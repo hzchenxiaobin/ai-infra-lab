@@ -32,6 +32,7 @@ LLM 驱动的模拟面试，三者通过统一知识图谱互相引用、用同�
 | [03-data-model.md](03-data-model.md) | 统一内容元数据规范、统一题目 ID 方案、数据库设计 |
 | [04-migration.md](04-migration.md) | 资产盘点、去重矩阵、编号冲突处理、迁移步骤 |
 | [05-roadmap.md](05-roadmap.md) | 里程碑（M0–M4）、验收标准、风险与开放问题 |
+| [06-development.md](06-development.md) | 开发文档：环境准备、快速开始、各应用开发指南、内容工作流、部署运维 |
 
 ## 核心设计决策速览
 
