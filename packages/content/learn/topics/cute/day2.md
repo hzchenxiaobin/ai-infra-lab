@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d2"
+type: learn
+title: "Day 2（周二）：Layout 代数深入"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 2
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 2（周二）：Layout 代数深入
 
 > **今日目标**：从"会调 `make_layout`"升级到"能手算嵌套 Layout 偏移、理解 Layout 的代数运算（coalesce/zipped/composed/partition）"

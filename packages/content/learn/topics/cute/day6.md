@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d6"
+type: learn
+title: "Day 6（周六）：TMA 与 Hopper 异步流水线"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 6
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 6（周六）：TMA 与 Hopper 异步流水线
 
 > **今日目标**：理解 TMA（Tensor Memory Accelerator）的硬件原理，能用 CuTe 构建 TMA descriptor 并用 `cute::TmaCopy` 搬运数据，了解 warp specialization 模式

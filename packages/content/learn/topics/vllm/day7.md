@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d7"
+type: learn
+title: "Day 7：部署实战与 Benchmark——从压测到复盘"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 7
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 7：部署实战与 Benchmark——从压测到复盘
 
 ## 🎯 目标

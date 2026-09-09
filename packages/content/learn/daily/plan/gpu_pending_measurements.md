@@ -1,3 +1,14 @@
+---
+id: "learn:plan:gpu-pending-measurements"
+type: learn
+title: "GPU 实测待补清单"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # GPU 实测待补清单
 
 > 依据：`rectification_plan.md` 整改执行后，所有"待 GPU 实测回填"项的汇总。

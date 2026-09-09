@@ -1,3 +1,15 @@
+---
+id: "learn:w09"
+type: learn
+title: "Week 9：分布式并行与多硬件"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-08-28
+week: 9
+related_problems: []
+related_questions: []
+---
+
 # Week 9：分布式并行与多硬件
 
 > 核心目标：掌握 TP/PP/DP 分布式并行、NCCL 通信、通信计算重叠、Ring Attention、MoE+EP 与 Ascend 多硬件对比

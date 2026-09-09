@@ -1,3 +1,18 @@
+---
+id: "gpu:e:019"
+type: problem
+title: "Reverse Array"
+tags: ["1D 并行", CUDA, "coalesced access", in-place, memory-bound, swap]
+knowledge_points: [1d-并行, coalesced-access, cuda, in-place, memory-bound, parallel-patterns, swap, 向量-数组重排]
+updated: 2026-09-07
+source: leetgpu
+number: 19
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Reverse Array 题解
 
 ## 1. 题目概述

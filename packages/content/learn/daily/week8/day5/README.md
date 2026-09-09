@@ -1,3 +1,16 @@
+---
+id: "learn:w08d05"
+type: learn
+title: "Day 5：项目推进 —— 量化/投机解码/CUDA Graph 接入 Mini 引擎"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-28
+week: 8
+day: 5
+related_problems: ["gpu:m:085"]
+related_questions: []
+---
+
 ## Day 5：项目推进 —— 量化/投机解码/CUDA Graph 接入 Mini 引擎
 
 ### 🎯 目标

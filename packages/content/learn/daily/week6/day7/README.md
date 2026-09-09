@@ -1,3 +1,16 @@
+---
+id: "learn:w06d07"
+type: learn
+title: "Day 7：推理系统核心问题总结"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 7
+related_problems: ["gpu:h:074", "gpu:m:017"]
+related_questions: []
+---
+
 ## Day 7：推理系统核心问题总结
 
 ### 🎯 目标

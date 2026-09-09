@@ -1,3 +1,18 @@
+---
+id: "gpu:m:034"
+type: problem
+title: "Logistic Regression"
+tags: [CUDA, "Cholesky 分解", "Newton-Raphson（IRLS）", sigmoid, "tiled GEMM（Hessian）", "迭代 kernel launch"]
+knowledge_points: [advanced-algorithms-math, cholesky-分解, cuda, logistic-regression, newton-raphson-irls, sigmoid, tiled-gemm-hessian, 迭代-kernel-launch]
+updated: 2026-09-07
+source: leetgpu
+number: 34
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Logistic Regression 题解
 
 ## 1. 题目概述

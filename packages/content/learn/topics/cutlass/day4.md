@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cutlass:d4"
+type: learn
+title: "Day 4：CUTLASS 2.x 三层抽象源码精读"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 4
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # Day 4：CUTLASS 2.x 三层抽象源码精读
 
 ## 🎯 目标

@@ -1,3 +1,14 @@
+---
+id: "learn:plan:rectification-plan"
+type: learn
+title: "AI Infra 10 周课程 · 整改方案与执行计划"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 10 周课程 · 整改方案与执行计划
 
 > 依据：`plan/course_route_review.md`（整体路线评审 + Week 1–10 逐日评审）。

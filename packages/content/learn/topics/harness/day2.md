@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d2"
+type: learn
+title: "Day 2：仓库即记录系统 + 地图而非手册"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 2
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 2：仓库即记录系统 + 地图而非手册
 
 ## 🎯 目标

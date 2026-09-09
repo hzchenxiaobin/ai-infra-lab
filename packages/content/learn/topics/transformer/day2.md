@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d2"
+type: learn
+title: "Day 2（周二）：Self-Attention 数学推导与实现"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 2
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 2（周二）：Self-Attention 数学推导与实现
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 1 搞清了"为什么需要 Attention"，Day 2 解决"Self-Attention 到底怎么算"——把 Bahdanau 的三步（对齐打分 → 归一化 → 加权求和）推广为 QKV 矩阵乘法，逐 shape 推演每一步的计算，并用 PyTorch 从零实现。

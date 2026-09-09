@@ -1,3 +1,16 @@
+---
+id: "learn:w01d07"
+type: learn
+title: "Day 7：总结与复盘"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 7
+related_problems: ["gpu:e:001", "gpu:e:002", "gpu:e:003", "gpu:e:008", "gpu:e:021", "gpu:m:004"]
+related_questions: []
+---
+
 ## Day 7：总结与复盘
 
 ### 🎯 目标

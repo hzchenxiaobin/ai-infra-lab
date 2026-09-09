@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d1"
+type: learn
+title: "Day 1：Harness 总览与核心范式"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 1
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 1：Harness 总览与核心范式
 
 ## 🎯 目标

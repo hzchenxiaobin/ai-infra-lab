@@ -1,3 +1,16 @@
+---
+id: "learn:w10d01"
+type: learn
+title: "Day 1：整合全部自定义 Kernel"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 1
+related_problems: ["gpu:e:003"]
+related_questions: []
+---
+
 ## Day 1：整合全部自定义 Kernel
 
 ### 🎯 目标

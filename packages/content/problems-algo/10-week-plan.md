@@ -1,3 +1,14 @@
+---
+id: "lc:list:10-week-plan"
+type: learn
+title: "10 周算法面试刷题计划"
+tags: [algo, problem-list]
+knowledge_points: [interview-prep]
+updated: 2026-09-09
+related_problems: []
+related_questions: []
+---
+
 # 📅 10 周算法面试刷题计划
 
 本计划把 [高频算法面试题汇总](hot-interview.md) 中的 **200 道高频面试题**（Hot 100 / CodeTop / 面试经典 150 / 剑指 Offer）按类别编排为 10 周，每周 3-6 天刷题 + 1 天复盘（复盘日重做本周错题、默写模板）。节奏建议：**简单题一天 3-4 道快速过，中等题 2-3 道，困难题 1 道吃透**；题目后带「题解」的表示本站已有详细中文题解，卡壳 20 分钟就看题解、看懂后自己默写一遍。

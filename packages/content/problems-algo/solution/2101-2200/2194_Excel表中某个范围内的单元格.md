@@ -1,3 +1,18 @@
+---
+id: "lc:2194"
+type: problem
+title: Excel表中某个范围内的单元格
+tags: [字符串, 枚举, 模拟]
+knowledge_points: [enumeration, simulation, string]
+updated: 2026-09-03
+source: leetcode
+number: 2194
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Excel表中某个范围内的单元格 题解
 
 ## 1. 题目概述

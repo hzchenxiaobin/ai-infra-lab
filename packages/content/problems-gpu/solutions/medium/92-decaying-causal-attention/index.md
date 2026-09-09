@@ -1,3 +1,18 @@
+---
+id: "gpu:m:092"
+type: problem
+title: "Decaying Causal Attention"
+tags: [Attention, CUDA, "Causal Mask", "Exponential Decay", 增量计算]
+knowledge_points: [attention, causal-mask, cuda, decaying-causal-attention, exponential-decay, 增量计算]
+updated: 2026-09-07
+source: leetgpu
+number: 92
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Decaying Causal Attention 题解
 
 ## 1. 题目概述

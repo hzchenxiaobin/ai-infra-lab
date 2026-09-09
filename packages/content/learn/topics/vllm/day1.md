@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d1"
+type: learn
+title: "Day 1：vLLM 快速上手与全景"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 1
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 1：vLLM 快速上手与全景
 
 ## 🎯 目标

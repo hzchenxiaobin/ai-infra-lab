@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d7"
+type: learn
+title: "Day 7（周日）：现代 C++ 新特性与高频题复盘"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 7
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 7（周日）：现代 C++ 新特性与高频题复盘
 
 > **本周定位**：C++ 面试系统化准备的收官日，汇总新特性 + 全周高频题复盘

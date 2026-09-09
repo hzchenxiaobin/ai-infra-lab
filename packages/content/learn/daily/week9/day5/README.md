@@ -1,3 +1,16 @@
+---
+id: "learn:w09d05"
+type: learn
+title: "Day 5：MoE + EP 并行专题"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-08-28
+week: 9
+day: 5
+related_problems: []
+related_questions: []
+---
+
 ## Day 5：MoE + EP 并行专题
 
 ### 🎯 目标

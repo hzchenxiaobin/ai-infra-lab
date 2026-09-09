@@ -1,3 +1,15 @@
+---
+id: "learn:w03"
+type: learn
+title: "Week 3：Tensor Core 与 CUTLASS"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+related_problems: []
+related_questions: []
+---
+
 # Week 3：Tensor Core 与 CUTLASS
 
 > 核心目标：掌握 Tensor Core/WMMA/mma.sync 指令编程、CUTLASS 三级 Tiling 源码、CuTe 布局抽象与混合精度策略

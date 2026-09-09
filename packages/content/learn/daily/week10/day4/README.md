@@ -1,3 +1,16 @@
+---
+id: "learn:w10d04"
+type: learn
+title: "Day 4：高频面试题基础篇"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 4
+related_problems: ["gpu:e:052"]
+related_questions: []
+---
+
 ## Day 4：高频面试题基础篇
 
 ### 🎯 目标

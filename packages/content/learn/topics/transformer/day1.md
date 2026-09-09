@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d1"
+type: learn
+title: "Day 1（周一）：序列建模演化与 Attention 动机"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 1
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：序列建模演化与 Attention 动机
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 1 是全周的地基：搞清楚"为什么需要 Attention"——从 RNN 的两个根本缺陷（长程依赖衰减 + 串行计算）出发，理解 Bahdanau Attention 如何破局，最终引向"Attention is all you need"的核心洞察。

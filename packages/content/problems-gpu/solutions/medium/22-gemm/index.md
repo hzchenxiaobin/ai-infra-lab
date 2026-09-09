@@ -1,3 +1,18 @@
+---
+id: "gpu:m:022"
+type: problem
+title: "General Matrix Multiplication (GEMM)"
+tags: [CUDA, FP16, GEMM, "Shared Memory Tiling", "Tensor Core", WMMA, compute-bound, epilogue]
+knowledge_points: [compute-bound, cuda, epilogue, fp16, gemm, shared-memory-tiling, tensor-core, wmma]
+updated: 2026-09-08
+source: leetgpu
+number: 22
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w02d02", "learn:w02d04", "learn:w09d06", "learn:w10d05"]
+---
+
 # LeetGPU General Matrix Multiplication (GEMM) 题解
 
 ## 1. 题目概述

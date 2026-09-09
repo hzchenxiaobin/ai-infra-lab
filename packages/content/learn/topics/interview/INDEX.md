@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:index"
+type: learn
+title: "AI Infra 面试专题索引"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-07
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 面试专题索引
 
 > 本页面是 `interview` 专题的导航入口，汇总目录下全部页面，新增页面后请同步更新此索引。

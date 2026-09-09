@@ -1,3 +1,16 @@
+---
+id: "learn:w02d01"
+type: learn
+title: "Day 1：Warp Shuffle 原语与 Warp/Block Reduce"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 1
+related_problems: ["gpu:m:016"]
+related_questions: []
+---
+
 ## Day 1：Warp Shuffle 原语与 Warp/Block Reduce
 
 ### 🎯 目标

@@ -1,3 +1,16 @@
+---
+id: "learn:w05d03"
+type: learn
+title: "Day 3：手写完整 FlashAttention Forward Kernel"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 3
+related_problems: ["gpu:h:012", "gpu:m:087"]
+related_questions: []
+---
+
 ## Day 3：手写完整 FlashAttention Forward Kernel
 
 ### 🎯 目标

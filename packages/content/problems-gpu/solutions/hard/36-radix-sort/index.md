@@ -1,3 +1,18 @@
+---
+id: "gpu:h:036"
+type: problem
+title: "Radix Sort"
+tags: [CUDA, "Radix Sort", "exclusive prefix sum（scan）", histogram, memory-bound, "stable scatter", "warp shuffle __shfl_up_sync", 分布式排序]
+knowledge_points: [cuda, exclusive-prefix-sum-scan, histogram, memory-bound, radix-sort, sampling-sorting-search, stable-scatter, warp-shuffle-shfl-up-sync, 分布式排序]
+updated: 2026-09-07
+source: leetgpu
+number: 36
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Radix Sort 题解
 
 ## 1. 题目概述

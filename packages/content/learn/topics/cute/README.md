@@ -1,3 +1,15 @@
+---
+id: "learn:topic:cute"
+type: learn
+title: "CuTe 一周学习计划"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # CuTe 一周学习计划
 
 > **适用对象**：已完成 [CUTLASS 专题](../cutlass/README.md) Day 2（CuTe 编程模型入门），掌握 Layout/Tensor/copy 基本用法；或已完成 week2 GEMM 手写实战、对 CUTLASS 3.x 有基本认知

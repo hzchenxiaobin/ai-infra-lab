@@ -1,3 +1,18 @@
+---
+id: "lc:0736"
+type: problem
+title: "Lisp 语法解析"
+tags: [哈希表, 字符串, 栈, 递归]
+knowledge_points: [hash-table, recursion, stack, string]
+updated: 2026-09-03
+source: leetcode
+number: 736
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Lisp 语法解析 题解
 
 ## 1. 题目概述

@@ -1,3 +1,18 @@
+---
+id: "gpu:m:076"
+type: problem
+title: "Adder Transformer Inference"
+tags: [CUDA, RMSNorm, RoPE, SwiGLU, "autoregressive 推理", "softmax attention", "多 kernel 流水线"]
+knowledge_points: [adder-transformer, autoregressive-推理, cuda, rmsnorm, rope, softmax-attention, swiglu, transformer-inference, 多-kernel-流水线]
+updated: 2026-09-07
+source: leetgpu
+number: 76
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w04d02"]
+---
+
 # LeetGPU Adder Transformer Inference 题解
 
 ## 1. 题目概述
@@ -21,7 +36,7 @@
 
 > ⚠️ **架构澄清**：题名 "Adder" 指**模型完成的任务是加法**（add two 10-digit numbers），而非「加法注意力」。实际 challenge 的 reference 使用**标准 softmax attention**（见 `challenge.py` 的 `F.softmax(attn_scores, dim=-1)`），并配备 RoPE + RMSNorm + SwiGLU。若按「无 softmax 的加法注意力」实现将无法通过 `atol=0.01` 校验。本题解忠实实现 reference 架构。
 
-> 💡 这道题是**多 kernel 推理流水线**的典型：embedding → attention → MLP → logits → argmax，循环 11 步。与 [Week4 Day2](../../../aiinfra/daily/week4/day2/README.md) 的 transformer 推理优化同构——核心是「把多个小 kernel 串成推理管线 + batch 维并行」。
+> 💡 这道题是**多 kernel 推理流水线**的典型：embedding → attention → MLP → logits → argmax，循环 11 步。与 [Week4 Day2](../../../../learn/daily/week4/day2/README.md) 的 transformer 推理优化同构——核心是「把多个小 kernel 串成推理管线 + batch 维并行」。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

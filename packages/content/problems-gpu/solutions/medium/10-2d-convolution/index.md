@@ -1,3 +1,18 @@
+---
+id: "gpu:m:010"
+type: problem
+title: "2D Convolution"
+tags: [CUDA, Convolution, "Shared Memory Halo", memory-bound, 常量内存]
+knowledge_points: [2d-shared-memory-halo, convolution, convolution-pooling, cuda, memory-bound, shared-memory-halo, 常量内存]
+updated: 2026-09-07
+source: leetgpu
+number: 10
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 2D Convolution 题解
 
 ## 1. 题目概述

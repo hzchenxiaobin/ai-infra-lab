@@ -1,3 +1,16 @@
+---
+id: "learn:w02d02"
+type: learn
+title: "Day 2：Register Blocking 与 2D Tiling"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 2
+related_problems: ["gpu:m:022"]
+related_questions: []
+---
+
 ## Day 2：Register Blocking 与 2D Tiling
 
 ### 🎯 目标

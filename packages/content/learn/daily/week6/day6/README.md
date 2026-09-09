@@ -1,3 +1,16 @@
+---
+id: "learn:w06d06"
+type: learn
+title: "Day 6：FlashDecoding —— Decode 阶段并行度突破"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 6
+related_problems: ["gpu:m:029", "gpu:m:096"]
+related_questions: []
+---
+
 ## Day 6：FlashDecoding —— Decode 阶段并行度突破
 
 ### 🎯 目标

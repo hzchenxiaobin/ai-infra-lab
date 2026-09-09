@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week8-expanded"
+type: learn
+title: "第8周深度展开：项目打磨 + 面试准备（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第8周深度展开：项目打磨 + 面试准备（7天）
 
 > **适用对象**：陈斌斌（已完成第7周学习，构建完整 Mini AI Infra 系统）

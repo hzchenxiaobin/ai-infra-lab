@@ -1,3 +1,18 @@
+---
+id: "gpu:e:001"
+type: problem
+title: "Vector Addition"
+tags: [CUDA, "coalesced access", "grid-stride loop", memory-bound]
+knowledge_points: [coalesced-access, coalesced-global-memory, cuda, grid-stride-loop, memory-bound, parallel-patterns]
+updated: 2026-09-07
+source: leetgpu
+number: 1
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w01d01", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review"]
+---
+
 # LeetGPU Vector Addition 题解
 
 ## 1. 题目概述

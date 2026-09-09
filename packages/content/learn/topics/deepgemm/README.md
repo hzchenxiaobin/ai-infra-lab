@@ -1,3 +1,15 @@
+---
+id: "learn:topic:deepgemm"
+type: learn
+title: "DeepGEMM 一周学习计划"
+tags: [deepgemm]
+knowledge_points: [deepgemm, gemm]
+updated: 2026-08-28
+topic: deepgemm
+related_problems: []
+related_questions: []
+---
+
 # DeepGEMM 一周学习计划
 
 > **适用对象**：已完成 [CUTLASS 专题](../cutlass/README.md) Day 4（三层抽象）与 [CuTe 专题](../cute/README.md) Day 6（TMA + WGMMA），掌握 Hopper 异步执行模型；建议读过 [FlashAttention-3 论文精读](../../paper/flashattention3/README.md) 理解 warp specialization 与 FP8 布局工程

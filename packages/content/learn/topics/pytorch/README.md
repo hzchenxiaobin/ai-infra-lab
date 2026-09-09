@@ -1,3 +1,15 @@
+---
+id: "learn:topic:pytorch"
+type: learn
+title: "PyTorch：从基础入门"
+tags: [pytorch]
+knowledge_points: [pytorch]
+updated: 2026-08-28
+topic: pytorch
+related_problems: []
+related_questions: []
+---
+
 # PyTorch：从基础入门
 
 > **适用对象**：有 Python 基础，想系统入门 PyTorch，为后续 CUDA / Triton / 算子开发打底的学习者

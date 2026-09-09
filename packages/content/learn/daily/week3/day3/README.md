@@ -1,3 +1,16 @@
+---
+id: "learn:w03d03"
+type: learn
+title: "Day 3：mma.sync 指令与 ldmatrix —— Tensor Core 底层编程"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 3
+related_problems: ["gpu:m:058", "gpu:m:107a"]
+related_questions: []
+---
+
 ## Day 3：mma.sync 指令与 ldmatrix —— Tensor Core 底层编程
 
 ### 🎯 目标

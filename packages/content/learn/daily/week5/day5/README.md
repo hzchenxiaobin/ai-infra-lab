@@ -1,3 +1,16 @@
+---
+id: "learn:w05d05"
+type: learn
+title: "Day 5：性能对比分析 —— 标准 vs 手写 vs 官方"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 5
+related_problems: ["gpu:h:012", "gpu:m:106"]
+related_questions: []
+---
+
 ## Day 5：性能对比分析 —— 标准 vs 手写 vs 官方
 
 ### 🎯 目标

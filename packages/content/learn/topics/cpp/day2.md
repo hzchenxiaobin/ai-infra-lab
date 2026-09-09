@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d2"
+type: learn
+title: "Day 2（周二）：RAII 与智能指针"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 2
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 2（周二）：RAII 与智能指针
 
 > **本周定位**：C++ 面试系统化准备，今日聚焦资源管理的核心范式——RAII 与智能指针

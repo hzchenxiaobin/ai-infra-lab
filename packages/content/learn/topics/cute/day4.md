@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d4"
+type: learn
+title: "Day 4（周四）：Copy 原语体系"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 4
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 4（周四）：Copy 原语体系
 
 > **今日目标**：掌握 `cute::copy` 的调度机制——它如何根据源/目标 Layout 自动选择向量化宽度、`cp.async`、TMA；能手动构建 3-stage 流水线

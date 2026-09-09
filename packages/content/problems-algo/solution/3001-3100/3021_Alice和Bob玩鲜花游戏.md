@@ -1,3 +1,18 @@
+---
+id: "lc:3021"
+type: problem
+title: Alice和Bob玩鲜花游戏
+tags: [博弈, 奇偶性, 数学]
+knowledge_points: [game-theory, math, parity, 奇偶性]
+updated: 2026-09-03
+source: leetcode
+number: 3021
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Alice和Bob玩鲜花游戏 题解
 
 ## 1. 题目概述

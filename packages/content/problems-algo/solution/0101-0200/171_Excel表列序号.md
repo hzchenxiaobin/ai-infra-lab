@@ -1,3 +1,18 @@
+---
+id: "lc:0171"
+type: problem
+title: Excel表列序号
+tags: [字符串, 数学]
+knowledge_points: [math, string]
+updated: 2026-09-03
+source: leetcode
+number: 171
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Excel表列序号 题解
 
 ## 1. 题目概述

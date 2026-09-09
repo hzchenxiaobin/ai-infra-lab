@@ -1,3 +1,18 @@
+---
+id: "gpu:m:071"
+type: problem
+title: "Parallel Merge"
+tags: [CUDA, "binary search", co-rank, "merge path", "parallel merge"]
+knowledge_points: [binary-search, co-rank, cuda, merge-path, parallel-merge, sampling-sorting-search]
+updated: 2026-09-07
+source: leetgpu
+number: 71
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Parallel Merge 题解
 
 ## 1. 题目概述

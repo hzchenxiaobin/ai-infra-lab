@@ -1,3 +1,18 @@
+---
+id: "lc:1635"
+type: problem
+title: Hopper公司查询I
+tags: [COALESCE, "GROUP BY", "LEFT JOIN", SQL, "WITH RECURSIVE", "YEAR()/MONTH()", 数据库, 累积计数]
+knowledge_points: [coalesce, database, group-by, left-join, recursive-cte, sql, year-month, 累积计数]
+updated: 2026-09-03
+source: leetcode
+number: 1635
+difficulty: hard
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode Hopper公司查询I 题解
 
 ## 1. 题目概述

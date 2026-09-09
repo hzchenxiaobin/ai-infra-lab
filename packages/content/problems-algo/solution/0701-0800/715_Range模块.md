@@ -1,3 +1,18 @@
+---
+id: "lc:0715"
+type: problem
+title: "Range 模块"
+tags: [区间合并, 有序集合, 设计]
+knowledge_points: [design, interval-merge, ordered-set]
+updated: 2026-09-03
+source: leetcode
+number: 715
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Range 模块 题解
 
 ## 1. 题目概述

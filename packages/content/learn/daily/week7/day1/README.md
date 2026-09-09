@@ -1,3 +1,16 @@
+---
+id: "learn:w07d01"
+type: learn
+title: "Day 1：Continuous Batching"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 1
+related_problems: ["gpu:e:041"]
+related_questions: []
+---
+
 ## Day 1：Continuous Batching
 
 ### 🎯 目标

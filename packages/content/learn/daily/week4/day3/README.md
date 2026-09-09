@@ -1,3 +1,16 @@
+---
+id: "learn:w04d03"
+type: learn
+title: "Day 3：LayerNorm 优化与 GEMM Backward 数据流"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 3
+related_problems: []
+related_questions: []
+---
+
 ## Day 3：LayerNorm 优化与 GEMM Backward 数据流
 
 ### 🎯 目标

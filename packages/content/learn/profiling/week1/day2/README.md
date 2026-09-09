@@ -1,3 +1,12 @@
+---
+id: "profiling:w1d2"
+type: profiling
+title: "Week 1 Day 2 — Occupancy Profiling"
+tags: [ncu, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Week 1 Day 2 — Occupancy Profiling
 
 ```bash

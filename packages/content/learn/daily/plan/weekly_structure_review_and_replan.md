@@ -1,3 +1,14 @@
+---
+id: "learn:plan:weekly-structure-review-and-replan"
+type: learn
+title: "AI Infra 10 周教程 —— 周级结构合理性与教学节奏评审 + 重组方案"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 10 周教程 —— 周级结构合理性与教学节奏评审 + 重组方案
 
 > 评审日期：2026-08-04

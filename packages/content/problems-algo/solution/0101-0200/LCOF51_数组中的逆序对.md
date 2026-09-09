@@ -1,3 +1,18 @@
+---
+id: "lc:lcof:51"
+type: problem
+title: 数组中的逆序对
+tags: [分治, 归并排序, 数组]
+knowledge_points: [array, divide-and-conquer, merge-sort]
+updated: 2026-09-03
+source: leetcode
+number: 51
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 数组中的逆序对 题解
 
 ## 1. 题目概述

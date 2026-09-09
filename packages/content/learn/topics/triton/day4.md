@@ -1,3 +1,16 @@
+---
+id: "learn:topic:triton:d4"
+type: learn
+title: "Day 4：GEMM 基础"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 4
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Day 4：GEMM 基础
 
 ## 🎯 目标

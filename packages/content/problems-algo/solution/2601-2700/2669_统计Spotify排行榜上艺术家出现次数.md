@@ -1,3 +1,18 @@
+---
+id: "lc:2669"
+type: problem
+title: "统计 Spotify 排行榜上艺术家出现次数"
+tags: ["COUNT(*) 聚合", "GROUP BY", "ORDER BY 排序", SQL, 分组计数, 数据库]
+knowledge_points: [count-聚合, database, group-by, order-by, order-by-排序, sql, 分组计数]
+updated: 2026-09-03
+source: leetcode
+number: 2669
+difficulty: easy
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode 统计 Spotify 排行榜上艺术家出现次数 题解
 
 ## 1. 题目概述

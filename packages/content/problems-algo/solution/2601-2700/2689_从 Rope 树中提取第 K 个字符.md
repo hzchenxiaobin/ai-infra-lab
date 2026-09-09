@@ -1,3 +1,18 @@
+---
+id: "lc:2689"
+type: problem
+title: "从 Rope 树中提取第 K 个字符"
+tags: [二叉树, 树, 深度优先搜索]
+knowledge_points: [binary-tree, dfs, tree]
+updated: 2026-09-03
+source: leetcode
+number: 2689
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 从 Rope 树中提取第 K 个字符 题解
 
 ## 1. 题目概述

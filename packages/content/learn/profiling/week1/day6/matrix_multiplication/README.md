@@ -1,3 +1,12 @@
+---
+id: "profiling:w1d6:matrix-multiplication"
+type: profiling
+title: "Matrix Multiplication — ncu 分析"
+tags: [ncu, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Matrix Multiplication — ncu 分析
 
 本题来自 LeetGPU [Matrix Multiplication](https://leetgpu.com/challenges/matrix-multiplication)，是 Week 1 Day 6 的在线题目任务 5。这里把 naive 与 shared-memory tiling 两个版本抽出来，方便直接用 ncu 对比分析。

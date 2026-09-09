@@ -1,3 +1,16 @@
+---
+id: "learn:topic:triton:d3"
+type: learn
+title: "Day 3：Softmax 与归约操作"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 3
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Day 3：Softmax 与归约操作
 
 ## 🎯 目标

@@ -1,3 +1,14 @@
+---
+id: "learn:reference:hardware-specs"
+type: learn
+title: "硬件参数唯一事实源（Single Source of Truth）"
+tags: [cuda-course, reference]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 硬件参数唯一事实源（Single Source of Truth）
 
 > ⚠️ **硬性规定**：教程正文（`weekN/dayM/README.md`）中**禁止新写硬件参数数字**。凡涉及 GPU 算力、带宽、SM 数、显存等参数，一律引用本文件（`reference/hardware_specs.md`）或 `reference/key_numbers.md`。本文件数字改动必须同步更新 SKILL.md 自检清单的 grep 检查项。

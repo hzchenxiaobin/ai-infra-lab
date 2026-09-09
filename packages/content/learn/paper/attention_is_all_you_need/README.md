@@ -1,3 +1,14 @@
+---
+id: "paper:attention-is-all-you-need"
+type: paper
+title: "Attention Is All You Need —— Transformer 论文精读"
+tags: [multi-head-attention, paper, positional-encoding, self-attention, seq2seq]
+knowledge_points: [attention-is-all-you-need, multi-head-attention, positional-encoding, self-attention, seq2seq]
+updated: 2026-08-28
+venue: "NeurIPS 2017（NIPS 2017）"
+status: done
+---
+
 # Attention Is All You Need —— Transformer 论文精读
 
 > 原文 PDF：[attention_is_all_you_need.pdf](attention_is_all_you_need.pdf)

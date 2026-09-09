@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d3"
+type: learn
+title: "Day 3（周三）：Tensor 引擎分层"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 3
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：Tensor 引擎分层
 
 > **今日目标**：理解 Tensor = Engine + Layout 的双模板设计，掌握 gmem/smem/rmem 三种 engine 的区别与创建方式，能用切片/分区操作 Tensor

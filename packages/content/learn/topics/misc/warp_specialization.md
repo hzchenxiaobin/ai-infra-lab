@@ -1,3 +1,15 @@
+---
+id: "learn:topic:misc:warp-specialization"
+type: learn
+title: "Warp Specialization：Hopper 的生产者-消费者并行范式"
+tags: [misc]
+knowledge_points: [warp-specialization]
+updated: 2026-08-28
+topic: misc
+related_problems: []
+related_questions: []
+---
+
 # Warp Specialization：Hopper 的生产者-消费者并行范式
 
 ## 🎯 目标

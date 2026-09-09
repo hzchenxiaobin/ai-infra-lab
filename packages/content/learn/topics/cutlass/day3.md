@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cutlass:d3"
+type: learn
+title: "Day 3：CUTLASS 3.x GEMM 实践"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 3
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # Day 3：CUTLASS 3.x GEMM 实践
 
 ## 🎯 目标

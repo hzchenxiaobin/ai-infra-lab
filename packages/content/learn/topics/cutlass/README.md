@@ -1,3 +1,15 @@
+---
+id: "learn:topic:cutlass"
+type: learn
+title: "CUTLASS 一周学习计划"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # CUTLASS 一周学习计划
 
 > **适用对象**：已完成 week2 GEMM 教程（手写 Shared Memory Tiling + Register Blocking GEMM，达到 cuBLAS 40%+），掌握 CUDA 基础、Shared Memory、Warp Shuffle、Tensor Core 概念

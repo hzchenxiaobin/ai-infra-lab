@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d3"
+type: learn
+title: "Day 3：基本使用 —— API 调用与 OpenAI Compatible API"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 3
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 3：基本使用 —— API 调用与 OpenAI Compatible API
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 3 天。熟练使用三种方式调用 SGLang：curl 原生 API、OpenAI SDK、Python 离线 Engine，并理解 OpenAI Compatible API 为什么成为行业标准

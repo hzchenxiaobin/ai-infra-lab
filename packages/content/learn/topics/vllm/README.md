@@ -1,3 +1,15 @@
+---
+id: "learn:topic:vllm"
+type: learn
+title: "vLLM：一周入门高吞吐 LLM 推理引擎"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # vLLM：一周入门高吞吐 LLM 推理引擎
 
 > **适用对象**：完成 [Week 5 PagedAttention / Mini 引擎](../../daily/week5/README.md) 与 [Week 6 Continuous Batching](../../daily/week6/README.md)（或具备等价的 KV Cache / 调度器基础）、想系统上手 vLLM 的开发者

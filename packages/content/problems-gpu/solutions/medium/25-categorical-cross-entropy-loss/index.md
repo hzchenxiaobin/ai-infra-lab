@@ -1,3 +1,18 @@
+---
+id: "gpu:m:025"
+type: problem
+title: "Categorical Cross Entropy Loss"
+tags: [CUDA, "Cross Entropy", log-sum-exp, reduction, "warp shuffle", 数值稳定性]
+knowledge_points: [cross-entropy, cross-entropy-loss, cuda, log-sum-exp, losses-basic-ml, numerical-stability, reduction, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 25
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Categorical Cross Entropy Loss 题解
 
 ## 1. 题目概述

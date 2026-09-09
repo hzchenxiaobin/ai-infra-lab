@@ -1,3 +1,18 @@
+---
+id: "gpu:h:116"
+type: problem
+title: "Diffusion Transformer Block"
+tags: [CUDA, DiT, GELU, LayerNorm, "Multi-Head Attention", adaLN-Zero, "multi-kernel pipeline", 算子融合]
+knowledge_points: [adaln-zero, cuda, dit, dit-block-adaln-zero, gelu, layernorm, multi-head-attention, multi-kernel-pipeline, transformer-inference, 算子融合]
+updated: 2026-09-07
+source: leetgpu
+number: 116
+difficulty: hard
+languages: [cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Diffusion Transformer Block 题解
 
 ## 1. 题目概述

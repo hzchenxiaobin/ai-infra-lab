@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:notes:social-interview-qa"
+type: learn
+title: "AI Infra 社招面试实录整理与参考答案（面试官视角）"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-08-28
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 社招面试实录整理与参考答案（面试官视角）
 
 > **来源**：知乎帖子 [《记AI-infra/大模型推理社招面试一兄弟的全过程(v3.0)》](https://zhuanlan.zhihu.com/p/1920946738270810330)（作者"不归牛顿管的熊猫"，公众号"AI不止算法"，面试官视角记录）

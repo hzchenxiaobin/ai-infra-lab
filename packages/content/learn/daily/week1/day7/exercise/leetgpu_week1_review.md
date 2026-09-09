@@ -1,3 +1,16 @@
+---
+id: "learn:w01d07:exercise:leetgpu-week1-review"
+type: learn
+title: "Week 1 LeetGPU 复盘记录"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 7
+related_problems: ["gpu:e:001", "gpu:e:002", "gpu:e:003", "gpu:e:008", "gpu:e:021", "gpu:m:004"]
+related_questions: []
+---
+
 # Week 1 LeetGPU 复盘记录
 
 > 用法：每道题提交通过后，把耗时和 ncu 关键指标填进下表；综合练习（Day 7）记录在最后。

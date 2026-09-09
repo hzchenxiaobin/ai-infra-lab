@@ -1,3 +1,16 @@
+---
+id: "learn:w06d05"
+type: learn
+title: "Day 5：项目推进 —— Mini 推理引擎 v0"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 5
+related_problems: ["gpu:h:074", "gpu:m:030"]
+related_questions: []
+---
+
 ## Day 5：项目推进 —— Mini 推理引擎 v0
 
 ### 🎯 目标

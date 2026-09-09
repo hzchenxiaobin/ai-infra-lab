@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d2"
+type: learn
+title: "Day 2：PagedAttention 原理——KV Cache 的分页管理"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 2
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 2：PagedAttention 原理——KV Cache 的分页管理
 
 ## 🎯 目标

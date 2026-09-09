@@ -1,3 +1,18 @@
+---
+id: "lc:2941"
+type: problem
+title: 子数组的最大GCD-Sum
+tags: [二分查找, 数学, 数组, 数论, 最大公约数]
+knowledge_points: [array, binary-search, gcd, math, number-theory]
+updated: 2026-09-03
+source: leetcode
+number: 2941
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 子数组的最大GCD-Sum 题解
 
 ## 1. 题目概述

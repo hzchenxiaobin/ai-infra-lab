@@ -1,3 +1,18 @@
+---
+id: "lc:3586"
+type: problem
+title: 寻找COVID康复患者
+tags: [CTE, DATEDIFF, JOIN, MIN, SQL, 双键排序, 数据库, 窗口函数, 聚合函数]
+knowledge_points: [aggregate-function, cte, database, datediff, join, min, multi-key-sort, sql, window-function, 双键排序]
+updated: 2026-09-03
+source: leetcode
+number: 3586
+difficulty: medium
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode 寻找COVID康复患者 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:w07d03"
+type: learn
+title: "Day 3：TensorRT-LLM / LightLLM / SGLang 调度对比"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 3
+related_problems: ["gpu:e:110", "gpu:m:070"]
+related_questions: []
+---
+
 ## Day 3：TensorRT-LLM / LightLLM / SGLang 调度对比
 
 ### 🎯 目标

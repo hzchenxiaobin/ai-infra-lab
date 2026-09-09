@@ -1,3 +1,16 @@
+---
+id: "learn:w03d02"
+type: learn
+title: "Day 2：手写 WMMA GEMM 与 cuBLAS 性能对比"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 2
+related_problems: ["gpu:e:002"]
+related_questions: []
+---
+
 ## Day 2：手写 WMMA GEMM 与 cuBLAS 性能对比
 
 ### 🎯 目标

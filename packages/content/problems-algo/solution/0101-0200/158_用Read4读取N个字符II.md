@@ -1,3 +1,18 @@
+---
+id: "lc:0158"
+type: problem
+title: "用 Read4 读取 N 个字符 II（多次调用）"
+tags: ["交互式 API", 字符串, 模拟, 设计]
+knowledge_points: [design, interactive, simulation, string, 交互式-api]
+updated: 2026-09-03
+source: leetcode
+number: 158
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 用 Read4 读取 N 个字符 II（多次调用） 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d4"
+type: learn
+title: "Day 4：智能体可读性 + 反馈回路"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 4
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 4：智能体可读性 + 反馈回路
 
 ## 🎯 目标

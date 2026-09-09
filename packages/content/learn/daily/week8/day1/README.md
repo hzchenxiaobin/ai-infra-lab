@@ -1,3 +1,16 @@
+---
+id: "learn:w08d01"
+type: learn
+title: "Day 1：量化推理专题 —— W8A16/INT8 KV/FP8"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-31
+week: 8
+day: 1
+related_problems: ["gpu:e:052", "gpu:m:064"]
+related_questions: []
+---
+
 ## Day 1：量化推理专题 —— W8A16/INT8 KV/FP8
 
 ### 🎯 目标

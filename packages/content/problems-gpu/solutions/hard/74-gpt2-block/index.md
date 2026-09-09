@@ -1,6 +1,21 @@
+---
+id: "gpu:h:074"
+type: problem
+title: "GPT-2 Transformer Block"
+tags: [CUDA, FlashAttention, GEMM, LayerNorm, Transformer, 端到端]
+knowledge_points: [cuda, flash-attention, gemm, gpt-2-block, layernorm, transformer, transformer-inference, 端到端]
+updated: 2026-09-07
+source: leetgpu
+number: 74
+difficulty: hard
+languages: [cuda]
+judge: leetgpu-com
+related_learn: ["learn:w04d07", "learn:w06d05", "learn:w06d07"]
+---
+
 # LeetGPU GPT-2 Transformer Block 题解（Week4 Day7 综合验收）
 
-> 本题为 Week4 Day7 综合验收题解，对应 [IO 优化方法论总结](../../../aiinfra/daily/week4/day7/README.md)。
+> 本题为 Week4 Day7 综合验收题解，对应 [IO 优化方法论总结](../../../../learn/daily/week4/day7/README.md)。
 
 ## 1. 题目概述
 
@@ -13,7 +28,7 @@
 
 **约束**：`1 ≤ seq_len ≤ 1024`，`d_model = 768`，`n_heads = 12`。
 
-> 💡 与 [Week4 Day7 IO 优化方法论总结](../../../aiinfra/daily/week4/day7/README.md) 的关联：GPT-2 Transformer Block 是 Week4 IO 优化主线的终极验收——融合了 FlashAttention（Week4 核心）+ LayerNorm（Week3）+ GEMM（Week2）+ Causal Mask，考察端到端 IO 优化能力。每个子算子的 HBM 访问模式都对应本周学的优化方法论。
+> 💡 与 [Week4 Day7 IO 优化方法论总结](../../../../learn/daily/week4/day7/README.md) 的关联：GPT-2 Transformer Block 是 Week4 IO 优化主线的终极验收——融合了 FlashAttention（Week4 核心）+ LayerNorm（Week3）+ GEMM（Week2）+ Causal Mask，考察端到端 IO 优化能力。每个子算子的 HBM 访问模式都对应本周学的优化方法论。
 
 ## 2. GPU 设计
 

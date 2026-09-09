@@ -1,3 +1,15 @@
+---
+id: "learn:w01:notes:week1-notes"
+type: learn
+title: "Week 1 学习笔记模板"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+related_problems: []
+related_questions: []
+---
+
 # Week 1 学习笔记模板
 
 ## 1. GPU 执行模型

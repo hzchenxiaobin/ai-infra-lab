@@ -1,3 +1,16 @@
+---
+id: "learn:w02d03"
+type: learn
+title: "Day 3：float4 向量化与整合版 GEMM（v1–v6 全系列实测）"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 3
+related_problems: ["gpu:e:008", "gpu:m:013"]
+related_questions: []
+---
+
 ## Day 3：float4 向量化与整合版 GEMM（v1–v6 全系列实测）
 
 ### 🎯 目标

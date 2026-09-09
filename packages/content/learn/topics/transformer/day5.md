@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d5"
+type: learn
+title: "Day 5（周五）：Transformer Block 组装"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 5
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：Transformer Block 组装
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 2-4 把"零件"都造好了（Self-Attention、Multi-Head、位置编码），Day 5 开始"组装"——把 MHA + FFN + LayerNorm + 残差连接拼成一个可堆叠的 Transformer Block，理解每个组件的作用与 Pre-Norm / Post-Norm 的差异。

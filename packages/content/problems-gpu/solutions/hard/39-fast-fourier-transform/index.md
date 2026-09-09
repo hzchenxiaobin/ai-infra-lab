@@ -1,3 +1,18 @@
+---
+id: "gpu:h:039"
+type: problem
+title: "Fast Fourier Transform"
+tags: [CUDA, Cooley-Tukey, FFT, compute-bound, radix-2, "shared memory", "twiddle factor", "位反转（bit-reversal）", "蝶形运算（butterfly）"]
+knowledge_points: [advanced-algorithms-math, compute-bound, cooley-tukey, cuda, fft, fft-2d-fft, radix-2, shared-memory, twiddle-factor, 位反转-bit-reversal, 蝶形运算-butterfly]
+updated: 2026-09-07
+source: leetgpu
+number: 39
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Fast Fourier Transform 题解
 
 ## 1. 题目概述

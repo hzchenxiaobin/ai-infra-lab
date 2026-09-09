@@ -1,3 +1,18 @@
+---
+id: "lc:3321"
+type: problem
+title: "计算子数组的 x-sum II"
+tags: [哈希表, "堆（优先队列）", 数组, 滑动窗口]
+knowledge_points: [array, hash-table, heap, sliding-window]
+updated: 2026-09-03
+source: leetcode
+number: 3321
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 计算子数组的 x-sum II 题解
 
 - **关联**：[3318（版本 I）](https://leetcode.cn/problems/find-x-sum-of-all-k-long-subarrays-i/)是本题的小数据版（$n \le 50$、$nums[i] \le 50$，逐窗口暴力可过）；本题把 $n$ 放大到 $10^5$，考察**双平衡树增量维护滑动窗口 top-x** 的标准姿势

@@ -1,3 +1,15 @@
+---
+id: "learn:topic:triton"
+type: learn
+title: "Triton 专题"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Triton 专题
 
 > **适用对象**：已完成 week1 CUDA 基础教程，理解 thread/block/grid、Global Memory、Shared Memory 概念

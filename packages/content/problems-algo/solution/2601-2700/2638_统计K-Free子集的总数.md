@@ -1,3 +1,18 @@
+---
+id: "lc:2638"
+type: problem
+title: 统计K-Free子集的总数
+tags: [动态规划, 排序, 数学, 数组, 组合数学]
+knowledge_points: [array, combinatorics, dynamic-programming, math, sorting]
+updated: 2026-09-03
+source: leetcode
+number: 2638
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 统计K-Free子集的总数 题解
 
 ## 1. 题目概述

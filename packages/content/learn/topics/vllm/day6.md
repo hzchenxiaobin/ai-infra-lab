@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d6"
+type: learn
+title: "Day 6：分布式与解码优化——TP/PP、Speculative Decoding、Structured Output、LoRA"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 6
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 6：分布式与解码优化——TP/PP、Speculative Decoding、Structured Output、LoRA
 
 ## 🎯 目标

@@ -1,3 +1,12 @@
+---
+id: "profiling:index"
+type: profiling
+title: "Week 1 & Week 2 性能分析任务汇总"
+tags: [ncu, nsys, profiling]
+knowledge_points: [profiling]
+updated: 2026-08-28
+---
+
 # Week 1 & Week 2 性能分析任务汇总
 
 本目录汇总了 `week1` 和 `week2` 中所有需要使用 **ncu（Nsight Compute）** 和 **nsys（Nsight Systems）** 进行性能分析的任务，并放置了可直接编译执行的 `.cu` 源码。
@@ -120,7 +129,7 @@ ncu --metrics sm__cycles_elapsed.avg,sm__warps_active.avg.pct_of_peak_sustained_
 
 #### Vector Add：不同 block size 性能对比
 
-> 对应 [Week 1 Day 1 LeetGPU Vector Add](../week1/day1/README.md)，用 ncu 对比 block_size = 32/64/128/256/512/1024 的性能差异。
+> 对应 [Week 1 Day 1 LeetGPU Vector Add](../daily/week1/day1/README.md)，用 ncu 对比 block_size = 32/64/128/256/512/1024 的性能差异。
 
 ```bash
 make vector_add_blocksize
@@ -278,7 +287,7 @@ nsys profile -o day6_full_timeline --trace cuda,nvtx,osrt ../day4/transpose
 
 **目录**：`profiling/week2/day1/`
 
-> 对应 [Week 2 Day 1 任务 3：使用 ncu 查看 Warp Shuffle 效率](../week2/day1/README.md)
+> 对应 [Week 2 Day 1 任务 3：使用 ncu 查看 Warp Shuffle 效率](../daily/week2/day1/README.md)
 
 **目标**：验证 Warp Shuffle 具有高 occupancy 和极低执行时间。
 
@@ -331,7 +340,7 @@ nsys profile -o multi_stream_timeline ./multi_stream
 
 **目录**：`profiling/week2/day4/`
 
-> 对应 [Week 2 Day 4 Coding 任务 1-5 + 扩展实验](../week2/day4/README.md)
+> 对应 [Week 2 Day 4 Coding 任务 1-5 + 扩展实验](../daily/week2/day4/README.md)
 
 **目标**：掌握 ncu CLI、关键指标解读、定位瓶颈、CSV 导出、profile-optimize-verify 循环。
 
@@ -377,7 +386,7 @@ make nsys-softmax          # nsys 时间线
 
 **目录**：`profiling/week2/day5/`
 
-> 对应 [Week 2 Day 5 实验 3：用 ncu 分析 FlashAttention Kernel](../week2/day5/README.md)
+> 对应 [Week 2 Day 5 实验 3：用 ncu 分析 FlashAttention Kernel](../daily/week2/day5/README.md)
 
 **目标**：判断 FlashAttention 是 compute-bound 还是 memory-bound，并与标准 Attention 对比 HBM 读写量。
 
@@ -407,7 +416,7 @@ make nsys                  # nsys 时间线
 
 **目录**：`profiling/week2/day6/`
 
-> 对应 [Week 2 Day 6 任务 3（ncu 验证 GEMM）+ 任务 4（Histogram）](../week2/day6/README.md)
+> 对应 [Week 2 Day 6 任务 3（ncu 验证 GEMM）+ 任务 4（Histogram）](../daily/week2/day6/README.md)
 
 #### 整合版 GEMM
 
@@ -451,7 +460,7 @@ make profile-hist-hbm      # HBM 读写量对比
 
 **目录**：`profiling/week2/day7/`
 
-> 对应 [Week 2 Day 7 任务 1（手撕 Reduce）+ 任务 2（手撕 GEMM）+ 任务 5（性能报告）](../week2/day7/README.md)
+> 对应 [Week 2 Day 7 任务 1（手撕 Reduce）+ 任务 2（手撕 GEMM）+ 任务 5（性能报告）](../daily/week2/day7/README.md)
 
 #### Block Reduce（任务 1 手撕验收）
 
@@ -492,7 +501,7 @@ make nsys-gemm           # nsys 时间线
 
 **目录**：`profiling/week3/day1/`
 
-> 对应 [Week 3 Day 1 晚间编程任务 + 练习题 2/3](../week3/day1/README.md)
+> 对应 [Week 3 Day 1 晚间编程任务 + 练习题 2/3](../daily/week3/day1/README.md)
 
 **目标**：三层 profiling（torch.profiler → nsys → ncu）分析 Transformer Prefill/Decode 两阶段。
 
@@ -520,7 +529,7 @@ make ncu-softmax    # 只分析 softmax kernel
 
 **目录**：`profiling/week3/day2/`
 
-> 对应 [Week 3 Day 2 任务 3（ncu 验证 memory-bound）+ 实验 1（D-scan 尺度律）](../week3/day2/README.md)
+> 对应 [Week 3 Day 2 任务 3（ncu 验证 memory-bound）+ 实验 1（D-scan 尺度律）](../daily/week3/day2/README.md)
 
 **目标**：用 ncu 验证 Softmax/LayerNorm 是 memory-bound，并观察 D 翻倍时时间的线性尺度律。
 
@@ -550,7 +559,7 @@ make nsys              # nsys 时间线
 
 **目录**：`profiling/week3/day3/`
 
-> 对应 [Week 3 Day 3 任务 3（ncu 对比优化前后）+ 实验 2（warp vs block D-scan）+ 实验 3（stall 分析）](../week3/day3/README.md)
+> 对应 [Week 3 Day 3 任务 3（ncu 对比优化前后）+ 实验 2（warp vs block D-scan）+ 实验 3（stall 分析）](../daily/week3/day3/README.md)
 
 **目标**：用 ncu 量化 warp 级 Softmax + float4 LayerNorm 的优化收益。
 

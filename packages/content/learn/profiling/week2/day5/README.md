@@ -1,6 +1,15 @@
+---
+id: "profiling:w2d5"
+type: profiling
+title: "Week 2 Day 5 — FlashAttention Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+---
+
 # Week 2 Day 5 — FlashAttention Profiling
 
-> 对应 [Week 2 Day 5 实验 3：用 ncu 分析 FlashAttention Kernel](../../week2/day5/README.md)
+> 对应 [Week 2 Day 5 实验 3：用 ncu 分析 FlashAttention Kernel](../../../daily/week2/day5/README.md)
 
 ## 编译与运行
 

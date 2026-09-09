@@ -1,3 +1,16 @@
+---
+id: "learn:w09d02"
+type: learn
+title: "Day 2：Pipeline Parallelism 与 DP —— 1F1B/bubble ratio/数据并行"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-09-01
+week: 9
+day: 2
+related_problems: []
+related_questions: []
+---
+
 ## Day 2：Pipeline Parallelism 与 DP —— 1F1B/bubble ratio/数据并行
 
 ### 🎯 目标

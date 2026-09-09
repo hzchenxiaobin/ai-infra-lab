@@ -1,3 +1,18 @@
+---
+id: "gpu:m:013"
+type: problem
+title: Histogramming
+tags: [CUDA, Histogram, "Shared Memory", atomicAdd, memory-bound, privatization]
+knowledge_points: [atomic-add, cuda, histogram, memory-bound, privatization, reduction-scan, shared-memory, 计数-直方图]
+updated: 2026-09-07
+source: leetgpu
+number: 13
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w02d03"]
+---
+
 # LeetGPU Histogramming 题解
 
 ## 1. 题目概述

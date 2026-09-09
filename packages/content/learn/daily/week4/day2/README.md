@@ -1,3 +1,16 @@
+---
+id: "learn:w04d02"
+type: learn
+title: "Day 2：手写 Softmax 与 LayerNorm Kernel"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 2
+related_problems: ["gpu:h:012", "gpu:m:076", "gpu:m:115"]
+related_questions: []
+---
+
 ## Day 2：手写 Softmax 与 LayerNorm Kernel
 
 ### 🎯 目标

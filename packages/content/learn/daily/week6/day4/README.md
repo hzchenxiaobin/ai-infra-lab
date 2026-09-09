@@ -1,3 +1,16 @@
+---
+id: "learn:w06d04"
+type: learn
+title: "Day 4：vLLM Worker 与 PagedAttention"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 4
+related_problems: ["gpu:h:109", "gpu:m:070"]
+related_questions: []
+---
+
 ## Day 4：vLLM Worker 与 PagedAttention
 
 ### 🎯 目标

@@ -1,3 +1,16 @@
+---
+id: "learn:w01d02"
+type: learn
+title: "Day 2：Occupancy 与资源约束"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 2
+related_problems: ["gpu:e:021"]
+related_questions: []
+---
+
 ## Day 2：Occupancy 与资源约束
 
 ### 🎯 目标

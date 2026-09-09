@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d4"
+type: learn
+title: "Day 4：源码架构走读——一次请求的完整生命周期"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 4
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 4：源码架构走读——一次请求的完整生命周期
 
 ## 🎯 目标

@@ -1,3 +1,18 @@
+---
+id: "gpu:m:049"
+type: problem
+title: "3D Subarray Sum"
+tags: ["3D 索引映射", CUDA, memory-bound, "warp shuffle", "归约（reduction）", 范围求和]
+knowledge_points: [3d-索引映射, cuda, memory-bound, range-sum, reduction, reduction-scan, warp-shuffle, 子数组和-最大子数组, 范围求和]
+updated: 2026-09-07
+source: leetgpu
+number: 49
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 3D Subarray Sum 题解
 
 ## 1. 题目概述

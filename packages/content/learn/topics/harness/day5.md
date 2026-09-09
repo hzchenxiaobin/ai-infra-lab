@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d5"
+type: learn
+title: "Day 5：熵管理与吞吐量理念"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 5
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 5：熵管理与吞吐量理念
 
 ## 🎯 目标

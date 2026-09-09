@@ -1,6 +1,15 @@
+---
+id: "profiling:w3d2"
+type: profiling
+title: "Week 3 Day 2 — Softmax + LayerNorm Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [cutlass, profiling, tensor-core]
+updated: 2026-08-28
+---
+
 # Week 3 Day 2 — Softmax + LayerNorm Profiling
 
-> 对应 [Week 3 Day 2 任务 3（ncu 验证 memory-bound）+ 实验 1（D-scan 尺度律）](../../week3/day2/README.md)
+> 对应 [Week 3 Day 2 任务 3（ncu 验证 memory-bound）+ 实验 1（D-scan 尺度律）](../../../daily/week3/day2/README.md)
 
 ## 1. ncu 验证 memory-bound（任务 3）
 

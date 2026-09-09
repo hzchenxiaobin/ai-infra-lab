@@ -1,3 +1,18 @@
+---
+id: "gpu:m:047"
+type: problem
+title: "Subarray Sum"
+tags: [CUDA, "block 归约", memory-bound, "warp shuffle", "归约（reduction）", 范围求和]
+knowledge_points: [block-reduction, cuda, memory-bound, range-sum, reduction, reduction-scan, warp-shuffle, 子数组和-最大子数组, 范围求和]
+updated: 2026-09-07
+source: leetgpu
+number: 47
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Subarray Sum 题解
 
 ## 1. 题目概述

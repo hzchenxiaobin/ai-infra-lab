@@ -1,3 +1,16 @@
+---
+id: "learn:w08d04"
+type: learn
+title: "Day 4：CUDA Graph 实操 —— 消除 Launch Overhead"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-28
+week: 8
+day: 4
+related_problems: ["gpu:e:003", "gpu:h:059"]
+related_questions: []
+---
+
 ## Day 4：CUDA Graph 实操 —— 消除 Launch Overhead
 
 ### 🎯 目标

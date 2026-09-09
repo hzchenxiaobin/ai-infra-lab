@@ -1,3 +1,18 @@
+---
+id: "lc:1115"
+type: problem
+title: "交替打印 FooBar"
+tags: [互斥锁, 信号量, 多线程, 并发, 条件变量]
+knowledge_points: [concurrency, condition-variable, multithreading, mutex, semaphore]
+updated: 2026-09-03
+source: leetcode
+number: 1115
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 交替打印 FooBar 题解
 
 ## 1. 题目概述

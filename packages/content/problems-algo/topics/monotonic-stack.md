@@ -1,3 +1,15 @@
+---
+id: "lc:topic:monotonic-stack"
+type: learn
+title: 单调栈专题
+tags: [algo, monotonic-stack]
+knowledge_points: [monotonic-stack]
+updated: 2026-08-28
+topic: algo-monotonic-stack
+related_problems: ["lc:0042", "lc:0084", "lc:0085", "lc:0316", "lc:0402", "lc:0581", "lc:0735", "lc:0739", "lc:0901", "lc:0907"]
+related_questions: []
+---
+
 <!-- title: 单调栈专题 -->
 # 单调栈专题
 

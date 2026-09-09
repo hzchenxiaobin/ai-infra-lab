@@ -1,3 +1,18 @@
+---
+id: "lc:2940"
+type: problem
+title: "找到 Alice 和 Bob 可以相遇的建筑"
+tags: [二分查找, 单调栈, "堆（优先队列）", 离线查询, 线段树]
+knowledge_points: [binary-search, heap, monotonic-stack, offline-queries, segment-tree]
+updated: 2026-09-03
+source: leetcode
+number: 2940
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 找到 Alice 和 Bob 可以相遇的建筑 题解
 
 ## 1. 题目概述

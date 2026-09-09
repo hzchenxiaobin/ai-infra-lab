@@ -1,4 +1,17 @@
-# Day 7：进阶专题与总结
+---
+id: "learn:topic:triton:d7"
+type: learn
+title: "Triton Day 7：进阶专题与总结"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 7
+topic: triton
+related_problems: []
+related_questions: []
+---
+
+# Triton Day 7：进阶专题与总结
 
 ## 🎯 目标
 

@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:mock-interview:sfinae-vs-if-constexpr"
+type: learn
+title: "SFINAE 与 if constexpr：编译期条件选择的机制与本质区别"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-07
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # SFINAE 与 if constexpr：编译期条件选择的机制与本质区别
 
 > **导读**：面试高频题——"解释一下 SFINAE 的全称和工作原理，比如用 enable_if 配合类型特征为整型和浮点型选择不同重载时，编译器到底发生了什么；再谈谈 if constexpr 和 SFINAE 在作用层面和编译行为上有什么本质区别"。本文先拆解 SFINAE 作为重载决议规则的机制本体，再用整型/浮点双 overload 的例子逐步还原编译器内部的流水线，然后给出 if constexpr 的语义与"被丢弃语句（discarded statement）"规则，最后从**作用层面（接口层 vs 实现层）**和**编译行为（替换阶段 vs 实例化阶段）**两个维度做本质对比。文中所有代码与报错均在 GCC 9.4（`-std=c++14` / `-std=c++17`）下实测；C++20 Concepts 方向的延伸见同目录 [enable_if_to_concepts.md](enable_if_to_concepts.md)。

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d6"
+type: learn
+title: "Day 6（周六）：最新前沿 —— Kimi K3 与下一代架构"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 6
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 6（周六）：最新前沿 —— Kimi K3 与下一代架构
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 6 站上当前（2026 年中）最前沿——**模型架构创新的下一步**。前五天搭好了"身体"（Day 1 架构、Day 3 训练 infra）、"大脑"（Day 2 RL 推理、Day 5 Agentic）、"眼睛"（Day 4 稀疏注意力），今天看 Kimi K3 怎么在架构层面再往前走一步：2.8T 参数（全球首个开源 3T 级模型）、两项新架构——**KDA（Kimi Delta Attention）**新型注意力机制和 **Attention Residuals（AttnRes）**替代传统残差连接。补充视野覆盖 DeepSeek V4 系列（1.6T/49B，默认 1M 上下文）和 NVIDIA Nemotron 3 Super（Mamba-Transformer 混合路线）。

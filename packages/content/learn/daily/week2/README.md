@@ -1,3 +1,15 @@
+---
+id: "learn:w02"
+type: learn
+title: "Week 2：CUDA Kernel 优化方法论"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+related_problems: []
+related_questions: []
+---
+
 # Week 2：CUDA Kernel 优化方法论
 
 > 核心目标：掌握 Warp Shuffle、Register Blocking、float4 向量化、GEMM 七层优化路径、CUDA Streams 与 Nsight Compute 性能分析

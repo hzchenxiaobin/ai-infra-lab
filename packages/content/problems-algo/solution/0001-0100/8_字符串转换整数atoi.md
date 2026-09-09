@@ -1,3 +1,18 @@
+---
+id: "lc:0008"
+type: problem
+title: "字符串转换整数 (atoi)"
+tags: [字符串, 模拟, 自动机]
+knowledge_points: [automaton, simulation, string]
+updated: 2026-09-03
+source: leetcode
+number: 8
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 字符串转换整数 (atoi) 题解
 
 ## 1. 题目概述

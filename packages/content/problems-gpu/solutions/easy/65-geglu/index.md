@@ -1,3 +1,18 @@
+---
+id: "gpu:e:065"
+type: problem
+title: "Gaussian Error Gated Linear Unit"
+tags: [CUDA, GELU, "elementwise kernel", erf, "kernel fusion", memory-bound]
+knowledge_points: [cuda, elementwise-kernel, erf, gelu, kernel-fusion, memory-bound, parallel-patterns, 逐元素激活函数]
+updated: 2026-09-07
+source: leetgpu
+number: 65
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Gaussian Error Gated Linear Unit (GeGLU) 题解
 
 ## 1. 题目概述

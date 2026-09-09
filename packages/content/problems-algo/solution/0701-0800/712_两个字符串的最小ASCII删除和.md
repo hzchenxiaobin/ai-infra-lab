@@ -1,3 +1,18 @@
+---
+id: "lc:0712"
+type: problem
+title: 两个字符串的最小ASCII删除和
+tags: [LCS, "二维 DP", 动态规划, 字符串]
+knowledge_points: [2d-dp, dynamic-programming, lcs, string]
+updated: 2026-09-03
+source: leetcode
+number: 712
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 两个字符串的最小ASCII删除和 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d4"
+type: learn
+title: "Day 4（周四）：长上下文与高效注意力 —— 稀疏注意力时代"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 4
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 4（周四）：长上下文与高效注意力 —— 稀疏注意力时代
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 4 是 2026 年最热的架构方向——**让百万 token 上下文变得便宜**。Day 1 的 MLA 把 KV cache 从 4.0 MB/token 压到 70 KB/token（57× 压缩），但**计算复杂度仍然是 $O(n^2)$**——1M token 上下文的注意力计算约 1 EFLOP/层，这不是省显存能解决的。今天对照读三篇论文：《DeepSeek-V3.2-Exp》的 **DSA**（在 MLA 基础上砍计算复杂度）、《Kimi Linear》的混合线性注意力（$O(n)$ 复杂度）、《MoBA》的 block 级 MoE 式注意力选择，理解从 $O(n^2)$ 到 $O(n \log n)$ 再到 $O(n)$ 的三条路线。

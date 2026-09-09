@@ -1,6 +1,15 @@
+---
+id: "profiling:w2d6"
+type: profiling
+title: "Week 2 Day 6 — 整合版 GEMM + Histogram Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+---
+
 # Week 2 Day 6 — 整合版 GEMM + Histogram Profiling
 
-> 对应 [Week 2 Day 6 任务 3 + 任务 4](../../week2/day6/README.md)
+> 对应 [Week 2 Day 6 任务 3 + 任务 4](../../../daily/week2/day6/README.md)
 
 ## 1. 整合版 GEMM（Register Blocking + float4 + Warp Shuffle + Coalesced 写回）
 

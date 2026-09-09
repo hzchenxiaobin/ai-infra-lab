@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d7"
+type: learn
+title: "Day 7：Mini Project —— 部署一个带性能报告的推理服务"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 7
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 7：Mini Project —— 部署一个带性能报告的推理服务
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 7 天（最后一天）。把前 6 天的所有技能串成一个完整项目：**用 SGLang 部署开源模型，提供 OpenAI Compatible API，带 Python 客户端、并发测试和性能报告**

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d2"
+type: learn
+title: "Day 2（周二）：推理模型与强化学习 —— R1 的革命"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 2
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 2（周二）：推理模型与强化学习 —— R1 的革命
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 2 是本周最重要的一天：2025 年 1 月 DeepSeek-R1 发布，用纯强化学习"训出"推理能力，直接把 OpenAI o1 级别的思维链开源了——这是 2025 年大模型领域最大的范式转变。今天精读《DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning》（[arXiv:2501.12948](https://arxiv.org/abs/2501.12948)），对照阅读《Kimi k1.5: Scaling Reinforcement Learning with LLMs》，理解 RL 如何从"对齐工具"变成"推理能力引擎"。

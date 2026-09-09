@@ -1,3 +1,18 @@
+---
+id: "gpu:e:063"
+type: problem
+title: "Interleave Arrays"
+tags: [CUDA, "coalesced access", "grid-stride loop", memory-bound, 索引映射]
+knowledge_points: [coalesced-access, coalesced-global-memory, cuda, grid-stride-loop, index-mapping, memory-bound, parallel-patterns, 向量-数组重排, 索引映射]
+updated: 2026-09-07
+source: leetgpu
+number: 63
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Interleave Arrays 题解
 
 ## 1. 题目概述

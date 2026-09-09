@@ -1,3 +1,18 @@
+---
+id: "lc:1078"
+type: problem
+title: "Bigram 分词"
+tags: [字符串, 模拟]
+knowledge_points: [simulation, string]
+updated: 2026-09-03
+source: leetcode
+number: 1078
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Bigram 分词 题解
 
 ## 1. 题目概述

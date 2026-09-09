@@ -1,3 +1,18 @@
+---
+id: "lc:2804"
+type: problem
+title: 数组原型的forEach方法
+tags: ["this 绑定", 数组, 设计, 迭代器]
+knowledge_points: [array, design, iterator, this-binding]
+updated: 2026-09-03
+source: leetcode
+number: 2804
+difficulty: easy
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 数组原型的forEach方法 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deepgemm:d5"
+type: learn
+title: "Day 5（周五）：Grouped GEMM for MoE——三种布局与调度"
+tags: [deepgemm]
+knowledge_points: [deepgemm, gemm]
+updated: 2026-08-28
+day: 5
+topic: deepgemm
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：Grouped GEMM for MoE——三种布局与调度
 
 > **本周定位**：本专题是 [CUTLASS 专题](../cutlass/README.md)（库视角）与 [CuTe 专题](../cute/README.md)（原语视角）之后的**单点深钻**——拆开一个生产级 FP8/FP4 GEMM kernel 看每一行 PTX 怎么写。

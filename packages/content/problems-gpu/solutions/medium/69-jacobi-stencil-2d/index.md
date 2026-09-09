@@ -1,3 +1,18 @@
+---
+id: "gpu:m:069"
+type: problem
+title: "2D Jacobi Stencil"
+tags: [CUDA, "Jacobi 迭代", memory-bound, "shared memory halo", "stencil 计算", 边界保留]
+knowledge_points: [advanced-algorithms-math, cuda, jacobi-迭代, memory-bound, shared-memory-halo, stencil, stencil-计算, 边界保留]
+updated: 2026-09-07
+source: leetgpu
+number: 69
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 2D Jacobi Stencil 题解
 
 ## 1. 题目概述

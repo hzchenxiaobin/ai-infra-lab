@@ -1,3 +1,16 @@
+---
+id: "learn:topic:triton:d5"
+type: learn
+title: "Day 5：FlashAttention 简化版"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 5
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Day 5：FlashAttention 简化版
 
 ## 🎯 目标

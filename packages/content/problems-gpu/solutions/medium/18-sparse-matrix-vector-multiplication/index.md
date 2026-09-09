@@ -1,3 +1,18 @@
+---
+id: "gpu:m:018"
+type: problem
+title: "Sparse Matrix-Vector Multiplication"
+tags: [CSR, CUDA, SpMV, memory-bound, "warp shuffle", 稀疏矩阵, "间接访存（gather）"]
+knowledge_points: [csr, cuda, gemm, memory-bound, sparse-matrix, spmv, warp-shuffle, 稀疏矩阵乘, 间接访存-gather]
+updated: 2026-09-07
+source: leetgpu
+number: 18
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Sparse Matrix-Vector Multiplication 题解
 
 ## 1. 题目概述

@@ -1,3 +1,15 @@
+---
+id: "learn:w01"
+type: learn
+title: "Week 1：GPU 执行模型与内存基础"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+related_problems: []
+related_questions: []
+---
+
 # Week 1：GPU 执行模型与内存基础
 
 > 核心目标：掌握 SM/Warp/SIMT 执行模型、Occupancy 资源约束、Memory Hierarchy、Coalescing/Bank Conflict 与 Nsight Profiling，建立 GPU 性能直觉

@@ -1,3 +1,15 @@
+---
+id: "learn:w05"
+type: learn
+title: "Week 5：FlashAttention 全专题"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+related_problems: []
+related_questions: []
+---
+
 # Week 5：FlashAttention 全专题
 
 > 核心目标：从 FA 简化版到 FA-3 的完整专题：Online Softmax 推导、Forward/Backward kernel、官方源码、性能对比与 IO 方法论

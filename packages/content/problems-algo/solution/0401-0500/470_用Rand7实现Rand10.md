@@ -1,3 +1,18 @@
+---
+id: "lc:0470"
+type: problem
+title: "用 Rand7() 实现 Rand10()"
+tags: [拒绝采样, 数学, 概率与随机]
+knowledge_points: [math, probability, rejection-sampling]
+updated: 2026-09-03
+source: leetcode
+number: 470
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 用 Rand7() 实现 Rand10() 题解
 
 ## 1. 题目概述

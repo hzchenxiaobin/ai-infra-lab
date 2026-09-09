@@ -1,3 +1,15 @@
+---
+id: "learn:topic:shengteng"
+type: learn
+title: "昇腾950 NPU 架构白皮书精读"
+tags: [shengteng]
+knowledge_points: [ascend-npu]
+updated: 2026-08-28
+topic: shengteng
+related_problems: []
+related_questions: []
+---
+
 # 昇腾950 NPU 架构白皮书精读
 
 > 原文 PDF：[ascend950_npu_whitepaper.pdf](ascend950_npu_whitepaper.pdf)（华为，2026，共 40 页）

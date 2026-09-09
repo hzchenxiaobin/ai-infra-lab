@@ -1,3 +1,18 @@
+---
+id: "gpu:h:109"
+type: problem
+title: Attention
+tags: [Attention, CUDA, FlashAttention, "Online Softmax", "kernel fusion", 分块计算]
+knowledge_points: [attention, cuda, flash-attention, kernel-fusion, online-softmax, 分块计算]
+updated: 2026-09-07
+source: leetgpu
+number: 109
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w05d01", "learn:w05d02", "learn:w06d04"]
+---
+
 # LeetGPU Attention 题解
 
 ## 1. 题目概述

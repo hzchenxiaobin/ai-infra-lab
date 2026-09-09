@@ -1,3 +1,15 @@
+---
+id: "learn:topic:llm"
+type: learn
+title: 大模型前沿技术一周学习计划
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # 大模型前沿技术一周学习计划
 
 > 设计时间：2026 年 8 月

@@ -1,3 +1,18 @@
+---
+id: "gpu:m:113"
+type: problem
+title: "Fused QKV Projection"
+tags: [CUDA, GEMM, "Kernel Fusion", "Layout Transform", "Shared Memory Tiling", compute-bound]
+knowledge_points: [attention, compute-bound, cuda, gemm, kernel-fusion, layout-transform, shared-memory-tiling]
+updated: 2026-09-07
+source: leetgpu
+number: 113
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Fused QKV Projection 题解
 
 ## 1. 题目概述

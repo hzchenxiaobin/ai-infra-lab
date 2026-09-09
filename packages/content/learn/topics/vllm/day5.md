@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d5"
+type: learn
+title: "Day 5：吞吐优化特性——Chunked Prefill / Prefix Caching / CUDA Graph / 量化"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 5
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 5：吞吐优化特性——Chunked Prefill / Prefix Caching / CUDA Graph / 量化
 
 ## 🎯 目标

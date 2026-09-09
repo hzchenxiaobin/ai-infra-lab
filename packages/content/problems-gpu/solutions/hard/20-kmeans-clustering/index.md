@@ -1,3 +1,18 @@
+---
+id: "gpu:h:020"
+type: problem
+title: "K-Means Clustering"
+tags: [CUDA, argmin, "atomic 归约", "kernel 流水线", "pairwise distance", 迭代算法]
+knowledge_points: [advanced-algorithms-math, argmin, atomic-归约, cuda, k-means, kernel-流水线, pairwise-distance, 迭代算法]
+updated: 2026-09-07
+source: leetgpu
+number: 20
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU K-Means Clustering 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:w01d01:notes:day1-hello-gpu"
+type: learn
+title: "Day 1 Profiling 任务：hello_gpu"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 1
+related_problems: []
+related_questions: []
+---
+
 # Day 1 Profiling 任务：hello_gpu
 
 ## 今日目标

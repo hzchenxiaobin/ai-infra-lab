@@ -1,3 +1,16 @@
+---
+id: "learn:w07d05"
+type: learn
+title: "Day 5：Mini 推理引擎 v1（多请求并发）"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 5
+related_problems: ["gpu:e:111", "gpu:m:029"]
+related_questions: []
+---
+
 ## Day 5：Mini 推理引擎 v1（多请求并发）
 
 ### 🎯 目标

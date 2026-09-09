@@ -1,4 +1,17 @@
-# Day 6：Profiling 与性能调优
+---
+id: "learn:topic:triton:d6"
+type: learn
+title: "Triton Day 6：Profiling 与性能调优"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 6
+topic: triton
+related_problems: []
+related_questions: []
+---
+
+# Triton Day 6：Profiling 与性能调优
 
 ## 🎯 目标
 

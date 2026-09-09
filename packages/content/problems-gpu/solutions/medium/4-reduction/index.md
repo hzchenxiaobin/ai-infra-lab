@@ -1,3 +1,18 @@
+---
+id: "gpu:m:004"
+type: problem
+title: Reduction
+tags: [CUDA, "__shfl_down_sync", memory-bound, "warp shuffle", 归约]
+knowledge_points: [cuda, memory-bound, reduction, reduction-scan, shfl-down-sync, warp-shuffle, 树形归约]
+updated: 2026-09-07
+source: leetgpu
+number: 4
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w01d05", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d07", "learn:w07d06", "learn:w07d07"]
+---
+
 # LeetGPU Reduction 题解
 
 ## 1. 题目概述
@@ -18,7 +33,7 @@
 
 **约束**：`1 ≤ N ≤ 10,000,000`；性能测试取大数组。
 
-> 💡 这道题是 **warp shuffle 归约的经典练习**——`__shfl_down_sync` 把 warp 内 32 个 lane 的值逐级归约到 lane 0。与 [Week7 Day6 全链路 Profiling](../../../aiinfra/daily/week7/day6/README.md) 的关联在于：Reduction 是 profiling 中最常分析的 memory-bound kernel，LayerNorm（求 mean/var）和 Softmax（求 max/sum）内部都包含 reduction。理解它的性能特征是分析这些 kernel 瓶颈的基础。
+> 💡 这道题是 **warp shuffle 归约的经典练习**——`__shfl_down_sync` 把 warp 内 32 个 lane 的值逐级归约到 lane 0。与 [Week7 Day6 全链路 Profiling](../../../../learn/daily/week7/day6/README.md) 的关联在于：Reduction 是 profiling 中最常分析的 memory-bound kernel，LayerNorm（求 mean/var）和 Softmax（求 max/sum）内部都包含 reduction。理解它的性能特征是分析这些 kernel 瓶颈的基础。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

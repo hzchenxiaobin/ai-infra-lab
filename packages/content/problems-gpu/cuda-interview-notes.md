@@ -1,3 +1,14 @@
+---
+id: "learn:note:cuda-interview-notes"
+type: learn
+title: "CUDA 手撕题专题：AI Infra 面经总结"
+tags: [cuda, interview]
+knowledge_points: [cuda, interview-prep]
+updated: 2026-09-09
+related_problems: []
+related_questions: []
+---
+
 # CUDA 手撕题专题：AI Infra 面经总结
 
 > **来源**：知乎、牛客网等平台的 AI Infra 公开面经（链接见文末参考资料），检索整理时间 2026-07

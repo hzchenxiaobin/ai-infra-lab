@@ -1,3 +1,18 @@
+---
+id: "gpu:e:021"
+type: problem
+title: ReLU
+tags: [CUDA, branchless, "elementwise kernel", memory-bound, "warp divergence"]
+knowledge_points: [branchless, cuda, elementwise-kernel, memory-bound, parallel-patterns, warp-divergence, 逐元素激活函数]
+updated: 2026-09-07
+source: leetgpu
+number: 21
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w01d02", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review"]
+---
+
 # LeetGPU ReLU 题解
 
 ## 1. 题目概述

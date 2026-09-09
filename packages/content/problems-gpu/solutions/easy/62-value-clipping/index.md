@@ -1,3 +1,18 @@
+---
+id: "gpu:e:062"
+type: problem
+title: "Value Clipping"
+tags: [CUDA, branchless, clamp, "elementwise kernel", memory-bound, "warp divergence"]
+knowledge_points: [branchless, clamp, cuda, elementwise-kernel, memory-bound, parallel-patterns, warp-divergence, 向量-数组重排]
+updated: 2026-09-07
+source: leetgpu
+number: 62
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Value Clipping 题解
 
 ## 1. 题目概述

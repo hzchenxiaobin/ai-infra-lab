@@ -1,3 +1,16 @@
+---
+id: "learn:w10d05"
+type: learn
+title: "Day 5：Mock 面试"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 5
+related_problems: ["gpu:m:022"]
+related_questions: []
+---
+
 ## Day 5：Mock 面试
 
 ### 🎯 目标

@@ -1,3 +1,18 @@
+---
+id: "lc:0050"
+type: problem
+title: "Pow(x, n)"
+tags: [位运算, 分治, 数学, 递归]
+knowledge_points: [bit-manipulation, divide-and-conquer, math, recursion]
+updated: 2026-09-03
+source: leetcode
+number: 50
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Pow(x, n) 题解
 
 ## 1. 题目概述

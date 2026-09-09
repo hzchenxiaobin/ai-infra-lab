@@ -1,3 +1,18 @@
+---
+id: "gpu:m:032"
+type: problem
+title: "INT8 Quantized MatMul"
+tags: [CUDA, "INT32 累加", "INT8 量化", requantize, "tiled GEMM"]
+knowledge_points: [cuda, gemm, int32-累加, int8-quantization, int8-量化-gemm, requantize, tiled-gemm]
+updated: 2026-09-07
+source: leetgpu
+number: 32
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU INT8 Quantized MatMul 题解
 
 ## 1. 题目概述

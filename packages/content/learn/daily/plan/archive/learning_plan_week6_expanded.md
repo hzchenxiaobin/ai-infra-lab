@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week6-expanded"
+type: learn
+title: "第6周深度展开：Batching & 调度（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第6周深度展开：Batching & 调度（7天）
 
 > **适用对象**：陈斌斌（已完成第5周学习，掌握 Prefill/Decode、KV Cache、vLLM 架构、Mini 推理引擎 v0）

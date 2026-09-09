@@ -1,3 +1,18 @@
+---
+id: "lc:1804"
+type: problem
+title: "实现 Trie II（前缀树）"
+tags: [哈希表, 字典树, 设计]
+knowledge_points: [design, hash-table, trie]
+updated: 2026-09-03
+source: leetcode
+number: 1804
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 实现 Trie II（前缀树） 题解
 
 ## 1. 题目概述

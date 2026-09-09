@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:mock-interview:swizzle-mechanism"
+type: learn
+title: "Swizzle 机制详解：从 bank conflict 到 XOR 置换"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-04
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # Swizzle 机制详解：从 bank conflict 到 XOR 置换
 
 > **导读**：swizzle（地址重排/打花）是 GPU 高性能 kernel 里消除 shared memory bank conflict 的标准手段。本文从问题出发，给出 swizzle 的形式化定义（CuTe `Swizzle<B, M, S>`），用具体数字完整演示一遍置换过程，并给出手写 CUDA、CuTe、CUTLASS 2.x、TMA 四个层次的代码实例。

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d7"
+type: learn
+title: "Day 7（周日）：整合输出 —— 从输入到输出"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 7
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 7（周日）：整合输出 —— 从输入到输出
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 7 是本周最后一天——**把六天的知识固化成自己的东西**。前六天搭好了四条主线：MoE 架构（Day 1）、RL 推理（Day 2）、训练基础设施（Day 3）、稀疏注意力（Day 4）、Agentic 训练（Day 5）、下一代架构（Day 6）。今天不学新东西，而是**输出**——写博客、做分享、画大图，用"教"来检验"学"。还有四道自测题要答——如果答不出就回炉对应那天。

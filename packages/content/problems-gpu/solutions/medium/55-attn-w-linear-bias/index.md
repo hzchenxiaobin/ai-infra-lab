@@ -1,3 +1,18 @@
+---
+id: "gpu:m:055"
+type: problem
+title: "Attention with Linear Biases (ALiBi)"
+tags: [ALiBi, Attention, CUDA, LLM, "online softmax", "positional bias"]
+knowledge_points: [alibi, attention, cuda, llm, online-softmax, positional-bias]
+updated: 2026-09-07
+source: leetgpu
+number: 55
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Attention with Linear Biases (ALiBi) 题解
 
 ## 1. 题目概述

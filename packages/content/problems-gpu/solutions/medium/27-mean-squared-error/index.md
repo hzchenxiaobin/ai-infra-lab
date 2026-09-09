@@ -1,3 +1,18 @@
+---
+id: "gpu:m:027"
+type: problem
+title: "Mean Squared Error"
+tags: [CUDA, "kernel 融合", memory-bound, "warp shuffle", "归约（reduction）", 损失函数]
+knowledge_points: [cuda, kernel-fusion, losses-basic-ml, memory-bound, mse, reduction, warp-shuffle, 损失函数]
+updated: 2026-09-07
+source: leetgpu
+number: 27
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Mean Squared Error 题解
 
 ## 1. 题目概述

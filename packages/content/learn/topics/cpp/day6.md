@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d6"
+type: learn
+title: "Day 6（周六）：并发编程基础"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 6
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 6（周六）：并发编程基础
 
 > **本周定位**：C++ 面试系统化准备，今日聚焦多线程并发——系统岗位必问

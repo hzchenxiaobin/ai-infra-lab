@@ -1,4 +1,17 @@
-# Day 7：进阶专题与总结
+---
+id: "learn:topic:harness:d7"
+type: learn
+title: "Harness Day 7：进阶专题与总结"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 7
+topic: harness
+related_problems: []
+related_questions: []
+---
+
+# Harness Day 7：进阶专题与总结
 
 ## 🎯 目标
 

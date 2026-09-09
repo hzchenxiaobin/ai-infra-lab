@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import * as readline from "node:readline/promises";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { stdin as input, stdout as output } from "node:process";
 import {
   CATEGORIES,
   CATEGORY_LABELS,
   type Category,
+  type ContentImportInput,
 } from "@ailab/contracts";
 import { getCaller, runSession } from "./session.js";
 import { banner, dimLine, errorLine, successLine, tableRow } from "./ui.js";
@@ -239,6 +243,65 @@ program
     }
     console.log(dimLine(`\n第 ${opts.page} 页 · 共 ${total} 题`));
     process.exit(0);
+  });
+
+// ── content:sync ────────────────────────────────────────────────────────
+
+program
+  .command("content:sync")
+  .description("content-kit dist 产物幂等入库（先跑 pnpm --filter content-kit sync 生成）")
+  .option("--dist <dir>", "content-kit dist 目录", undefined)
+  .action(async (opts) => {
+    const distDir =
+      opts.dist ?? path.resolve(fileURLToPath(new URL("../../../packages/content-kit/dist", import.meta.url)));
+    let contentsRaw: unknown;
+    let problemsRaw: unknown;
+    try {
+      [contentsRaw, problemsRaw] = await Promise.all([
+        readFile(path.join(distDir, "contents.json"), "utf8").then(JSON.parse),
+        readFile(path.join(distDir, "problems.json"), "utf8").then(JSON.parse),
+      ]);
+    } catch (err) {
+      console.log(errorLine(`读取 dist 产物失败（${distDir}）：${(err as Error).message}`));
+      console.log(dimLine("先在 packages/content-kit 跑 `node scripts/tsx.mjs src/sync.ts` 生成产物"));
+      process.exit(1);
+    }
+    // content-kit 产物为 snake_case，contracts 入参为 camelCase（dev/cli.md §5：映射收在 CLI）
+    const input: ContentImportInput = {
+      contents: (contentsRaw as Array<Record<string, unknown>>).map((c) => ({
+        id: String(c.id),
+        type: c.type as ContentImportInput["contents"][number]["type"],
+        title: String(c.title),
+        tags: (c.tags as string[]) ?? [],
+        knowledgePoints: (c.knowledge_points as string[]) ?? [],
+        url: String(c.url ?? ""),
+        contentHash: String(c.contentHash),
+      })),
+      problems: (problemsRaw as Array<Record<string, unknown>>).map((p) => ({
+        id: String(p.id),
+        source: p.source as ContentImportInput["problems"][number]["source"],
+        number: Number(p.number ?? 0),
+        difficulty: p.difficulty as ContentImportInput["problems"][number]["difficulty"],
+        languages: (p.languages as string[]) ?? [],
+        judgeType: p.judge_type as ContentImportInput["problems"][number]["judgeType"],
+        testcases: (p.testcases as ContentImportInput["problems"][number]["testcases"]) ?? [],
+        externalUrl: String(p.external_url ?? ""),
+      })),
+    };
+    console.log(dimLine(`导入 ${input.contents.length} 条内容元数据 / ${input.problems.length} 条题目元数据…`));
+    try {
+      const caller = await getCaller();
+      const stats = await caller.content.import(input);
+      console.log(
+        successLine(
+          `同步完成：新增 ${stats.inserted} · 更新 ${stats.updated} · 未变 ${stats.unchanged} · 标 stale ${stats.stale} · 题目 upsert ${stats.problemsUpserted}`,
+        ),
+      );
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
   });
 
 // ── 交互式选题 ─────────────────────────────────────────────────────────

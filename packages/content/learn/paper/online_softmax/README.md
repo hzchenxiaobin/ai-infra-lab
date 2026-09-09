@@ -1,3 +1,14 @@
+---
+id: "paper:online-softmax"
+type: paper
+title: "Online normalizer calculation for softmax —— 单遍计算 softmax 归一化项"
+tags: [cuda, online-softmax, paper, topk-融合, v100, 内存访问]
+knowledge_points: [cuda, online-softmax, topk-融合, v100, 内存访问]
+updated: 2026-08-28
+venue: "arXiv preprint（Preprint. Work in progress.）"
+status: done
+---
+
 # Online normalizer calculation for softmax —— 单遍计算 softmax 归一化项
 
 > 原文 PDF：[online_softmax.pdf](online_softmax.pdf)

@@ -1,3 +1,15 @@
+---
+id: "lc:topic:backtracking"
+type: learn
+title: 回溯算法专题
+tags: [algo, backtracking]
+knowledge_points: [backtracking]
+updated: 2026-08-28
+topic: algo-backtracking
+related_problems: ["lc:0017", "lc:0022", "lc:0037", "lc:0039", "lc:0040", "lc:0046", "lc:0047", "lc:0051", "lc:0077", "lc:0078", "lc:0079", "lc:0090", "lc:0093", "lc:0131", "lc:0140", "lc:0216", "lc:0254"]
+related_questions: []
+---
+
 <!-- title: 回溯算法专题 -->
 # 回溯算法专题
 

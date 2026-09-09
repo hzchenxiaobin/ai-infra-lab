@@ -1,3 +1,15 @@
+---
+id: "learn:w10"
+type: learn
+title: "Week 10：项目整合与面试冲刺"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+related_problems: []
+related_questions: []
+---
+
 # Week 10：项目整合与面试冲刺
 
 > 核心目标：Mini 引擎真整合、全链路 Profiling、项目文档与架构图、面试题库、Mock 面试、诊断剧本与最终复盘

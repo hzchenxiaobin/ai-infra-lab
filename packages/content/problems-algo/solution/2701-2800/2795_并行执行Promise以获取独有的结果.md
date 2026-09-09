@@ -1,3 +1,18 @@
+---
+id: "lc:2795"
+type: problem
+title: "并行执行 Promise 以获取独有的结果"
+tags: [Promise, "Promise.allSettled 手写", 并发, 计数器, 闭包]
+knowledge_points: [closure, concurrency, promise, promise.allsettled-手写, 计数器]
+updated: 2026-09-03
+source: leetcode
+number: 2795
+difficulty: medium
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 并行执行 Promise 以获取独有的结果 题解
 
 ## 1. 题目概述

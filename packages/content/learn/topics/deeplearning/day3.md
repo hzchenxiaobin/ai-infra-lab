@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d3"
+type: learn
+title: "Day 3｜第一个神经网络：手写数字识别（MNIST）"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 3
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 3｜第一个神经网络：手写数字识别（MNIST）
 
 > 今日目标：用 PyTorch 跑通第一个真正的神经网络，逐行理解代码

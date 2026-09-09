@@ -1,3 +1,16 @@
+---
+id: "learn:w04d05"
+type: learn
+title: "Day 5：项目推进 —— Triton 三方 Benchmark 与 Autotune"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 5
+related_problems: []
+related_questions: []
+---
+
 ## Day 5：项目推进 —— Triton 三方 Benchmark 与 Autotune
 
 ### 🎯 目标

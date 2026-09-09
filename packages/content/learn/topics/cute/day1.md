@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d1"
+type: learn
+title: "Day 1（周一）：CuTe 总览与独立编译环境"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 1
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：CuTe 总览与独立编译环境
 
 > **今日目标**：理解 CuTe 作为独立 kernel 组装框架的定位，脱离 CUTLASS GEMM 模板编译第一个纯 CuTe 程序，建立 `include/cute/` 源码地图

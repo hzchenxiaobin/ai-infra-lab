@@ -1,3 +1,18 @@
+---
+id: "gpu:m:075"
+type: problem
+title: "Sparse Matrix-Dense Matrix Multiplication"
+tags: [CSR, CUDA, SpMM, "gather 访存", "scaled accumulation", 稀疏矩阵]
+knowledge_points: [csr, cuda, gather-访存, gemm, scaled-accumulation, sparse-matrix, spmm, 稀疏矩阵乘]
+updated: 2026-09-07
+source: leetgpu
+number: 75
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Sparse Matrix-Dense Matrix Multiplication 题解
 
 ## 1. 题目概述

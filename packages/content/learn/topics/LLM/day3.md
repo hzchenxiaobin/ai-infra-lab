@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d3"
+type: learn
+title: "Day 3（周三）：训练效率与基础设施 —— 万卡集群怎么炼模型"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 3
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：训练效率与基础设施 —— 万卡集群怎么炼模型
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 3 转向前沿实验室真正的护城河——**训练工程和优化器**。Day 1 学了 V3 的架构（671B/37B MoE），Day 2 学了 R1 的 RL（GRPO 每步采 64 个回复），但"671B 模型怎么训得动""万亿参数训练为什么不崩"——这些问题的答案全在今天。用三篇材料拼出全景：DeepSeek-V3 报告第 3 章（[arXiv:2412.19437](https://arxiv.org/abs/2412.19437)）的 DualPipe + FP8 + EP 通信、Moonlight 论文的 Muon 优化器规模化验证、以及《Kimi K2》（[arXiv:2507.20534](https://arxiv.org/abs/2507.20534)）预训练章节的 MuonClip / QK-clip。

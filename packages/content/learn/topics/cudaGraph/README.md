@@ -1,7 +1,19 @@
+---
+id: "learn:topic:cuda-graph"
+type: learn
+title: "CUDA Graph 专题：原理、用法与面试考点"
+tags: [cuda-graph]
+knowledge_points: [cuda-graphs]
+updated: 2026-08-28
+topic: cuda-graph
+related_problems: []
+related_questions: []
+---
+
 # CUDA Graph 专题：原理、用法与面试考点
 
 > **适用对象**：准备 AI Infra / 推理引擎方向岗位的求职者，以及做 LLM 推理性能优化的工程师
-> **相关专题**：[CUDA 手撕题专题](../cuda/README.md)、[PyTorch 专题](../pytorch/README.md)、[vLLM 专题](../vllm/README.md)
+> **相关专题**：[CUDA 手撕题专题](../../../problems-gpu/solutions/)、[PyTorch 专题](../pytorch/README.md)、[vLLM 专题](../vllm/README.md)
 
 ---
 

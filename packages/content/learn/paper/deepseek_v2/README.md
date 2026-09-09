@@ -1,3 +1,14 @@
+---
+id: "paper:deepseek-v2"
+type: paper
+title: "DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model —— 论文精读"
+tags: [decoupled-rope, deepseekmoe, device-limited-routing, grpo, low-rank-kv-compression, mla, paper, yarn]
+knowledge_points: [decoupled-rope, deepseek-v2, deepseekmoe, device-limited-routing, grpo, low-rank-kv-compression, mla, yarn]
+updated: 2026-08-28
+venue: "arXiv 技术报告（无会议）"
+status: done
+---
+
 # DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model —— 论文精读
 
 > 原文 PDF：[deepseek_v2.pdf](deepseek_v2.pdf)

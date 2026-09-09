@@ -1,3 +1,12 @@
+---
+id: "profiling:w1d6"
+type: profiling
+title: "Week 1 Day 6 — 综合 Nsight Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Week 1 Day 6 — 综合 Nsight Profiling
 
 本目录复用 Week 1 前 5 天的 kernel，直接到对应目录编译后执行完整报告采集。

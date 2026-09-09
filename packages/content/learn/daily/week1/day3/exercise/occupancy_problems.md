@@ -1,3 +1,16 @@
+---
+id: "learn:w01d03:exercise:occupancy-problems"
+type: learn
+title: "Day 3 练习题：手动计算 GPU Occupancy"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 3
+related_problems: []
+related_questions: []
+---
+
 # Day 3 练习题：手动计算 GPU Occupancy
 
 > 本练习以 **NVIDIA GeForce RTX 5090 (Compute Capability 12.0)** 为例，所有计算均按 RTX 5090 的硬件上限进行：

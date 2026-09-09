@@ -1,3 +1,18 @@
+---
+id: "gpu:m:082"
+type: problem
+title: "Linear Recurrence"
+tags: [CUDA, "State Space Model", "associative scan", "linear recurrence", "warp shuffle"]
+knowledge_points: [advanced-algorithms-math, associative-scan, cuda, linear-recurrence, state-space-model, warp-shuffle, 线性递推-ssm]
+updated: 2026-09-07
+source: leetgpu
+number: 82
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Linear Recurrence 题解
 
 ## 1. 题目概述

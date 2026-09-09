@@ -1,3 +1,12 @@
+---
+id: "profiling:w1d5"
+type: profiling
+title: "Week 1 Day 5 — Bank Conflict Profiling"
+tags: [ncu, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Week 1 Day 5 — Bank Conflict Profiling
 
 ```bash

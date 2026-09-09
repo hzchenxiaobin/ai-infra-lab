@@ -1,3 +1,18 @@
+---
+id: "lc:4030"
+type: problem
+title: "判断 ASCII 值回文"
+tags: [位运算, 双指针, 字符串]
+knowledge_points: [bit-manipulation, string, two-pointers]
+updated: 2026-09-03
+source: leetcode
+number: 4030
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 判断 ASCII 值回文 题解
 
 ## 1. 题目概述

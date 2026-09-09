@@ -1,3 +1,16 @@
+---
+id: "learn:w06d02"
+type: learn
+title: "Day 2：实现 KV Cache（含 GQA/MQA/MLA 变体）"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 2
+related_problems: ["gpu:m:051", "gpu:m:080"]
+related_questions: []
+---
+
 ## Day 2：实现 KV Cache（含 GQA/MQA/MLA 变体）
 
 ### 🎯 目标

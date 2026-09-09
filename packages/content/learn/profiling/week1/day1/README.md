@@ -1,6 +1,15 @@
+---
+id: "profiling:w1d1"
+type: profiling
+title: "Week 1 Day 1 — hello_gpu & Vector Add Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Week 1 Day 1 — hello_gpu & Vector Add Profiling
 
-> 若在 WSL2 中运行 `ncu` 遇到 `ERR_NVGPUCTRPERM`，请参考 [`profiling/README.md`](../README.md) 中的"环境准备与常见故障"章节，在 Windows 宿主开放 GPU Performance Counters 权限。
+> 若在 WSL2 中运行 `ncu` 遇到 `ERR_NVGPUCTRPERM`，请参考 [`profiling/README.md`](../../README.md) 中的"环境准备与常见故障"章节，在 Windows 宿主开放 GPU Performance Counters 权限。
 
 ## 1. hello_gpu（线程层次验证）
 
@@ -17,7 +26,7 @@ ncu --metrics sm__cycles_elapsed.avg,sm__warps_active.avg.pct_of_peak_sustained_
 
 ## 2. Vector Add：不同 block size 性能对比
 
-> 对应 [Week 1 Day 1 LeetGPU Vector Add 题目](../../week1/day1/README.md)，用 ncu 对比不同 block size 的性能差异。
+> 对应 [Week 1 Day 1 LeetGPU Vector Add 题目](../../../daily/week1/day1/README.md)，用 ncu 对比不同 block size 的性能差异。
 
 Vector Add 是典型 memory-bound kernel（AI ≈ 0.083 FLOP/Byte），性能几乎完全取决于**显存带宽利用率**。通过对比不同 block size，可以直观看到 occupancy 与带宽的关系。
 

@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week5-expanded"
+type: learn
+title: "第5周深度展开：推理系统与 KV Cache（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第5周深度展开：推理系统与 KV Cache（7天）
 
 > **适用对象**：陈斌斌（已完成第4周学习，掌握 FlashAttention 原理与实现、IO 优化方法论）

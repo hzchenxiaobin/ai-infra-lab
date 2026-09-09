@@ -1,3 +1,18 @@
+---
+id: "gpu:m:110"
+type: problem
+title: "Parallel Reverse Scan (GAE)"
+tags: [CUDA, GAE, "Linear Recurrence", RL, "Reverse Scan", Scan, memory-bound, "warp shuffle __shfl_down_sync"]
+knowledge_points: [cuda, gae, linear-recurrence, memory-bound, reduction-scan, reverse-scan, rl, scan, warp-shuffle-shfl-down-sync]
+updated: 2026-09-07
+source: leetgpu
+number: 110
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Parallel Reverse Scan (GAE) 题解
 
 ## 1. 题目概述

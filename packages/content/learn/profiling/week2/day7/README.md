@@ -1,6 +1,15 @@
+---
+id: "profiling:w2d7"
+type: profiling
+title: "Week 2 Day 7 — 验收日 Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+---
+
 # Week 2 Day 7 — 验收日 Profiling
 
-> 对应 [Week 2 Day 7 任务 1（手撕 Reduce）+ 任务 2（手撕 GEMM）+ 任务 5（性能报告）](../../week2/day7/README.md)
+> 对应 [Week 2 Day 7 任务 1（手撕 Reduce）+ 任务 2（手撕 GEMM）+ 任务 5（性能报告）](../../../daily/week2/day7/README.md)
 
 Day 7 是验收日，通过限时手撕验证本周所学。本目录提供两个手撕 kernel 的可执行代码 + ncu profiling，用于验收时量化性能指标。
 

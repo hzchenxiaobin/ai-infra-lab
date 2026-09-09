@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cutlass:d2"
+type: learn
+title: "Day 2：CuTe 编程模型"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 2
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # Day 2：CuTe 编程模型
 
 ## 🎯 目标

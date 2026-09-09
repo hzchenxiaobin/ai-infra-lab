@@ -1,3 +1,16 @@
+---
+id: "learn:w01d07:notes:day7-summary"
+type: learn
+title: "Day 7 Profiling 总结"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 7
+related_problems: []
+related_questions: []
+---
+
 # Day 7 Profiling 总结
 
 ## 今日目标

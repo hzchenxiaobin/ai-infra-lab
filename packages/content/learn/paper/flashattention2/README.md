@@ -1,8 +1,19 @@
+---
+id: "paper:flashattention2"
+type: paper
+title: "FlashAttention-2 —— Faster Attention with Better Parallelism and Work Partitioning 论文精读"
+tags: [non-matmul-flops, occupancy, online-softmax, paper, warp-specialization, work-partitioning]
+knowledge_points: [flashattention2, non-matmul-flops, occupancy, online-softmax, warp-specialization, work-partitioning]
+updated: 2026-08-28
+venue: "arXiv 技术报告（2023）；后收录于 ICLR 2024（Spotlight）"
+status: done
+---
+
 # FlashAttention-2 —— Faster Attention with Better Parallelism and Work Partitioning 论文精读
 
 > 原文 PDF：[flashattention2.pdf](flashattention2.pdf)
 > 精读规范：[`../SKILL.md`](../SKILL.md)
-> 系列精读：[FlashAttention (FA1)](../flashattention/README.md) / [FlashAttention-3 (FA3)](../flashattention3/README.md)　｜　配套教程：[week2/day5](../../../aiinfra/daily/week2/day5/README.md)
+> 系列精读：[FlashAttention (FA1)](../flashattention/README.md) / [FlashAttention-3 (FA3)](../flashattention3/README.md)　｜　配套教程：[week2/day5](../../daily/week2/day5/README.md)
 
 ---
 

@@ -1,3 +1,16 @@
+---
+id: "learn:w08d02"
+type: learn
+title: "Day 2：FP8 量化深入 —— E4M3/E5M2 kernel 与 GPTQ vs AWQ 对比"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-28
+week: 8
+day: 2
+related_problems: ["gpu:m:061"]
+related_questions: []
+---
+
 ## Day 2：FP8 量化深入 —— E4M3/E5M2 kernel 与 GPTQ vs AWQ 对比
 
 ### 🎯 目标

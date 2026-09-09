@@ -1,3 +1,16 @@
+---
+id: "learn:w07d06"
+type: learn
+title: "Day 6：Prefill/Decode 分离推理（PD Disaggregated）"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-31
+week: 7
+day: 6
+related_problems: ["gpu:m:004"]
+related_questions: []
+---
+
 ## Day 6：Prefill/Decode 分离推理（PD Disaggregated）
 
 ### 🎯 目标

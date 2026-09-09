@@ -1,3 +1,18 @@
+---
+id: "gpu:m:114"
+type: problem
+title: "LeetGPU GEMV 题解"
+tags: [CUDA, GEMV, "block 归约", memory-bound, roofline, "vectorized load", 合并访存]
+knowledge_points: [block-reduction, cuda, gemm, gemv, gemv-m-1-gemm, memory-bound, roofline, vectorized-load, 合并访存]
+updated: 2026-09-07
+source: leetgpu
+number: 114
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU GEMV 题解
 
 ## 1. 题目概述

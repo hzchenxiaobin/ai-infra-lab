@@ -1,3 +1,16 @@
+---
+id: "learn:w08d03"
+type: learn
+title: "Day 3：投机解码专题 —— 原理与三路线（Medusa / EAGLE / MTP）"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-09-01
+week: 8
+day: 3
+related_problems: ["gpu:e:054", "gpu:m:087"]
+related_questions: []
+---
+
 ## Day 3：投机解码专题 —— 原理与三路线（Medusa / EAGLE / MTP）
 
 ### 🎯 目标

@@ -1,3 +1,18 @@
+---
+id: "lc:0653"
+type: problem
+title: "两数之和 IV - 输入 BST"
+tags: [DFS, 二叉搜索树, 双指针, 哈希表, 树]
+knowledge_points: [bst, dfs, hash-table, tree, two-pointers]
+updated: 2026-09-03
+source: leetcode
+number: 653
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 两数之和 IV - 输入 BST 题解
 
 ## 1. 题目概述

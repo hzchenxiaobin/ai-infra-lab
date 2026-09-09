@@ -1,3 +1,18 @@
+---
+id: "gpu:e:031"
+type: problem
+title: "Matrix Copy"
+tags: [CUDA, "Matrix Copy", "coalesced access", "float4 向量化", memory-bound, 内存带宽]
+knowledge_points: [coalesced-access, coalesced-global-memory, cuda, float4-向量化, matrix-copy, memory-bound, parallel-patterns, 内存带宽]
+updated: 2026-09-07
+source: leetgpu
+number: 31
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w09d01"]
+---
+
 # LeetGPU Matrix Copy 题解
 
 ## 1. 题目概述

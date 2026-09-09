@@ -1,6 +1,15 @@
+---
+id: "profiling:w2d4"
+type: profiling
+title: "Week 2 Day 4 — Nsight Compute Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+---
+
 # Week 2 Day 4 — Nsight Compute Profiling
 
-> 对应 [Week 2 Day 4 Coding 任务 1-5 + 扩展实验](../../week2/day4/README.md)
+> 对应 [Week 2 Day 4 Coding 任务 1-5 + 扩展实验](../../../daily/week2/day4/README.md)
 
 Day 4 的核心是学习 ncu 命令行用法、关键指标解读、瓶颈判定和 profile-optimize-verify 闭环。本目录包含两个 profiling 对象：Register Blocking GEMM（任务 1-4）和 Softmax（任务 5）。
 

@@ -1,3 +1,18 @@
+---
+id: "gpu:e:108"
+type: problem
+title: "Vector Reversal"
+tags: [CUDA, "coalesced access", memory-bound, 索引映射]
+knowledge_points: [coalesced-access, cuda, index-mapping, memory-bound, parallel-patterns, 索引映射]
+updated: 2026-09-07
+source: leetgpu
+number: 108
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w07d02"]
+---
+
 # LeetGPU Vector Reversal 题解
 
 ## 1. 题目概述
@@ -18,7 +33,7 @@
 
 **约束**：`1 ≤ N ≤ 10,000,000`；性能测试取大数组（约 40 MB）。
 
-> 💡 这道题是**索引映射的最简形式**——`output[i] = input[N-1-i]`，每个线程处理一个元素的"调度"。与 [Week7 Day2 完整调度器](../../../aiinfra/daily/week7/day2/README.md) 的"请求到资源的映射"同构：调度器把请求按优先级分配到 batch 槽位（`batch[i] = waiting[best]`），Vector Reversal 把数据按逆序映射到输出位置。两者都是**用索引规则做资源映射**。
+> 💡 这道题是**索引映射的最简形式**——`output[i] = input[N-1-i]`，每个线程处理一个元素的"调度"。与 [Week7 Day2 完整调度器](../../../../learn/daily/week7/day2/README.md) 的"请求到资源的映射"同构：调度器把请求按优先级分配到 batch 槽位（`batch[i] = waiting[best]`），Vector Reversal 把数据按逆序映射到输出位置。两者都是**用索引规则做资源映射**。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

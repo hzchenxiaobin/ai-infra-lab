@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d1"
+type: learn
+title: "Day 1（周一）：打地基 —— 现代大模型架构总览"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 1
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：打地基 —— 现代大模型架构总览
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 1 是全周的地基：后面每一天的论文（R1 的 RL、K2 的 MuonClip、V3.2 的 DSA）都默认你看得懂"模型结构"章节。今天用《DeepSeek-V3 Technical Report》（[arXiv:2412.19437](https://arxiv.org/abs/2412.19437)）第 2 章作为主教材，把现代大模型架构的三大件——Transformer 主干、注意力变体（MHA/GQA/MLA）、MoE——一次讲透。

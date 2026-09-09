@@ -1,3 +1,18 @@
+---
+id: "lc:0532"
+type: problem
+title: "数组中的 k-diff 数对"
+tags: [双指针, 哈希表, 数组]
+knowledge_points: [array, hash-table, two-pointers]
+updated: 2026-09-03
+source: leetcode
+number: 532
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 数组中的 k-diff 数对 题解
 
 ## 1. 题目概述

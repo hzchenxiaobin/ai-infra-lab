@@ -1,3 +1,15 @@
+---
+id: "lc:topic:greedy"
+type: learn
+title: 贪心算法专题
+tags: [algo, greedy]
+knowledge_points: [greedy]
+updated: 2026-08-28
+topic: algo-greedy
+related_problems: ["lc:0011", "lc:0012", "lc:0013", "lc:0053", "lc:0055", "lc:0056", "lc:0121", "lc:0122", "lc:0134", "lc:0135", "lc:0179", "lc:0253", "lc:0316", "lc:0334", "lc:0343", "lc:0392", "lc:0402", "lc:0406", "lc:0435", "lc:0452", "lc:0502", "lc:0621", "lc:0659", "lc:0714", "lc:0763", "lc:0767", "lc:0875", "lc:0918", "lc:1011", "lc:1584"]
+related_questions: []
+---
+
 <!-- title: 贪心算法专题 -->
 # 贪心算法专题
 

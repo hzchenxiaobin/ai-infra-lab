@@ -1,3 +1,16 @@
+---
+id: "learn:w02d07"
+type: learn
+title: "Day 7：限时 Kernel 手撕 + GitHub 整理 + 性能对比报告"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 7
+related_problems: ["gpu:m:004"]
+related_questions: []
+---
+
 ## Day 7：限时 Kernel 手撕 + GitHub 整理 + 性能对比报告
 
 ### 🎯 目标

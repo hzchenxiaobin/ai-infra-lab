@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d6"
+type: learn
+title: "Day 6：Harness 综合实战"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 6
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 6：Harness 综合实战
 
 ## 🎯 目标

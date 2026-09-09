@@ -1,3 +1,18 @@
+---
+id: "gpu:m:107b"
+type: problem
+title: "PPO Clipped Surrogate Loss"
+tags: [CUDA, PPO, RL, atomicAdd, "kernel fusion", memory-bound, reduction, "warp shuffle"]
+knowledge_points: [atomic-add, cuda, kernel-fusion, losses-basic-ml, memory-bound, ppo, reduction, rl, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 107
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU PPO Clipped Surrogate Loss 题解
 
 ## 1. 题目概述

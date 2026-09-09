@@ -1,3 +1,18 @@
+---
+id: "lc:0412"
+type: problem
+title: "Fizz Buzz"
+tags: [字符串, 数学, 模拟]
+knowledge_points: [math, simulation, string]
+updated: 2026-09-03
+source: leetcode
+number: 412
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Fizz Buzz 题解
 
 ## 1. 题目概述

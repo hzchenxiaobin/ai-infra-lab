@@ -1,3 +1,18 @@
+---
+id: "gpu:e:024"
+type: problem
+title: "Rainbow Table"
+tags: [CUDA, "FNV-1a 哈希", "elementwise kernel", grid-stride, memory/compute-bound, "serial loop", 整数回绕]
+knowledge_points: [cuda, elementwise-kernel, fnv-1a-哈希, grid-stride-loop, memory-compute-bound, rainbow-table, serial-loop, simulation-misc, 整数回绕]
+updated: 2026-09-07
+source: leetgpu
+number: 24
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Rainbow Table 题解
 
 ## 1. 题目概述

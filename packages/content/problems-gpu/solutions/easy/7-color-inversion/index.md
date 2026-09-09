@@ -1,3 +1,18 @@
+---
+id: "gpu:e:007"
+type: problem
+title: "Color Inversion"
+tags: [CUDA, "elementwise kernel", "image processing", memory-bound, uchar4, "vectorized access"]
+knowledge_points: [cuda, elementwise-kernel, image-processing, memory-bound, parallel-patterns, uchar4, vectorized-access, 颜色-图像变换]
+updated: 2026-09-07
+source: leetgpu
+number: 7
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Color Inversion 题解
 
 ## 1. 题目概述

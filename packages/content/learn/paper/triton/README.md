@@ -1,3 +1,14 @@
+---
+id: "paper:triton"
+type: paper
+title: "Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations —— 以 tile 为一等公民的 GPU 算子编译器"
+tags: [auto-tuning, intermediate-language, llvm-ir, memory-coalescing, paper, shared-memory, spmd, tile]
+knowledge_points: [auto-tuning, intermediate-language, llvm-ir, memory-coalescing, shared-memory, spmd, tile, triton]
+updated: 2026-08-28
+venue: "MAPL '19（ACM SIGPLAN Intl. Workshop on Machine Learning and Programming Languages），附属于 PLDI 2019"
+status: done
+---
+
 # Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations —— 以 tile 为一等公民的 GPU 算子编译器
 
 > 原文 PDF：[triton.pdf](triton.pdf)

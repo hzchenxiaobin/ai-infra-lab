@@ -1,3 +1,18 @@
+---
+id: "gpu:m:105"
+type: problem
+title: "Group Normalization"
+tags: [CUDA, GroupNorm, normalization, reduction, "shared memory", "warp shuffle"]
+knowledge_points: [cuda, group-normalization, groupnorm, normalization, normalization-embedding, reduction, shared-memory, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 105
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Group Normalization 题解
 
 ## 1. 题目概述

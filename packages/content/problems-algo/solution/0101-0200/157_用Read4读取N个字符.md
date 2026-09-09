@@ -1,3 +1,18 @@
+---
+id: "lc:0157"
+type: problem
+title: "用 Read4 读取 N 个字符"
+tags: ["交互式 API", 字符串, 模拟]
+knowledge_points: [interactive, simulation, string, 交互式-api]
+updated: 2026-09-03
+source: leetcode
+number: 157
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 用 Read4 读取 N 个字符 题解
 
 ## 1. 题目概述

@@ -1,3 +1,18 @@
+---
+id: "lc:1747"
+type: problem
+title: "应该被禁止的 Leetflex 账户"
+tags: [DISTINCT, JOIN, SQL, datetime, 区间重叠, 数据库, 自连接]
+knowledge_points: [database, datetime, distinct, interval-overlap, join, self-join, sql, 区间重叠]
+updated: 2026-09-03
+source: leetcode
+number: 1747
+difficulty: medium
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode 应该被禁止的 Leetflex 账户 题解
 
 > ⚠️ **本题是 LeetCode Plus 会员专享题**，官方题面需登录会员查看。下方题面依据平台公开的建表语句与示例数据复原，描述与官方一致。

@@ -1,3 +1,16 @@
+---
+id: "learn:w08d06"
+type: learn
+title: "Day 6：Profiling —— 量化前后精度性能对比与 CUDA Graph Launch Gap"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-28
+week: 8
+day: 6
+related_problems: ["gpu:m:040"]
+related_questions: []
+---
+
 ## Day 6：Profiling —— 量化前后精度性能对比与 CUDA Graph Launch Gap
 
 ### 🎯 目标

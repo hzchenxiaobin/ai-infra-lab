@@ -1,3 +1,16 @@
+---
+id: "learn:w09d01"
+type: learn
+title: "Day 1：分布式推理 —— 为什么需要分布式 + TP + DP 定位"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-08-28
+week: 9
+day: 1
+related_problems: ["gpu:e:031"]
+related_questions: []
+---
+
 ## Day 1：分布式推理 —— 为什么需要分布式 + TP + DP 定位
 
 ### 🎯 目标

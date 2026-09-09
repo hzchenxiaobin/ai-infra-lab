@@ -1,3 +1,16 @@
+---
+id: "learn:w04d04"
+type: learn
+title: "Day 4：Triton 语言专题 —— 用 Triton 重写 Softmax/GEMM/FA"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 4
+related_problems: ["gpu:e:002"]
+related_questions: []
+---
+
 ## Day 4：Triton 语言专题 —— 用 Triton 重写 Softmax/GEMM/FA
 
 ### 🎯 目标

@@ -1,3 +1,18 @@
+---
+id: "lc:0535"
+type: problem
+title: "TinyURL 的加密与解密"
+tags: [哈希表, 字符串, 数学, 设计]
+knowledge_points: [design, hash-table, math, string]
+updated: 2026-09-03
+source: leetcode
+number: 535
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode TinyURL 的加密与解密 题解
 
 ## 1. 题目概述
@@ -301,7 +316,7 @@ def encode(self, longUrl):
 
 | # | 题目 | 与本题的关联 |
 |---|------|-------------|
-| 168 | [Excel 表列名称](https://leetcode.cn/problems/excel-sheet-column-title/)（[题解](../0101-0200/168_Excel表列名称.md)） | 1-indexed 进制转换（先减 1 再取余），与本题 base62 编码同属「进制转换」家族的编码方向 |
+| 168 | [Excel 表列名称](https://leetcode.cn/problems/excel-sheet-column-title/)（[题解](../0001-0100/168_Excel表列名称.md)） | 1-indexed 进制转换（先减 1 再取余），与本题 base62 编码同属「进制转换」家族的编码方向 |
 | 171 | [Excel 表列序号](https://leetcode.cn/problems/excel-sheet-column-number/)（[题解](../0101-0200/171_Excel表列序号.md)） | Horner 累乘加的合成方向，与本题 `_to_id` 解码逻辑完全同构，是 168 的逆向姊妹题 |
 | 146 | [LRU 缓存](https://leetcode.cn/problems/lru-cache/)（[题解](../0101-0200/146_LRU缓存.md)） | 经典设计题，哈希表 + 双向链表组合，与本题「双表映射」的设计范式同源 |
 | 981 | [基于时间的键值存储](https://leetcode.cn/problems/time-based-key-value-store/)（[题解](../0901-1000/981_基于时间的键值存储.md)） | HashMap + 有序数组做 key→value 检索，与本题 `long2code` 哈希检索思路一致，多了时间戳维度 |

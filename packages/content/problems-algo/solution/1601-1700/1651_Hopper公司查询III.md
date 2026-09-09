@@ -1,3 +1,18 @@
+---
+id: "lc:1651"
+type: problem
+title: Hopper公司查询III
+tags: [COALESCE, "GROUP BY", "LEFT JOIN", "ROUND()", SQL, "WITH RECURSIVE", "YEAR()/MONTH()", 数据库, "窗口函数 SUM OVER", 自连接]
+knowledge_points: [coalesce, database, group-by, left-join, recursive-cte, round, self-join, sql, year-month, 窗口函数-sum-over]
+updated: 2026-09-03
+source: leetcode
+number: 1651
+difficulty: hard
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode Hopper公司查询III 题解
 
 ## 1. 题目概述

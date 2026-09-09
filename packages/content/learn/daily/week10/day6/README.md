@@ -1,3 +1,16 @@
+---
+id: "learn:w10d06"
+type: learn
+title: "Day 6：诊断流程实战剧本 + 手撕限时清单"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 6
+related_problems: []
+related_questions: []
+---
+
 ## Day 6：诊断流程实战剧本 + 手撕限时清单
 
 ### 🎯 目标

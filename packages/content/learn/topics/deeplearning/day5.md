@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d5"
+type: learn
+title: "Day 5｜卷积神经网络 CNN（图像方向）"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 5
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 5｜卷积神经网络 CNN（图像方向）
 
 > 今日目标：理解卷积的直觉，用 CNN 重做 MNIST，准确率冲上 99%+

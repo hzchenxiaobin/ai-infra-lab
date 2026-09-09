@@ -1,3 +1,16 @@
+---
+id: "learn:w10d03"
+type: learn
+title: "Day 3：项目文档完善（README）"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 3
+related_problems: ["gpu:e:008"]
+related_questions: []
+---
+
 ## Day 3：项目文档完善（README）
 
 ### 🎯 目标

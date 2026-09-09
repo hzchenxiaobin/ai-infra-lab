@@ -1,3 +1,18 @@
+---
+id: "gpu:m:107a"
+type: problem
+title: Argmax
+tags: [Argmax, CUDA, "__shfl_down_sync", "warp shuffle", 归约]
+knowledge_points: [argmax, cuda, reduction, reduction-scan, shfl-down-sync, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 107
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w03d03"]
+---
+
 # LeetGPU Argmax 题解
 
 ## 1. 题目概述
@@ -11,7 +26,7 @@
 
 **约束**：`1 ≤ N ≤ 10,000,000`。
 
-> 💡 与 [Week3 Day3 优化对比实验](../../../aiinfra/daily/week3/day3/README.md) 的关联：Argmax 是"带状态追踪的归约"——不仅要找最大值，还要记录其下标。正是 warp 级 vs block 级 reduce 的直接实战。
+> 💡 与 [Week3 Day3 优化对比实验](../../../../learn/daily/week3/day3/README.md) 的关联：Argmax 是"带状态追踪的归约"——不仅要找最大值，还要记录其下标。正是 warp 级 vs block 级 reduce 的直接实战。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

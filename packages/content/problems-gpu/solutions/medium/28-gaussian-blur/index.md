@@ -1,3 +1,18 @@
+---
+id: "gpu:m:028"
+type: problem
+title: "Gaussian Blur"
+tags: [CUDA, Convolution, "Shared Memory Halo", memory-bound, 可分离卷积, 零填充]
+knowledge_points: [convolution, convolution-pooling, cuda, memory-bound, shared-memory-halo, 可分离卷积, 可分离卷积-高斯模糊, 零填充]
+updated: 2026-09-07
+source: leetgpu
+number: 28
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Gaussian Blur 题解
 
 ## 1. 题目概述

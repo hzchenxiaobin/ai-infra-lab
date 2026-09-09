@@ -1,3 +1,18 @@
+---
+id: "gpu:m:060"
+type: problem
+title: "Top-p Sampling"
+tags: ["CDF 采样", CUDA, "LLM 推理", "bitonic sort", cumsum, "nucleus sampling", softmax, "top-p sampling"]
+knowledge_points: [bitonic-sort, cdf-采样, cuda, cumsum, llm-inference, nucleus-sampling, sampling-sorting-search, softmax, top-p-sampling]
+updated: 2026-09-07
+source: leetgpu
+number: 60
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w06d03"]
+---
+
 # LeetGPU Top-p Sampling 题解
 
 ## 1. 题目概述

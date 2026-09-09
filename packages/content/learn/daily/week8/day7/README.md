@@ -1,3 +1,16 @@
+---
+id: "learn:w08d07"
+type: learn
+title: "Day 7：复盘与面试 Q&A —— 量化/投机解码/CUDA Graph/采样"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-08-28
+week: 8
+day: 7
+related_problems: ["gpu:e:009"]
+related_questions: []
+---
+
 ## Day 7：复盘与面试 Q&A —— 量化/投机解码/CUDA Graph/采样
 
 ### 🎯 目标

@@ -1,3 +1,16 @@
+---
+id: "learn:w04d01"
+type: learn
+title: "Day 1：Trace Transformer 推理流程（Prefill/Decode）"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 1
+related_problems: ["gpu:e:002"]
+related_questions: []
+---
+
 ## Day 1：Trace Transformer 推理流程（Prefill/Decode）
 
 ### 🎯 目标

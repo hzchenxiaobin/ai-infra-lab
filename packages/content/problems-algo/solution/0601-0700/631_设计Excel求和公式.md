@@ -1,3 +1,18 @@
+---
+id: "lc:0631"
+type: problem
+title: "设计 Excel 求和公式"
+tags: [图, 记忆化搜索, 设计, 递归]
+knowledge_points: [design, graph, memoization, recursion]
+updated: 2026-09-03
+source: leetcode
+number: 631
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 设计 Excel 求和公式 题解
 
 ## 1. 题目概述

@@ -1,3 +1,14 @@
+---
+id: "lc:index"
+type: learn
+title: "已写题解标签索引（参考用）"
+tags: [algo, index]
+knowledge_points: [interview-prep]
+updated: 2026-09-01
+related_problems: []
+related_questions: []
+---
+
 # 已写题解标签索引（参考用）
 
 > 本文件由 `SKILL.md` 1.2 节迁移而来：按标签分组列出已写题解中的代表性题目，仅供按标签检索，**不驱动选题**。选题逻辑见 `SKILL.md` 第 1 节。

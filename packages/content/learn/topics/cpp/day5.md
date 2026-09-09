@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d5"
+type: learn
+title: "Day 5（周五）：面向对象与多态底层"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 5
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：面向对象与多态底层
 
 > **本周定位**：C++ 面试系统化准备，今日深入虚函数表与多态的底层实现

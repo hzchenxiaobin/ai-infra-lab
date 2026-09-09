@@ -1,3 +1,18 @@
+---
+id: "gpu:h:056"
+type: problem
+title: "Linear Self-Attention"
+tags: [CUDA, "ELU feature map", GEMM, "Linear Attention", "kernel trick", reduction]
+knowledge_points: [attention, cuda, elu-feature-map, gemm, kernel-trick, linear-attention, reduction]
+updated: 2026-09-07
+source: leetgpu
+number: 56
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Linear Self-Attention 题解
 
 ## 1. 题目概述

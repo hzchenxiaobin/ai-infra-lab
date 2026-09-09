@@ -1,3 +1,16 @@
+---
+id: "learn:w01d05"
+type: learn
+title: "Day 5：Bank Conflict 分析与实践"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 5
+related_problems: ["gpu:m:004"]
+related_questions: []
+---
+
 ## Day 5：Bank Conflict 分析与实践
 
 ### 🎯 目标

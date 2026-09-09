@@ -1,3 +1,18 @@
+---
+id: "gpu:m:011"
+type: problem
+title: "3D Convolution"
+tags: ["3D Convolution", "3D tiling", CUDA, "Shared Memory Halo", memory-bound]
+knowledge_points: [3d-shared-memory-halo, 3d-tiling, conv3d, convolution-pooling, cuda, memory-bound, shared-memory-halo]
+updated: 2026-09-07
+source: leetgpu
+number: 11
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 3D Convolution 题解
 
 ## 1. 题目概述

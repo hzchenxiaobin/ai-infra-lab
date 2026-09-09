@@ -1,3 +1,18 @@
+---
+id: "gpu:e:068"
+type: problem
+title: "Sigmoid Activation"
+tags: [CUDA, "__expf", activation, "elementwise kernel", "fast math", memory-bound]
+knowledge_points: [activation, cuda, elementwise-kernel, expf, fast-math, memory-bound, parallel-patterns, 逐元素激活函数]
+updated: 2026-09-07
+source: leetgpu
+number: 68
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Sigmoid 题解
 
 ## 1. 题目概述

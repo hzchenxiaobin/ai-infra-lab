@@ -1,3 +1,18 @@
+---
+id: "gpu:m:108"
+type: problem
+title: "DPO Sequence Loss"
+tags: [CUDA, "Kernel Fusion", "Loss Function", "Numerical Stability", Reduction, memory-bound, softplus]
+knowledge_points: [cuda, kernel-fusion, loss-function, losses-basic-ml, memory-bound, numerical-stability, reduction, softplus]
+updated: 2026-09-07
+source: leetgpu
+number: 108
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU DPO Sequence Loss 题解
 
 ## 1. 题目概述

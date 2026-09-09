@@ -1,3 +1,15 @@
+---
+id: "learn:w04"
+type: learn
+title: "Week 4：Transformer 算子手写 + Triton"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+related_problems: []
+related_questions: []
+---
+
 # Week 4：Transformer 算子手写 + Triton
 
 > 核心目标：手写 Softmax/LayerNorm/GEMM Backward kernel、掌握 Triton 语言、完成 Triton vs CUDA 三方性能对比

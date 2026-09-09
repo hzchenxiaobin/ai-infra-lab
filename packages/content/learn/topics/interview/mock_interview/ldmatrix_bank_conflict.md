@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:mock-interview:ldmatrix-bank-conflict"
+type: learn
+title: "面试题精讲：ldmatrix 读行主序 A 的 shared memory bank conflict"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-04
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # 面试题精讲：ldmatrix 读行主序 A 的 shared memory bank conflict
 
 > **题目**：ldmatrix 是从 shared memory 按行读取的，每个线程提供一行的起始地址，每行 8 个 FP16 即 16 字节。如果 A 矩阵在 shared memory 中按行紧密存放（行间距 16 字节的倍数），请分析 ldmatrix 读这 8 行时会不会发生 shared memory bank conflict？如果会，工程上（比如 CUTLASS）通常用什么手段消除？

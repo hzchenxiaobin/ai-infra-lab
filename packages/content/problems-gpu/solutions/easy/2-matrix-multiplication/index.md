@@ -1,3 +1,18 @@
+---
+id: "gpu:e:002"
+type: problem
+title: "Matrix Multiplication"
+tags: [CUDA, GEMM, TF32, "Tensor Core", WMMA, compute-bound, "register tiling", "shared memory tiling"]
+knowledge_points: [compute-bound, cuda, gemm, naive-matmul, register-tiling, shared-memory-tiling, tensor-core, tf32, wmma]
+updated: 2026-09-07
+source: leetgpu
+number: 2
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w01d06", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d05", "learn:w03d02", "learn:w04d01", "learn:w04d04"]
+---
+
 # LeetGPU Matrix Multiplication 题解
 
 ## 1. 题目概述

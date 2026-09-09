@@ -1,3 +1,15 @@
+---
+id: "learn:topic:misc"
+type: learn
+title: "杂七杂八：AI Infra 碎片知识整理"
+tags: [misc]
+knowledge_points: [misc]
+updated: 2026-08-28
+topic: misc
+related_problems: []
+related_questions: []
+---
+
 # 杂七杂八：AI Infra 碎片知识整理
 
 > 收纳那些不够单独开一个专题、但值得记录的碎片知识——硬件特性、概念辨析、面试快问快答、踩坑备忘等。

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d1"
+type: learn
+title: "Day 1：认识 SGLang —— 它是什么、解决什么问题"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 1
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 1：认识 SGLang —— 它是什么、解决什么问题
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 1 天。全周目标：建立完整认知框架 + 跑通 SGLang + 理解核心机制（而不是读完所有源码）

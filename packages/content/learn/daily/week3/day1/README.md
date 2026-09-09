@@ -1,3 +1,16 @@
+---
+id: "learn:w03d01"
+type: learn
+title: "Day 1：Tensor Core 与 WMMA —— 从 FMA 到 Tensor Core"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 1
+related_problems: []
+related_questions: []
+---
+
 ## Day 1：Tensor Core 与 WMMA —— 从 FMA 到 Tensor Core
 
 ### 🎯 目标

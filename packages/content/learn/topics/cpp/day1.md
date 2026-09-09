@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d1"
+type: learn
+title: "Day 1（周一）：内存模型与基础语义"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 1
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：内存模型与基础语义
 
 > **本周定位**：本专题是 C++ 面试的系统化准备，覆盖语言核心高频考点。本周目标是每天吃透一个主题，配可编译代码与面试问答，最终能应对大厂 C++ 一二面。

@@ -1,3 +1,14 @@
+---
+id: "learn:reference:key-numbers"
+type: learn
+title: "面试必背数字清单（唯一事实源）"
+tags: [cuda-course, reference]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 面试必背数字清单（唯一事实源）
 
 > ⚠️ **硬性规定**：教程正文引用以下数字时，一律以本文件与 `reference/hardware_specs.md` 为准，禁止在正文中另写一套。每个数字都标注了来源；标注 [需核实] 的条目引用前必须确认。

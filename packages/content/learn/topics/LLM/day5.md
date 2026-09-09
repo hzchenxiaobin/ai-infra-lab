@@ -1,3 +1,16 @@
+---
+id: "learn:topic:llm:d5"
+type: learn
+title: "Day 5（周五）：Agentic 智能 —— 从聊天模型到智能体"
+tags: [llm]
+knowledge_points: [llm]
+updated: 2026-08-28
+day: 5
+topic: llm
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：Agentic 智能 —— 从聊天模型到智能体
 
 > **本周定位**：本专题是"读论文"视角的一周——不写 kernel，目标是跟上 2025–2026 年开源大模型最前沿（DeepSeek V3 → R1 → V3.2 与 Kimi K1.5 → K2 → K3 两条技术线）。Day 5 是 2026 年竞争的主战场——**Agent 能力是怎么"训"出来的**。前四天搭好了三块基础：Day 1 的 MoE 架构（K2 的 1T/32B 身体）、Day 2 的 GRPO + RLVR（Agent RL 的算法基础）、Day 4 的 DSA（Agent 的长上下文可以便宜了）。今天把这三块拼成 Agent：精读《Kimi K2》（[arXiv:2507.20534](https://arxiv.org/abs/2507.20534)）后训练章节的大规模 agentic 数据合成管线 + 真实/合成环境联合 RL、《DeepSeek-V3.2》（[arXiv:2512.02556](https://arxiv.org/abs/2512.02556)）的可扩展 RL 框架（高算力版 V3.2-Speciale 拿下 IMO 和 IOI 金牌），泛读《GLM-5》（[arXiv:2602.15763](https://arxiv.org/abs/2602.15763)）了解同代竞品思路。

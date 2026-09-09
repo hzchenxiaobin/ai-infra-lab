@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview"
+type: learn
+title: "AI Infra 面经与面试题整理"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-08-28
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 面经与面试题整理
 
 ## 专题笔记

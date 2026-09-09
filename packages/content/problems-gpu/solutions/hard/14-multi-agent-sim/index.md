@@ -1,3 +1,18 @@
+---
+id: "gpu:h:014"
+type: problem
+title: "Multi-Agent Simulation"
+tags: [CUDA, "O(N²)", "agent 并行", compute-bound, "pairwise interaction", "per-thread 归约", "shared memory tiling"]
+knowledge_points: [agent-并行, compute-bound, cuda, multi-agent-simulation, o-n², pairwise-interaction, per-thread-归约, shared-memory-tiling, simulation-misc]
+updated: 2026-09-07
+source: leetgpu
+number: 14
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Multi-Agent Simulation 题解
 
 ## 1. 题目概述

@@ -1,3 +1,15 @@
+---
+id: "learn:topic:cpp"
+type: learn
+title: "C++ 面试一周学习计划"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # C++ 面试一周学习计划
 
 > **适用对象**：有 C/C++ 基础、准备 AI Infra / 系统 / 后端方向 C++ 面试的开发者；建议已完成本仓库 [Week 1](../../daily/week1/README.md) CUDA 基础教程，对内存层级有初步认知

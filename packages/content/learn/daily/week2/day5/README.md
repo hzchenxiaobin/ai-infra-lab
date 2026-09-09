@@ -1,3 +1,16 @@
+---
+id: "learn:w02d05"
+type: learn
+title: "Day 5：CUDA Streams 与异步执行"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 5
+related_problems: ["gpu:e:002"]
+related_questions: []
+---
+
 ## Day 5：CUDA Streams 与异步执行
 
 ### 🎯 目标

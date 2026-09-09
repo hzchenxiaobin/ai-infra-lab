@@ -1,4 +1,15 @@
-# AI Infra 8 周冲刺学习计划（工程实战版）
+---
+id: "learn:plan:archive:ai-infra-8-week-plan-detailed"
+type: learn
+title: "AI Infra 8 周冲刺学习计划（工程实战版·详细）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
+# AI Infra 8 周冲刺学习计划（工程实战版·详细）
 
 > ⚠️ **已过时**：本文件是早期详细计划，**以 `weekN/dayM/README.md` 教程与 `learning_plan_weekN_expanded.md` 为准**。代码以落盘文件（`kernels/*.py`/`*.cu`）为准，本文件中的代码块可能未同步。保留此文件仅供历史参考。
 

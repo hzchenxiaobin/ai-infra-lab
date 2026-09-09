@@ -1,3 +1,18 @@
+---
+id: "gpu:h:093"
+type: problem
+title: "Llama Transformer Block"
+tags: [CUDA, GQA, RMSNorm, RoPE, SwiGLU, Transformer, "multi-kernel pipeline", 端到端]
+knowledge_points: [cuda, gqa, llama-block, multi-kernel-pipeline, rmsnorm, rope, swiglu, transformer, transformer-inference, 端到端]
+updated: 2026-09-07
+source: leetgpu
+number: 93
+difficulty: hard
+languages: [cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Llama Transformer Block 题解
 
 ## 1. 题目概述

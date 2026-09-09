@@ -1,3 +1,14 @@
+---
+id: "learn:plan:learning-plan-10week"
+type: learn
+title: "AI Infra 10 周学习计划（v2 重组版）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 10 周学习计划（v2 重组版）
 
 > 制定日期：2026-08-04

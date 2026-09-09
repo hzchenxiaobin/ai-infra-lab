@@ -1,3 +1,14 @@
+---
+id: "paper:gptq"
+type: paper
+title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers —— 论文精读"
+tags: [cholesky, dequant-kernel, hessian, obq, one-shot-quantization, paper, second-order, w4a16]
+knowledge_points: [cholesky, dequant-kernel, gptq, hessian, obq, one-shot-quantization, second-order, w4a16]
+updated: 2026-08-28
+venue: "ICLR 2023"
+status: done
+---
+
 # GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers —— 论文精读
 
 > 原文 PDF：[gptq.pdf](gptq.pdf)

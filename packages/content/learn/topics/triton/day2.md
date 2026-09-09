@@ -1,3 +1,16 @@
+---
+id: "learn:topic:triton:d2"
+type: learn
+title: "Day 2：Block 级编程与内存访问"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 2
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Day 2：Block 级编程与内存访问
 
 ## 🎯 目标

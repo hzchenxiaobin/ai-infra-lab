@@ -1,3 +1,16 @@
+---
+id: "learn:topic:vllm:d3"
+type: learn
+title: "Day 3：Continuous Batching 与调度器"
+tags: [vllm]
+knowledge_points: [vllm]
+updated: 2026-08-28
+day: 3
+topic: vllm
+related_problems: []
+related_questions: []
+---
+
 # Day 3：Continuous Batching 与调度器
 
 ## 🎯 目标

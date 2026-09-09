@@ -1,3 +1,16 @@
+---
+id: "learn:w07d07"
+type: learn
+title: "Day 7：调度优化策略总结"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 7
+related_problems: ["gpu:m:004"]
+related_questions: []
+---
+
 ## Day 7：调度优化策略总结
 
 ### 🎯 目标

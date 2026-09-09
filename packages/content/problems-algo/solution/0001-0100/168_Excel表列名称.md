@@ -1,3 +1,18 @@
+---
+id: "lc:0168"
+type: problem
+title: Excel表列名称
+tags: [字符串, 数学]
+knowledge_points: [math, string]
+updated: 2026-09-03
+source: leetcode
+number: 168
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Excel表列名称 题解
 
 ## 1. 题目概述

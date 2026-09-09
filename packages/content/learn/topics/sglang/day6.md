@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d6"
+type: learn
+title: "Day 6：性能与工程实践 —— 指标与 Benchmark"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 6
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 6：性能与工程实践 —— 指标与 Benchmark
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 6 天。掌握推理服务的性能语言（TTFT / TPOT / Throughput），会用官方工具跑一个规范的 Benchmark，并理解 batch size、并发、前缀缓存三个变量对性能的影响

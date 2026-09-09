@@ -1,6 +1,15 @@
+---
+id: "profiling:w3d3"
+type: profiling
+title: "Week 3 Day 3 — 源码分析优化对比 Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [cutlass, profiling, tensor-core]
+updated: 2026-08-28
+---
+
 # Week 3 Day 3 — 源码分析优化对比 Profiling
 
-> 对应 [Week 3 Day 3 任务 3（ncu 对比优化前后）+ 实验 2（warp vs block D-scan）+ 实验 3（stall 分析）](../../week3/day3/README.md)
+> 对应 [Week 3 Day 3 任务 3（ncu 对比优化前后）+ 实验 2（warp vs block D-scan）+ 实验 3（stall 分析）](../../../daily/week3/day3/README.md)
 
 Day 3 的核心是读 PyTorch/FasterTransformer 源码后，对 Day 16 的 kernel 做优化（warp 级 Softmax + float4 LayerNorm），用 ncu 量化优化收益。
 

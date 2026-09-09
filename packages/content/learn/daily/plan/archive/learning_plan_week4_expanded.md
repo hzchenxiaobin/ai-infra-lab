@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week4-expanded"
+type: learn
+title: "第4周深度展开：FlashAttention 深挖与 IO 优化（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第4周深度展开：FlashAttention 深挖与 IO 优化（7天）
 
 > **适用对象**：陈斌斌（已完成第3周学习，掌握 Transformer 执行流程、手写 Softmax/LayerNorm、标准 Attention IO 分析）

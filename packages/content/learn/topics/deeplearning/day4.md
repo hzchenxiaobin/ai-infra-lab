@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d4"
+type: learn
+title: "Day 4｜调参与训练技巧"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 4
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 4｜调参与训练技巧
 
 > 今日目标：学会看训练曲线，亲手做调参实验，建立"实验驱动"的调参直觉

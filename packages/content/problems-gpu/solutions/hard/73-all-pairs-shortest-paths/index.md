@@ -1,3 +1,18 @@
+---
+id: "gpu:h:073"
+type: problem
+title: "All-Pairs Shortest Paths"
+tags: [CUDA, Floyd-Warshall, "min-plus 半环", "shared memory tiling", 图算法, 外串内并]
+knowledge_points: [advanced-algorithms-math, cuda, floyd-warshall, min-plus-半环, shared-memory-tiling, 图算法, 图遍历, 外串内并]
+updated: 2026-09-07
+source: leetgpu
+number: 73
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU All-Pairs Shortest Paths 题解
 
 ## 1. 题目概述

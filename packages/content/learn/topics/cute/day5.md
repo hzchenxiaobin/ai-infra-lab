@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d5"
+type: learn
+title: "Day 5（周五）：Swizzle 作为 Layout"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 5
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：Swizzle 作为 Layout
 
 > **今日目标**：从"swizzle 是个黑盒优化"升级到"swizzle 就是 Layout 的一部分"，能手推 XOR swizzle 映射，理解 MMA swizzle pattern

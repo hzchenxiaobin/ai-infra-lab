@@ -1,3 +1,15 @@
+---
+id: "lc:topic:interval-dp"
+type: learn
+title: "区间 DP 专题"
+tags: [algo, interval-dp]
+knowledge_points: [interval-dp]
+updated: 2026-08-28
+topic: algo-interval-dp
+related_problems: ["lc:0005", "lc:0131", "lc:0132", "lc:1143", "lc:1312"]
+related_questions: []
+---
+
 <!-- title: 区间 DP 专题 -->
 # 区间 DP 专题
 

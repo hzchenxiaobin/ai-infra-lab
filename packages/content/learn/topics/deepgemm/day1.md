@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deepgemm:d1"
+type: learn
+title: "Day 1（周一）：DeepGEMM 总览与 JIT 环境"
+tags: [deepgemm]
+knowledge_points: [deepgemm, gemm]
+updated: 2026-08-28
+day: 1
+topic: deepgemm
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：DeepGEMM 总览与 JIT 环境
 
 > **本周定位**：本专题是 [CUTLASS 专题](../cutlass/README.md)（库视角）与 [CuTe 专题](../cute/README.md)（原语视角）之后的**单点深钻**——拆开一个生产级 FP8/FP4 GEMM kernel 看每一行 PTX 怎么写。本周目标是读懂 DeepGEMM（v2.6.1）的 warp-specialized kernel 源码，跑出 H800 ~1550 TFLOPS，产出源码精读笔记与 ncu 调优报告。

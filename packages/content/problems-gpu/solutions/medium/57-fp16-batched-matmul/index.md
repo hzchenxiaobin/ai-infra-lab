@@ -1,3 +1,18 @@
+---
+id: "gpu:m:057"
+type: problem
+title: "FP16 Batched Matrix Multiplication"
+tags: ["Batched GEMM", CUDA, FP16, "FP32 累加", "Shared Memory Tiling", "Tensor Core", WMMA, "half 精度"]
+knowledge_points: [batched-gemm, cuda, fp16, fp16-运算, fp32-累加, quantization, shared-memory-tiling, tensor-core, wmma]
+updated: 2026-09-07
+source: leetgpu
+number: 57
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU FP16 Batched Matrix Multiplication 题解
 
 ## 1. 题目概述

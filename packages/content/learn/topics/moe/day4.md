@@ -1,3 +1,16 @@
+---
+id: "learn:topic:moe:d4"
+type: learn
+title: "Day 4（周四）：Expert Parallelism 与 all-to-all 通信"
+tags: [moe]
+knowledge_points: [moe]
+updated: 2026-08-28
+day: 4
+topic: moe
+related_problems: []
+related_questions: []
+---
+
 # Day 4（周四）：Expert Parallelism 与 all-to-all 通信
 
 > **本周定位**：本专题是 [CUTLASS 专题](../cutlass/README.md)（算子视角，Day 7 Group GEMM）之后的**系统视角**——把 Grouped GEMM、Top-K 路由、all-to-all 通信、负载均衡组装成一个完整的 MoE 层。本周目标是用 Triton 拼出一个 Top-2 路由的 MoE FFN 层,性能达到 Megatron-LM 参考实现 70%+,产出 ncu 性能报告。

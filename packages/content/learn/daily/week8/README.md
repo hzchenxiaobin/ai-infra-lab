@@ -1,3 +1,15 @@
+---
+id: "learn:w08"
+type: learn
+title: "Week 8：推理加速技术"
+tags: [notes, quantization, speculative-decoding]
+knowledge_points: [inference-optimization, quantization]
+updated: 2026-09-01
+week: 8
+related_problems: []
+related_questions: []
+---
+
 # Week 8：推理加速技术
 
 > 核心目标：掌握量化（W8A16/INT8 KV/FP8）、投机解码（Medusa/EAGLE/MTP）、CUDA Graph 与采样 kernel

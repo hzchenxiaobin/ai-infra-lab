@@ -1,3 +1,18 @@
+---
+id: "lc:2776"
+type: problem
+title: "转换回调函数为 Promise 函数"
+tags: [Promise, util.promisify, 回调函数, 闭包]
+knowledge_points: [closure, promise, util.promisify, 回调函数]
+updated: 2026-09-03
+source: leetcode
+number: 2776
+difficulty: medium
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 转换回调函数为 Promise 函数 题解
 
 ## 1. 题目概述

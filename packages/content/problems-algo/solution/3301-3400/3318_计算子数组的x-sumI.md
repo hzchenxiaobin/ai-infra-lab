@@ -1,3 +1,18 @@
+---
+id: "lc:3318"
+type: problem
+title: "计算子数组的 x-sum I"
+tags: [哈希表, "堆（优先队列）", 数组, 滑动窗口]
+knowledge_points: [array, hash-table, heap, sliding-window]
+updated: 2026-09-03
+source: leetcode
+number: 3318
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 计算子数组的 x-sum I 题解
 
 - **关联**：3321（版本 II）是本题的数据加强版（$n$ 放大到 $10^5$、元素值放大到 $10^9$），本文的「每窗重选 top-x」解法在 II 会超时，升级姿势见第 5 节

@@ -1,3 +1,16 @@
+---
+id: "learn:w03d07"
+type: learn
+title: "Day 7：复盘与手撕 —— Tensor Core/CUTLASS 面试要点"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 7
+related_problems: []
+related_questions: []
+---
+
 ## Day 7：复盘与手撕 —— Tensor Core/CUTLASS 面试要点
 
 ### 🎯 目标

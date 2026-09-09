@@ -1,3 +1,18 @@
+---
+id: "gpu:m:044"
+type: problem
+title: "Count 2D Array Element"
+tags: ["2D 索引", CUDA, atomicAdd, memory-bound, predicate, "warp shuffle", "归约（reduction）"]
+knowledge_points: [2d-索引, atomic-add, cuda, memory-bound, predicate, reduction, reduction-scan, warp-shuffle, 计数-直方图]
+updated: 2026-09-07
+source: leetgpu
+number: 44
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Count 2D Array Element 题解
 
 ## 1. 题目概述

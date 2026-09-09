@@ -1,3 +1,15 @@
+---
+id: "learn:topic:shengteng:l2-cache-interleaving"
+type: learn
+title: "昇腾950 L2 Cache 微架构：512B 低位交织与高位异或交织"
+tags: [shengteng]
+knowledge_points: [ascend-npu]
+updated: 2026-08-28
+topic: shengteng
+related_problems: []
+related_questions: []
+---
+
 # 昇腾950 L2 Cache 微架构：512B 低位交织与高位异或交织
 
 > 图示说明：[l2_cache_interleaving.svg](l2_cache_interleaving.svg)

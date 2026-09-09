@@ -1,3 +1,18 @@
+---
+id: "gpu:m:037"
+type: problem
+title: "Matrix Power"
+tags: [CUDA, GEMM, "binary exponentiation", compute-bound, "register blocking", "shared memory tiling"]
+knowledge_points: [advanced-algorithms-math, binary-exponentiation, compute-bound, cuda, gemm, matrix-power, register-blocking, shared-memory-tiling]
+updated: 2026-09-07
+source: leetgpu
+number: 37
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Matrix Power 题解
 
 ## 1. 题目概述

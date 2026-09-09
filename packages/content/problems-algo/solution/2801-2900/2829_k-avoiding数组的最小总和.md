@@ -1,3 +1,18 @@
+---
+id: "lc:2829"
+type: problem
+title: "k-avoiding 数组的最小总和"
+tags: [数学, 贪心]
+knowledge_points: [greedy, math]
+updated: 2026-09-03
+source: leetcode
+number: 2829
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode k-avoiding 数组的最小总和 题解
 
 ## 1. 题目概述

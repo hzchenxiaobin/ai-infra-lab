@@ -1,3 +1,14 @@
+---
+id: "paper:vllm"
+type: paper
+title: "Efficient Memory Management for Large Language Model Serving with PagedAttention —— vLLM 论文精读"
+tags: [copy-on-write, iteration-level-scheduling, kv-cache, pagedattention, paper, virtual-memory]
+knowledge_points: [copy-on-write, iteration-level-scheduling, kv-cache, pagedattention, virtual-memory, vllm]
+updated: 2026-08-28
+venue: "SOSP 2023"
+status: done
+---
+
 # Efficient Memory Management for Large Language Model Serving with PagedAttention —— vLLM 论文精读
 
 > 原文 PDF：[vllm.pdf](vllm.pdf)

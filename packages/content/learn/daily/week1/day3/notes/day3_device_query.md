@@ -1,3 +1,16 @@
+---
+id: "learn:w01d03:notes:day3-device-query"
+type: learn
+title: "Day 3 Profiling 任务：设备属性与 Occupancy Calculator"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 3
+related_problems: []
+related_questions: []
+---
+
 # Day 3 Profiling 任务：设备属性与 Occupancy Calculator
 
 ## 今日目标

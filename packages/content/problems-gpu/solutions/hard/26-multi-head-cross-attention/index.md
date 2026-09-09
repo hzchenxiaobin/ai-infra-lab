@@ -1,3 +1,18 @@
+---
+id: "gpu:h:026"
+type: problem
+title: "Multi-Head Cross-Attention"
+tags: [CUDA, Cross-Attention, FlashAttention, "batched kernel launch", "online softmax", "融合 attention"]
+knowledge_points: [attention, batched-kernel-launch, cross-attention, cuda, flash-attention, fused-attention, online-softmax]
+updated: 2026-09-07
+source: leetgpu
+number: 26
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Multi-Head Cross-Attention 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d4"
+type: learn
+title: "Day 4（周四）：模板与泛型编程"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-07
+day: 4
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 4（周四）：模板与泛型编程
 
 > **本周定位**：C++ 面试系统化准备，今日聚焦模板——AI Infra 方向必问（CUTLASS/DeepGEMM 全是模板）

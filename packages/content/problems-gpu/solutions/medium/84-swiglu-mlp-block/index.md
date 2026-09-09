@@ -1,3 +1,18 @@
+---
+id: "gpu:m:084"
+type: problem
+title: "SwiGLU MLP Block"
+tags: [CUDA, GEMM, LLaMA, MLP, SwiGLU, compute-bound, "kernel fusion"]
+knowledge_points: [compute-bound, cuda, gemm, kernel-fusion, llama, mlp, mlp-block-swiglu, swiglu, transformer-inference]
+updated: 2026-09-07
+source: leetgpu
+number: 84
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU SwiGLU MLP Block 题解
 
 ## 1. 题目概述

@@ -1,3 +1,16 @@
+---
+id: "learn:w03d05"
+type: learn
+title: "Day 5：项目推进 —— WMMA GEMM 接入 Benchmark 与 Double Buffering"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 5
+related_problems: []
+related_questions: []
+---
+
 ## Day 5：项目推进 —— WMMA GEMM 接入 Benchmark 与 Double Buffering
 
 ### 🎯 目标

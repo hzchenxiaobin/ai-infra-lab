@@ -1,3 +1,16 @@
+---
+id: "learn:w03d06"
+type: learn
+title: "Day 6：Profiling —— Tensor Core 利用率与 WMMA vs FMA 对比"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-09-01
+week: 3
+day: 6
+related_problems: ["gpu:m:050"]
+related_questions: []
+---
+
 ## Day 6：Profiling —— Tensor Core 利用率与 WMMA vs FMA 对比
 
 ### 🎯 目标

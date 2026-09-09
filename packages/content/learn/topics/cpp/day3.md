@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d3"
+type: learn
+title: "Day 3（周三）：移动语义与完美转发"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-08-28
+day: 3
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：移动语义与完美转发
 
 > **本周定位**：C++ 面试系统化准备，今日聚焦 C++11 最重要的特性——移动语义

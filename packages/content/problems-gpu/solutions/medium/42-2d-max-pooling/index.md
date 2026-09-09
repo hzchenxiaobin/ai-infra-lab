@@ -1,3 +1,18 @@
+---
+id: "gpu:m:042"
+type: problem
+title: "2D Max Pooling"
+tags: ["2D 索引映射", CUDA, Pooling, memory-bound, "padding 边界", "滑窗 reduction"]
+knowledge_points: [2d-索引映射, convolution-pooling, cuda, memory-bound, padding-边界, pooling, 滑窗-reduction, 滑窗最大值]
+updated: 2026-09-07
+source: leetgpu
+number: 42
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 2D Max Pooling 题解
 
 ## 1. 题目概述

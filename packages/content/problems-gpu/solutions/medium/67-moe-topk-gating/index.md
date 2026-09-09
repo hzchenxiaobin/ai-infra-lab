@@ -1,3 +1,18 @@
+---
+id: "gpu:m:067"
+type: problem
+title: "MoE Top-K Gating"
+tags: [CUDA, "MoE 路由", softmax, "top-k 选择", 并行归约]
+knowledge_points: [cuda, moe-routing, moe-top-k-gating, softmax, top-k-选择, transformer-inference, 并行归约]
+updated: 2026-09-07
+source: leetgpu
+number: 67
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU MoE Top-K Gating 题解
 
 ## 1. 题目概述

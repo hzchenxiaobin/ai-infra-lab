@@ -1,3 +1,18 @@
+---
+id: "lc:2877"
+type: problem
+title: "从表中创建 DataFrame"
+tags: ["DataFrame 构造", Pandas]
+knowledge_points: [dataframe-构造, pandas]
+updated: 2026-09-03
+source: leetcode
+number: 2877
+difficulty: easy
+languages: [python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 从表中创建 DataFrame 题解
 
 ## 1. 题目概述

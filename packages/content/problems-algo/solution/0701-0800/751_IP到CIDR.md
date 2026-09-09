@@ -1,3 +1,18 @@
+---
+id: "lc:0751"
+type: problem
+title: "IP 到 CIDR"
+tags: [位运算, 字符串, 贪心]
+knowledge_points: [bit-manipulation, greedy, string]
+updated: 2026-09-03
+source: leetcode
+number: 751
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode IP 到 CIDR 题解
 
 ## 1. 题目概述

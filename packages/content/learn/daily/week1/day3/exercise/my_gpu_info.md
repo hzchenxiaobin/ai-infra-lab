@@ -1,3 +1,16 @@
+---
+id: "learn:w01d03:exercise:my-gpu-info"
+type: learn
+title: "GPU 信息：NVIDIA GeForce RTX 5090"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 3
+related_problems: []
+related_questions: []
+---
+
 # GPU 信息：NVIDIA GeForce RTX 5090
 
 ## 1. deviceQuery 原始输出

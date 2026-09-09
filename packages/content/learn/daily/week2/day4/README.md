@@ -1,3 +1,16 @@
+---
+id: "learn:w02d04"
+type: learn
+title: "Day 4：GEMM 优化续篇 —— Shuffle 写回、Double Buffering 深挖与 cuBLAS 三基准对比"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 4
+related_problems: ["gpu:m:022"]
+related_questions: []
+---
+
 ## Day 4：GEMM 优化续篇 —— Shuffle 写回、Double Buffering 深挖与 cuBLAS 三基准对比
 
 ### 🎯 目标

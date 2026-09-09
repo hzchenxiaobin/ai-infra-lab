@@ -1,3 +1,18 @@
+---
+id: "lc:0984"
+type: problem
+title: "不含 AAA 或 BBB 的字符串"
+tags: [字符串, 贪心]
+knowledge_points: [greedy, string]
+updated: 2026-09-03
+source: leetcode
+number: 984
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 不含 AAA 或 BBB 的字符串 题解
 
 ## 1. 题目概述

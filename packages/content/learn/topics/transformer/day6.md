@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d6"
+type: learn
+title: "Day 6（周六）：完整架构与变体"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 6
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 6（周六）：完整架构与变体
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 5 把"零件"组装成了一个可堆叠的 Transformer Block，Day 6 解决"怎么用 Block 拼成不同架构"——同样一个 Block，配上不同的注意力 mask 与堆叠方式，就得到 Encoder-Decoder / Decoder-only / Encoder-only 三种架构变体。今天把三种架构的 mask 差异、适用任务、推理方式彻底理清，为 Day 7 用 Block 堆出 mini-GPT 做最后铺垫。

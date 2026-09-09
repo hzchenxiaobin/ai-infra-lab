@@ -1,3 +1,16 @@
+---
+id: "learn:w01d03:notes:cuda-programming-guide-performance"
+type: learn
+title: "CUDA Programming Guide 性能优化部分学习笔记"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 3
+related_problems: []
+related_questions: []
+---
+
 # CUDA Programming Guide 性能优化部分学习笔记
 
 > 本笔记是 [week1/README.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day3.html) Day 3 的延伸阅读，汇总了新版《CUDA Programming Guide》中与性能优化相关的内容。Day 3 只需了解整体框架，具体技术细节会在 Day 4–Day 6 中专项练习。

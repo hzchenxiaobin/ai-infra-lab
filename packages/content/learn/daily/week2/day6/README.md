@@ -1,3 +1,16 @@
+---
+id: "learn:w02d06"
+type: learn
+title: "Day 6：Nsight Compute 性能分析"
+tags: [cuda, kernel-optimization, notes, nsight]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+week: 2
+day: 6
+related_problems: ["gpu:m:005"]
+related_questions: []
+---
+
 ## Day 6：Nsight Compute 性能分析
 
 ### 🎯 目标

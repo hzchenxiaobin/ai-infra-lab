@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d4"
+type: learn
+title: "Day 4：LLM 推理基础 —— Prefill / Decode / KV Cache / Continuous Batching"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 4
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 4：LLM 推理基础 —— Prefill / Decode / KV Cache / Continuous Batching
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 4 天。今天讲推理引擎的"通用内功"——这些概念不属于 SGLang 独有，但不理解它们就无法理解 SGLang 的任何优化

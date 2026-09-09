@@ -1,3 +1,16 @@
+---
+id: "learn:w05d02"
+type: learn
+title: "Day 2：FlashAttention 论文精读与 Online Softmax 推导"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 2
+related_problems: ["gpu:h:109", "gpu:m:080"]
+related_questions: []
+---
+
 ## Day 2：FlashAttention 论文精读与 Online Softmax 推导
 
 ### 🎯 目标

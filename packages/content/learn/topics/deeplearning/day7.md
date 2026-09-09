@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d7"
+type: learn
+title: "Day 7｜综合小项目 + 复盘"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 7
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 7｜综合小项目 + 复盘
 
 > 今日目标：独立完成一个完整项目，画出一周知识地图，规划后续路线

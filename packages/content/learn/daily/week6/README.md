@@ -1,3 +1,15 @@
+---
+id: "learn:w06"
+type: learn
+title: "Week 6：推理系统基础与 KV Cache"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+related_problems: []
+related_questions: []
+---
+
 # Week 6：推理系统基础与 KV Cache
 
 > 核心目标：掌握 Prefill/Decode 推理流程、KV Cache（GQA/MQA/MLA）、vLLM 架构、PagedAttention、FlashDecoding 与 Mini 引擎 v0

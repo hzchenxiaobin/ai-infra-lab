@@ -1,3 +1,16 @@
+---
+id: "learn:w01d04:notes:day4-transpose"
+type: learn
+title: "Day 4 Profiling 任务：Memory Hierarchy 与矩阵转置"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 4
+related_problems: []
+related_questions: []
+---
+
 # Day 4 Profiling 任务：Memory Hierarchy 与矩阵转置
 
 ## 今日目标

@@ -1,3 +1,16 @@
+---
+id: "learn:w07d02"
+type: learn
+title: "Day 2：vLLM Scheduler 源码分析"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 2
+related_problems: ["gpu:e:108", "gpu:m:072"]
+related_questions: []
+---
+
 ## Day 2：vLLM Scheduler 源码分析
 
 ### 🎯 目标

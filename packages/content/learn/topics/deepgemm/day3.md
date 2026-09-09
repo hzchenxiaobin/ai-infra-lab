@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deepgemm:d3"
+type: learn
+title: "Day 3（周三）：SM90 FP8 GEMM Kernel 源码精读（上）"
+tags: [deepgemm]
+knowledge_points: [deepgemm, gemm]
+updated: 2026-08-28
+day: 3
+topic: deepgemm
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：SM90 FP8 GEMM Kernel 源码精读（上）
 
 > **本周定位**：本专题是 [CUTLASS 专题](../cutlass/README.md)（库视角）与 [CuTe 专题](../cute/README.md)（原语视角）之后的**单点深钻**——拆开一个生产级 FP8/FP4 GEMM kernel 看每一行 PTX 怎么写。

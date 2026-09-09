@@ -1,3 +1,18 @@
+---
+id: "gpu:m:005"
+type: problem
+title: Softmax
+tags: [CUDA, Softmax, memory-bound, "safe softmax", "warp shuffle reduce", 三遍扫描, 数值稳定性]
+knowledge_points: [attention, cuda, memory-bound, numerical-stability, safe-softmax, softmax, softmax-数值稳定, warp-shuffle-reduce, 三遍扫描]
+updated: 2026-09-07
+source: leetgpu
+number: 5
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w02d06"]
+---
+
 # LeetGPU Softmax 题解
 
 ## 1. 题目概述

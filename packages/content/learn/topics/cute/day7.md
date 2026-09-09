@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cute:d7"
+type: learn
+title: "Day 7（周日）：CuTe GEMM 实战与面试复盘"
+tags: [cute]
+knowledge_points: [cute]
+updated: 2026-08-28
+day: 7
+topic: cute
+related_problems: []
+related_questions: []
+---
+
 # Day 7（周日）：CuTe GEMM 实战与面试复盘
 
 > **今日目标**：用本周学的 CuTe 原语（Layout + Tensor + copy + Swizzle + MMA）从零组装一个 GEMM，对标 `examples/cute/tutorial`，完成面试复盘

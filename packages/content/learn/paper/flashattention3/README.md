@@ -1,3 +1,14 @@
+---
+id: "paper:flashattention3"
+type: paper
+title: "FlashAttention-3 —— Fast and Accurate Attention with Asynchrony and Low-precision 论文精读"
+tags: [block-quantization, fp8, incoherent-processing, paper, pingpong-scheduling, tma, warp-specialization, wgmma]
+knowledge_points: [block-quantization, flashattention3, fp8, incoherent-processing, pingpong-scheduling, tma, warp-specialization, wgmma]
+updated: 2026-08-28
+venue: "arXiv 技术报告（2024）；后收录于 NeurIPS 2024"
+status: done
+---
+
 # FlashAttention-3 —— Fast and Accurate Attention with Asynchrony and Low-precision 论文精读
 
 > 原文 PDF：[flashattention3.pdf](flashattention3.pdf)

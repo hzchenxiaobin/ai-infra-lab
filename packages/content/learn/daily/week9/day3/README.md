@@ -1,3 +1,16 @@
+---
+id: "learn:w09d03"
+type: learn
+title: "Day 3：NCCL Collectives —— all-reduce/all-gather/reduce-scatter 通信量"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-09-01
+week: 9
+day: 3
+related_problems: []
+related_questions: []
+---
+
 ## Day 3：NCCL Collectives —— all-reduce/all-gather/reduce-scatter 通信量
 
 ### 🎯 目标

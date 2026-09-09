@@ -1,3 +1,18 @@
+---
+id: "gpu:e:003"
+type: problem
+title: "Matrix Transpose"
+tags: [CUDA, "bank conflict", "shared memory", tiling, 内存布局]
+knowledge_points: [2d-grid-映射, bank-conflict, cuda, parallel-patterns, shared-memory, tiling, 内存布局]
+updated: 2026-09-07
+source: leetgpu
+number: 3
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w01d04", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w07d04", "learn:w08d04", "learn:w10d01"]
+---
+
 # LeetGPU Matrix Transpose 题解
 
 ## 1. 题目概述
@@ -18,7 +33,7 @@ dst = [[1,4],[2,5],[3,6]]  (3×2)
 
 **约束**：`1 ≤ M, N ≤ 4096`；性能测试取大矩阵。
 
-> 💡 这道题是 **shared memory tiling 的经典练习**——读 input 按行（coalesced），写 output 按列（strided），用 shared memory tile 做中转解决非连续写。与 [Week7 Day4 自定义 Kernel 集成](../../../aiinfra/daily/week7/day4/README.md) 中的**内存布局一致性**同构：PyTorch Tensor 默认 row-major，自定义 kernel 必须正确处理 stride 和布局。Transpose 的 shared memory tiling 是 FlashAttention 分块读写的基础。
+> 💡 这道题是 **shared memory tiling 的经典练习**——读 input 按行（coalesced），写 output 按列（strided），用 shared memory tile 做中转解决非连续写。与 [Week7 Day4 自定义 Kernel 集成](../../../../learn/daily/week7/day4/README.md) 中的**内存布局一致性**同构：PyTorch Tensor 默认 row-major，自定义 kernel 必须正确处理 stride 和布局。Transpose 的 shared memory tiling 是 FlashAttention 分块读写的基础。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

@@ -1,3 +1,16 @@
+---
+id: "learn:w01d06:notes:day6-nsight-profiling"
+type: learn
+title: "Day 6 Profiling 实战：综合Profiling"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 6
+related_problems: []
+related_questions: []
+---
+
 # Day 6 Profiling 实战：综合Profiling
 
 ## 今日目标

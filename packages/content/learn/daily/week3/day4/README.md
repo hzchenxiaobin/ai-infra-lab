@@ -1,3 +1,16 @@
+---
+id: "learn:w03d04"
+type: learn
+title: "Day 4：CUTLASS 源码分析 + CuTe 概念铺垫"
+tags: [cutlass, notes, tensor-core, wgmma]
+knowledge_points: [cutlass, tensor-core]
+updated: 2026-08-28
+week: 3
+day: 4
+related_problems: ["gpu:m:030"]
+related_questions: []
+---
+
 ## Day 4：CUTLASS 源码分析 + CuTe 概念铺垫
 
 ### 🎯 目标

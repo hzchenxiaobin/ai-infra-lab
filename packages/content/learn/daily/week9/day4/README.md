@@ -1,3 +1,16 @@
+---
+id: "learn:w09d04"
+type: learn
+title: "Day 4：通信计算重叠 —— 双 Stream + CUDA Graph Overlap"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-09-01
+week: 9
+day: 4
+related_problems: []
+related_questions: []
+---
+
 ## Day 4：通信计算重叠 —— 双 Stream + CUDA Graph Overlap
 
 ### 🎯 目标

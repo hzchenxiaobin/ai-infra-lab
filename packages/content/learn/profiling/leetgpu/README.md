@@ -1,6 +1,15 @@
+---
+id: "profiling:leetgpu:readme"
+type: profiling
+title: "LeetGPU Profiling — ncu 性能分析"
+tags: [ncu, profiling]
+knowledge_points: [profiling]
+updated: 2026-08-28
+---
+
 # LeetGPU Profiling — ncu 性能分析
 
-本目录汇总了 [LeetGPU 题解](../../leetgpu/) 中所有带有 ncu profiling 代码的可执行程序，方便一键编译和性能分析。
+本目录汇总了 [LeetGPU 题解](../../../problems-gpu/solutions/) 中所有带有 ncu profiling 代码的可执行程序，方便一键编译和性能分析。
 
 ## 目录结构
 
@@ -52,15 +61,15 @@ make profile-argmax              # Argmax: occupancy + DRAM + registers
 
 | 题目 | 瓶颈类型 | 关键指标 | 预期值 | 对应题解 |
 |------|---------|---------|--------|---------|
-| Vector Add | memory-bound | `dram__throughput` | 高（>60%） | [Vector Add 题解](../../leetgpu/leetgpu-vector-add-solution.md) |
-| ReLU | memory-bound | `dram__throughput`, `registers_per_thread` | DRAM 高，寄存器少 | [ReLU 题解](../../leetgpu/leetgpu-relu-solution.md) |
-| Matrix Transpose | memory-bound | `bank_conflicts`, `dram__throughput` | bank conflict 应为 0（padding 后） | [Transpose 题解](../../leetgpu/leetgpu-matrix-transpose-solution.md) |
-| Reduction | memory-bound | `bank_conflicts`, `occupancy` | occupancy 高，冲突低 | [Reduction 题解](../../leetgpu/leetgpu-reduction-solution.md) |
-| Histogram | memory-bound | `dram__throughput`, `bank_conflicts` | shared mem 版 DRAM 更低 | [Histogram 题解](../../leetgpu/leetgpu-histogram-solution.md) |
-| Matrix Addition | memory-bound | `dram__throughput`, `occupancy` | float4 版 DRAM 更高 | [Matrix Add 题解](../../leetgpu/leetgpu-matrix-addition-solution.md) |
-| Matrix Multiplication | compute-bound | `sm__throughput`, `dram__throughput` | SM >> DRAM | [Matmul 题解](../../leetgpu/leetgpu-matrix-multiplication-solution.md) |
-| Softmax | memory-bound | `dram__throughput`, `stall` | DRAM 高，Long Scoreboard 高 | [Softmax 题解](../../leetgpu/leetgpu-softmax-solution.md) |
-| Argmax | memory-bound | `occupancy`, `dram__throughput` | DRAM 高 | [Argmax 题解](../../leetgpu/leetgpu-argmax-solution.md) |
+| Vector Add | memory-bound | `dram__throughput` | 高（>60%） | [Vector Add 题解](../../../problems-gpu/solutions/easy/1-vector-add/index.md) |
+| ReLU | memory-bound | `dram__throughput`, `registers_per_thread` | DRAM 高，寄存器少 | [ReLU 题解](../../../problems-gpu/solutions/easy/21-relu/index.md) |
+| Matrix Transpose | memory-bound | `bank_conflicts`, `dram__throughput` | bank conflict 应为 0（padding 后） | [Transpose 题解](../../../problems-gpu/solutions/easy/3-matrix-transpose/index.md) |
+| Reduction | memory-bound | `bank_conflicts`, `occupancy` | occupancy 高，冲突低 | [Reduction 题解](../../../problems-gpu/solutions/medium/4-reduction/index.md) |
+| Histogram | memory-bound | `dram__throughput`, `bank_conflicts` | shared mem 版 DRAM 更低 | [Histogram 题解](../../../problems-gpu/solutions/medium/13-histogramming/index.md) |
+| Matrix Addition | memory-bound | `dram__throughput`, `occupancy` | float4 版 DRAM 更高 | [Matrix Add 题解](../../../problems-gpu/solutions/easy/8-matrix-addition/index.md) |
+| Matrix Multiplication | compute-bound | `sm__throughput`, `dram__throughput` | SM >> DRAM | [Matmul 题解](../../../problems-gpu/solutions/easy/2-matrix-multiplication/index.md) |
+| Softmax | memory-bound | `dram__throughput`, `stall` | DRAM 高，Long Scoreboard 高 | [Softmax 题解](../../../problems-gpu/solutions/medium/5-softmax/index.md) |
+| Argmax | memory-bound | `occupancy`, `dram__throughput` | DRAM 高 | [Argmax 题解](../../../problems-gpu/solutions/medium/107-argmax/index.md) |
 
 ## 瓶颈判定方法
 

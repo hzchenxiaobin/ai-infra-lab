@@ -1,3 +1,16 @@
+---
+id: "learn:w04d06"
+type: learn
+title: "Day 6：Profiling —— Triton vs CUDA vs PyTorch 性能对比"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 6
+related_problems: []
+related_questions: []
+---
+
 ## Day 6：Profiling —— Triton vs CUDA vs PyTorch 性能对比
 
 ### 🎯 目标

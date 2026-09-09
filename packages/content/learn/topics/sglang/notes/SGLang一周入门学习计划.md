@@ -1,3 +1,15 @@
+---
+id: "learn:topic:sglang:notes:sglang一周入门学习计划"
+type: learn
+title: "SGLang 一周入门学习计划（2026 版）"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # SGLang 一周入门学习计划（2026 版）
 
 > 适用版本：SGLang v0.5.x（撰写时最新稳定版为 v0.5.18，2026 年 8 月）

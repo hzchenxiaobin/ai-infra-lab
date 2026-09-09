@@ -1,3 +1,18 @@
+---
+id: "gpu:m:109"
+type: problem
+title: "GRPO Surrogate Loss"
+tags: [CUDA, GRPO, PPO, RL, atomicAdd, "kernel fusion", memory-bound, reduction, "warp shuffle"]
+knowledge_points: [atomic-add, cuda, grpo, kernel-fusion, losses-basic-ml, memory-bound, ppo, reduction, rl, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 109
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU GRPO Surrogate Loss 题解
 
 ## 1. 题目概述

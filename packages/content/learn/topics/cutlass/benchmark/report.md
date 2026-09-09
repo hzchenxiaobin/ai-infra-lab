@@ -1,3 +1,15 @@
+---
+id: "learn:topic:cutlass:benchmark:report"
+type: learn
+title: "CUTLASS GEMM 性能报告"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # CUTLASS GEMM 性能报告
 
 > 生成日期：Day 6 Profiling 实验

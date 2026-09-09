@@ -1,3 +1,18 @@
+---
+id: "lc:2821"
+type: problem
+title: "延迟每个 Promise 对象的解析"
+tags: [JavaScript, Promise, async/await, setTimeout]
+knowledge_points: [async-await, javascript, promise, settimeout]
+updated: 2026-09-03
+source: leetcode
+number: 2821
+difficulty: medium
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 延迟每个 Promise 对象的解析 题解
 
 ## 1. 题目概述

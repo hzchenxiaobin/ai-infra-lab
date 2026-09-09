@@ -1,3 +1,18 @@
+---
+id: "gpu:m:043"
+type: problem
+title: "Count Array Element"
+tags: [CUDA, atomicAdd, memory-bound, predicate, "warp shuffle", "归约（reduction）"]
+knowledge_points: [atomic-add, cuda, memory-bound, predicate, reduction, reduction-scan, warp-shuffle, 计数-直方图]
+updated: 2026-09-07
+source: leetgpu
+number: 43
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Count Array Element 题解
 
 ## 1. 题目概述

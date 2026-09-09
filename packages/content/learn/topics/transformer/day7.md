@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d7"
+type: learn
+title: "Day 7（周日）：从零实现 mini-GPT + 训练"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 7
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 7（周日）：从零实现 mini-GPT + 训练
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 7 是全周的**收尾与里程碑**——把 Day 2-6 造好的全部零件（Self-Attention、Multi-Head、RoPE、Transformer Block、因果 mask）组装成一个完整的 Decoder-only mini-GPT，在 Shakespeare 文本上训练 next-token prediction，观察 loss 持续下降并用它生成可读文本，打通"论文公式 → 代码实现 → 训练验证"全链路。

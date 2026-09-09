@@ -1,3 +1,18 @@
+---
+id: "gpu:h:046"
+type: problem
+title: "BFS Shortest Path"
+tags: [BFS, CUDA, atomicCAS, "frontier 并行", "host 外层循环", level-synchronous, 图算法]
+knowledge_points: [advanced-algorithms-math, atomic-cas, bfs, cuda, frontier-并行, host-外层循环, level-synchronous, 图算法, 图遍历]
+updated: 2026-09-07
+source: leetgpu
+number: 46
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU BFS Shortest Path 题解
 
 ## 1. 题目概述

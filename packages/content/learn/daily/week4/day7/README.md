@@ -1,3 +1,16 @@
+---
+id: "learn:w04d07"
+type: learn
+title: "Day 7：Week 4 复盘 —— 算子分类与 Triton 决策表"
+tags: [notes, transformer, triton]
+knowledge_points: [transformer, triton]
+updated: 2026-08-28
+week: 4
+day: 7
+related_problems: ["gpu:h:074"]
+related_questions: []
+---
+
 ## Day 7：Week 4 复盘 —— 算子分类与 Triton 决策表
 
 ### 🎯 目标

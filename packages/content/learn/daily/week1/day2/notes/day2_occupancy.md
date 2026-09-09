@@ -1,3 +1,16 @@
+---
+id: "learn:w01d02:notes:day2-occupancy"
+type: learn
+title: "Day 2 Profiling 任务：Occupancy 与资源约束"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 2
+related_problems: []
+related_questions: []
+---
+
 # Day 2 Profiling 任务：Occupancy 与资源约束
 
 ## 今日目标

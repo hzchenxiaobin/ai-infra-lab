@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:mock-interview:flashattention-io-complexity"
+type: learn
+title: "FlashAttention IO 复杂度推导：从分块计算到 Θ(N²d²/M)"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-05
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # FlashAttention IO 复杂度推导：从分块计算到 Θ(N²d²/M)
 
 > **导读**：面试高频题——"FlashAttention 和标准 Attention 的 FLOPs 完全相同（~2N²d），加速全部来自 HBM 访问量的降低。请从分块计算的角度推导 Θ(N²d²/M) 这个 IO 界，说明什么时候退化成 O(Nd)，并估算 d=64、N=4096 时 IO 降低多少倍"。本文按 IO 模型 → 标准实现的 IO → 分块方案 → 逐步计数 → 下界最优性 → 退化条件 → 数值估算的顺序完整走一遍，数字与 [FlashAttention 论文](https://arxiv.org/abs/2205.14135)（Theorem 2/3）一一对应。

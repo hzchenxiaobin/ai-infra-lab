@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cutlass:d5"
+type: learn
+title: "Day 5：Epilogue 融合"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 5
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # Day 5：Epilogue 融合
 
 ## 🎯 目标

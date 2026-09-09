@@ -1,3 +1,16 @@
+---
+id: "learn:w01d05:notes:day5-bank-conflict"
+type: learn
+title: "Day 5 Profiling 任务：Bank Conflict 分析"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 5
+related_problems: []
+related_questions: []
+---
+
 # Day 5 Profiling 任务：Bank Conflict 分析
 
 ## 今日目标

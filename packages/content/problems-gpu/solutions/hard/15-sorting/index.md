@@ -1,3 +1,18 @@
+---
+id: "gpu:h:015"
+type: problem
+title: Sorting
+tags: ["Bitonic Sort", CUDA, compare-swap, memory-bound, "shared memory", 并行排序, 排序网络]
+knowledge_points: [bitonic-sort, compare-swap, cuda, memory-bound, parallel-sort, sampling-sorting-search, shared-memory, 并行排序, 排序网络]
+updated: 2026-09-07
+source: leetgpu
+number: 15
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Sorting 题解
 
 ## 1. 题目概述

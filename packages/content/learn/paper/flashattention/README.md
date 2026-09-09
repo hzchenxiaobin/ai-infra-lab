@@ -1,8 +1,19 @@
+---
+id: "paper:flashattention"
+type: paper
+title: "FlashAttention —— Fast and Memory-Efficient Exact Attention with IO-Awareness 论文精读"
+tags: [block-sparse-attention, io-awareness, kernel-fusion, online-softmax, paper, recomputation, tiling]
+knowledge_points: [block-sparse-attention, flashattention, io-awareness, kernel-fusion, online-softmax, recomputation, tiling]
+updated: 2026-08-28
+venue: "NeurIPS 2022"
+status: done
+---
+
 # FlashAttention —— Fast and Memory-Efficient Exact Attention with IO-Awareness 论文精读
 
 > 原文 PDF：[flashattention.pdf](flashattention.pdf)
 > 精读规范：[`../SKILL.md`](../SKILL.md)
-> 配套教程：本仓库 [week2/day5 FlashAttention CUDA 实现](../../../aiinfra/daily/week2/day5/README.md)（含手写简化版 kernel）
+> 配套教程：本仓库 [week2/day5 FlashAttention CUDA 实现](../../daily/week2/day5/README.md)（含手写简化版 kernel）
 > 系列精读：[FlashAttention-2 (FA2)](../flashattention2/README.md) / [FlashAttention-3 (FA3)](../flashattention3/README.md)
 
 ---

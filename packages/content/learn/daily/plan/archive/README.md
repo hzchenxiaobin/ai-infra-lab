@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:readme"
+type: learn
+title: 计划文件归档
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 计划文件归档
 
 本目录存放已过时的计划文件，**主线以 `plan/learning_plan_10week.md`（10 周 v2）为准**。

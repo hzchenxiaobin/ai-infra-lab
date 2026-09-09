@@ -1,3 +1,15 @@
+---
+id: "learn:topic:harness"
+type: learn
+title: "Harness Engineering 一周学习计划"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Harness Engineering 一周学习计划
 
 > **适用对象**：零基础——无需 CUDA / 编译器 / 算子库前置知识，只要你写过代码、用过 AI 编程助手即可

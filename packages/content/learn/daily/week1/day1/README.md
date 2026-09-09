@@ -1,3 +1,16 @@
+---
+id: "learn:w01d01"
+type: learn
+title: "Day 1：GPU 执行模型基础（SM/Warp/Thread）"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 1
+related_problems: ["gpu:e:001"]
+related_questions: []
+---
+
 ## Day 1：GPU 执行模型基础（SM/Warp/Thread）
 
 ### 🎯 目标

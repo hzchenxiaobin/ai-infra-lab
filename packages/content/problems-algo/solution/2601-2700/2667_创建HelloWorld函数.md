@@ -1,3 +1,18 @@
+---
+id: "lc:2667"
+type: problem
+title: "创建 Hello World 函数"
+tags: ["Rest 参数", 函数式编程, 闭包, 高阶函数]
+knowledge_points: [closure, functional-programming, higher-order-function, rest-参数]
+updated: 2026-09-03
+source: leetcode
+number: 2667
+difficulty: easy
+languages: [cpp, javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 创建 Hello World 函数 题解
 
 ## 1. 题目概述

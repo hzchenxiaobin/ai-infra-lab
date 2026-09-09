@@ -1,3 +1,18 @@
+---
+id: "gpu:h:059"
+type: problem
+title: "Sliding Window Self-Attention"
+tags: [Attention, CUDA, "kernel fusion", memory-bound, "sliding window"]
+knowledge_points: [attention, cuda, kernel-fusion, memory-bound, sliding-window, sliding-window-attention]
+updated: 2026-09-07
+source: leetgpu
+number: 59
+difficulty: hard
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w08d04"]
+---
+
 # LeetGPU Sliding Window Self-Attention 题解
 
 ## 1. 题目概述
@@ -28,7 +43,7 @@ O[i] = Σ_j P[i][j] · V[j]
 
 **约束**：`N` 较大（如 16K/32K），`W << N`（如 128/256），`d` 较小（如 64）。
 
-> 💡 Sliding Window Attention 是长文本优化的核心手段之一。与 [Week8 Day4 高频面试进阶篇](../../../aiinfra/daily/week8/day4/README.md) 的"长文本推理优化"主题直接对应——它用局部窗口把 attention 复杂度从 `O(N²)` 降到 `O(N·W)`，显著降低显存和计算。
+> 💡 Sliding Window Attention 是长文本优化的核心手段之一。与 [Week8 Day4 高频面试进阶篇](../../../../learn/daily/week8/day4/README.md) 的"长文本推理优化"主题直接对应——它用局部窗口把 attention 复杂度从 `O(N²)` 降到 `O(N·W)`，显著降低显存和计算。
 
 ---
 

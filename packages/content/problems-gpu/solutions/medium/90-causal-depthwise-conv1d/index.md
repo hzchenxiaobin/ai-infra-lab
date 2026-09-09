@@ -1,3 +1,18 @@
+---
+id: "gpu:m:090"
+type: problem
+title: "Causal Depthwise Conv1d"
+tags: [CUDA, Causal, Convolution, Depthwise, memory-bound, 边界处理]
+knowledge_points: [boundary-handling, causal, causal-depthwise-conv1d, convolution, convolution-pooling, cuda, depthwise, memory-bound, 边界处理]
+updated: 2026-09-07
+source: leetgpu
+number: 90
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Causal Depthwise Conv1d 题解
 
 ## 1. 题目概述

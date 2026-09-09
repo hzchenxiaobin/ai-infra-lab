@@ -1,3 +1,15 @@
+---
+id: "learn:topic:deeplearning"
+type: learn
+title: 深度学习零基础一周入门计划
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # 深度学习零基础一周入门计划
 
 > 目标：建立整体认知 + 动手跑通第一个神经网络

@@ -1,3 +1,18 @@
+---
+id: "lc:3237"
+type: problem
+title: "Alt 和 Tab 模拟"
+tags: [哈希表, 数组, 模拟]
+knowledge_points: [array, hash-table, simulation]
+updated: 2026-09-03
+source: leetcode
+number: 3237
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Alt 和 Tab 模拟 题解
 
 ## 1. 题目概述

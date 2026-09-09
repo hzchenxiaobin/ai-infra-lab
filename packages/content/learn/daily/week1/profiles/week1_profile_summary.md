@@ -1,3 +1,15 @@
+---
+id: "learn:w01:profiles:week1-profile-summary"
+type: learn
+title: "Week 1 Profiling 报告汇总"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+related_problems: []
+related_questions: []
+---
+
 # Week 1 Profiling 报告汇总
 
 > 本周 profiling 按天拆解，具体任务见各 day 的 `notes/` 目录。

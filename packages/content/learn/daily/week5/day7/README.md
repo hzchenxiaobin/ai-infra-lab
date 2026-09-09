@@ -1,3 +1,16 @@
+---
+id: "learn:w05d07"
+type: learn
+title: "Day 7：复盘与手撕 —— FlashAttention 限时手写与面试 Q&A"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 7
+related_problems: []
+related_questions: []
+---
+
 ## Day 7：复盘与手撕 —— FlashAttention 限时手写与面试 Q&A
 
 ### 🎯 目标

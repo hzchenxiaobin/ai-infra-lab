@@ -1,3 +1,18 @@
+---
+id: "lc:2878"
+type: problem
+title: "获取 DataFrame 的大小"
+tags: ["DataFrame 属性", Pandas]
+knowledge_points: [dataframe-属性, pandas]
+updated: 2026-09-03
+source: leetcode
+number: 2878
+difficulty: easy
+languages: [python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 获取 DataFrame 的大小 题解
 
 ## 1. 题目概述

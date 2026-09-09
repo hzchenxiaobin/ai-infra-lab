@@ -1,3 +1,18 @@
+---
+id: "gpu:m:058"
+type: problem
+title: "FP16 Dot Product"
+tags: [CUDA, "FP32 累加", "half 精度", "warp shuffle", "归约（reduction）"]
+knowledge_points: [cuda, fp16, fp16-tensor-core, fp32-累加, gemm, reduction, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 58
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w03d03"]
+---
+
 # LeetGPU FP16 Dot Product 题解
 
 ## 1. 题目概述

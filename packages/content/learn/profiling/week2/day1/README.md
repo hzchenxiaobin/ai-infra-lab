@@ -1,6 +1,15 @@
+---
+id: "profiling:w2d1"
+type: profiling
+title: "Week 2 Day 1 — Warp Reduce Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [kernel-optimization, profiling]
+updated: 2026-08-28
+---
+
 # Week 2 Day 1 — Warp Reduce Profiling
 
-> 对应 [Week 2 Day 1 任务 3：使用 ncu 查看 Warp Shuffle 效率](../../week2/day1/README.md)
+> 对应 [Week 2 Day 1 任务 3：使用 ncu 查看 Warp Shuffle 效率](../../../daily/week2/day1/README.md)
 
 ## 编译与运行
 

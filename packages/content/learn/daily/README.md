@@ -1,3 +1,14 @@
+---
+id: "learn:path"
+type: learn
+title: "AI Infra 10 周学习计划（工程实战版）"
+tags: [cuda-course]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 10 周学习计划（工程实战版）
 
 > 适合人群：具备 CUDA / 算子优化基础，希望转向 AI Infra（推理系统 / 分布式 / 内核优化）  

@@ -1,3 +1,18 @@
+---
+id: "lc:1645"
+type: problem
+title: Hopper公司查询II
+tags: ["AVG()", COALESCE, "GROUP BY", "LEFT JOIN", "ROUND()", SQL, "WITH RECURSIVE", "YEAR()/MONTH()", 数据库]
+knowledge_points: [avg, coalesce, database, group-by, left-join, recursive-cte, round, sql, year-month]
+updated: 2026-09-03
+source: leetcode
+number: 1645
+difficulty: hard
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode Hopper公司查询II 题解
 
 > ⚠️ **题目来源说明**：本题在 leetcode.cn 与 leetcode.com 均为 **Plus 会员专享题**，官方题面接口返回 `content = null`，无法直接抓取。下述题意、表结构与示例数据依据 **1635. Hopper Company Queries I**（同系列、共享 `Drivers`/`Rides`/`AcceptedRides` 三表与同一组样例）与该题的官方要求重建，并已在文中标注假设。若与官方题面有出入，以官方为准。

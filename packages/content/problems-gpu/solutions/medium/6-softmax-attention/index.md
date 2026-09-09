@@ -1,3 +1,18 @@
+---
+id: "gpu:m:006"
+type: problem
+title: "Softmax Attention"
+tags: [Attention, CUDA, "fused softmax+matmul", "memory-bound (Decode) / compute-bound (Prefill)", "online softmax", 数值稳定]
+knowledge_points: [attention, cuda, fused-softmax-matmul, memory-bound-decode-compute-bound-prefill, numerical-stability, online-softmax]
+updated: 2026-09-07
+source: leetgpu
+number: 6
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w05d01"]
+---
+
 # LeetGPU Softmax Attention 题解
 
 ## 1. 题目概述

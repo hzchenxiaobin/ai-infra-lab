@@ -1,3 +1,16 @@
+---
+id: "learn:w07d04"
+type: learn
+title: "Day 4：Chunked Prefill 与 Prefix Caching 实操"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+day: 4
+related_problems: ["gpu:e:003"]
+related_questions: []
+---
+
 ## Day 4：Chunked Prefill 与 Prefix Caching 实操
 
 ### 🎯 目标

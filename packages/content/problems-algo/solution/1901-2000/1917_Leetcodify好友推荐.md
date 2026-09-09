@@ -1,3 +1,18 @@
+---
+id: "lc:1917"
+type: problem
+title: "Leetcodify 好友推荐"
+tags: ["COUNT(DISTINCT)", "GROUP BY + HAVING", "NOT EXISTS", "SELECT DISTINCT", SQL, UNION, "反连接（anti-join）", 对称化, 数据库, "自连接（Self-Join）"]
+knowledge_points: [anti-join, count-distinct, database, group-by-having, not-exists, select-distinct, self-join, sql, union, 对称化]
+updated: 2026-09-03
+source: leetcode
+number: 1917
+difficulty: hard
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode Leetcodify 好友推荐 题解
 
 ## 1. 题目概述

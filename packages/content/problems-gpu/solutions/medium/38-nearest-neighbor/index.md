@@ -1,3 +1,18 @@
+---
+id: "gpu:m:038"
+type: problem
+title: "Nearest Neighbor"
+tags: [CUDA, "argmin 归约", compute-bound, "pairwise distance", "shared memory tiling", 数据复用]
+knowledge_points: [advanced-algorithms-math, argmin-归约, compute-bound, cuda, nearest-neighbor, pairwise-distance, shared-memory-tiling, 数据复用]
+updated: 2026-09-07
+source: leetgpu
+number: 38
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Nearest Neighbor 题解
 
 ## 1. 题目概述

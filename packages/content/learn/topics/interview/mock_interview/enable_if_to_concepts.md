@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:mock-interview:enable-if-to-concepts"
+type: learn
+title: "从 enable_if 到 C++20 Concepts：模板重载约束的现代化改造"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-09-04
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # 从 enable_if 到 C++20 Concepts：模板重载约束的现代化改造
 
 > **导读**：面试高频题——"把一段依赖 `std::enable_if` 的模板重载改造成 C++20 Concepts，并说明它相对 SFINAE 解决了什么问题"。本文先解释 SFINAE 的含义，再给出一段典型的 enable_if 重载代码作为改造对象，然后用 Concepts 逐步重写（数值类型约束 + "拥有 `size()`" 约束），最后从**写法**和**报错信息**两个维度拆解 Concepts 相对 SFINAE 解决的核心问题。

@@ -1,3 +1,15 @@
+---
+id: "learn:topic:transformer"
+type: learn
+title: "Transformer：从零开始理解现代深度学习的基石架构"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Transformer：从零开始理解现代深度学习的基石架构
 
 > **适用对象**：有 Python + PyTorch 基础、了解线性代数与基本 ML 概念，但尚未系统学习 Transformer 架构的开发者；无需 GPU kernel 经验，本专题从模型层"从零"起步

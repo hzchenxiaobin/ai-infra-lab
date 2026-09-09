@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d1"
+type: learn
+title: "Day 1｜建立直觉：什么是机器学习与深度学习"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 1
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 1｜建立直觉：什么是机器学习与深度学习
 
 > 今日目标：建立"神经网络 = 函数拟合"的直觉，搭好学习环境

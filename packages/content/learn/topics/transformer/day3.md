@@ -1,3 +1,16 @@
+---
+id: "learn:topic:transformer:d3"
+type: learn
+title: "Day 3（周三）：Multi-Head Attention"
+tags: [transformer]
+knowledge_points: [transformer]
+updated: 2026-08-28
+day: 3
+topic: transformer
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：Multi-Head Attention
 
 > **本周定位**：本专题是模型层"从零"起步——不涉及 CUDA kernel，聚焦 Transformer 的数学原理与 PyTorch 实现。本周目标是理解 Self-Attention、Multi-Head、位置编码、Transformer Block，最终用纯 PyTorch 从零手写一个可训练的 mini-GPT。Day 2 把单头 Self-Attention 的四步计算吃透了，Day 3 解决"为什么要多头、怎么拆 head"——把 $d$ 维空间切成 $h$ 个子空间并行做 Attention，理解 shape 操作的精髓，掌握参数量/计算量不变的证明，并动手实现 + 可视化多头注意力。

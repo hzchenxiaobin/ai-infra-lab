@@ -1,3 +1,18 @@
+---
+id: "gpu:m:078"
+type: problem
+title: "2D FFT"
+tags: [CUDA, DFT, FFT, compute-bound, "shared memory", "twiddle factor", "行-列分解（row-column decomposition）"]
+knowledge_points: [advanced-algorithms-math, compute-bound, cuda, dft, fft, fft-2d-fft, shared-memory, twiddle-factor, 行-列分解-row-column-decomposition]
+updated: 2026-09-07
+source: leetgpu
+number: 78
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU 2D FFT 题解
 
 ## 1. 题目概述

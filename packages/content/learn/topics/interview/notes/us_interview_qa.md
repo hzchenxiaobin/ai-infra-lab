@@ -1,3 +1,15 @@
+---
+id: "learn:topic:interview:notes:us-interview-qa"
+type: learn
+title: "AI Infra 面试题与参考答案（北美面经篇）"
+tags: [interview]
+knowledge_points: [interview]
+updated: 2026-08-28
+topic: interview
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 面试题与参考答案（北美面经篇）
 
 > **来源**：知乎帖子 [《AI infra 面试经验贴》](https://zhuanlan.zhihu.com/p/1970722821522061231)（作者"抠抠歪"，理工科 PhD，北美 HPC 背景，面了美国十几家公司，方向为 kernel 开发与分布式通信）

@@ -1,3 +1,18 @@
+---
+id: "lc:1908"
+type: problem
+title: "Nim 游戏 II"
+tags: [位运算, 动态规划, 博弈, 数学, 脑筋急转弯]
+knowledge_points: [bit-manipulation, brainteaser, dynamic-programming, game-theory, math]
+updated: 2026-09-03
+source: leetcode
+number: 1908
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode Nim 游戏 II 题解
 
 ## 1. 题目概述

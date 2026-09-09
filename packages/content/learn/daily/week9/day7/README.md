@@ -1,3 +1,16 @@
+---
+id: "learn:w09d07"
+type: learn
+title: "Day 7：复盘与面试 Q&A —— 分布式/MoE/多硬件"
+tags: [distributed-parallelism, multi-hardware, notes]
+knowledge_points: [distributed-parallelism, multi-hardware]
+updated: 2026-08-28
+week: 9
+day: 7
+related_problems: []
+related_questions: []
+---
+
 ## Day 7：复盘与面试 Q&A —— 分布式/MoE/多硬件
 
 ### 🎯 目标

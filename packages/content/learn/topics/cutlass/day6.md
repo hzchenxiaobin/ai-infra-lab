@@ -1,4 +1,17 @@
-# Day 6：Profiling 与性能调优
+---
+id: "learn:topic:cutlass:d6"
+type: learn
+title: "CUTLASS Day 6：Profiling 与性能调优"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 6
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
+# CUTLASS Day 6：Profiling 与性能调优
 
 ## 🎯 目标
 

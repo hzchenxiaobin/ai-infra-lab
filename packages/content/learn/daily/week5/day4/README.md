@@ -1,3 +1,16 @@
+---
+id: "learn:w05d04"
+type: learn
+title: "Day 4：FlashAttention Backward 与 GEMM Backward"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 4
+related_problems: ["gpu:h:053", "gpu:m:017"]
+related_questions: []
+---
+
 ## Day 4：FlashAttention Backward 与 GEMM Backward
 
 ### 🎯 目标

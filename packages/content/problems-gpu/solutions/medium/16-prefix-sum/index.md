@@ -1,3 +1,18 @@
+---
+id: "gpu:m:016"
+type: problem
+title: "Prefix Sum"
+tags: [CUDA, "Prefix Sum", Scan, "__shfl_up_sync", memory-bound, "warp shuffle", "三阶段分块 scan"]
+knowledge_points: [cuda, memory-bound, prefix-sum-gpu, reduction-scan, scan, shfl-up-sync, warp-shuffle, warp-级-scan, 三阶段分块-scan]
+updated: 2026-09-07
+source: leetgpu
+number: 16
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w02d01"]
+---
+
 # LeetGPU Prefix Sum 题解
 
 ## 1. 题目概述

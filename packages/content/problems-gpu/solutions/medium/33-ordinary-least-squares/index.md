@@ -1,3 +1,18 @@
+---
+id: "gpu:m:033"
+type: problem
+title: "Ordinary Least Squares"
+tags: [CUDA, "Cholesky 分解", "GEMM（XᵀX）", "shared memory tiling", 三角求解, "归约（Xᵀy）", 线性代数]
+knowledge_points: [advanced-algorithms-math, cholesky-分解, cuda, gemm-xᵀx, shared-memory-tiling, 三角求解, 归约-xᵀy, 线性代数, 线性回归-ols]
+updated: 2026-09-07
+source: leetgpu
+number: 33
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Ordinary Least Squares 题解
 
 ## 1. 题目概述

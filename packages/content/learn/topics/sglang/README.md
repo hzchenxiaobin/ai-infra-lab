@@ -1,3 +1,15 @@
+---
+id: "learn:topic:sglang"
+type: learn
+title: "SGLang：高性能 LLM 推理服务引擎"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # SGLang：高性能 LLM 推理服务引擎
 
 > **适用对象**：想系统上手 SGLang 的开发者——无需推理引擎先验经验（[Week 6](../../daily/week6/README.md) / [Week 7](../../daily/week7/README.md) 或 [vLLM 专题](../vllm/README.md) 学过更好，概念会更亲切）

@@ -1,6 +1,15 @@
+---
+id: "profiling:w3d1"
+type: profiling
+title: "Week 3 Day 1 — Transformer 推理流程 Profiling"
+tags: [ncu, nsys, profiling]
+knowledge_points: [cutlass, profiling, tensor-core]
+updated: 2026-08-28
+---
+
 # Week 3 Day 1 — Transformer 推理流程 Profiling
 
-> 对应 [Week 3 Day 1 晚间编程任务 + 练习题 2/3](../../week3/day1/README.md)
+> 对应 [Week 3 Day 1 晚间编程任务 + 练习题 2/3](../../../daily/week3/day1/README.md)
 
 Day 1 的 profiling 有三个层次：torch.profiler（算子级）→ nsys（系统级时间线）→ ncu（kernel 级指标）。
 

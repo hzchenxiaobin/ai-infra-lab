@@ -1,3 +1,18 @@
+---
+id: "gpu:e:052"
+type: problem
+title: "LeetGPU SiLU 题解"
+tags: [CUDA, "__expf 快速数学", elementwise, grid-stride, memory-bound]
+knowledge_points: [cuda, elementwise, expf-快速数学, grid-stride-loop, memory-bound, parallel-patterns, 逐元素激活函数]
+updated: 2026-09-07
+source: leetgpu
+number: 52
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w08d01", "learn:w10d04"]
+---
+
 # LeetGPU SiLU 题解
 
 ## 1. 题目概述
@@ -19,7 +34,7 @@ output = [0.7311, 1.7616, 2.8577, 3.9281]
 
 **约束**：`1 ≤ N ≤ 数百万`；性能测试取大向量；`atol = rtol = 1e-5`。
 
-> 💡 这道题是**典型的 memory-bound elementwise kernel**——计算量极小（一次 exp + 一次乘法），瓶颈完全在数据搬运。与 [Week8 Day1](../../../aiinfra/daily/week8/day1/README.md) 的 benchmark 方法论直接对应：它是练习 cudaEvent 计时、带宽测量、对比 HBM 峰值的最佳对象。同时 SiLU 是 LLaMA 的 SwiGLU 激活核心，benchmark 它就是给 Mini 引擎的激活算子建立性能基线。
+> 💡 这道题是**典型的 memory-bound elementwise kernel**——计算量极小（一次 exp + 一次乘法），瓶颈完全在数据搬运。与 [Week8 Day1](../../../../learn/daily/week8/day1/README.md) 的 benchmark 方法论直接对应：它是练习 cudaEvent 计时、带宽测量、对比 HBM 峰值的最佳对象。同时 SiLU 是 LLaMA 的 SwiGLU 激活核心，benchmark 它就是给 Mini 引擎的激活算子建立性能基线。
 
 ## 2. CPU 基线 / 朴素 GPU 方法
 

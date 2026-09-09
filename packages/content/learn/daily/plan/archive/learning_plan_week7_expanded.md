@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week7-expanded"
+type: learn
+title: "第7周深度展开：系统整合（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第7周深度展开：系统整合（7天）
 
 > **适用对象**：陈斌斌（已完成第6周学习，掌握 Dynamic/Continuous Batching、vLLM Scheduler、Mini 推理引擎 v1）

@@ -1,3 +1,18 @@
+---
+id: "gpu:m:111"
+type: problem
+title: "Softmax Attention Backward"
+tags: [CUDA, GEMM, "attention backward", "kernel fusion", reduction, "softmax 反向"]
+knowledge_points: [attention, attention-backward, cuda, gemm, kernel-fusion, reduction, softmax-反向]
+updated: 2026-09-07
+source: leetgpu
+number: 111
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Softmax Attention Backward 题解
 
 ## 1. 题目概述

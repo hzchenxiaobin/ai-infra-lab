@@ -1,3 +1,16 @@
+---
+id: "learn:topic:triton:d1"
+type: learn
+title: "Day 1：Triton 总览与环境搭建"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+day: 1
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Day 1：Triton 总览与环境搭建
 
 ## 🎯 目标

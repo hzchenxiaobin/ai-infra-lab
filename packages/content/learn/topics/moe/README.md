@@ -1,3 +1,15 @@
+---
+id: "learn:topic:moe"
+type: learn
+title: "MoE 一周学习计划"
+tags: [moe]
+knowledge_points: [moe]
+updated: 2026-08-28
+topic: moe
+related_problems: []
+related_questions: []
+---
+
 # MoE 一周学习计划
 
 > **适用对象**：已完成 [CUTLASS 专题](../cutlass/README.md) Day 3（3.x GEMM）与 Day 7（Group GEMM），掌握 GEMM Tiling、Tensor Core、CollectiveBuilder；建议读过 [DeepSeek-V2 论文精读](../../paper/deepseek_v2/README.md) 对 DeepSeekMoE 有基本认知

@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d5"
+type: learn
+title: "Day 5：SGLang 核心机制 —— RadixAttention 与调度优化"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 5
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 5：SGLang 核心机制 —— RadixAttention 与调度优化
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 5 天。理解 SGLang 区别于其他引擎的"独门武功"：RadixAttention / Prefix Cache / Chunked Prefill / 零开销调度

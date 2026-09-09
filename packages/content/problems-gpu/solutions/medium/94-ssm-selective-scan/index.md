@@ -1,3 +1,18 @@
+---
+id: "gpu:m:094"
+type: problem
+title: "SSM Selective Scan"
+tags: [CUDA, Mamba, "State Space Model", compute-bound, "register tiling", "sequential recurrence"]
+knowledge_points: [advanced-algorithms-math, compute-bound, cuda, mamba, register-tiling, sequential-recurrence, state-space-model, 线性递推-ssm]
+updated: 2026-09-07
+source: leetgpu
+number: 94
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU SSM Selective Scan 题解
 
 ## 1. 题目概述

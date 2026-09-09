@@ -1,3 +1,15 @@
+---
+id: "learn:topic:misc:tma"
+type: learn
+title: "TMA：Hopper 的张量内存加速器"
+tags: [misc]
+knowledge_points: [tma]
+updated: 2026-08-28
+topic: misc
+related_problems: []
+related_questions: []
+---
+
 # TMA：Hopper 的张量内存加速器
 
 ## 🎯 目标

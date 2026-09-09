@@ -1,3 +1,18 @@
+---
+id: "gpu:m:085"
+type: problem
+title: "LoRA Linear"
+tags: [CUDA, "Low-Rank Adaptation", 参数高效微调, 矩阵乘法]
+knowledge_points: [cuda, lora, low-rank-adaptation, transformer-inference, 参数高效微调, 矩阵乘法]
+updated: 2026-09-07
+source: leetgpu
+number: 85
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w08d05"]
+---
+
 # LeetGPU LoRA Linear 题解
 
 ## 1. 题目概述
@@ -34,7 +49,7 @@ y = y1 + y0: [4]
 
 **约束**：`m,n` 中等（如 1024/4096），`r` 很小（4~64）。
 
-> 💡 LoRA 是面试高频考点，与 [Week8 Day5 Mock 面试](../../../aiinfra/daily/week8/day5/README.md) 的"项目深度拷问"环节直接呼应：讲清楚 LoRA 为什么省显存、什么时候用、训练/推理怎么部署，是向面试官展示 LLM 工程能力的关键。
+> 💡 LoRA 是面试高频考点，与 [Week8 Day5 Mock 面试](../../../../learn/daily/week8/day5/README.md) 的"项目深度拷问"环节直接呼应：讲清楚 LoRA 为什么省显存、什么时候用、训练/推理怎么部署，是向面试官展示 LLM 工程能力的关键。
 
 ---
 

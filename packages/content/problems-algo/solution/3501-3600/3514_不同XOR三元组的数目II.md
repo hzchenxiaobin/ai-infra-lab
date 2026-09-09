@@ -1,3 +1,18 @@
+---
+id: "lc:3514"
+type: problem
+title: "不同 XOR 三元组的数目 II"
+tags: [位运算, 数学, 数组, 枚举]
+knowledge_points: [array, bit-manipulation, enumeration, math]
+updated: 2026-09-03
+source: leetcode
+number: 3514
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 不同 XOR 三元组的数目 II 题解
 
 ## 1. 题目概述

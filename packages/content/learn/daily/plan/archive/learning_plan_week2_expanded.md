@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week2-expanded"
+type: learn
+title: "第2周深度展开：CUDA进阶优化与性能分析（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第2周深度展开：CUDA进阶优化与性能分析（7天）
 
 > **适用对象**：陈斌斌（已完成第1周学习，掌握向量加法、Naive GEMM、Shared Memory Tiling GEMM、Softmax Kernel）

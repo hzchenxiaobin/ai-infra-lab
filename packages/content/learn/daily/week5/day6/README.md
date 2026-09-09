@@ -1,3 +1,16 @@
+---
+id: "learn:w05d06"
+type: learn
+title: "Day 6：FlashAttention-2 论文与源码差异"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 6
+related_problems: ["gpu:m:030", "gpu:m:064"]
+related_questions: []
+---
+
 ## Day 6：FlashAttention-2 论文与源码差异
 
 ### 🎯 目标

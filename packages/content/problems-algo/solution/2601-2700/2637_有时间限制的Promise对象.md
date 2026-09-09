@@ -1,3 +1,18 @@
+---
+id: "lc:2637"
+type: problem
+title: 有时间限制的Promise对象
+tags: [Promise, Promise.race, async/await, setTimeout]
+knowledge_points: [async-await, promise, settimeout]
+updated: 2026-09-03
+source: leetcode
+number: 2637
+difficulty: medium
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 有时间限制的Promise对象 题解
 
 ## 1. 题目概述

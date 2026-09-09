@@ -1,3 +1,18 @@
+---
+id: "lc:lcof:62"
+type: problem
+title: 圆圈中最后剩下的数字
+tags: [动态规划, 数学, 递推]
+knowledge_points: [dynamic-programming, math, recurrence]
+updated: 2026-09-03
+source: leetcode
+number: 62
+difficulty: easy
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 圆圈中最后剩下的数字 题解
 
 ## 1. 题目概述

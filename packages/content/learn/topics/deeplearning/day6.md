@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d6"
+type: learn
+title: "Day 6｜序列模型与 Transformer 概览"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 6
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 6｜序列模型与 Transformer 概览
 
 > 今日目标：了解 RNN/LSTM 的用途，重点搞懂注意力机制在干什么

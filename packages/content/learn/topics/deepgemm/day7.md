@@ -1,4 +1,17 @@
-# Day 7（周日）：ncu Profiling 与性能调优报告
+---
+id: "learn:topic:deepgemm:d7"
+type: learn
+title: "DeepGEMM Day 7（周日）：ncu Profiling 与性能调优报告"
+tags: [deepgemm]
+knowledge_points: [deepgemm, gemm]
+updated: 2026-08-28
+day: 7
+topic: deepgemm
+related_problems: []
+related_questions: []
+---
+
+# DeepGEMM Day 7（周日）：ncu Profiling 与性能调优报告
 
 > **本周定位**：本专题是 [CUTLASS 专题](../cutlass/README.md)（库视角）与 [CuTe 专题](../cute/README.md)（原语视角）之后的**单点深钻**——拆开一个生产级 FP8/FP4 GEMM kernel 看每一行 PTX 怎么写。
 > **前置要求**：已完成 Day 1-6，理解 DeepGEMM 的 JIT、FP8 scaling、SM90/SM100 kernel、Grouped GEMM、Mega MoE

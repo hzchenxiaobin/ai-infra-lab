@@ -1,3 +1,16 @@
+---
+id: "learn:w10d02"
+type: learn
+title: "Day 2：系统联调（六步分层验证）"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 2
+related_problems: ["gpu:e:111"]
+related_questions: []
+---
+
 ## Day 2：系统联调（六步分层验证）
 
 ### 🎯 目标

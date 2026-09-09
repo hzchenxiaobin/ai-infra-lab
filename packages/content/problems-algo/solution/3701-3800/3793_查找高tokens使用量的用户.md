@@ -1,3 +1,18 @@
+---
+id: "lc:3793"
+type: problem
+title: 查找高tokens使用量的用户
+tags: ["GROUP BY + HAVING", "MAX > AVG 存在性判定", "ROUND 保留小数", SQL, 数据库, 聚合函数]
+knowledge_points: [aggregate-function, database, group-by-having, max-avg-存在性判定, round-保留小数, sql]
+updated: 2026-09-03
+source: leetcode
+number: 3793
+difficulty: easy
+languages: [python, sql]
+judge: none
+related_learn: []
+---
+
 # LeetCode 查找高tokens使用量的用户 题解
 
 ## 1. 题目概述

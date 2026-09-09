@@ -1,3 +1,15 @@
+---
+id: "learn:topic:triton:benchmark:report"
+type: learn
+title: "Triton 性能报告"
+tags: [triton]
+knowledge_points: [triton]
+updated: 2026-08-28
+topic: triton
+related_problems: []
+related_questions: []
+---
+
 # Triton 性能报告
 
 > 生成日期：Day 6 Profiling 实验

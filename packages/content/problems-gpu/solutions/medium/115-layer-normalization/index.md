@@ -1,3 +1,18 @@
+---
+id: "gpu:m:115"
+type: problem
+title: "Layer Normalization"
+tags: [CUDA, LayerNorm, mean-centering, memory-bound, normalization, reduction, "warp shuffle"]
+knowledge_points: [cuda, layernorm, mean-centering, memory-bound, normalization, normalization-embedding, reduction, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 115
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w04d02"]
+---
+
 # LeetGPU Layer Normalization 题解
 
 ## 1. 题目概述

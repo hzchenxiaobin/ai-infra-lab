@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cutlass:d1"
+type: learn
+title: "Day 1：CUTLASS 总览与环境搭建"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 1
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
 # Day 1：CUTLASS 总览与环境搭建
 
 ## 🎯 目标

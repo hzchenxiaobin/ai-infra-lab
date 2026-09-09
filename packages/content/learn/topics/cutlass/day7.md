@@ -1,4 +1,17 @@
-# Day 7：进阶专题与总结
+---
+id: "learn:topic:cutlass:d7"
+type: learn
+title: "CUTLASS Day 7：进阶专题与总结"
+tags: [cutlass]
+knowledge_points: [cutlass]
+updated: 2026-08-28
+day: 7
+topic: cutlass
+related_problems: []
+related_questions: []
+---
+
+# CUTLASS Day 7：进阶专题与总结
 
 ## 🎯 目标
 

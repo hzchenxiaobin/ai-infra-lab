@@ -1,3 +1,18 @@
+---
+id: "gpu:m:051"
+type: problem
+title: "Max Subarray Sum"
+tags: [CUDA, memory-bound, "prefix sum", reduction, 滑动窗口]
+knowledge_points: [cuda, memory-bound, prefix-sum-gpu, reduction, reduction-scan, sliding-window, 子数组和-最大子数组]
+updated: 2026-09-07
+source: leetgpu
+number: 51
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w06d02"]
+---
+
 # LeetGPU Max Subarray Sum 题解
 
 ## 1. 题目概述
@@ -19,7 +34,7 @@ input = [1, 2, 4, 2, 3], window_size = 2
 
 **约束**：`1 ≤ N ≤ 50000`，`-10 ≤ input[i] ≤ 10`，`1 ≤ window_size ≤ N`；性能测试取 `N=50000, window_size=25000`。
 
-> 💡 这道题的**滑动窗口**思想与 [Week6 Day2](../../../aiinfra/daily/week6/day2/README.md) Continuous Batching 的 iteration-level 调度同构——窗口在数据上滑动，每步加入新元素、移出旧元素，正是 Continuous Batching "每轮加入新请求、移出完成请求"的微缩版。
+> 💡 这道题的**滑动窗口**思想与 [Week6 Day2](../../../../learn/daily/week6/day2/README.md) Continuous Batching 的 iteration-level 调度同构——窗口在数据上滑动，每步加入新元素、移出旧元素，正是 Continuous Batching "每轮加入新请求、移出完成请求"的微缩版。
 
 ## 2. CPU 基线
 

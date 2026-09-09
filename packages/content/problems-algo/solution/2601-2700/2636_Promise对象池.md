@@ -1,3 +1,18 @@
+---
+id: "lc:2636"
+type: problem
+title: "Promise 对象池"
+tags: [Promise, 并发控制, 异步, 高阶函数]
+knowledge_points: [async, concurrency-control, higher-order-function, promise]
+updated: 2026-09-03
+source: leetcode
+number: 2636
+difficulty: medium
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode Promise 对象池 题解
 
 ## 1. 题目概述

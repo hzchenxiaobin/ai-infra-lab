@@ -1,3 +1,14 @@
+---
+id: "learn:plan:archive:learning-plan-week3-expanded"
+type: learn
+title: "第3周深度展开：Transformer 执行本质与算子手写（7天）"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # 第3周深度展开：Transformer 执行本质与算子手写（7天）
 
 > **适用对象**：陈斌斌（已完成第2周学习，掌握 Warp Shuffle、Register Blocking GEMM cuBLAS 70%+、Multi-Stream、Nsight 性能分析、FlashAttention 简化版 Forward Kernel）

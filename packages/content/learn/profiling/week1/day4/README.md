@@ -1,3 +1,12 @@
+---
+id: "profiling:w1d4"
+type: profiling
+title: "Week1 Day4：Nsight Compute (ncu) 性能分析任务 —— 矩阵转置"
+tags: [ncu, nsys, profiling]
+knowledge_points: [gpu-execution-model, memory-hierarchy, profiling]
+updated: 2026-08-28
+---
+
 # Week1 Day4：Nsight Compute (ncu) 性能分析任务 —— 矩阵转置
 
 > **来源**：`week1/day4`（Memory Hierarchy 深入）

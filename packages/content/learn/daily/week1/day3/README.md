@@ -1,3 +1,16 @@
+---
+id: "learn:w01d03"
+type: learn
+title: "Day 3：认识你的 GPU —— deviceQuery 与 Occupancy 计算"
+tags: [cuda, gpu-execution-model, memory-hierarchy, notes]
+knowledge_points: [gpu-execution-model, memory-hierarchy]
+updated: 2026-08-28
+week: 1
+day: 3
+related_problems: ["gpu:e:008"]
+related_questions: []
+---
+
 ## Day 3：认识你的 GPU —— deviceQuery 与 Occupancy 计算
 
 ### 🎯 目标

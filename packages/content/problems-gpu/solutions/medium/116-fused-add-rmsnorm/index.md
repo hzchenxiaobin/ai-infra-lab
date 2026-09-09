@@ -1,3 +1,18 @@
+---
+id: "gpu:m:116"
+type: problem
+title: "Fused Residual Add and RMSNorm"
+tags: [CUDA, Llama, RMSNorm, "epilogue fusion", "kernel fusion", memory-bound, "residual connection"]
+knowledge_points: [cuda, dit-block-adaln-zero, epilogue-fusion, kernel-fusion, llama, memory-bound, residual-connection, rmsnorm, transformer-inference]
+updated: 2026-09-07
+source: leetgpu
+number: 116
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Fused Add and RMSNorm 题解
 
 ## 1. 题目概述

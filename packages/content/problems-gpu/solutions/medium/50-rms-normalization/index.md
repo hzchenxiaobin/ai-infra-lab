@@ -1,3 +1,18 @@
+---
+id: "gpu:m:050"
+type: problem
+title: "RMS Normalization"
+tags: [CUDA, Llama, RMSNorm, memory-bound, normalization, reduction, "warp shuffle"]
+knowledge_points: [cuda, llama, memory-bound, normalization, normalization-embedding, reduction, rms-normalization, rmsnorm, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 50
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: ["learn:w03d06"]
+---
+
 # LeetGPU RMS Normalization 题解
 
 ## 1. 题目概述
@@ -307,7 +322,7 @@ Llama 实际用 FP16/BF16 存储 `x`，reduce 用 FP32 保精度。这把 HBM �
 
 #### 优化 4：与下游 GEMM 融合（Llama 的做法）
 
-Llama 把 RMSNorm + QKV GEMM 融合成单个 kernel，省去 RMSNorm 输出 `(B,N,d)` 的一次 HBM 读写。这正是 [Day 20 Kernel Fusion](../../../aiinfra/daily/week3/day6/README.md) 的核心思想——RMSNorm 是 memory-bound，融合后收益最大。
+Llama 把 RMSNorm + QKV GEMM 融合成单个 kernel，省去 RMSNorm 输出 `(B,N,d)` 的一次 HBM 读写。这正是 [Day 20 Kernel Fusion](../../../../learn/daily/week3/day6/README.md) 的核心思想——RMSNorm 是 memory-bound，融合后收益最大。
 
 > 💡 优化 1（shared 缓存）和 4（与 GEMM 融合）是 Llama 推理引擎的标配。本题的朴素版是教学基线，掌握"单次块归约 + elementwise"模板后，融合版本就是在这个骨架上加 GEMM epilogue。
 
@@ -324,7 +339,7 @@ Llama 把 RMSNorm + QKV GEMM 融合成单个 kernel，省去 RMSNorm 输出 `(B,
 | **块归约次数** | 每行 **1 次**（sum of squares），LayerNorm 是 2 次（mean + variance） |
 | **global 读次数** | 2 次（Pass 1 + Pass 2 各读一遍 x）→ 优化后 1 次 |
 
-> 💡 **一句话总结**：RMSNorm 是"一次归约 + 一次归一化"的极简模板——它比 [Softmax](/solutions/medium/5-softmax/)（两次归约）和 LayerNorm（两次归约且 variance 依赖 mean）都更省，是 Llama 选它替代 LayerNorm 的性能根因。掌握了 [Day 4 的 `block_reduce`](/solutions/medium/4-reduction/) 积木后，RMSNorm 几乎是"填空题"。它的 memory-bound 本质（AI ≈ 0.42）让它成为 [Day 20 端到端 Profiling](../../../aiinfra/daily/week3/day6/README.md) 的完美靶点——用 ncu 看 `DRAM% >> SM%` 就能一眼判定。
+> 💡 **一句话总结**：RMSNorm 是"一次归约 + 一次归一化"的极简模板——它比 [Softmax](/solutions/medium/5-softmax/)（两次归约）和 LayerNorm（两次归约且 variance 依赖 mean）都更省，是 Llama 选它替代 LayerNorm 的性能根因。掌握了 [Day 4 的 `block_reduce`](/solutions/medium/4-reduction/) 积木后，RMSNorm 几乎是"填空题"。它的 memory-bound 本质（AI ≈ 0.42）让它成为 [Day 20 端到端 Profiling](../../../../learn/daily/week3/day6/README.md) 的完美靶点——用 ncu 看 `DRAM% >> SM%` 就能一眼判定。
 
 ## 同类练习题
 

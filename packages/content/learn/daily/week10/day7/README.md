@@ -1,3 +1,16 @@
+---
+id: "learn:w10d07"
+type: learn
+title: "Day 7：最终复盘 —— 10 周能力地图"
+tags: [interview, notes, project]
+knowledge_points: [interview-prep, project-integration]
+updated: 2026-08-28
+week: 10
+day: 7
+related_problems: ["gpu:e:009"]
+related_questions: []
+---
+
 ## Day 7：最终复盘 —— 10 周能力地图
 
 ### 🎯 目标

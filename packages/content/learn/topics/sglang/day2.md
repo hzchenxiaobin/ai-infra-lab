@@ -1,3 +1,16 @@
+---
+id: "learn:topic:sglang:d2"
+type: learn
+title: "Day 2：环境搭建 —— 安装并启动 SGLang"
+tags: [sglang]
+knowledge_points: [sglang]
+updated: 2026-08-31
+day: 2
+topic: sglang
+related_problems: []
+related_questions: []
+---
+
 # Day 2：环境搭建 —— 安装并启动 SGLang
 
 > **本周计划**：本日是 [SGLang 一周入门学习计划](notes/SGLang一周入门学习计划.md)的第 2 天。今天独立完成 SGLang 安装，成功启动一个模型推理服务进程，并确认服务正常监听端口

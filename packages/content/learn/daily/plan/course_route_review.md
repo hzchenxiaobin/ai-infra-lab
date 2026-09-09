@@ -1,3 +1,14 @@
+---
+id: "learn:plan:course-route-review"
+type: learn
+title: "AI Infra 10 周课程 · 整体路线评审"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-08-28
+related_problems: []
+related_questions: []
+---
+
 # AI Infra 10 周课程 · 整体路线评审
 
 > 评审范围：`aiinfra/daily/` 下全部 10 周 markdown 课程（week1–week10 每天教程 + 周 README + plan/ 全部计划文档，不含 .svg)。

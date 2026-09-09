@@ -1,3 +1,18 @@
+---
+id: "lc:2723"
+type: problem
+title: "两个 Promise 对象相加"
+tags: [Promise, Promise.all, async/await]
+knowledge_points: [async-await, promise, promise.all]
+updated: 2026-09-03
+source: leetcode
+number: 2723
+difficulty: easy
+languages: [javascript, python, typescript]
+judge: none
+related_learn: []
+---
+
 # LeetCode 两个 Promise 对象相加 题解
 
 ## 1. 题目概述

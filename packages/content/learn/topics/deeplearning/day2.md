@@ -1,3 +1,16 @@
+---
+id: "learn:topic:deeplearning:d2"
+type: learn
+title: "Day 2｜核心概念攻坚：梯度下降与反向传播"
+tags: [deeplearning]
+knowledge_points: [deep-learning]
+updated: 2026-08-28
+day: 2
+topic: deeplearning
+related_problems: []
+related_questions: []
+---
+
 # Day 2｜核心概念攻坚：梯度下降与反向传播
 
 > 今日目标：理解"误差往回传、参数慢慢调"，并手写梯度下降代码

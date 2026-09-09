@@ -1,3 +1,14 @@
+---
+id: "lc:list:hot-interview"
+type: learn
+title: 高频算法面试题汇总
+tags: [algo, problem-list]
+knowledge_points: [interview-prep]
+updated: 2026-09-09
+related_problems: []
+related_questions: []
+---
+
 # 🔥 高频算法面试题汇总
 
 汇总各平台公认的算法面试高频题，覆盖 **LeetCode 热题 HOT 100**、**面试经典 150 题**、**CodeTop（牛客网面经题目频率统计）** 和 **剑指 Offer**。知乎、小红书上流传的「大厂高频算法题」笔记内容基本与这几份榜单一致，均已被下面的清单覆盖。
@@ -385,7 +396,7 @@
 | [354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) | 困难 | [站内题解](solution/0301-0400/354_俄罗斯套娃信封问题.md) | LIS 变形 |
 | [516. 最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/) | 中等 | [站内题解](solution/0501-0600/516_最长回文子序列.md) |  |
 | [647. 回文子串](https://leetcode.cn/problems/palindromic-substrings/) | 中等 | [站内题解](solution/0601-0700/647_回文子串.md) | 中心扩展 |
-| [718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/) | 中等 | [站内题解](solution/0601-0700/718_最长重复子数组.md) | 面试经典 150，公共子串 DP（1143 子序列版的连续变体，不匹配归零） |
+| [718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/) | 中等 | [站内题解](./solution/0701-0800/718_最长重复子数组.md) | 面试经典 150，公共子串 DP（1143 子序列版的连续变体，不匹配归零） |
 | [698. 划分为 K 个相等的子集](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/) | 中等 | [站内题解](solution/0601-0700/698_划分为K个相等的子集.md) | 回溯 + 剪枝 |
 | [96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/) | 中等 | [站内题解](solution/0001-0100/96_不同的二叉搜索树.md) | 卡塔兰数计数 DP |
 | [918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/) | 中等 | [站内题解](solution/0901-1000/918_最大环形子数组和.md) | 面试经典 150，Kadane 环形变体（total − min_sum） |

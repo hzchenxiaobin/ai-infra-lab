@@ -1,3 +1,16 @@
+---
+id: "learn:w06d03"
+type: learn
+title: "Day 3：vLLM 整体架构分析"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 3
+related_problems: ["gpu:m:060", "gpu:m:072"]
+related_questions: []
+---
+
 ## Day 3：vLLM 整体架构分析
 
 ### 🎯 目标

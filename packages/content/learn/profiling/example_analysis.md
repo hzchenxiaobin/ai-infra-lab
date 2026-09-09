@@ -1,3 +1,12 @@
+---
+id: "profiling:example-analysis"
+type: profiling
+title: "ncu 结果分析实例：以 `bank_conflict` 为例"
+tags: [ncu, profiling]
+knowledge_points: [profiling]
+updated: 2026-08-28
+---
+
 # ncu 结果分析实例：以 `bank_conflict` 为例
 
 下面以 `ncu/week1/day5/bank_conflict.cu` 为例，演示如何运行 `ncu`、拿到指标、并逐步分析出性能瓶颈。

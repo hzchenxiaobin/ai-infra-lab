@@ -1,3 +1,16 @@
+---
+id: "learn:w05d01"
+type: learn
+title: "Day 1：FlashAttention CUDA 实现（简化版）"
+tags: [attention, flash-attention, notes]
+knowledge_points: [attention, flash-attention]
+updated: 2026-08-28
+week: 5
+day: 1
+related_problems: ["gpu:h:109", "gpu:m:006", "gpu:m:096"]
+related_questions: []
+---
+
 ## Day 1：FlashAttention CUDA 实现（简化版）
 
 ### 🎯 目标

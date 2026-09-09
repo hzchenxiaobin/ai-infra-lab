@@ -1,3 +1,16 @@
+---
+id: "learn:w06d01"
+type: learn
+title: "Day 1：推理流程 —— Prefill vs Decode"
+tags: [inference-system, kv-cache, notes, vllm]
+knowledge_points: [inference-system, kv-cache]
+updated: 2026-08-28
+week: 6
+day: 1
+related_problems: ["gpu:e:041", "gpu:m:096"]
+related_questions: []
+---
+
 ## Day 1：推理流程 —— Prefill vs Decode
 
 ### 🎯 目标

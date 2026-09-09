@@ -1,3 +1,18 @@
+---
+id: "lc:lcof:47"
+type: problem
+title: 礼物的最大价值
+tags: [动态规划, 数组, "网格 DP"]
+knowledge_points: [array, dynamic-programming, grid-dp]
+updated: 2026-09-03
+source: leetcode
+number: 47
+difficulty: medium
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode 礼物的最大价值 题解
 
 ## 1. 题目概述

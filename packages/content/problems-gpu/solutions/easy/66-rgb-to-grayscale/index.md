@@ -1,3 +1,18 @@
+---
+id: "gpu:e:066"
+type: problem
+title: "RGB to Grayscale"
+tags: [CUDA, "elementwise kernel", "image processing", memory-bound, 加权求和]
+knowledge_points: [cuda, elementwise-kernel, image-processing, memory-bound, parallel-patterns, 加权求和, 颜色-图像变换]
+updated: 2026-09-07
+source: leetgpu
+number: 66
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU RGB to Grayscale 题解
 
 ## 1. 题目概述

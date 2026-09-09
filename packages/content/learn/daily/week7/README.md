@@ -1,3 +1,15 @@
+---
+id: "learn:w07"
+type: learn
+title: "Week 7：Batching 与调度"
+tags: [batching, notes, scheduling]
+knowledge_points: [batching, scheduling]
+updated: 2026-08-28
+week: 7
+related_problems: []
+related_questions: []
+---
+
 # Week 7：Batching 与调度
 
 > 核心目标：掌握 Dynamic/Continuous Batching、vLLM Scheduler、Chunked Prefill、Prefix Caching、PD 分离与 Mini 引擎 v1

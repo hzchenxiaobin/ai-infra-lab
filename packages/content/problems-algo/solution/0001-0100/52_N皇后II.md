@@ -1,3 +1,18 @@
+---
+id: "lc:0052"
+type: problem
+title: "N 皇后 II"
+tags: [位运算, 回溯]
+knowledge_points: [backtracking, bit-manipulation]
+updated: 2026-09-03
+source: leetcode
+number: 52
+difficulty: hard
+languages: [cpp, python]
+judge: none
+related_learn: []
+---
+
 # LeetCode N 皇后 II 题解
 
 ## 1. 题目概述

@@ -1,3 +1,18 @@
+---
+id: "gpu:e:023"
+type: problem
+title: "Leaky ReLU"
+tags: [CUDA, activation, branchless, "elementwise kernel", memory-bound, "warp divergence"]
+knowledge_points: [activation, branchless, cuda, elementwise-kernel, memory-bound, parallel-patterns, warp-divergence, 逐元素激活函数]
+updated: 2026-09-07
+source: leetgpu
+number: 23
+difficulty: easy
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Leaky ReLU 题解
 
 ## 1. 题目概述

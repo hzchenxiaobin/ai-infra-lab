@@ -1,3 +1,18 @@
+---
+id: "gpu:m:035"
+type: problem
+title: "Monte Carlo Integration"
+tags: [CUDA, Reduction, atomicAdd, "grid-stride loop", memory-bound, "warp shuffle"]
+knowledge_points: [advanced-algorithms-math, atomic-add, cuda, grid-stride-loop, memory-bound, monte-carlo, reduction, warp-shuffle]
+updated: 2026-09-07
+source: leetgpu
+number: 35
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Monte Carlo Integration 题解
 
 ## 1. 题目概述

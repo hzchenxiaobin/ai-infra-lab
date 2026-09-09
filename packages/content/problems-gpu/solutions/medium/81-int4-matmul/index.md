@@ -1,3 +1,18 @@
+---
+id: "gpu:m:081"
+type: problem
+title: "INT4 Weight-Only Quantized MatMul"
+tags: [CUDA, FP16, "INT4 量化", "LLM 推理", W4A16, "group-wise dequant", "nibble 打包"]
+knowledge_points: [cuda, fp16, gemm, group-wise-dequant, int4-quantization, int4-weight-only, llm-inference, nibble-打包, w4a16]
+updated: 2026-09-07
+source: leetgpu
+number: 81
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU INT4 Weight-Only Quantized MatMul 题解
 
 ## 1. 题目概述

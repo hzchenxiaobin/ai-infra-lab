@@ -1,3 +1,16 @@
+---
+id: "learn:topic:harness:d3"
+type: learn
+title: "Day 3：机械化执行"
+tags: [harness]
+knowledge_points: [evaluation-harness]
+updated: 2026-08-28
+day: 3
+topic: harness
+related_problems: []
+related_questions: []
+---
+
 # Day 3：机械化执行
 
 ## 🎯 目标

@@ -1,3 +1,18 @@
+---
+id: "gpu:m:112"
+type: problem
+title: "Attention with Sinks"
+tags: [Attention, CUDA, StreamingLLM, "causal mask", "fused kernel", "online softmax", "sink token", "sliding window"]
+knowledge_points: [attention, causal-mask, cuda, fused-kernel, online-softmax, sink-token, sink-token-滑动窗口, sliding-window, streamingllm]
+updated: 2026-09-07
+source: leetgpu
+number: 112
+difficulty: medium
+languages: [cpp, cuda]
+judge: leetgpu-com
+related_learn: []
+---
+
 # LeetGPU Attention with Sinks 题解
 
 ## 1. 题目概述
