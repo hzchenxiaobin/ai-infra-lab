@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 456"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a07830"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="456" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：二维费用分组背包，逐元素滚动</text>
+
+  <!-- 开始 -->
+  <rect x="170" y="40" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="62" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">初始化 dp[a][b] = 0（空前缀）</text>
+
+  <path d="M 260 74 L 260 92" fill="none" stroke="#a07830" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 取元素 -->
+  <rect x="170" y="96" width="180" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="120" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">取下一个元素 x（遍历 nums）</text>
+
+  <!-- 预处理 h -->
+  <rect x="378" y="98" width="126" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="441" y="119" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">预处理 h = ⌈x/2⌉</text>
+  <path d="M 350 115 L 374 115" fill="none" stroke="#999" stroke-width="1.2" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <path d="M 260 134 L 260 152" fill="none" stroke="#a07830" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 五候选决策 -->
+  <rect x="70" y="156" width="380" height="158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="178" text-anchor="middle" font-size="11.5" fill="#8a6a1f" font-weight="bold" filter="url(#rough2)">对每个状态 (a, b)：五者取最小 → ndp[a][b]</text>
+  <text x="86" y="200" font-size="10" fill="#333" filter="url(#rough2)">· x + dp[a][b]　　　　　　（两招都不用）</text>
+  <text x="86" y="220" font-size="10" fill="#333" filter="url(#rough2)">· h + dp[a−1][b]　　　　　（仅①，需 a ≥ 1）</text>
+  <text x="86" y="240" font-size="10" fill="#333" filter="url(#rough2)">· (x−k) + dp[a][b−1]　　　（仅②，需 b ≥ 1 且 x ≥ k）</text>
+  <text x="86" y="260" font-size="10" fill="#333" filter="url(#rough2)">· ⌈(x−k)/2⌉ + dp[a−1][b−1]（先②后①，需 x ≥ k）</text>
+  <text x="86" y="280" font-size="10" fill="#333" filter="url(#rough2)">· (h−k) + dp[a−1][b−1]　　（先①后②，需 h ≥ k）</text>
+  <text x="86" y="302" font-size="9" fill="#8a6a1f" filter="url(#rough2)">注：同一元素每招至多一次，五种方式已穷尽全部组合</text>
+
+  <path d="M 260 314 L 260 330" fill="none" stroke="#a07830" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判断菱形 -->
+  <polygon points="260,334 336,366 260,398 184,366" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="370" text-anchor="middle" font-size="11" fill="#8f3a35" font-weight="bold" filter="url(#rough2)">还有元素？</text>
+
+  <!-- 是：回环 -->
+  <path d="M 336 366 L 452 366 L 452 115 L 354 115" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="360" y="358" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">是（dp ← ndp）</text>
+
+  <!-- 否：结束 -->
+  <path d="M 260 398 L 260 414" fill="none" stroke="#a07830" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="410" font-size="10.5" fill="#555" filter="url(#rough2)">否</text>
+  <rect x="160" y="418" width="200" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="439" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">返回 dp[op1][op2]</text>
+</svg>

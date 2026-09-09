@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="480" height="560" fill="#fafafa"/>
+
+  <text x="240" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">掷骰子模拟 DP 流程（滚动数组优化）</text>
+
+  <!-- Init -->
+  <rect x="90" y="44" width="300" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="240" y="86" text-anchor="middle" font-size="11" fill="#555">dp[j][1] = 1 (j=1..6)，total = 6</text>
+
+  <path d="M 240 104 L 240 122" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop: for i = 2..n -->
+  <rect x="80" y="126" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="146" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for i = 2 to n</text>
+  <text x="240" y="162" text-anchor="middle" font-size="10.5" fill="#555">逐层推进，每层掷一次骰子</text>
+
+  <path d="M 240 174 L 240 192" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 1: compute rowSum -->
+  <rect x="60" y="196" width="360" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 计算各点数的行和</text>
+  <text x="240" y="234" text-anchor="middle" font-size="10.5" fill="#555">rowSum[j] = Σ dp[j][k]，k=1..rollMax[j−1]</text>
+  <text x="240" y="248" text-anchor="middle" font-size="9.5" fill="#888">统计上一轮以 j 结尾的序列总数</text>
+
+  <path d="M 240 256 L 240 274" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: save prev, reset -->
+  <rect x="90" y="278" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="298" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 保存 prev = dp，清空新 dp</text>
+  <text x="240" y="312" text-anchor="middle" font-size="9.5" fill="#888">滚动数组：只需上一层</text>
+
+  <path d="M 240 322 L 240 340" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: for each j -->
+  <rect x="80" y="344" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="364" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for j = 1 to 6</text>
+  <text x="240" y="380" text-anchor="middle" font-size="10.5" fill="#555">对每种点数做转移</text>
+
+  <path d="M 240 392 L 240 410" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: k=1 vs k>=2 -->
+  <polygon points="240,414 370,454 240,494 110,454" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="240" y="450" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">k 的取值？</text>
+  <text x="240" y="466" text-anchor="middle" font-size="10" fill="#777">连续次数</text>
+
+  <!-- Left branch: k=1 (switch) -->
+  <path d="M 110 454 L 40 454 L 40 400" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="50" y="446" font-size="10" fill="#4a7a3a" font-weight="bold">k=1</text>
+  <rect x="6" y="360" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="378" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">换掷 j</text>
+  <text x="66" y="392" text-anchor="middle" font-size="9" fill="#555">dp[j][1] =</text>
+  <text x="66" y="402" font-size="8.5" fill="#555" text-anchor="middle">total−rowSum[j]</text>
+
+  <!-- Right branch: k>=2 (extend) -->
+  <path d="M 370 454 L 440 454 L 440 400" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="400" y="446" font-size="10" fill="#b85450" font-weight="bold">k≥2</text>
+  <rect x="354" y="360" width="120" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="414" y="378" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">续掷 j</text>
+  <text x="414" y="392" text-anchor="middle" font-size="9" fill="#555">dp[j][k] =</text>
+  <text x="414" y="402" font-size="8.5" fill="#555" text-anchor="middle">prev[j][k−1]</text>
+
+  <!-- merge -->
+  <path d="M 66 360 L 66 340 L 200 340" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <path d="M 414 360 L 414 340 L 280 340" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+
+  <!-- update total -->
+  <rect x="120" y="324" width="240" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="344" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">更新 total = Σ dp[j][k]</text>
+
+  <!-- loop back -->
+  <path d="M 360 340 L 452 340 L 452 148 L 402 148" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="458" y="244" font-size="9" fill="#aaa" transform="rotate(-90 458 244)">下一轮</text>
+
+  <!-- final -->
+  <text x="240" y="530" text-anchor="middle" font-size="11" fill="#d6a040" font-style="italic">遍历结束 → return total % (10⁹+7)</text>
+  <text x="240" y="548" text-anchor="middle" font-size="10.5" fill="#888">时间 O(n·6·15)，空间 O(6·15)=O(1)</text>
+</svg>

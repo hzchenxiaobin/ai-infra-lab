@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → WHERE 双条件过滤 → SELECT 投影</text>
+
+  <!-- Step 1: Input -->
+  <rect x="150" y="42" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Customers 表（n 行，含多年记录）</text>
+
+  <path d="M280 76 L280 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE year = 2021 -->
+  <rect x="50" y="94" width="460" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="114" font-size="10" fill="#4a7a3a" font-weight="bold">① WHERE year = 2021：只留 2021 年的行</text>
+  <text x="70" y="130" font-size="9" fill="#4a7a3a">逐行检查 year 列是否等于 2021，不符合的直接丢弃</text>
+  <text x="70" y="142" font-size="8.5" fill="#888">⚠ 这是等值过滤，可用 year 列索引加速；无 2021 记录的客户自然被排除（如客户 3）</text>
+
+  <path d="M280 150 L280 166" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: AND revenue > 0 -->
+  <rect x="30" y="168" width="500" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="188" font-size="10" fill="#d6a040" font-weight="bold">② AND revenue &gt; 0：在 2021 行中再留正收入</text>
+  <text x="50" y="204" font-size="9" fill="#d6a040">对剩余行检查 revenue 严格大于 0；revenue ≤ 0（含负值和零）的行丢弃</text>
+  <text x="50" y="218" font-size="8.5" fill="#888">⚠ AND 短路求值：year≠2021 的行根本不会走到这一步，先粗筛后细筛效率高</text>
+
+  <path d="M280 224 L280 240" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SELECT -->
+  <rect x="80" y="242" width="400" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="261" font-size="10" fill="#4a7a3a" font-weight="bold">③ SELECT customer_id：投影出客户编号</text>
+  <text x="100" y="277" font-size="9" fill="#4a7a3a">复合主键保证 (customer_id, 2021) 唯一，结果无重复，无需 DISTINCT</text>
+
+  <path d="M280 286 L280 302" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="140" y="304" width="280" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="325" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出：customer_id = {1, 4}</text>
+
+  <!-- ===== Right side: SQL clause execution order ===== -->
+  <rect x="430" y="94" width="120" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="112" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">SQL 执行顺序</text>
+  <line x1="440" y1="118" x2="540" y2="118" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="445" y="132" font-size="8" fill="#446688">1. FROM ✓</text>
+  <text x="455" y="144" font-size="7" fill="#446688">读 Customers</text>
+  <text x="445" y="160" font-size="8" fill="#d6a040" font-weight="bold">2. WHERE ✓</text>
+  <text x="455" y="172" font-size="7" fill="#d6a040">year=2021</text>
+  <text x="455" y="184" font-size="7" fill="#d6a040">AND rev&gt;0</text>
+  <text x="445" y="200" font-size="8" fill="#888">3. GROUP BY（无）</text>
+  <text x="445" y="216" font-size="8" fill="#888">4. HAVING（无）</text>
+  <text x="445" y="232" font-size="8" fill="#4a7a3a" font-weight="bold">5. SELECT ✓</text>
+  <text x="455" y="244" font-size="7" fill="#4a7a3a">投影 id</text>
+  <text x="445" y="260" font-size="8" fill="#888">6. ORDER BY（无）</text>
+  <text x="445" y="276" font-size="8" fill="#888">7. LIMIT（无）</text>
+  <text x="445" y="290" font-size="7" fill="#b85450">⚠ 行级过滤</text>
+
+  <!-- ===== Bottom: row count flow ===== -->
+  <rect x="20" y="352" width="520" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="372" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">行数流（示例：7 行输入）</text>
+
+  <rect x="35" y="382" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="75" y="399" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">7 行</text>
+
+  <path d="M115 395 L150 395" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="132" y="389" text-anchor="middle" font-size="7" fill="#4a7a3a">year=2021</text>
+
+  <rect x="155" y="382" width="90" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="399" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">3 行</text>
+
+  <path d="M250 395 L285 395" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="267" y="389" text-anchor="middle" font-size="7" fill="#d6a040">rev&gt;0</text>
+
+  <rect x="290" y="382" width="80" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="330" y="399" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">2 行</text>
+
+  <path d="M375 395 L410 395" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="392" y="389" text-anchor="middle" font-size="7" fill="#b85450">SELECT</text>
+
+  <rect x="415" y="382" width="100" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="465" y="399" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">{1, 4}</text>
+
+  <text x="280" y="432" text-anchor="middle" font-size="8.5" fill="#888">7 行 → 按 year=2021 过滤剩 3 行 → 按 revenue&gt;0 过滤剩 2 行 → 投影 customer_id 得 {1, 4}</text>
+</svg>

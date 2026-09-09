@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">
+    Kahn BFS + 26 色计数 DP 流程
+  </text>
+
+  <!-- 1. 建图 -->
+  <rect x="40" y="56" width="200" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="140" y="83" text-anchor="middle" font-size="13" fill="#334" filter="url(#rough2)">① 建邻接表 + 入度数组</text>
+
+  <!-- 箭头 -->
+  <path d="M140,102 L140,128" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. 入度 0 入队 -->
+  <rect x="40" y="130" width="200" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="140" y="157" text-anchor="middle" font-size="13" fill="#334" filter="url(#rough2)">② 入度=0 的点入队 Q</text>
+
+  <path d="M140,176 L140,202" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3. 队列空? 判断 -->
+  <polygon points="140,204 240,244 140,284 40,244" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="140" y="240" text-anchor="middle" font-size="12" fill="#7a5a20" filter="url(#rough2)">队列 Q 空?</text>
+  <text x="140" y="256" text-anchor="middle" font-size="11" fill="#7a5a20" filter="url(#rough2)">(已处理 &lt; n)</text>
+
+  <!-- 否：循环体（右侧）-->
+  <path d="M240,244 L300,244" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="252" y="238" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否</text>
+
+  <!-- 4. 出队 u -->
+  <rect x="300" y="100" width="220" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="410" y="125" text-anchor="middle" font-size="12" fill="#2a4a1a" filter="url(#rough2)">③ 出队 u，processed++</text>
+
+  <path d="M410,140 L410,164" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 5. 累加自身颜色 -->
+  <rect x="300" y="166" width="220" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="410" y="186" text-anchor="middle" font-size="12" fill="#2a4a1a" filter="url(#rough2)">④ count[u][color(u)] += 1</text>
+  <text x="410" y="200" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">更新全局 ans = max(ans, …)</text>
+
+  <path d="M410,206 L410,230" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 6. 遍历邻居 v -->
+  <rect x="300" y="232" width="220" height="58" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="410" y="252" text-anchor="middle" font-size="12" fill="#2a4a1a" filter="url(#rough2)">⑤ 对每条边 u→v：</text>
+  <text x="410" y="270" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">count[v][c] = max(count[v][c], count[u][c])</text>
+  <text x="410" y="284" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">deg[v]--; 若 0 则入队</text>
+
+  <!-- 回到判断 -->
+  <path d="M300,261 L260,261 L260,244 L240,244" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 是：结束判断 -->
+  <path d="M140,284 L140,310" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="148" y="300" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <!-- 7. 判环 -->
+  <polygon points="140,312 250,352 140,392 30,352" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="140" y="348" text-anchor="middle" font-size="12" fill="#7a3030" filter="url(#rough2)">processed == n ?</text>
+  <text x="140" y="364" text-anchor="middle" font-size="11" fill="#7a3030" filter="url(#rough2)">(判环)</text>
+
+  <!-- 否：有环 -1 -->
+  <path d="M250,352 L300,352" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="258" y="346" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="300" y="332" width="120" height="40" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="360" y="357" text-anchor="middle" font-size="13" fill="#7a3030" filter="url(#rough2)">return -1</text>
+
+  <!-- 是：返回 ans -->
+  <path d="M140,392 L140,418" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="148" y="408" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="80" y="420" width="120" height="32" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="140" y="441" text-anchor="middle" font-size="13" fill="#2a4a1a" filter="url(#rough2)">return ans</text>
+
+  <!-- 旁注 -->
+  <rect x="300" y="392" width="240" height="56" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="420" y="410" text-anchor="middle" font-size="11" fill="#7a5a20" filter="url(#rough2)">关键：处理 u 时其所有前驱</text>
+  <text x="420" y="426" text-anchor="middle" font-size="11" fill="#7a5a20" filter="url(#rough2)">已出队 → count[u] 已是终态，</text>
+  <text x="420" y="442" text-anchor="middle" font-size="11" fill="#7a5a20" filter="url(#rough2)">可安全向邻居传播</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：拆 mod 2 / mod 5 双通道，逐项 Lucas 累加</text>
+
+  <!-- 输入预处理框 -->
+  <rect x="105" y="38" width="350" height="36" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="61" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">预处理：d[i] = s[i] − s[i+1]，m = n − 2</text>
+
+  <!-- 分叉箭头 -->
+  <path d="M 240 74 C 180 86 152 90 152 98" fill="none" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 320 74 C 380 86 408 90 408 98" fill="none" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 左通道：mod 2 -->
+  <rect x="28" y="100" width="248" height="182" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="152" y="122" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">mod 2 通道</text>
+
+  <rect x="48" y="134" width="208" height="46" rx="6" fill="#ffffff" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="152" y="153" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">判奇：C(m,i) 为奇数</text>
+  <text x="152" y="170" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⟺ (i &amp; m) == i（二进制子集）</text>
+
+  <path d="M 152 180 L 152 190" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="48" y="192" width="208" height="30" rx="6" fill="#ffffff" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="152" y="211" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">奇 ⟹ s₂ += d[i] (mod 2)</text>
+
+  <text x="152" y="252" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">得 s₂ ≡ Σ C(m,i)·d[i] (mod 2)</text>
+  <text x="152" y="270" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">Lucas p=2：各位只能取 0/1，子集即不进位</text>
+
+  <!-- 右通道：mod 5 -->
+  <rect x="284" y="100" width="248" height="182" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="408" y="122" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">mod 5 通道</text>
+
+  <rect x="304" y="134" width="208" height="46" rx="6" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="408" y="153" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">Lucas：C(m,i) ≡ Π C(mⱼ,iⱼ) (mod 5)</text>
+  <text x="408" y="170" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">m、i 转 5 进制逐位查小表</text>
+
+  <path d="M 408 180 L 408 190" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="304" y="192" width="208" height="30" rx="6" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="408" y="211" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">任一位 iⱼ &gt; mⱼ ⟹ 该项系数为 0</text>
+
+  <text x="408" y="252" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">得 s₅ ≡ Σ C(m,i)·d[i] (mod 5)</text>
+  <text x="408" y="270" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">5×5 小杨辉三角可直接打表</text>
+
+  <!-- 汇聚箭头 -->
+  <path d="M 152 282 C 152 306 200 300 246 318" fill="none" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 408 282 C 408 306 360 300 314 318" fill="none" stroke="#888" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="160,340 280,306 400,340 280,374" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="344" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">s₂ = 0 且 s₅ = 0 ?</text>
+
+  <!-- 输出分支 -->
+  <path d="M 400 340 L 466 340" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="492" y="345" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">true</text>
+
+  <path d="M 160 340 L 94 340" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="68" y="345" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">false</text>
+
+  <!-- 底部注释 -->
+  <rect x="55" y="386" width="450" height="40" rx="8" fill="#ffffff" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="6 3" filter="url(#rough2)"/>
+  <text x="280" y="402" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">为何拆 2 与 5：10 = 2×5 是合数，组合数递推要除法、无逆元；</text>
+  <text x="280" y="419" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">由 CRT：x ≡ 0 (mod 10) ⟺ x ≡ 0 (mod 2) 且 x ≡ 0 (mod 5)</text>
+</svg>

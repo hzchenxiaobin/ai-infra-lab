@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：左段和 leftSum 滚动累加，右段和 = total − leftSum</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">下标 i 处前 i+1 个元素和 vs 后 n−i−1 个元素和，O(1) 维护</text>
+
+  <!-- ===== Array nums = [2,5,3,9,5,3], split at i=3 ===== -->
+  <text x="28" y="80" font-size="10.5" fill="#666">nums</text>
+  <text x="90" y="72" text-anchor="middle" font-size="9" fill="#888">0</text>
+  <text x="150" y="72" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="210" y="72" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="270" y="72" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="330" y="72" text-anchor="middle" font-size="9" fill="#888">4</text>
+  <text x="390" y="72" text-anchor="middle" font-size="9" fill="#888">5</text>
+
+  <!-- left part (blue) i=0..3 -->
+  <rect x="70" y="76" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="130" y="76" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+  <rect x="190" y="76" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <rect x="250" y="76" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">9</text>
+  <!-- right part (green) i=4..5 -->
+  <rect x="310" y="76" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="330" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+  <rect x="370" y="76" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+
+  <!-- split divider between i=3 and i=4 -->
+  <line x1="300" y1="64" x2="300" y2="118" stroke="#b85450" stroke-width="2.5" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="300" y="58" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">分割 i=3</text>
+
+  <!-- left segment brace -->
+  <path d="M 70 118 Q 70 128 90 130 L 270 130 Q 290 128 290 118" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="170" y="146" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">前 4 个 (i+1=4)</text>
+  <!-- right segment brace -->
+  <path d="M 310 118 Q 310 128 330 130 L 390 130 Q 410 128 410 118" fill="none" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="360" y="146" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">后 2 个 (n−i−1=2)</text>
+
+  <!-- ===== leftSum row (blue) ===== -->
+  <text x="28" y="178" font-size="10.5" fill="#666">leftSum</text>
+  <rect x="70" y="156" width="220" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="176" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">2+5+3+9 = 19</text>
+  <!-- leftSum recurrence arrow -->
+  <path d="M 32 171 L 66 171" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="34" y="200" font-size="10" fill="#446688" font-weight="bold">leftSum += nums[i]</text>
+  <text x="34" y="213" font-size="9" fill="#888">从 0 起逐个累加</text>
+
+  <!-- ===== rightSum = total - leftSum (green) ===== -->
+  <text x="28" y="240" font-size="10.5" fill="#666">rightSum</text>
+  <rect x="310" y="218" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="238" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">5+3 = 8</text>
+  <path d="M 414 233 L 470 233" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="476" y="230" font-size="10" fill="#4a7a3a" font-weight="bold">= total</text>
+  <text x="476" y="243" font-size="10" fill="#4a7a3a" font-weight="bold">− leftSum</text>
+
+  <!-- total tag -->
+  <rect x="470" y="156" width="60" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="173" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">total=27</text>
+  <text x="500" y="195" text-anchor="middle" font-size="9" fill="#888">一次遍历求</text>
+
+  <!-- ===== averages row (orange) ===== -->
+  <text x="28" y="280" font-size="10.5" fill="#666">平均值</text>
+  <rect x="70" y="262" width="220" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="282" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">leftAvg = 19 / 4 = 4</text>
+  <rect x="310" y="262" width="100" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="282" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">8 / 2 = 4</text>
+  <text x="420" y="282" font-size="10.5" fill="#d6a040" font-weight="bold">向下取整</text>
+
+  <!-- ===== diff result ===== -->
+  <line x1="180" y1="292" x2="180" y2="312" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <line x1="360" y1="292" x2="360" y2="312" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <rect x="70" y="312" width="340" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="334" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">diff = |4 − 4| = 0  →  最小平均差下标 = 3</text>
+
+  <!-- ===== Footer note ===== -->
+  <rect x="40" y="358" width="465" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="272" y="379" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">右段和 = total − leftSum：免去后段累加；前段和 O(1) 滚动 → 整体 O(n)</text>
+</svg>

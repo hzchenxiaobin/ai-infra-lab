@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="480" fill="#fafafa"/>
+
+  <text x="330" y="28" text-anchor="middle" font-size="16" fill="#444" font-weight="bold">例题：84 柱状图最大矩形 — 递增栈两侧找更小</text>
+  <text x="330" y="48" text-anchor="middle" font-size="11" fill="#888">heights = [2,1,5,6,2,3]，末尾加哨兵 0 强制清栈。出栈瞬间：右界=cur，左界=新栈顶</text>
+
+  <!-- histogram bars (scaled: 1 unit = 20px height, x grid 50px) -->
+  <g filter="url(#rough2)">
+    <!-- baseline -->
+    <line x1="80" y1="260" x2="430" y2="260" stroke="#888" stroke-width="1.5"/>
+    <!-- bar 0: h=2 -->
+    <rect x="90" y="220" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="110" y="214" text-anchor="middle" font-size="11" fill="#333">2</text>
+    <!-- bar 1: h=1 -->
+    <rect x="140" y="240" width="40" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="160" y="234" text-anchor="middle" font-size="11" fill="#333">1</text>
+    <!-- bar 2: h=5 -->
+    <rect x="190" y="160" width="40" height="100" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="210" y="154" text-anchor="middle" font-size="11" fill="#333">5</text>
+    <!-- bar 3: h=6 -->
+    <rect x="240" y="140" width="40" height="120" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="260" y="134" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">6</text>
+    <!-- bar 4: h=2 -->
+    <rect x="290" y="220" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="310" y="214" text-anchor="middle" font-size="11" fill="#333">2</text>
+    <!-- bar 5: h=3 -->
+    <rect x="340" y="200" width="40" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="360" y="194" text-anchor="middle" font-size="11" fill="#333">3</text>
+    <!-- sentinel bar 6: h=0 -->
+    <rect x="390" y="258" width="40" height="2" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <text x="410" y="276" text-anchor="middle" font-size="10" fill="#b85450">哨兵0</text>
+
+    <!-- x labels -->
+    <text x="110" y="278" text-anchor="middle" font-size="9" fill="#888">0</text>
+    <text x="160" y="278" text-anchor="middle" font-size="9" fill="#888">1</text>
+    <text x="210" y="278" text-anchor="middle" font-size="9" fill="#888">2</text>
+    <text x="260" y="278" text-anchor="middle" font-size="9" fill="#888">3</text>
+    <text x="310" y="278" text-anchor="middle" font-size="9" fill="#888">4</text>
+    <text x="360" y="278" text-anchor="middle" font-size="9" fill="#888">5</text>
+  </g>
+
+  <!-- max rectangle highlight: h=5 spanning cols 2,3 -->
+  <rect x="190" y="160" width="90" height="100" fill="none" stroke="#b85450" stroke-width="2.2" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="235" y="156" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">max = 5×2 = 10</text>
+
+  <!-- left side: process -->
+  <text x="30" y="308" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">结算时刻（递增栈存下标）：</text>
+
+  <rect x="20" y="320" width="620" height="150" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <g font-size="10.5" fill="#333">
+    <text x="34" y="340" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">cur</text>
+    <text x="90" y="340" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">栈变化</text>
+    <text x="300" y="340" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">出栈的柱子 & 结算</text>
+    <text x="540" y="340" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">max 更新</text>
+
+    <text x="34" y="360" fill="#446688" filter="url(#rough2)">i=0,h=2</text>
+    <text x="90" y="360" filter="url(#rough2)">栈空 → 入 [0]</text>
+    <text x="300" y="360" fill="#888" filter="url(#rough2)">—</text>
+    <text x="540" y="360" fill="#888" filter="url(#rough2)">0</text>
+
+    <text x="34" y="378" fill="#b85450" filter="url(#rough2)">i=1,h=1</text>
+    <text x="90" y="378" filter="url(#rough2)">1&lt;2 → pop 0</text>
+    <text x="300" y="378" fill="#b85450" filter="url(#rough2)">柱0(h=2)：右界=1, 左界=空→-1</text>
+    <text x="540" y="378" fill="#b85450" filter="url(#rough2)">2×(1−(−1)−1)=2</text>
+
+    <text x="34" y="396" fill="#446688" filter="url(#rough2)">i=2,h=5</text>
+    <text x="90" y="396" filter="url(#rough2)">5&gt;1 → 入 [1,2]</text>
+    <text x="300" y="396" fill="#888" filter="url(#rough2)">—</text>
+    <text x="540" y="396" fill="#888" filter="url(#rough2)">2</text>
+
+    <text x="34" y="414" fill="#446688" filter="url(#rough2)">i=3,h=6</text>
+    <text x="90" y="414" filter="url(#rough2)">6&gt;5 → 入 [1,2,3]</text>
+    <text x="300" y="414" fill="#888" filter="url(#rough2)">—</text>
+    <text x="540" y="414" fill="#888" filter="url(#rough2)">2</text>
+
+    <text x="34" y="432" fill="#b85450" filter="url(#rough2)">i=4,h=2</text>
+    <text x="90" y="432" filter="url(#rough2)">2&lt;6 → pop 3</text>
+    <text x="300" y="432" fill="#b85450" filter="url(#rough2)">柱3(h=6)：右界=4, 左界=2</text>
+    <text x="540" y="432" fill="#b85450" filter="url(#rough2)">6×(4−2−1)=6</text>
+
+    <text x="34" y="450" fill="#b85450" filter="url(#rough2)">（续）</text>
+    <text x="90" y="450" filter="url(#rough2)">2&lt;5 → pop 2</text>
+    <text x="300" y="450" fill="#b85450" filter="url(#rough2)">柱2(h=5)：右界=4, 左界=1</text>
+    <text x="540" y="450" fill="#b85450" font-weight="bold" filter="url(#rough2)">5×(4−1−1)=10 ⭐</text>
+
+    <text x="34" y="468" fill="#446688" filter="url(#rough2)">i=5,h=3</text>
+    <text x="90" y="468" filter="url(#rough2)">3&gt;2 → 入 [1,4,5]</text>
+    <text x="300" y="468" fill="#888" filter="url(#rough2)">（末尾哨兵 0 再清栈，算柱5/4/1…）</text>
+    <text x="540" y="468" fill="#888" filter="url(#rough2)">10</text>
+  </g>
+
+  <!-- right side note -->
+  <rect x="460" y="64" width="180" height="184" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="84" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">关键观察：</text>
+  <text x="470" y="104" font-size="10" fill="#555" filter="url(#rough2)">最大矩形一定以</text>
+  <text x="470" y="118" font-size="10" fill="#555" filter="url(#rough2)">某根柱子高度为高</text>
+  <text x="470" y="132" font-size="10" fill="#555" filter="url(#rough2)">→ 枚举每根柱子</text>
+  <text x="470" y="146" font-size="10" fill="#555" filter="url(#rough2)">  找左右更矮边界</text>
+  <text x="470" y="166" font-size="10" fill="#b85450" filter="url(#rough2)">宽 w = R − L − 1</text>
+  <text x="470" y="180" font-size="10" fill="#b85450" filter="url(#rough2)">面积 = h × w</text>
+  <text x="470" y="202" font-size="10" fill="#446688" filter="url(#rough2)">递增栈：</text>
+  <text x="470" y="216" font-size="10" fill="#446688" filter="url(#rough2)">出栈瞬间右界=cur</text>
+  <text x="470" y="230" font-size="10" fill="#446688" filter="url(#rough2)">左界=pop 后新栈顶</text>
+</svg>

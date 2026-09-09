@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：双队列 + +n 重入队</text>
+
+  <!-- Step 1: init -->
+  <rect x="40" y="46" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="64" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 初始化</text>
+  <text x="140" y="80" text-anchor="middle" font-size="10" fill="#555">扫 senate，R 下标入 qr，D 下标入 qd</text>
+  <path d="M 140 90 L 140 108" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: check both non-empty -->
+  <polygon points="140,112 240,150 140,188 40,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="146" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② qr 与 qd</text>
+  <text x="140" y="162" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">都非空?</text>
+  <text x="140" y="178" text-anchor="middle" font-size="9" fill="#888">否 → 跳到 ⑥</text>
+
+  <!-- No branch: go to step 6 -->
+  <path d="M 240 150 L 360 150 L 360 318" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="142" font-size="10" fill="#888">否</text>
+
+  <!-- Yes branch: down -->
+  <path d="M 140 188 L 140 206" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="200" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- Step 3: pop fronts -->
+  <rect x="40" y="210" width="200" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="228" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ 取两队首</text>
+  <text x="140" y="244" text-anchor="middle" font-size="10" fill="#555">r = qr.front(), d = qd.front()</text>
+  <path d="M 140 254 L 140 272" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: compare r and d -->
+  <polygon points="140,276 250,314 140,352 30,314" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="310" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ r &lt; d ?</text>
+  <text x="140" y="326" text-anchor="middle" font-size="9" fill="#888">谁小谁先投票</text>
+
+  <!-- r < d branch (left): R bans D -->
+  <path d="M 30 314 L 10 314 L 10 372 L 40 372" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="14" y="306" font-size="9" fill="#446688">是</text>
+  <rect x="40" y="358" width="100" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="376" text-anchor="middle" font-size="9" fill="#446688">qd.pop()</text>
+  <text x="90" y="396" text-anchor="middle" font-size="9" fill="#446688">qr.push(r+n)</text>
+
+  <!-- r >= d branch (right): D bans R -->
+  <path d="M 250 314 L 270 314 L 270 372 L 240 372" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="258" y="306" font-size="9" fill="#b85450">否</text>
+  <rect x="240" y="358" width="100" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="376" text-anchor="middle" font-size="9" fill="#b85450">qr.pop()</text>
+  <text x="290" y="396" text-anchor="middle" font-size="9" fill="#b85450">qd.push(d+n)</text>
+
+  <!-- loop back from step 5 to step 2 -->
+  <path d="M 340 372 L 400 372 L 400 150 L 240 150" stroke="#888" stroke-width="1" fill="none" stroke-dasharray="2,2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="266" font-size="9" fill="#888">回到 ②</text>
+
+  <!-- Step 6: return winner -->
+  <rect x="360" y="318" width="160" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="338" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑥ 返回胜者</text>
+  <text x="440" y="354" text-anchor="middle" font-size="10" fill="#555">qr 非空 → "Radiant"</text>
+  <text x="440" y="368" text-anchor="middle" font-size="10" fill="#555">qd 非空 → "Dire"</text>
+</svg>

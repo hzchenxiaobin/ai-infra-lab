@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">核心：两条布尔短路律 → 直接折叠对方子树</text>
+
+  <!-- Law 1: 1 OR x = 1 -->
+  <rect x="30" y="48" width="230" height="86" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="145" y="80" text-anchor="middle" font-size="20" fill="#b85450" font-weight="bold">1 ∨ x = 1</text>
+  <text x="145" y="104" text-anchor="middle" font-size="12" fill="#333">a 是叶子且 a.val = true</text>
+  <text x="145" y="122" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">→ 返回叶子 true（不看 b）</text>
+
+  <!-- Law 2: 0 OR x = x -->
+  <rect x="280" y="48" width="230" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="395" y="80" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">0 ∨ x = x</text>
+  <text x="395" y="104" text-anchor="middle" font-size="12" fill="#333">a 是叶子且 a.val = false</text>
+  <text x="395" y="122" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">→ 直接返回 b（共享子树）</text>
+
+  <!-- Sketch: a = leaf 1, b = internal, result = leaf 1 -->
+  <text x="270" y="166" text-anchor="middle" font-size="12" fill="#888">示意：a 为叶子 1，b 为内部节点 → 短路不进 b 的子树</text>
+
+  <!-- a: leaf node -->
+  <rect x="40" y="196" width="70" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="75" y="214" text-anchor="middle" font-size="10" fill="#888">叶子</text>
+  <text x="75" y="232" text-anchor="middle" font-size="16" fill="#b85450" font-weight="bold">1</text>
+  <text x="75" y="262" text-anchor="middle" font-size="12" fill="#555">a</text>
+
+  <!-- OR symbol -->
+  <text x="150" y="226" text-anchor="middle" font-size="22" fill="#555" font-weight="bold">∨</text>
+
+  <!-- b: internal node with 4 children -->
+  <rect x="190" y="196" width="70" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="225" y="218" text-anchor="middle" font-size="11" fill="#333">内部</text>
+  <line x1="208" y1="230" x2="208" y2="244" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <line x1="242" y1="230" x2="242" y2="244" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <rect x="194" y="244" width="26" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <rect x="224" y="244" width="26" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="225" y="278" text-anchor="middle" font-size="12" fill="#555">b（有子树）</text>
+
+  <!-- red dashed circle around b's subtree: short-circuit -->
+  <ellipse cx="225" cy="244" rx="46" ry="34" fill="none" stroke="#b85450" stroke-width="1.8" stroke-dasharray="5,4" filter="url(#rough2)"/>
+  <text x="225" y="300" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">未探索</text>
+
+  <!-- = symbol -->
+  <text x="300" y="226" text-anchor="middle" font-size="22" fill="#555" font-weight="bold">=</text>
+
+  <!-- result: leaf 1 -->
+  <rect x="340" y="196" width="70" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="375" y="214" text-anchor="middle" font-size="10" fill="#888">叶子</text>
+  <text x="375" y="232" text-anchor="middle" font-size="16" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="375" y="262" text-anchor="middle" font-size="12" fill="#555">结果</text>
+
+  <!-- arrow from b-circle to result labeled 短路 -->
+  <path d="M 272 244 Q 310 230 340 220" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="307" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">短路！</text>
+
+  <!-- Bottom note: both-internal case -->
+  <rect x="30" y="318" width="480" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="340" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">双方都是内部节点时：四象限分别递归 → 若四子皆叶且同值则压缩成单叶</text>
+  <text x="270" y="358" text-anchor="middle" font-size="11" fill="#888">（压缩 = 427 构造时「子网格全同值则不切」的逆操作）</text>
+</svg>

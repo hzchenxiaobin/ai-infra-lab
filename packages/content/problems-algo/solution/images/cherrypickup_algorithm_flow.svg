@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="460" height="560" fill="#fafafa"/>
+
+  <text x="230" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">摘樱桃：算法流程</text>
+
+  <!-- Step 1: init -->
+  <rect x="60" y="40" width="340" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="62" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 初始化 dp[0][0] = grid[0][0]</text>
+  <text x="230" y="82" text-anchor="middle" font-size="11" fill="#555">两人都在起点 (0,0)，第 0 步</text>
+
+  <path d="M 230 100 L 230 118" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop k -->
+  <rect x="80" y="122" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="142" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for k = 1 to 2(n−1)</text>
+  <text x="230" y="158" text-anchor="middle" font-size="11" fill="#555">枚举步数（总步数 = 2n−2）</text>
+
+  <path d="M 230 170 L 230 188" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop x1, x2 -->
+  <rect x="80" y="192" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="212" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for x1, x2 ∈ [0, n)</text>
+  <text x="230" y="228" text-anchor="middle" font-size="11" fill="#555">y1 = k−x1，y2 = k−x2</text>
+
+  <path d="M 230 240 L 230 258" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: bounds & thorn check -->
+  <polygon points="230,262 360,312 230,362 100,312" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="306" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">越界或荆棘?</text>
+  <text x="230" y="324" text-anchor="middle" font-size="10.5" fill="#777">y&lt;0 / y≥n / grid&lt;0</text>
+
+  <!-- Yes branch: skip -->
+  <path d="M 360 312 L 410 312 L 410 286" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="372" y="304" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="368" y="266" width="88" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="412" y="285" text-anchor="middle" font-size="10.5" fill="#b85450">跳过此状态</text>
+
+  <!-- No branch -->
+  <path d="M 230 362 L 230 382" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="238" y="376" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Step: compute gain -->
+  <rect x="70" y="386" width="320" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="406" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② 计算本步收益 gain</text>
+  <text x="230" y="424" text-anchor="middle" font-size="10.5" fill="#555">= grid[x1][y1] + (x1==x2 ? 0 : grid[x2][y2])</text>
+
+  <path d="M 230 438 L 230 454" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step: max over 4 predecessors + update -->
+  <rect x="60" y="458" width="340" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="480" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ ndp[x1][x2] = max(dp[p1][p2]) + gain</text>
+  <text x="230" y="500" text-anchor="middle" font-size="10.5" fill="#555">p1∈{x1−1,x1}，p2∈{x2−1,x2}，共 4 个前驱</text>
+
+  <!-- loop back to k -->
+  <path d="M 400 486 L 436 486 L 436 144 L 380 144" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="392" y="138" font-size="9.5" fill="#888">下一组 x1,x2 / k+1</text>
+
+  <!-- final -->
+  <rect x="80" y="526" width="300" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="545" text-anchor="middle" font-size="11" fill="#d6a040" font-style="italic">结束 → return max(0, dp[n−1][n−1])</text>
+</svg>

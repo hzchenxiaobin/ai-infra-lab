@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">request(userID, chunkID) 决策流程</text>
+
+  <!-- start -->
+  <rect x="200" y="46" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="16" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">进入 request</text>
+
+  <!-- arrow down -->
+  <path d="M 280 82 L 280 100" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- step1: lookup -->
+  <rect x="160" y="104" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 查 chunk_users[chunkID]</text>
+  <text x="280" y="138" text-anchor="middle" font-size="10" fill="#666">owners = 拥有该块的用户集合</text>
+
+  <path d="M 280 150 L 280 168" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- step2: sorted result -->
+  <rect x="160" y="172" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="190" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② res = sorted(owners)</text>
+  <text x="280" y="206" text-anchor="middle" font-size="10" fill="#666">升序排列，作为返回值</text>
+
+  <path d="M 280 218 L 280 236" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decision diamond: res empty? -->
+  <polygon points="280,240 360,286 280,332 200,286" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="282" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">res 非空？</text>
+  <text x="280" y="298" text-anchor="middle" font-size="10" fill="#888">(有人拥有此块)</text>
+
+  <!-- No branch -> right -->
+  <path d="M 360 286 L 432 286" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="380" y="280" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="432" y="268" width="108" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="486" y="284" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">直接返回 []</text>
+  <text x="486" y="299" text-anchor="middle" font-size="9.5" fill="#888">请求者不获块</text>
+
+  <!-- Yes branch -> down -->
+  <path d="M 280 332 L 280 354" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="290" y="346" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- decision diamond 2: requester already owns? -->
+  <polygon points="280,358 370,400 280,442 190,400" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="396" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">请求者已持有？</text>
+  <text x="280" y="412" text-anchor="middle" font-size="10" fill="#888">chunkID ∈ user_chunks[uid]</text>
+
+  <!-- Yes -> left, no write -->
+  <path d="M 190 400 L 120 400" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="146" y="394" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="20" y="382" width="100" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="70" y="400" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">无需写入</text>
+  <text x="70" y="414" text-anchor="middle" font-size="9.5" fill="#888">返回 res（含自己）</text>
+
+  <!-- No -> right, double write -->
+  <path d="M 370 400 L 432 400" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="388" y="394" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="432" y="376" width="116" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="394" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">③ 双向写入</text>
+  <text x="490" y="408" text-anchor="middle" font-size="9.5" fill="#888">user_chunks[uid].add</text>
+  <text x="490" y="421" text-anchor="middle" font-size="9.5" fill="#888">chunk_users[cid].add</text>
+
+  <!-- note: returned res excludes requester -->
+  <rect x="200" y="416" width="160" height="20" fill="none"/>
+  <text x="280" y="432" text-anchor="middle" font-size="9.5" fill="#888">返回的 res 不含请求者本人</text>
+</svg>

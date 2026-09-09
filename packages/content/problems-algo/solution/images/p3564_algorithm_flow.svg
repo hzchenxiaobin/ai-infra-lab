@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="520" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：连表 → 映射季节 → 聚合 → 窗口编号 → 取冠军</text>
+
+  <!-- Step 1 -->
+  <rect x="90" y="40" width="360" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="58" text-anchor="middle" font-size="10" fill="#333">① 连表：sales ⋈ products（ON product_id）</text>
+  <text x="270" y="74" text-anchor="middle" font-size="10" fill="#666">明细行补出 category（维度表补维度）</text>
+  <path d="M 270 84 L 270 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="90" y="100" width="360" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="118" text-anchor="middle" font-size="10" fill="#333">② 季节映射：CASE WHEN MONTH(sale_date) IN (...)</text>
+  <text x="270" y="135" text-anchor="middle" font-size="9.5" fill="#b85450">只取月份——YEAR 不参与，跨年冬季自然合并</text>
+  <path d="M 270 150 L 270 162" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="90" y="166" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="184" text-anchor="middle" font-size="10" fill="#333">③ 聚合：GROUP BY season, category</text>
+  <text x="270" y="201" text-anchor="middle" font-size="9.5" fill="#666">SUM(quantity) · SUM(quantity × price)（行内乘积再求和）</text>
+  <path d="M 270 216 L 270 228" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="90" y="232" width="360" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="250" text-anchor="middle" font-size="10" fill="#333">④ 窗口编号：ROW_NUMBER() OVER (PARTITION BY season</text>
+  <text x="270" y="267" text-anchor="middle" font-size="9.5" fill="#666">ORDER BY 总量 DESC, 收入 DESC, 类别 ASC) AS rn</text>
+  <path d="M 270 282 L 270 294" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Side annotation: why nest for rn -->
+  <rect x="14" y="236" width="64" height="46" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="46" y="252" text-anchor="middle" font-size="8" fill="#666">rn 诞生于</text>
+  <text x="46" y="264" text-anchor="middle" font-size="8" fill="#666">SELECT 阶段</text>
+  <text x="46" y="276" text-anchor="middle" font-size="8" fill="#b85450">WHERE 够不着</text>
+
+  <!-- Decision diamond -->
+  <polygon points="270,298 392,334 270,370 148,334" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="338" text-anchor="middle" font-size="10.5" fill="#333">rn = 1 ?</text>
+
+  <path d="M 392 334 L 448 334" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="412" y="326" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="452" y="319" width="72" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="488" y="338" text-anchor="middle" font-size="9.5" fill="#b85450">丢弃（他名）</text>
+
+  <path d="M 270 370 L 270 382" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="284" y="380" font-size="9" fill="#4a7a3a">是</text>
+
+  <!-- Step 5 -->
+  <rect x="90" y="386" width="360" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="404" text-anchor="middle" font-size="10" fill="#333">⑤ 排序：ORDER BY season ASC</text>
+  <text x="270" y="420" text-anchor="middle" font-size="9.5" fill="#666">英文名字典序：Fall &lt; Spring &lt; Summer &lt; Winter</text>
+  <path d="M 270 430 L 270 442" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="90" y="446" width="360" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="465" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">输出：season | category | total_quantity | total_revenue</text>
+  <text x="270" y="482" text-anchor="middle" font-size="9.5" fill="#4a7a3a">（每季至多一行冠军，共 ≤ 4 行）</text>
+</svg>

@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="560" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：排序后逐咒语算阈值 → lower_bound → m − idx</text>
+
+  <!-- ===== Example 1 ===== -->
+  <text x="30" y="56" font-size="12" fill="#446688" font-weight="bold">示例 1：spells=[5,1,3], potions 排序=[1,2,3,4,5], m=5, success=7</text>
+  <text x="30" y="72" font-size="10.5" fill="#888">阈值 t = ⌈7 / s⌉；lower_bound 在排序药水中找首个 ≥ t 的下标</text>
+
+  <!-- potions bar -->
+  <g font-size="11">
+    <rect x="60" y="82" width="48" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="84" y="102" text-anchor="middle" fill="#333">1</text>
+    <rect x="110" y="82" width="48" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="134" y="102" text-anchor="middle" fill="#333">2</text>
+    <rect x="160" y="82" width="48" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="184" y="102" text-anchor="middle" fill="#333">3</text>
+    <rect x="210" y="82" width="48" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="234" y="102" text-anchor="middle" fill="#333">4</text>
+    <rect x="260" y="82" width="48" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="284" y="102" text-anchor="middle" fill="#333">5</text>
+  </g>
+  <text x="320" y="102" font-size="9.5" fill="#888">下标 0 1 2 3 4</text>
+
+  <!-- table header -->
+  <g font-size="10.5" fill="#888">
+    <rect x="30" y="120" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="135" text-anchor="middle">咒语 s</text>
+    <rect x="90" y="120" width="100" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="135" text-anchor="middle">阈值 t=⌈7/s⌉</text>
+    <rect x="190" y="120" width="130" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="135" text-anchor="middle">lower_bound(t)=idx</text>
+    <rect x="320" y="120" width="100" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="135" text-anchor="middle">count=m−idx</text>
+    <rect x="420" y="120" width="110" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="135" text-anchor="middle">成功药水段</text>
+  </g>
+
+  <!-- row s=5 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="144" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="159" text-anchor="middle" font-weight="bold">5</text>
+    <rect x="90" y="144" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="159" text-anchor="middle">2</text>
+    <rect x="190" y="144" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="159" text-anchor="middle">1（值=2）</text>
+    <rect x="320" y="144" width="100" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="159" text-anchor="middle" font-weight="bold" fill="#4a7a3a">4</text>
+    <rect x="420" y="144" width="110" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="159" text-anchor="middle" fill="#4a7a3a">[2,3,4,5]</text>
+  </g>
+
+  <!-- row s=1 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="168" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="183" text-anchor="middle" font-weight="bold">1</text>
+    <rect x="90" y="168" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="183" text-anchor="middle">7</text>
+    <rect x="190" y="168" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="183" text-anchor="middle">5（越界=末尾）</text>
+    <rect x="320" y="168" width="100" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="183" text-anchor="middle" font-weight="bold" fill="#b85450">0</text>
+    <rect x="420" y="168" width="110" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="183" text-anchor="middle" fill="#b85450">∅（全失败）</text>
+  </g>
+
+  <!-- row s=3 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="192" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="207" text-anchor="middle" font-weight="bold">3</text>
+    <rect x="90" y="192" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="207" text-anchor="middle">3</text>
+    <rect x="190" y="192" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="207" text-anchor="middle">2（值=3）</text>
+    <rect x="320" y="192" width="100" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="207" text-anchor="middle" font-weight="bold" fill="#4a7a3a">3</text>
+    <rect x="420" y="192" width="110" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="207" text-anchor="middle" fill="#4a7a3a">[3,4,5]</text>
+  </g>
+
+  <!-- answer 1 -->
+  <rect x="120" y="222" width="320" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="13" filter="url(#rough2)"/>
+  <text x="280" y="240" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">pairs = [4,0,3] ✓</text>
+
+  <!-- divider -->
+  <line x1="20" y1="262" x2="540" y2="262" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- ===== Example 2 ===== -->
+  <text x="30" y="288" font-size="12" fill="#4a7a3a" font-weight="bold">示例 2：spells=[3,1,2], potions=[8,5,8] 排序=[5,8,8], m=3, success=16</text>
+  <text x="30" y="304" font-size="10.5" fill="#888">注意原药水无序且有重复，排序后重复 8 仍各占一席</text>
+
+  <!-- potions bar -->
+  <g font-size="11">
+    <rect x="60" y="314" width="70" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="95" y="334" text-anchor="middle" fill="#333">5</text>
+    <rect x="132" y="314" width="70" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="167" y="334" text-anchor="middle" fill="#333">8</text>
+    <rect x="204" y="314" width="70" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="239" y="334" text-anchor="middle" fill="#333">8</text>
+  </g>
+  <text x="284" y="334" font-size="9.5" fill="#888">下标 0 1 2</text>
+
+  <!-- table header -->
+  <g font-size="10.5" fill="#888">
+    <rect x="30" y="352" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="367" text-anchor="middle">咒语 s</text>
+    <rect x="90" y="352" width="100" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="367" text-anchor="middle">阈值 t=⌈16/s⌉</text>
+    <rect x="190" y="352" width="130" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="367" text-anchor="middle">lower_bound(t)=idx</text>
+    <rect x="320" y="352" width="100" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="367" text-anchor="middle">count=m−idx</text>
+    <rect x="420" y="352" width="110" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="367" text-anchor="middle">成功药水段</text>
+  </g>
+
+  <!-- row s=3 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="376" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="391" text-anchor="middle" font-weight="bold">3</text>
+    <rect x="90" y="376" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="391" text-anchor="middle">6</text>
+    <rect x="190" y="376" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="391" text-anchor="middle">1（值=8）</text>
+    <rect x="320" y="376" width="100" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="391" text-anchor="middle" font-weight="bold" fill="#4a7a3a">2</text>
+    <rect x="420" y="376" width="110" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="391" text-anchor="middle" fill="#4a7a3a">[8,8]</text>
+  </g>
+
+  <!-- row s=1 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="400" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="415" text-anchor="middle" font-weight="bold">1</text>
+    <rect x="90" y="400" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="415" text-anchor="middle">16</text>
+    <rect x="190" y="400" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="415" text-anchor="middle">3（越界=末尾）</text>
+    <rect x="320" y="400" width="100" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="415" text-anchor="middle" font-weight="bold" fill="#b85450">0</text>
+    <rect x="420" y="400" width="110" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="415" text-anchor="middle" fill="#b85450">∅（全失败）</text>
+  </g>
+
+  <!-- row s=2 -->
+  <g font-size="11" fill="#333">
+    <rect x="30" y="424" width="60" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="60" y="439" text-anchor="middle" font-weight="bold">2</text>
+    <rect x="90" y="424" width="100" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="140" y="439" text-anchor="middle">8</text>
+    <rect x="190" y="424" width="130" height="22" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="255" y="439" text-anchor="middle">1（值=8）</text>
+    <rect x="320" y="424" width="100" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="370" y="439" text-anchor="middle" font-weight="bold" fill="#4a7a3a">2</text>
+    <rect x="420" y="424" width="110" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="475" y="439" text-anchor="middle" fill="#4a7a3a">[8,8]</text>
+  </g>
+
+  <!-- answer 2 -->
+  <rect x="120" y="454" width="320" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="13" filter="url(#rough2)"/>
+  <text x="280" y="472" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">pairs = [2,0,2] ✓</text>
+
+  <!-- footer -->
+  <rect x="30" y="494" width="500" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="514" text-anchor="middle" font-size="10.5" fill="#333">对比：阈值越小（咒语越强），lower_bound 越靠左，成功药水段越长</text>
+  <text x="280" y="531" text-anchor="middle" font-size="10.5" fill="#333">阈值大于最大药水（如示例中 t=7&gt;5、t=16&gt;8）时 idx=m，count=0</text>
+  <text x="280" y="548" text-anchor="middle" font-size="10.5" fill="#888">重复药水排序后各占一席，计数不丢——与「成功药水是后缀」一致</text>
+</svg>

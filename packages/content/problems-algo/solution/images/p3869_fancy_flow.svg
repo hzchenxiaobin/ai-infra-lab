@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：枚举 + 数位 DP + 容斥，与区间长度无关</text>
+
+  <!-- ①② 预处理流水线 -->
+  <g filter="url(#rough2)">
+    <rect x="160" y="38" width="240" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="280" y="56" text-anchor="middle" font-size="12" fill="#33506b" font-weight="bold">① 位掩码枚举 goods</text>
+    <text x="280" y="74" text-anchor="middle" font-size="10.5" fill="#333">递增 511 + 递减 1022，去重 1524 个</text>
+    <path d="M 280 82 L 280 98" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+
+    <rect x="160" y="102" width="240" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="280" y="120" text-anchor="middle" font-size="12" fill="#33506b" font-weight="bold">② 过滤出 good_sums</text>
+    <text x="280" y="138" text-anchor="middle" font-size="10.5" fill="#333">goods ∩ [1,144] → 103 个合法数位和</text>
+  </g>
+
+  <!-- ② → ③④ 分发，① → ④ 直供 goods -->
+  <g filter="url(#rough2)">
+    <path d="M 220 146 L 152 166" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="168" y="150" font-size="9" fill="#666">good_sums</text>
+    <path d="M 340 146 L 408 166" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="360" y="150" font-size="9" fill="#666">good_sums</text>
+    <path d="M 400 60 L 525 60 L 525 215 L 540 215" stroke="#999" stroke-width="1.3" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+    <text x="530" y="140" font-size="9" fill="#999" text-anchor="middle">goods</text>
+  </g>
+
+  <!-- ③ 数位 DP（左） -->
+  <g filter="url(#rough2)">
+    <rect x="25" y="170" width="250" height="150" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="150" y="190" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">③ 数位 DP：cnt(n)</text>
+    <text x="150" y="210" text-anchor="middle" font-size="10.5" fill="#333">逐位填 0..9，状态 (pos, sum, tight)</text>
+    <text x="150" y="228" text-anchor="middle" font-size="10.5" fill="#333">记忆化只存 tight=false 的 (pos,sum)</text>
+    <text x="150" y="246" text-anchor="middle" font-size="10.5" fill="#333">终态：sum ∈ good_sums 记 1</text>
+    <rect x="55" y="256" width="190" height="22" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+    <text x="150" y="271" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">A = cnt(r) − cnt(l−1)</text>
+    <text x="150" y="298" text-anchor="middle" font-size="10" fill="#2f5d24">状态 &lt; 5000，两趟合计 ≈ 5 万次转移</text>
+  </g>
+
+  <!-- ④ 扫描 goods（右，双菱形决策） -->
+  <g filter="url(#rough2)">
+    <rect x="300" y="170" width="235" height="150" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="417" y="190" text-anchor="middle" font-size="12" fill="#8a6d1a" font-weight="bold">④ 扫描 goods（每个 g）</text>
+    <polygon points="372,212 417,196 462,212 417,228" fill="#ffffff" stroke="#d6a040" stroke-width="1.4"/>
+    <text x="417" y="216" text-anchor="middle" font-size="10" fill="#333">g ∈ [l,r] ?</text>
+    <text x="365" y="208" font-size="9" fill="#999" text-anchor="end">否→下一个</text>
+    <path d="M 417 228 L 417 240" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <text x="424" y="238" font-size="9" fill="#666">是</text>
+    <text x="417" y="252" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">+1（B）</text>
+    <path d="M 417 256 L 417 264" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <polygon points="372,282 417,266 462,282 417,298" fill="#ffffff" stroke="#d6a040" stroke-width="1.4"/>
+    <text x="417" y="286" text-anchor="middle" font-size="10" fill="#333">Σg ∈ 好和 ?</text>
+    <text x="365" y="278" font-size="9" fill="#999" text-anchor="end">否→只留 +1</text>
+    <path d="M 417 298 L 417 308" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <text x="424" y="308" font-size="9" fill="#666">是</text>
+    <text x="417" y="317" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">−1（A∩B）</text>
+  </g>
+
+  <!-- ③④ → ⑤ 汇合 -->
+  <g filter="url(#rough2)">
+    <path d="M 150 320 L 150 342 L 218 352" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="140" y="338" font-size="10" fill="#2f5d24">A</text>
+    <path d="M 417 320 L 417 342 L 342 352" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="428" y="338" font-size="10" fill="#8a6d1a">B、A∩B</text>
+
+    <rect x="140" y="356" width="280" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="280" y="376" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">⑤ 容斥合并输出</text>
+    <text x="280" y="396" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">ans = A + B − A∩B</text>
+  </g>
+
+  <text x="470" y="385" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">全程 &lt; 10⁵ 次操作</text>
+  <text x="470" y="400" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">10¹⁵ 区间照秒杀</text>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 620"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="620" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：压缩 → 二分 T → O(m²) 倒放区间 DP 判可行</text>
+    <text x="310" y="42" text-anchor="middle" font-size="10.5" fill="#888">每轮 check(T) 把「完成时刻 ≤ T？」翻译成倒放中的截止约束，区间 DP 一趟判定</text>
+
+    <!-- step 1 -->
+    <rect x="60" y="56" width="500" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="310" y="72" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold">① 压缩：同楼层只留最晚到达 a（一次到访全处理）</text>
+    <text x="310" y="88" text-anchor="middle" font-size="9.5" fill="#33506b">排序得 F[0..m−1] 与 A[0..m−1]（m = 不同楼层数）</text>
+
+    <path d="M 310 96 V 112" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="60" y="112" width="500" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="310" y="130" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold">② 二分 T ∈ [lo, hi]：lo = max A（答案不早于最晚到达）</text>
+    <text x="310" y="148" text-anchor="middle" font-size="9.5" fill="#33506b">hi = lo + |start − F₀| + (F_{m−1} − F₀)（原地等到最晚再整趟扫，必可行）</text>
+
+    <path d="M 310 158 V 174" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+
+    <!-- step 3: check box -->
+    <rect x="40" y="174" width="540" height="196" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10"/>
+    <text x="310" y="194" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">③ check(T)——固定 T，倒放判定，O(m²)</text>
+    <text x="62" y="214" font-size="9.5" fill="#2f5527">a. 截止时刻 D[i] = T − A[i]；任一 D[i] &lt; 0（请求比 T 晚到）→ 直接不可行</text>
+    <text x="62" y="232" font-size="9.5" fill="#2f5527">b. 初始化 dp[i][i][0] = dp[i][i][1] = 0：倒放起点任选一个请求楼层</text>
+    <text x="80" y="248" font-size="8.5" fill="#6b7f99">（它就是正向里最后被处理的那个楼层；自己这关：0 ≤ D[i]）</text>
+    <text x="62" y="266" font-size="9.5" fill="#2f5527">c. 区间长度 len = 2 … m 逐层扩张：</text>
+    <text x="80" y="282" font-size="9.5" fill="#2f5527">dp[l][r][0] ← min( dp[l+1][r][0] + F[l+1]−F[l] ,  dp[l+1][r][1] + F[r]−F[l] )，须 ≤ D[l]</text>
+    <text x="80" y="298" font-size="9.5" fill="#2f5527">dp[l][r][1] ← min( dp[l][r−1][0] + F[r]−F[l] ,  dp[l][r−1][1] + F[r]−F[r−1] )，须 ≤ D[r]</text>
+    <text x="80" y="314" font-size="8.5" fill="#6b7f99">（新增楼层的首次到访时刻 = 扩张到达时刻，恰好是卡截止的位置）</text>
+    <text x="62" y="332" font-size="9.5" fill="#2f5527">d. 访问完所有楼层后回 start：min( dp[0][m−1][0] + |F₀−start| ,</text>
+    <text x="300" y="348" font-size="9.5" fill="#2f5527">dp[0][m−1][1] + |F_{m−1}−start| ) ≤ T ？</text>
+    <text x="62" y="364" font-size="8.5" fill="#6b7f99">（早到 start 可原地等 ⇒ 只须「≤ T」；两个端点都试）</text>
+
+    <!-- decision -->
+    <path d="M 310 370 V 392" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+    <polygon points="310,392 400,424 310,456 220,424" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="310" y="420" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">T 可行？</text>
+    <text x="310" y="436" text-anchor="middle" font-size="8.5" fill="#8a6d1f">（check 的返回值）</text>
+
+    <!-- yes branch -->
+    <path d="M 400 424 H 520 V 135" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+    <rect x="428" y="470" width="144" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="500" y="485" text-anchor="middle" font-size="9.5" fill="#2f5527" font-weight="bold">可行 → hi = mid</text>
+    <text x="500" y="498" text-anchor="middle" font-size="8.5" fill="#2f5527">T 也许还能更小</text>
+    <path d="M 352 447 L 460 470" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrB)" fill="none" stroke-dasharray="6 4"/>
+    <text x="404" y="462" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <!-- no branch -->
+    <path d="M 220 424 H 100 V 135" stroke="#b85450" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+    <rect x="48" y="470" width="144" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="120" y="485" text-anchor="middle" font-size="9.5" fill="#8a3a35" font-weight="bold">不可行 → lo = mid+1</text>
+    <text x="120" y="498" text-anchor="middle" font-size="8.5" fill="#8a3a35">T 必须更大</text>
+    <path d="M 268 447 L 162 470" stroke="#b85450" stroke-width="2" marker-end="url(#arrB)" fill="none" stroke-dasharray="6 4"/>
+    <text x="216" y="462" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">否</text>
+
+    <!-- finish -->
+    <path d="M 310 456 V 522" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" fill="none"/>
+    <text x="322" y="492" font-size="9" fill="#6b7f99">lo == hi 时收敛</text>
+    <rect x="180" y="522" width="260" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10"/>
+    <text x="310" y="540" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold">输出 lo：处理所有请求的最短时间</text>
+    <text x="310" y="553" text-anchor="middle" font-size="8.5" fill="#a87020">（示例 3：T=8 可行、T=7 卡在收尾回 start，答案 8）</text>
+
+    <!-- complexity -->
+    <rect x="40" y="572" width="540" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10"/>
+    <text x="310" y="588" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold">复杂度：check O(m²) × 二分 O(log V) = O(m² log V)</text>
+    <text x="310" y="603" text-anchor="middle" font-size="8.5" fill="#33506b">V = 值域 ≈ 4×10⁹（log V ≈ 32）；m = 750 时 C++ 约 45ms、numpy 向量化约 0.5s；答案 ≤ 3×10⁹ 必须 64 位</text>
+  </g>
+</svg>

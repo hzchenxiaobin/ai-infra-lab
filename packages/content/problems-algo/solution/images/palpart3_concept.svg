@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两阶段 DP：预处理代价表 + 分组 DP</text>
+
+  <!-- Top: string split into k segments -->
+  <text x="40" y="58" font-size="12" fill="#888">s =</text>
+  <rect x="80" y="44" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="105" y="64" text-anchor="middle" font-size="13" fill="#333">a</text>
+  <rect x="130" y="44" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="155" y="64" text-anchor="middle" font-size="13" fill="#333">a</text>
+  <rect x="190" y="44" width="50" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="64" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="240" y="44" width="50" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="265" y="64" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="300" y="44" width="50" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="325" y="64" text-anchor="middle" font-size="13" fill="#333">c</text>
+
+  <!-- Split markers -->
+  <path d="M 180 40 L 180 78" stroke="#b85450" stroke-width="2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <path d="M 290 40 L 290 78" stroke="#b85450" stroke-width="2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- Segment labels -->
+  <text x="155" y="92" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">段1 "aa"</text>
+  <text x="240" y="92" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">段2 "bb"</text>
+  <text x="325" y="92" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">段3 "c"</text>
+  <text x="155" y="104" text-anchor="middle" font-size="9.5" fill="#888">cost=0</text>
+  <text x="240" y="104" text-anchor="middle" font-size="9.5" fill="#888">cost=0</text>
+  <text x="325" y="104" text-anchor="middle" font-size="9.5" fill="#888">cost=0</text>
+
+  <!-- Divider -->
+  <path d="M 40 120 L 520 120" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Phase 1 box -->
+  <rect x="40" y="136" width="220" height="100" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="150" y="158" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">Phase 1：预处理代价表</text>
+  <text x="150" y="178" text-anchor="middle" font-size="11" fill="#555">cost[i][j] = 把 s[i..j]</text>
+  <text x="150" y="194" text-anchor="middle" font-size="11" fill="#555">改成回文的最少修改次数</text>
+  <text x="150" y="214" text-anchor="middle" font-size="10.5" fill="#888">递推：cost[i][j] = cost[i+1][j-1]</text>
+  <text x="150" y="228" text-anchor="middle" font-size="10.5" fill="#888">           + (s[i] ≠ s[j])</text>
+
+  <!-- Arrow Phase1 -> Phase2 -->
+  <path d="M 260 186 L 290 186" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Phase 2 box -->
+  <rect x="300" y="136" width="220" height="100" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="158" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">Phase 2：分组 DP</text>
+  <text x="410" y="178" text-anchor="middle" font-size="11" fill="#555">dp[i][j] = s[0..i-1] 分成</text>
+  <text x="410" y="194" text-anchor="middle" font-size="11" fill="#555">j 段回文的最少修改次数</text>
+  <text x="410" y="214" text-anchor="middle" font-size="10.5" fill="#888">枚举最后一刀 m：</text>
+  <text x="410" y="228" text-anchor="middle" font-size="10.5" fill="#888">dp[i][j]=min(dp[m][j-1]+cost[m][i-1])</text>
+
+  <!-- Arrow down -->
+  <path d="M 410 240 L 410 264" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Answer box -->
+  <rect x="290" y="268" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="293" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">答案 = dp[n][k]</text>
+
+  <!-- Bottom note -->
+  <rect x="60" y="330" width="440" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">与 132 分割回文串 II 的对照</text>
+  <text x="280" y="372" text-anchor="middle" font-size="10.5" fill="#555">132：段代价 = 是否回文（0/1），求最少切割次数</text>
+  <text x="280" y="388" text-anchor="middle" font-size="10.5" fill="#555">1278：段代价 = 改成回文的修改数，固定分 k 段</text>
+</svg>

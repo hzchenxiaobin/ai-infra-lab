@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：PARTITION BY 分组 → DENSE_RANK 打组内名次 → WHERE rk≤3 筛前三档</text>
+
+  <!-- ===== Step 1: Employee + Department input ===== -->
+  <text x="105" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Employee JOIN Department</text>
+  <rect x="40" y="64" width="140" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="56" y="79" font-size="9" fill="#333">id</text>
+  <text x="84" y="79" font-size="9" fill="#333">name</text>
+  <text x="122" y="79" font-size="9" fill="#333">salary</text>
+  <text x="162" y="79" font-size="9" fill="#333">dId</text>
+  <line x1="68" y1="64" x2="68" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="104" y1="64" x2="104" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="142" y1="64" x2="142" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="40" y="86" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="99" font-size="9" fill="#333">4</text>
+  <text x="84" y="99" font-size="9" fill="#333">Max</text>
+  <text x="122" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">90k</text>
+  <text x="162" y="99" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="104" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="117" font-size="9" fill="#333">1</text>
+  <text x="84" y="117" font-size="9" fill="#333">Joe</text>
+  <text x="122" y="117" font-size="9" fill="#333">85k</text>
+  <text x="162" y="117" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="122" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="135" font-size="9" fill="#333">6</text>
+  <text x="84" y="135" font-size="9" fill="#333">Randy</text>
+  <text x="122" y="135" font-size="9" fill="#333">85k</text>
+  <text x="162" y="135" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="140" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="153" font-size="9" fill="#333">7</text>
+  <text x="84" y="153" font-size="9" fill="#333">Will</text>
+  <text x="122" y="153" font-size="9" fill="#333">70k</text>
+  <text x="162" y="153" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="158" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="171" font-size="9" fill="#333">5</text>
+  <text x="84" y="171" font-size="9" fill="#333">Janet</text>
+  <text x="122" y="171" font-size="9" fill="#888">69k</text>
+  <text x="162" y="171" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="178" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="191" font-size="9" fill="#333">2</text>
+  <text x="84" y="191" font-size="9" fill="#333">Henry</text>
+  <text x="122" y="191" font-size="9" fill="#d6a040" font-weight="bold">80k</text>
+  <text x="162" y="191" font-size="9" fill="#333">2</text>
+
+  <rect x="40" y="196" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="56" y="209" font-size="9" fill="#333">3</text>
+  <text x="84" y="209" font-size="9" fill="#333">Sam</text>
+  <text x="122" y="209" font-size="9" fill="#333">60k</text>
+  <text x="162" y="209" font-size="9" fill="#333">2</text>
+  <line x1="68" y1="86" x2="68" y2="214" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="104" y1="86" x2="104" y2="214" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="142" y1="86" x2="142" y2="214" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="110" y="232" text-anchor="middle" font-size="9" fill="#888">绿=IT(dId 1) / 橙=Sales(dId 2)</text>
+
+  <!-- Arrow: Employee -> DENSE_RANK window -->
+  <path d="M180 139 L236 139" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="208" y="132" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">DENSE_RANK</text>
+  <text x="208" y="150" text-anchor="middle" font-size="8" fill="#446688">OVER(...)</text>
+
+  <!-- ===== Step 2: window function output (with rk column) ===== -->
+  <text x="340" y="58" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">② 窗口函数打名次（不跳号）</text>
+  <rect x="250" y="64" width="180" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="266" y="79" font-size="9" fill="#333">name</text>
+  <text x="306" y="79" font-size="9" fill="#333">salary</text>
+  <text x="346" y="79" font-size="9" fill="#333">dId</text>
+  <text x="395" y="79" font-size="9" fill="#b85450" font-weight="bold">rk</text>
+  <line x1="286" y1="64" x2="286" y2="86" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="326" y1="64" x2="326" y2="86" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="366" y1="64" x2="366" y2="86" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="250" y="86" width="180" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">Max</text>
+  <text x="306" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">90k</text>
+  <text x="346" y="99" font-size="9" fill="#333">1</text>
+  <text x="395" y="99" font-size="10" fill="#b85450" font-weight="bold">1</text>
+
+  <rect x="250" y="104" width="180" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="117" font-size="9" fill="#333">Joe</text>
+  <text x="306" y="117" font-size="9" fill="#333">85k</text>
+  <text x="346" y="117" font-size="9" fill="#333">1</text>
+  <text x="395" y="117" font-size="10" fill="#b85450" font-weight="bold">2</text>
+
+  <rect x="250" y="122" width="180" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="135" font-size="9" fill="#333">Randy</text>
+  <text x="306" y="135" font-size="9" fill="#333">85k</text>
+  <text x="346" y="135" font-size="9" fill="#333">1</text>
+  <text x="395" y="135" font-size="10" fill="#b85450" font-weight="bold">2</text>
+
+  <rect x="250" y="140" width="180" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="153" font-size="9" fill="#333">Will</text>
+  <text x="306" y="153" font-size="9" fill="#333">70k</text>
+  <text x="346" y="153" font-size="9" fill="#333">1</text>
+  <text x="395" y="153" font-size="10" fill="#b85450" font-weight="bold">3</text>
+
+  <rect x="250" y="158" width="180" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="171" font-size="9" fill="#888">Janet</text>
+  <text x="306" y="171" font-size="9" fill="#888">69k</text>
+  <text x="346" y="171" font-size="9" fill="#333">1</text>
+  <text x="395" y="171" font-size="10" fill="#888">4</text>
+
+  <rect x="250" y="178" width="180" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="191" font-size="9" fill="#d6a040" font-weight="bold">Henry</text>
+  <text x="306" y="191" font-size="9" fill="#d6a040" font-weight="bold">80k</text>
+  <text x="346" y="191" font-size="9" fill="#333">2</text>
+  <text x="395" y="191" font-size="10" fill="#b85450" font-weight="bold">1</text>
+
+  <rect x="250" y="196" width="180" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="266" y="209" font-size="9" fill="#333">Sam</text>
+  <text x="306" y="209" font-size="9" fill="#333">60k</text>
+  <text x="346" y="209" font-size="9" fill="#333">2</text>
+  <text x="395" y="209" font-size="10" fill="#b85450" font-weight="bold">2</text>
+  <line x1="286" y1="86" x2="286" y2="214" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="326" y1="86" x2="326" y2="214" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="366" y1="86" x2="366" y2="214" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="340" y="232" text-anchor="middle" font-size="9" fill="#888">Joe/Randy 同 85k → 同 rk=2，不跳号</text>
+
+  <!-- Arrow: window output -> WHERE rk<=3 -->
+  <path d="M430 139 L486 139" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="458" y="132" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">WHERE</text>
+  <text x="458" y="150" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">rk ≤ 3</text>
+
+  <!-- ===== Step 3: filter result ===== -->
+  <text x="555" y="58" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ 前三档入选</text>
+  <rect x="490" y="64" width="130" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="510" y="79" font-size="9" fill="#333">Dept</text>
+  <text x="545" y="79" font-size="9" fill="#333">Emp</text>
+  <text x="590" y="79" font-size="9" fill="#333">Sal</text>
+  <line x1="528" y1="64" x2="528" y2="86" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="568" y1="64" x2="568" y2="86" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="490" y="86" width="130" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">IT</text>
+  <text x="545" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">Max</text>
+  <text x="590" y="99" font-size="9" fill="#4a7a3a" font-weight="bold">90k</text>
+
+  <rect x="490" y="104" width="130" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="117" font-size="9" fill="#4a7a3a" font-weight="bold">IT</text>
+  <text x="545" y="117" font-size="9" fill="#4a7a3a" font-weight="bold">Joe</text>
+  <text x="590" y="117" font-size="9" fill="#4a7a3a" font-weight="bold">85k</text>
+
+  <rect x="490" y="122" width="130" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="135" font-size="9" fill="#4a7a3a" font-weight="bold">IT</text>
+  <text x="545" y="135" font-size="9" fill="#4a7a3a" font-weight="bold">Randy</text>
+  <text x="590" y="135" font-size="9" fill="#4a7a3a" font-weight="bold">85k</text>
+
+  <rect x="490" y="140" width="130" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="153" font-size="9" fill="#4a7a3a" font-weight="bold">IT</text>
+  <text x="545" y="153" font-size="9" fill="#4a7a3a" font-weight="bold">Will</text>
+  <text x="590" y="153" font-size="9" fill="#4a7a3a" font-weight="bold">70k</text>
+
+  <rect x="490" y="160" width="130" height="16" fill="#fafafa" stroke="#bbb" stroke-width="0.8" stroke-dasharray="3,2" rx="3" filter="url(#rough2)"/>
+  <text x="555" y="171" text-anchor="middle" font-size="8" fill="#888">Janet rk=4 ✗ 排除</text>
+
+  <rect x="490" y="178" width="130" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="191" font-size="9" fill="#d6a040" font-weight="bold">Sales</text>
+  <text x="545" y="191" font-size="9" fill="#d6a040" font-weight="bold">Henry</text>
+  <text x="590" y="191" font-size="9" fill="#d6a040" font-weight="bold">80k</text>
+
+  <rect x="490" y="196" width="130" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="209" font-size="9" fill="#d6a040" font-weight="bold">Sales</text>
+  <text x="545" y="209" font-size="9" fill="#d6a040" font-weight="bold">Sam</text>
+  <text x="590" y="209" font-size="9" fill="#d6a040" font-weight="bold">60k</text>
+  <line x1="528" y1="86" x2="528" y2="214" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="568" y1="86" x2="568" y2="214" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- PARTITION BY + ORDER BY annotation box -->
+  <rect x="248" y="250" width="184" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="5,3" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="268" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">DENSE_RANK() OVER (</text>
+  <text x="340" y="282" text-anchor="middle" font-size="9" fill="#446688">PARTITION BY departmentId</text>
+  <text x="340" y="296" text-anchor="middle" font-size="9" fill="#446688">ORDER BY salary DESC)</text>
+
+  <!-- key insight box -->
+  <rect x="40" y="330" width="580" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="350" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">关键：前三高 = 前 3 个「不同」工资值 → DENSE_RANK（按不同值计数、不跳号）</text>
+  <text x="60" y="370" font-size="9" fill="#555">• 同薪同号：Joe/Randy 同 85k → 共用 rk=2，并列不挤占名额</text>
+  <text x="60" y="386" font-size="9" fill="#555">• 不跳号：Will 是第 3 个不同值 → rk=3（若用 RANK 会跳到 4 被漏掉）</text>
+  <text x="60" y="402" font-size="9" fill="#555">• 不足 3 档：Sales 仅 2 个不同工资 → 全部入选（rk=1,2 均 ≤3）</text>
+
+  <text x="320" y="432" text-anchor="middle" font-size="9" fill="#888">184（Top-1）把 RANK()=1 改为 DENSE_RANK()≤K 即得任意分组 Top-K</text>
+  <text x="320" y="448" text-anchor="middle" font-size="9" fill="#888">窗口函数晚于 WHERE → 需套子查询后在外层 WHERE rk≤3 过滤</text>
+</svg>

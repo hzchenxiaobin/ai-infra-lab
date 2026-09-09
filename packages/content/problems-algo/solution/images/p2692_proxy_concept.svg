@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="350" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">Proxy 核心机制：原对象套壳，读走 get（嵌套懒递归），写/删恒抛 TypeError</text>
+
+  <!-- 原对象 -->
+  <text x="85" y="78" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">原对象 obj</text>
+  <rect x="30" y="90" width="110" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="85" y="112" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">{</text>
+  <text x="50" y="128" font-size="11" fill="#333" filter="url(#rough2)">x: 5,</text>
+  <text x="50" y="146" font-size="11" fill="#333" filter="url(#rough2)">arr:[1,2,3]</text>
+  <text x="120" y="166" text-anchor="end" font-size="11" fill="#333" filter="url(#rough2)">}</text>
+
+  <!-- 套壳箭头 -->
+  <path d="M 142 133 L 206 133" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="174" y="126" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">套壳</text>
+
+  <!-- Proxy 代理对象 -->
+  <rect x="210" y="70" width="190" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" stroke-dasharray="6 4" filter="url(#rough2)"/>
+  <text x="305" y="90" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">Proxy 代理对象</text>
+  <text x="305" y="104" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">new Proxy(obj, handler)</text>
+
+  <!-- get chip -->
+  <rect x="226" y="116" width="158" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="305" y="133" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">get：透传 + 懒递归</text>
+  <text x="305" y="148" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">嵌套对象 → makeImmutable</text>
+
+  <!-- set chip -->
+  <rect x="226" y="164" width="158" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="305" y="186" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">set：不调 Reflect.set</text>
+
+  <!-- deleteProperty chip -->
+  <rect x="226" y="206" width="158" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="305" y="228" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">deleteProperty：拦截删除</text>
+
+  <!-- get outcome arrow (green) -->
+  <path d="M 384 135 L 452 135" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <rect x="456" y="118" width="132" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="522" y="134" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">返回值</text>
+  <text x="522" y="146" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">基本类型 / 递归代理</text>
+
+  <!-- set outcome arrow (red) -->
+  <path d="M 384 181 L 452 181" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="456" y="166" width="132" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="522" y="185" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">✗ 抛 TypeError</text>
+
+  <!-- delete outcome arrow (red) -->
+  <path d="M 384 223 L 452 223" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="456" y="208" width="132" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="522" y="227" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">✗ 抛 TypeError</text>
+
+  <!-- 不变式注释 -->
+  <rect x="210" y="288" width="380" height="40" fill="#fafafa" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="400" y="305" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">不变式：经此代理读→基本值或同守此式的嵌套代理；写/删→必抛错</text>
+  <text x="400" y="320" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">原对象毫发无损 · 非侵入 · 懒递归保证深不可变</text>
+</svg>

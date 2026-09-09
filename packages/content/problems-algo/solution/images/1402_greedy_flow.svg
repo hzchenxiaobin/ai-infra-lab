@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">贪心递推：从右往左累加后缀和 suf，total += suf</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">f(i) = suf[i] + f(i+1)，suf 单调不增 ⇒ 收益单峰，取峰值</text>
+
+  <!-- formula box top-right -->
+  <rect x="420" y="60" width="180" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="510" y="82" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">递推关系</text>
+  <text x="510" y="100" text-anchor="middle" font-size="12" fill="#333">f(i) = suf[i] + f(i+1)</text>
+  <text x="510" y="112" text-anchor="middle" font-size="10" fill="#888">边界 f(n) = 0</text>
+
+  <!-- ===== Array at top ===== -->
+  <text x="40" y="78" font-size="11" fill="#446688" font-weight="bold">升序 s = [-9, -8, -1, 0, 5]</text>
+  <g font-size="11">
+    <rect x="40" y="86" width="44" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="62" y="105" text-anchor="middle" fill="#333">-9</text>
+    <rect x="88" y="86" width="44" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="110" y="105" text-anchor="middle" fill="#333">-8</text>
+    <rect x="136" y="86" width="44" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="158" y="105" text-anchor="middle" fill="#d6a040" font-weight="bold">-1</text>
+    <rect x="184" y="86" width="44" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="206" y="105" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="232" y="86" width="44" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+    <text x="254" y="105" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+  </g>
+  <!-- index labels -->
+  <g font-size="9" fill="#888">
+    <text x="62" y="124" text-anchor="middle">i=0</text>
+    <text x="110" y="124" text-anchor="middle">i=1</text>
+    <text x="158" y="124" text-anchor="middle">i=2</text>
+    <text x="206" y="124" text-anchor="middle">i=3</text>
+    <text x="254" y="124" text-anchor="middle">i=4</text>
+  </g>
+  <!-- reverse direction arrow -->
+  <path d="M 250 132 L 66 132" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="158" y="146" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">反向扫描 i: 4 → 0</text>
+
+  <!-- ===== Step rows: i, s[i], suf, total ===== -->
+  <!-- header -->
+  <g font-size="11" fill="#444" font-weight="bold">
+    <text x="80" y="172" text-anchor="middle">步骤 i</text>
+    <text x="180" y="172" text-anchor="middle">s[i]</text>
+    <text x="290" y="172" text-anchor="middle">suf (后缀和)</text>
+    <text x="410" y="172" text-anchor="middle">total = suf+旧total</text>
+    <text x="540" y="172" text-anchor="middle">动作</text>
+  </g>
+  <line x1="40" y1="180" x2="590" y2="180" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- step rows -->
+  <g font-size="11" fill="#333">
+    <!-- i=4 -->
+    <text x="80" y="204" text-anchor="middle">4</text>
+    <text x="180" y="204" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <text x="290" y="204" text-anchor="middle">0+5 = 5</text>
+    <text x="410" y="204" text-anchor="middle">0+5 = 5</text>
+    <text x="540" y="204" text-anchor="middle" fill="#4a7a3a">保留(↑)</text>
+    <!-- i=3 -->
+    <text x="80" y="228" text-anchor="middle">3</text>
+    <text x="180" y="228" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <text x="290" y="228" text-anchor="middle">5+0 = 5</text>
+    <text x="410" y="228" text-anchor="middle">5+5 = 10</text>
+    <text x="540" y="228" text-anchor="middle" fill="#4a7a3a">保留(↑)</text>
+    <!-- i=2 highlight (peak) -->
+    <rect x="44" y="236" width="546" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" fill-opacity="0.5" filter="url(#rough2)"/>
+    <text x="80" y="252" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+    <text x="180" y="252" text-anchor="middle" fill="#d6a040" font-weight="bold">-1</text>
+    <text x="290" y="252" text-anchor="middle" fill="#b85450" font-weight="bold">5+(-1) = 4</text>
+    <text x="410" y="252" text-anchor="middle" fill="#b85450" font-weight="bold">10+4 = 14 ★峰值</text>
+    <text x="540" y="252" text-anchor="middle" fill="#4a7a3a">保留(suf&gt;0)</text>
+    <!-- i=1 -->
+    <text x="80" y="276" text-anchor="middle">1</text>
+    <text x="180" y="276" text-anchor="middle" fill="#888" font-weight="bold">-8</text>
+    <text x="290" y="276" text-anchor="middle">4+(-8) = -4</text>
+    <text x="410" y="276" text-anchor="middle">14+(-4) = 10</text>
+    <text x="540" y="276" text-anchor="middle" fill="#b85450">应丢(suf≤0)</text>
+    <!-- i=0 -->
+    <text x="80" y="300" text-anchor="middle">0</text>
+    <text x="180" y="300" text-anchor="middle" fill="#888" font-weight="bold">-9</text>
+    <text x="290" y="300" text-anchor="middle">-4+(-9) = -13</text>
+    <text x="410" y="300" text-anchor="middle">10+(-13) = -3</text>
+    <text x="540" y="300" text-anchor="middle" fill="#b85450">丢(更负)</text>
+  </g>
+
+  <!-- ans box -->
+  <rect x="40" y="330" width="546" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="313" y="356" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">ans = max(0, 5, 10, 14, 10, -3) = 14</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="384" width="546" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="313" y="404" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">判据：加入 s[i] 后 total 增量 = suf[i]</text>
+  <text x="313" y="420" text-anchor="middle" font-size="10" fill="#888">suf &gt; 0 ⇒ 保留赚；suf ≤ 0 ⇒ 丢；suf 单调不增 ⇒ 峰值后即可剪枝停</text>
+</svg>

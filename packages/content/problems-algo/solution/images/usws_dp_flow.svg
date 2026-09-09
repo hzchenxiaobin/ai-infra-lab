@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 490" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="440" height="490" fill="#fafafa"/>
+
+  <text x="220" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">环绕串唯一子串：扫描 p 维护 len，更新 dp[末字符]</text>
+
+  <!-- 初始化 -->
+  <rect x="110" y="42" width="220" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="64" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="220" y="82" text-anchor="middle" font-size="11" fill="#555">dp[0..25] = 0；len = 0</text>
+
+  <path d="M 220 96 L 220 114" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- for 循环 -->
+  <rect x="90" y="118" width="260" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="138" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for i = 0 to n−1</text>
+  <text x="220" y="154" text-anchor="middle" font-size="11" fill="#555">逐字符扫描 p</text>
+
+  <path d="M 220 164 L 220 184" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="220,189 350,238 220,287 90,238" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="220" y="230" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i &gt; 0 且</text>
+  <text x="220" y="248" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">(p[i]−p[i−1]+26)%26==1 ?</text>
+  <text x="220" y="266" text-anchor="middle" font-size="10" fill="#777">p[i] 是否为 p[i−1] 的循环后继</text>
+
+  <!-- Yes 分支 -->
+  <path d="M 90 238 L 40 238 L 40 304" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="52" y="229" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+
+  <rect x="-8" y="308" width="100" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="42" y="328" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">延续</text>
+  <text x="42" y="346" text-anchor="middle" font-size="10.5" fill="#555">len += 1</text>
+  <text x="42" y="362" text-anchor="middle" font-size="9.5" fill="#82b366">（接上之前的</text>
+  <text x="42" y="374" text-anchor="middle" font-size="9.5" fill="#82b366">合法段）</text>
+
+  <!-- No 分支 -->
+  <path d="M 350 238 L 400 238 L 400 304" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="364" y="229" font-size="11" fill="#b85450" font-weight="bold">No</text>
+
+  <rect x="348" y="308" width="92" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="394" y="328" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">中断/首字符</text>
+  <text x="394" y="346" text-anchor="middle" font-size="10.5" fill="#555">len = 1</text>
+  <text x="394" y="362" text-anchor="middle" font-size="9.5" fill="#b85450">（单字符永远</text>
+  <text x="394" y="374" text-anchor="middle" font-size="9.5" fill="#b85450">合法，重新起段）</text>
+
+  <!-- 两支汇合到更新 dp -->
+  <path d="M 42 386 L 42 408 L 180 408" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <path d="M 394 386 L 394 408 L 262 408" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+
+  <!-- 更新 dp -->
+  <rect x="90" y="392" width="260" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="416" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">dp[p[i]−'a'] = max(dp[p[i]−'a'], len)</text>
+
+  <!-- 回到循环 -->
+  <path d="M 220 432 L 220 452 L 420 452 L 420 140 L 352 140" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="430" y="300" font-size="9.5" fill="#888" font-style="italic" transform="rotate(-90 430 300)">下一字符</text>
+
+  <text x="220" y="476" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">循环结束 → return Σdp[c]　O(n) 时间 / O(1) 空间</text>
+</svg>

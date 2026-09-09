@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：分层 Dijkstra——堆元素 (d, node, excluded)</text>
+
+  <!-- 初始化 -->
+  <rect x="110" y="32" width="300" height="46" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="50" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">建无向邻接表 · dist[v][j] ← ∞ · dist[0][0] ← 0</text>
+  <text x="260" y="68" text-anchor="middle" font-size="10.5" fill="#33506b" filter="url(#rough2)">堆压入三元组 (0, 0, 0) = (d, node, excluded)</text>
+
+  <line x1="260" y1="78" x2="260" y2="92" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 弹堆 -->
+  <rect x="150" y="92" width="220" height="28" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="110" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">弹出堆顶 (d, u, j)</text>
+
+  <line x1="260" y1="120" x2="260" y2="126" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+
+  <!-- 菱形：过期判断 -->
+  <polygon points="175,152 260,126 345,152 260,178" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="148" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">d &gt; dist[u][j]？</text>
+  <text x="260" y="164" text-anchor="middle" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">（过期堆项）</text>
+
+  <path d="M 345 152 L 415 152 L 415 106 L 374 106" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="380" y="145" text-anchor="middle" font-size="10" fill="#8a6d1f" filter="url(#rough2)">是·丢弃</text>
+
+  <line x1="260" y1="178" x2="260" y2="192" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="190" font-size="10" fill="#33506b" filter="url(#rough2)">否</text>
+
+  <!-- 双重松弛 -->
+  <rect x="95" y="192" width="330" height="60" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="210" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">对 u 的每条邻接边 (v, w)：</text>
+  <text x="260" y="227" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">① d + w &lt; dist[v][j] → 付费入堆（层内）</text>
+  <text x="260" y="244" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">② j=0 且 d &lt; dist[v][1] → 免费 = d 入堆（跨层·排除此边）</text>
+
+  <!-- 回到弹堆 -->
+  <path d="M 95 222 L 55 222 L 55 106 L 146 106" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="46" y="196" transform="rotate(-90 46 196)" font-size="10" fill="#33506b" filter="url(#rough2)">堆非空 · 继续弹出</text>
+
+  <line x1="260" y1="252" x2="260" y2="268" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="266" font-size="10" fill="#33506b" filter="url(#rough2)">堆空</text>
+
+  <!-- 菱形：可达性 -->
+  <polygon points="165,298 260,270 355,298 260,326" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">dist[n−1][1] = ∞？</text>
+
+  <line x1="165" y1="298" x2="124" y2="298" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="145" y="290" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="30" y="283" width="94" height="30" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="77" y="302" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 −1</text>
+
+  <line x1="355" y1="298" x2="396" y2="298" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="376" y="290" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">否</text>
+  <rect x="398" y="280" width="100" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="448" y="295" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">返回答案</text>
+  <text x="448" y="309" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">dist[n−1][1]</text>
+
+  <text x="260" y="350" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">堆中至多 n + 2m 个三元组 ⇒ 时间 O((n+m) log n)，空间 O(n + m)</text>
+</svg>

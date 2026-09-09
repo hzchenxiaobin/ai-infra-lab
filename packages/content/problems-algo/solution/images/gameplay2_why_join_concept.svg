@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">为什么 GROUP BY + MIN 不够？需要定位回原行取 device_id</text>
+
+  <!-- Activity source table (top) -->
+  <text x="170" y="56" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Activity（源表，含 device_id）</text>
+  <rect x="30" y="62" width="280" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="78" font-size="9.5" fill="#333">player_id</text>
+  <text x="120" y="78" font-size="9.5" fill="#b85450" font-weight="bold">device_id</text>
+  <text x="200" y="78" font-size="9.5" fill="#333">event_date</text>
+  <text x="278" y="78" font-size="9.5" fill="#333">games</text>
+  <line x1="90" y1="62" x2="90" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="160" y1="62" x2="160" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="250" y1="62" x2="250" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="30" y="86" width="280" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="100" font-size="9.5" fill="#333">1</text>
+  <text x="120" y="100" font-size="9.5" fill="#b85450" font-weight="bold">2</text>
+  <text x="200" y="100" font-size="9.5" fill="#b85450" font-weight="bold">2016-03-01</text>
+  <text x="278" y="100" font-size="9.5" fill="#333">5</text>
+  <line x1="90" y1="86" x2="90" y2="106" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="160" y1="86" x2="160" y2="106" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="250" y1="86" x2="250" y2="106" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="30" y="106" width="280" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="120" font-size="9.5" fill="#333">1</text>
+  <text x="120" y="120" font-size="9.5" fill="#999">2</text>
+  <text x="200" y="120" font-size="9.5" fill="#999">2016-05-02</text>
+  <text x="278" y="120" font-size="9.5" fill="#333">6</text>
+  <line x1="90" y1="106" x2="90" y2="126" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="160" y1="106" x2="160" y2="126" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="250" y1="106" x2="250" y2="126" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- arrow down to GROUP BY -->
+  <path d="M170 130 L170 150" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- GROUP BY step: loses device_id -->
+  <rect x="40" y="152" width="260" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="174" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">GROUP BY player_id + MIN(event_date)</text>
+  <text x="170" y="192" text-anchor="middle" font-size="9.5" fill="#555">只得到 player_id, min_date 两列</text>
+
+  <!-- result of GROUP BY (only 2 cols) -->
+  <rect x="40" y="212" width="120" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="60" y="228" font-size="9.5" fill="#333">player_id</text>
+  <text x="120" y="228" font-size="9.5" fill="#333">min_date</text>
+  <line x1="100" y1="212" x2="100" y2="236" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <rect x="40" y="236" width="120" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="250" font-size="9.5" fill="#333">1</text>
+  <text x="120" y="250" font-size="9.5" fill="#333">2016-03-01</text>
+  <line x1="100" y1="236" x2="100" y2="256" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- red X: device_id lost -->
+  <text x="185" y="248" font-size="20" fill="#b85450" font-weight="bold">✗</text>
+  <text x="210" y="244" font-size="9.5" fill="#b85450" font-weight="bold">device_id 丢了！</text>
+  <text x="210" y="258" font-size="9" fill="#b85450">聚合压行，非分组列消失</text>
+
+  <!-- arrow right: JOIN back -->
+  <path d="M170 262 L170 282" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- JOIN back step -->
+  <rect x="30" y="284" width="280" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="306" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">JOIN 回 Activity ON player_id + event_date=min_date</text>
+  <text x="170" y="322" text-anchor="middle" font-size="9.5" fill="#555">用 (player_id, min_date) 定位回原行，取 device_id</text>
+
+  <!-- right side: final result -->
+  <text x="450" y="56" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">最终结果（512 要求）</text>
+  <rect x="380" y="62" width="140" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="405" y="80" font-size="9.5" fill="#333">player_id</text>
+  <text x="475" y="80" font-size="9.5" fill="#b85450" font-weight="bold">device_id</text>
+  <line x1="445" y1="62" x2="445" y2="88" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="88" width="140" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="405" y="103" font-size="10" fill="#333">1</text>
+  <text x="475" y="103" font-size="10" fill="#b85450" font-weight="bold">2</text>
+  <line x1="445" y1="88" x2="445" y2="110" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="110" width="140" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="405" y="125" font-size="10" fill="#333">2</text>
+  <text x="475" y="125" font-size="10" fill="#4a7a3a" font-weight="bold">3</text>
+  <line x1="445" y1="110" x2="445" y2="132" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="132" width="140" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="405" y="147" font-size="10" fill="#333">3</text>
+  <text x="475" y="147" font-size="10" fill="#d6a040" font-weight="bold">1</text>
+  <line x1="445" y1="132" x2="445" y2="154" stroke="#d6a040" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- arrow from JOIN to result -->
+  <path d="M310 309 L380 110" stroke="#4a7a3a" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- bottom callout -->
+  <rect x="30" y="346" width="500" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="368" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">核心：聚合把多行压一行，会丢掉非聚合列</text>
+  <text x="280" y="384" text-anchor="middle" font-size="10.5" fill="#555">要取「最值所在行的其他列」→ JOIN 回原表 或 窗口函数取 rn=1</text>
+</svg>

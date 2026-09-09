@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：双谓词行级过滤 + DISTINCT 取用户列表（非计数）</text>
+
+  <!-- ===== Left: Purchases table (4 rows) ===== -->
+  <text x="120" y="48" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">Purchases 表（4 行）</text>
+
+  <!-- table header -->
+  <rect x="30" y="54" width="180" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="69" font-size="8" fill="#446688" font-weight="bold">user</text>
+  <text x="100" y="69" font-size="8" fill="#446688" font-weight="bold">time_stamp</text>
+  <text x="170" y="69" font-size="8" fill="#446688" font-weight="bold">amount</text>
+
+  <!-- Row 1: user 1, 04-20, 4416 -->
+  <rect x="30" y="78" width="180" height="24" fill="#fff" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="94" font-size="9" fill="#555">1</text>
+  <text x="100" y="94" font-size="8" fill="#999">04-20 09:03</text>
+  <text x="170" y="94" font-size="9" fill="#555" font-weight="bold">4416</text>
+
+  <!-- Row 2: user 2, 03-19, 678 -->
+  <rect x="30" y="104" width="180" height="24" fill="#fff" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="120" font-size="9" fill="#555">2</text>
+  <text x="100" y="120" font-size="8" fill="#999">03-19 19:24</text>
+  <text x="170" y="120" font-size="9" fill="#555" font-weight="bold">678</text>
+
+  <!-- Row 3: user 3, 03-18, 4523 (the winner) -->
+  <rect x="30" y="130" width="180" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="146" font-size="9" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="100" y="146" font-size="8" fill="#4a7a3a">03-18 12:03</text>
+  <text x="170" y="146" font-size="9" fill="#4a7a3a" font-weight="bold">4523</text>
+
+  <!-- Row 4: user 3, 03-30, 626 -->
+  <rect x="30" y="156" width="180" height="24" fill="#fff" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="172" font-size="9" fill="#555">3</text>
+  <text x="100" y="172" font-size="8" fill="#999">03-30 09:43</text>
+  <text x="170" y="172" font-size="9" fill="#555" font-weight="bold">626</text>
+
+  <!-- params note -->
+  <rect x="30" y="188" width="180" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="202" text-anchor="middle" font-size="8" fill="#d6a040">startDate=03-08, endDate=03-20</text>
+  <text x="120" y="215" text-anchor="middle" font-size="8" fill="#d6a040">minAmount = 1000</text>
+
+  <!-- ===== Middle: Two filter gates ===== -->
+  <!-- Arrow from table to gate 1 -->
+  <path d="M 212 110 L 250 110" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Gate 1: time range filter -->
+  <rect x="254" y="62" width="160" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="334" y="80" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">WHERE</text>
+  <text x="334" y="94" text-anchor="middle" font-size="8" fill="#446688">time_stamp BETWEEN</text>
+  <text x="334" y="106" text-anchor="middle" font-size="8" fill="#446688">startDate AND endDate</text>
+  <text x="334" y="116" text-anchor="middle" font-size="7" fill="#888">DATE→00:00:00 隐式转换</text>
+
+  <!-- AND label -->
+  <text x="334" y="134" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">AND</text>
+
+  <!-- Gate 2: amount filter -->
+  <rect x="254" y="140" width="160" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="334" y="158" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">AND amount &gt;= minAmount</text>
+  <text x="334" y="172" text-anchor="middle" font-size="7" fill="#888">单次购买金额达标（非累计）</text>
+  <text x="334" y="183" text-anchor="middle" font-size="7" fill="#888">&gt;= 含等号</text>
+
+  <!-- Arrow from gates to result -->
+  <path d="M 416 124 L 454 124" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Right: Result flow ===== -->
+  <!-- Filtered rows -->
+  <rect x="458" y="62" width="120" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="518" y="78" text-anchor="middle" font-size="8" fill="#4a7a3a">合格购买行</text>
+  <text x="518" y="92" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">user 3, 4523</text>
+  <text x="518" y="104" text-anchor="middle" font-size="7" fill="#888">仅 1 行通过双过滤</text>
+
+  <!-- Arrow down -->
+  <path d="M 518 110 L 518 128" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- DISTINCT -->
+  <rect x="458" y="132" width="120" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="518" y="148" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">DISTINCT user_id</text>
+  <text x="518" y="162" text-anchor="middle" font-size="8" fill="#666">{3} → 去重</text>
+
+  <!-- Arrow down -->
+  <path d="M 518 172 L 518 190" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Result: user_id list (NOT count) -->
+  <rect x="458" y="194" width="120" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="518" y="210" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">user_id 列表</text>
+  <rect x="478" y="216" width="80" height="20" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="518" y="230" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="518" y="246" text-anchor="middle" font-size="7" fill="#888">ORDER BY user_id</text>
+
+  <!-- ===== Bottom: row-by-row filter summary ===== -->
+  <rect x="30" y="240" width="548" height="140" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="304" y="258" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">逐行双谓词判定</text>
+
+  <!-- header row -->
+  <text x="55" y="276" font-size="8" fill="#888" font-weight="bold">行</text>
+  <text x="95" y="276" font-size="8" fill="#888" font-weight="bold">user</text>
+  <text x="155" y="276" font-size="8" fill="#888" font-weight="bold">日期</text>
+  <text x="245" y="276" font-size="8" fill="#888" font-weight="bold">金额</text>
+  <text x="305" y="276" font-size="8" fill="#446688" font-weight="bold">时间区间?</text>
+  <text x="385" y="276" font-size="8" fill="#b85450" font-weight="bold">金额达标?</text>
+  <text x="475" y="276" font-size="8" fill="#4a7a3a" font-weight="bold">AND 结果</text>
+
+  <!-- separator -->
+  <line x1="40" y1="282" x2="568" y2="282" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Row 1 -->
+  <text x="55" y="296" font-size="8" fill="#555">1</text>
+  <text x="95" y="296" font-size="8" fill="#555">1</text>
+  <text x="155" y="296" font-size="8" fill="#999">04-20 09:03</text>
+  <text x="245" y="296" font-size="8" fill="#555">4416</text>
+  <text x="305" y="296" font-size="9" fill="#b85450" font-weight="bold">✗</text>
+  <text x="385" y="296" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <text x="475" y="296" font-size="9" fill="#b85450" font-weight="bold">✗ 丢弃</text>
+
+  <!-- Row 2 -->
+  <text x="55" y="312" font-size="8" fill="#555">2</text>
+  <text x="95" y="312" font-size="8" fill="#555">2</text>
+  <text x="155" y="312" font-size="8" fill="#999">03-19 19:24</text>
+  <text x="245" y="312" font-size="8" fill="#555">678</text>
+  <text x="305" y="312" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <text x="385" y="312" font-size="9" fill="#b85450" font-weight="bold">✗</text>
+  <text x="475" y="312" font-size="9" fill="#b85450" font-weight="bold">✗ 丢弃</text>
+
+  <!-- Row 3 (winner) -->
+  <rect x="42" y="318" width="528" height="18" fill="#e6f4ea" stroke="none" rx="3" filter="url(#rough2)"/>
+  <text x="55" y="332" font-size="8" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="95" y="332" font-size="8" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="155" y="332" font-size="8" fill="#4a7a3a">03-18 12:03</text>
+  <text x="245" y="332" font-size="8" fill="#4a7a3a" font-weight="bold">4523</text>
+  <text x="305" y="332" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <text x="385" y="332" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <text x="475" y="332" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 保留</text>
+
+  <!-- Row 4 -->
+  <text x="55" y="352" font-size="8" fill="#555">4</text>
+  <text x="95" y="352" font-size="8" fill="#555">3</text>
+  <text x="155" y="352" font-size="8" fill="#999">03-30 09:43</text>
+  <text x="245" y="352" font-size="8" fill="#555">626</text>
+  <text x="305" y="352" font-size="9" fill="#b85450" font-weight="bold">✗</text>
+  <text x="385" y="352" font-size="9" fill="#b85450" font-weight="bold">✗</text>
+  <text x="475" y="352" font-size="9" fill="#b85450" font-weight="bold">✗ 丢弃</text>
+
+  <!-- ===== Bottom note: 2205 vs 2230 comparison ===== -->
+  <rect x="30" y="392" width="548" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="304" y="410" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">与 2205 对照：过滤逻辑完全相同，仅输出不同</text>
+  <text x="304" y="428" text-anchor="middle" font-size="9" fill="#666">2205：COUNT(DISTINCT user_id) → INT（标量，CREATE FUNCTION getUserIDs）</text>
+  <text x="304" y="442" text-anchor="middle" font-size="9" fill="#4a7a3a">2230：DISTINCT user_id → 结果集（多行，CREATE PROCEDURE find_valid_users）</text>
+  <text x="304" y="456" text-anchor="middle" font-size="8" fill="#888">函数只能返回标量；返回多行结果集须用存储过程 PROCEDURE</text>
+</svg>

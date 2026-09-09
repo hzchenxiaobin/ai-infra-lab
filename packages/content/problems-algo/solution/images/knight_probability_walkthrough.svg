@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：n=3, k=2, row=0, col=0</text>
+  <text x="300" y="44" text-anchor="middle" font-size="11" fill="#888">3×3 棋盘，骑士从 (0,0) 出发走 2 步，求仍在板上的概率</text>
+
+  <!-- ============ 三张 3x3 棋盘 ============ -->
+  <!-- cell=36, board=108 -->
+
+  <!-- Board 1: step 0, origin (40,80) -->
+  <text x="94" y="74" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">step 0（起点）</text>
+  <g filter="url(#rough2)">
+    <rect x="40"  y="80"  width="36" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2.5"/>
+    <rect x="76"  y="80"  width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="112" y="80"  width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="40"  y="116" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="76"  y="116" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="112" y="116" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="40"  y="152" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="76"  y="152" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="112" y="152" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+  </g>
+  <circle cx="58" cy="98" r="9" fill="#b85450" filter="url(#rough2)"/>
+  <text x="58" y="102" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">马</text>
+  <text x="94" y="206" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">dp[0][0][0] = 1</text>
+
+  <!-- arrow board1 -> board2 -->
+  <path d="M 156 134 L 222 134" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="189" y="126" text-anchor="middle" font-size="9.5" fill="#888">走 1 步</text>
+  <text x="189" y="148" text-anchor="middle" font-size="9.5" fill="#888">÷8 扩散</text>
+
+  <!-- Board 2: step 1, origin (230,80) -->
+  <text x="284" y="74" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">step 1（走 1 步）</text>
+  <g filter="url(#rough2)">
+    <rect x="230" y="80"  width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="266" y="80"  width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="302" y="80"  width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="230" y="116" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="266" y="116" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <!-- (1,2) highlight -->
+    <rect x="302" y="116" width="36" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <rect x="230" y="152" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <!-- (2,1) highlight -->
+    <rect x="266" y="152" width="36" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <rect x="302" y="152" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+  </g>
+  <text x="320" y="138" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">1/8</text>
+  <text x="284" y="174" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">1/8</text>
+  <text x="284" y="206" text-anchor="middle" font-size="10.5" fill="#888">从 (0,0) 出发：2 个落点在板</text>
+  <text x="284" y="220" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">6/8 离板（丢弃）</text>
+
+  <!-- arrow board2 -> board3 -->
+  <path d="M 346 134 L 412 134" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="379" y="126" text-anchor="middle" font-size="9.5" fill="#888">走 1 步</text>
+  <text x="379" y="148" text-anchor="middle" font-size="9.5" fill="#888">÷8 扩散</text>
+
+  <!-- Board 3: step 2, origin (420,80) -->
+  <text x="474" y="74" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">step 2（走 2 步）</text>
+  <g filter="url(#rough2)">
+    <!-- (0,0)=2/64 -->
+    <rect x="420" y="80"  width="36" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="456" y="80"  width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <!-- (0,2)=1/64 -->
+    <rect x="492" y="80"  width="36" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="420" y="116" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="456" y="116" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="492" y="116" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <!-- (2,0)=1/64 -->
+    <rect x="420" y="152" width="36" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="456" y="152" width="36" height="36" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="492" y="152" width="36" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+  </g>
+  <text x="438" y="104" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">2/64</text>
+  <text x="510" y="104" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">1/64</text>
+  <text x="438" y="176" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">1/64</text>
+  <text x="474" y="206" text-anchor="middle" font-size="10.5" fill="#888">板上概率之和 =</text>
+
+  <!-- ============ 计算过程 ============ -->
+  <rect x="40" y="240" width="520" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="262" font-size="11.5" fill="#d6a040" font-weight="bold">step 2 推导：</text>
+  <text x="56" y="282" font-size="11" fill="#333">从 (2,1)[1/8]：合法落点 (0,0)、(0,2) → 各 += 1/8 × 1/8 = 1/64</text>
+  <text x="56" y="300" font-size="11" fill="#333">从 (1,2)[1/8]：合法落点 (0,0)、(2,0) → 各 += 1/8 × 1/8 = 1/64</text>
+  <text x="56" y="320" font-size="11" fill="#444" font-weight="bold">板上合计：(0,0)=2/64，(0,2)=1/64，(2,0)=1/64 → 2+1+1 = 4/64</text>
+
+  <!-- ============ 结果 ============ -->
+  <rect x="40" y="344" width="520" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="370" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">ans = 4/64 = 1/16 = 0.0625</text>
+  <text x="300" y="390" text-anchor="middle" font-size="10.5" fill="#888">2 步后骑士仍在 3×3 棋盘上的概率为 0.0625</text>
+
+  <!-- ============ 图例 ============ -->
+  <rect x="40" y="412" width="520" height="56" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="432" font-size="10.5" fill="#888" font-weight="bold">图例：</text>
+  <rect x="100" y="422" width="16" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="122" y="434" font-size="10" fill="#444">起点</text>
+  <rect x="170" y="422" width="16" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="192" y="434" font-size="10" fill="#444">step 1 落点（1/8）</text>
+  <rect x="300" y="422" width="16" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="322" y="434" font-size="10" fill="#444">step 2 落点（板上留存）</text>
+  <text x="56" y="456" font-size="10" fill="#888">每步概率 = 上一步概率 × 1/8；离板方向不累加 → 概率自然衰减</text>
+</svg>

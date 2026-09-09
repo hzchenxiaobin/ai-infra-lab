@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：筛日期 → 按日分组 → 去重计数</text>
+
+  <!-- ===== Step 1: WHERE date filter ===== -->
+  <rect x="160" y="46" width="220" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="64" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">步骤 ①  WHERE 日期过滤</text>
+  <text x="270" y="80" text-anchor="middle" font-size="8.5" fill="#333">DATEDIFF('2019-07-27', activity_date) &lt; 30</text>
+  <text x="270" y="94" text-anchor="middle" font-size="7.5" fill="#888">保留差值 0–29 的行（共 30 天窗口）</text>
+
+  <!-- arrow down -->
+  <path d="M270 108 L270 130" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- mini visualization: 07-20 keep, 06-25 drop -->
+  <rect x="120" y="132" width="300" height="58" fill="#fafafa" stroke="#888" stroke-width="0.8" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="160" y="148" font-size="8" fill="#4a7a3a" font-weight="bold">07-20</text>
+  <text x="160" y="160" font-size="7" fill="#4a7a3a">差值 = 7 &lt; 30</text>
+  <text x="160" y="172" font-size="7" fill="#4a7a3a" font-weight="bold">→ 保留 ✓</text>
+
+  <text x="270" y="160" text-anchor="middle" font-size="8" fill="#888">|</text>
+
+  <text x="370" y="148" font-size="8" fill="#b85450" font-weight="bold">06-25</text>
+  <text x="370" y="160" font-size="7" fill="#b85450">差值 = 32 ≥ 30</text>
+  <text x="370" y="172" font-size="7" fill="#b85450" font-weight="bold">→ 丢弃 ✗</text>
+
+  <!-- arrow down -->
+  <path d="M270 194 L270 216" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: GROUP BY ===== -->
+  <rect x="160" y="218" width="220" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="236" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">步骤 ②  GROUP BY activity_date</text>
+  <text x="270" y="252" text-anchor="middle" font-size="8.5" fill="#333">按活动日期分组</text>
+  <text x="270" y="266" text-anchor="middle" font-size="7.5" fill="#888">同日所有记录归入同一组</text>
+
+  <!-- arrow down -->
+  <path d="M270 280 L270 302" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- mini vis: two groups -->
+  <rect x="120" y="304" width="300" height="58" fill="#fafafa" stroke="#888" stroke-width="0.8" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="320" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">分组 07-20</text>
+  <text x="180" y="334" text-anchor="middle" font-size="7.5" fill="#333">user_id: 1,1,1,2</text>
+  <text x="180" y="346" text-anchor="middle" font-size="7" fill="#888">4 条记录</text>
+
+  <text x="270" y="334" text-anchor="middle" font-size="8" fill="#888">|</text>
+
+  <text x="370" y="320" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">分组 07-21</text>
+  <text x="370" y="334" text-anchor="middle" font-size="7.5" fill="#333">user_id: 2,2,3,3,3</text>
+  <text x="370" y="346" text-anchor="middle" font-size="7" fill="#888">5 条记录</text>
+
+  <!-- arrow down -->
+  <path d="M270 366 L270 388" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: COUNT DISTINCT ===== -->
+  <rect x="160" y="390" width="220" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="408" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">步骤 ③  COUNT(DISTINCT user_id)</text>
+  <text x="270" y="424" text-anchor="middle" font-size="8.5" fill="#333">每组内对 user_id 去重后计数</text>
+  <text x="270" y="438" text-anchor="middle" font-size="7.5" fill="#888">同用户多条 → 只算 1 个</text>
+
+  <!-- right side: result examples -->
+  <rect x="400" y="304" width="130" height="84" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="322" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">去重计数结果</text>
+  <text x="465" y="340" text-anchor="middle" font-size="8" fill="#333">07-20: {1,2} →</text>
+  <text x="465" y="354" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">2</text>
+  <text x="465" y="368" text-anchor="middle" font-size="8" fill="#333">07-21: {2,3} →</text>
+  <text x="465" y="382" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">2</text>
+
+  <!-- pitfall warning box -->
+  <rect x="20" y="390" width="130" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="85" y="408" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">⚠️ 易错点</text>
+  <text x="30" y="422" font-size="7.5" fill="#333">COUNT(*) = 4（错）</text>
+  <text x="30" y="434" font-size="7.5" fill="#333">COUNT(DISTINCT) = 2</text>
+  <text x="30" y="444" font-size="7" fill="#4a7a3a" font-weight="bold">→ 必须用 DISTINCT</text>
+</svg>

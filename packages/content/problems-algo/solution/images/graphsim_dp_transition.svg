@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">DP 转移：邻居的「上一行」取最小，再叠加当前步匹配代价</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">dp[i][v] = min&#8201;{ dp[i−1][u] } + cost(i, v)，其中 u 遍历 v 的所有邻居</text>
+
+  <!-- ===== column i-1 (neighbors) ===== -->
+  <text x="110" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">第 i−1 步（邻居们）</text>
+
+  <g font-size="11">
+    <!-- neighbor u1 -->
+    <rect x="50" y="100" width="110" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+    <text x="105" y="123" text-anchor="middle" fill="#333">dp[i−1][u₁]</text>
+    <!-- neighbor u2 -->
+    <rect x="50" y="150" width="110" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+    <text x="105" y="173" text-anchor="middle" fill="#333">dp[i−1][u₂]</text>
+    <!-- neighbor u3 (best) -->
+    <rect x="50" y="200" width="110" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+    <text x="105" y="223" text-anchor="middle" fill="#4a7a3a" font-weight="bold">dp[i−1][u₃]</text>
+    <!-- neighbor u4 -->
+    <rect x="50" y="250" width="110" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+    <text x="105" y="273" text-anchor="middle" fill="#333">dp[i−1][u₄]</text>
+  </g>
+  <text x="105" y="304" text-anchor="middle" font-size="9" fill="#888">u₁,u₂,u₃,u₄ ∈ adj(v)</text>
+
+  <!-- ===== arrows converging to min ===== -->
+  <g fill="none" filter="url(#rough2)">
+    <path d="M 160 118 C 220 118, 250 180, 300 180" stroke="#b3b3b3" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <path d="M 160 168 C 220 168, 250 182, 300 182" stroke="#b3b3b3" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <path d="M 160 218 C 220 218, 250 186, 300 186" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrb)"/>
+    <path d="M 160 268 C 220 268, 250 188, 300 188" stroke="#b3b3b3" stroke-width="1.2" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- ===== min box ===== -->
+  <rect x="295" y="162" width="80" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="335" y="184" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">取最小</text>
+  <text x="335" y="200" text-anchor="middle" font-size="10" fill="#666">min&#8201;{...}</text>
+  <text x="335" y="148" text-anchor="middle" font-size="9" fill="#4a7a3a">最优来源 u₃ → 记入 prev[i][v]</text>
+
+  <!-- ===== + cost arrow ===== -->
+  <path d="M 375 186 L 420 186" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="420" y="168" width="80" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="186" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">+ cost(i,v)</text>
+  <text x="460" y="200" text-anchor="middle" font-size="9" fill="#666">名字≠target[i]?</text>
+
+  <!-- ===== result ===== -->
+  <path d="M 500 188 L 530 188" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <rect x="528" y="168" width="26" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+
+  <!-- ===== bottom: cost table + prev note ===== -->
+  <rect x="30" y="320" width="500" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="342" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">cost(i, v) = (names[v] != targetPath[i]) ? 1 : 0</text>
+  <text x="280" y="362" text-anchor="middle" font-size="11" fill="#333">路径合法性自然保证：只允许从 v 的邻居 u 转移，故 ans[i−1]=u 与 ans[i]=v 必有直接道路</text>
+  <text x="280" y="378" text-anchor="middle" font-size="10" fill="#888">回溯：找到 dp[T−1] 最小的 v，沿 prev[i][v] 一步步倒推到第 0 步即得完整路径</text>
+</svg>

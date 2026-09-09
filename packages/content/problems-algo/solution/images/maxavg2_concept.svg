@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心概念：二分答案 + 前缀和判定</text>
+
+  <!-- ====== 顶部：原始问题 ====== -->
+  <rect x="60" y="42" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="67" text-anchor="middle" font-size="12" fill="#333">求：长度 ≥ k 的子数组的最大平均数</text>
+
+  <path d="M 280 84 L 280 106" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== 第二层：转换为判定问题 ====== -->
+  <rect x="40" y="110" width="480" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="130" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">转换：猜候选平均 mid → 判定是否存在子数组 avg ≥ mid</text>
+  <text x="280" y="150" text-anchor="middle" font-size="11" fill="#888">avg(nums[j..i]) ≥ mid  ⟺  Σ(nums[t]−mid) ≥ 0</text>
+
+  <path d="M 280 168 L 280 190" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== 第三层：B 数组 + 前缀和 ====== -->
+  <rect x="40" y="194" width="220" height="88" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">令 B[t] = nums[t] − mid</text>
+  <text x="150" y="234" text-anchor="middle" font-size="11" fill="#555">prefix[0] = 0</text>
+  <text x="150" y="252" text-anchor="middle" font-size="11" fill="#555">prefix[i+1] = prefix[i] + B[i]</text>
+  <text x="150" y="272" text-anchor="middle" font-size="10.5" fill="#888">子数组 B[j..i] 和 = prefix[i+1] − prefix[j]</text>
+
+  <rect x="300" y="194" width="220" height="88" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">需：长度 ≥ k → j ≤ i+1−k</text>
+  <text x="410" y="234" text-anchor="middle" font-size="11" fill="#555">prefix[i+1] ≥ prefix[j]</text>
+  <text x="410" y="252" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⟺ prefix[i+1] ≥ minPre</text>
+  <text x="410" y="272" text-anchor="middle" font-size="10.5" fill="#888">minPre = min(prefix[0..i+1−k])</text>
+
+  <path d="M 260 238 L 300 238" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="280" y="232" text-anchor="middle" font-size="9" fill="#4a7a3a">代入</text>
+
+  <path d="M 280 284 L 280 306" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== 第四层：check 函数 ====== -->
+  <rect x="80" y="310" width="400" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="335" text-anchor="middle" font-size="12" fill="#333">check(mid)：O(n) 扫描，维护 minPre 判定</text>
+
+  <path d="M 280 352 L 280 374" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== 底部：二分框架 ====== -->
+  <rect x="40" y="378" width="480" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">二分：lo = min(nums), hi = max(nums)</text>
+  <text x="280" y="416" text-anchor="middle" font-size="11" fill="#4a7a3a">check(mid) ✓ → lo = mid（向右搜更大）</text>
+  <text x="280" y="432" text-anchor="middle" font-size="11" fill="#b85450">check(mid) ✗ → hi = mid（向左搜更小）</text>
+</svg>

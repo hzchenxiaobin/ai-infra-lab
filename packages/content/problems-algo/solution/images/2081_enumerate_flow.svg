@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+      <path d="M0,0 L5,9 L10,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：按长度枚举十进制回文 → 过滤 k 进制回文</text>
+
+  <!-- ===== Step 1: 枚举长度 ===== -->
+  <rect x="60" y="44" width="440" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">Step 1：长度 L = 1, 2, 3, …（升序枚举）</text>
+  <text x="78" y="88" font-size="11.5" fill="#555" font-family="'Comic Sans MS', monospace">half = (L+1)/2；前半 h ∈ [10^(half−1), 10^half)</text>
+  <text x="78" y="102" font-size="11" fill="#4a7a3a">长度递增 ⇒ 生成的回文天然递增，无需排序</text>
+
+  <path d="M 280 108 L 280 130" stroke="#888" stroke-width="2.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: 构造回文 ===== -->
+  <rect x="60" y="136" width="440" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="158" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">Step 2：由前半 h 构造十进制回文 p</text>
+  <!-- odd example -->
+  <text x="78" y="182" font-size="11.5" fill="#555" font-family="'Comic Sans MS', monospace">奇数长 L=5：h="123" → p = h + reverse(h 去末位)</text>
+  <rect x="92" y="190" width="46" height="28" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="208" text-anchor="middle" font-size="13" fill="#333" font-family="'Comic Sans MS', monospace">123</text>
+  <text x="146" y="208" font-size="14" fill="#4a7a3a" font-weight="bold">→</text>
+  <rect x="162" y="190" width="92" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="208" y="208" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" font-family="'Comic Sans MS', monospace">12321</text>
+  <text x="262" y="208" font-size="10.5" fill="#888">镜像去掉中心后那位</text>
+  <!-- even example -->
+  <text x="78" y="234" font-size="11.5" fill="#555" font-family="'Comic Sans MS', monospace">偶数长 L=4：h="12"  → p = h + reverse(h)</text>
+  <rect x="92" y="240" width="46" height="28" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="258" text-anchor="middle" font-size="13" fill="#333" font-family="'Comic Sans MS', monospace">12</text>
+  <text x="146" y="258" font-size="14" fill="#4a7a3a" font-weight="bold">→</text>
+  <rect x="162" y="240" width="92" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="208" y="258" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" font-family="'Comic Sans MS', monospace">1221</text>
+  <text x="262" y="258" font-size="10.5" fill="#888">整体镜像拼接</text>
+
+  <path d="M 280 258 L 280 282" stroke="#888" stroke-width="2.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: k 进制判回文 ===== -->
+  <rect x="60" y="288" width="440" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="310" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">Step 3：把 p 转 k 进制，判是否回文</text>
+  <text x="78" y="332" font-size="11.5" fill="#555" font-family="'Comic Sans MS', monospace">不断 x % k 取余压入 t，再除以 k → 得到 k 进制各位</text>
+  <text x="78" y="350" font-size="11.5" fill="#555" font-family="'Comic Sans MS', monospace">双指针对比 t[i] == t[j]，全相等则回文</text>
+  <text x="78" y="366" font-size="11" fill="#d6a040">例：p=9, k=2 → t=[1,0,0,1] → 首尾对称 ✓</text>
+
+  <path d="M 280 376 L 280 400" stroke="#888" stroke-width="2.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: 累加 ===== -->
+  <rect x="60" y="406" width="440" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="428" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">Step 4：命中则 sum += p, cnt += 1</text>
+  <text x="280" y="448" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">cnt == n 时立即返回 sum（保证取到最小 n 个）</text>
+
+  <text x="280" y="472" text-anchor="middle" font-size="10" fill="#aaa">时间：与第 n 个镜像数同量级 · 空间：O(log p) 存 k 进制串</text>
+</svg>

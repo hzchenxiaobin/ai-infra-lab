@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="540" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：WHERE 过滤 → GROUP BY 分组 → HAVING 计数筛选 → 输出</text>
+
+  <!-- ===== Step 1 ===== -->
+  <rect x="70" y="44" width="360" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="92" y="66" font-size="11.5" fill="#333" font-weight="bold">① FROM Candidates</text>
+  <text x="92" y="84" font-size="10" fill="#666">读取全部技能记录（示例 12 行）</text>
+  <text x="452" y="76" font-size="10.5" fill="#888">12 行</text>
+
+  <path d="M250 96 L250 118" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2 ===== -->
+  <rect x="70" y="122" width="360" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="92" y="144" font-size="11.5" fill="#333" font-weight="bold">② WHERE skill IN ('Python','Tableau','PostgreSQL')</text>
+  <text x="92" y="162" font-size="10" fill="#666">只保留必备技能行（先求每人技能与 R 的交集）</text>
+  <text x="452" y="154" font-size="10.5" fill="#888">7 行</text>
+
+  <path d="M250 174 L250 196" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3 ===== -->
+  <rect x="70" y="200" width="360" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="92" y="222" font-size="11.5" fill="#333" font-weight="bold">③ GROUP BY candidate_id</text>
+  <text x="92" y="240" font-size="10" fill="#666">把同一候选人的技能行聚成一组</text>
+  <text x="452" y="232" font-size="10.5" fill="#888">3 组</text>
+
+  <path d="M250 252 L250 274" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4 ===== -->
+  <rect x="70" y="278" width="360" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="92" y="300" font-size="11.5" fill="#333" font-weight="bold">④ HAVING COUNT(DISTINCT skill) = 3</text>
+  <text x="92" y="318" font-size="10" fill="#666">组内去重计数等于必备技能数 3 才保留</text>
+  <text x="452" y="292" font-size="10" fill="#4a7a3a" font-weight="bold">123 → 3 ✓</text>
+  <text x="452" y="308" font-size="10" fill="#4a7a3a" font-weight="bold">147 → 3 ✓</text>
+  <text x="452" y="324" font-size="10" fill="#b85450" font-weight="bold">256 → 1 ✗</text>
+
+  <path d="M250 330 L250 352" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5 ===== -->
+  <rect x="70" y="356" width="360" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="92" y="378" font-size="11.5" fill="#333" font-weight="bold">⑤ SELECT candidate_id</text>
+  <text x="92" y="396" font-size="10" fill="#666">投影输出通过筛选的组，加 ORDER BY 升序更稳</text>
+  <text x="452" y="388" font-size="10.5" fill="#888">2 行</text>
+
+  <path d="M250 408 L250 430" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Output ===== -->
+  <rect x="70" y="434" width="360" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="250" y="462" text-anchor="middle" font-size="12.5" fill="#2f5d24" font-weight="bold">输出 candidate_id：123, 147</text>
+
+  <!-- ===== Key points ===== -->
+  <rect x="30" y="494" width="600" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="510" font-size="10.5" fill="#333">① HAVING 不能换成 WHERE：每人命中几项要分组后才数得出来，WHERE 在分组前逐行执行</text>
+  <text x="48" y="524" font-size="10.5" fill="#333">② COUNT(DISTINCT skill) 抵御同一技能重复行，防御性写法</text>
+</svg>

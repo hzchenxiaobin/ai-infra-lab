@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="460" height="560" fill="#fafafa"/>
+
+  <text x="230" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">atMost(K) 函数：滑窗 + 频率表流程</text>
+
+  <!-- Init -->
+  <rect x="100" y="44" width="260" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="230" y="86" text-anchor="middle" font-size="11" fill="#555">left = 0, distinct = 0, total = 0, freq = {}</text>
+
+  <path d="M 230 104 L 230 122" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop entry -->
+  <rect x="90" y="126" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="146" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for right in 0..n−1</text>
+  <text x="230" y="162" text-anchor="middle" font-size="10.5" fill="#555">右指针遍历每个位置</text>
+
+  <path d="M 230 174 L 230 192" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- add nums[right] -->
+  <rect x="100" y="196" width="260" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">freq[nums[right]]++</text>
+  <text x="230" y="234" text-anchor="middle" font-size="11" fill="#555">若 freq 由 0→1：distinct++（新种类入窗）</text>
+
+  <path d="M 230 250 L 230 268" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: distinct > K? -->
+  <polygon points="230,272 360,318 230,364 100,318" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="314" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">distinct &gt; K ?</text>
+  <text x="230" y="332" text-anchor="middle" font-size="10.5" fill="#777">种类数超限？</text>
+
+  <!-- Yes branch: shrink -->
+  <path d="M 100 318 L 40 318 L 40 370" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="52" y="310" font-size="11" fill="#b85450" font-weight="bold">Yes</text>
+  <rect x="6" y="374" width="120" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="66" y="396" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">收缩左指针</text>
+  <text x="66" y="414" text-anchor="middle" font-size="10" fill="#555">freq[nums[left]]−−</text>
+  <text x="66" y="428" text-anchor="middle" font-size="10" fill="#555">若归 0：distinct−−</text>
+  <text x="66" y="442" text-anchor="middle" font-size="10" fill="#555">left++</text>
+
+  <!-- No branch -->
+  <path d="M 360 318 L 420 318 L 420 370" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="374" y="310" font-size="11" fill="#82b366" font-weight="bold">No</text>
+  <rect x="334" y="374" width="120" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="394" y="396" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">直接计数</text>
+  <text x="394" y="412" text-anchor="middle" font-size="10" fill="#555">窗口满足</text>
+
+  <!-- merge to count -->
+  <path d="M 66 450 L 66 470 L 150 470" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <path d="M 394 422 L 394 470 L 310 470" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+
+  <!-- count += right-left+1 -->
+  <rect x="90" y="454" width="280" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="479" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">total += right − left + 1</text>
+
+  <!-- loop back -->
+  <path d="M 370 474 L 432 474 L 432 148 L 372 148" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="438" y="310" font-size="9.5" fill="#aaa" transform="rotate(-90 438 310)">循环</text>
+
+  <!-- final -->
+  <text x="230" y="524" text-anchor="middle" font-size="11" fill="#d6a040" font-style="italic">遍历结束 → return total （O(n), O(n)）</text>
+  <text x="230" y="544" text-anchor="middle" font-size="10.5" fill="#888">答案 = atMost(k) − atMost(k−1)</text>
+</svg>

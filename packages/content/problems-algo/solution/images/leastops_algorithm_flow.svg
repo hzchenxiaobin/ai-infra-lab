@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#d6a040" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">表示数字的最少运算符：进位 DP 流程</text>
+
+  <!-- ===== Step row ===== -->
+  <rect x="30" y="38" width="150" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="56" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① 转 x 进制</text>
+  <text x="105" y="72" text-anchor="middle" font-size="10" fill="#333">target → d[0..m−1]</text>
+  <text x="105" y="84" text-anchor="middle" font-size="9" fill="#888">d[0] 为最低位</text>
+
+  <path d="M 184 63 L 206 63" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="210" y="38" width="170" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="295" y="56" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">② 逐位进位 DP</text>
+  <text x="295" y="72" text-anchor="middle" font-size="10" fill="#333">i = m−1 downto 0</text>
+  <text x="295" y="84" text-anchor="middle" font-size="9" fill="#888">每位置 carry ∈ {0,1}</text>
+
+  <path d="M 384 63 L 406 63" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="410" y="38" width="130" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="475" y="56" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">③ 返回答案</text>
+  <text x="475" y="72" text-anchor="middle" font-size="10" fill="#333">dp[0][0] − 1</text>
+  <text x="475" y="84" text-anchor="middle" font-size="9" fill="#888">−1：首项无前导符</text>
+
+  <!-- ===== Decision at position i ===== -->
+  <text x="280" y="112" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">位置 i 的决策：有效位 e = d[i] + carry</text>
+
+  <!-- Center node: position i -->
+  <rect x="225" y="122" width="110" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="143" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">位置 i，e = d[i]+carry</text>
+
+  <!-- Branch A (left, green): no carry -->
+  <path d="M 245 156 Q 150 180 110 196" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="40" y="196" width="200" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="140" y="214" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">选项 A：不进位</text>
+  <text x="140" y="232" text-anchor="middle" font-size="10" fill="#333">c_i = e（放 e 个 xⁱ）</text>
+  <text x="140" y="248" text-anchor="middle" font-size="10" fill="#333">cost = e · w(i)</text>
+  <text x="140" y="262" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">+ dp[i+1][0]</text>
+
+  <!-- Branch B (right, orange): carry -->
+  <path d="M 315 156 Q 410 180 450 196" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <rect x="320" y="196" width="200" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="420" y="214" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">选项 B：进位（借位）</text>
+  <text x="420" y="232" text-anchor="middle" font-size="10" fill="#333">c_i = e−x（放 x−e 个 −xⁱ）</text>
+  <text x="420" y="248" text-anchor="middle" font-size="10" fill="#333">cost = (x−e) · w(i)</text>
+  <text x="420" y="262" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">+ dp[i+1][1]</text>
+
+  <!-- min -->
+  <text x="280" y="290" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">dp[i][carry] = min(A, B)</text>
+
+  <!-- ===== w(i) table + base case ===== -->
+  <rect x="30" y="302" width="260" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="160" y="320" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">权重 w(i) = cost(项) + 1</text>
+  <text x="50" y="338" font-size="10" fill="#333">w(0) = 2   ← 1 = x/x，1 个 /</text>
+  <text x="50" y="354" font-size="10" fill="#333">w(1) = 1   ← x，0 个运算符</text>
+  <text x="50" y="370" font-size="10" fill="#333">w(i) = i   ← xⁱ 需 i−1 个 *</text>
+
+  <rect x="310" y="302" width="220" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="420" y="320" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">边界条件（i = m）</text>
+  <text x="330" y="340" font-size="10" fill="#333">dp[m][0] = 0（无余位）</text>
+  <text x="330" y="358" font-size="10" fill="#333">dp[m][1] = w(m)（1 个 xᵐ）</text>
+  <text x="330" y="374" font-size="9" fill="#888">进位到最高位之外 → 放 1 项</text>
+</svg>

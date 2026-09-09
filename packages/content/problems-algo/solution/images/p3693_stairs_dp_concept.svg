@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：跳距只有 1/2/3，dp[j] 只依赖前 3 个状态</text>
+
+  <!-- 三条跳跃弧线：j-3 / j-2 / j-1 → j -->
+  <path d="M 312 146 Q 336 112 368 144" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="332" y="118" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">+1</text>
+
+  <path d="M 242 146 Q 295 84 384 140" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="102" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">+4</text>
+
+  <path d="M 172 146 Q 270 44 400 136" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="255" y="78" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">+9</text>
+
+  <text x="498" y="64" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">罚金 = 跳距² ∈ {1, 4, 9}</text>
+
+  <!-- 台阶格子 -->
+  <rect x="70" y="150" width="64" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="102" y="172" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">0</text>
+  <text x="102" y="187" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">dp[0]=0</text>
+
+  <rect x="140" y="150" width="64" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="172" y="172" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">1</text>
+  <text x="172" y="187" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">dp[j−3]</text>
+
+  <rect x="210" y="150" width="64" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="242" y="172" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">2</text>
+  <text x="242" y="187" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">dp[j−2]</text>
+
+  <rect x="280" y="150" width="64" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="312" y="172" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">3</text>
+  <text x="312" y="187" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">dp[j−1]</text>
+
+  <rect x="350" y="150" width="64" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="382" y="172" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">j</text>
+  <text x="382" y="187" text-anchor="middle" font-size="8.5" fill="#a07020" filter="url(#rough2)">dp[j]=?</text>
+
+  <!-- 前驱虚线框 -->
+  <rect x="133" y="138" width="216" height="68" fill="none" stroke="#4a7a3a" stroke-width="1.3" stroke-dasharray="6,4" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="222" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">只有这 3 级能一步跳到 j（第 0 级太远，跳 4 级不允许）</text>
+
+  <!-- 转移方程框 -->
+  <rect x="55" y="238" width="410" height="88" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="262" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">dp[j] = costs[j] + min( dp[j−1]+1, dp[j−2]+4, dp[j−3]+9 )</text>
+  <text x="260" y="284" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">落点费 costs[j] 只看落点、与来源无关 → 提到 min 外面</text>
+  <text x="260" y="304" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">罚金固定三档 1/4/9 → 每个状态 O(1) 转移，整体 O(n)</text>
+</svg>

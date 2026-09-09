@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">反向 DP 存可行性 + 按值升序贪心重构</text>
+
+  <!-- 1 预处理 -->
+  <rect x="70" y="32" width="250" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="195" y="49" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#446688" filter="url(#rough2)">预处理：值升序下标 idx</text>
+  <text x="195" y="66" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">p10[i] = 10^len(x_i) mod k</text>
+
+  <path d="M 195 76 L 195 88" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2 反向DP -->
+  <rect x="60" y="90" width="300" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="210" y="108" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#446688" filter="url(#rough2)">反向 DP：mask 从 full−1 递减到 0</text>
+  <text x="210" y="124" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">逐 (mask, r) 枚举未用 i 回灌可行性：</text>
+  <text x="210" y="140" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">good[mask][r] ∨= good[mask | 1&lt;&lt;i][(r·p10[i]+x_i) mod k]</text>
+  <text x="382" y="122" font-size="9" fill="#888" filter="url(#rough2)">子状态更大</text>
+  <text x="382" y="136" font-size="9" fill="#888" filter="url(#rough2)">递减即拓扑序</text>
+
+  <path d="M 195 148 L 195 160" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3 判断存在性 -->
+  <polygon points="195,162 285,196 195,230 105,196" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="195" y="200" text-anchor="middle" font-size="11" font-weight="bold" fill="#a07828" filter="url(#rough2)">good[0][0] = 1 ?</text>
+
+  <path d="M 285 196 L 328 196" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="298" y="188" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="332" y="178" width="92" height="36" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="378" y="200" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450" filter="url(#rough2)">返回 []</text>
+
+  <path d="M 195 230 L 195 244" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="203" y="242" font-size="9.5" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- 4 重构初始化 -->
+  <rect x="70" y="246" width="250" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="195" y="263" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#446688" filter="url(#rough2)">贪心重构：mask = 0, r = 0, ans = []</text>
+  <text x="195" y="279" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">每步选「选后仍可行」的最小值</text>
+
+  <path d="M 195 286 L 195 298" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 5 选元素循环体 -->
+  <rect x="40" y="300" width="300" height="66" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="318" text-anchor="middle" font-size="10" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">按值升序尝试未用元素 i：</text>
+  <text x="190" y="334" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">nr = (r·p10[i] + x_i) mod k</text>
+  <text x="190" y="350" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">good[mask|1&lt;&lt;i][nr] ✓ → 选入 ans，更新 (mask, r)</text>
+
+  <path d="M 340 333 L 352 333" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" filter="url(#rough2)"/>
+
+  <!-- 6 完成判断 -->
+  <polygon points="430,296 508,333 430,370 352,333" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="430" y="337" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#a07828" filter="url(#rough2)">mask == full ?</text>
+
+  <path d="M 430 296 L 430 282 L 330 282 L 330 296" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="438" y="278" font-size="9.5" font-weight="bold" fill="#a07828" filter="url(#rough2)">否 · 继续选</text>
+
+  <path d="M 430 370 L 430 384" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="440" y="382" font-size="9.5" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- 7 输出 -->
+  <rect x="330" y="386" width="180" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="420" y="408" text-anchor="middle" font-size="11" font-weight="bold" fill="#2f5527" filter="url(#rough2)">返回 ans（字典序最小）</text>
+
+  <text x="46" y="398" font-size="9" fill="#888" filter="url(#rough2)">交换论证：更小的值若可行，</text>
+  <text x="46" y="412" font-size="9" fill="#888" filter="url(#rough2)">贪心必然先选到它</text>
+</svg>

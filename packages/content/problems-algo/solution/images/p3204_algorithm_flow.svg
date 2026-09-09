@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 312" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="312" fill="#fafafa"/>
+
+  <text x="290" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：一条 SELECT 的整表聚合——不写 GROUP BY，天然输出一行</text>
+  <text x="290" y="40" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">FROM → 两个位聚合函数并排算 → 单行两列出仓</text>
+
+  <!-- 输入表 -->
+  <rect x="40" y="64" width="160" height="112" fill="#fff" stroke="#999" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <line x1="40" y1="88" x2="200" y2="88" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="110" y1="64" x2="110" y2="176" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="75" y="81" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">user_id</text>
+  <text x="155" y="81" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">permissions</text>
+  <text x="75" y="105" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">1</text>
+  <text x="155" y="105" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">5</text>
+  <text x="75" y="125" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">2</text>
+  <text x="155" y="125" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">12</text>
+  <text x="75" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">3</text>
+  <text x="155" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">7</text>
+  <text x="75" y="165" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">4</text>
+  <text x="155" y="165" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">3</text>
+  <text x="120" y="192" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">FROM user_permissions（4 行）</text>
+
+  <!-- 箭头到聚合 -->
+  <path d="M 202 100 L 243 98" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 202 142 L 243 148" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 聚合框 A -->
+  <rect x="248" y="70" width="186" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="341" y="92" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">BIT_AND(permissions)</text>
+  <text x="341" y="110" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">AS common_perms（所有用户都有）</text>
+  <text x="341" y="123" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">5 &amp; 12 &amp; 7 &amp; 3 = 0</text>
+
+  <!-- 聚合框 B -->
+  <rect x="248" y="134" width="186" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="341" y="156" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">BIT_OR(permissions)</text>
+  <text x="341" y="174" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">AS any_perms（任一用户有）</text>
+  <text x="341" y="187" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">5 | 12 | 7 | 3 = 15</text>
+
+  <!-- 箭头到输出 -->
+  <path d="M 436 99 L 458 112" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 436 163 L 458 150" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 输出 -->
+  <rect x="462" y="92" width="100" height="72" fill="#fff" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="512" y="112" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">输出（一行）</text>
+  <text x="512" y="132" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">common_perms = 0</text>
+  <text x="512" y="150" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">any_perms = 15</text>
+
+  <rect x="40" y="208" width="500" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="226" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">💡 聚合函数不配 GROUP BY ⇒ 整张表被当成一个大组 ⇒ 输出恰好一行；</text>
+  <text x="290" y="242" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">就算空表也输出一行（BIT_AND 返回全 1、BIT_OR 返回 0，即各自的单位元，见题解 5.1）</text>
+
+  <rect x="40" y="260" width="500" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="278" text-anchor="middle" font-size="9" fill="#8a6d1a" filter="url(#rough2)">⚠️ 别顺手写 GROUP BY user_id——那是按用户分组、每组一行，方向全错；</text>
+  <text x="290" y="294" text-anchor="middle" font-size="9" fill="#8a6d1a" filter="url(#rough2)">WHERE / GROUP BY / ORDER BY 全都不需要，两个聚合表达式并排放在 SELECT 里即可</text>
+</svg>

@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：PARTITION BY student_id + ORDER BY grade DESC, course_id ASC → 取 rn=1</text>
+
+  <!-- Enrolls source table (left) -->
+  <text x="145" y="56" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Enrolls（源表）</text>
+  <rect x="30" y="62" width="230" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="79" font-size="9.5" fill="#333">student_id</text>
+  <text x="125" y="79" font-size="9.5" fill="#333">course_id</text>
+  <text x="200" y="79" font-size="9.5" fill="#333">grade</text>
+  <line x1="90" y1="62" x2="90" y2="88" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="62" x2="165" y2="88" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: student 2, course 2, grade 95 -->
+  <rect x="30" y="88" width="230" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="103" font-size="10" fill="#333">2</text>
+  <text x="125" y="103" font-size="10" fill="#333">2</text>
+  <text x="200" y="103" font-size="10" fill="#b85450" font-weight="bold">95</text>
+  <line x1="90" y1="88" x2="90" y2="110" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="88" x2="165" y2="110" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: student 2, course 3, grade 95 (tie) -->
+  <rect x="30" y="110" width="230" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="125" font-size="10" fill="#333">2</text>
+  <text x="125" y="125" font-size="10" fill="#999">3</text>
+  <text x="200" y="125" font-size="10" fill="#b85450">95</text>
+  <line x1="90" y1="110" x2="90" y2="132" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="110" x2="165" y2="132" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- separator between student groups -->
+  <line x1="30" y1="134" x2="260" y2="134" stroke="#d6a040" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- row: student 1, course 1, grade 90 -->
+  <rect x="30" y="136" width="230" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="151" font-size="10" fill="#333">1</text>
+  <text x="125" y="151" font-size="10" fill="#999">1</text>
+  <text x="200" y="151" font-size="10" fill="#999">90</text>
+  <line x1="90" y1="136" x2="90" y2="158" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="136" x2="165" y2="158" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: student 1, course 2, grade 99 (max) -->
+  <rect x="30" y="158" width="230" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="173" font-size="10" fill="#333">1</text>
+  <text x="125" y="173" font-size="10" fill="#446688" font-weight="bold">2</text>
+  <text x="200" y="173" font-size="10" fill="#446688" font-weight="bold">99</text>
+  <line x1="90" y1="158" x2="90" y2="180" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="158" x2="165" y2="180" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <line x1="30" y1="182" x2="260" y2="182" stroke="#d6a040" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- row: student 3, course 1, grade 80 (max, tie with course 3) -->
+  <rect x="30" y="184" width="230" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="199" font-size="10" fill="#333">3</text>
+  <text x="125" y="199" font-size="10" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="200" y="199" font-size="10" fill="#4a7a3a" font-weight="bold">80</text>
+  <line x1="90" y1="184" x2="90" y2="206" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="184" x2="165" y2="206" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: student 3, course 2, grade 75 -->
+  <rect x="30" y="206" width="230" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="221" font-size="10" fill="#333">3</text>
+  <text x="125" y="221" font-size="10" fill="#999">2</text>
+  <text x="200" y="221" font-size="10" fill="#999">75</text>
+  <line x1="90" y1="206" x2="90" y2="228" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="206" x2="165" y2="228" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: student 3, course 3, grade 80 (tie, not selected) -->
+  <rect x="30" y="228" width="230" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="48" y="243" font-size="10" fill="#333">3</text>
+  <text x="125" y="243" font-size="10" fill="#999">3</text>
+  <text x="200" y="243" font-size="10" fill="#999">80</text>
+  <line x1="90" y1="228" x2="90" y2="250" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="165" y1="228" x2="165" y2="250" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- arrow down to partition -->
+  <path d="M145 256 L145 278" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Partition + Order step -->
+  <rect x="20" y="280" width="250" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="302" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">ROW_NUMBER() OVER (</text>
+  <text x="145" y="318" text-anchor="middle" font-size="10" fill="#555">PARTITION BY student_id</text>
+  <text x="145" y="332" text-anchor="middle" font-size="10" fill="#555">ORDER BY grade DESC, course_id ASC)</text>
+
+  <!-- arrow right to result -->
+  <path d="M270 307 L320 307 L320 130 L380 130" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Result table (right) -->
+  <text x="470" y="56" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">输出（rn = 1）</text>
+  <rect x="380" y="62" width="180" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="400" y="79" font-size="9.5" fill="#333">student_id</text>
+  <text x="465" y="79" font-size="9.5" fill="#333">course_id</text>
+  <text x="525" y="79" font-size="9.5" fill="#333">grade</text>
+  <line x1="430" y1="62" x2="430" y2="88" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="495" y1="62" x2="495" y2="88" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="88" width="180" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="400" y="103" font-size="10" fill="#333">1</text>
+  <text x="465" y="103" font-size="10" fill="#446688" font-weight="bold">2</text>
+  <text x="525" y="103" font-size="10" fill="#446688" font-weight="bold">99</text>
+  <line x1="430" y1="88" x2="430" y2="110" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="495" y1="88" x2="495" y2="110" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="110" width="180" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="400" y="125" font-size="10" fill="#333">2</text>
+  <text x="465" y="125" font-size="10" fill="#b85450" font-weight="bold">2</text>
+  <text x="525" y="125" font-size="10" fill="#b85450" font-weight="bold">95</text>
+  <line x1="430" y1="110" x2="430" y2="132" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="495" y1="110" x2="495" y2="132" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="380" y="132" width="180" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="400" y="147" font-size="10" fill="#333">3</text>
+  <text x="465" y="147" font-size="10" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="525" y="147" font-size="10" fill="#4a7a3a" font-weight="bold">80</text>
+  <line x1="430" y1="132" x2="430" y2="154" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="495" y1="132" x2="495" y2="154" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- callout boxes -->
+  <rect x="20" y="350" width="260" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="35" y="372" font-size="10" fill="#333" font-weight="bold">grade DESC：成绩高的排前面</text>
+  <text x="35" y="388" font-size="10" fill="#b85450" font-weight="bold">course_id ASC：并列时取课号小的</text>
+  <text x="35" y="404" font-size="10" fill="#555">ROW_NUMBER 保证每组只取一行</text>
+
+  <rect x="300" y="350" width="240" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="315" y="372" font-size="10" fill="#b85450" font-weight="bold">⚠️ 不能用 RANK/DENSE_RANK</text>
+  <text x="315" y="388" font-size="10" fill="#555">它们会让并列者都标 1</text>
+  <text x="315" y="404" font-size="10" fill="#555">题目要求并列只取一行 → ROW_NUMBER</text>
+</svg>

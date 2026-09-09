@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">纯 awk 方案：关联数组 word→count，一遍扫描 O(n)</text>
+  <path d="M 150 42 Q 280 50 410 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- 输入词流：10 个小芯片 -->
+  <text x="60" y="76" font-size="11" fill="#888">输入词流（逐词扫描）：</text>
+
+  <!-- 第一行芯片 the day is sunny the -->
+  <g filter="url(#sk)">
+    <rect x="60" y="84" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="110" y="84" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="160" y="84" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="210" y="84" width="56" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="270" y="84" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="83" y="100" text-anchor="middle" font-size="11" fill="#2b6e9e">the</text>
+  <text x="133" y="100" text-anchor="middle" font-size="11" fill="#2b6e9e">day</text>
+  <text x="183" y="100" text-anchor="middle" font-size="11" fill="#2b6e9e">is</text>
+  <text x="238" y="100" text-anchor="middle" font-size="11" fill="#2b6e9e">sunny</text>
+  <text x="293" y="100" text-anchor="middle" font-size="11" fill="#2b6e9e">the</text>
+
+  <!-- 第二行芯片 the the sunny is is -->
+  <g filter="url(#sk)">
+    <rect x="60" y="116" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="110" y="116" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="160" y="116" width="56" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="220" y="116" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <rect x="270" y="116" width="46" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="83" y="132" text-anchor="middle" font-size="11" fill="#2b6e9e">the</text>
+  <text x="133" y="132" text-anchor="middle" font-size="11" fill="#2b6e9e">the</text>
+  <text x="188" y="132" text-anchor="middle" font-size="11" fill="#2b6e9e">sunny</text>
+  <text x="243" y="132" text-anchor="middle" font-size="11" fill="#2b6e9e">is</text>
+  <text x="293" y="132" text-anchor="middle" font-size="11" fill="#2b6e9e">is</text>
+
+  <!-- 两个 the 芯片高亮，连到哈希表 -->
+  <g filter="url(#sk)">
+    <rect x="60" y="84" width="46" height="24" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <rect x="110" y="116" width="46" height="24" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="83" y="100" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">the</text>
+  <text x="133" y="132" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">the</text>
+
+  <!-- 中间动作说明 -->
+  <text x="380" y="100" font-size="11" fill="#444">对每个词执行：</text>
+  <g filter="url(#sk)">
+    <rect x="380" y="110" width="150" height="30" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+  </g>
+  <text x="455" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415">c[$i]++</text>
+  <text x="380" y="158" font-size="10" fill="#888">键不存在时自动建为 0，再 +1</text>
+
+  <!-- 下行箭头到哈希表 -->
+  <path d="M 280 150 L 280 178" stroke="#3a3a3a" stroke-width="1.8" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+  <text x="290" y="170" font-size="10" fill="#666">累加结果</text>
+
+  <!-- 哈希表 -->
+  <text x="60" y="200" font-size="12" fill="#888">关联数组 c（哈希表）：</text>
+  <g filter="url(#sk)">
+    <rect x="120" y="210" width="320" height="148" rx="8" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <!-- 表头 -->
+  <line x1="120" y1="236" x2="440" y2="236" stroke="#4a7a3a" stroke-width="1.2" filter="url(#sk)"/>
+  <line x1="300" y1="210" x2="300" y2="358" stroke="#4a7a3a" stroke-width="1.2" filter="url(#sk)"/>
+  <text x="210" y="228" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">键 word</text>
+  <text x="370" y="228" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">值 count</text>
+  <!-- 行 -->
+  <g filter="url(#sk)">
+    <rect x="124" y="240" width="172" height="26" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+    <rect x="304" y="240" width="132" height="26" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+  </g>
+  <text x="210" y="258" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">the</text>
+  <text x="370" y="258" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">4</text>
+  <text x="210" y="286" text-anchor="middle" font-size="12" fill="#333">is</text>
+  <text x="370" y="286" text-anchor="middle" font-size="13" fill="#333">3</text>
+  <text x="210" y="312" text-anchor="middle" font-size="12" fill="#333">sunny</text>
+  <text x="370" y="312" text-anchor="middle" font-size="13" fill="#333">2</text>
+  <text x="210" y="338" text-anchor="middle" font-size="12" fill="#333">day</text>
+  <text x="370" y="338" text-anchor="middle" font-size="13" fill="#333">1</text>
+
+  <!-- 高亮芯片到 the 行的弯箭头 -->
+  <path d="M 83 108 Q 60 175 180 240" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arR)" stroke-dasharray="5 3" filter="url(#sk)"/>
+  <path d="M 133 140 Q 120 190 200 240" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arR)" stroke-dasharray="5 3" filter="url(#sk)"/>
+  <text x="40" y="180" font-size="10" fill="#b85450">两次命中</text>
+  <text x="40" y="194" font-size="10" fill="#b85450">同一桶</text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="16" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：度数定位 → 找角 → 并行游走 → 逐行递推</text>
+
+  <!-- ① -->
+  <rect x="140" y="26" width="240" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="44" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 建邻接表 adj；找最小度节点 start</text>
+
+  <path d="M 260 54 L 260 62" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="260,64 348,94 260,124 172,94" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="92" text-anchor="middle" font-size="11" fill="#a07830" font-weight="bold" filter="url(#rough2)">最小度 = 1 ？</text>
+  <text x="260" y="106" text-anchor="middle" font-size="8.5" fill="#a07830" filter="url(#rough2)">（有度 1 ⟺ 1×n 链）</text>
+
+  <!-- 左分支：1×n 链 -->
+  <path d="M 172 94 L 111 94 L 111 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="146" y="88" text-anchor="middle" font-size="8.5" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="16" y="118" width="190" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+  <text x="111" y="134" text-anchor="middle" font-size="10" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">②a 1×n 链（示例 2）</text>
+  <text x="111" y="150" text-anchor="middle" font-size="8.5" fill="#8a3a34" filter="url(#rough2)">从端点起步，每步走向</text>
+  <text x="111" y="164" text-anchor="middle" font-size="8.5" fill="#8a3a34" filter="url(#rough2)">「≠ 前驱」的唯一邻居</text>
+  <text x="111" y="178" text-anchor="middle" font-size="8.5" fill="#8a3a34" filter="url(#rough2)">走完输出 [row]</text>
+
+  <!-- 主分支 -->
+  <path d="M 260 124 L 260 134" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="270" y="134" text-anchor="start" font-size="8.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">否（R, C ≥ 2）</text>
+
+  <rect x="148" y="138" width="224" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="156" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">②b c = start（角）；邻居 a、b</text>
+  <text x="260" y="171" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">谁向右谁向下无所谓 —— 转置也是合法解</text>
+  <text x="260" y="186" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">d = a、b 除 c 外的公共邻居 = (1,1)</text>
+  <text x="260" y="201" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">row0 = [c, a]，row1 = [b, d]</text>
+
+  <path d="M 260 212 L 260 222" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="148" y="226" width="224" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="244" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">③ 并行游走：当 row0 末尾度 = 3 时</text>
+  <text x="260" y="259" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">nxt = adj(cur) − {左, 下}（唯一）</text>
+  <text x="260" y="274" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">nd = 公共邻居(nxt, down) − {cur}</text>
+  <text x="260" y="287" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">两行同步追加；遇度 2 即右上角 ⇒ C、R = n/C</text>
+
+  <path d="M 260 292 L 260 302" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="128" y="306" width="264" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="322" text-anchor="middle" font-size="10" fill="#a07830" font-weight="bold" filter="url(#rough2)">④ 逐行递推 i = 2..R−1</text>
+  <text x="260" y="335" text-anchor="middle" font-size="8.5" fill="#a07830" filter="url(#rough2)">w0 = adj(up[0]) − {上, 右}（行首）</text>
+  <text x="260" y="347" text-anchor="middle" font-size="8.5" fill="#a07830" filter="url(#rough2)">wj = 公共邻居(row[j−1], up[j]) − {up[j−1]}，输出 grid</text>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心交换流程（逐沙发修复，pos 映射 O(1) 定位伴侣）</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="170" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: 建 pos[人]=座位; ans=0; i=0</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: i < n ? -->
+  <polygon points="270,104 370,150 270,196 170,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">(还有沙发待处理)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 370 150 L 452 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="486" cy="150" rx="46" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="154" text-anchor="middle" font-size="12" fill="#333">返回 ans</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 196 L 270 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- compute partner -->
+  <rect x="120" y="218" width="300" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="240" text-anchor="middle" font-size="12" fill="#333">x = row[2i];  partner = x ^ 1  （沙发 i 的左座人）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 252 L 270 270" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: row[2i+1] == partner ? -->
+  <polygon points="270,274 380,320 270,366 160,320" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="316" text-anchor="middle" font-size="12" fill="#333">row[2i+1] == partner ?</text>
+  <text x="270" y="332" text-anchor="middle" font-size="11" fill="#666">(右座已是伴侣吗)</text>
+
+  <!-- Yes (already paired) -> i++ -->
+  <path d="M 160 320 L 100 320" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="130" y="312" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="14" y="300" width="84" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="318" text-anchor="middle" font-size="11" fill="#333">沙发已配对</text>
+  <text x="56" y="334" text-anchor="middle" font-size="11" fill="#555">i++</text>
+
+  <!-- No (need swap) -->
+  <path d="M 380 320 L 440 320" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="312" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="432" y="300" width="100" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="482" y="316" text-anchor="middle" font-size="11" fill="#333">pos = pos[partner]</text>
+  <text x="482" y="332" text-anchor="middle" font-size="11" fill="#333">swap(row[2i+1], row[pos])</text>
+
+  <!-- second step box under swap -->
+  <path d="M 482 342 L 482 360" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="432" y="364" width="100" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="482" y="380" text-anchor="middle" font-size="11" fill="#333">更新 pos 映射</text>
+  <text x="482" y="396" text-anchor="middle" font-size="11" fill="#333">ans++; i++</text>
+
+  <!-- loop back arrow from left box up to decision i<n -->
+  <path d="M 56 300 L 56 150 L 170 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="230" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 48 230)">下一个沙发</text>
+
+  <!-- loop back arrow from right box up to decision i<n -->
+  <path d="M 482 406 L 482 150 L 370 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- summary note -->
+  <text x="270" y="448" text-anchor="middle" font-size="11" fill="#888">每轮 swap 恰让一个沙发配对成功，且不破坏已修复沙发 → 交换次数 = 最少</text>
+</svg>

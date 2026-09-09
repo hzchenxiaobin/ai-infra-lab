@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+  <text x="270" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：摆动序列 = 相邻差正负交替，挑峰谷即可</text>
+
+  <!-- ===== Section 1: perfect wiggle ===== -->
+  <text x="30" y="62" font-size="12" fill="#446688" font-weight="bold">① 完美摆动 [1, 7, 4, 9, 2, 5]：每段差都正负交替</text>
+
+  <!-- 6 boxes: x = 80, 152, 224, 296, 368, 440 ; w=42 h=34 ; y=78 -->
+  <g filter="url(#rough2)">
+    <rect x="80" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <rect x="152" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <rect x="224" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <rect x="296" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <rect x="368" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <rect x="440" y="78" width="42" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+  </g>
+  <text x="101" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <text x="173" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">7</text>
+  <text x="245" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">4</text>
+  <text x="317" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">9</text>
+  <text x="389" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <text x="461" y="100" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+
+  <!-- arrows between boxes at y=95, green for up / red for down -->
+  <path d="M 122 95 L 152 95" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 194 95 L 224 95" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 266 95 L 296 95" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 338 95 L 368 95" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 410 95 L 440 95" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- diff labels above arrows -->
+  <text x="137" y="74" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">↑+6</text>
+  <text x="209" y="74" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">↓−3</text>
+  <text x="281" y="74" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">↑+5</text>
+  <text x="353" y="74" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">↓−7</text>
+  <text x="425" y="74" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">↑+3</text>
+
+  <text x="490" y="100" font-size="10.5" fill="#4a7a3a" font-weight="bold">长度 6 ✓</text>
+
+  <!-- divider -->
+  <path d="M 30 130 L 510 130" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Section 2: array with monotonic runs ===== -->
+  <text x="30" y="158" font-size="12" fill="#b85450" font-weight="bold">② 含单调段时 [1, 17, 5, 10, 13, 15, 10, 5, 16, 8]：挑峰谷，跳中段</text>
+
+  <!-- 10 boxes: w=38 h=34 gap=14 ; x=22,74,...,490 ; y=232 -->
+  <!-- picked(green): idx 0,1,2,5,7,8,9 ; skipped(gray): idx 3,4,6 -->
+  <g filter="url(#rough2)">
+    <!-- picked -->
+    <rect x="22" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <rect x="74" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <rect x="126" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <!-- skipped -->
+    <rect x="178" y="232" width="38" height="34" fill="#eee" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,3" rx="4"/>
+    <rect x="230" y="232" width="38" height="34" fill="#eee" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,3" rx="4"/>
+    <!-- picked -->
+    <rect x="282" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <!-- skipped -->
+    <rect x="334" y="232" width="38" height="34" fill="#eee" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,3" rx="4"/>
+    <!-- picked -->
+    <rect x="386" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <rect x="438" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <rect x="490" y="232" width="38" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+  </g>
+
+  <!-- values: 1,17,5,10,13,15,10,5,16,8 ; centers 41,93,145,197,249,301,353,405,457,509 -->
+  <text x="41" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">1</text>
+  <text x="93" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">17</text>
+  <text x="145" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">5</text>
+  <text x="197" y="254" text-anchor="middle" font-size="12.5" fill="#aaa">10</text>
+  <text x="249" y="254" text-anchor="middle" font-size="12.5" fill="#aaa">13</text>
+  <text x="301" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">15</text>
+  <text x="353" y="254" text-anchor="middle" font-size="12.5" fill="#aaa">10</text>
+  <text x="405" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">5</text>
+  <text x="457" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">16</text>
+  <text x="509" y="254" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">8</text>
+
+  <!-- strikethrough on skipped boxes -->
+  <path d="M 178 232 L 216 266" stroke="#bbb" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M 230 232 L 268 266" stroke="#bbb" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M 334 232 L 372 266" stroke="#bbb" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+
+  <!-- peak/valley labels above picked boxes at y=200 -->
+  <text x="41" y="204" text-anchor="middle" font-size="10" fill="#888">起</text>
+  <text x="93" y="204" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">峰</text>
+  <text x="145" y="204" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">谷</text>
+  <text x="301" y="204" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">峰</text>
+  <text x="405" y="204" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">谷</text>
+  <text x="457" y="204" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">峰</text>
+  <text x="509" y="204" text-anchor="middle" font-size="10" fill="#888">终</text>
+
+  <!-- connecting lines between picked centers at y=218 : green up / red down -->
+  <path d="M 41 218 L 93 218" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 93 218 L 145 218" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 145 218 L 301 218" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 301 218 L 405 218" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 405 218 L 457 218" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 457 218 L 509 218" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- monotonic run brackets below boxes at y=288 -->
+  <!-- up run: 5 -> 15 (centers 145 -> 301) -->
+  <path d="M 145 282 L 145 290 L 301 290 L 301 282" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="223" y="304" text-anchor="middle" font-size="10" fill="#4a7a3a">单调升，取最高峰 15</text>
+  <!-- down run: 15 -> 5 (centers 301 -> 405) -->
+  <path d="M 301 312 L 301 320 L 405 320 L 405 312" stroke="#b85450" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="353" y="334" text-anchor="middle" font-size="10" fill="#b85450">单调降，取最低谷 5</text>
+
+  <!-- result label -->
+  <rect x="40" y="356" width="460" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="376" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">挑出的峰谷序列：[1, 17, 5, 15, 5, 16, 8]</text>
+  <text x="270" y="394" text-anchor="middle" font-size="10.5" fill="#555">单调段只取端点（峰/谷），中段元素全部跳过 → 长度 = 峰谷数 = 7</text>
+</svg>

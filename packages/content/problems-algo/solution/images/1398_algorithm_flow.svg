@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="480" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：HAVING 条件聚合（一次扫描 + 分组过滤）</text>
+  <text x="290" y="46" text-anchor="middle" font-size="11" fill="#888">JOIN → GROUP BY → HAVING 三条件 → ORDER BY → 输出</text>
+
+  <!-- Box 1 -->
+  <rect x="60" y="64" width="460" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="290" y="86" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 数据源</text>
+  <text x="290" y="104" text-anchor="middle" font-size="11" fill="#555">FROM Customers c JOIN Orders o ON c.customer_id = o.customer_id</text>
+
+  <path d="M 290 120 L 290 138" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Box 2 -->
+  <rect x="60" y="140" width="460" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="290" y="167" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">② 分组：GROUP BY c.customer_id, c.customer_name</text>
+
+  <path d="M 290 188 L 290 206" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Box 3 highlighted (core) -->
+  <rect x="40" y="208" width="500" height="92" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="290" y="230" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 过滤 HAVING（核心：把"有 / 无"变成"计数&gt;0 / =0"）</text>
+  <text x="290" y="250" text-anchor="middle" font-size="10.5" fill="#555">SUM(IF(o.product_name='A',1,0)) &gt; 0   AND</text>
+  <text x="290" y="266" text-anchor="middle" font-size="10.5" fill="#555">SUM(IF(o.product_name='B',1,0)) &gt; 0   AND</text>
+  <text x="290" y="282" text-anchor="middle" font-size="10.5" fill="#555">SUM(IF(o.product_name='C',1,0)) = 0</text>
+
+  <path d="M 290 304 L 290 322" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Box 4 -->
+  <rect x="60" y="324" width="460" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="290" y="351" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">④ 排序：ORDER BY c.customer_name</text>
+
+  <path d="M 290 372 L 290 390" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Box 5 output -->
+  <rect x="120" y="392" width="340" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="290" y="419" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">⑤ 输出：customer_id, customer_name</text>
+
+  <!-- note -->
+  <rect x="60" y="448" width="460" height="22" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="290" y="463" text-anchor="middle" font-size="10" fill="#b85450">⚠ 若用 NOT IN 子查询需防 NULL 陷阱；条件聚合天然规避</text>
+</svg>

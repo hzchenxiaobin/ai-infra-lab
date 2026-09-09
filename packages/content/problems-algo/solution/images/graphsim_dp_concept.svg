@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心概念：在图上走一条路径，让名字序列尽量贴合 targetPath</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">编辑距离 = 名字不匹配的位置数（类似汉明距离），路径每相邻两步必须有直接道路</text>
+
+  <!-- ===== left: graph ===== -->
+  <text x="120" y="74" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">城市图（无向连通）</text>
+
+  <!-- edges -->
+  <g stroke="#999" stroke-width="1.4" fill="none" filter="url(#rough2)">
+    <line x1="90" y1="120" x2="150" y2="180"/>
+    <line x1="90" y1="120" x2="150" y2="240"/>
+    <line x1="150" y1="180" x2="210" y2="120"/>
+    <line x1="150" y1="180" x2="210" y2="240"/>
+    <line x1="150" y1="180" x2="150" y2="240"/>
+    <line x1="210" y1="120" x2="150" y2="240"/>
+  </g>
+
+  <!-- nodes: 0=ATL,1=PEK,2=LAX,3=DXB,4=HND -->
+  <g font-size="10">
+    <!-- node 0 ATL (highlight, matches target[0]) -->
+    <circle cx="90" cy="120" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+    <text x="90" y="116" text-anchor="middle" fill="#333" font-weight="bold">0</text>
+    <text x="90" y="128" text-anchor="middle" fill="#4a7a3a" font-weight="bold">ATL</text>
+    <!-- node 1 PEK -->
+    <circle cx="210" cy="120" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="210" y="116" text-anchor="middle" fill="#333">1</text>
+    <text x="210" y="128" text-anchor="middle" fill="#333">PEK</text>
+    <!-- node 2 LAX -->
+    <circle cx="150" cy="180" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="150" y="176" text-anchor="middle" fill="#333">2</text>
+    <text x="150" y="188" text-anchor="middle" fill="#333">LAX</text>
+    <!-- node 3 DXB -->
+    <circle cx="150" cy="240" r="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="150" y="236" text-anchor="middle" fill="#333">3</text>
+    <text x="150" y="248" text-anchor="middle" fill="#d6a040" font-weight="bold">DXB</text>
+    <!-- node 4 HND -->
+    <circle cx="210" cy="240" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="210" y="236" text-anchor="middle" fill="#333">4</text>
+    <text x="210" y="248" text-anchor="middle" fill="#333">HND</text>
+  </g>
+
+  <!-- ===== right: targetPath ===== -->
+  <text x="400" y="74" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">targetPath（要模仿的序列）</text>
+
+  <g font-size="11">
+    <rect x="320" y="92" width="58" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="349" y="114" text-anchor="middle" fill="#b85450" font-weight="bold">ATL</text>
+    <rect x="382" y="92" width="58" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="411" y="114" text-anchor="middle" fill="#b85450" font-weight="bold">DXB</text>
+    <rect x="444" y="92" width="58" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="473" y="114" text-anchor="middle" fill="#b85450" font-weight="bold">HND</text>
+    <rect x="506" y="92" width="40" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="526" y="114" text-anchor="middle" fill="#b85450" font-weight="bold">LAX</text>
+    <text x="349" y="84" text-anchor="middle" font-size="8" fill="#888">t0</text>
+    <text x="411" y="84" text-anchor="middle" font-size="8" fill="#888">t1</text>
+    <text x="473" y="84" text-anchor="middle" font-size="8" fill="#888">t2</text>
+    <text x="526" y="84" text-anchor="middle" font-size="8" fill="#888">t3</text>
+  </g>
+
+  <!-- ===== a candidate path on graph ===== -->
+  <text x="400" y="158" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">候选路径 0→3→0→2</text>
+  <g font-size="11">
+    <rect x="320" y="172" width="58" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="349" y="188" text-anchor="middle" fill="#333" font-weight="bold">ATL</text>
+    <text x="349" y="200" text-anchor="middle" font-size="8" fill="#888">节点0</text>
+    <rect x="382" y="172" width="58" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="411" y="188" text-anchor="middle" fill="#333" font-weight="bold">DXB</text>
+    <text x="411" y="200" text-anchor="middle" font-size="8" fill="#888">节点3</text>
+    <rect x="444" y="172" width="58" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="473" y="188" text-anchor="middle" fill="#333" font-weight="bold">ATL</text>
+    <text x="473" y="200" text-anchor="middle" font-size="8" fill="#888">节点0</text>
+    <rect x="506" y="172" width="40" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="526" y="188" text-anchor="middle" fill="#333" font-weight="bold">LAX</text>
+    <text x="526" y="200" text-anchor="middle" font-size="8" fill="#888">节点2</text>
+  </g>
+
+  <!-- mismatch markers -->
+  <g font-size="9">
+    <text x="349" y="226" text-anchor="middle" fill="#4a7a3a">✓</text>
+    <text x="411" y="226" text-anchor="middle" fill="#4a7a3a">✓</text>
+    <text x="473" y="226" text-anchor="middle" fill="#b85450" font-weight="bold">✗ ATL≠HND</text>
+    <text x="526" y="226" text-anchor="middle" fill="#4a7a3a">✓</text>
+  </g>
+  <text x="410" y="250" text-anchor="middle" font-size="10" fill="#888">编辑距离 = 1（只有第 2 位不匹配）</text>
+
+  <!-- ===== bottom: state definition ===== -->
+  <rect x="30" y="288" width="500" height="108" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="312" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">状态定义：dp[i][v]</text>
+  <text x="280" y="334" text-anchor="middle" font-size="12" fill="#333">走完前 i+1 步（下标 0..i）、且第 i 步终点落在城市 v 的最小编辑距离</text>
+  <text x="280" y="354" text-anchor="middle" font-size="11" fill="#666">转移：dp[i][v] = min&#8201;{ dp[i−1][u] + (names[v]≠target[i] ? 1 : 0) }，u ∈ adj(v)</text>
+  <text x="280" y="374" text-anchor="middle" font-size="10" fill="#888">边界 dp[0][v] = (names[v]≠target[0] ? 1 : 0)；答案 = argmin&#8201;dp[T−1][v]，再回溯 prev 还原路径</text>
+  <text x="280" y="390" text-anchor="middle" font-size="10" fill="#b85450">关键：每步只看「当前城市名是否匹配」，路径合法性由「只从邻居转移」保证</text>
+</svg>

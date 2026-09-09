@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="16" text-anchor="middle" font-size="12.5" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：O(n²) 枚举点对 → 双桶哈希 → 两路聚合相减</text>
+
+  <!-- step A -->
+  <g filter="url(#rough2)">
+    <rect x="80" y="28" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="260" y="48" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold">枚举所有点对 (i &lt; j)：共 C(n,2) ≈ 1.25×10⁵ 条线段</text>
+    <text x="260" y="66" text-anchor="middle" font-size="9.5" fill="#33506b">规范化：g = gcd(|dx|,|dy|) 约分并统一符号 → 斜率键 s = (dy, dx)</text>
+  </g>
+
+  <!-- branch arrows -->
+  <path d="M 230 78 L 140 92 L 140 106" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 290 78 L 380 92 L 380 106" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- left: line bucket -->
+  <g filter="url(#rough2)">
+    <rect x="20" y="110" width="240" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="140" y="130" text-anchor="middle" font-size="9" fill="#33506b" font-weight="bold">直线键 ℓ = (dy, −dx, c)，c = dy·x₁ − dx·y₁</text>
+    <text x="140" y="145" text-anchor="middle" font-size="8.5" fill="#33506b">法向量与方向向量垂直、沿线不变、统一符号</text>
+    <text x="140" y="159" text-anchor="middle" font-size="9" fill="#33506b" font-weight="bold">slope_lines[s][ℓ] += 1</text>
+  </g>
+
+  <!-- right: midpoint bucket -->
+  <g filter="url(#rough2)">
+    <rect x="260" y="110" width="240" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8"/>
+    <text x="380" y="130" text-anchor="middle" font-size="9" fill="#8a6d1f" font-weight="bold">中点键 (x₁+x₂, y₁+y₂)</text>
+    <text x="380" y="145" text-anchor="middle" font-size="8.5" fill="#8a6d1f">用坐标和代替中点，整数精度避免除 2</text>
+    <text x="380" y="159" text-anchor="middle" font-size="9" fill="#8a6d1f" font-weight="bold">mid_slopes[mid][s] += 1</text>
+  </g>
+
+  <path d="M 140 166 L 140 190" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 380 166 L 380 190" fill="none" stroke="#d6a040" stroke-width="1.6" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- left: part1 -->
+  <g filter="url(#rough2)">
+    <rect x="20" y="194" width="240" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="140" y="214" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold">part₁ = Σ_s (K² − Σℓ kℓ²) / 2</text>
+    <text x="140" y="230" text-anchor="middle" font-size="8.5" fill="#2f5d24">同斜率、跨直线的底边配对</text>
+    <text x="140" y="246" text-anchor="middle" font-size="8.5" fill="#2f5d24">共端点（平行线不相交）与四点共线自动排除</text>
+  </g>
+
+  <!-- right: part2 -->
+  <g filter="url(#rough2)">
+    <rect x="260" y="194" width="240" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="380" y="214" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold">part₂ = Σ_mid [C(m,2) − Σₛ C(mₛ,2)]</text>
+    <text x="380" y="230" text-anchor="middle" font-size="8.5" fill="#8a6d1f">共中点且异斜率 = 平行四边形的对角线</text>
+    <text x="380" y="246" text-anchor="middle" font-size="8.5" fill="#8a6d1f">同斜率同中点（共线对称）不误减</text>
+  </g>
+
+  <!-- converge arrows -->
+  <path d="M 140 256 L 140 268 L 235 268 L 235 280" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 380 256 L 380 268 L 285 268 L 285 280" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- answer -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="284" width="260" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8"/>
+    <text x="260" y="303" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">ans = part₁ − part₂</text>
+    <text x="260" y="320" text-anchor="middle" font-size="8.5" fill="#b85450">C++ 中间量用 long long：K² 可达 1.6×10¹⁰</text>
+  </g>
+
+  <text x="260" y="348" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">其余退化自动为 0：三点共线+外点（混合线段斜率必异）· 内点构型（重心坐标可证无平行对）</text>
+</svg>

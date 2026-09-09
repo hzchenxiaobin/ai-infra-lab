@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    示例演算：User 1 vs User 6
+  </text>
+
+  <!-- ===== LEFT: User 1 (has recommendations) ===== -->
+  <rect x="20" y="40" width="255" height="410" rx="8" fill="none" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="147" y="60" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">User 1  ✓ 有推荐</text>
+
+  <!-- Step 1: Friends (bidirectional) -->
+  <text x="35" y="82" font-size="10" fill="#888" filter="url(#rough2)">① 双向好友</text>
+  <rect x="35" y="88" width="225" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="147" y="104" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">正向: (1,2)(1,3)(1,4)</text>
+  <text x="147" y="120" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">逆向: (6,1) → 1 的友 = 6</text>
+
+  <!-- Step 2: Friend likes -->
+  <text x="35" y="144" font-size="10" fill="#888" filter="url(#rough2)">② 好友赞的页面</text>
+  <rect x="35" y="150" width="225" height="60" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="45" y="166" font-size="9" fill="#333" filter="url(#rough2)">友2 → {23, 77}</text>
+  <text x="45" y="180" font-size="9" fill="#333" filter="url(#rough2)">友3 → {24, 77}</text>
+  <text x="45" y="194" font-size="9" fill="#333" filter="url(#rough2)">友4 → {56}  友6 → {33, 88}</text>
+  <text x="45" y="206" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">并集: {23,24,56,77,33,88}</text>
+
+  <!-- Step 3: Own likes -->
+  <text x="35" y="228" font-size="10" fill="#888" filter="url(#rough2)">③ 自己已赞</text>
+  <rect x="35" y="234" width="225" height="24" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1" filter="url(#rough2)"/>
+  <text x="147" y="250" text-anchor="middle" font-size="10" fill="#8a6d20" filter="url(#rough2)">{88}</text>
+
+  <!-- Step 4: Result -->
+  <text x="35" y="276" font-size="10" fill="#888" filter="url(#rough2)">④ 推荐 = ② − ③</text>
+  <rect x="35" y="282" width="225" height="30" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="147" y="302" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">{23, 24, 56, 77, 33}</text>
+
+  <!-- Output pairs -->
+  <text x="35" y="330" font-size="9" fill="#888" filter="url(#rough2)">输出 5 行:</text>
+  <text x="35" y="345" font-size="9" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">(1,23) (1,24) (1,56)</text>
+  <text x="35" y="358" font-size="9" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">(1,77) (1,33)</text>
+
+  <!-- Note about DISTINCT -->
+  <rect x="35" y="378" width="225" height="58" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="45" y="394" font-size="9" fill="#b85450" filter="url(#rough2)">⚠ 友2和友3都赞了77</text>
+  <text x="45" y="408" font-size="9" fill="#b85450" filter="url(#rough2)">→ 候选(1,77)出现两次</text>
+  <text x="45" y="422" font-size="9" fill="#b85450" filter="url(#rough2)">→ 必须 DISTINCT 去重!</text>
+
+  <!-- ===== RIGHT: User 6 (no recommendations) ===== -->
+  <rect x="290" y="40" width="255" height="410" rx="8" fill="none" stroke="#b85450" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="417" y="60" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">User 6  ✗ 无推荐</text>
+
+  <!-- Step 1: Friends -->
+  <text x="305" y="82" font-size="10" fill="#888" filter="url(#rough2)">① 双向好友</text>
+  <rect x="305" y="88" width="225" height="40" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="417" y="104" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">正向: (6,1) → 友 = 1</text>
+  <text x="417" y="120" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">逆向: 无 (1,6) 不存在</text>
+
+  <!-- Step 2: Friend likes -->
+  <text x="305" y="144" font-size="10" fill="#888" filter="url(#rough2)">② 好友赞的页面</text>
+  <rect x="305" y="150" width="225" height="60" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="315" y="172" font-size="9" fill="#333" filter="url(#rough2)">友1 → {88}</text>
+  <text x="315" y="196" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">并集: {88}</text>
+
+  <!-- Step 3: Own likes -->
+  <text x="305" y="228" font-size="10" fill="#888" filter="url(#rough2)">③ 自己已赞</text>
+  <rect x="305" y="234" width="225" height="24" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1" filter="url(#rough2)"/>
+  <text x="417" y="250" text-anchor="middle" font-size="10" fill="#8a6d20" filter="url(#rough2)">{33, 88}</text>
+
+  <!-- Step 4: Result -->
+  <text x="305" y="276" font-size="10" fill="#888" filter="url(#rough2)">④ 推荐 = ② − ③</text>
+  <rect x="305" y="282" width="225" height="30" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="417" y="302" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">{}  (空集)</text>
+
+  <!-- Explanation -->
+  <text x="305" y="330" font-size="9" fill="#888" filter="url(#rough2)">输出 0 行</text>
+
+  <rect x="305" y="346" width="225" height="90" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1" filter="url(#rough2)"/>
+  <text x="315" y="362" font-size="9" fill="#8a6d20" filter="url(#rough2)">💡 唯一好友(1)赞的88</text>
+  <text x="315" y="376" font-size="9" fill="#8a6d20" filter="url(#rough2)">   自己也已赞88</text>
+  <text x="315" y="390" font-size="9" fill="#8a6d20" filter="url(#rough2)">   → 88 被反连接排除</text>
+  <text x="315" y="406" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">→ User 6 不在结果中</text>
+  <text x="315" y="424" font-size="9" fill="#888" filter="url(#rough2)">   (无推荐的用户自动缺席)</text>
+</svg>

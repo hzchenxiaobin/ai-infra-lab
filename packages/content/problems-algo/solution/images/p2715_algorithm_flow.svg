@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" filter="url(#rough2)">cancellable 算法流程</text>
+
+  <!-- 步骤1：调用 cancellable -->
+  <rect x="40" y="60" width="200" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">调用 cancellable(fn, args, t)</text>
+  <text x="140" y="100" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">t 毫秒后执行 fn(...args)</text>
+  <text x="140" y="112" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">返回一个 cancelFn</text>
+
+  <!-- 箭头到步骤2 -->
+  <path d="M 240 88 L 300 88" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤2：setTimeout 安排 -->
+  <rect x="300" y="60" width="220" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">const timer = setTimeout(fn, t, ...args)</text>
+  <text x="410" y="100" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">事件循环在 t ms 后入队 fn</text>
+  <text x="410" y="112" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">timer 是定时器句柄</text>
+
+  <!-- 返回 cancelFn 箭头到步骤3 -->
+  <path d="M 410 116 L 410 150" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="138" font-size="10" fill="#446688" filter="url(#rough2)">return () =&gt; clearTimeout(timer)</text>
+
+  <!-- 步骤3：两条分支 -->
+  <rect x="40" y="160" width="200" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#d6a040" filter="url(#rough2)">分支A cancelTimeMs &lt; t</text>
+  <text x="140" y="198" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">timer 尚未触发</text>
+  <text x="140" y="210" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">clearTimeout 取消 → fn 不执行</text>
+
+  <rect x="320" y="160" width="200" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">分支B cancelTimeMs ≥ t</text>
+  <text x="420" y="198" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">timer 已在 t ms 触发</text>
+  <text x="420" y="210" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">clearTimeout 无害 → fn 已执行</text>
+
+  <!-- 从 cancelFn 调用分别到两个分支 -->
+  <path d="M 410 116 Q 410 140 140 160" fill="none" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 410 150 L 420 160" fill="none" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="280" y="148" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">cancelFn() 被调用</text>
+
+  <!-- 结果 -->
+  <rect x="40" y="245" width="200" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="269" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">结果：[] (fn 未执行)</text>
+
+  <rect x="320" y="245" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="269" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">结果：[{time:t, returned:fn(...args)}]</text>
+
+  <!-- 箭头到结果 -->
+  <path d="M 140 216 L 140 245" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 420 216 L 420 245" fill="none" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 关键点 -->
+  <rect x="40" y="310" width="480" height="55" fill="none" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="52" y="328" font-size="11" font-weight="bold" fill="#d6a040" filter="url(#rough2)">关键性质</text>
+  <text x="52" y="346" font-size="10" fill="#333" filter="url(#rough2)">clearTimeout 对「未触发」与「已触发」的 timer 都安全——后者是 no-op，不报错。</text>
+  <text x="52" y="360" font-size="10" fill="#333" filter="url(#rough2)">因此无需用标志位记录 fn 是否已执行，直接 clearTimeout 即可。</text>
+</svg>

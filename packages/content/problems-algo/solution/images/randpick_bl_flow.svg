@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：init 重映射建表 / pick 投点查表</text>
+
+  <rect x="36" y="46" width="488" height="178" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="68" font-size="13" fill="#446688" font-weight="bold">① init(n, blacklist)</text>
+
+  <rect x="60" y="84" width="220" height="30" fill="#fafafa" stroke="#446688" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="104" font-size="11" fill="#444">sz = n − len(blacklist)</text>
+
+  <rect x="60" y="124" width="220" height="30" fill="#fafafa" stroke="#446688" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="144" font-size="11" fill="#444">把 blacklist 全部塞进 set B</text>
+
+  <rect x="60" y="164" width="220" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="184" font-size="11" fill="#d6a040" font-weight="bold">w = sz  （扫描 [sz, n) 找白名单目标）</text>
+
+  <rect x="300" y="84" width="210" height="110" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="104" font-size="11" fill="#4a7a3a" font-weight="bold">for b in blacklist:</text>
+  <text x="316" y="122" font-size="10.5" fill="#555">if b &lt; sz:</text>
+  <text x="324" y="140" font-size="10.5" fill="#b85450" font-weight="bold">  while w in B: w += 1</text>
+  <text x="324" y="158" font-size="10.5" fill="#b85450" font-weight="bold">  map[b] = w; w += 1</text>
+  <text x="316" y="176" font-size="10.5" fill="#888">else: 跳过（b ≥ sz 不影响投点）</text>
+
+  <text x="56" y="210" font-size="10.5" fill="#888">→ 得到 map：[0, sz) 内每个黑名单 b 重映射到 [sz, n) 内某白名单 w</text>
+
+  <rect x="36" y="240" width="488" height="98" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="262" font-size="13" fill="#b85450" font-weight="bold">② pick()</text>
+
+  <rect x="60" y="278" width="200" height="30" fill="#fafafa" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="298" font-size="11" fill="#444">r = rand() % sz   ∈ [0, sz)</text>
+
+  <path d="M 160 312 L 160 330" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="60" y="338" width="440" height="48" fill="#fafafa" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="358" font-size="11" fill="#444">查表：return map.get(r, r)</text>
+  <text x="68" y="376" font-size="10.5" fill="#888">  · r 不在 map（r 是白名单） → 直接返回 r</text>
+  <text x="300" y="376" font-size="10.5" fill="#888">  · r 在 map（r 是黑名单）  → 返回映射的白名单 map[r]</text>
+
+  <rect x="36" y="358" width="0" height="0" fill="none"/>
+
+  <rect x="36" y="354" width="488" height="0" fill="none"/>
+
+  <rect x="36" y="356" width="488" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="378" font-size="12" fill="#d6a040" font-weight="bold">关键不变量</text>
+  <text x="56" y="398" font-size="11" fill="#555">• [0, sz) 投点共 sz 种结果，恰好一一对应 sz 个白名单数 → 每个白名单概率 1/sz</text>
+  <text x="56" y="416" font-size="11" fill="#555">• map 只覆盖「[0, sz) 内的黑名单」，未触达的白名单 r 直接返回自身</text>
+  <text x="56" y="434" font-size="11" fill="#b85450" font-weight="bold">→ pick 每次 O(1)：一次 rand + 一次哈希查表，与 n、|blacklist| 均无关</text>
+</svg>

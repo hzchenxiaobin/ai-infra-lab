@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">一维滚动：倒序枚举 + 不可达检查</text>
+
+  <!-- dp array -->
+  <text x="24" y="60" font-size="12" fill="#888">dp[j]：</text>
+  <rect x="80" y="46" width="42" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="101" y="66" text-anchor="middle" font-size="12" fill="#333">0</text>
+  <rect x="126" y="46" width="42" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="147" y="66" text-anchor="middle" font-size="12" fill="#333">-1</text>
+  <rect x="172" y="46" width="42" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="193" y="66" text-anchor="middle" font-size="12" fill="#333">-1</text>
+  <rect x="218" y="46" width="42" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="239" y="66" text-anchor="middle" font-size="12" fill="#333">dp[j-x]</text>
+  <rect x="264" y="46" width="42" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="285" y="66" text-anchor="middle" font-size="12" fill="#333">dp[j]</text>
+  <rect x="310" y="46" width="42" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="331" y="66" text-anchor="middle" font-size="12" fill="#333">-1</text>
+  <rect x="356" y="46" width="42" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="377" y="66" text-anchor="middle" font-size="12" fill="#333">-1</text>
+
+  <!-- arrow j-x -> j -->
+  <path d="M 234 84 Q 250 106 266 84" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="250" y="106" text-anchor="middle" font-size="11" fill="#b85450">若 dp[j-x] ≥ 0：</text>
+
+  <!-- transition formula -->
+  <rect x="80" y="116" width="360" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="138" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">dp[j] = max( dp[j],  dp[j-x] + 1 )</text>
+
+  <!-- reverse order box -->
+  <rect x="24" y="172" width="230" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="139" y="196" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">j 必须倒序：target ↓ x</text>
+  <text x="139" y="220" text-anchor="middle" font-size="10" fill="#555">正序时 dp[j-x] 是本轮刚写的值</text>
+  <text x="139" y="238" text-anchor="middle" font-size="10" fill="#555">= 同一元素 x 被用了不止一次</text>
+  <text x="139" y="256" text-anchor="middle" font-size="10" fill="#555">→ 错变成「完全背包」</text>
+  <text x="139" y="278" text-anchor="middle" font-size="10" fill="#888">倒序保证读的是上一轮的旧值</text>
+
+  <!-- flow chart -->
+  <rect x="276" y="172" width="224" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="388" y="194" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">算法流程</text>
+  <text x="388" y="214" text-anchor="middle" font-size="10" fill="#555">① 逐个元素 x ∈ nums</text>
+  <text x="388" y="232" text-anchor="middle" font-size="10" fill="#555">② pre = min(pre+x, target) 封顶剪枝</text>
+  <text x="388" y="250" text-anchor="middle" font-size="10" fill="#555">③ j 从 pre 倒序到 x，做松弛</text>
+  <text x="388" y="268" text-anchor="middle" font-size="10" fill="#555">④ 全部处理完</text>
+  <text x="388" y="286" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">答案 dp[target]（-1 即无解）</text>
+
+  <!-- why -1 box -->
+  <rect x="24" y="312" width="476" height="72" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="262" y="336" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">为什么哨兵是 -1 而不是 0？</text>
+  <text x="262" y="356" text-anchor="middle" font-size="11" fill="#555">dp[j] = 0 仅对 j = 0（空子序列）合法；j &gt; 0 时长度 0 意味着「凑不出」</text>
+  <text x="262" y="374" text-anchor="middle" font-size="11" fill="#555">-1 一身兼二职：区分「不可达」与「可达长度」，max 比较时天然不参与更新</text>
+</svg>

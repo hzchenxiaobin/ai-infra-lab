@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：Shift-AND 位并行 —— 位集移位相与一次求出所有可行起点</text>
+
+  <!-- ===== Part 1: matching relation ===== -->
+  <rect x="30" y="36" width="480" height="88" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="60" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">每位 sub[i] 能匹配一个字符集 A_i（自身 + mappings 里的 new）</text>
+  <text x="270" y="82" text-anchor="middle" font-size="11.5" fill="#333">例：sub[i]='e'，mappings 含 e-&gt;3  =&gt;  A_i = {e, 3}</text>
+  <text x="270" y="106" text-anchor="middle" font-size="11.5" fill="#333">matchable(a,b) = (a=b) 或 (a,b) 在 mappings 中；不做传递闭包</text>
+
+  <line x1="270" y1="126" x2="270" y2="146" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="270" y="160" text-anchor="middle" font-size="11.5" fill="#555">把 A_i 在 s 上的命中下标做成位集 B_i；候选起点 = 逐位相与 (B_i &gt;&gt; i)</text>
+
+  <!-- ===== index ruler 0..9 ===== -->
+  <text x="135" y="174" text-anchor="middle" font-size="10" fill="#999">0</text>
+  <text x="165" y="174" text-anchor="middle" font-size="10" fill="#999">1</text>
+  <text x="195" y="174" text-anchor="middle" font-size="10" fill="#999">2</text>
+  <text x="225" y="174" text-anchor="middle" font-size="10" fill="#999">3</text>
+  <text x="255" y="174" text-anchor="middle" font-size="10" fill="#999">4</text>
+  <text x="285" y="174" text-anchor="middle" font-size="10" fill="#999">5</text>
+  <text x="315" y="174" text-anchor="middle" font-size="10" fill="#999">6</text>
+  <text x="345" y="174" text-anchor="middle" font-size="10" fill="#999">7</text>
+  <text x="375" y="174" text-anchor="middle" font-size="10" fill="#999">8</text>
+  <text x="405" y="174" text-anchor="middle" font-size="10" fill="#999">9</text>
+
+  <!-- column-4 surviving band -->
+  <rect x="240" y="180" width="60" height="106" fill="#4a7a3a" fill-opacity="0.06"/>
+
+  <!-- B0 track + filled {1,4,7} -->
+  <rect x="120" y="180" width="300" height="22" fill="#f0f0f0" stroke="#cccccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="150" y="180" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <rect x="240" y="180" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <rect x="330" y="180" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="114" y="195" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">B0&gt;&gt;0</text>
+
+  <!-- B1 track + filled {4,7} -->
+  <rect x="120" y="208" width="300" height="22" fill="#f0f0f0" stroke="#cccccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="240" y="208" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <rect x="330" y="208" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="114" y="223" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">B1&gt;&gt;1</text>
+
+  <!-- B2 track + filled {4,5} -->
+  <rect x="120" y="236" width="300" height="22" fill="#f0f0f0" stroke="#cccccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="240" y="236" width="60" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="114" y="251" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">B2&gt;&gt;2</text>
+
+  <!-- B3 track + filled {4} -->
+  <rect x="120" y="264" width="300" height="22" fill="#f0f0f0" stroke="#cccccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="240" y="264" width="30" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="114" y="279" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">B3&gt;&gt;3</text>
+
+  <!-- AND arrow -->
+  <line x1="270" y1="290" x2="270" y2="314" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="306" font-size="11" fill="#888" font-weight="bold">按位与</text>
+
+  <!-- cand track + filled {4} -->
+  <rect x="120" y="318" width="300" height="22" fill="#f0f0f0" stroke="#cccccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="240" y="318" width="30" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="2" filter="url(#rough2)"/>
+  <text x="114" y="333" text-anchor="end" font-size="12" fill="#4a7a3a" font-weight="bold">cand</text>
+
+  <!-- result -->
+  <rect x="80" y="350" width="380" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="373" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">cand 中为 1 的位 j* 即可行起点：s[j*..j*+m-1] 整段匹配 sub</text>
+
+  <text x="270" y="406" text-anchor="middle" font-size="10.5" fill="#999">示意：4 位逐位相与，交集剩一个 1 即一个可行起点 j*</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算: hit → cog, wordList=[hot,dot,dog,lot,log,cog]</text>
+  <text x="300" y="42" text-anchor="middle" font-size="11" fill="#888">通配符模式表(部分): h*t→[hit,hot]  *ot→[hot,dot,lot]  do*→[dot,dog]  lo*→[lot,log]  *og→[dog,log,cog]</text>
+
+  <!-- Header -->
+  <text x="35" y="70" font-size="12" fill="#444" font-weight="bold">层</text>
+  <text x="80" y="70" font-size="12" fill="#444" font-weight="bold">取出</text>
+  <text x="155" y="70" font-size="12" fill="#444" font-weight="bold">生成模式</text>
+  <text x="300" y="70" font-size="12" fill="#444" font-weight="bold">新发现邻居(经模式)</text>
+  <text x="475" y="70" font-size="12" fill="#444" font-weight="bold">队列</text>
+  <line x1="20" y1="78" x2="580" y2="78" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Row 1: level 1, hit -->
+  <text x="35" y="100" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="80" y="100" font-size="11" fill="#333" font-weight="bold">hit</text>
+  <text x="155" y="100" font-size="11" fill="#333">*it, h*t, hi*</text>
+  <text x="300" y="100" font-size="11" fill="#446688" font-weight="bold">hot (h*t)</text>
+  <text x="475" y="100" font-size="11" fill="#4a7a3a" font-weight="bold">[hot]</text>
+
+  <!-- Row 2: level 2, hot -->
+  <text x="35" y="124" font-size="11" fill="#333">2</text>
+  <text x="80" y="124" font-size="11" fill="#333" font-weight="bold">hot</text>
+  <text x="155" y="124" font-size="11" fill="#333">*ot, h*t, ho*</text>
+  <text x="300" y="124" font-size="11" fill="#446688" font-weight="bold">dot, lot (*ot)</text>
+  <text x="475" y="124" font-size="11" fill="#4a7a3a" font-weight="bold">[dot, lot]</text>
+
+  <!-- Row 3: level 3, dot -->
+  <text x="35" y="148" font-size="11" fill="#333">3</text>
+  <text x="80" y="148" font-size="11" fill="#333" font-weight="bold">dot</text>
+  <text x="155" y="148" font-size="11" fill="#333">*ot, d*t, do*</text>
+  <text x="300" y="148" font-size="11" fill="#446688" font-weight="bold">dog (do*)</text>
+  <text x="475" y="148" font-size="11" fill="#4a7a3a" font-weight="bold">[lot, dog]</text>
+
+  <!-- Row 4: level 3, lot -->
+  <text x="35" y="172" font-size="11" fill="#333">3</text>
+  <text x="80" y="172" font-size="11" fill="#333" font-weight="bold">lot</text>
+  <text x="155" y="172" font-size="11" fill="#333">*ot, l*t, lo*</text>
+  <text x="300" y="172" font-size="11" fill="#446688" font-weight="bold">log (lo*)</text>
+  <text x="475" y="172" font-size="11" fill="#4a7a3a" font-weight="bold">[dog, log]</text>
+
+  <!-- Row 5: level 4, dog → found endWord! -->
+  <text x="35" y="196" font-size="11" fill="#b85450" font-weight="bold">4</text>
+  <text x="80" y="196" font-size="11" fill="#333" font-weight="bold">dog</text>
+  <text x="155" y="196" font-size="11" fill="#333">*og, d*g, do*</text>
+  <text x="300" y="196" font-size="11" fill="#b85450" font-weight="bold">cog == endWord (*og) ← 命中!</text>
+  <text x="475" y="196" font-size="11" fill="#888">—</text>
+
+  <line x1="20" y1="210" x2="580" y2="210" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Result box -->
+  <rect x="60" y="232" width="480" height="44" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="254" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">level=4 时发现 cog → 返回 level+1 = 5</text>
+  <text x="300" y="270" text-anchor="middle" font-size="11" fill="#888">转换序列: hit → hot → dot → dog → cog (长度 5)</text>
+
+  <!-- Note box -->
+  <rect x="60" y="296" width="480" height="58" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="300" y="316" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">关键观察</text>
+  <text x="300" y="334" text-anchor="middle" font-size="11" fill="#555">同一模式的单词互为邻居 — 一次哈希查询 O(L) 取代逐对比较 O(N)</text>
+  <text x="300" y="350" text-anchor="middle" font-size="11" fill="#888">visited 集合保证每个单词只入队一次 → BFS 首次到达即最短</text>
+
+  <!-- Legend -->
+  <rect x="80" y="372" width="14" height="14" fill="#4a7a3a" rx="2" filter="url(#rough2)"/>
+  <text x="100" y="383" font-size="11" fill="#555">入队</text>
+  <rect x="170" y="372" width="14" height="14" fill="#b85450" rx="2" filter="url(#rough2)"/>
+  <text x="190" y="383" font-size="11" fill="#555">命中终点</text>
+  <text x="280" y="383" font-size="11" fill="#888">BFS 逐层扩展，首次到达 endWord 即最短路径</text>
+</svg>

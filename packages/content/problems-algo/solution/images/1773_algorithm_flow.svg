@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">算法流程：建映射 → 定 idx → 遍历比对 → 返回计数</text>
+  <path d="M 140 36 Q 360 44 580 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Step 1: build map ===== -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="70" width="150" height="76" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="115" y="92" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 建映射</text>
+  <text x="115" y="112" text-anchor="middle" font-size="10" fill="#333">mp = {</text>
+  <text x="115" y="126" text-anchor="middle" font-size="10" fill="#333">"type":0,"color":1,</text>
+  <text x="115" y="140" text-anchor="middle" font-size="10" fill="#333">"name":2}</text>
+
+  <!-- arrow 1 -> 2 -->
+  <path d="M 192 108 L 226 108" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: lookup idx ===== -->
+  <g filter="url(#rough2)">
+    <rect x="230" y="70" width="160" height="76" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="310" y="92" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 定下标（外提）</text>
+  <text x="310" y="116" text-anchor="middle" font-size="11" fill="#333">idx = mp[ruleKey]</text>
+  <text x="310" y="134" text-anchor="middle" font-size="10" fill="#888" font-style="italic">循环前算一次</text>
+
+  <!-- arrow 2 -> 3 -->
+  <path d="M 392 108 L 426 108" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: loop compare ===== -->
+  <g filter="url(#rough2)">
+    <rect x="430" y="70" width="170" height="76" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="515" y="92" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ 遍历比对计数</text>
+  <text x="515" y="114" text-anchor="middle" font-size="10" fill="#333">for item in items:</text>
+  <text x="515" y="130" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">if item[idx]==ruleValue</text>
+  <text x="515" y="144" text-anchor="middle" font-size="10" fill="#333">count += 1</text>
+
+  <!-- arrow 3 -> 4 (down then left) -->
+  <path d="M 600 108 L 640 108 L 640 220 L 360 220 L 360 250" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: return ===== -->
+  <g filter="url(#rough2)">
+    <rect x="290" y="252" width="140" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="360" y="276" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ 返回 count</text>
+  <text x="360" y="294" text-anchor="middle" font-size="10" fill="#888" font-style="italic">匹配规则的物品数</text>
+
+  <!-- ===== Bottom: per-iteration detail ===== -->
+  <text x="40" y="332" font-size="12" fill="#888" font-weight="bold">每轮迭代成本（步骤③循环体）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="342" width="640" height="46" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="60" y="362" font-size="11" fill="#d6a040" font-weight="bold">① 一次下标访问 item[idx]</text>
+  <text x="60" y="380" font-size="11" fill="#333">+ 一次字符串比较 == ruleValue（串长 ≤ 10，视为 O(1)）</text>
+  <text x="380" y="362" font-size="11" fill="#4a7a3a" font-weight="bold">✓ 无 ruleKey 判断</text>
+  <text x="380" y="380" font-size="11" fill="#4a7a3a" font-weight="bold">✓ 无 if-elif 分支</text>
+  <text x="560" y="362" font-size="11" fill="#446688" font-weight="bold">共 n 轮 → O(n)</text>
+  <text x="560" y="380" font-size="11" fill="#446688" font-weight="bold">空间 O(1)</text>
+</svg>

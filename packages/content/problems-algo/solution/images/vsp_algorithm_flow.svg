@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="480" height="440" fill="#fafafa"/>
+
+  <text x="240" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：upload 分配最小可用 ID</text>
+
+  <!-- Start -->
+  <ellipse cx="240" cy="60" rx="62" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="240" y="65" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">开始 upload(video)</text>
+
+  <line x1="240" y1="80" x2="240" y2="100" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="240,104 352,144 240,184 128,144" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="240" y="148" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">recycled 堆非空?</text>
+
+  <!-- Yes label + arrow to left box -->
+  <text x="150" y="136" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 128 144 L 118 196" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- No label + arrow to right box -->
+  <text x="318" y="136" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 352 144 L 362 196" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Left branch: pop heap -->
+  <rect x="44" y="198" width="148" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="118" y="216" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">id = 堆顶</text>
+  <text x="118" y="232" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">recycled.pop()</text>
+
+  <!-- Right branch: nextId++ -->
+  <rect x="288" y="198" width="148" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="362" y="216" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">id = nextId</text>
+  <text x="362" y="232" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">nextId += 1</text>
+
+  <!-- Merge arrows -->
+  <path d="M 118 240 L 118 268 L 236 268" stroke="#888" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <path d="M 362 240 L 362 268 L 244 268" stroke="#888" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <line x1="240" y1="268" x2="240" y2="280" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Store video -->
+  <rect x="40" y="282" width="400" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="302" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">videos[id] = { content: video, views: 0,</text>
+  <text x="240" y="318" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">likes: 0, dislikes: 0 }</text>
+
+  <line x1="240" y1="328" x2="240" y2="344" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Return -->
+  <ellipse cx="240" cy="366" rx="54" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="240" y="371" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">return id</text>
+
+  <!-- complexity note -->
+  <rect x="60" y="400" width="360" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="419" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">单次 upload：O(log R) 堆操作，R = 回收堆大小</text>
+</svg>

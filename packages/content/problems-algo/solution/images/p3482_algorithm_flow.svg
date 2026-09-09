@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="500" fill="#fafafa"/>
+
+  <text x="310" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：双递归 CTE → JOIN 聚合收口 → 三键排序</text>
+
+  <!-- ① 行源 -->
+  <rect x="210" y="38" width="200" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">Employees（邻接表存树）</text>
+
+  <!-- 分叉箭头 -->
+  <path d="M 275 80 L 170 114" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 345 80 L 450 114" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② CTE① levels -->
+  <rect x="18" y="118" width="280" height="104" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="158" y="138" text-anchor="middle" font-size="11" fill="#2d5a1e" font-weight="bold" filter="url(#rough2)">CTE① levels — 定层级</text>
+  <text x="32" y="158" font-size="9" fill="#333" filter="url(#rough2)">锚点：manager_id IS NULL → level 1</text>
+  <text x="32" y="173" font-size="9" fill="#333" filter="url(#rough2)">递推：e.manager_id = 已定层员工</text>
+  <text x="32" y="188" font-size="9" fill="#333" filter="url(#rough2)">　　　→ level + 1（每轮多产出一层）</text>
+  <text x="32" y="208" font-size="8.5" fill="#777" filter="url(#rough2)">产出：每人恰一行，带 level</text>
+
+  <!-- ③ CTE② pairs -->
+  <rect x="322" y="118" width="280" height="104" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="462" y="138" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">CTE② pairs — 摊平子树</text>
+  <text x="336" y="158" font-size="9" fill="#333" filter="url(#rough2)">锚点：每人自配对 (e, e, salary)</text>
+  <text x="336" y="173" font-size="9" fill="#333" filter="url(#rough2)">递推：(祖先, 下属) 逐层下延</text>
+  <text x="336" y="188" font-size="9" fill="#333" filter="url(#rough2)">　　　→ 全部祖先-后代对（含自己）</text>
+  <text x="336" y="208" font-size="8.5" fill="#777" filter="url(#rough2)">示例产出：29 行（含每人自配对）</text>
+
+  <!-- 汇合箭头 -->
+  <path d="M 158 222 L 255 254" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 462 222 L 365 254" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 聚合收口 -->
+  <rect x="120" y="258" width="380" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="278" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">JOIN + GROUP BY 收口</text>
+  <text x="135" y="298" font-size="9" fill="#333" filter="url(#rough2)">JOIN pairs p ON p.manager_id = 员工</text>
+  <text x="135" y="313" font-size="9" fill="#333" filter="url(#rough2)">COUNT(*) − 1 → team_size（去掉自配对）</text>
+  <text x="135" y="328" font-size="9" fill="#333" filter="url(#rough2)">SUM(p.salary) → budget（自配对贡献自己工资）</text>
+
+  <!-- 箭头 -->
+  <path d="M 310 342 L 310 366" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 排序 -->
+  <rect x="120" y="370" width="380" height="46" fill="#f5f5f0" stroke="#888" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="397" text-anchor="middle" font-size="11" fill="#444" font-weight="bold" filter="url(#rough2)">ORDER BY level↑, budget↓, employee_name↑</text>
+
+  <!-- 箭头 -->
+  <path d="M 310 416 L 310 440" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ 输出 -->
+  <rect x="150" y="444" width="320" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="463" text-anchor="middle" font-size="11" fill="#8a3a36" font-weight="bold" filter="url(#rough2)">输出 10 行 × 5 列</text>
+  <text x="310" y="479" text-anchor="middle" font-size="8.5" fill="#777" filter="url(#rough2)">employee_id, name, level, team_size, budget</text>
+</svg>

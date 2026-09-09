@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：三层聚合层层物化</text>
+
+  <!-- Step 1: dedupe -->
+  <circle cx="40" cy="56" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="56" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">①</text>
+  <rect x="62" y="40" width="446" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="76" y="62" font-size="11" fill="#333" filter="url(#rough2)">去重日期：GROUP BY customer_id, transaction_date</text>
+
+  <!-- arrow -->
+  <path d="M285,74 L285,90" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: row number + island key -->
+  <circle cx="40" cy="108" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="108" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">②</text>
+  <rect x="62" y="92" width="446" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="76" y="114" font-size="10.5" fill="#333" filter="url(#rough2)">算岛键：DATE_SUB(date, INTERVAL ROW_NUMBER() OVER (PARTITION BY cid ORDER BY date) DAY)</text>
+
+  <path d="M285,126 L285,142" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: island count -->
+  <circle cx="40" cy="160" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="160" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">③</text>
+  <rect x="62" y="144" width="446" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="76" y="166" font-size="11" fill="#333" filter="url(#rough2)">岛内计数：GROUP BY customer_id, island → COUNT(*) AS cnt</text>
+
+  <path d="M285,178 L285,194" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: per customer max -->
+  <circle cx="40" cy="212" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="212" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">④</text>
+  <rect x="62" y="196" width="446" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="76" y="218" font-size="11" fill="#333" filter="url(#rough2)">每顾客最大：MAX(cnt) AS max_cnt ... GROUP BY customer_id</text>
+
+  <path d="M285,230 L285,246" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: filter global max -->
+  <circle cx="40" cy="264" r="13" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="264" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">⑤</text>
+  <rect x="62" y="248" width="446" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="76" y="270" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">筛全局最大：WHERE max_cnt = (SELECT MAX(max_cnt) FROM best) → 返回并列第一</text>
+
+  <!-- Data shape trace on right margin -->
+  <text x="270" y="306" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">每步物化为中间表，下一层在其上聚合</text>
+
+  <text x="40" y="332" font-size="10" fill="#888" filter="url(#rough2)">数据形态：</text>
+  <text x="110" y="332" font-size="10" fill="#446688" filter="url(#rough2)">原表(9行)</text>
+  <text x="200" y="332" font-size="10" fill="#888" filter="url(#rough2)">→ 去重(9行)</text>
+  <text x="295" y="332" font-size="10" fill="#888" filter="url(#rough2)">→ 岛(5个)</text>
+  <text x="380" y="332" font-size="10" fill="#888" filter="url(#rough2)">→ 顾客最大(3人)</text>
+  <text x="475" y="332" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">→ 结果(2人)</text>
+
+  <text x="270" y="360" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">三层聚合 = 三个 GROUP BY，无法在一个 SELECT 内嵌套，故用链式 CTE</text>
+  <text x="270" y="380" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">识别「需要 k 层聚合」就摆 k 个 CTE，逐层物化推进</text>
+</svg>

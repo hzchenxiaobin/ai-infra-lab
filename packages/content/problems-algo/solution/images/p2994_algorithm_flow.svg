@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：递归生成日历 → 筛周五骨架 → LEFT JOIN → 补零聚合 → 周序输出</text>
+
+  <rect x="70" y="40" width="420" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="58" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">① 递归 CTE 生成 11 月日历</text>
+  <text x="280" y="75" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">CAST('2023-11-01' AS DATE) 起，逐日 +1 天，直到 11-30（共 30 行）</text>
+
+  <path d="M 280 84 L 280 98" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="100" width="420" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="118" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">② 筛出周五骨架（4 行）</text>
+  <text x="280" y="135" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">WHERE DAYOFWEEK(d) = 6 → 11-03 / 11-10 / 11-17 / 11-24</text>
+
+  <path d="M 280 144 L 280 158" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="160" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="178" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">③ LEFT JOIN Purchases</text>
+  <text x="280" y="195" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">ON purchase_date = d —— 无匹配的周五仍保留，amount_spend 为 NULL</text>
+
+  <path d="M 280 204 L 280 218" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="220" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="238" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">④ 分组聚合 + 补零</text>
+  <text x="280" y="255" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">GROUP BY d，IFNULL(SUM(amount_spend), 0) AS total_amount</text>
+
+  <path d="M 280 264 L 280 278" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="280" width="420" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="298" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">⑤ 标周序 + 排序</text>
+  <text x="280" y="315" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">CEIL(DAYOFMONTH(d) / 7) AS week_of_month，ORDER BY week_of_month</text>
+
+  <path d="M 280 324 L 280 338" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="340" width="420" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="363" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">输出三列：week_of_month / purchase_date / total_amount（恒 4 行）</text>
+</svg>

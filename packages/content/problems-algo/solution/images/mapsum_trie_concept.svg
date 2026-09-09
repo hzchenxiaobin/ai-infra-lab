@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 460" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2e8b57"/>
+    </marker>
+    <marker id="arO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+  <rect width="780" height="460" fill="#fdfcf7"/>
+
+  <text x="390" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">键值映射：Trie + 节点子树和缓存</text>
+  <path d="M 220 38 Q 390 46 560 38" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="390" y="56" text-anchor="middle" font-size="11" fill="#888">insert("apple",3) + insert("app",2) 建成的 Trie，节点标注 Σ=子树键值和</text>
+
+  <!-- ===== Trie tree ===== -->
+  <!-- root -->
+  <g filter="url(#sk)"><ellipse cx="70" cy="190" rx="26" ry="18" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="70" y="194" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold">root</text>
+
+  <!-- root -> a -->
+  <path d="M 96 188 L 150 188" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="123" y="180" text-anchor="middle" font-size="10" fill="#888">a</text>
+
+  <!-- a node (sum=5) -->
+  <g filter="url(#sk)"><circle cx="172" cy="188" r="20" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="172" y="186" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold">a</text>
+  <text x="172" y="200" text-anchor="middle" font-size="9" fill="#2b6e9e">Σ=5</text>
+
+  <!-- a -> p -->
+  <path d="M 192 188 L 246 188" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="219" y="180" text-anchor="middle" font-size="10" fill="#888">p</text>
+
+  <!-- p node (sum=5) -- this is the "ap" prefix node -->
+  <g filter="url(#sk)"><circle cx="268" cy="188" r="22" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2.4"/></g>
+  <text x="268" y="186" text-anchor="middle" font-size="11" fill="#2e8b57" font-weight="bold">p</text>
+  <text x="268" y="200" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">Σ=5</text>
+  <text x="268" y="226" text-anchor="middle" font-size="9" fill="#2e8b57" font-weight="bold">↑ sum("ap")</text>
+
+  <!-- p -> p2 -->
+  <path d="M 290 188 L 344 188" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arO)" stroke-dasharray="5,3" filter="url(#sk)"/>
+  <text x="317" y="180" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">p</text>
+
+  <!-- p2 node (sum=5, is_end "app" val=2) -->
+  <g filter="url(#sk)"><circle cx="368" cy="188" r="22" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/></g>
+  <text x="368" y="186" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">p</text>
+  <text x="368" y="200" text-anchor="middle" font-size="9" fill="#9a6a20">Σ=5</text>
+  <text x="368" y="226" text-anchor="middle" font-size="9" fill="#9a6a20" font-weight="bold">★"app"=2</text>
+
+  <!-- p2 -> l -->
+  <path d="M 388 178 L 442 132" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="408" y="146" font-size="10" fill="#888">l</text>
+
+  <!-- l node (sum=3) -->
+  <g filter="url(#sk)"><circle cx="464" cy="124" r="20" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="464" y="122" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold">l</text>
+  <text x="464" y="136" text-anchor="middle" font-size="9" fill="#2b6e9e">Σ=3</text>
+
+  <!-- l -> e -->
+  <path d="M 484 124 L 538 124" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="511" y="116" text-anchor="middle" font-size="10" fill="#888">e</text>
+
+  <!-- e node (sum=3, is_end "apple" val=3) -->
+  <g filter="url(#sk)"><circle cx="562" cy="124" r="22" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2"/></g>
+  <text x="562" y="122" text-anchor="middle" font-size="11" fill="#2e8b57" font-weight="bold">e</text>
+  <text x="562" y="136" text-anchor="middle" font-size="9" fill="#2e6e2e">Σ=3</text>
+  <text x="562" y="162" text-anchor="middle" font-size="9" fill="#2e8b57" font-weight="bold">★"apple"=3</text>
+
+  <!-- ===== right side: operation semantics ===== -->
+  <text x="690" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b2b2b">两个操作</text>
+
+  <!-- insert box -->
+  <g filter="url(#sk)"><rect x="612" y="116" width="156" height="92" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/></g>
+  <text x="690" y="136" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">insert(key, val)</text>
+  <text x="690" y="154" text-anchor="middle" font-size="9" fill="#9a6a20">delta = val - kv[key]</text>
+  <text x="690" y="170" text-anchor="middle" font-size="9" fill="#9a6a20">沿 key 路径下行</text>
+  <text x="690" y="184" text-anchor="middle" font-size="9" fill="#9a6a20" font-weight="bold">每节点 Σ += delta</text>
+  <text x="690" y="200" text-anchor="middle" font-size="8" fill="#9a6a20">覆盖→delta 可为负</text>
+
+  <!-- sum box -->
+  <g filter="url(#sk)"><rect x="612" y="224" width="156" height="76" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.6"/></g>
+  <text x="690" y="244" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">sum(prefix)</text>
+  <text x="690" y="262" text-anchor="middle" font-size="9" fill="#2e6e2e">沿 prefix 走到对应节点</text>
+  <text x="690" y="278" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">直接 return node.Σ</text>
+  <text x="690" y="292" text-anchor="middle" font-size="8" fill="#2e6e2e">无需 DFS 收集子树</text>
+
+  <!-- ===== bottom: two highlighted paths ===== -->
+  <!-- insert("app",2) orange path bracket -->
+  <path d="M 152 214 Q 270 248 368 214" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="4,3" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="150" y="312" width="240" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/></g>
+  <text x="270" y="332" text-anchor="middle" font-size="10" fill="#9a6a20" font-weight="bold">insert("app", 2)：delta = 2-0 = +2</text>
+  <text x="270" y="348" text-anchor="middle" font-size="9" fill="#9a6a20">a / p / p 三个节点 Σ 各 +2</text>
+  <text x="270" y="362" text-anchor="middle" font-size="9" fill="#9a6a20">（l、e 不动，仍 Σ=3）</text>
+
+  <!-- sum("ap") green path bracket -->
+  <path d="M 96 168 Q 190 138 268 168" stroke="#2e8b57" stroke-width="1.4" fill="none" stroke-dasharray="4,3" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="410" y="312" width="240" height="56" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/></g>
+  <text x="530" y="332" text-anchor="middle" font-size="10" fill="#2e6e2e" font-weight="bold">sum("ap")：走 root→a→p</text>
+  <text x="530" y="348" text-anchor="middle" font-size="9" fill="#2e6e2e">读 p 节点的 Σ = 5</text>
+  <text x="530" y="362" text-anchor="middle" font-size="9" fill="#2e6e2e">= "apple"(3) + "app"(2)</text>
+
+  <!-- bottom legend -->
+  <g filter="url(#sk)"><rect x="40" y="392" width="700" height="52" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/></g>
+  <text x="390" y="412" text-anchor="middle" font-size="10" fill="#2b6e9e">💡 每个节点的 Σ = 「经过该节点的所有键 val 之和」，由 insert 沿路径加 delta 增量维护</text>
+  <text x="390" y="428" text-anchor="middle" font-size="10" fill="#2b6e9e">★ = 单词结尾（is_end）   橙色虚线 = insert 路径（加 delta）   绿色 = sum 读取的前缀节点</text>
+</svg>

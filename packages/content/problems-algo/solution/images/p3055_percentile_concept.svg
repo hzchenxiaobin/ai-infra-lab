@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：每州保单数 N &lt; 20 时，「前 5%」只剩组内最大值</text>
+  <text x="290" y="42" text-anchor="middle" font-size="10" fill="#888">以 Florida 州（N=5）为例：分数按累积分布落位，95% 红线只放过最大值</text>
+
+  <!-- 95% threshold line -->
+  <line x1="487" y1="76" x2="487" y2="144" stroke="#b85450" stroke-width="2" stroke-dasharray="6,4" filter="url(#rough2)"/>
+  <text x="487" y="68" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">95% 阈值线</text>
+
+  <!-- Percentile axis -->
+  <line x1="55" y1="135" x2="525" y2="135" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="555" y="139" font-size="10" fill="#666">cd</text>
+  <line x1="60" y1="131" x2="60" y2="139" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="60" y="157" text-anchor="middle" font-size="9" fill="#666">0%</text>
+  <line x1="172" y1="131" x2="172" y2="139" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="172" y="157" text-anchor="middle" font-size="9" fill="#666">25%</text>
+  <line x1="285" y1="131" x2="285" y2="139" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="285" y="157" text-anchor="middle" font-size="9" fill="#666">50%</text>
+  <line x1="397" y1="131" x2="397" y2="139" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="397" y="157" text-anchor="middle" font-size="9" fill="#666">75%</text>
+  <line x1="510" y1="131" x2="510" y2="139" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="510" y="157" text-anchor="middle" font-size="9" fill="#666">100%</text>
+  <text x="487" y="170" text-anchor="middle" font-size="9" fill="#b85450">95%</text>
+
+  <!-- Florida dots on the axis -->
+  <circle cx="150" cy="135" r="7" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="115" text-anchor="middle" font-size="9" fill="#333">0.66 (20%)</text>
+  <circle cx="240" cy="135" r="7" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="240" y="115" text-anchor="middle" font-size="9" fill="#333">0.78 (40%)</text>
+  <circle cx="330" cy="135" r="7" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="330" y="115" text-anchor="middle" font-size="9" fill="#333">0.88 (60%)</text>
+  <circle cx="420" cy="135" r="7" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="420" y="115" text-anchor="middle" font-size="9" fill="#333">0.97 (80%)</text>
+  <circle cx="510" cy="135" r="8" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="512" y="112" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">0.98 (100%) ★</text>
+
+  <!-- Formula box -->
+  <rect x="40" y="185" width="500" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="207" text-anchor="middle" font-size="10" fill="#446688">组内第二名 cd ≤ (N−1)/N，而 (N−1)/N &lt; 0.95 ⟺ N &lt; 20</text>
+  <text x="290" y="229" text-anchor="middle" font-size="10" fill="#446688">PERCENT_RANK 视角：rank ≤ 1 + 0.05×(N−1)；N=5 → rank ≤ 1.2，N=3 → rank ≤ 1.1</text>
+
+  <!-- Conclusion box -->
+  <rect x="40" y="263" width="500" height="54" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="285" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">本题每州仅 3~5 张保单 ≪ 20 →「每州前 5%」=「每州最大 fraud_score（含并列）」</text>
+  <text x="290" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">RANK() OVER (PARTITION BY state ORDER BY fraud_score DESC) = 1 即正解</text>
+
+  <!-- Warning box -->
+  <rect x="40" y="331" width="500" height="54" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="351" text-anchor="middle" font-size="9" fill="#b85450">⚠️ 样本量决定语义：N ≥ 20 时两种写法分道扬镳——</text>
+  <text x="290" y="371" text-anchor="middle" font-size="9" fill="#b85450">CUME_DIST ≥ 0.95 保留约 5% 的行；RANK=1 仍只留榜首。样本可能变大时用 CUME_DIST 版</text>
+</svg>

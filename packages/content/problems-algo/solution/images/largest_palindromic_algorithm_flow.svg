@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="560" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：计数 → 拼左半 → 选中心 → 前导零处理 → 拼接</text>
+
+  <!-- 1. count -->
+  <rect x="200" y="44" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="69" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">统计 cnt[d]，d = 0..9</text>
+  <path d="M 310 86 L 310 108" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 2. build left -->
+  <rect x="150" y="112" width="320" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="130" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">left = ""</text>
+  <text x="310" y="148" text-anchor="middle" font-size="12" fill="#4a7a3a">for d = 9→0：left += str(d)×(cnt[d]//2)</text>
+  <path d="M 310 158 L 310 180" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 3. center -->
+  <rect x="150" y="184" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="202" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">center = 最大奇计数数字（9→0 找首个 cnt[d] 奇）</text>
+  <text x="310" y="220" text-anchor="middle" font-size="11" fill="#888">无落单则 center = ""</text>
+  <path d="M 310 230 L 310 252" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 4. decision: leading zero? -->
+  <polygon points="310,256 460,300 310,344 160,300" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="294" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">left 非空 且 left[0]=='0' ?</text>
+  <text x="310" y="312" text-anchor="middle" font-size="10.5" fill="#555">无非零配对？</text>
+
+  <!-- yes branch: clear left -->
+  <path d="M 160 300 L 100 300" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="130" y="293" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="14" y="284" width="84" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="305" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">left = ""</text>
+
+  <!-- no branch -->
+  <path d="M 460 300 L 520 300" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="490" y="293" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="524" y="284" width="84" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="566" y="305" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">保留 left</text>
+
+  <!-- merge arrow down -->
+  <path d="M 310 344 L 310 372" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 5. assemble -->
+  <rect x="120" y="376" width="380" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="394" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">res = left + center + reverse(left)</text>
+  <text x="310" y="412" text-anchor="middle" font-size="11" fill="#888">左半 + 中心 + 左半逆序</text>
+  <path d="M 310 422 L 310 444" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 6. decision: empty? -->
+  <polygon points="310,448 400,478 310,508 220,478" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="310" y="483" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">res 空 ?</text>
+
+  <!-- yes -->
+  <path d="M 220 478 L 150 478" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="185" y="471" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="60" y="464" width="86" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="103" y="484" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return "0"</text>
+
+  <!-- no -->
+  <path d="M 400 478 L 470 478" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="435" y="471" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="474" y="464" width="120" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="534" y="484" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return res</text>
+
+  <text x="310" y="544" text-anchor="middle" font-size="10.5" fill="#888">注：res 空仅在「全 0 且无落单」时发生（如 "0000"），兜底返回单 "0"</text>
+</svg>

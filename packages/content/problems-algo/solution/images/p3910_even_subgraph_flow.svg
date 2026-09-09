@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">算法流程：枚举 → 奇偶剪枝 → 位掩码 BFS → 计数</text>
+
+  <!-- 左上注释框 -->
+  <rect x="22" y="42" width="116" height="78" fill="#f5f5f5" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="60" text-anchor="middle" font-size="10" font-weight="bold" fill="#444" filter="url(#rough2)">为什么能暴力？</text>
+  <text x="80" y="76" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">n ≤ 13</text>
+  <text x="80" y="92" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">2¹³ = 8192 个子集</text>
+  <text x="80" y="108" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">总操作量 ≈ 10⁵</text>
+
+  <!-- 预处理 -->
+  <rect x="150" y="42" width="220" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="59" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">预处理：adj[u] ＝ u 的邻接掩码</text>
+  <text x="260" y="76" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">odd ＝ 值为 1 的节点集合</text>
+  <path d="M260,84 L260,92" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 枚举 -->
+  <rect x="172" y="94" width="176" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="114" text-anchor="middle" font-size="12" font-weight="bold" fill="#333" filter="url(#rough2)">枚举 s ＝ 1 … 2ⁿ−1</text>
+  <path d="M260,126 L260,134" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形1：奇偶 -->
+  <polygon points="260,136 368,172 260,208 152,172" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="167" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">popcount(s &amp; odd) 为偶？</text>
+  <text x="260" y="184" text-anchor="middle" font-size="9" fill="#667" filter="url(#rough2)">（子集和为偶数？）</text>
+  <text x="380" y="164" text-anchor="start" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M260,208 L260,218" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="216" text-anchor="start" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- BFS -->
+  <rect x="122" y="220" width="276" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="238" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">从 s 最低位 v 出发，位掩码 BFS 逐层扩散：</text>
+  <text x="260" y="255" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">seen ∪= frontier</text>
+  <text x="260" y="272" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">frontier ＝ (∪ adj[u] ∩ s) − seen，直至为空</text>
+  <path d="M260,280 L260,288" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形2：连通 -->
+  <polygon points="260,290 356,317 260,344 164,317" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="314" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">seen == s ？</text>
+  <text x="260" y="330" text-anchor="middle" font-size="9" fill="#667" filter="url(#rough2)">（诱导子图连通）</text>
+  <text x="372" y="310" text-anchor="start" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M356,317 L394,317" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 计数 -->
+  <rect x="396" y="303" width="86" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="439" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#2d5a24" filter="url(#rough2)">ans += 1</text>
+
+  <!-- 回环：三个出口汇合到右侧竖线，回到枚举框 -->
+  <path d="M368,172 L494,172" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M482,317 L494,317" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="275" y="341" text-anchor="start" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M260,344 L260,351 L494,351" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M494,351 L494,107 L354,107" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="432" y="98" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">下一个 s</text>
+</svg>

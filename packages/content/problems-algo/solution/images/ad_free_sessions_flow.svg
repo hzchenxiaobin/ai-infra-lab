@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 370" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="370" fill="#fafafa"/>
+
+  <text x="330" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">执行流程：LEFT JOIN 反连接 → IS NULL 筛无匹配 → 投影 session_id</text>
+
+  <!-- ===== Stage 1: Playback ===== -->
+  <text x="85" y="52" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Playback</text>
+  <rect x="20" y="58" width="130" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="35" y="72" font-size="8" fill="#446688" font-weight="bold">sess</text>
+  <text x="65" y="72" font-size="8" fill="#446688" font-weight="bold">cust</text>
+  <text x="95" y="72" font-size="8" fill="#446688" font-weight="bold">start</text>
+  <text x="125" y="72" font-size="8" fill="#446688" font-weight="bold">end</text>
+  <g font-size="8.5" fill="#333" text-anchor="middle">
+    <rect x="20" y="78" width="130" height="16" fill="#f5f5f5" stroke="#aaa" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="35" y="90">1</text><text x="65" y="90">1</text><text x="95" y="90">1</text><text x="125" y="90">5</text>
+    <rect x="20" y="94" width="130" height="16" fill="#f5f5f5" stroke="#aaa" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="35" y="106">2</text><text x="65" y="106">1</text><text x="95" y="106">15</text><text x="125" y="106">23</text>
+    <rect x="20" y="110" width="130" height="16" fill="#f5f5f5" stroke="#aaa" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="35" y="122">3</text><text x="65" y="122">2</text><text x="95" y="122">10</text><text x="125" y="122">12</text>
+    <rect x="20" y="126" width="130" height="16" fill="#f5f5f5" stroke="#aaa" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="35" y="138">4</text><text x="65" y="138">2</text><text x="95" y="138">17</text><text x="125" y="138">28</text>
+    <rect x="20" y="142" width="130" height="16" fill="#f5f5f5" stroke="#aaa" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="35" y="154">5</text><text x="65" y="154">2</text><text x="95" y="154">2</text><text x="125" y="154">8</text>
+  </g>
+
+  <!-- arrow 1->2 with ON label -->
+  <path d="M150 116 L184 116" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="167" y="92" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">LEFT JOIN</text>
+  <text x="167" y="103" text-anchor="middle" font-size="7" fill="#446688">Ads a</text>
+  <text x="167" y="129" text-anchor="middle" font-size="7" fill="#d6a040">ON 客户同</text>
+  <text x="167" y="139" text-anchor="middle" font-size="7" fill="#d6a040">+ 时在区间</text>
+
+  <!-- ===== Stage 2: Joined intermediate ===== -->
+  <text x="270" y="52" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② 连接后（含 NULL）</text>
+  <rect x="195" y="58" width="150" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="72" font-size="8" fill="#446688" font-weight="bold">p.sess</text>
+  <text x="280" y="72" font-size="8" fill="#446688" font-weight="bold">p.cust</text>
+  <text x="325" y="72" font-size="8" fill="#446688" font-weight="bold">a.ad_id</text>
+  <g font-size="8.5" fill="#333" text-anchor="middle">
+    <rect x="195" y="78" width="150" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="89">1</text><text x="280" y="89">1</text><text x="325" y="89" fill="#b85450" font-weight="bold">1</text>
+    <rect x="195" y="92" width="150" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="103">2</text><text x="280" y="103">1</text><text x="325" y="103" fill="#888" font-style="italic">NULL</text>
+    <rect x="195" y="106" width="150" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="117">3</text><text x="280" y="117">2</text><text x="325" y="117" fill="#888" font-style="italic">NULL</text>
+    <rect x="195" y="120" width="150" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="131">4</text><text x="280" y="131">2</text><text x="325" y="131" fill="#b85450" font-weight="bold">2</text>
+    <rect x="195" y="134" width="150" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="145">4</text><text x="280" y="145">2</text><text x="325" y="145" fill="#b85450" font-weight="bold">3</text>
+    <rect x="195" y="148" width="150" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+    <text x="225" y="159">5</text><text x="280" y="159">2</text><text x="325" y="159" fill="#888" font-style="italic">NULL</text>
+  </g>
+  <text x="270" y="176" text-anchor="middle" font-size="7" fill="#d6a040">⚠ S4 拼到 2 条广告→展开 2 行</text>
+
+  <!-- arrow 2->3 with WHERE label -->
+  <path d="M345 125 L384 125" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="364" y="111" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">WHERE</text>
+  <text x="364" y="143" text-anchor="middle" font-size="7" fill="#b85450">a.ad_id IS NULL</text>
+
+  <!-- ===== Stage 3: decision / filter ===== -->
+  <text x="450" y="52" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 保留未匹配</text>
+  <!-- decision diamond -->
+  <path d="M450 90 L500 125 L450 160 L400 125 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="450" y="120" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">a.ad_id</text>
+  <text x="450" y="132" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">IS NULL?</text>
+  <!-- yes -> down-right to result ; no -> drop -->
+  <path d="M500 125 L540 125" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="520" y="119" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M450 160 L450 185" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)" stroke-dasharray="3,2"/>
+  <text x="466" y="178" font-size="7" fill="#b85450">否→丢弃</text>
+
+  <!-- ===== Stage 4: Result ===== -->
+  <text x="595" y="52" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ 结果</text>
+  <rect x="545" y="58" width="100" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="595" y="72" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">session_id</text>
+  <g font-size="10" fill="#4a7a3a" font-weight="bold" text-anchor="middle">
+    <rect x="545" y="78" width="100" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="595" y="90">2</text>
+    <rect x="545" y="94" width="100" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="595" y="106">3</text>
+    <rect x="545" y="110" width="100" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="595" y="122">5</text>
+  </g>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="20" y="210" width="620" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="229" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">子句执行顺序与陷阱</text>
+  <text x="36" y="248" font-size="9.5" fill="#333">• <tspan fill="#446688" font-weight="bold">FROM + JOIN + ON</tspan> 先执行：ON 决定「能否拼上」，两条件（客户同 + 时在区间）都放 ON</text>
+  <text x="36" y="264" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">WHERE a.ad_id IS NULL</tspan> 后执行：从拼好的行里筛「未匹配」（右表主键判空）</text>
+  <text x="36" y="280" font-size="9.5" fill="#333">• ⚠ 若把区间条件误写进 WHERE，未匹配行因 a.timestamp IS NULL 被过滤 → LEFT JOIN 退化为 INNER JOIN，结果变空</text>
+
+  <!-- SQL snippet -->
+  <rect x="20" y="300" width="620" height="60" fill="#f5f5f5" stroke="#888" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="34" y="318" font-size="9.5" fill="#446688" font-family="monospace">SELECT p.session_id</text>
+  <text x="34" y="332" font-size="9.5" fill="#446688" font-family="monospace">FROM Playback p LEFT JOIN Ads a ON a.customer_id=p.customer_id AND a.timestamp BETWEEN p.start_time AND p.end_time</text>
+  <text x="34" y="346" font-size="9.5" fill="#446688" font-family="monospace">WHERE a.ad_id IS NULL;</text>
+</svg>

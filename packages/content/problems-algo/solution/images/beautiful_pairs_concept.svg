@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：平面最近点对分治——切分 / 递归 / 合并窄带</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#888">每个下标 i 是点 (nums1[i], nums2[i])，求曼哈顿距离最小的下标对</text>
+
+  <!-- Axes -->
+  <path d="M 70 290 L 470 290" stroke="#bbb" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 70 290 L 70 70" stroke="#bbb" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="464" y="305" font-size="10" fill="#888">x</text>
+  <text x="58" y="76" font-size="10" fill="#888">y</text>
+
+  <!-- tick labels -->
+  <text x="156" y="305" text-anchor="middle" font-size="9" fill="#aaa">1</text>
+  <text x="236" y="305" text-anchor="middle" font-size="9" fill="#aaa">2</text>
+  <text x="316" y="305" text-anchor="middle" font-size="9" fill="#aaa">3</text>
+  <text x="396" y="305" text-anchor="middle" font-size="9" fill="#aaa">4</text>
+  <text x="60" y="244" text-anchor="end" font-size="9" fill="#aaa">1</text>
+  <text x="60" y="194" text-anchor="end" font-size="9" fill="#aaa">2</text>
+  <text x="60" y="144" text-anchor="end" font-size="9" fill="#aaa">3</text>
+
+  <!-- Merge strip: |x - xm| <= d, xm=3, d=1 => x in [2,4] -->
+  <rect x="236" y="70" width="160" height="220" fill="#fff8e1" fill-opacity="0.6" stroke="#d6a040" stroke-width="1.4" stroke-dasharray="5,3" rx="4" filter="url(#rough2)"/>
+  <text x="316" y="86" text-anchor="middle" font-size="10" fill="#a87020" font-weight="bold">中轴窄带 [xm−d, xm+d]</text>
+  <text x="316" y="100" text-anchor="middle" font-size="9.5" fill="#a87020">跨侧点对只在此带内才可能更优</text>
+
+  <!-- Split line at x=3 (median) -->
+  <path d="M 316 70 L 316 290" stroke="#446688" stroke-width="1.8" stroke-dasharray="6,4" filter="url(#rough2)"/>
+  <text x="322" y="66" font-size="10.5" fill="#446688" font-weight="bold">xm = 中位数 x</text>
+
+  <!-- Left / right half labels -->
+  <text x="150" y="116" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">左半（递归）</text>
+  <text x="400" y="116" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">右半（递归）</text>
+
+  <!-- Points: (x,y,idx) -> svgX = 70 + x*80, svgY = 290 - y*50 -->
+  <!-- (1,2,0) blue   (2,3,1) blue  (2,2,3) blue  (3,1,2) green  (4,3,4) green -->
+  <!-- Closest pair: idx0=(1,2) & idx3=(2,2), dist=1 -->
+
+  <!-- Closest pair highlighted line (red) -->
+  <path d="M 150 190 L 230 190" stroke="#b85450" stroke-width="3" filter="url(#rough2)"/>
+  <text x="190" y="182" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">dist=1 ✓</text>
+
+  <!-- Point idx0 (1,2) -->
+  <circle cx="150" cy="190" r="7" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="150" y="174" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">0</text>
+
+  <!-- Point idx3 (2,2) -->
+  <circle cx="230" cy="190" r="7" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="230" y="174" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">3</text>
+
+  <!-- Point idx1 (2,3) blue -->
+  <circle cx="230" cy="140" r="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="230" y="128" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">1</text>
+
+  <!-- Point idx2 (3,1) green -->
+  <circle cx="310" cy="240" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="310" y="228" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">2</text>
+
+  <!-- Point idx4 (4,3) green -->
+  <circle cx="390" cy="140" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="390" y="128" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">4</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="316" width="440" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="334" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">三步：① 按 x 中位数切分 ② 递归左右得 d ③ 合并 |x−xm|≤d 的窄带按 y 扫</text>
+  <text x="260" y="348" text-anchor="middle" font-size="10" fill="#555">带外跨侧点 x 差 ≥ d 必不更优；带内按 y 排序，y 差 &gt; d 即 break</text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：预处理 → 逐列转移（前后缀 max）→ 收尾</text>
+
+  <!-- 开始 -->
+  <rect x="205" y="34" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="12" filter="url(#rough2)"/>
+  <text x="260" y="50" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">开始（读入 n×n）</text>
+  <path d="M 260 58 L 260 66" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ① -->
+  <rect x="110" y="68" width="300" height="28" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="86" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">① 列前缀和 P[j][t] = 第 j 列前 t 行之和</text>
+  <path d="M 260 96 L 260 104" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② -->
+  <rect x="110" y="106" width="300" height="28" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="124" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">② dp[a][0] = 0（h[−1]=0 哨兵），其余 −∞</text>
+  <path d="M 260 134 L 260 142" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判断菱形 -->
+  <polygon points="260,146 340,172 260,198 180,172" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="176" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">i &lt; n−1 ?</text>
+  <text x="268" y="212" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M 260 198 L 260 214" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 循环体 -->
+  <rect x="44" y="216" width="330" height="100" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="209" y="234" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ 循环 i = 0 … n−2，对每个 a ∈ [0,n]：</text>
+  <text x="209" y="251" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">a. b 从 n→0 倒扫：val(b)=dp[a][b]+max(0,P[i][b]−P[i][a])</text>
+  <text x="209" y="265" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">　 取后缀 max 得 suf[b] = max_{b'≥b} val(b')</text>
+  <text x="209" y="282" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">b. c 从 0→n 正扫：pref = max_{b≤c} dp[a][b]</text>
+  <text x="209" y="296" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">　 ndp[c][a] = max(pref + max(0,P[i][c]−P[i][a]), suf[c+1])</text>
+  <text x="209" y="311" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">dp ← ndp；i+1 ⇒ 回到判断</text>
+
+  <!-- 回环箭头 -->
+  <path d="M 44 266 L 22 266 L 22 172 L 176 172" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 否 → ④ -->
+  <text x="352" y="166" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 340 172 L 384 172" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="388" y="142" width="126" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="451" y="158" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 收尾（最后一列）</text>
+  <text x="451" y="174" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">ans = max over a,b</text>
+  <text x="451" y="188" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">dp[a][b] + max(0,</text>
+  <text x="451" y="202" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">P[n−1][b] − P[n−1][a])</text>
+
+  <path d="M 451 208 L 451 224" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="401" y="226" width="100" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="12" filter="url(#rough2)"/>
+  <text x="451" y="242" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">返回 ans</text>
+
+  <!-- 底部备注 -->
+  <rect x="44" y="326" width="330" height="24" fill="#ffffff" stroke="#888888" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="209" y="342" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">n = 1 时无任何邻居，dp 收尾公式自然返回 0</text>
+</svg>

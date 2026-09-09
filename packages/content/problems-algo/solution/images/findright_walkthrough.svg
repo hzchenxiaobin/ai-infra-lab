@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="4.5" refY="8" orient="auto">
+      <path d="M0,0 L9,0 L4.5,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：intervals = [[3,4],[2,3],[1,2]]</text>
+
+  <!-- Step 1: input + build pairs -->
+  <text x="24" y="58" font-size="12" fill="#446688" font-weight="bold">① 构造 (start, idx) 并按 start 升序排序</text>
+  <!-- input cells -->
+  <rect x="24" y="68" width="64" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="56" y="87" text-anchor="middle" font-size="11" fill="#333">[3,4]·0</text>
+  <rect x="92" y="68" width="64" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="124" y="87" text-anchor="middle" font-size="11" fill="#333">[2,3]·1</text>
+  <rect x="160" y="68" width="64" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="192" y="87" text-anchor="middle" font-size="11" fill="#333">[1,2]·2</text>
+  <text x="236" y="87" font-size="11" fill="#888">原始下标</text>
+  <!-- arrow -->
+  <path d="M 280 82 L 300 82" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="290" y="74" text-anchor="middle" font-size="10" fill="#888">排序</text>
+  <!-- sorted starts -->
+  <rect x="312" y="68" width="64" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="344" y="87" text-anchor="middle" font-size="11" fill="#333">1·idx2</text>
+  <rect x="380" y="68" width="64" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="412" y="87" text-anchor="middle" font-size="11" fill="#333">2·idx1</text>
+  <rect x="448" y="68" width="64" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="480" y="87" text-anchor="middle" font-size="11" fill="#333">3·idx0</text>
+  <text x="524" y="87" font-size="10" fill="#888">starts[]</text>
+
+  <!-- Step 2: per-interval table header -->
+  <text x="24" y="128" font-size="12" fill="#446688" font-weight="bold">② 对每个区间 end_i 在 starts 上做 lower_bound</text>
+
+  <!-- table header -->
+  <rect x="24" y="138" width="512" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">i</text>
+  <text x="120" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">区间</text>
+  <text x="200" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">end_i</text>
+  <text x="300" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">lower_bound(end_i)</text>
+  <text x="430" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">starts[pos]</text>
+  <text x="510" y="156" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">ans[i]</text>
+
+  <!-- row i=0 -->
+  <rect x="24" y="168" width="512" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="190" text-anchor="middle" font-size="11.5" fill="#333">0</text>
+  <text x="120" y="190" text-anchor="middle" font-size="11.5" fill="#333">[3,4]</text>
+  <text x="200" y="190" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">4</text>
+  <text x="300" y="190" text-anchor="middle" font-size="11" fill="#b85450">pos=3（越界，无 ≥4 者）</text>
+  <text x="430" y="190" text-anchor="middle" font-size="11" fill="#888">—</text>
+  <text x="510" y="190" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">-1</text>
+
+  <!-- row i=1 -->
+  <rect x="24" y="206" width="512" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="228" text-anchor="middle" font-size="11.5" fill="#333">1</text>
+  <text x="120" y="228" text-anchor="middle" font-size="11.5" fill="#333">[2,3]</text>
+  <text x="200" y="228" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">3</text>
+  <text x="300" y="228" text-anchor="middle" font-size="11" fill="#4a7a3a">pos=2（首个 ≥3）</text>
+  <text x="430" y="228" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">3·idx0</text>
+  <text x="510" y="228" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">0</text>
+
+  <!-- row i=2 -->
+  <rect x="24" y="244" width="512" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="266" text-anchor="middle" font-size="11.5" fill="#333">2</text>
+  <text x="120" y="266" text-anchor="middle" font-size="11.5" fill="#333">[1,2]</text>
+  <text x="200" y="266" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">2</text>
+  <text x="300" y="266" text-anchor="middle" font-size="11" fill="#4a7a3a">pos=1（首个 ≥2）</text>
+  <text x="430" y="266" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">2·idx1</text>
+  <text x="510" y="266" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1</text>
+
+  <!-- binary search detail for i=1 -->
+  <text x="24" y="304" font-size="12" fill="#446688" font-weight="bold">③ 二分细节（以 i=1, end=3 为例，在 [1,2,3] 上找首个 ≥3）</text>
+  <rect x="24" y="314" width="512" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">轮次</text>
+  <text x="100" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">left</text>
+  <text x="150" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">right</text>
+  <text x="200" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">mid</text>
+  <text x="270" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">starts[mid]</text>
+  <text x="370" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">比较</text>
+  <text x="490" y="332" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">动作</text>
+
+  <rect x="24" y="344" width="512" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="362" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="100" y="362" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="150" y="362" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="200" y="362" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="270" y="362" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="370" y="362" text-anchor="middle" font-size="11" fill="#446688">2 &lt; 3</text>
+  <text x="490" y="362" text-anchor="middle" font-size="11" fill="#446688">left=2</text>
+
+  <rect x="24" y="376" width="512" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="394" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="100" y="394" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="150" y="394" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="200" y="394" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="270" y="394" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="370" y="394" text-anchor="middle" font-size="11" fill="#4a7a3a">3 ≥ 3</text>
+  <text x="490" y="394" text-anchor="middle" font-size="11" fill="#4a7a3a">right=1</text>
+
+  <rect x="24" y="408" width="512" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="425" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">收敛：left=2 &gt; right=1 → pos=left=2 → starts[2]=3·idx0 → ans[1]=0 ✓</text>
+</svg>

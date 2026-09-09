@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：找前缀 → 找后缀 → 双指针合并</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="46" width="480" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="62" font-size="11" fill="#4a7a3a" font-weight="bold">① 找最长非递减前缀</text>
+  <text x="56" y="78" font-size="11" fill="#555">i 从 0 起，while arr[i] ≤ arr[i+1] 则 i++ → 得到 arr[0..i]</text>
+
+  <path d="M 280 88 L 280 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="102" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="118" font-size="11" fill="#446688" font-weight="bold">② 找最长非递减后缀</text>
+  <text x="56" y="134" font-size="11" fill="#555">j 从 n−1 起，while arr[j−1] ≤ arr[j] 则 j−− → 得到 arr[j..n−1]</text>
+
+  <path d="M 280 144 L 280 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: already sorted? -->
+  <polygon points="280,158 380,196 280,234 180,196" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="192" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i == n−1 ?</text>
+  <text x="280" y="208" text-anchor="middle" font-size="10" fill="#888">(整段已有序)</text>
+
+  <!-- Yes branch -->
+  <path d="M 180 196 L 110 196 L 110 250" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="140" y="190" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="62" y="252" width="96" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="273" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回 0</text>
+
+  <!-- No branch -->
+  <path d="M 380 196 L 450 196 L 450 250" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="420" y="190" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Step 3 -->
+  <rect x="180" y="252" width="340" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="196" y="268" font-size="11" fill="#b85450" font-weight="bold">③ 初始答案：只留前缀 / 只留后缀</text>
+  <text x="196" y="284" font-size="11" fill="#555">ans = min(n−1−i, j)</text>
+
+  <path d="M 350 294 L 350 306" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: two pointers -->
+  <rect x="40" y="308" width="480" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="326" font-size="11" fill="#d6a040" font-weight="bold">④ 双指针合并：k = 0, l = j</text>
+  <text x="56" y="342" font-size="11" fill="#555">若 arr[k] ≤ arr[l]：ans = min(ans, l−k−1)，k++</text>
+  <text x="56" y="358" font-size="11" fill="#555">否则 l++（后缀太小，右移找更大的）</text>
+
+  <path d="M 280 366 L 280 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: pointers done? -->
+  <polygon points="280,380 360,410 280,440 200,410" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="406" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">k &gt; i 或</text>
+  <text x="280" y="420" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">l ≥ n ?</text>
+
+  <!-- Yes -> return -->
+  <path d="M 200 410 L 110 410" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="404" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- loop back -->
+  <path d="M 360 410 L 470 410 L 470 336 L 520 336" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="490" y="404" text-anchor="middle" font-size="10" fill="#888">否，回 ④</text>
+
+  <!-- final return -->
+  <rect x="40" y="394" width="70" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="75" y="414" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回 ans</text>
+</svg>

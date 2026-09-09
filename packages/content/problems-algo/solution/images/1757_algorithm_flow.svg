@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流程：FROM → WHERE → SELECT</text>
+  <path d="M 160 36 Q 360 44 560 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <text x="360" y="58" text-anchor="middle" font-size="10" fill="#888">书写顺序 SELECT→FROM→WHERE，但逻辑执行顺序相反：先定位表，再过滤行，最后投影列</text>
+
+  <!-- ===== Step 1: FROM ===== -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="80" width="180" height="70" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="120" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Products</text>
+  <text x="120" y="118" text-anchor="middle" font-size="10" fill="#555">读取源表全部 5 行</text>
+  <text x="120" y="134" text-anchor="middle" font-size="10" fill="#888">product_id | low_fats | recyclable</text>
+
+  <!-- arrow -->
+  <path d="M 214 115 L 250 115" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: WHERE ===== -->
+  <g filter="url(#rough2)">
+    <rect x="254" y="80" width="240" height="70" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="374" y="100" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② WHERE 过滤行</text>
+  <text x="374" y="118" text-anchor="middle" font-size="10" fill="#333">low_fats = 'Y'</text>
+  <text x="374" y="132" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">AND</text>
+  <text x="374" y="146" text-anchor="middle" font-size="10" fill="#333">recyclable = 'Y'</text>
+
+  <!-- arrow -->
+  <path d="M 498 115 L 534 115" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: SELECT ===== -->
+  <g filter="url(#rough2)">
+    <rect x="538" y="80" width="160" height="70" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="618" y="100" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ SELECT 投影</text>
+  <text x="618" y="118" text-anchor="middle" font-size="10" fill="#555">只保留 product_id 列</text>
+  <text x="618" y="134" text-anchor="middle" font-size="10" fill="#888">丢弃 low_fats / recyclable</text>
+
+  <!-- ===== Row-level flow (bottom) ===== -->
+  <text x="40" y="180" font-size="11" fill="#888" font-weight="bold">逐行视角：5 行经过 WHERE 后只剩 2 行，再投影出 product_id</text>
+
+  <!-- before filter: 5 rows -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="194" width="200" height="156" rx="8" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="140" y="210" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">FROM 后（5 行）</text>
+
+  <g filter="url(#rough2)"><rect x="56" y="218" width="168" height="20" fill="#fff" stroke="#ccc" stroke-width="1" rx="3"/></g>
+  <text x="140" y="232" text-anchor="middle" font-size="10" fill="#333">0 · Y · N</text>
+
+  <g filter="url(#rough2)"><rect x="56" y="240" width="168" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="140" y="254" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">1 · Y · Y</text>
+
+  <g filter="url(#rough2)"><rect x="56" y="262" width="168" height="20" fill="#fff" stroke="#ccc" stroke-width="1" rx="3"/></g>
+  <text x="140" y="276" text-anchor="middle" font-size="10" fill="#333">2 · N · Y</text>
+
+  <g filter="url(#rough2)"><rect x="56" y="284" width="168" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="140" y="298" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">3 · Y · Y</text>
+
+  <g filter="url(#rough2)"><rect x="56" y="306" width="168" height="20" fill="#fff" stroke="#ccc" stroke-width="1" rx="3"/></g>
+  <text x="140" y="320" text-anchor="middle" font-size="10" fill="#333">4 · N · N</text>
+
+  <!-- arrow -->
+  <path d="M 244 272 L 296 272" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="264" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">WHERE</text>
+
+  <!-- after filter: 2 rows -->
+  <g filter="url(#rough2)">
+    <rect x="300" y="194" width="200" height="156" rx="8" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="400" y="210" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">WHERE 后（2 行）</text>
+
+  <g filter="url(#rough2)"><rect x="316" y="240" width="168" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="400" y="254" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">1 · Y · Y</text>
+
+  <g filter="url(#rough2)"><rect x="316" y="284" width="168" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="400" y="298" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">3 · Y · Y</text>
+
+  <!-- arrow -->
+  <path d="M 504 272 L 556 272" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="530" y="264" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">SELECT</text>
+
+  <!-- result: only product_id -->
+  <g filter="url(#rough2)">
+    <rect x="560" y="194" width="140" height="156" rx="8" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="630" y="210" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">结果</text>
+
+  <g filter="url(#rough2)"><rect x="576" y="218" width="108" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3"/></g>
+  <text x="630" y="232" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">product_id</text>
+
+  <g filter="url(#rough2)"><rect x="576" y="240" width="108" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="630" y="254" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">1</text>
+
+  <g filter="url(#rough2)"><rect x="576" y="284" width="108" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/></g>
+  <text x="630" y="298" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">3</text>
+
+  <!-- footnote -->
+  <text x="360" y="368" text-anchor="middle" font-size="10" fill="#888">⭐ 逻辑顺序与书写顺序相反：SQL 先确定数据源（FROM）、再过滤（WHERE）、最后投影（SELECT）</text>
+</svg>

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：加隐含限制 → 排序 → 两趟传播 → 逐段取峰</text>
+
+  <!-- ===== Step 1: Add [1,0] + sort ===== -->
+  <rect x="40" y="44" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="60" text-anchor="middle" font-size="11" fill="#333">Step 1：加入 [1,0]，按 id 升序排序</text>
+  <text x="190" y="76" text-anchor="middle" font-size="10" fill="#888">restrictions.push_back([1,0]); sort()</text>
+
+  <!-- data box beside step 1 -->
+  <g filter="url(#rough2)">
+    <rect x="370" y="44" width="220" height="40" fill="#fffdf3" stroke="#d6a040" stroke-width="1.2" rx="6"/>
+  </g>
+  <text x="480" y="60" text-anchor="middle" font-size="10" fill="#333">id:  1   2   5   7   10</text>
+  <text x="480" y="76" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">h:   0   5   3   4   3</text>
+
+  <!-- arrow down -->
+  <path d="M 190 84 L 190 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Forward pass ===== -->
+  <rect x="40" y="104" width="300" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="122" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Step 2：正向传播（左→右）</text>
+  <text x="190" y="138" text-anchor="middle" font-size="10" fill="#555">h[i] = min(h[i], h[i−1] + id[i] − id[i−1])</text>
+  <text x="190" y="152" text-anchor="middle" font-size="9" fill="#888">左侧限制的包络向右传，i 从 1 到 m−1</text>
+
+  <!-- forward arrow beside -->
+  <path d="M 370 132 L 590 132" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="480" y="126" text-anchor="middle" font-size="9" fill="#4a7a3a">i: 1→2→5→7→10</text>
+
+  <!-- arrow down -->
+  <path d="M 190 160 L 190 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- data after forward -->
+  <g filter="url(#rough2)">
+    <rect x="370" y="170" width="220" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6"/>
+  </g>
+  <text x="480" y="184" text-anchor="middle" font-size="10" fill="#333">h:  0  1  3  4  3</text>
+  <text x="480" y="198" text-anchor="middle" font-size="9" fill="#4a7a3a">（位置2：min(5,0+1)=1）</text>
+
+  <!-- arrow down -->
+  <path d="M 190 210 L 190 226" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Backward pass ===== -->
+  <rect x="40" y="230" width="300" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="248" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Step 3：反向传播（右→左）</text>
+  <text x="190" y="264" text-anchor="middle" font-size="10" fill="#555">h[i] = min(h[i], h[i+1] + id[i+1] − id[i])</text>
+  <text x="190" y="278" text-anchor="middle" font-size="9" fill="#888">右侧限制的包络向左传，i 从 m−2 到 0</text>
+
+  <!-- backward arrow beside -->
+  <path d="M 590 258 L 370 258" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="480" y="252" text-anchor="middle" font-size="9" fill="#b85450">i: 10←7←5←2←1</text>
+
+  <!-- arrow down -->
+  <path d="M 190 286 L 190 302" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- data after backward -->
+  <g filter="url(#rough2)">
+    <rect x="370" y="296" width="220" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6"/>
+  </g>
+  <text x="480" y="310" text-anchor="middle" font-size="10" fill="#333">h:  0  1  3  4  3</text>
+  <text x="480" y="324" text-anchor="middle" font-size="9" fill="#b85450">（紧上界 = 下包络值）</text>
+
+  <!-- arrow down -->
+  <path d="M 190 336 L 190 352" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: Peak per segment ===== -->
+  <rect x="40" y="356" width="300" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="374" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Step 4：逐段取峰</text>
+  <text x="190" y="390" text-anchor="middle" font-size="10" fill="#555">peak = ⌊(h[i] + h[i+1] + d) / 2⌋</text>
+  <text x="190" y="404" text-anchor="middle" font-size="9" fill="#888">末段：tail = h[last] + (n − id[last])</text>
+
+  <!-- arrow down -->
+  <path d="M 190 412 L 190 428" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- segment computation table beside step 4 -->
+  <g filter="url(#rough2)">
+    <rect x="370" y="356" width="220" height="84" fill="#fffdf3" stroke="#d6a040" stroke-width="1.2" rx="6"/>
+  </g>
+  <text x="480" y="372" text-anchor="middle" font-size="9" fill="#888">段        峰值</text>
+  <g font-size="9" fill="#333">
+    <text x="384" y="388">(1,0)→(2,1) d=1</text>
+    <text x="576" y="388" text-anchor="end" fill="#555">1</text>
+    <text x="384" y="402">(2,1)→(5,3) d=3</text>
+    <text x="576" y="402" text-anchor="end" fill="#555">3</text>
+    <text x="384" y="416">(5,3)→(7,4) d=2</text>
+    <text x="576" y="416" text-anchor="end" fill="#555">4</text>
+    <text x="384" y="430">(7,4)→(10,3) d=3</text>
+    <text x="576" y="430" text-anchor="end" fill="#d6a040" font-weight="bold">5 ←</text>
+  </g>
+
+  <!-- ===== Step 5: Return max ===== -->
+  <ellipse cx="190" cy="470" rx="110" ry="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="468" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Step 5：返回 max(所有段峰值)</text>
+  <text x="190" y="482" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">= max(1,3,4,5,3) = 5</text>
+
+  <!-- arrow down -->
+  <path d="M 190 492 L 190 508" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- summary -->
+  <text x="310" y="528" text-anchor="middle" font-size="10" fill="#888">复杂度：排序 O(m log m) + 两趟传播 O(m) + 取峰 O(m)；m = 限制数+1</text>
+</svg>

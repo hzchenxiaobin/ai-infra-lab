@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：打包「吃 1」操作，状态数 O(n) → O(log²n)</text>
+
+  <!-- brute force box -->
+  <rect x="30" y="46" width="520" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="68" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">暴力 DP：f(n) = 1 + min( f(n−1), f(n/2) if n%2==0, f(n/3) if n%3==0 )</text>
+  <text x="290" y="88" text-anchor="middle" font-size="11" fill="#444">逐格递推，状态数 = n ≤ 2×10⁹ → 内存与时间均爆炸</text>
+  <text x="290" y="104" text-anchor="middle" font-size="11" fill="#b85450">✗ 不可行</text>
+
+  <!-- key insight -->
+  <rect x="30" y="124" width="520" height="110" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="146" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">关键观察：连续「吃 1」只为凑整除 → 与除法打包成一步跳跃</text>
+
+  <!-- n node -->
+  <ellipse cx="80" cy="186" rx="28" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="80" y="191" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">n</text>
+
+  <!-- arrow to n/2 -->
+  <path d="M 108 180 Q 200 160 280 168" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="130" y="156" width="120" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="170" text-anchor="middle" font-size="10" fill="#4a7a3a">吃 n%2 个 + ÷2</text>
+
+  <ellipse cx="312" cy="172" rx="34" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="312" y="177" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⌊n/2⌋</text>
+  <text x="372" y="176" font-size="11" fill="#4a7a3a">代价 = n%2 + 1</text>
+
+  <!-- arrow to n/3 -->
+  <path d="M 108 196 Q 200 216 280 208" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="130" y="206" width="120" height="18" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="220" text-anchor="middle" font-size="10" fill="#b85450">吃 n%3 个 + ÷3</text>
+
+  <ellipse cx="312" cy="214" rx="34" ry="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="312" y="219" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⌊n/3⌋</text>
+  <text x="372" y="218" font-size="11" fill="#b85450">代价 = n%3 + 1</text>
+
+  <!-- recurrence box -->
+  <rect x="30" y="248" width="520" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="270" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">递推式</text>
+  <text x="290" y="292" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">f(n) = min( n,  n%2 + 1 + f(⌊n/2⌋),  n%3 + 1 + f(⌊n/3⌋) )</text>
+  <text x="290" y="308" text-anchor="middle" font-size="11" fill="#555">边界 f(0)=0, f(1)=1；min 中第一项 n 表示「全吃 1」的上界</text>
+
+  <!-- state count box -->
+  <rect x="30" y="328" width="520" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="350" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">状态数分析</text>
+  <text x="290" y="372" text-anchor="middle" font-size="12" fill="#333">访问的状态 = { ⌊n / (2^a · 3^b)⌋ : a, b ≥ 0 }</text>
+  <text x="290" y="392" text-anchor="middle" font-size="12" fill="#333">至多 (⌊log₂n⌋+1) × (⌊log₃n⌋+1) 个</text>
+  <text x="290" y="412" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">n = 2×10⁹ 时 ≈ 32 × 20 = 640 个 ✓ 用哈希表记忆化即可</text>
+</svg>

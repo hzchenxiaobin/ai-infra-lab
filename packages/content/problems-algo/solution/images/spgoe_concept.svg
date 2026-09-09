@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="360" viewBox="0 0 560 360" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="arg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a8e4a"/>
+    </marker>
+    <marker id="aro" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#c98a2b"/>
+    </marker>
+    <marker id="argray" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <rect width="560" height="360" fill="#fdfcf7"/>
+  <text x="280" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#2b2b2b">为什么状态要带「剩余消除次数」？</text>
+  <path d="M 150 38 Q 280 46 410 38" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="135" y="66" text-anchor="middle" font-size="11" fill="#888">同一格 (r,c) 可经两条路径到达，但「预算」不同</text>
+
+  <!-- path A: green, k_left=1, comes from top-left -->
+  <text x="40" y="96" font-size="11" fill="#4a8e4a" font-weight="bold">路径 A</text>
+  <path d="M 44 104 Q 70 116 110 130" stroke="#4a8e4a" stroke-width="2.2" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="34" y="112" width="78" height="22" rx="6" fill="#e6f4ea" stroke="#4a8e4a"/>
+  </g>
+  <text x="73" y="128" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">k_left = 1</text>
+
+  <!-- path B: orange, k_left=0, comes from bottom-left -->
+  <text x="40" y="188" font-size="11" fill="#c98a2b" font-weight="bold">路径 B</text>
+  <path d="M 44 196 Q 70 170 110 150" stroke="#c98a2b" stroke-width="2.2" fill="none" marker-end="url(#aro)" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="34" y="200" width="78" height="22" rx="6" fill="#fff8e1" stroke="#c98a2b"/>
+  </g>
+  <text x="73" y="216" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold">k_left = 0</text>
+
+  <!-- the cell (r,c) -->
+  <g filter="url(#sk)">
+    <rect x="110" y="120" width="48" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+  </g>
+  <text x="134" y="148" text-anchor="middle" font-size="12" fill="#2b4b6e" font-weight="bold">(r,c)</text>
+
+  <!-- obstacle gate below the cell -->
+  <text x="158" y="184" font-size="10" fill="#888">前方障碍</text>
+  <g filter="url(#sk)">
+    <rect x="110" y="190" width="48" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4"/>
+  </g>
+  <text x="134" y="218" text-anchor="middle" font-size="15" fill="#b03a3a" font-weight="bold">1</text>
+
+  <!-- green continues through the obstacle (eliminate) -->
+  <path d="M 134 164 L 134 188" stroke="#4a8e4a" stroke-width="2.2" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <path d="M 134 234 L 134 276" stroke="#4a8e4a" stroke-width="2.2" stroke-dasharray="5 3" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <text x="184" y="262" font-size="10" fill="#2e6e2e">消除 1，预算 1→0，继续 ✓</text>
+
+  <!-- orange blocked at the obstacle -->
+  <path d="M 112 164 Q 100 178 110 190" stroke="#c98a2b" stroke-width="2.2" fill="none" marker-end="url(#aro)" filter="url(#sk)"/>
+  <text x="186" y="200" font-size="12" fill="#b03a3a" font-weight="bold">✗ 无额度，被挡</text>
+
+  <!-- right: state formula box -->
+  <g filter="url(#sk)">
+    <rect x="310" y="78" width="232" height="230" rx="10" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2" stroke-dasharray="5 3"/>
+  </g>
+  <text x="426" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b2b2b">状态 = 位置 + 预算</text>
+  <path d="M 340 112 Q 426 118 512 112" stroke="#bbb" stroke-width="1" fill="none" filter="url(#sk)"/>
+  <g font-size="12" fill="#444">
+    <text x="328" y="138">state = (r, c, k_left)</text>
+    <text x="328" y="160">k_left = 剩余可消除障碍数</text>
+    <text x="328" y="192" fill="#2b6e9e" font-weight="bold">vis[r][c] = 到达 (r,c) 时</text>
+    <text x="328" y="210" fill="#2b6e9e" font-weight="bold">　 见过的最大 k_left</text>
+    <text x="328" y="242">剪枝：新 k_left ≤ vis[r][c]</text>
+    <text x="328" y="260">　 → 已被更优状态覆盖，跳过</text>
+    <text x="328" y="290" fill="#b03a3a" font-weight="bold">只有预算更大才值得再走</text>
+  </g>
+</svg>

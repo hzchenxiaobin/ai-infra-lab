@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <rect width="900" height="440" fill="#fdfcf7"/>
+  <text x="450" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">离建筑物最近的距离：多源 BFS 逐楼累加 + 逐步剪枝</text>
+  <path d="M 260 40 Q 450 48 640 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="450" y="60" text-anchor="middle" font-size="11" fill="#888">对每栋楼做一次 BFS，把距离累加到空地；只有「被所有楼都到达」的空地才是候选</text>
+
+  <!-- ===== Left: problem setup ===== -->
+  <g filter="url(#sk)">
+    <rect x="36" y="86" width="360" height="320" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="5 3"/>
+  </g>
+  <text x="216" y="110" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a6d1a">问题：找一块空地，到所有楼距离之和最短</text>
+
+  <!-- mini grid 5x3 -->
+  <g font-size="11" filter="url(#sk)">
+    <!-- row 0 -->
+    <rect x="72" y="140" width="36" height="36" fill="#e6f4ea" stroke="#4a8e4a"/><text x="90" y="163" text-anchor="middle" fill="#2e6e2e" font-weight="bold">1</text>
+    <rect x="108" y="140" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="126" y="163" text-anchor="middle" fill="#555">0</text>
+    <rect x="144" y="140" width="36" height="36" fill="#fce4ec" stroke="#b85450"/><text x="162" y="163" text-anchor="middle" fill="#b03a3a" font-weight="bold">2</text>
+    <rect x="180" y="140" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="198" y="163" text-anchor="middle" fill="#555">0</text>
+    <rect x="216" y="140" width="36" height="36" fill="#e6f4ea" stroke="#4a8e4a"/><text x="234" y="163" text-anchor="middle" fill="#2e6e2e" font-weight="bold">1</text>
+    <!-- row 1 -->
+    <rect x="72" y="176" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="90" y="199" text-anchor="middle" fill="#555">0</text>
+    <rect x="108" y="176" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="126" y="199" text-anchor="middle" fill="#555">0</text>
+    <rect x="144" y="176" width="36" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2"/><text x="162" y="199" text-anchor="middle" fill="#2e4e7e" font-weight="bold">0★</text>
+    <rect x="180" y="176" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="198" y="199" text-anchor="middle" fill="#555">0</text>
+    <rect x="216" y="176" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="234" y="199" text-anchor="middle" fill="#555">0</text>
+    <!-- row 2 -->
+    <rect x="72" y="212" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="90" y="235" text-anchor="middle" fill="#555">0</text>
+    <rect x="108" y="212" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="126" y="235" text-anchor="middle" fill="#555">0</text>
+    <rect x="144" y="212" width="36" height="36" fill="#e6f4ea" stroke="#4a8e4a"/><text x="162" y="235" text-anchor="middle" fill="#2e6e2e" font-weight="bold">1</text>
+    <rect x="180" y="212" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="198" y="235" text-anchor="middle" fill="#555">0</text>
+    <rect x="216" y="212" width="36" height="36" fill="#fdfcf7" stroke="#999"/><text x="234" y="235" text-anchor="middle" fill="#555">0</text>
+  </g>
+  <g font-size="10" fill="#888">
+    <text x="72" y="266">1=楼(不可穿)  0=空地  2=障碍  ★=候选答案</text>
+  </g>
+  <text x="216" y="300" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">三栋楼，需绕开障碍物</text>
+  <text x="216" y="320" text-anchor="middle" font-size="10" fill="#888">从 (1,2) 出发：3 + 3 + 1 = 7</text>
+  <text x="216" y="338" text-anchor="middle" font-size="10" fill="#888">(0,0)楼需绕障碍，(0,4)楼也需绕</text>
+  <text x="216" y="372" text-anchor="middle" font-size="10" fill="#b03a3a">⚠️ 不能穿过楼和障碍，只能走空地</text>
+
+  <!-- arrow -->
+  <path d="M 406 236 L 470 236" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="438" y="228" text-anchor="middle" font-size="10" fill="#888">逐楼 BFS</text>
+
+  <!-- ===== Right: multi-building BFS accumulation ===== -->
+  <g filter="url(#sk)">
+    <rect x="480" y="86" width="384" height="320" rx="8" fill="#eef7ff" stroke="#4a8edb" stroke-width="1.3"/>
+  </g>
+  <text x="672" y="110" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">✓ 对每栋楼做 BFS，距离逐栋累加</text>
+
+  <!-- building 1 ripple -->
+  <g filter="url(#sk)">
+    <circle cx="548" cy="178" r="52" fill="none" stroke="#4a8edb" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.45"/>
+    <circle cx="548" cy="178" r="34" fill="none" stroke="#4a8edb" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.65"/>
+    <circle cx="548" cy="178" r="16" fill="none" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="540" y="170" width="16" height="16" fill="#e6f4ea" stroke="#4a8e4a" stroke-width="1.5"/>
+  </g>
+  <g font-size="10" fill="#2e6e2e">
+    <text x="548" y="182" text-anchor="middle" font-weight="bold">楼</text>
+    <text x="548" y="160" text-anchor="middle">d=1</text>
+    <text x="548" y="142" text-anchor="middle">d=2</text>
+  </g>
+  <text x="548" y="250" text-anchor="middle" font-size="10" fill="#2b6e9e">楼A：dist[][] += 距离A</text>
+
+  <!-- building 2 ripple -->
+  <g filter="url(#sk)">
+    <circle cx="800" cy="178" r="52" fill="none" stroke="#c98a2b" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.45"/>
+    <circle cx="800" cy="178" r="34" fill="none" stroke="#c98a2b" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.65"/>
+    <circle cx="800" cy="178" r="16" fill="none" stroke="#c98a2b" stroke-width="1.4"/>
+    <rect x="792" y="170" width="16" height="16" fill="#e6f4ea" stroke="#4a8e4a" stroke-width="1.5"/>
+  </g>
+  <g font-size="10" fill="#7a5415">
+    <text x="800" y="182" text-anchor="middle" font-weight="bold">楼</text>
+    <text x="800" y="160" text-anchor="middle">d=1</text>
+    <text x="800" y="142" text-anchor="middle">d=2</text>
+  </g>
+  <text x="800" y="250" text-anchor="middle" font-size="10" fill="#7a5415">楼B：dist[][] += 距离B</text>
+
+  <!-- accumulation bar -->
+  <g filter="url(#sk)">
+    <rect x="520" y="280" width="304" height="56" rx="6" fill="#f5f0e8" stroke="#888" stroke-width="1"/>
+  </g>
+  <text x="672" y="300" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">dist[i][j] = Σ 各楼到 (i,j) 的最短距离</text>
+  <text x="672" y="318" text-anchor="middle" font-size="10" fill="#888">reach[i][j] = 能到达 (i,j) 的楼数</text>
+  <text x="672" y="334" text-anchor="middle" font-size="10" fill="#b03a3a">只选 reach == 楼总数 的空地，取 dist 最小</text>
+
+  <!-- pruning note -->
+  <g filter="url(#sk)">
+    <rect x="520" y="352" width="304" height="40" rx="6" fill="#fff3f3" stroke="#b85450" stroke-width="1" stroke-dasharray="4 2"/>
+  </g>
+  <text x="672" y="368" text-anchor="middle" font-size="10" fill="#b03a3a" font-weight="bold">剪枝：BFS 只扩展 reach == k 的格子</text>
+  <text x="672" y="382" text-anchor="middle" font-size="10" fill="#888">之前某楼到不了的格，后面不再访问</text>
+</svg>

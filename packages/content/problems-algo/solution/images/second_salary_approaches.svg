@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两种解法流程对比</text>
+
+  <!-- Left column: MAX subquery -->
+  <rect x="30" y="46" width="250" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：子查询 + MAX</text>
+
+  <rect x="30" y="86" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="104" text-anchor="middle" font-size="10" fill="#333">① 内层：SELECT MAX(salary)</text>
+  <text x="155" y="120" text-anchor="middle" font-size="10" fill="#333">→ 第一高 M1</text>
+
+  <path d="M155 130 L155 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="30" y="150" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="168" text-anchor="middle" font-size="10" fill="#333">② 外层：WHERE salary &lt; M1</text>
+  <text x="155" y="184" text-anchor="middle" font-size="10" fill="#b85450">排除所有第一高（含重复）</text>
+
+  <path d="M155 194 L155 210" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="30" y="214" width="250" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="232" text-anchor="middle" font-size="10" fill="#333">③ 再取 MAX(salary)</text>
+  <text x="155" y="248" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">→ 第二高（无则自动 NULL）</text>
+
+  <rect x="30" y="270" width="250" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="288" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">优点</text>
+  <text x="155" y="304" text-anchor="middle" font-size="9.5" fill="#333">salary &lt; M1 天然排除全部最大值</text>
+  <text x="155" y="318" text-anchor="middle" font-size="9.5" fill="#333">MAX 空集自动返回 NULL</text>
+
+  <!-- Right column: DISTINCT + LIMIT OFFSET -->
+  <rect x="300" y="46" width="250" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 B：DISTINCT + LIMIT</text>
+
+  <rect x="300" y="86" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="104" text-anchor="middle" font-size="10" fill="#333">① SELECT DISTINCT salary</text>
+  <text x="425" y="120" text-anchor="middle" font-size="10" fill="#b85450">手动去重</text>
+
+  <path d="M425 130 L425 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="300" y="150" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="168" text-anchor="middle" font-size="10" fill="#333">② ORDER BY salary DESC</text>
+  <text x="425" y="184" text-anchor="middle" font-size="10" fill="#333">降序排列</text>
+
+  <path d="M425 194 L425 210" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="300" y="214" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="232" text-anchor="middle" font-size="10" fill="#333">③ LIMIT 1 OFFSET 1</text>
+  <text x="425" y="248" text-anchor="middle" font-size="10" fill="#b85450">取第 2 个（空则返回空集）</text>
+
+  <path d="M425 258 L425 274" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <rect x="300" y="278" width="250" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="296" text-anchor="middle" font-size="10" fill="#333">④ 外层 SELECT ( 子查询 )</text>
+  <text x="425" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">空集 → NULL 行（关键包装）</text>
+
+  <rect x="300" y="336" width="250" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="354" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">优点 / 缺点</text>
+  <text x="425" y="370" text-anchor="middle" font-size="9.5" fill="#333">直观易推广到第 N 高</text>
+  <text x="425" y="380" text-anchor="middle" font-size="9.5" fill="#333">需手动去重 + 外包装</text>
+
+  <!-- VS divider -->
+  <text x="290" y="100" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">VS</text>
+</svg>

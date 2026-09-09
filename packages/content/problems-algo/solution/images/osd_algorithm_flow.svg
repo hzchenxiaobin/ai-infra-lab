@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="340" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：前两个 diff 比较 → 相等则扫描，不等则用 diff[2] 裁决</text>
+
+  <!-- ===== Start ===== -->
+  <ellipse cx="280" cy="54" rx="30" ry="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="58" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">开始</text>
+  <path d="M 280 68 L 280 82" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Calc d0, d1 ===== -->
+  <rect x="180" y="82" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="101" text-anchor="middle" font-size="11" fill="#555">计算 d0 = diff(words[0])</text>
+  <text x="280" y="117" text-anchor="middle" font-size="11" fill="#555">      d1 = diff(words[1])</text>
+  <path d="M 280 126 L 280 142" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision diamond ===== -->
+  <polygon points="280,142 352,166 280,190 208,166" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="170" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">diff[0] == diff[1] ?</text>
+
+  <!-- right branch connector (是) -->
+  <path d="M 352 166 L 380 166" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="366" y="159" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <!-- left branch connector (否) -->
+  <path d="M 208 166 L 180 166" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="194" y="159" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== Right branch: majority + scan ===== -->
+  <rect x="382" y="150" width="164" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="464" y="171" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">majority = diff[0]</text>
+  <path d="M 464 182 L 464 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="382" y="198" width="164" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="464" y="218" text-anchor="middle" font-size="10.5" fill="#555">遍历 i = 2..m−1</text>
+  <text x="464" y="234" text-anchor="middle" font-size="10.5" fill="#555">diff(words[i]) ≠ majority</text>
+  <text x="464" y="250" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">→ 返回 words[i]</text>
+
+  <!-- ===== Left branch: calc d2 + adjudicate ===== -->
+  <rect x="14" y="150" width="164" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="96" y="171" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">计算 diff[2] = diff(words[2])</text>
+  <path d="M 96 182 L 96 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="14" y="198" width="164" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="96" y="218" text-anchor="middle" font-size="10.5" fill="#555">若 diff[0] == diff[2]</text>
+  <text x="96" y="234" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">  → 返回 words[1]</text>
+  <text x="96" y="250" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否则 → 返回 words[0]</text>
+
+  <!-- divider -->
+  <line x1="24" y1="276" x2="544" y2="276" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4" filter="url(#rough2)"/>
+
+  <!-- bottom notes -->
+  <text x="280" y="300" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">两条路径均 O(m·n) 时间 / O(n) 空间；至多 3 次 diff 比较即锁定异类</text>
+  <text x="280" y="320" text-anchor="middle" font-size="10" fill="#999">m = words.length，n = 串长；恰一异类保证「是」分支必命中、「否」分支必裁决</text>
+</svg>

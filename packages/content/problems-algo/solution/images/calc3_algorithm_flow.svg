@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 660" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="660" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">基本计算器 III：双栈 + 优先级表 一遍扫描流程</text>
+
+  <!-- Start -->
+  <ellipse cx="290" cy="62" rx="150" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="66" text-anchor="middle" font-size="12" fill="#333">开始: nums=[], ops=[], expect_num=true</text>
+
+  <path d="M 290 82 L 290 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: i &lt; n ? -->
+  <polygon points="290,104 382,150 290,196 198,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="146" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="290" y="162" text-anchor="middle" font-size="10" fill="#888">(逐字符扫描)</text>
+
+  <!-- No -> end: reduce all then return -->
+  <path d="M 382 150 L 454 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="418" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="456" y="124" width="118" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="515" y="144" text-anchor="middle" font-size="10" fill="#333">while ops 非空:</text>
+  <text x="515" y="158" text-anchor="middle" font-size="10" fill="#333">归约一次</text>
+  <text x="515" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回 nums.top</text>
+
+  <!-- Yes -> down -->
+  <path d="M 290 196 L 290 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="302" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- Diamond: c 是数字? -->
+  <polygon points="290,218 382,264 290,310 198,264" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="260" text-anchor="middle" font-size="12" fill="#333">c 是数字?</text>
+
+  <!-- Yes -> read full number, push -->
+  <path d="M 198 264 L 116 264" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="156" y="256" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="14" y="240" width="104" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="258" text-anchor="middle" font-size="10" fill="#333">读完整多位数 num</text>
+  <text x="66" y="272" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">nums.push(num)</text>
+  <text x="66" y="284" text-anchor="middle" font-size="10" fill="#888">expect_num=false</text>
+
+  <!-- inner loop back up -->
+  <path d="M 66 240 L 66 150 L 198 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="56" y="196" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 56 196)">i++ 继续</text>
+
+  <!-- No -> down -->
+  <path d="M 290 310 L 290 328" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="302" y="324" font-size="11" fill="#b85450">否</text>
+
+  <!-- switch on c (4 boxes) -->
+  <text x="290" y="344" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">按字符 c 分支处理（跳过空格）：</text>
+
+  <rect x="16" y="356" width="128" height="56" fill="#f0f0f0" stroke="#999" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="376" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">c == '('</text>
+  <text x="80" y="392" text-anchor="middle" font-size="10" fill="#333">ops.push('(')</text>
+  <text x="80" y="405" text-anchor="middle" font-size="10" fill="#888">expect_num=true</text>
+
+  <rect x="154" y="356" width="128" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="218" y="376" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">c == ')'</text>
+  <text x="218" y="392" text-anchor="middle" font-size="10" fill="#333">while top≠'(':</text>
+  <text x="218" y="405" text-anchor="middle" font-size="10" fill="#333">归约; 再 pop '('</text>
+
+  <rect x="292" y="356" width="128" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="356" y="376" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">c ∈ + − × ÷</text>
+  <text x="356" y="392" text-anchor="middle" font-size="10" fill="#333">一元判定 + 归约</text>
+  <text x="356" y="405" text-anchor="middle" font-size="10" fill="#333">（见下方框）</text>
+
+  <rect x="430" y="356" width="128" height="56" fill="#f0f0f0" stroke="#999" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="494" y="376" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">c == ' '</text>
+  <text x="494" y="396" text-anchor="middle" font-size="10" fill="#888">跳过</text>
+
+  <!-- operator detail box -->
+  <path d="M 356 412 L 356 430" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="432" width="412" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="356" y="451" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">运算符处理（expect_num 为真 → 一元）</text>
+  <text x="356" y="469" text-anchor="middle" font-size="10" fill="#b85450">若一元且 c=='-': nums.push(0)（化为二元）；c=='+' 直接跳过</text>
+  <text x="356" y="485" text-anchor="middle" font-size="10" fill="#333">while ops非空 且 prio(top) ≥ prio(c): 归约一次</text>
+  <text x="356" y="500" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">ops.push(c); expect_num=true</text>
+
+  <!-- reduce definition box -->
+  <rect x="150" y="520" width="412" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="356" y="538" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">归约一次：op=ops.pop; b=nums.Pop; a=nums.Pop</text>
+  <text x="356" y="555" text-anchor="middle" font-size="11" fill="#444">按 op 算 a+b / a−b / a×b / a÷b（÷ 向零截断），结果压回 nums</text>
+
+  <!-- converge all branches -->
+  <path d="M 80 412 L 80 580 L 198 580" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 218 412 L 218 580" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 494 412 L 494 580 L 382 580" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 356 564 L 356 580" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="190" y="584" width="200" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="604" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">i++，进入下一字符</text>
+
+  <!-- loop back to top diamond -->
+  <path d="M 190 600 L 10 600 L 10 150 L 198 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="10" y="380" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 10 380)">回到 i&lt;n 判断</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="624" width="520" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="642" text-anchor="middle" font-size="10" fill="#555">括号靠 '(' 优先级 0 挡住归约、')' 触发子式归约；乘除靠更高优先级抢先归约</text>
+</svg>

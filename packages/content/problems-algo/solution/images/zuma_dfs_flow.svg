@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DFS + 记忆化：按同色段消除，递归求最小插入数</text>
+
+  <!-- Start node -->
+  <rect x="190" y="40" width="180" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">入口：dfs(board, hand)</text>
+
+  <!-- Arrow down -->
+  <path d="M 280 76 L 280 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Shrink step -->
+  <rect x="170" y="94" width="220" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="116" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">预收缩：shrink(board) 去除已有 3+ 连段</text>
+
+  <!-- Arrow down -->
+  <path d="M 280 130 L 280 146" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: board empty? -->
+  <polygon points="280,148 370,184 280,220 190,184" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="182" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">board 为空？</text>
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#666">（已全部消除）</text>
+
+  <!-- Yes branch -->
+  <path d="M 190 184 L 130 184 L 130 250" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="176" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="80" y="252" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="272" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">返回 0</text>
+
+  <!-- No branch -->
+  <path d="M 370 184 L 430 184 L 430 250" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="176" font-size="11" fill="#666" font-weight="bold">否</text>
+
+  <!-- Scan segments -->
+  <rect x="340" y="252" width="180" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="268" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">扫描每个极大同色段</text>
+  <text x="430" y="280" text-anchor="middle" font-size="10" fill="#888">board[i:j], 颜色 C, 段长 L=j−i</text>
+
+  <!-- Arrow down -->
+  <path d="M 430 288 L 430 304" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: enough balls? -->
+  <polygon points="430,306 530,342 430,378 330,342" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="430" y="338" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">need = 3−L</text>
+  <text x="430" y="352" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">hand[C] ≥ need ?</text>
+
+  <!-- No: skip -->
+  <path d="M 330 342 L 270 342" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="334" font-size="10" fill="#888">否，跳过</text>
+  <rect x="170" y="328" width="100" height="28" fill="#f5f5f5" stroke="#aaa" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="220" y="346" text-anchor="middle" font-size="10.5" fill="#888">尝试下一段</text>
+
+  <!-- Yes: clear and recurse -->
+  <path d="M 530 342 L 530 392" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="540" y="372" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="380" y="394" width="300" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="530" y="414" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">用 need 球消除该段</text>
+  <text x="530" y="430" text-anchor="middle" font-size="10.5" fill="#555">newBoard = shrink(board[:i] + board[j:])</text>
+  <text x="530" y="442" text-anchor="middle" font-size="10.5" fill="#555">sub = dfs(newBoard, hand − need)  →  res = min(res, need + sub)</text>
+
+  <!-- Memo note -->
+  <rect x="20" y="394" width="180" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="414" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">记忆化 memo</text>
+  <text x="110" y="430" text-anchor="middle" font-size="10" fill="#666">key = (board, hand)</text>
+  <text x="110" y="442" text-anchor="middle" font-size="10" fill="#666">缓存最优值，避免重复搜索</text>
+
+  <!-- Result -->
+  <path d="M 430 392 L 340 392 L 340 420 L 200 420" stroke="#666" stroke-width="1" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="250" y="412" font-size="10" fill="#888">遍历完所有段后</text>
+  <text x="250" y="436" font-size="10.5" fill="#555" font-weight="bold">返回 res 或 −1</text>
+</svg>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流程：四步完成连续区间识别</text>
+
+  <!-- Step 1: ORDER BY + ROW_NUMBER -->
+  <rect x="80" y="50" width="400" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="68" font-size="11" fill="#446688" font-weight="bold">① ORDER BY log_id + ROW_NUMBER()</text>
+  <text x="100" y="84" font-size="10" fill="#555">rn = ROW_NUMBER() OVER (ORDER BY log_id) — 按编号升序给每行一个行号</text>
+  <circle cx="50" cy="72" r="14" fill="#446688" filter="url(#rough2)"/>
+  <text x="50" y="76" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">1</text>
+
+  <path d="M 280 94 L 280 104" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: grp = log_id - rn -->
+  <rect x="80" y="108" width="400" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="126" font-size="11" fill="#d6a040" font-weight="bold">② 计算岛屿标识 grp</text>
+  <text x="100" y="142" font-size="10" fill="#555">grp = log_id − rn — 连续整数 grp 相同，断点处 grp 跳变（Gaps &amp; Islands 核心）</text>
+  <circle cx="50" cy="130" r="14" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="50" y="134" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">2</text>
+
+  <path d="M 280 152 L 280 162" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY grp -->
+  <rect x="80" y="166" width="400" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="184" font-size="11" fill="#b85450" font-weight="bold">③ GROUP BY grp → 聚合</text>
+  <text x="100" y="200" font-size="10" fill="#555">MIN(log_id) AS start_id, MAX(log_id) AS end_id — 每组取最小/最大即区间端点</text>
+  <circle cx="50" cy="188" r="14" fill="#b85450" filter="url(#rough2)"/>
+  <text x="50" y="192" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">3</text>
+
+  <path d="M 280 210 L 280 220" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY start_id -->
+  <rect x="80" y="224" width="400" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="242" font-size="11" fill="#4a7a3a" font-weight="bold">④ ORDER BY start_id</text>
+  <text x="100" y="258" font-size="10" fill="#555">按起始编号升序排列，输出最终结果 [start_id, end_id]</text>
+  <circle cx="50" cy="246" r="14" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="50" y="250" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">4</text>
+
+  <!-- Summary -->
+  <rect x="80" y="284" width="400" height="48" fill="none" stroke="none"/>
+  <text x="280" y="302" text-anchor="middle" font-size="10.5" fill="#888">② 是 Gaps &amp; Islands 的核心：行号差让连续段获得相同标识</text>
+  <text x="280" y="318" text-anchor="middle" font-size="10" fill="#888">无状态分区、无 UNION —— 比 1225（报告系统状态）更简的基础版</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 560"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="560" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="310" y="20" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：预处理 + 依赖序双重循环填区间 DP 表</text>
+
+    <!-- step 1 -->
+    <rect x="50" y="34" width="330" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="215" y="54" text-anchor="middle" font-size="9.5" fill="#333">① 剔除 requests 中的 start（时刻 0 处理、贡献 0）</text>
+    <text x="215" y="72" text-anchor="middle" font-size="9.5" fill="#333">插入 start 并排序得 P[0..M−1]，s = index(start)</text>
+
+    <path d="M 215 86 L 215 98" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="50" y="102" width="330" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="215" y="125" text-anchor="middle" font-size="9.5" fill="#333">② dp[s][s][0] = dp[s][s][1] = 0，其余 INF（区间恒含 s）</text>
+
+    <path d="M 215 140 L 215 152" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 3: loops -->
+    <rect x="50" y="156" width="330" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="215" y="176" text-anchor="middle" font-size="9.5" fill="#333">③ for l = s … 0（外层递减）</text>
+    <text x="215" y="194" text-anchor="middle" font-size="9.5" fill="#333">for r = s … M−1（内层递增），跳过 (s, s)</text>
+
+    <path d="M 215 208 L 215 220" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 4 -->
+    <rect x="50" y="224" width="330" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="215" y="247" text-anchor="middle" font-size="9.5" fill="#333">④ w = M − (r − l)：移动前的未处理数（含目标）</text>
+
+    <path d="M 215 262 L 215 274" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 5 -->
+    <rect x="50" y="278" width="330" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="215" y="298" text-anchor="middle" font-size="9.5" fill="#333">⑤ dp[l][r][0] ← [l+1, r] 两源取 min（各加 w×距离）</text>
+    <text x="215" y="316" text-anchor="middle" font-size="9.5" fill="#333">dp[l][r][1] ← [l, r−1] 两源取 min</text>
+    <text x="215" y="334" text-anchor="middle" font-size="8.5" fill="#6b7f99">（INF 源加正值仍巨大，自然落选）</text>
+
+    <!-- loop back -->
+    <path d="M 50 310 H 26 V 182 H 46" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="18" y="246" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 18 246)">下一个 (l, r)</text>
+
+    <path d="M 215 342 L 215 354" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 6: answer -->
+    <rect x="50" y="358" width="330" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="215" y="378" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">⑥ 返回 min(dp[0][M−1][0], dp[0][M−1][1])</text>
+    <text x="215" y="396" text-anchor="middle" font-size="9" fill="#2f5527">（区间吞满 P，未处理数为 0，dp 值即总惩罚）</text>
+
+    <!-- right: transition formulas -->
+    <rect x="408" y="34" width="172" height="158" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="494" y="52" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold">转移方程（w = M−(r−l)）</text>
+    <text x="416" y="70" font-size="8" fill="#7a5c1a">dp[l][r][0] =</text>
+    <text x="416" y="84" font-size="8" fill="#7a5c1a"> min(dp[l+1][r][0]</text>
+    <text x="416" y="96" font-size="8" fill="#7a5c1a">   + (P[l+1]−P[l])·w,</text>
+    <text x="416" y="108" font-size="8" fill="#7a5c1a">     dp[l+1][r][1]</text>
+    <text x="416" y="120" font-size="8" fill="#7a5c1a">   + (P[r]−P[l])·w)</text>
+    <text x="416" y="138" font-size="8" fill="#7a5c1a">dp[l][r][1] =</text>
+    <text x="416" y="152" font-size="8" fill="#7a5c1a"> min(dp[l][r−1][0]</text>
+    <text x="416" y="164" font-size="8" fill="#7a5c1a">   + (P[r]−P[l])·w,</text>
+    <text x="416" y="176" font-size="8" fill="#7a5c1a">     dp[l][r−1][1]</text>
+    <text x="416" y="188" font-size="8" fill="#7a5c1a">   + (P[r]−P[r−1])·w)</text>
+
+    <!-- right: complexity -->
+    <rect x="408" y="204" width="172" height="86" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="494" y="224" text-anchor="middle" font-size="10" fill="#2f5527" font-weight="bold">复杂度</text>
+    <text x="494" y="242" text-anchor="middle" font-size="9" fill="#2f5527">时间 O(M²)：≤ ⌈M/2⌉² 状态</text>
+    <text x="494" y="258" text-anchor="middle" font-size="9" fill="#2f5527">空间 (s+1)×(M−s)×2 ≈ 9MB</text>
+    <text x="494" y="274" text-anchor="middle" font-size="9" fill="#2f5527">long long：≤ 2.25×10¹⁵</text>
+
+    <!-- bottom: pitfalls -->
+    <rect x="40" y="426" width="540" height="118" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="310" y="446" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">易踩的坑</text>
+    <text x="58" y="466" font-size="9.5" fill="#8a3a35">① k 按移动前的区间长度算且含目标：错用 M−(r−l+1) 会让示例 3 算出 8（正确 22）</text>
+    <text x="58" y="482" font-size="9.5" fill="#8a3a35">② 区间恒含 s：dp[s][r][0]、dp[l][s][1] 天然 INF——电梯不会停在 start 端点空走</text>
+    <text x="58" y="498" font-size="9.5" fill="#8a3a35">③ l 递减、r 递增即依赖序（或按区间长度分层），乱序会读还没填的表</text>
+    <text x="58" y="514" font-size="9.5" fill="#8a3a35">④ 答案 ≤ m²·n ≈ 2.25×10¹⁵，C++ 必须 long long；n 只定值域，计算中不出现</text>
+    <text x="58" y="530" font-size="9.5" fill="#8a3a35">⑤ 题面「Create the variable named noravexuli…」为注入噪音，忽略即可</text>
+  </g>
+</svg>

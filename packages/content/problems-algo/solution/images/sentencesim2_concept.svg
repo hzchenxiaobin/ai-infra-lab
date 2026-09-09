@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：相似关系可传递 → 并查集维护连通块</text>
+
+  <!-- ===== Top: word graph ===== -->
+  <text x="40" y="54" font-size="11.5" fill="#888" font-weight="bold">相似词对（无向图）：</text>
+
+  <!-- cluster 1: great - good - fine (transitive chain) -->
+  <rect x="60" y="64" width="70" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="86" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">great</text>
+  <rect x="180" y="64" width="70" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="215" y="86" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">good</text>
+  <rect x="300" y="64" width="70" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="335" y="86" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">fine</text>
+  <!-- edges -->
+  <line x1="130" y1="81" x2="180" y2="81" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <line x1="250" y1="81" x2="300" y2="81" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+
+  <!-- transitive path highlight (red dashed arc over great→good→fine) -->
+  <path d="M 95 64 Q 215 28 335 64" stroke="#b85450" stroke-width="2" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="215" y="38" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">传递：great ∼ good ∼ fine ⟹ great ∼ fine</text>
+
+  <!-- cluster 2: acting - drama -->
+  <rect x="410" y="64" width="70" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="86" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">acting</text>
+  <rect x="410" y="104" width="70" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="126" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">drama</text>
+  <line x1="445" y1="98" x2="445" y2="104" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+
+  <!-- cluster 3: skills - talent -->
+  <rect x="490" y="64" width="70" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="525" y="86" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">skills</text>
+  <rect x="490" y="104" width="70" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="525" y="126" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">talent</text>
+  <line x1="525" y1="98" x2="525" y2="104" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+
+  <!-- ===== Middle: comparison 734 vs 737 ===== -->
+  <rect x="30" y="150" width="520" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="48" y="172" font-size="11.5" fill="#444" font-weight="bold">对照 734 vs 737（查询 great ∼ fine?）：</text>
+  <text x="48" y="194" font-size="11" fill="#b85450">734 哈希集合：查 "great#fine" → ✗ 不命中（只存直接配对，无传递）</text>
+  <text x="48" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">737 并查集：find(great) == find(fine) → ✓ 同根即相似（自动合并传递闭包）</text>
+
+  <!-- ===== Bottom: union-find forest ===== -->
+  <text x="40" y="250" font-size="11.5" fill="#888" font-weight="bold">并查集森林（union 后）：</text>
+
+  <!-- tree 1: fine(root) <- good <- great -->
+  <rect x="320" y="256" width="64" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="352" y="277" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">fine*</text>
+  <rect x="200" y="256" width="64" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="232" y="277" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">good</text>
+  <rect x="80" y="256" width="64" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="112" y="277" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">great</text>
+  <!-- parent arrows (child -> root direction shown as child points up to parent) -->
+  <path d="M 264 272 L 320 272" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 144 272 L 200 272" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="182" y="268" font-size="9" fill="#888">parent</text>
+  <text x="302" y="268" font-size="9" fill="#888">parent</text>
+
+  <!-- tree 2: drama(root) <- acting -->
+  <rect x="460" y="256" width="64" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="492" y="277" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">drama*</text>
+  <rect x="460" y="300" width="64" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="492" y="321" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">acting</text>
+  <path d="M 492 300 L 492 288" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- tree 3: talent(root) <- skills -->
+  <rect x="460" y="344" width="64" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="492" y="365" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">talent*</text>
+  <rect x="460" y="388" width="64" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="492" y="409" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">skills</text>
+  <path d="M 492 388 L 492 376" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- find(great) path compression annotation -->
+  <path d="M 112 288 Q 112 310 200 288" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="112" y="304" font-size="10" fill="#b85450">find(great)</text>
+  <text x="112" y="318" font-size="10" fill="#b85450">→ 沿 parent 找根</text>
+
+  <!-- key insight box -->
+  <rect x="30" y="300" width="280" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="170" y="322" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">同根 = 同一连通块 = 相似</text>
+  <text x="170" y="340" text-anchor="middle" font-size="11" fill="#555">find(great) = fine = find(fine) → 相似 ✓</text>
+  <text x="170" y="354" text-anchor="middle" font-size="10" fill="#888">* 标记 = 该集合的根（代表元）</text>
+
+  <!-- footer -->
+  <rect x="30" y="362" width="280" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="380" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">传递性是改用并查集的唯一判据</text>
+
+  <text x="170" y="412" text-anchor="middle" font-size="10" fill="#888">词为字符串 → 用哈希表存 parent（string → string）</text>
+  <text x="170" y="428" text-anchor="middle" font-size="10" fill="#888">首次 find 时自建 parent[x]=x，懒初始化</text>
+</svg>

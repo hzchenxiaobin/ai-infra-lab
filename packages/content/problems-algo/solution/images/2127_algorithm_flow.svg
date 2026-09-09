@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：Kahn 剥链 + 环上分类</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="50" width="480" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="64" cy="74" r="12" fill="#446688" filter="url(#rough2)"/>
+  <text x="64" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">1</text>
+  <text x="86" y="70" font-size="11" fill="#333" font-weight="bold">统计入度 indeg[] + 初始化 depth[]=0</text>
+  <text x="86" y="86" font-size="10" fill="#666">for f in favorite: indeg[f] += 1   （每个节点出度恰为 1，无需建邻接表）</text>
+  <path d="M 280 98 L 280 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="114" width="480" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="64" cy="138" r="12" fill="#446688" filter="url(#rough2)"/>
+  <text x="64" y="142" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">2</text>
+  <text x="86" y="134" font-size="11" fill="#333" font-weight="bold">入队所有 indeg[i] == 0 的节点（非环节点 = 挂链叶端）</text>
+  <text x="86" y="150" font-size="10" fill="#666">q = deque(i for i in range(n) if indeg[i] == 0)</text>
+  <path d="M 280 162 L 280 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Kahn loop -->
+  <rect x="40" y="178" width="480" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <circle cx="64" cy="200" r="12" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="64" y="204" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">3</text>
+  <text x="86" y="196" font-size="11" fill="#333" font-weight="bold">Kahn 剥洋葱：while q 非空</text>
+  <text x="86" y="212" font-size="10" fill="#666">u = q.popleft(); v = favorite[u]</text>
+  <text x="86" y="226" font-size="10" fill="#666">depth[v] = max(depth[v], depth[u] + 1)   # 挂链深度沿 favorite 传递</text>
+  <text x="86" y="240" font-size="10" fill="#666">indeg[v] -= 1; if indeg[v]==0: q.append(v)</text>
+  <path d="M 280 248 L 280 262" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: 环分类 -->
+  <rect x="40" y="264" width="480" height="90" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <circle cx="64" cy="288" r="12" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="64" y="292" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">4</text>
+  <text x="86" y="284" font-size="11" fill="#333" font-weight="bold">遍历剩余 indeg[i] > 0 的环节点，沿 favorite 走一圈收集环</text>
+  <text x="86" y="302" font-size="10" fill="#4a7a3a">if len == 2（二元环）: sum2 += 2 + depth[i] + depth[favorite[i]]   ← 可拼桌</text>
+  <text x="86" y="318" font-size="10" fill="#b85450">else（长环 ≥ 3）: maxCycle = max(maxCycle, len)                    ← 独占一桌</text>
+  <text x="86" y="334" font-size="9" fill="#888">depth[环上节点] 来自 Kahn 中环外前驱的传递，恰 = 挂链长度 L_i / L_j</text>
+  <path d="M 280 354 L 280 368" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: 答案 -->
+  <rect x="40" y="370" width="480" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <circle cx="64" cy="395" r="12" fill="#b85450" filter="url(#rough2)"/>
+  <text x="64" y="399" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">5</text>
+  <text x="86" y="390" font-size="12" fill="#333" font-weight="bold">return max(maxCycle, sum2)</text>
+  <text x="86" y="406" font-size="10" fill="#666">长环独占取最大 vs 二元环拼桌取总和，二者互斥取 max</text>
+</svg>

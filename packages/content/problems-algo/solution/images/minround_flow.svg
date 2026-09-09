@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 640" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="500" height="640" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="250" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">最小化舍入误差：算法流程</text>
+
+  <!-- Start -->
+  <rect x="200" y="40" width="100" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="15" filter="url(#rough2)"/>
+  <text x="250" y="60" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">开始</text>
+  <path d="M 250 70 L 250 84" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P1: Parse -->
+  <rect x="110" y="86" width="280" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="108" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">解析每个价格 → (整数部 a, 小数部 f)</text>
+  <path d="M 250 122 L 250 136" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P2: baseSum + fracs -->
+  <rect x="110" y="138" width="280" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="155" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">baseSum = Σ a_i</text>
+  <text x="250" y="169" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">fracs = [非零小数部列表]</text>
+  <path d="M 250 174 L 250 188" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P3: k -->
+  <rect x="110" y="190" width="280" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="212" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">k = target − baseSum</text>
+  <path d="M 250 226 L 250 240" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="250,242 360,282 250,322 140,282" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="278" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">0 ≤ k ≤ m ?</text>
+  <text x="250" y="294" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">(m = fracs 长度)</text>
+
+  <!-- No branch: right -->
+  <path d="M 360 282 L 410 282" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="276" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">No</text>
+  <rect x="410" y="266" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="286" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">return</text>
+  <text x="450" y="298" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">"-1"</text>
+
+  <!-- Yes branch: down -->
+  <path d="M 250 322 L 250 346" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="266" y="338" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">Yes</text>
+
+  <!-- P4: Sort -->
+  <rect x="110" y="348" width="280" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="370" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">fracs 按小数部降序排序</text>
+  <path d="M 250 384 L 250 398" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P5: Upgrade -->
+  <rect x="110" y="400" width="280" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="417" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">升级前 k 个 → ceil，其余 → floor</text>
+  <text x="250" y="431" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（小数部越大，ceil 误差越小）</text>
+  <path d="M 250 440 L 250 454" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P6: Error -->
+  <rect x="100" y="456" width="300" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="473" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">error = Σ(1000 − frac)[升级] + Σ(frac)[保持]</text>
+  <text x="250" y="487" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（千分位整数运算，避免浮点误差）</text>
+  <path d="M 250 496 L 250 510" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- P7: Format -->
+  <rect x="110" y="512" width="280" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="534" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">格式化 error / 1000 → "X.YYY"</text>
+  <path d="M 250 548 L 250 562" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End -->
+  <rect x="170" y="564" width="160" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="15" filter="url(#rough2)"/>
+  <text x="250" y="584" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">返回最小误差</text>
+
+  <!-- No-branch end: down to merge -->
+  <path d="M 450 298 L 450 579 L 332 579" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4,4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="458" y="440" font-size="9" fill="#b85450" filter="url(#rough2)">不可行</text>
+  <text x="458" y="452" font-size="9" fill="#b85450" filter="url(#rough2)">直接返回</text>
+</svg>

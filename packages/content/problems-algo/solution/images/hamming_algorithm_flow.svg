@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="500" height="460" fill="#fafafa"/>
+
+  <text x="250" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：异或 + Brian Kernighan 计数</text>
+
+  <!-- Start oval -->
+  <ellipse cx="250" cy="60" rx="48" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="65" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">开始</text>
+
+  <line x1="250" y1="80" x2="250" y2="96" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 1: z = x ^ y; count = 0 -->
+  <rect x="110" y="100" width="280" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="122" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">z = x ^ y   // 差异位编码进 z</text>
+  <text x="250" y="140" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">count = 0</text>
+
+  <line x1="250" y1="150" x2="250" y2="166" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: z != 0 ? -->
+  <polygon points="250,170 332,212 250,254 168,212" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="208" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">z ≠ 0 ?</text>
+  <text x="250" y="224" text-anchor="middle" font-size="10.5" fill="#888">还有差异位没数</text>
+
+  <!-- Yes branch: down -->
+  <text x="262" y="268" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="250" y1="254" x2="250" y2="272" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- z &= z - 1; count++ -->
+  <rect x="110" y="276" width="280" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="298" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">z &amp;= z − 1   // 抹掉最低设置位</text>
+  <text x="250" y="316" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">count++       // 计一个差异位</text>
+
+  <!-- loop back to decision -->
+  <line x1="390" y1="301" x2="430" y2="301" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="392" y="194" width="76" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="212" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">回判</text>
+  <path d="M 430 194 Q 430 212 332 212" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No branch: left to return -->
+  <text x="150" y="206" font-size="11" fill="#d6a040" font-weight="bold">否</text>
+  <path d="M 168 212 Q 90 212 90 286" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- return count -->
+  <rect x="20" y="288" width="140" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="310" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">return count</text>
+
+  <line x1="90" y1="322" x2="90" y2="348" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End oval -->
+  <ellipse cx="90" cy="368" rx="42" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="90" y="373" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">结束</text>
+
+  <!-- bottom note -->
+  <rect x="150" y="352" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="372" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">循环次数 = 差异位数（最坏 31 次）</text>
+  <text x="310" y="388" text-anchor="middle" font-size="11" fill="#446688">异或归约 + 抹最低 1，跳过所有相同位</text>
+
+  <!-- complexity tag -->
+  <rect x="150" y="408" width="320" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="430" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">时间 O(popcount(x⊕y))，空间 O(1)</text>
+</svg>

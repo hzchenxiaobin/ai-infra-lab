@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：LAG 取上一条同类型会话 → 间隔过滤 → 去重排序</text>
+  <text x="290" y="38" text-anchor="middle" font-size="9" fill="#888">窗口列必须先经 CTE 物化才能进 WHERE；prev_end 为 NULL 的首行被 WHERE 天然丢弃</text>
+
+  <!-- Step 1 -->
+  <rect x="190" y="50" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="64" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Sessions</text>
+  <text x="290" y="78" text-anchor="middle" font-size="8" fill="#888">读入全部会话行（n 行）</text>
+
+  <path d="M 290 84 L 290 96" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="120" y="98" width="340" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="114" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">② CTE T：LAG(session_end) OVER (</text>
+  <text x="290" y="128" text-anchor="middle" font-size="9" fill="#446688">PARTITION BY user_id, session_type ORDER BY session_end) AS prev_end</text>
+  <text x="290" y="139" text-anchor="middle" font-size="8" fill="#888">分区排序 O(n log n)：每个 (用户, 类型) 桶内各会话按结束时间排好</text>
+
+  <path d="M 290 142 L 290 154" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: diamond NULL check -->
+  <polygon points="290,156 372,186 290,216 208,186" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="183" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">prev_end 为 NULL？</text>
+  <text x="290" y="196" text-anchor="middle" font-size="8" fill="#888">（分区首行）</text>
+
+  <path d="M 372 186 L 430 186" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="180" text-anchor="middle" font-size="8" fill="#b85450">是</text>
+  <rect x="432" y="172" width="128" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="496" y="184" text-anchor="middle" font-size="9" fill="#b85450">丢弃该行</text>
+  <text x="496" y="196" text-anchor="middle" font-size="8" fill="#b85450">TIMESTAMPDIFF(NULL,..)=NULL</text>
+
+  <path d="M 290 216 L 290 228" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="226" font-size="8" fill="#4a7a3a">否</text>
+
+  <!-- Step 4: diamond gap check -->
+  <polygon points="290,230 378,262 290,294 202,262" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="258" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">TIMESTAMPDIFF(HOUR,</text>
+  <text x="290" y="271" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">prev_end, session_start) ≤ 12？</text>
+
+  <path d="M 378 262 L 436 262" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="404" y="256" text-anchor="middle" font-size="8" fill="#b85450">否</text>
+  <rect x="438" y="248" width="122" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="499" y="260" text-anchor="middle" font-size="9" fill="#b85450">丢弃该行</text>
+  <text x="499" y="272" text-anchor="middle" font-size="8" fill="#b85450">间隔超过 12 小时</text>
+
+  <path d="M 290 294 L 290 306" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="304" font-size="8" fill="#4a7a3a">是</text>
+
+  <!-- Step 5 -->
+  <rect x="160" y="308" width="260" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="322" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">③ SELECT DISTINCT user_id FROM T WHERE …</text>
+  <text x="290" y="336" text-anchor="middle" font-size="8" fill="#888">同一用户可能命中多对，DISTINCT 去重</text>
+
+  <path d="M 290 342 L 290 354" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6 -->
+  <rect x="190" y="356" width="200" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="370" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">④ ORDER BY user_id</text>
+  <text x="290" y="384" text-anchor="middle" font-size="8" fill="#888">按 user_id 升序输出单列表</text>
+
+  <!-- Note box -->
+  <rect x="40" y="404" width="500" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="422" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ 窗口函数在 SELECT 阶段求值，WHERE 执行时尚不存在 → 必须套一层 CTE 物化后再过滤</text>
+  <text x="290" y="440" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ TIMESTAMPDIFF(HOUR, NULL, x) 返回 NULL，NULL ≤ 12 判定为假 → 分区首行无需显式排除</text>
+  <text x="290" y="456" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ 排序键用 session_end：引理的单调性（end(Si) ≤ end(Sj−1)）正是建立在这个序上</text>
+</svg>

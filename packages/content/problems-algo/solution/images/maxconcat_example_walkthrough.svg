@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：arr=["un","iq","ue"]，答案 4</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">DFS 决策树：绿框=选入（互斥），红框=冲突剪枝，每个节点更新 ans</text>
+
+  <!-- ===== Recursion tree ===== -->
+  <g filter="url(#rough2)" font-size="10">
+    <!-- Root: dfs(0, ∅, 0) -->
+    <rect x="220" y="62" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6"/>
+    <text x="280" y="78" text-anchor="middle" fill="#446688" font-weight="bold">dfs(0, ∅, 0)</text>
+    <text x="280" y="91" text-anchor="middle" fill="#555" font-size="9">ans = 0</text>
+
+    <!-- Layer 1: try un / iq / ue -->
+    <!-- select un -->
+    <rect x="70" y="138" width="130" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="135" y="154" text-anchor="middle" fill="#4a7a3a" font-weight="bold">选 un ✓</text>
+    <text x="135" y="168" text-anchor="middle" fill="#555" font-size="9">dfs(1,{u,n},2) ans=2</text>
+    <!-- select iq -->
+    <rect x="215" y="138" width="130" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="280" y="154" text-anchor="middle" fill="#4a7a3a" font-weight="bold">选 iq ✓</text>
+    <text x="280" y="168" text-anchor="middle" fill="#555" font-size="9">dfs(2,{i,q},2)</text>
+    <!-- select ue -->
+    <rect x="360" y="138" width="130" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="425" y="154" text-anchor="middle" fill="#4a7a3a" font-weight="bold">选 ue ✓</text>
+    <text x="425" y="168" text-anchor="middle" fill="#555" font-size="9">dfs(3,{u,e},2)</text>
+
+    <!-- edges root -> L1 -->
+    <path d="M 250 96 L 135 138" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+    <path d="M 280 96 L 280 138" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+    <path d="M 310 96 L 425 138" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+
+    <!-- Layer 2: under un -> iq (OK) / ue (conflict) -->
+    <rect x="20" y="214" width="135" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="87" y="230" text-anchor="middle" fill="#4a7a3a" font-weight="bold">再选 iq ✓</text>
+    <text x="87" y="244" text-anchor="middle" fill="#555" font-size="9">dfs(2,{u,n,i,q},4)</text>
+
+    <rect x="165" y="214" width="135" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6"/>
+    <text x="232" y="230" text-anchor="middle" fill="#b85450" font-weight="bold">选 ue ✗</text>
+    <text x="232" y="244" text-anchor="middle" fill="#b85450" font-size="9">un∩ue={u} 剪枝</text>
+
+    <!-- edges: un -> iq / ue -->
+    <path d="M 110 178 L 87 214" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+    <path d="M 160 178 L 232 214" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4,3" fill="none" marker-end="url(#arrR)"/>
+
+    <!-- under iq -> ue (OK) -->
+    <rect x="300" y="214" width="135" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="367" y="230" text-anchor="middle" fill="#4a7a3a" font-weight="bold">再选 ue ✓</text>
+    <text x="367" y="244" text-anchor="middle" fill="#555" font-size="9">dfs(3,{i,q,u,e},4)</text>
+
+    <path d="M 300 178 L 367 214" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+
+    <!-- Layer 3: under (un,iq) -> ue conflict -->
+    <rect x="20" y="296" width="135" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6"/>
+    <text x="87" y="312" text-anchor="middle" fill="#b85450" font-weight="bold">选 ue ✗</text>
+    <text x="87" y="326" text-anchor="middle" fill="#b85450" font-size="9">含 u，与 un 冲突</text>
+
+    <path d="M 87 254 L 87 296" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4,3" fill="none" marker-end="url(#arrR)"/>
+
+    <!-- best marker on un+iq node -->
+    <rect x="20" y="350" width="135" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6"/>
+    <text x="87" y="366" text-anchor="middle" fill="#d6a040" font-weight="bold">"uniq" 长度 4 ⭐</text>
+    <text x="87" y="378" text-anchor="middle" fill="#555" font-size="9">全局最大</text>
+    <path d="M 87 336 L 87 350" stroke="#d6a040" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ===== Result + insight ===== -->
+  <rect x="180" y="350" width="345" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="352" y="366" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">同样 iq+ue → "ique" 长度 4</text>
+  <text x="352" y="378" text-anchor="middle" font-size="9" fill="#555">两条路径都得 4，验证 4 为全局最优</text>
+
+  <rect x="180" y="392" width="345" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="352" y="408" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠️ 红框=按位与剪枝生效处：un 与 ue 共享 u</text>
+  <text x="352" y="421" text-anchor="middle" font-size="9" fill="#555">冲突子树整棵跳过，不进入递归</text>
+</svg>

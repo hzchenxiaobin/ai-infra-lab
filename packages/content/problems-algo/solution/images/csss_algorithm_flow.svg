@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：拆分 → 枚举子集和 → 排序 → 二分汇合</text>
+
+  <!-- Step 1: split -->
+  <rect x="60" y="48" width="440" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="66" font-size="11" fill="#446688" font-weight="bold">① 拆分</text>
+  <text x="80" y="82" font-size="10" fill="#333">mid = n / 2；L = nums[0..mid)，R = nums[mid..n)</text>
+
+  <path d="M 280 92 L 280 108" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: enumerate subset sums -->
+  <rect x="60" y="110" width="440" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="128" font-size="11" fill="#4a7a3a" font-weight="bold">② 枚举子集和</text>
+  <text x="80" y="144" font-size="10" fill="#333">LS = 子集和(L)，RS = 子集和(R)   各 2^(n/2) 个</text>
+  <text x="80" y="158" font-size="10" fill="#888">用位掩码 mask ∈ [0, 2^len)：选中的元素累加进 sum</text>
+
+  <path d="M 280 168 L 280 184" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: sort RS -->
+  <rect x="60" y="186" width="440" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="204" font-size="11" fill="#d6a040" font-weight="bold">③ 排序 RS</text>
+  <text x="80" y="220" font-size="10" fill="#333">sort(RS)：让右半子集和有序，供后续二分查找</text>
+
+  <path d="M 280 230 L 280 246" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: iterate + binary search -->
+  <rect x="60" y="248" width="440" height="100" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="266" font-size="11" fill="#b85450" font-weight="bold">④ 遍历 LS × 二分 RS</text>
+  <text x="80" y="282" font-size="10" fill="#333">ans = |goal|   （空子序列和 = 0 的兜底）</text>
+  <text x="80" y="298" font-size="10" fill="#333">for s in LS:</text>
+  <text x="96" y="312" font-size="10" fill="#333">target = goal − s</text>
+  <text x="96" y="326" font-size="10" fill="#333">pos = lower_bound(RS, target)   检查 pos 与 pos−1 两个候选</text>
+  <text x="96" y="340" font-size="10" fill="#d6a040" font-weight="bold">ans = min(ans, |s + RS[pos] − goal|, |s + RS[pos−1] − goal|)</text>
+
+  <path d="M 280 348 L 280 364" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="280,366 360,396 280,426 200,396" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="394" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">ans == 0 ?</text>
+  <text x="280" y="408" text-anchor="middle" font-size="9" fill="#888">提前剪枝</text>
+
+  <path d="M 360 396 L 410 396" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="390" font-size="9" fill="#4a7a3a">是 → 返回 0</text>
+
+  <path d="M 200 396 L 150 396 L 150 248" stroke="#666" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="392" font-size="9" fill="#b85450">否 → 继续</text>
+
+  <!-- final return -->
+  <rect x="410" y="380" width="110" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="402" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return ans</text>
+</svg>

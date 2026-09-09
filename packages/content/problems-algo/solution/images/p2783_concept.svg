@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：先到先得 → 前 capacity 位入座，其余进等待名单</text>
+
+  <!-- flight label + capacity pill -->
+  <text x="36" y="108" font-size="13" fill="#888" font-weight="bold">航班 1</text>
+  <rect x="36" y="116" width="80" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="134" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">capacity=2</text>
+
+  <!-- demand bracket over all 3 passengers -->
+  <path d="M130,74 Q130,66 138,66 L326,66 Q334,66 334,74" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="232" y="60" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">需求 D = 3</text>
+
+  <!-- passenger boxes: 101,102 green(booked) ; 103 orange(waitlist) -->
+  <g font-size="16" font-weight="bold">
+    <rect x="130" y="80" width="64" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+    <text x="162" y="110" text-anchor="middle" fill="#333">101</text>
+
+    <rect x="200" y="80" width="64" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+    <text x="232" y="110" text-anchor="middle" fill="#333">102</text>
+
+    <rect x="270" y="80" width="64" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+    <text x="302" y="110" text-anchor="middle" fill="#333">103</text>
+  </g>
+
+  <!-- rank labels below -->
+  <g font-size="11" fill="#aaa">
+    <text x="162" y="144" text-anchor="middle">第 1 位</text>
+    <text x="232" y="144" text-anchor="middle">第 2 位</text>
+    <text x="302" y="144" text-anchor="middle">第 3 位</text>
+  </g>
+
+  <!-- capacity cutoff dashed line between 102 and 103 -->
+  <path d="M267,72 L267,168" fill="none" stroke="#b85450" stroke-width="2.2" stroke-dasharray="5,4" filter="url(#rough2)"/>
+  <text x="272" y="80" font-size="11" fill="#b85450" font-weight="bold">capacity 截断</text>
+
+  <!-- booked / waitlist spans -->
+  <path d="M130,160 Q130,168 138,168 L256,168 Q264,168 264,160" fill="none" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="197" y="184" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">入座 B = min(3,2) = 2 ✓</text>
+
+  <path d="M270,160 Q270,168 278,168 L326,168 Q334,168 334,160" fill="none" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="302" y="184" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">等待 W=1 ✗</text>
+
+  <!-- occupancy rate note -->
+  <path d="M162,196 L162,214" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="172" y="212" font-size="12" fill="#446688" font-weight="bold">入座率 R = B / C = 2 / 2 = 1.00</text>
+
+  <!-- formula box -->
+  <rect x="50" y="248" width="440" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="270" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">入座 B = min(D, C)     等待 W = max(D−C, 0)     入座率 R = B / C</text>
+  <text x="270" y="292" text-anchor="middle" font-size="11" fill="#7a5a20">聚合层面无需排序：先到先得只决定「谁」入座，不改变「多少」人入座</text>
+
+  <!-- key insight -->
+  <rect x="50" y="322" width="440" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="346" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">明细要序号(ROW_NUMBER) · 聚合只要计数(LEAST/GREATEST)</text>
+</svg>

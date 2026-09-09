@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：dfs(s) + memo 记忆化搜索</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">首胜即剪枝——找到任一必败后继立即返回，避免遍历全部后继</text>
+
+  <!-- ===== Step 1: memo check ===== -->
+  <text x="30" y="78" font-size="11" fill="#446688" font-weight="bold">入口 dfs(s)</text>
+  <rect x="190" y="62" width="180" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="82" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">查询 memo[s]</text>
+  <text x="280" y="96" text-anchor="middle" font-size="9" fill="#555">已算过则直接返回缓存值</text>
+
+  <path d="M 280 106 L 280 124" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: decision: in memo? ===== -->
+  <polygon points="280,124 360,160 280,196 200,160" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="156" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">s ∈ memo ?</text>
+  <text x="280" y="170" text-anchor="middle" font-size="9" fill="#888">（命中缓存？）</text>
+
+  <!-- yes -> return memo -->
+  <path d="M 200 160 L 70 160 L 70 220" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="118" y="152" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="14" y="220" width="112" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="240" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return memo[s]</text>
+  <text x="70" y="254" text-anchor="middle" font-size="9" fill="#555">O(1) 命中</text>
+
+  <!-- no -> loop -->
+  <path d="M 360 160 L 470 160 L 470 220" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="408" y="152" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="414" y="220" width="112" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="240" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">遍历 i=0..n-2</text>
+  <text x="470" y="254" text-anchor="middle" font-size="9" fill="#555">找 s[i]s[i+1]==&quot;++&quot;</text>
+
+  <!-- ===== Step 3: for each ++ -> flip -> recurse ===== -->
+  <path d="M 470 264 L 470 282" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="300" y="282" width="340" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="302" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">t = s[:i] + &quot;--&quot; + s[i+2:]</text>
+  <text x="470" y="316" text-anchor="middle" font-size="9" fill="#555">翻转该对，构造后继局面 t</text>
+
+  <!-- ===== Step 4: recurse + short-circuit ===== -->
+  <path d="M 470 326 L 470 344" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <polygon points="300,344 470,344 470,388 300,388" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="385" y="362" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">if (!dfs(t)) : win=true; break</text>
+  <text x="385" y="378" text-anchor="middle" font-size="9" fill="#555">对手面对 t 必败 → 你必胜，立刻剪枝</text>
+
+  <!-- loop back arrow from step4 left to step2-loop (i advances) -->
+  <path d="M 300 366 Q 240 366 200 200 Q 195 175 200 160" stroke="#888" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="232" y="300" font-size="9" fill="#888">下一个 i</text>
+
+  <!-- after loop: store + return -->
+  <path d="M 385 388 L 385 396" stroke="none"/>
+  <rect x="160" y="300" width="120" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="320" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">memo[s] = win</text>
+  <text x="220" y="334" text-anchor="middle" font-size="9" fill="#555">return win</text>
+  <path d="M 300 366 L 280 322" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="280" y="350" font-size="9" fill="#666">循环结束</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：按 start_day 排序后，start ≤ 前缀 MAX(end) ⇒ 同组</text>
+
+  <!-- ============ Hall 1 timeline ============ -->
+  <text x="40" y="74" font-size="12" fill="#888" font-weight="bold">hall 1</text>
+
+  <!-- event bars (sketch bars) -->
+  <!-- [01-13, 01-14] -->
+  <rect x="130" y="60" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="77" text-anchor="middle" font-size="9" fill="#333">01-13~14</text>
+
+  <!-- [01-14, 01-17] : touches previous at x=170 -->
+  <rect x="170" y="60" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="77" text-anchor="middle" font-size="9" fill="#333">01-14~17</text>
+
+  <!-- [01-18, 01-25] : gap from x=250 to x=265 -->
+  <rect x="265" y="60" width="88" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="309" y="77" text-anchor="middle" font-size="9" fill="#333">01-18~25</text>
+
+  <!-- merge bracket above bar1+bar2 -->
+  <path d="M 130 52 L 130 46 L 250 46 L 250 52" stroke="#446688" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="190" y="40" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">合并 → [01-13, 01-17]</text>
+
+  <!-- separate bracket above bar3 -->
+  <path d="M 265 52 L 265 46 L 353 46 L 353 52" stroke="#4a7a3a" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="309" y="40" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">[01-18, 01-25]</text>
+
+  <!-- overlap callout at shared day 01-14 -->
+  <line x1="170" y1="86" x2="170" y2="104" stroke="#d6a040" stroke-width="2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="170" y="118" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">共享 01-14</text>
+  <text x="170" y="130" text-anchor="middle" font-size="9" fill="#d6a040">⇒ 重叠 ⇒ 合并</text>
+
+  <!-- gap callout between bar2 and bar3 -->
+  <text x="257" y="118" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">01-17 &lt; 01-18</text>
+  <text x="257" y="130" text-anchor="middle" font-size="9" fill="#4a7a3a">⇒ 有空隙 ⇒ 分组</text>
+
+  <!-- ============ Hall 2 timeline (nested) ============ -->
+  <text x="40" y="168" font-size="12" fill="#888" font-weight="bold">hall 2</text>
+
+  <!-- [12-09, 12-23] long bar -->
+  <rect x="130" y="154" width="150" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="171" text-anchor="middle" font-size="9" fill="#333">12-09~23</text>
+
+  <!-- [12-13, 12-17] nested inside -->
+  <rect x="160" y="150" width="60" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="171" text-anchor="middle" font-size="9" fill="#333">12-13~17</text>
+
+  <!-- merge bracket -->
+  <path d="M 130 144 L 130 138 L 280 138 L 280 144" stroke="#d6a040" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="205" y="132" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">合并 → [12-09, 12-23]</text>
+
+  <text x="205" y="196" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">嵌套：短段被长段包住 ⇒ 仍同组</text>
+  <text x="205" y="208" text-anchor="middle" font-size="9" fill="#b85450">须取前缀 MAX(end)，而非 LAG(prev_end)</text>
+
+  <!-- ============ Key formula box ============ -->
+  <rect x="36" y="226" width="488" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="250" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">分组判定</text>
+  <text x="280" y="272" text-anchor="middle" font-size="12" fill="#333">prev_max_end = MAX(end_day) OVER (PARTITION BY hall ORDER BY start</text>
+  <text x="280" y="288" text-anchor="middle" font-size="12" fill="#333">ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)</text>
+  <text x="280" y="305" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">is_new = 1  iff  start_day &gt; prev_max_end  (否则并入当前岛)</text>
+
+  <!-- ============ Pitfall: LAG vs running MAX ============ -->
+  <rect x="36" y="316" width="240" height="90" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="156" y="336" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">陷阱：LAG(prev_end)</text>
+  <text x="156" y="356" text-anchor="middle" font-size="10" fill="#333">[1,10] [3,5] [6,8]</text>
+  <text x="156" y="372" text-anchor="middle" font-size="10" fill="#b85450">看前驱 end=5 → 6&gt;5 误判新组</text>
+  <text x="156" y="388" text-anchor="middle" font-size="10" fill="#b85450">⇒ 错拆成 [1,10] 与 [6,8]</text>
+
+  <rect x="284" y="316" width="240" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="404" y="336" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">正解：running MAX(end)</text>
+  <text x="404" y="356" text-anchor="middle" font-size="10" fill="#333">[1,10] [3,5] [6,8]</text>
+  <text x="404" y="372" text-anchor="middle" font-size="10" fill="#4a7a3a">前缀 MAX=10 → 6≤10 同组</text>
+  <text x="404" y="388" text-anchor="middle" font-size="10" fill="#4a7a3a">⇒ 正确合并为 [1,10]</text>
+</svg>

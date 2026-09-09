@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">赛车 DP 递推流程（按 t 从 1 到 target 升序填表）</text>
+
+  <!-- start box -->
+  <rect x="170" y="42" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="67" text-anchor="middle" font-size="12" fill="#333">对每个 t = 1 … target</text>
+
+  <line x1="270" y1="82" x2="270" y2="104" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- compute k box -->
+  <rect x="140" y="106" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="124" text-anchor="middle" font-size="11" fill="#333">k = bit_length(t)，forward = 2^k − 1</text>
+  <text x="270" y="142" text-anchor="middle" font-size="10" fill="#888">（最小 k 使 2^k &gt; t，故 2^(k−1) ≤ t &lt; 2^k）</text>
+
+  <line x1="270" y1="150" x2="270" y2="168" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond: forward == t ? -->
+  <path d="M 270 168 L 360 200 L 270 232 L 180 200 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="196" text-anchor="middle" font-size="11" fill="#444">2^k − 1 == t ?</text>
+  <text x="270" y="212" text-anchor="middle" font-size="10" fill="#888">（直达 2^k−1）</text>
+
+  <!-- yes branch (right) -->
+  <path d="M 360 200 L 430 200 L 430 248" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="194" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="370" y="250" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="268" text-anchor="middle" font-size="11" fill="#333">dp[t] = k</text>
+  <text x="430" y="283" text-anchor="middle" font-size="10" fill="#888">k 个 A 直达</text>
+
+  <!-- no branch (down) -->
+  <line x1="270" y1="232" x2="270" y2="254" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="248" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- two candidate boxes -->
+  <rect x="40" y="258" width="220" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="278" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">① 过头</text>
+  <text x="150" y="296" text-anchor="middle" font-size="10" fill="#444">cand = k + 1 + dp[2^k−1−t]</text>
+  <text x="150" y="312" text-anchor="middle" font-size="10" fill="#888">过头 k 个 A + R + 回程</text>
+
+  <rect x="280" y="258" width="220" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="278" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 不足+回退</text>
+  <text x="390" y="296" text-anchor="middle" font-size="10" fill="#444">for j = 0 … k−2：</text>
+  <text x="390" y="312" text-anchor="middle" font-size="10" fill="#444">cand = min(cand, k+j+1+dp[t−2^(k−1)+2^j])</text>
+
+  <!-- merge arrows -->
+  <path d="M 150 322 Q 150 342 200 348" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 390 322 Q 390 342 340 348" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 430 290 Q 460 330 360 350" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- dp[t] = min -->
+  <rect x="130" y="354" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="372" text-anchor="middle" font-size="11" fill="#333">dp[t] = min(①, ②各 j 候选)</text>
+  <text x="270" y="388" text-anchor="middle" font-size="10" fill="#888">所有 dp[子问题] &lt; t，已在前序填好</text>
+
+  <!-- loop back arrow -->
+  <path d="M 130 376 Q 60 376 60 62 Q 60 42 170 50" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="220" font-size="10" fill="#888">下一个 t</text>
+
+  <!-- end -->
+  <rect x="170" y="412" width="200" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="437" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 dp[target]</text>
+  <line x1="270" y1="398" x2="270" y2="410" stroke="#b85450" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

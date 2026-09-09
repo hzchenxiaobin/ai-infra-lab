@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：两遍线性扫描 + 常数级排序</text>
+  <text x="260" y="36" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">第一遍收集信息，第二遍装填结果；中间只对 ≤ 5 种元音排序</text>
+
+  <!-- start -->
+  <rect x="95" y="46" width="170" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="180" y="65" text-anchor="middle" font-size="11" fill="#33507a" font-weight="bold" filter="url(#rough2)">输入 s（小写字母串）</text>
+
+  <path d="M 180 76 L 180 90" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- pass 1 header -->
+  <rect x="75" y="94" width="210" height="28" rx="6" fill="#f5f7fa" stroke="#8aa" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="180" y="112" text-anchor="middle" font-size="10.5" fill="#456" font-weight="bold" filter="url(#rough2)">① 第一遍扫描：i = 0 … n−1</text>
+
+  <path d="M 180 122 L 180 138" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- diamond -->
+  <path d="M 180 142 L 248 176 L 180 210 L 112 176 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="172" text-anchor="middle" font-size="10" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">s[i] 是元音？</text>
+  <text x="180" y="186" text-anchor="middle" font-size="8.5" fill="#a08030" filter="url(#rough2)">(a e i o u)</text>
+
+  <!-- yes branch -->
+  <path d="M 248 176 L 280 176" fill="none" stroke="#d6a040" stroke-width="1.6" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="258" y="168" text-anchor="middle" font-size="9" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="284" y="152" width="204" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="386" y="170" text-anchor="middle" font-size="10" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">cnt[v]++</text>
+  <text x="386" y="188" text-anchor="middle" font-size="10" fill="#2a5a1e" filter="url(#rough2)">首次出现则记 first[v] = i</text>
+
+  <!-- no branch -->
+  <path d="M 112 176 C 90 176 88 200 108 216" fill="none" stroke="#446688" stroke-width="1.4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="86" y="196" text-anchor="middle" font-size="9" fill="#789" filter="url(#rough2)">否（辅音，跳过）</text>
+
+  <!-- merge from yes box -->
+  <path d="M 386 200 C 386 222 300 226 250 230" fill="none" stroke="#4a7a3a" stroke-width="1.4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- sort step -->
+  <rect x="60" y="226" width="250" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="185" y="240" text-anchor="middle" font-size="10" fill="#8a3a36" font-weight="bold" filter="url(#rough2)">② 出现的元音按 (频率↓, 首现↑) 排序</text>
+  <text x="185" y="254" text-anchor="middle" font-size="9" fill="#a06a66" filter="url(#rough2)">再按序展开成目标序列 seq</text>
+  <text x="330" y="244" font-size="9" fill="#b85450" filter="url(#rough2)">← 至多 5 种，O(1)</text>
+
+  <path d="M 185 260 L 185 274" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- pass 2 -->
+  <rect x="60" y="278" width="250" height="34" rx="6" fill="#f5f7fa" stroke="#8aa" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="185" y="292" text-anchor="middle" font-size="10" fill="#456" font-weight="bold" filter="url(#rough2)">③ 第二遍扫描：元音槽位依次 ← seq[k++]</text>
+  <text x="185" y="306" text-anchor="middle" font-size="9" fill="#789" filter="url(#rough2)">辅音字符原样保留</text>
+
+  <path d="M 185 312 L 185 324" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- end -->
+  <rect x="95" y="328" width="180" height="28" rx="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="185" y="346" text-anchor="middle" font-size="11" fill="#33507a" font-weight="bold" filter="url(#rough2)">返回装填后的字符串</text>
+
+  <!-- complexity note -->
+  <rect x="330" y="260" width="160" height="86" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="410" y="280" text-anchor="middle" font-size="10" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">复杂度</text>
+  <text x="410" y="298" text-anchor="middle" font-size="9.5" fill="#3a4a3a" filter="url(#rough2)">时间 O(n)</text>
+  <text x="410" y="314" text-anchor="middle" font-size="9" fill="#3a4a3a" filter="url(#rough2)">排序 O(5 log 5) = 常数</text>
+  <text x="410" y="330" text-anchor="middle" font-size="9.5" fill="#3a4a3a" filter="url(#rough2)">额外空间 O(1)</text>
+  <text x="410" y="342" text-anchor="middle" font-size="8" fill="#5a7a5a" filter="url(#rough2)">（不计输出串）</text>
+</svg>

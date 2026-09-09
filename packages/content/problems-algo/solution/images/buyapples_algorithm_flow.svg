@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr_grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">算法流程：一次多源 Dijkstra</text>
+
+  <!-- 1. build graph -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="40" width="280" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="260" y="65" text-anchor="middle" font-size="12" fill="#3a5a2a">建无向图 g[u]，边权为原 w</text>
+  </g>
+  <path d="M260,80 L260,98" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+
+  <!-- 2. multi-source init -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="98" width="400" height="48" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="260" y="118" text-anchor="middle" font-size="12" fill="#334455">多源初始化：对每个城市 u</text>
+    <text x="260" y="136" text-anchor="middle" font-size="12" fill="#334455">dist[u] = appleCost[u]，全部入堆</text>
+  </g>
+  <path d="M260,146 L260,164" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+
+  <!-- 3. pop -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="164" width="240" height="38" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="260" y="189" text-anchor="middle" font-size="12" fill="#334455">取堆顶 (d, u)</text>
+  </g>
+  <path d="M260,202 L260,220" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+
+  <!-- 4. decision diamond: stale? -->
+  <g filter="url(#rough2)">
+    <path d="M260,220 L332,252 L260,284 L188,252 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.7"/>
+    <text x="260" y="257" text-anchor="middle" font-size="11" fill="#b85450">d &gt; dist[u] ?</text>
+  </g>
+  <!-- yes: discard, loop back to pop -->
+  <path d="M332,252 L372,252 L372,183 L380,183" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+  <text x="376" y="248" text-anchor="start" font-size="11" fill="#b85450" filter="url(#rough2)">是（过时）丢弃</text>
+  <!-- no: relax -->
+  <path d="M260,284 L260,302" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+  <text x="268" y="298" text-anchor="start" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否</text>
+
+  <!-- 5. relax with scaled edge -->
+  <g filter="url(#rough2)">
+    <rect x="28" y="302" width="464" height="48" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.7"/>
+    <text x="260" y="322" text-anchor="middle" font-size="12" fill="#7a4a10">对每条 (u, v, w)：若 d + (k+1)·w &lt; dist[v]</text>
+    <text x="260" y="340" text-anchor="middle" font-size="12" fill="#7a4a10">则 dist[v] = d + (k+1)·w，入堆</text>
+  </g>
+  <path d="M260,350 L260,362" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+
+  <!-- 6. decision: heap empty? -->
+  <g filter="url(#rough2)">
+    <path d="M260,362 L320,384 L260,406 L200,384 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="260" y="388" text-anchor="middle" font-size="11" fill="#b85450">堆空?</text>
+  </g>
+  <!-- no: loop back to relax->pop (left side up) -->
+  <path d="M200,384 L20,384 L20,183 L140,183" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+  <text x="28" y="380" text-anchor="start" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否，继续</text>
+  <!-- yes: return -->
+  <path d="M260,406 L260,416" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+  <text x="330" y="412" text-anchor="start" font-size="11" fill="#3a5a2a" filter="url(#rough2)">是 → dist[] 即答案</text>
+</svg>

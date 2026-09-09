@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：奇偶访问规则 → 房间 i 必须被访问两次才能前进</text>
+
+  <!-- Room row: 0 1 ... j ... i-1 i  i+1 -->
+  <g font-size="12" fill="#333" text-anchor="middle">
+    <rect x="60" y="56" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="80" y="77">0</text>
+    <text x="130" y="77" fill="#888">…</text>
+    <rect x="150" y="56" width="40" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="170" y="77">j</text>
+    <text x="220" y="77" fill="#888">…</text>
+    <rect x="250" y="56" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="270" y="77">i-1</text>
+    <rect x="310" y="54" width="44" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+    <text x="332" y="77" font-weight="bold">i</text>
+    <rect x="380" y="56" width="40" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="400" y="77">i+1</text>
+  </g>
+  <text x="332" y="108" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">当前房间</text>
+
+  <!-- Step 1: visit i (odd) -> sent back to j -->
+  <text x="40" y="136" font-size="11.5" fill="#555" font-weight="bold">① 首访 i（第1次=奇数）→ 回跳 nextVisit[i] = j</text>
+  <path d="M 332 96 Q 200 130 170 92" stroke="#b85450" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="250" y="128" text-anchor="middle" font-size="10.5" fill="#b85450">回跳到 j (j ≤ i)</text>
+
+  <!-- Step 2: re-complete rooms j..i-1 -->
+  <text x="40" y="166" font-size="11.5" fill="#555" font-weight="bold">② 重新走完 j → j+1 → … → i-1 → i（第2次）</text>
+  <rect x="148" y="180" width="244" height="40" fill="none" stroke="#4a7a3a" stroke-width="2" stroke-dasharray="4,3" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="205" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">这段路程 = dp[j]+dp[j+1]+…+dp[i−1]</text>
+
+  <!-- arrow from j to i along the bracket -->
+  <path d="M 172 196 L 308 196" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: visit i again (even) -> go to i+1 -->
+  <text x="40" y="244" font-size="11.5" fill="#555" font-weight="bold">③ 再访 i（第2次=偶数）→ 前进到 i+1</text>
+  <path d="M 336 234 Q 372 246 398 234" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="370" y="252" text-anchor="middle" font-size="10.5" fill="#4a7a3a">前进</text>
+
+  <!-- Divider -->
+  <path d="M 40 268 L 520 268" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Recurrence -->
+  <text x="280" y="292" text-anchor="middle" font-size="12.5" fill="#555" font-weight="bold">递推式：dp[i] = 2 + Σ(dp[j..i−1])</text>
+
+  <!-- breakdown of the 3 parts -->
+  <rect x="50" y="306" width="130" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1 天</text>
+  <text x="115" y="340" text-anchor="middle" font-size="10" fill="#888">首访 i，回跳</text>
+
+  <rect x="200" y="306" width="170" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="285" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Σ dp[j..i−1]</text>
+  <text x="285" y="340" text-anchor="middle" font-size="10" fill="#888">折返走回 i</text>
+
+  <rect x="390" y="306" width="120" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1 天</text>
+  <text x="450" y="340" text-anchor="middle" font-size="10" fill="#888">再访 i，前进</text>
+
+  <!-- Invariant box -->
+  <rect x="50" y="364" width="460" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">关键不变量：首访 i 时，房间 0..i−1 各被访问偶数次</text>
+  <text x="280" y="402" text-anchor="middle" font-size="11" fill="#555">回跳到 j 后，状态与「当初首访 j」完全相同 → 折返耗时恰好 dp[j]</text>
+  <text x="280" y="418" text-anchor="middle" font-size="10.5" fill="#888">故可用前缀和 O(1) 求区间和：dp[i] = 2 + prefix[i] − prefix[j]</text>
+</svg>

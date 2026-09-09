@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：四个操作共享一对哈希表</text>
+  <text x="260" y="38" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">写操作在两表间交替同步；读操作直读倒排桶</text>
+
+  <!-- legend -->
+  <rect x="140" y="48" width="13" height="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="158" y="58" font-size="9.5" fill="#446688" filter="url(#rough2)">正排 orders</text>
+  <rect x="280" y="48" width="13" height="11" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="298" y="58" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">倒排 cnt</text>
+
+  <!-- lane 1: addOrder -->
+  <rect x="14" y="78" width="106" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="67" y="97" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">addOrder</text>
+  <path d="M 120 93 L 134 93" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="136" y="78" width="158" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="97" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">orders[id] = (t, p)</text>
+  <path d="M 296 93 L 316 93" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="318" y="78" width="160" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="398" y="97" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">cnt[(t, p)] += 1</text>
+
+  <!-- lane 2: modifyOrder -->
+  <rect x="14" y="146" width="106" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="67" y="165" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">modifyOrder</text>
+  <path d="M 120 161 L 134 161" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="136" y="146" width="84" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="165" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">查旧 (t,old)</text>
+  <path d="M 220 161 L 233 161" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="235" y="146" width="84" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="277" y="165" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">旧桶 −1</text>
+  <path d="M 319 161 L 332 161" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="334" y="146" width="84" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="376" y="165" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">正排改价</text>
+  <path d="M 418 161 L 431 161" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="433" y="146" width="80" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="473" y="165" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">新桶 +1</text>
+
+  <!-- lane 3: cancelOrder -->
+  <rect x="14" y="214" width="106" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="67" y="233" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">cancelOrder</text>
+  <path d="M 120 229 L 134 229" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="136" y="214" width="158" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="233" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">orders.pop(id)</text>
+  <path d="M 296 229 L 316 229" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="318" y="214" width="160" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="398" y="233" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">cnt[(t, p)] −= 1</text>
+
+  <!-- lane 4: getOrdersAtPrice -->
+  <rect x="14" y="282" width="106" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="67" y="301" text-anchor="middle" font-size="9" fill="#333" font-weight="bold" filter="url(#rough2)">getOrdersAtPrice</text>
+  <path d="M 120 297 L 134 297" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="136" y="282" width="158" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="301" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">cnt.get((t, p), 0)</text>
+  <path d="M 296 297 L 316 297" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="318" y="282" width="160" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="398" y="301" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回计数</text>
+
+  <!-- notes -->
+  <rect x="20" y="326" width="480" height="48" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="344" font-size="10" fill="#333" filter="url(#rough2)">① 蓝框动正排、绿框动倒排：每个写操作都在两表间交替，漏掉任何一半就失同步</text>
+  <text x="36" y="360" font-size="10" fill="#333" filter="url(#rough2)">② modify 成同价：旧桶 −1、新桶 +1 落在同一桶，净零对称，无需特判（早退只是省哈希）</text>
+  <text x="36" y="372" font-size="9" fill="#888" filter="url(#rough2)">③ 桶计数归零可不删键（查询用缺省 0）；若删键，顺序必须是先减、再判零、后加</text>
+</svg>

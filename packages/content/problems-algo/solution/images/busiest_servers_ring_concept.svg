@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心概念：环形顺时针找下一个空闲服务器</text>
+
+  <!-- ===== Left: ring of k=6 servers ===== -->
+  <text x="175" y="64" text-anchor="middle" font-size="11" fill="#888">服务器成环（k=6 示意）</text>
+
+  <!-- faint ring guide -->
+  <circle cx="175" cy="235" r="95" fill="none" stroke="#e0e0e0" stroke-width="1.2" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- clockwise direction arc (faint, around top-right) -->
+  <path d="M 175 140 A 95 95 0 0 1 257 187" fill="none" stroke="#bbb" stroke-width="1.4" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="232" y="150" font-size="9" fill="#999">顺时针</text>
+
+  <!-- servers: busy=#fce4ec/#b85450, free=#e6f4ea/#4a7a3a, assigned=#fff8e1/#d6a040, target ring orange -->
+  <!-- s=0 (top) busy -->
+  <circle cx="175" cy="140" r="20" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="175" y="144" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">0</text>
+  <text x="175" y="120" text-anchor="middle" font-size="9" fill="#b85450">忙</text>
+
+  <!-- s=1 (top-right) target + busy -->
+  <circle cx="257" cy="187" r="20" fill="#fce4ec" stroke="#d6a040" stroke-width="3" filter="url(#rough2)"/>
+  <text x="257" y="191" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">1</text>
+  <text x="285" y="180" font-size="9" fill="#d6a040" font-weight="bold">目标 i%k</text>
+  <text x="285" y="192" font-size="9" fill="#b85450">忙</text>
+
+  <!-- s=2 (bottom-right) free -> assigned -->
+  <circle cx="257" cy="283" r="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="257" y="287" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">2</text>
+  <text x="285" y="288" font-size="9" fill="#d6a040" font-weight="bold">选中 ✓</text>
+
+  <!-- s=3 (bottom) busy -->
+  <circle cx="175" cy="330" r="20" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="175" y="334" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">3</text>
+  <text x="175" y="356" text-anchor="middle" font-size="9" fill="#b85450">忙</text>
+
+  <!-- s=4 (bottom-left) free -->
+  <circle cx="93" cy="283" r="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="93" y="287" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">4</text>
+
+  <!-- s=5 (top-left) free -->
+  <circle cx="93" cy="187" r="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="93" y="191" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">5</text>
+
+  <!-- scan arrow: target 1 -> 2 (clockwise short hop) -->
+  <path d="M 270 205 Q 292 235 270 265" fill="none" stroke="#d6a040" stroke-width="2.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="240" font-size="9" fill="#d6a040" font-weight="bold">下一个空闲</text>
+
+  <!-- ===== Right: data structures ===== -->
+  <!-- free sorted set -->
+  <rect x="360" y="70" width="180" height="86" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="90" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">free 有序集合</text>
+  <rect x="372" y="100" width="30" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="387" y="116" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <rect x="406" y="100" width="30" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="421" y="116" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4</text>
+  <rect x="440" y="100" width="30" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="116" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+  <text x="450" y="142" text-anchor="middle" font-size="10" fill="#666">ceiling(target=1) → 2</text>
+
+  <!-- busy heap -->
+  <rect x="360" y="172" width="180" height="98" fill="#fff" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="192" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">busy 优先队列 (end, id)</text>
+  <rect x="372" y="202" width="74" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="409" y="217" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">(e₁, 1)</text>
+  <rect x="372" y="226" width="74" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="409" y="241" text-anchor="middle" font-size="10" fill="#444">(e₀, 0)</text>
+  <rect x="372" y="250" width="74" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="409" y="265" text-anchor="middle" font-size="10" fill="#444">(e₃, 3)</text>
+  <text x="466" y="217" font-size="9" fill="#888">按 end 排序</text>
+  <text x="466" y="241" font-size="9" fill="#888">队首 end 最小</text>
+
+  <!-- rule box -->
+  <rect x="360" y="286" width="180" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="306" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">选取规则</text>
+  <text x="372" y="324" font-size="10" fill="#555">① 释放：end ≤ arrival 的</text>
+  <text x="384" y="338" font-size="10" fill="#555">服务器移回 free</text>
+  <text x="372" y="356" font-size="10" fill="#555">② ceiling(i%k)：第一个</text>
+  <text x="384" y="370" font-size="10" fill="#555">≥ 目标的空闲服务器</text>
+  <text x="372" y="388" font-size="10" fill="#555">③ 若无 → 回绕到 free[0]</text>
+  <text x="384" y="402" font-size="10" fill="#b85450" font-weight="bold">（即环上顺时针下一站）</text>
+
+  <!-- bottom legend -->
+  <text x="175" y="400" text-anchor="middle" font-size="10" fill="#888">● 忙 ● 空闲 ◎ 目标 ★ 选中</text>
+  <circle cx="92" cy="397" r="5" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <circle cx="140" cy="397" r="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <circle cx="186" cy="397" r="5" fill="#fce4ec" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <circle cx="240" cy="397" r="5" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+</svg>

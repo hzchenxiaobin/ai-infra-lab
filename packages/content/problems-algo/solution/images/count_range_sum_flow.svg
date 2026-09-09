@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 600" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="600" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：前缀和 + 归并排序（对 pref 切分，合并时双指针计数）</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">递归切分 pref[lo..hi]，合并前先双指针统计跨段合法对数，再做常规归并</text>
+
+  <!-- ===== Start: prefix ===== -->
+  <rect x="170" y="56" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="78" text-anchor="middle" font-size="11" fill="#4a7a3a">构造前缀和 pref[0..n]，pref[0]=0</text>
+  <path d="M 290 90 L 290 102" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== mergeSort entry ===== -->
+  <rect x="200" y="104" width="180" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="14" filter="url(#rough2)"/>
+  <text x="290" y="123" text-anchor="middle" font-size="11" fill="#333">mergeSort(lo, hi)</text>
+  <path d="M 290 132 L 290 144" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: lo >= hi ===== -->
+  <polygon points="290,146 380,176 290,206 200,176" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="172" text-anchor="middle" font-size="10" fill="#444">lo ≥ hi ?</text>
+  <text x="290" y="186" text-anchor="middle" font-size="9" fill="#888">(长度≤1)</text>
+
+  <!-- Yes branch: return -->
+  <path d="M 380 176 L 430 176" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="170" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="432" y="164" width="110" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="487" y="180" text-anchor="middle" font-size="10" fill="#4a7a3a">return（无配对）</text>
+
+  <!-- No branch: down -->
+  <path d="M 290 206 L 290 218" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="298" y="216" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== mid + recurse ===== -->
+  <rect x="150" y="220" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="238" text-anchor="middle" font-size="10" fill="#333">mid = (lo+hi)/2</text>
+  <text x="290" y="254" text-anchor="middle" font-size="10" fill="#333">递归 mergeSort(lo, mid) + mergeSort(mid+1, hi)</text>
+  <path d="M 290 264 L 290 276" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Count cross pairs: two pointers ===== -->
+  <rect x="150" y="278" width="280" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="298" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">★ 双指针统计跨段合法对（合并前！）</text>
+  <text x="290" y="316" text-anchor="middle" font-size="10" fill="#333">p1=lo, p2=lo</text>
+  <text x="290" y="332" text-anchor="middle" font-size="10" fill="#333">for j = mid+1 .. hi：</text>
+  <text x="290" y="346" text-anchor="middle" font-size="9" fill="#888">　while pref[p1] &lt; pref[j]−upper → p1++</text>
+  <text x="290" y="358" text-anchor="middle" font-size="9" fill="#888">　while pref[p2] ≤ pref[j]−lower → p2++　 ans += p2−p1</text>
+  <path d="M 290 370 L 290 382" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Standard merge ===== -->
+  <rect x="170" y="384" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="406" text-anchor="middle" font-size="10" fill="#333">常规归并：双路取小写入 tmp</text>
+  <path d="M 290 418 L 290 430" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Copy back ===== -->
+  <rect x="190" y="432" width="200" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="451" text-anchor="middle" font-size="10" fill="#4a7a3a">拷贝 tmp[lo..hi] 回 pref[lo..hi]</text>
+
+  <!-- ===== Side notes ===== -->
+  <rect x="20" y="278" width="120" height="92" fill="#f6f6f6" stroke="#aaa" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="296" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">为何先计数后合并</text>
+  <text x="80" y="312" text-anchor="middle" font-size="9" fill="#888">两半已各自有序</text>
+  <text x="80" y="324" text-anchor="middle" font-size="9" fill="#888">→ pref[l] 升序连续</text>
+  <text x="80" y="336" text-anchor="middle" font-size="9" fill="#888">→ 双指针可线性扫</text>
+  <text x="80" y="350" text-anchor="middle" font-size="9" fill="#888">合并会打乱分段</text>
+  <text x="80" y="362" text-anchor="middle" font-size="9" fill="#888">→ 必须先数完</text>
+
+  <rect x="440" y="278" width="120" height="92" fill="#f6f6f6" stroke="#aaa" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="296" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">指针单调性</text>
+  <text x="500" y="312" text-anchor="middle" font-size="9" fill="#888">pref[j] 递增</text>
+  <text x="500" y="324" text-anchor="middle" font-size="9" fill="#888">→ pref[j]±K 递增</text>
+  <text x="500" y="336" text-anchor="middle" font-size="9" fill="#888">→ p1, p2 只右移</text>
+  <text x="500" y="350" text-anchor="middle" font-size="9" fill="#888">每层均摊 O(n)</text>
+  <text x="500" y="362" text-anchor="middle" font-size="9" fill="#888">总 O(n log n)</text>
+
+  <!-- ===== Bottom notes ===== -->
+  <text x="20" y="496" font-size="10" fill="#888" font-weight="bold">⚡ 三个关键时机：</text>
+  <text x="20" y="512" font-size="10" fill="#888">① 递归左右半 → 各自内部配对在子层已统计完</text>
+  <text x="20" y="528" font-size="10" fill="#888">② 合并前双指针 → 统计跨段配对（l 在左、r 在右）</text>
+  <text x="20" y="544" font-size="10" fill="#888">③ 常规归并 → 把两半按值合并，为上层计数做准备</text>
+  <text x="20" y="566" font-size="10" fill="#888">💡 任意配对 (l,r) 恰在某层「跨段」被统计一次：l 落左半、r 落右半的那一层，不重不漏</text>
+  <text x="20" y="582" font-size="10" fill="#888">⚠️ 与 315 不同：本题不需记原始下标，因为「l 在左半、r 在右半」已天然保证 l&lt;r</text>
+</svg>

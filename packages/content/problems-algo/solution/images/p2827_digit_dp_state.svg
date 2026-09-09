@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">记忆化搜索：dfs(i, diff, rem, tight, started)</text>
+
+  <!-- ===== state cards row 1 ===== -->
+  <rect x="30" y="44" width="158" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="109" y="64" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">i：填到第几位</text>
+  <text x="42" y="84" font-size="11" fill="#333">从高位往低位，i = 0..10</text>
+  <text x="42" y="102" font-size="10.5" fill="#888">（high ≤ 10^9 至多 10 位）</text>
+
+  <rect x="200" y="44" width="158" height="76" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="279" y="64" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">diff：奇数位 − 偶数位</text>
+  <text x="212" y="84" font-size="11" fill="#333">奇数 d → diff+1，偶数 → −1</text>
+  <text x="212" y="102" font-size="10.5" fill="#888">范围 [−10, 10]，终点要求 = 0</text>
+
+  <rect x="370" y="44" width="158" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="449" y="64" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">rem：数值 mod k</text>
+  <text x="382" y="84" font-size="11" fill="#333">逐位 (rem×10+d) mod k</text>
+  <text x="382" y="102" font-size="10.5" fill="#888">k ≤ 20，范围 [0, k)</text>
+
+  <!-- ===== state cards row 2 ===== -->
+  <rect x="115" y="132" width="158" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="194" y="152" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">tight：贴着上界？</text>
+  <text x="127" y="172" font-size="11" fill="#333">当前位上限 = s[i] 或 9</text>
+  <text x="127" y="190" font-size="10.5" fill="#888">贴界状态只走一条链，不缓存</text>
+
+  <rect x="285" y="132" width="158" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="364" y="152" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">started：填过非零位？</text>
+  <text x="297" y="172" font-size="11" fill="#333">前导 0 不记 diff、不计数</text>
+  <text x="297" y="190" font-size="10.5" fill="#888">排除全零路径（数 0）</text>
+
+  <path d="M280 212 L280 232" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== transition ===== -->
+  <rect x="30" y="238" width="500" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">转移：在位置 i 枚举 d ∈ [0, up]（tight 时 up = s[i]，否则 9）</text>
+  <text x="44" y="278" font-size="11" fill="#333">· 未开始且 d = 0 → 跳过：保持未开始，diff / rem 不变（数值仍为 0）</text>
+  <text x="44" y="296" font-size="11" fill="#333">· 正常分支：diff ± 1，rem = (rem×10+d) mod k，置 started = true</text>
+  <text x="44" y="316" font-size="11" fill="#333">· 终点（i = n）：started 且 diff = 0 且 rem = 0 → 计 1，否则计 0</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="346" width="500" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="366" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">答案 = count(high) − count(low−1)；low−1 = 0 时全零路径 started=false</text>
+  <text x="280" y="384" text-anchor="middle" font-size="11" fill="#555">count(0) = 0 天然成立，无需特判</text>
+  <text x="280" y="400" text-anchor="middle" font-size="10.5" fill="#888">自由状态 memo：10 × 21 × k × 2 表项，k=20 时 8400 个</text>
+</svg>

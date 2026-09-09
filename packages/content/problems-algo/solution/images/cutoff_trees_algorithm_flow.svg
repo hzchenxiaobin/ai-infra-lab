@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <path d="M0 0 L7 3 L0 6 z" fill="#555"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <path d="M0 0 L7 3 L0 6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="460" fill="#fafafa"/>
+
+  <text x="360" y="32" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">算法流程：收集 → 排序 → 逐段 BFS → 累加</text>
+  <path d="M 220 40 Q 360 48 500 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 1: collect -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="64" width="200" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#2a4a6a" filter="url(#rough2)">① 收集所有 forest[i][j] &gt; 1</text>
+  <text x="230" y="100" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">得到 (height, i, j) 三元组列表</text>
+  <path d="M230 108 L230 128" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: sort -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="128" width="200" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="148" text-anchor="middle" font-size="12" font-weight="bold" fill="#2a4a6a" filter="url(#rough2)">② 按 height 升序排序</text>
+  <text x="230" y="164" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">得固定序列 T1,T2,…,Tk</text>
+  <path d="M230 172 L230 192" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: init -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="192" width="200" height="40" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="210" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415" filter="url(#rough2)">③ cur=(0,0), ans=0</text>
+  <text x="230" y="224" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">从起点出发</text>
+  <path d="M230 232 L230 252" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: loop header (diamond) -->
+  <g filter="url(#rough2)">
+    <polygon points="230,252 320,296 230,340 140,296" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="230" y="290" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415" filter="url(#rough2)">④ 还有未砍</text>
+  <text x="230" y="306" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415" filter="url(#rough2)">的树?</text>
+
+  <!-- loop no -> return ans -->
+  <path d="M320 296 L420 296" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="288" text-anchor="middle" font-size="10" fill="#2e6e2e" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="420" y="274" width="170" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="505" y="294" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e5e2e" filter="url(#rough2)">⑦ 返回 ans</text>
+  <text x="505" y="310" text-anchor="middle" font-size="10" fill="#3a6a3a" filter="url(#rough2)">= 各段距离之和</text>
+
+  <!-- loop yes -> down to BFS -->
+  <path d="M230 340 L230 360" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="245" y="354" font-size="10" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <!-- Step 5: BFS -->
+  <g filter="url(#rough2)">
+    <rect x="100" y="360" width="260" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="380" text-anchor="middle" font-size="12" font-weight="bold" fill="#2a4a6a" filter="url(#rough2)">⑤ d = bfs(forest, cur, T.pos)</text>
+  <text x="230" y="396" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">网格 BFS：遇 0 跳过，到目标返步数</text>
+
+  <!-- branch right: d == -1? -->
+  <path d="M360 382 L420 382" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <polygon points="420,382 470,360 520,382 470,404" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="470" y="380" text-anchor="middle" font-size="11" font-weight="bold" fill="#b03a3a" filter="url(#rough2)">d=-1?</text>
+
+  <!-- yes -> return -1 -->
+  <path d="M520 382 L560 382" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="540" y="374" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="560" y="360" width="120" height="44" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="620" y="380" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a" filter="url(#rough2)">返回 -1</text>
+  <text x="620" y="396" text-anchor="middle" font-size="10" fill="#a04040" filter="url(#rough2)">本段不可达</text>
+
+  <!-- no -> back to update box -->
+  <path d="M470 404 L470 424 L230 424 L230 414" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="490" y="418" font-size="10" fill="#2e6e2e" filter="url(#rough2)">否</text>
+
+  <!-- Step 6: accumulate + update cur, loop back -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="414" width="220" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="437" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e5e2e" filter="url(#rough2)">⑥ ans+=d; cur=T.pos; 回 ④</text>
+
+  <!-- loop back arrow from ⑥ up to ④ -->
+  <path d="M120 432 L60 432 L60 296 L140 296" stroke="#4a7a3a" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

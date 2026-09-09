@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">0-1 BFS 建模：顺箭头走 = 0 权边，改方向走 = 1 权边</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">把“最少修改次数”变成“0/1 权图上的最短路”</text>
+
+  <!-- ===== 左：3x3 网格 ===== -->
+  <text x="40" y="74" font-size="11" fill="#446688" font-weight="bold">3×3 网格（→=1, ←=2, ↓=3, ↑=4）</text>
+
+  <!-- grid cells 50x50, origin (40,86) -->
+  <!-- row 0 -->
+  <rect x="40" y="86" width="50" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="65" y="118" text-anchor="middle" font-size="20" fill="#d6a040" font-weight="bold">→</text>
+  <text x="50" y="98" font-size="8" fill="#d6a040">起</text>
+
+  <rect x="92" y="86" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="117" y="118" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">↓</text>
+
+  <rect x="144" y="86" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="169" y="118" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">→</text>
+
+  <!-- row 1 -->
+  <rect x="40" y="138" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="65" y="170" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">↑</text>
+
+  <rect x="92" y="138" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="117" y="170" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">←</text>
+
+  <rect x="144" y="138" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="169" y="170" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">↓</text>
+
+  <!-- row 2 -->
+  <rect x="40" y="190" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="65" y="222" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">←</text>
+
+  <rect x="92" y="190" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="117" y="222" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">→</text>
+
+  <rect x="144" y="190" width="50" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="169" y="222" text-anchor="middle" font-size="20" fill="#b85450" font-weight="bold">↑</text>
+  <text x="158" y="202" font-size="8" fill="#b85450">终</text>
+
+  <!-- 从 (0,0) 出发的两条边 -->
+  <!-- 0 权：顺箭头向右 (0,0)->(0,1) -->
+  <path d="M 92 108 L 138 108" stroke="#4a7a3a" stroke-width="2.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="115" y="100" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">w=0</text>
+
+  <!-- 1 权：改方向向下 (0,0)->(1,0) -->
+  <path d="M 68 138 L 68 184" stroke="#b85450" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="36" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">w=1</text>
+
+  <!-- 图例 -->
+  <rect x="40" y="256" width="200" height="56" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <line x1="54" y1="274" x2="84" y2="274" stroke="#4a7a3a" stroke-width="2.4" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="92" y="278" font-size="10" fill="#4a7a3a">顺箭头：0 权（不改）</text>
+  <line x1="54" y1="296" x2="84" y2="296" stroke="#b85450" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="92" y="300" font-size="10" fill="#b85450">改方向：1 权（改一次）</text>
+
+  <!-- ===== 右：双端队列机制 ===== -->
+  <text x="300" y="74" font-size="11" fill="#446688" font-weight="bold">双端队列 deque：按距离单调</text>
+
+  <!-- deque box -->
+  <rect x="300" y="86" width="240" height="64" fill="#fff" stroke="#666" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="104" font-size="9" fill="#888">队首 dist 小</text>
+  <text x="528" y="104" text-anchor="end" font-size="9" fill="#888">队尾 dist 大</text>
+
+  <!-- deque cells -->
+  <rect x="312" y="112" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="332" y="131" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">d</text>
+  <rect x="356" y="112" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="376" y="131" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">d</text>
+  <rect x="400" y="112" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="420" y="131" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">d+1</text>
+  <rect x="444" y="112" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="464" y="131" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">d+1</text>
+  <text x="492" y="131" font-size="14" fill="#888">…</text>
+
+  <!-- push_front / push_back 箭头 -->
+  <path d="M 308 70 L 308 100" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="284" y="66" font-size="10" fill="#4a7a3a" font-weight="bold">push_front</text>
+  <text x="284" y="78" font-size="9" fill="#4a7a3a">(w=0)</text>
+
+  <path d="M 528 70 L 528 100" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="540" y="66" font-size="10" fill="#b85450" font-weight="bold">push_back</text>
+  <text x="540" y="78" font-size="9" fill="#b85450">(w=1)</text>
+
+  <!-- 规则框 -->
+  <rect x="300" y="162" width="240" height="150" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="182" font-size="11" fill="#4a7a3a" font-weight="bold">核心规则</text>
+  <text x="312" y="202" font-size="10" fill="#444">① 弹出队首 (r,c)，即为最短路确定</text>
+  <text x="312" y="220" font-size="10" fill="#444">② 遍历 4 方向邻居：</text>
+  <text x="324" y="236" font-size="10" fill="#4a7a3a">  方向 = 箭头 → w=0 → push_front</text>
+  <text x="324" y="252" font-size="10" fill="#b85450">  方向 ≠ 箭头 → w=1 → push_back</text>
+  <text x="312" y="270" font-size="10" fill="#444">③ dist 改善才入队（懒删除）</text>
+  <text x="312" y="288" font-size="10" fill="#444">④ 队列空，dist[终] 即答案</text>
+  <text x="312" y="304" font-size="9" fill="#888">每个节点出队一次，O(mn)</text>
+
+  <!-- 底部注脚 -->
+  <text x="40" y="338" font-size="10" fill="#888">每格 4 条出边：一条 0 权（原箭头）+ 三条 1 权（改成该方向）</text>
+  <text x="40" y="354" font-size="10" fill="#888">“每格只改一次”天然满足：最短路是简单路径，每格只出走一次</text>
+
+  <!-- 答案标注 -->
+  <rect x="300" y="326" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="344" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">答案 = dist[(m-1, n-1)]</text>
+  <text x="420" y="358" text-anchor="middle" font-size="9" fill="#666">从 (0,0) 到 (m-1,n-1) 的最少修改次数</text>
+
+  <!-- footer -->
+  <text x="280" y="404" text-anchor="middle" font-size="10" fill="#888">0-1 BFS 本质是“边权只有 0/1 的 Dijkstra”，用 deque 替代堆，复杂度 O(mn)</text>
+</svg>

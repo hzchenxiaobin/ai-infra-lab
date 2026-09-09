@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">
+    示例演算：nums=[0,1,2,3,4], queries=[[3,1],[1,3],[5,6]]
+  </text>
+  <text x="280" y="40" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    为演示用 3 位二进制；实际代码用 31 位（bit30→bit0）
+  </text>
+
+  <!-- ===== Column headers ===== -->
+  <text x="110" y="64" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">q0: m=1, x=3</text>
+  <text x="300" y="64" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">q1: m=3, x=1</text>
+  <text x="490" y="64" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">q2: m=6, x=5</text>
+
+  <!-- separator lines -->
+  <line x1="200" y1="52" x2="200" y2="430" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 4" filter="url(#rough2)"/>
+  <line x1="390" y1="52" x2="390" y2="430" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 4" filter="url(#rough2)"/>
+
+  <!-- ===== Row 1: insert step ===== -->
+  <text x="30" y="84" font-size="10" fill="#888" filter="url(#rough2)">插入</text>
+
+  <!-- q0: insert {0,1} -->
+  <rect x="50" y="72" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="68" y="88" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="90" y="72" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="108" y="88" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">1</text>
+  <text x="135" y="88" font-size="9" fill="#888" filter="url(#rough2)">ptr→2</text>
+
+  <!-- q1: insert {2,3} (new) -->
+  <rect x="240" y="72" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" opacity="0.5" filter="url(#rough2)"/>
+  <text x="258" y="88" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">{0,1}</text>
+  <rect x="280" y="72" width="36" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="298" y="88" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="320" y="72" width="36" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="338" y="88" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">3</text>
+  <text x="365" y="88" font-size="9" fill="#888" filter="url(#rough2)">ptr→4</text>
+
+  <!-- q2: insert {4} (new) -->
+  <rect x="430" y="72" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" opacity="0.5" filter="url(#rough2)"/>
+  <text x="448" y="88" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">{0..3}</text>
+  <rect x="470" y="72" width="36" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="488" y="88" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">4</text>
+  <text x="515" y="88" font-size="9" fill="#888" filter="url(#rough2)">ptr→5</text>
+
+  <!-- ===== Row 2: binary table ===== -->
+  <text x="30" y="118" font-size="10" fill="#888" filter="url(#rough2)">候选</text>
+  <text x="30" y="132" font-size="9" fill="#aaa" filter="url(#rough2)">3位</text>
+
+  <!-- q0 candidates: 0=000, 1=001; x=3=011 -->
+  <text x="50" y="118" font-size="9" fill="#333" filter="url(#rough2)">0: 000</text>
+  <text x="50" y="132" font-size="9" fill="#333" filter="url(#rough2)">1: 001</text>
+  <text x="130" y="118" font-size="9" fill="#b85450" filter="url(#rough2)">x=011</text>
+
+  <!-- q1 candidates: all 0-3; x=1=001 -->
+  <text x="230" y="112" font-size="9" fill="#333" filter="url(#rough2)">0:000 1:001</text>
+  <text x="230" y="126" font-size="9" fill="#333" filter="url(#rough2)">2:010 3:011</text>
+  <text x="350" y="118" font-size="9" fill="#b85450" filter="url(#rough2)">x=001</text>
+
+  <!-- q2 candidates: all 0-4; x=5=101 -->
+  <text x="420" y="112" font-size="9" fill="#333" filter="url(#rough2)">0:000 1:001 2:010</text>
+  <text x="420" y="126" font-size="9" fill="#333" filter="url(#rough2)">3:011 4:100</text>
+  <text x="540" y="118" font-size="9" fill="#b85450" filter="url(#rough2)">x=101</text>
+
+  <!-- ===== Row 3: XOR results ===== -->
+  <text x="30" y="158" font-size="10" fill="#888" filter="url(#rough2)">异或</text>
+
+  <!-- q0: 0^3=3, 1^3=2 → max 3 -->
+  <text x="50" y="158" font-size="9" fill="#333" filter="url(#rough2)">000⊕011=011=3</text>
+  <text x="50" y="172" font-size="9" fill="#888" filter="url(#rough2)">001⊕011=010=2</text>
+  <rect x="120" y="148" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="137" y="163" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">3</text>
+
+  <!-- q1: highlight 2^1=3 -->
+  <text x="230" y="158" font-size="9" fill="#888" filter="url(#rough2)">000⊕001=001=1</text>
+  <text x="230" y="172" font-size="9" fill="#888" filter="url(#rough2)">001⊕001=000=0</text>
+  <text x="230" y="186" font-size="9" fill="#b85450" filter="url(#rough2)">010⊕001=011=3 ←</text>
+  <text x="230" y="200" font-size="9" fill="#888" filter="url(#rough2)">011⊕001=010=2</text>
+  <rect x="350" y="178" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="367" y="193" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">3</text>
+
+  <!-- q2: highlight 2^5=7 -->
+  <text x="420" y="158" font-size="9" fill="#888" filter="url(#rough2)">000⊕101=101=5</text>
+  <text x="420" y="172" font-size="9" fill="#888" filter="url(#rough2)">001⊕101=100=4</text>
+  <text x="420" y="186" font-size="9" fill="#b85450" filter="url(#rough2)">010⊕101=111=7 ←</text>
+  <text x="420" y="200" font-size="9" fill="#888" filter="url(#rough2)">011⊕101=110=6</text>
+  <text x="420" y="214" font-size="9" fill="#888" filter="url(#rough2)">100⊕101=001=1</text>
+  <rect x="540" y="178" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="557" y="193" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">7</text>
+
+  <!-- ===== Row 4: Trie greedy trace ===== -->
+  <text x="30" y="240" font-size="10" fill="#888" filter="url(#rough2)">Trie</text>
+  <text x="30" y="254" font-size="9" fill="#aaa" filter="url(#rough2)">贪心</text>
+
+  <!-- q0: x=011, want 1,0,0 → 000 (0), XOR=011=3 -->
+  <text x="50" y="240" font-size="9" fill="#333" filter="url(#rough2)">bit2: x=0 want=1</text>
+  <text x="50" y="254" font-size="9" fill="#888" filter="url(#rough2)"> → 无1,走0</text>
+  <text x="50" y="268" font-size="9" fill="#333" filter="url(#rough2)">bit1: x=1 want=0</text>
+  <text x="50" y="282" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有0,走0</text>
+  <text x="50" y="296" font-size="9" fill="#333" filter="url(#rough2)">bit0: x=1 want=0</text>
+  <text x="50" y="310" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有0→000</text>
+  <text x="50" y="324" font-size="9" fill="#b85450" filter="url(#rough2)">命中 000, XOR=3</text>
+
+  <!-- q1: x=001, want 1,1,0 → 010 (2), XOR=011=3 -->
+  <text x="230" y="240" font-size="9" fill="#333" filter="url(#rough2)">bit2: x=0 want=1</text>
+  <text x="230" y="254" font-size="9" fill="#888" filter="url(#rough2)"> → 无1,走0</text>
+  <text x="230" y="268" font-size="9" fill="#333" filter="url(#rough2)">bit1: x=0 want=1</text>
+  <text x="230" y="282" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有1→走1</text>
+  <text x="230" y="296" font-size="9" fill="#333" filter="url(#rough2)">bit0: x=1 want=0</text>
+  <text x="230" y="310" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有0→走0</text>
+  <text x="230" y="324" font-size="9" fill="#b85450" filter="url(#rough2)">命中 010, XOR=3</text>
+
+  <!-- q2: x=101, want 0,1,0 → 010 (2), XOR=111=7 -->
+  <text x="420" y="240" font-size="9" fill="#333" filter="url(#rough2)">bit2: x=1 want=0</text>
+  <text x="420" y="254" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有0→走0</text>
+  <text x="420" y="268" font-size="9" fill="#333" filter="url(#rough2)">bit1: x=0 want=1</text>
+  <text x="420" y="282" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有1→走1</text>
+  <text x="420" y="296" font-size="9" fill="#333" filter="url(#rough2)">bit0: x=1 want=0</text>
+  <text x="420" y="310" font-size="9" fill="#4a7a3a" filter="url(#rough2)"> → 有0→走0</text>
+  <text x="420" y="324" font-size="9" fill="#b85450" filter="url(#rough2)">命中 010, XOR=7</text>
+
+  <!-- ===== Bottom: final answer ===== -->
+  <rect x="80" y="360" width="400" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="378" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    ans[q0]=3, ans[q1]=3, ans[q2]=7
+  </text>
+  <text x="280" y="394" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">
+    → 输出 [3, 3, 7]  ✓
+  </text>
+
+  <!-- ===== Footnote ===== -->
+  <text x="280" y="424" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    绿色=已插入（旧）；橙色=本轮新增；红色=答案
+  </text>
+  <text x="280" y="440" text-anchor="middle" font-size="9" fill="#aaa" filter="url(#rough2)">
+    Trie 逐位贪心：want = 1 − bit，走得到则该位异或为 1
+  </text>
+</svg>

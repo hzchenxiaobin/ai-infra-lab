@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="540" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">SQL 逻辑流程：GROUP BY 算税率 → JOIN 回贴 → ROUND 算税后</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">五步走：分组聚合 → CASE 映射 → JOIN 回贴 → ROUND 取整 → ORDER BY 排序</text>
+
+  <!-- Step 1: GROUP BY -->
+  <rect x="40" y="64" width="540" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="64" width="36" height="64" rx="8" fill="#446688" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="102" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">①</text>
+  <text x="90" y="84" font-size="12" fill="#446688" font-weight="bold">分组聚合：FROM Salaries GROUP BY company_id</text>
+  <text x="90" y="102" font-size="10" fill="#666" font-family="'Courier New', monospace">SELECT company_id, MAX(salary) FROM Salaries GROUP BY company_id</text>
+  <text x="90" y="120" font-size="10" fill="#888">→ n 行明细压成 C 行（C = 公司数），每行带该公司最大工资</text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M 310 130 L 310 148" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: CASE WHEN -->
+  <rect x="40" y="152" width="540" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="152" width="36" height="72" rx="8" fill="#d6a040" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="194" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">②</text>
+  <text x="90" y="172" font-size="12" fill="#d6a040" font-weight="bold">分级映射：CASE WHEN MAX(salary) ... END AS tax_rate</text>
+  <text x="90" y="190" font-size="10" fill="#666" font-family="'Courier New', monospace">CASE WHEN max&lt;1000 THEN 0 WHEN max&lt;=10000 THEN 0.24 ELSE 0.49 END</text>
+  <text x="90" y="208" font-size="10" fill="#888">→ CASE 自上而下短路：第一条命中即停，三段连续区间无需显式 AND</text>
+  <text x="90" y="220" font-size="10" fill="#888">   产出 (company_id, tax_rate) 小结果集，C 行</text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M 310 226 L 310 244" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN -->
+  <rect x="40" y="248" width="540" height="64" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="248" width="36" height="64" rx="8" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="286" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">③</text>
+  <text x="90" y="268" font-size="12" fill="#4a7a3a" font-weight="bold">税率回贴：Salaries s JOIN t ON s.company_id = t.company_id</text>
+  <text x="90" y="286" font-size="10" fill="#666" font-family="'Courier New', monospace">FROM Salaries s JOIN (...) t ON s.company_id = t.company_id</text>
+  <text x="90" y="304" font-size="10" fill="#888">→ 等值连接且 t 每 company_id 唯一，行数不变仍为 n，每员工贴上对应公司税率</text>
+
+  <!-- Arrow 3→4 -->
+  <path d="M 310 314 L 310 332" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: ROUND -->
+  <rect x="40" y="336" width="540" height="64" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="336" width="36" height="64" rx="8" fill="#b85450" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="374" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">④</text>
+  <text x="90" y="356" font-size="12" fill="#b85450" font-weight="bold">算税后取整：ROUND(s.salary × (1 − t.tax_rate), 0) AS salary</text>
+  <text x="90" y="374" font-size="10" fill="#666" font-family="'Courier New', monospace">ROUND(s.salary * (1 - t.tax_rate), 0) AS salary</text>
+  <text x="90" y="392" font-size="10" fill="#888">→ MySQL ROUND 半数远离零（5910.52 → 5911），勿用 FLOOR/CAST 取整</text>
+
+  <!-- Arrow 4→5 -->
+  <path d="M 310 402 L 310 420" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 5: ORDER BY -->
+  <rect x="40" y="424" width="540" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="40" y="424" width="36" height="56" rx="8" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="458" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">⑤</text>
+  <text x="90" y="444" font-size="12" fill="#4a7a3a" font-weight="bold">排序输出：ORDER BY company_id, employee_id</text>
+  <text x="90" y="462" font-size="10" fill="#888">→ 双键升序，结果行数 = n，与 Salaries 相同</text>
+
+  <!-- Key insight -->
+  <rect x="40" y="496" width="540" height="32" rx="8" fill="#fafafa" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="60" y="510" font-size="10" fill="#444" font-weight="bold">💡 关键转换：税率是「公司级常量」——上提为分组视图后 JOIN 回贴，</text>
+  <text x="60" y="522" font-size="10" fill="#444">   避免在 SELECT 里写 3 个相关子查询（O(n²) → O(n log n)）</text>
+</svg>

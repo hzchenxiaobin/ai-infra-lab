@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 520" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.7"/>
+    </filter>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="860" height="520" fill="#fdfcf7"/>
+
+  <text x="430" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">扫雷游戏：DFS 揭露流程</text>
+  <path d="M 280 42 Q 430 50 580 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- start: click -->
+  <g filter="url(#sk)"><rect x="340" y="62" width="180" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/></g>
+  <text x="430" y="88" text-anchor="middle" font-size="13" fill="#2b4a6e" font-weight="bold">点击 click = [r, c]</text>
+
+  <!-- arrow down -->
+  <path d="M 430 102 L 430 124" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- decision: is M? -->
+  <g filter="url(#sk)"><path d="M 430 128 L 530 168 L 430 208 L 330 168 Z" fill="#fdeef0" stroke="#b85450" stroke-width="1.6"/></g>
+  <text x="430" y="164" text-anchor="middle" font-size="12" fill="#7a3030" font-weight="bold">board[r][c]</text>
+  <text x="430" y="180" text-anchor="middle" font-size="12" fill="#7a3030" font-weight="bold">== 'M' ?</text>
+
+  <!-- Yes branch -> X -->
+  <path d="M 530 168 L 620 168" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="575" y="160" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <g filter="url(#sk)"><rect x="620" y="148" width="170" height="44" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/></g>
+  <text x="705" y="167" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">board[r][c] = 'X'</text>
+  <text x="705" y="183" text-anchor="middle" font-size="11" fill="#7a3030">游戏结束，return board</text>
+
+  <!-- No branch down -->
+  <path d="M 430 208 L 430 232" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="448" y="226" font-size="11" fill="#4a8e4a" font-weight="bold">否</text>
+
+  <!-- count adjacent mines -->
+  <g filter="url(#sk)"><rect x="320" y="236" width="220" height="44" rx="8" fill="#fff8e1" stroke="#c98a2b" stroke-width="1.6"/></g>
+  <text x="430" y="256" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">cnt = 数 8 邻居中的地雷数</text>
+  <text x="430" y="272" text-anchor="middle" font-size="10" fill="#888">遍历 (dr,dc) ∈ {-1,0,1}² \ (0,0)</text>
+
+  <!-- arrow down -->
+  <path d="M 430 280 L 430 304" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- decision: cnt == 0 ? -->
+  <g filter="url(#sk)"><path d="M 430 308 L 540 348 L 430 388 L 320 348 Z" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.6"/></g>
+  <text x="430" y="344" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">cnt == 0 ?</text>
+  <text x="430" y="360" text-anchor="middle" font-size="10" fill="#2e6e2e">（无相邻雷）</text>
+
+  <!-- Yes (cnt==0): B + DFS 8 neighbors -->
+  <path d="M 320 348 L 200 348" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="260" y="340" text-anchor="middle" font-size="11" fill="#4a8e4a" font-weight="bold">是</text>
+  <g filter="url(#sk)"><rect x="40" y="318" width="160" height="62" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/></g>
+  <text x="120" y="340" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">board[r][c] = 'B'</text>
+  <text x="120" y="358" text-anchor="middle" font-size="11" fill="#2e6e2e">对 8 邻居 (nr,nc):</text>
+  <text x="120" y="372" text-anchor="middle" font-size="11" fill="#2e6e2e">若 board=='E' → 递归 dfs</text>
+
+  <!-- No (cnt>0): digit -->
+  <path d="M 540 348 L 660 348" stroke="#5a5a5a" stroke-width="1.6" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="600" y="340" text-anchor="middle" font-size="11" fill="#c98a2b" font-weight="bold">否</text>
+  <g filter="url(#sk)"><rect x="660" y="318" width="170" height="62" rx="8" fill="#fff8e1" stroke="#c98a2b" stroke-width="1.8"/></g>
+  <text x="745" y="342" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">board[r][c] = '0'+cnt</text>
+  <text x="745" y="361" text-anchor="middle" font-size="11" fill="#7a5415">变数字，停止扩散</text>
+  <text x="745" y="375" text-anchor="middle" font-size="10" fill="#888">（天然堤坝）</text>
+
+  <!-- both merge to return -->
+  <path d="M 120 380 L 120 430 L 410 430" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 745 380 L 745 430 L 450 430" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 705 168 L 705 430 L 470 430" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="360" y="420" width="140" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/></g>
+  <text x="430" y="446" text-anchor="middle" font-size="12" fill="#2b4a6e" font-weight="bold">return board</text>
+
+  <!-- side note -->
+  <g filter="url(#sk)"><rect x="40" y="62" width="240" height="148" rx="10" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/></g>
+  <text x="55" y="86" font-size="12" font-weight="bold" fill="#444">递归终止/剪枝：</text>
+  <text x="55" y="108" font-size="11" fill="#2e6e2e">· 只对 'E' 递归（B/数字/X 跳过）</text>
+  <text x="55" y="128" font-size="11" fill="#7a5415">· 改成 B/数字后再访问邻居</text>
+  <text x="55" y="148" font-size="11" fill="#888">  避免重复访问（原地标记）</text>
+  <text x="55" y="170" font-size="11" fill="#2b6e9e">· 8 方向 ≠ 4 方向（含对角线）</text>
+  <text x="55" y="192" font-size="10" fill="#888">改写 board 即 visited，无需额外数组</text>
+
+  <text x="430" y="492" text-anchor="middle" font-size="11" fill="#666">递归深度 = B 连通块规模；最坏 O(m·n)（全 E 且无雷）</text>
+</svg>

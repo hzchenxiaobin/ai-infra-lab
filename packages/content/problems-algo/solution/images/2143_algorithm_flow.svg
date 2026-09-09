@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+      <path d="M0,0 L5,9 L10,0 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+      <path d="M0,0 L5,9 L10,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="13.5" fill="#555" font-weight="bold">DP 转移：f[i][j] 的两个来源（a = nums1[i]，b = nums2[i]）</text>
+
+  <!-- ===== Source 1: standalone ===== -->
+  <rect x="40" y="46" width="230" height="118" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="68" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">来源 1：单独成段 [i, i]</text>
+  <text x="56" y="90" font-size="10.5" fill="#555">选 nums1[i]：差值 +a</text>
+  <text x="56" y="106" font-size="11" fill="#446688" font-family="'Comic Sans MS', monospace" font-weight="bold">f[i][a + s₂] += 1</text>
+  <text x="56" y="130" font-size="10.5" fill="#555">选 nums2[i]：差值 −b</text>
+  <text x="56" y="146" font-size="11" fill="#b85450" font-family="'Comic Sans MS', monospace" font-weight="bold">f[i][s₂ − b] += 1</text>
+
+  <!-- ===== Source 2: extend ===== -->
+  <rect x="290" y="46" width="230" height="118" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="405" y="68" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">来源 2：接在前段之后 [l, i]</text>
+  <text x="306" y="90" font-size="10.5" fill="#555">选 nums1[i]：差值 +a</text>
+  <text x="306" y="106" font-size="11" fill="#446688" font-family="'Comic Sans MS', monospace" font-weight="bold">f[i][j] += f[i−1][j − a]</text>
+  <text x="306" y="130" font-size="10.5" fill="#555">选 nums2[i]：差值 −b</text>
+  <text x="306" y="146" font-size="11" fill="#b85450" font-family="'Comic Sans MS', monospace" font-weight="bold">f[i][j] += f[i−1][j + b]</text>
+
+  <!-- Divider -->
+  <path d="M 40 180 L 520 180" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== Transition schematic ===== -->
+  <text x="280" y="200" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">转移示意：f[i−1] 的某差值 j，经 +a 或 −b 平移到 f[i]</text>
+
+  <!-- f[i-1] cell -->
+  <rect x="70" y="246" width="90" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="115" y="266" text-anchor="middle" font-size="10.5" fill="#888">f[i−1][j]</text>
+  <text x="115" y="282" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">差值 d = j−s₂</text>
+
+  <!-- arrow: pick nums1 (+a) going up-right -->
+  <path d="M 162 258 C 230 226, 300 226, 368 222" stroke="#446688" stroke-width="2.2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="222" y="208" width="86" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="265" y="222" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">选 nums1，+a</text>
+
+  <!-- f[i][j+a] cell (top right) -->
+  <rect x="372" y="212" width="110" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="427" y="232" text-anchor="middle" font-size="10.5" fill="#888">f[i][j + a]</text>
+  <text x="427" y="248" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">差值 d + a</text>
+
+  <!-- arrow: pick nums2 (-b) going down-right -->
+  <path d="M 162 278 C 230 310, 300 310, 368 314" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="222" y="308" width="86" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="265" y="322" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">选 nums2，−b</text>
+
+  <!-- f[i][j-b] cell (bottom right) -->
+  <rect x="372" y="320" width="110" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="427" y="340" text-anchor="middle" font-size="10.5" fill="#888">f[i][j − b]</text>
+  <text x="427" y="356" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">差值 d − b</text>
+
+  <!-- standalone hint -->
+  <path d="M 115 292 L 115 366" stroke="#aaa" stroke-width="1.4" stroke-dasharray="3,2" fill="none" filter="url(#rough2)"/>
+  <text x="115" y="382" text-anchor="middle" font-size="9.5" fill="#888">i 单独成段时</text>
+  <text x="115" y="396" text-anchor="middle" font-size="9.5" fill="#888">直接 +1（来源 1）</text>
+
+  <!-- Divider -->
+  <path d="M 40 412 L 520 412" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== Answer accumulation ===== -->
+  <rect x="40" y="422" width="480" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="440" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">答案 ans = Σᵢ f[i][s₂]（差值 0 = 平衡，逐结尾位置累加）</text>
+  <text x="280" y="456" text-anchor="middle" font-size="10" fill="#888">每轮 i 算完 f[i] 后即累加 f[i][s₂]，避免重复统计且不漏不重</text>
+</svg>

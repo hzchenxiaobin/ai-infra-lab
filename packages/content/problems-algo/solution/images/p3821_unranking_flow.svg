@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 760"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="760" fill="#fafafa"/>
+
+  <!-- 开始 -->
+  <rect x="95" y="18" width="170" height="34" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="40" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">输入 n, k</text>
+
+  <path d="M 180 52 L 180 72" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 预计算杨辉三角 -->
+  <rect x="70" y="74" width="220" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="99" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">预计算杨辉三角 C[0..60][0..60]</text>
+  <text x="300" y="92" font-size="11" fill="#888" filter="url(#rough2)">递推：C[i][j] =</text>
+  <text x="300" y="108" font-size="11" fill="#888" filter="url(#rough2)">C[i−1][j−1] + C[i−1][j]</text>
+
+  <path d="M 180 114 L 180 144" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- L=1 -->
+  <rect x="70" y="146" width="220" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="168" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">L = 1（从最短长度试起）</text>
+
+  <path d="M 180 180 L 180 210" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <circle cx="180" cy="196" r="3" fill="#555" filter="url(#rough2)"/>
+
+  <!-- 菱形1：定长 -->
+  <polygon points="180,212 285,258 180,304 75,258" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="253" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">n &gt; C(L−1, k−1) ?</text>
+  <text x="180" y="271" text-anchor="middle" font-size="10.5" fill="#99865a" filter="url(#rough2)">（长度 L 的桶装得下 n 吗）</text>
+
+  <!-- 是：扣桶 -->
+  <path d="M 285 258 L 326 258" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="300" y="250" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="330" y="236" width="200" height="44" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="430" y="254" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">n −= C(L−1, k−1)</text>
+  <text x="430" y="272" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">L += 1，回去重判</text>
+  <path d="M 430 236 L 430 196 L 190 196" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- 否：答案长 L -->
+  <path d="M 180 304 L 180 326" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="192" y="322" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">否（答案长度 = L）</text>
+
+  <!-- 初始化逐位 -->
+  <rect x="60" y="330" width="240" height="52" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="350" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">ans = 1 &lt;&lt; (L−1)（MSB 置 1）</text>
+  <text x="180" y="370" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">r = k − 1，p = L − 2</text>
+
+  <path d="M 180 382 L 180 404" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形2：循环条件 -->
+  <polygon points="180,408 288,454 180,500 72,454" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="449" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">p ≥ 0 且 r &gt; 0 ?</text>
+  <text x="180" y="467" text-anchor="middle" font-size="10.5" fill="#99865a" filter="url(#rough2)">（还有位要定吗）</text>
+
+  <!-- 是：继续 -->
+  <path d="M 180 500 L 180 524" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="190" y="517" font-size="12" fill="#555" filter="url(#rough2)">是</text>
+
+  <!-- 菱形3：放0还是放1 -->
+  <polygon points="180,528 285,574 180,620 75,574" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="569" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">n &gt; C(p, r) ?</text>
+  <text x="180" y="587" text-anchor="middle" font-size="10.5" fill="#99865a" filter="url(#rough2)">（放 0 跳得过吗）</text>
+
+  <!-- 是：放1 -->
+  <path d="M 285 574 L 326 574" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="300" y="566" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="330" y="548" width="205" height="52" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="432" y="568" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">ans |= 1 &lt;&lt; p</text>
+  <text x="432" y="588" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">n −= C(p, r)，r −= 1</text>
+  <text x="432" y="616" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">（跳不过，只能放 1）</text>
+
+  <!-- 否：放0 -->
+  <path d="M 180 620 L 180 638" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="192" y="634" font-size="11.5" fill="#446688" filter="url(#rough2)">否（该位保持 0）</text>
+
+  <!-- p 减一 -->
+  <rect x="130" y="640" width="100" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="661" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">p −= 1</text>
+
+  <!-- 回到菱形2 -->
+  <path d="M 230 656 L 548 656 L 548 454 L 294 454" stroke="#555" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形2 否：退出 -->
+  <path d="M 72 454 L 30 454 L 30 712 L 91 712" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="44" y="446" font-size="12" fill="#4a7a3a" filter="url(#rough2)">否</text>
+
+  <!-- 结束 -->
+  <rect x="95" y="692" width="170" height="40" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="717" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">返回 ans</text>
+</svg>

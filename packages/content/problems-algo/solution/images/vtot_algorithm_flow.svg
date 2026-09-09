@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrBack" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="460" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：BFS + 列号哈希表分桶（无 sort）</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">在 102 层序模板上把 (node, col) 一起入队，按 col 分桶、最后按列号升序输出</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1 -->
+    <rect x="40" y="64" width="440" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="84" font-size="12" fill="#446688" font-weight="bold">① 初始化</text>
+    <text x="140" y="84" font-family="monospace" font-size="10" fill="#555">if (!root) return {};</text>
+    <text x="140" y="100" font-family="monospace" font-size="10" fill="#555">queue.push({root, 0});  min_col = max_col = 0;</text>
+    <text x="140" y="114" font-family="monospace" font-size="10" fill="#d6a040">col_to_nodes = {};   // col -> list&lt;val&gt;</text>
+
+    <path d="M 260 116 L 260 130" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: while -->
+    <rect x="40" y="134" width="440" height="168" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="154" font-size="12" fill="#4a7a3a" font-weight="bold">② while 队列非空</text>
+    <text x="54" y="172" font-family="monospace" font-size="10" fill="#555">while (!queue.empty()) {</text>
+    <text x="70" y="188" font-family="monospace" font-size="10" fill="#b85450">auto [node, col] = queue.front(); queue.pop();</text>
+    <text x="70" y="204" font-family="monospace" font-size="10" fill="#4a7a3a">col_to_nodes[col].push_back(node-&gt;val);  // 按 BFS 顺序追加</text>
+    <text x="70" y="220" font-family="monospace" font-size="10" fill="#d6a040">min_col = min(min_col, col);  max_col = max(max_col, col);</text>
+    <text x="70" y="236" font-family="monospace" font-size="10" fill="#446688">if (node-&gt;left)  queue.push({node-&gt;left,  col - 1});  // 先左</text>
+    <text x="70" y="252" font-family="monospace" font-size="10" fill="#446688">if (node-&gt;right) queue.push({node-&gt;right, col + 1});  // 后右</text>
+    <text x="54" y="290" font-size="9" fill="#888">↑ 桶内顺序天然 = BFS 访问顺序：浅层先入（上→下），同层左先入（左→右）</text>
+
+    <!-- Step 3: collect by col -->
+    <rect x="40" y="310" width="440" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="330" font-size="12" fill="#d6a040" font-weight="bold">③ 按列号升序输出</text>
+    <text x="54" y="348" font-family="monospace" font-size="10" fill="#b85450">for (int c = min_col; c &lt;= max_col; ++c)</text>
+    <text x="54" y="364" font-family="monospace" font-size="10" fill="#4a7a3a">    result.push_back(col_to_nodes[c]);   // 无需 sort</text>
+
+    <path d="M 260 380 L 260 394" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arrBack)" filter="url(#rough2)"/>
+
+    <!-- Step 4 -->
+    <rect x="40" y="398" width="440" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="418" font-size="12" fill="#b85450" font-weight="bold">④ 返回</text>
+    <text x="110" y="418" font-family="monospace" font-size="10" fill="#555">return result;   // [[4],[9],[3,0,1],[8],[7]]</text>
+    <text x="110" y="432" font-family="monospace" font-size="9" fill="#888">每节点入队 1 次 + 哈希 O(1) → 总 O(n)，空间 O(n)</text>
+  </g>
+
+  <text x="260" y="452" text-anchor="middle" font-size="9" fill="#888">与 987 的唯一区别：314 靠 BFS 天然顺序免 sort，987 必须按 (col,row,val) sort</text>
+</svg>

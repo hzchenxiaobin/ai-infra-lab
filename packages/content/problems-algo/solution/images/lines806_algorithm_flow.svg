@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：逐字符扫描 + 换行判定</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">一遍遍历 O(n)，O(1) 空间</text>
+
+  <!-- Init -->
+  <rect x="170" y="58" width="220" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="14" filter="url(#rough2)"/>
+  <text x="280" y="78" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">lines = 1, cur = 0</text>
+  <path d="M 280 90 L 280 106" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Header: for each char -->
+  <rect x="140" y="110" width="280" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">遍历 S 中每个字符 c</text>
+  <text x="280" y="143" text-anchor="middle" font-size="10" fill="#888">w = widths[c - 'a']</text>
+  <path d="M 280 152 L 280 168" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: cur + w > 100? -->
+  <polygon points="280,170 400,216 280,262 160,216" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="212" text-anchor="middle" font-size="11" fill="#8a6a20" font-weight="bold">cur + w</text>
+  <text x="280" y="226" text-anchor="middle" font-size="11" fill="#8a6a20" font-weight="bold">&gt; 100 ?</text>
+
+  <!-- Yes branch (left) -->
+  <text x="148" y="210" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <path d="M 160 216 L 120 216" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="22" y="196" width="98" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="71" y="214" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">lines += 1</text>
+  <text x="71" y="229" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">cur = w</text>
+
+  <!-- No branch (right) -->
+  <text x="408" y="210" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M 400 216 L 430 216" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="430" y="196" width="110" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="485" y="222" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">cur += w</text>
+
+  <!-- merge + loop back to header (right side) -->
+  <path d="M 71 238 L 71 282 L 280 282" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <path d="M 485 238 L 485 282 L 280 282" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <path d="M 280 282 L 548 282 L 548 131 L 422 131" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="426" y="276" font-size="9" fill="#888">下一字符</text>
+
+  <!-- exit (loop exhausted) -> return, routed on far left -->
+  <path d="M 140 131 L 12 131 L 12 372 L 196 372" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="20" y="300" font-size="9" fill="#888">S 遍历完毕</text>
+
+  <!-- Return -->
+  <rect x="196" y="356" width="170" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="14" filter="url(#rough2)"/>
+  <text x="281" y="376" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return [lines, cur]</text>
+
+  <!-- note -->
+  <rect x="30" y="404" width="500" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="424" font-size="10" fill="#4a7a3a" font-weight="bold">注意：cur 是「当前行已用宽度」，换行时重置为 w（而非 0）</text>
+  <text x="44" y="440" font-size="10" fill="#555">因为换行意味着这个字符本身落在新行，已占 w 单位</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：布尔掩码标记每个字符，连续 true 段 = 一对标签</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">重叠/相邻的命中在掩码中自动连成一段，无需额外合并逻辑</text>
+
+  <!-- s cells: a a b c d -->
+  <text x="60" y="86" font-size="12" fill="#888">s：</text>
+  <rect x="100" y="64" width="48" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="124" y="86" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+  <rect x="148" y="64" width="48" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="172" y="86" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+  <rect x="196" y="64" width="48" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="86" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b</text>
+  <rect x="244" y="64" width="48" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="268" y="86" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+  <rect x="292" y="64" width="48" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="316" y="86" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">d</text>
+
+  <!-- index labels -->
+  <text x="124" y="112" text-anchor="middle" font-size="9.5" fill="#aaa">0</text>
+  <text x="172" y="112" text-anchor="middle" font-size="9.5" fill="#aaa">1</text>
+  <text x="220" y="112" text-anchor="middle" font-size="9.5" fill="#aaa">2</text>
+  <text x="268" y="112" text-anchor="middle" font-size="9.5" fill="#aaa">3</text>
+  <text x="316" y="112" text-anchor="middle" font-size="9.5" fill="#aaa">4</text>
+
+  <!-- word match brackets -->
+  <path d="M 148 128 L 148 136 L 244 136 L 244 128" stroke="#b85450" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="196" y="152" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">"ab" → [1,2]</text>
+
+  <path d="M 196 162 L 196 170 L 292 170 L 292 162" stroke="#d6a040" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="244" y="186" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">"bc" → [2,3]</text>
+
+  <!-- bold array -->
+  <text x="60" y="218" font-size="12" fill="#888">bold[]：</text>
+  <rect x="100" y="204" width="48" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="124" y="224" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">F</text>
+  <rect x="148" y="204" width="48" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="172" y="224" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">T</text>
+  <rect x="196" y="204" width="48" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="224" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">T</text>
+  <rect x="244" y="204" width="48" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="268" y="224" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">T</text>
+  <rect x="292" y="204" width="48" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="316" y="224" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">F</text>
+
+  <!-- merged bracket covering 1-3 -->
+  <path d="M 148 244 L 148 252 L 292 252 L 292 244" stroke="#446688" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="220" y="268" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">连续 true 段 [1,3] → 一对 &lt;b&gt;&lt;/b&gt;</text>
+
+  <!-- result -->
+  <rect x="60" y="282" width="440" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="304" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">输出：a&lt;b&gt;abc&lt;/b&gt;d</text>
+
+  <!-- note -->
+  <rect x="40" y="328" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="350" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">"ab" 覆盖 [1,2]，"bc" 覆盖 [2,3] —— 重叠于位置 2</text>
+  <text x="280" y="370" text-anchor="middle" font-size="11" fill="#444">掩码中 [1,2,3] 连成一段 true，自动合并，无需额外区间逻辑</text>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：统计奇偶 → 从根到叶前缀异或 → 求和</text>
+
+  <!-- ===== init box ===== -->
+  <rect x="150" y="44" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">① 初始化 cnt[]=0，对每个 q∈queries：cnt[q] ^= 1</text>
+  <text x="280" y="77" text-anchor="middle" font-size="10.5" fill="#333">仅留奇偶：偶数次查询自动抵消为 0</text>
+
+  <!-- arrow down -->
+  <path d="M 280 86 L 280 108" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== root box ===== -->
+  <rect x="180" y="112" width="200" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="134" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 根节点：val[1] = cnt[1]</text>
+
+  <!-- arrow down -->
+  <path d="M 280 148 L 280 172" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== loop body ===== -->
+  <rect x="140" y="176" width="280" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ 循环 v = 2..n</text>
+  <text x="280" y="214" text-anchor="middle" font-size="12" fill="#333">val[v] = val[v &gt;&gt; 1] ^ cnt[v]</text>
+  <text x="280" y="228" text-anchor="middle" font-size="10.5" fill="#4a7a3a">v &gt;&gt; 1 即 ⌊v/2⌋，父节点已算</text>
+
+  <!-- arrow down to decision -->
+  <path d="M 280 236 L 280 260" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== decision diamond: v <= n ? ===== -->
+  <polygon points="280,264 366,304 280,344 194,304" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">v ≤ n ?</text>
+  <text x="280" y="317" text-anchor="middle" font-size="10" fill="#888">（未遍历完）</text>
+
+  <!-- yes branch: loop back up to body -->
+  <path d="M 366 304 C 442 304 442 205 422 205" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="450" y="250" font-size="12" fill="#4a7a3a" font-weight="bold">是</text>
+  <text x="450" y="266" font-size="10.5" fill="#4a7a3a">v++ 回循环</text>
+
+  <!-- no branch: down to return -->
+  <path d="M 280 344 L 280 368" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="360" font-size="12" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== return box ===== -->
+  <rect x="170" y="372" width="220" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="394" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ 返回 Σ val[1..n]</text>
+
+  <!-- divider -->
+  <line x1="30" y1="420" x2="540" y2="420" stroke="#ccc" stroke-width="1" stroke-dasharray="4 4" filter="url(#rough2)"/>
+
+  <!-- ===== key formula note ===== -->
+  <rect x="30" y="432" width="500" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="453" text-anchor="middle" font-size="11.5" fill="#333">关键：val[v] = val[⌊v/2⌋] ⊕ cnt[v]；因 ⌊v/2⌋ &lt; v，递增处理时父已就绪</text>
+</svg>

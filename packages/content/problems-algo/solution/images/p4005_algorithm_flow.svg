@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 560"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="560" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="260" y="20" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：全 1 特判 → 因子计数建表 → 候选代价取最小（兜底 n）</text>
+
+    <!-- ① 开始 -->
+    <rect x="70" y="34" width="300" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="220" y="55" text-anchor="middle" font-size="10.5" fill="#2f5d24">① 输入 nums，n = len(nums)</text>
+    <path d="M220 68 V 82" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ② 判定 -->
+    <polygon points="220,86 308,124 220,162 132,124" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="220" y="121" text-anchor="middle" font-size="10" fill="#7a5c1a">全部元素都是 1？</text>
+    <text x="220" y="136" text-anchor="middle" font-size="7.5" fill="#a08040">（目标必须 &gt; 1）</text>
+
+    <path d="M308 124 H 352" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="327" y="117" text-anchor="middle" font-size="8.5" fill="#b85450">是</text>
+    <rect x="356" y="106" width="104" height="36" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="408" y="128" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">返回 0</text>
+
+    <path d="M220 162 V 178" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="230" y="175" text-anchor="middle" font-size="8.5" fill="#4a7a3a">否</text>
+
+    <!-- ③ 频次 + 素数表 -->
+    <rect x="70" y="180" width="300" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="198" text-anchor="middle" font-size="9.5" fill="#33506b">② 统计频次 freq；埃氏筛出全部素数</text>
+    <text x="220" y="214" text-anchor="middle" font-size="9.5" fill="#33506b">≤ ⌊√10⁹⌋ = 31623（约 3400 个）</text>
+    <path d="M220 224 V 240" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ④ 因子计数 -->
+    <rect x="70" y="242" width="300" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="260" text-anchor="middle" font-size="9.5" fill="#33506b">③ 每个不同值 v：试除分解 → 枚举全部因子 d</text>
+    <text x="220" y="276" text-anchor="middle" font-size="9.5" fill="#33506b">multipleCount[d] += freq[v]</text>
+    <text x="220" y="291" text-anchor="middle" font-size="8" fill="#555">x 是 v 的因子 ⟺ x | v ⇒ mul(x) 一查便知</text>
+    <path d="M220 298 V 314" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ⑤ 兜底 -->
+    <rect x="70" y="316" width="300" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="220" y="338" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold">④ ans ← n（公倍数目标兜底，每元素至多 1 次）</text>
+    <path d="M220 352 V 382" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ⑥ 候选循环 -->
+    <rect x="48" y="366" width="344" height="122" rx="10" fill="none" stroke="#446688" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="60" y="358" width="132" height="16" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+    <text x="126" y="369.5" text-anchor="middle" font-size="8" fill="#33506b">对每个出现过的 x &gt; 1</text>
+
+    <rect x="70" y="384" width="300" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="402" text-anchor="middle" font-size="9" fill="#33506b">⑤ mul ← multipleCount[x]（被 x 整除的元素数）</text>
+    <text x="220" y="418" text-anchor="middle" font-size="9" fill="#33506b">div ← Σ freq[d]，d 取遍 x 的因子（整除 x 的元素数）</text>
+    <path d="M220 428 V 442" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <rect x="70" y="444" width="300" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="220" y="465" text-anchor="middle" font-size="10.5" fill="#7a5c1a" font-weight="bold">⑥ ans ← min(ans, 2n − mul − div)</text>
+
+    <path d="M372 461 H 384 V 406 H 374" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+    <text x="368" y="437" text-anchor="end" font-size="7.5" fill="#888">下一个 x</text>
+
+    <path d="M220 478 V 500" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ⑦ 返回 -->
+    <rect x="70" y="502" width="300" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="220" y="523" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold">⑦ 返回 ans</text>
+
+    <text x="260" y="548" text-anchor="middle" font-size="8.5" fill="#999">瓶颈：试除分解 O(π(√V)) 每值、因子计数 O(Σ d(v))；V ≤ 10⁹ 时 π(√V) ≈ 3401、d(v) ≤ 1344</text>
+  </g>
+</svg>

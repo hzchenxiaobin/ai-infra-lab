@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="460" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 思路：WHERE 过滤日期 + JOIN 关联国家 + CASE WHEN 分类</text>
+
+  <!-- Step 1: Weather 表 + 日期过滤 -->
+  <text x="40" y="58" font-size="11.5" fill="#888">① Weather 表按 day = '2019-11-15' 过滤</text>
+  <rect x="40" y="66" width="500" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="86" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">country_id</text>
+  <text x="300" y="86" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">weather_state</text>
+  <text x="430" y="86" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">day</text>
+  <text x="290" y="108" text-anchor="middle" font-size="10.5" fill="#b85450">WHERE day = '2019-11-15' —— 只留该日有记录的国家</text>
+
+  <path d="M 290 120 L 290 138" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: JOIN Countries -->
+  <text x="40" y="152" font-size="11.5" fill="#888">② JOIN Countries ON country_id —— 补上国家名</text>
+  <rect x="50" y="160" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="180" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">Weather JOIN Countries ON country_id</text>
+  <text x="290" y="196" text-anchor="middle" font-size="10.5" fill="#555">用 country_id 把天气记录关联到 country_name</text>
+
+  <path d="M 290 206 L 290 224" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: CASE WHEN 分类 -->
+  <text x="40" y="238" font-size="11.5" fill="#888">③ CASE WHEN weather_state 分类为 Cold / Hot / Warm</text>
+
+  <!-- Cold -->
+  <rect x="50" y="246" width="150" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="125" y="266" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">Cold</text>
+  <text x="125" y="282" text-anchor="middle" font-size="10.5" fill="#555">weather_state &le; 15</text>
+
+  <!-- Warm -->
+  <rect x="215" y="246" width="150" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="266" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">Warm</text>
+  <text x="290" y="282" text-anchor="middle" font-size="10.5" fill="#555">15 &lt; weather_state &lt; 30</text>
+
+  <!-- Hot -->
+  <rect x="380" y="246" width="150" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="266" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">Hot</text>
+  <text x="455" y="282" text-anchor="middle" font-size="10.5" fill="#555">weather_state &ge; 30</text>
+
+  <path d="M 290 292 L 290 312" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="307" font-size="10" fill="#888">输出</text>
+
+  <!-- Result -->
+  <rect x="50" y="316" width="480" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="336" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">SELECT country_name, weather_type</text>
+  <text x="290" y="354" text-anchor="middle" font-size="10.5" fill="#555">每个在 2019-11-15 有天气记录的国家一行</text>
+
+  <!-- Key insight box -->
+  <rect x="40" y="378" width="500" height="68" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="396" font-size="11" fill="#555" font-weight="bold">💡 CASE WHEN 三分支映射：</text>
+  <text x="60" y="412" font-size="10.5" fill="#888">weather_state 是整数标量，直接用 CASE WHEN 做区间映射到字符串标签</text>
+  <text x="60" y="428" font-size="10.5" fill="#888">无需聚合（每个国家该日只有一条记录），JOIN 后逐行分类即可</text>
+</svg>

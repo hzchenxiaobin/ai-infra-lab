@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14.5" fill="#555" font-weight="bold">核心观察：精力只看总量（一次补足），经验逐场贪心补足</text>
+
+  <!-- ============ LEFT PANEL: ENERGY ============ -->
+  <rect x="18" y="44" width="266" height="316" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="151" y="68" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">精力：单向递减 → 只看总量</text>
+  <text x="151" y="86" text-anchor="middle" font-size="10.5" fill="#888">击败全程需 Σenergy + 1 精力</text>
+
+  <!-- energy consumption bar: total 11 = [1,4,3,2] consumed + 1 slack -->
+  <!-- bar from x=32 to x=270, width 238, 11 units -> unit ≈ 21.6 -->
+  <rect x="32" y="100" width="22" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="43" y="120" text-anchor="middle" font-size="11" fill="#b85450">1</text>
+  <rect x="54" y="100" width="86" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="97" y="120" text-anchor="middle" font-size="11" fill="#b85450">4</text>
+  <rect x="140" y="100" width="65" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="172" y="120" text-anchor="middle" font-size="11" fill="#b85450">3</text>
+  <rect x="205" y="100" width="43" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="226" y="120" text-anchor="middle" font-size="11" fill="#b85450">2</text>
+  <!-- slack (strict >) -->
+  <rect x="248" y="100" width="22" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="259" y="120" text-anchor="middle" font-size="9" fill="#4a7a3a">+1</text>
+  <text x="151" y="146" text-anchor="middle" font-size="10" fill="#888">consumed Σenergy=10 · 末尾 +1 保证严格大于</text>
+
+  <!-- drain arrow -->
+  <path d="M 32 162 L 270 162" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="151" y="158" text-anchor="middle" font-size="9.5" fill="#888">精力只减不增（击败即扣 energy[i]）</text>
+
+  <!-- input breakdown -->
+  <rect x="32" y="178" width="108" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="86" y="197" text-anchor="middle" font-size="11" fill="#446688">已有 5</text>
+  <rect x="140" y="178" width="108" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="197" text-anchor="middle" font-size="11" fill="#b85450">训练 +6</text>
+  <text x="151" y="224" text-anchor="middle" font-size="10.5" fill="#555">= 总精力 11 = Σenergy + 1</text>
+
+  <!-- formula box -->
+  <rect x="32" y="236" width="238" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="151" y="256" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">trainE = max(0, Σenergy + 1 − initialEnergy)</text>
+  <text x="151" y="270" text-anchor="middle" font-size="10.5" fill="#888">= max(0, 11 − 5) = 6</text>
+
+  <text x="32" y="300" font-size="10.5" fill="#555">• 精力只减不增 → 各场约束的最紧者是</text>
+  <text x="44" y="316" font-size="10.5" fill="#555">  总和（正数前缀和单调增）</text>
+  <text x="32" y="336" font-size="10.5" fill="#555">• 故一次公式求出，无需逐场模拟</text>
+
+  <!-- ============ RIGHT PANEL: EXPERIENCE ============ -->
+  <rect x="296" y="44" width="266" height="316" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="429" y="68" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">经验：逐场递增 → 贪心补足</text>
+  <text x="429" y="86" text-anchor="middle" font-size="10.5" fill="#888">每场不足即补 exp[i]+1−cur，胜后 +exp[i]</text>
+
+  <!-- timeline of fights: start 3 -->
+  <!-- node: start -->
+  <rect x="310" y="104" width="46" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="333" y="122" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="333" y="142" text-anchor="middle" font-size="9" fill="#888">起点</text>
+
+  <!-- arrow to fight0 -->
+  <path d="M 356 117 L 372 117" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- fight0: opp 2, 3>2 no train -> 5 -->
+  <rect x="374" y="104" width="46" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="397" y="122" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <text x="397" y="98" text-anchor="middle" font-size="9" fill="#4a7a3a">opp2 ✓</text>
+  <text x="397" y="142" text-anchor="middle" font-size="9" fill="#888">+2</text>
+  <path d="M 420 117 L 436 117" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- fight1: opp 6, 5<6 train 2 -> 7(>6) -> 13 -->
+  <rect x="438" y="104" width="46" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="461" y="122" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">7</text>
+  <text x="461" y="98" text-anchor="middle" font-size="9" fill="#b85450">opp6 训练+2</text>
+  <!-- train jump arrow -->
+  <path d="M 461 132 L 461 150" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="478" y="146" text-anchor="middle" font-size="9" fill="#b85450">补 6+1−5=2</text>
+  <path d="M 484 117 L 500 117" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- after fight1 -> 13 -->
+  <rect x="502" y="104" width="46" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="525" y="122" text-anchor="middle" font-size="11" fill="#333">13</text>
+  <text x="525" y="142" text-anchor="middle" font-size="9" fill="#888">+6</text>
+
+  <!-- second row: fight2, fight3 -->
+  <path d="M 525 130 L 525 160 L 333 160 L 333 174" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- fight2: opp 3, 13>3 -> 16 -->
+  <rect x="310" y="178" width="46" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="333" y="196" text-anchor="middle" font-size="11" fill="#333">16</text>
+  <text x="333" y="172" text-anchor="middle" font-size="9" fill="#4a7a3a">opp3 ✓</text>
+  <text x="333" y="216" text-anchor="middle" font-size="9" fill="#888">+3</text>
+  <path d="M 356 191 L 372 191" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- fight3: opp 1, 16>1 -> 17 -->
+  <rect x="374" y="178" width="46" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="397" y="196" text-anchor="middle" font-size="11" fill="#333">17</text>
+  <text x="397" y="172" text-anchor="middle" font-size="9" fill="#4a7a3a">opp1 ✓</text>
+  <text x="397" y="216" text-anchor="middle" font-size="9" fill="#888">+1</text>
+
+  <!-- sum -->
+  <rect x="310" y="232" width="238" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="429" y="252" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">经验训练合计 = 0 + 2 + 0 + 0 = 2</text>
+
+  <text x="310" y="284" font-size="10.5" fill="#555">• 经验胜后 +exp[i] → 单调递增</text>
+  <text x="310" y="302" font-size="10.5" fill="#555">• 但每场须严格大于，须按序逐场判断</text>
+  <text x="310" y="320" font-size="10.5" fill="#555">• 不足时贪心补到 exp[i]+1（恰好多 1）</text>
+  <text x="310" y="338" font-size="10.5" fill="#555">• 多补无益：+1 对后续同效，留到该场补</text>
+
+  <!-- total bar -->
+  <rect x="18" y="356" width="544" height="0" fill="none"/>
+</svg>

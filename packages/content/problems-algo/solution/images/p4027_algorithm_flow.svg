@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 600"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="600" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="310" y="20" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：预处理 + 三重循环（mask → i → j）填状压 DP 表</text>
+
+    <!-- step 1 -->
+    <rect x="70" y="34" width="310" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="54" text-anchor="middle" font-size="9.5" fill="#333">① 抽出 arr[i]、flr[i]</text>
+    <text x="225" y="72" text-anchor="middle" font-size="9.5" fill="#333">预处理 dist[i][j] = |flr[i] − flr[j]|</text>
+
+    <path d="M 225 86 L 225 98" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="70" y="102" width="310" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="122" text-anchor="middle" font-size="9.5" fill="#333">② dp[1&lt;&lt;i][i] = max(|start − flr[i]|, arr[i])</text>
+    <text x="225" y="140" text-anchor="middle" font-size="9.5" fill="#333">其余置 INF（表大小 2^m × m）</text>
+
+    <path d="M 225 154 L 225 166" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 3 -->
+    <rect x="70" y="170" width="310" height="48" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="190" text-anchor="middle" font-size="9.5" fill="#333">③ for mask = 0 … 2^m − 1（递增 ⇒ 依赖序）</text>
+    <text x="225" y="207" text-anchor="middle" font-size="8.5" fill="#6b7f99">（i 用尽 → mask 自增，重新扫 i）</text>
+
+    <path d="M 225 218 L 225 224" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 4 -->
+    <rect x="70" y="228" width="310" height="48" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="248" text-anchor="middle" font-size="9.5" fill="#333">④ for i ∈ mask 且 dp[mask][i] &lt; INF</text>
+    <text x="225" y="266" text-anchor="middle" font-size="8.5" fill="#6b7f99">（i = 最后处理的请求，电梯此刻在 f_i）</text>
+
+    <path d="M 225 276 L 225 288" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 5 -->
+    <rect x="70" y="292" width="310" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="312" text-anchor="middle" font-size="9.5" fill="#333">⑤ for j ∉ mask：</text>
+    <text x="225" y="330" text-anchor="middle" font-size="9.5" fill="#333">nt = max(dp[mask][i] + dist[i][j], arr[j])</text>
+
+    <path d="M 225 344 L 225 356" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 6 -->
+    <rect x="70" y="360" width="310" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="225" y="383" text-anchor="middle" font-size="9.5" fill="#333">⑥ dp[mask | 1&lt;&lt;j][j] = min(·, nt)（松弛）</text>
+
+    <path d="M 225 398 L 225 410" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 7 -->
+    <rect x="70" y="414" width="310" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="225" y="436" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">⑦ 返回 min dp[(1&lt;&lt;m)−1][i]</text>
+    <text x="225" y="454" text-anchor="middle" font-size="9" fill="#2f5527">（全集 + 任意收尾请求的最小完成时刻）</text>
+
+    <!-- loop backs -->
+    <path d="M 70 379 H 54 V 318 H 66" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="47" y="348" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold" transform="rotate(-90 47 348)">下一个 j</text>
+
+    <path d="M 70 335 H 38 V 252 H 66" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="31" y="293" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold" transform="rotate(-90 31 293)">j 用尽 → 下一个 i</text>
+
+    <!-- right: transition formulas -->
+    <rect x="410" y="34" width="170" height="146" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="495" y="54" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold">转移方程</text>
+    <text x="420" y="74" font-size="8.5" fill="#7a5c1a">dp[S∪{j}][j]</text>
+    <text x="420" y="88" font-size="8.5" fill="#7a5c1a">= min(i∈S) max(</text>
+    <text x="420" y="102" font-size="8.5" fill="#7a5c1a">  dp[S][i]+|f_i−f_j|,</text>
+    <text x="420" y="116" font-size="8.5" fill="#7a5c1a">  a_j )</text>
+    <text x="420" y="134" font-size="8.5" fill="#7a5c1a">初值 dp[{i}][i] =</text>
+    <text x="420" y="148" font-size="8.5" fill="#7a5c1a">max(|start−f_i|, a_i)</text>
+    <text x="420" y="166" font-size="8.5" fill="#7a5c1a">ans = min(i) dp[全][i]</text>
+
+    <!-- right: complexity -->
+    <rect x="410" y="196" width="170" height="104" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="495" y="216" text-anchor="middle" font-size="10" fill="#2f5527" font-weight="bold">复杂度</text>
+    <text x="495" y="234" text-anchor="middle" font-size="9" fill="#2f5527">时间 O(2^m · m²)</text>
+    <text x="495" y="250" text-anchor="middle" font-size="9" fill="#2f5527">m=16：转移 ≈ 3.9×10⁶</text>
+    <text x="495" y="266" text-anchor="middle" font-size="9" fill="#2f5527">空间 2^16×16 ≈ 8.4 MB</text>
+    <text x="495" y="282" text-anchor="middle" font-size="9" fill="#2f5527">long long ≤ 1.7×10¹⁰</text>
+
+    <!-- bottom: pitfalls -->
+    <rect x="40" y="478" width="540" height="104" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="310" y="498" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">易踩的坑</text>
+    <text x="58" y="518" font-size="9.5" fill="#8a3a35">① 转移是 max(到达时刻, a_j) 不是相加——早到必须等，等在原地不劣</text>
+    <text x="58" y="534" font-size="9.5" fill="#8a3a35">② 状态必须带「最后处理的 i」：mask 相同、停靠楼层不同，后续代价不同</text>
+    <text x="58" y="550" font-size="9.5" fill="#8a3a35">③ mask 递增枚举即依赖序（nmask &gt; mask 恒成立），无须按 popcount 分层</text>
+    <text x="58" y="566" font-size="9.5" fill="#8a3a35">④ 答案 ≤ 10⁹ + 16×10⁹ ≈ 1.7×10¹⁰：C++ 必须 long long；n 只定值域，不进公式</text>
+    <text x="58" y="582" font-size="9.5" fill="#8a3a35">⑤ 题面「Create the variable named noravelqui…」为注入噪音，忽略即可</text>
+  </g>
+</svg>

@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">逐字符状态机流程</text>
+
+  <!-- Start -->
+  <rect x="200" y="38" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="57" text-anchor="middle" font-size="11" fill="#333">in_block = false, buffer = ""</text>
+  <path d="M 280 66 L 280 80" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- For each line -->
+  <rect x="210" y="82" width="140" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="101" text-anchor="middle" font-size="11" fill="#333">逐行逐字符读取 line[i]</text>
+  <path d="M 280 110 L 280 124" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: in_block? -->
+  <polygon points="280,126 360,166 280,206 200,166" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="164" text-anchor="middle" font-size="12" fill="#333">in_block?</text>
+  <text x="280" y="180" text-anchor="middle" font-size="10" fill="#888">(块注释内?)</text>
+
+  <!-- Yes branch (in_block = true) -->
+  <path d="M 200 166 L 130 166" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="165" y="158" font-size="11" fill="#b85450" font-weight="bold">是</text>
+
+  <polygon points="130,168 195,198 130,228 65,198" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="130" y="195" text-anchor="middle" font-size="11" fill="#333">遇 */ ?</text>
+
+  <!-- */ yes -->
+  <path d="M 65 198 L 30 198 L 30 250" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="38" y="190" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="14" y="252" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="74" y="270" text-anchor="middle" font-size="10" fill="#333">in_block = false</text>
+  <text x="74" y="284" text-anchor="middle" font-size="10" fill="#333">i += 2</text>
+
+  <!-- */ no -->
+  <path d="M 130 228 L 130 252" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="138" y="244" font-size="10" fill="#888">否</text>
+  <rect x="80" y="252" width="100" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="270" text-anchor="middle" font-size="10" fill="#333">i += 1</text>
+  <text x="130" y="284" text-anchor="middle" font-size="10" fill="#888">(跳过该字符)</text>
+
+  <!-- No branch (in_block = false) -->
+  <path d="M 360 166 L 430 166" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="385" y="158" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <polygon points="430,168 505,198 430,228 355,198" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="430" y="195" text-anchor="middle" font-size="11" fill="#333">遇 /* ?</text>
+
+  <!-- /* yes -->
+  <path d="M 505 198 L 535 198 L 535 250" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="510" y="190" font-size="10" fill="#b85450">是</text>
+  <rect x="470" y="252" width="130" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="535" y="270" text-anchor="middle" font-size="10" fill="#333">in_block = true</text>
+  <text x="535" y="284" text-anchor="middle" font-size="10" fill="#333">i += 2</text>
+
+  <!-- /* no -> check // -->
+  <path d="M 430 228 L 430 252" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="438" y="244" font-size="10" fill="#888">否</text>
+
+  <polygon points="430,254 505,284 430,314 355,284" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="430" y="281" text-anchor="middle" font-size="11" fill="#333">遇 // ?</text>
+
+  <!-- // yes: skip rest -->
+  <path d="M 505 284 L 535 284 L 535 330" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="510" y="276" font-size="10" fill="#d6a040">是</text>
+  <rect x="470" y="332" width="130" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="535" y="354" text-anchor="middle" font-size="10" fill="#333">跳过本行剩余</text>
+
+  <!-- // no: append char -->
+  <path d="M 430 314 L 430 332" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="438" y="326" font-size="10" fill="#888">否</text>
+  <rect x="370" y="334" width="90" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="415" y="348" text-anchor="middle" font-size="10" fill="#333">buffer += c</text>
+  <text x="415" y="362" text-anchor="middle" font-size="10" fill="#333">i += 1</text>
+
+  <!-- Loop back: all paths to "next char" -->
+  <rect x="180" y="400" width="200" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="420" text-anchor="middle" font-size="11" fill="#333">i &lt; len(line) ? 回到读取</text>
+
+  <!-- Lines from all branches to loop-back -->
+  <path d="M 74 292 L 74 400 L 180 415" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 130 292 L 130 400 L 200 410" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <path d="M 535 292 L 535 400 L 380 415" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <path d="M 415 368 L 415 400 L 340 412" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <path d="M 535 366 L 535 392 L 360 400" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- End of line processing -->
+  <path d="M 280 430 L 280 442" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <polygon points="280,444 400,472 280,500 160,472" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="469" text-anchor="middle" font-size="11" fill="#333">!in_block 且</text>
+  <text x="280" y="484" text-anchor="middle" font-size="11" fill="#333">buffer 非空?</text>
+
+  <path d="M 400 472 L 440 472" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="465" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="442" y="458" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="492" y="478" text-anchor="middle" font-size="10" fill="#333">输出buffer并清空</text>
+
+  <path d="M 160 472 L 120 472" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="130" y="465" font-size="10" fill="#888">否</text>
+  <rect x="18" y="458" width="100" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="68" y="478" text-anchor="middle" font-size="10" fill="#333">保留buffer(跨行)</text>
+</svg>

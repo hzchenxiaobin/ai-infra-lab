@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L7,4.5 L0,9 Z" fill="#888"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L7,4.5 L0,9 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="470" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：累计非空计数 cnt 圈岛 + 按 cnt 分岛取 MAX 填值</text>
+
+  <!-- Step 1 -->
+  <rect x="160" y="46" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="66" text-anchor="middle" font-size="12" fill="#335" font-weight="bold">① FROM CoffeeShop</text>
+  <text x="290" y="82" text-anchor="middle" font-size="10.5" fill="#555">取全表（id 为主键，各行唯一）</text>
+
+  <path d="M 290 90 L 290 108" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="110" y="110" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="130" text-anchor="middle" font-size="12" fill="#335" font-weight="bold">② ORDER BY id 升序排好</text>
+  <text x="290" y="148" text-anchor="middle" font-size="10.5" fill="#b85450">「前一个值」依赖 id 序，必须先按 id 确定行序</text>
+
+  <path d="M 290 160 L 290 178" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3 (key) -->
+  <rect x="60" y="180" width="460" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="202" text-anchor="middle" font-size="12" fill="#a87020" font-weight="bold">③ 计累计非空计数 cnt（圈出每个岛）</text>
+  <text x="290" y="220" text-anchor="middle" font-size="10.5" fill="#555">cnt = COUNT(drink) OVER (ORDER BY id ROWS UNBOUNDED PRECEDING..CURRENT)</text>
+  <text x="290" y="238" text-anchor="middle" font-size="10.5" fill="#555">非空行 cnt 自增（开新岛）；NULL 行 cnt 不变（并入前岛）</text>
+
+  <path d="M 290 248 L 290 266" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 4 (key) -->
+  <rect x="50" y="268" width="480" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="290" text-anchor="middle" font-size="12" fill="#3a5a2a" font-weight="bold">④ 按 cnt 分岛，取岛内 MAX(drink) 填值</text>
+  <text x="290" y="308" text-anchor="middle" font-size="10.5" fill="#555">MAX(drink) OVER (PARTITION BY cnt) AS drink</text>
+  <text x="290" y="326" text-anchor="middle" font-size="10.5" fill="#555">每岛恰一个非空值 → MAX 取它，赋给同岛所有 NULL 行</text>
+
+  <path d="M 290 336 L 290 354" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="150" y="356" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="376" text-anchor="middle" font-size="12" fill="#335" font-weight="bold">⑤ SELECT id, drink ORDER BY id</text>
+  <text x="290" y="392" text-anchor="middle" font-size="10.5" fill="#555">输出填充后的结果，按 id 升序</text>
+
+  <!-- edge case note -->
+  <rect x="40" y="416" width="500" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="436" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠ 前导 NULL：最小 id 即为 NULL 时，所在岛 cnt = 0</text>
+  <text x="290" y="452" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">该岛无任何非空值 → MAX = NULL → 保持 NULL（无前值可填）</text>
+</svg>

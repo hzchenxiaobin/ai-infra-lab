@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#2b2b2b" font-weight="bold" filter="url(#rough2)">算法流程：两次 BFS</text>
+
+  <!-- Step 1: locate -->
+  <rect x="190" y="46" width="180" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#2b5d8a" font-weight="bold" filter="url(#rough2)">① 遍历定位 S / D / 所有 *</text>
+  <path d="M 280 80 L 280 96" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Phase 1 panel -->
+  <rect x="30" y="100" width="240" height="150" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="150" y="122" text-anchor="middle" font-size="12" fill="#b03a3a" font-weight="bold" filter="url(#rough2)">② 洪水 BFS（多源）</text>
+  <g font-size="10" fill="#555">
+    <text x="46" y="146" filter="url(#rough2)">· 所有 * 入队，flood=0</text>
+    <text x="46" y="166" filter="url(#rough2)">· 逐层扩展四邻居</text>
+    <text x="46" y="186" filter="url(#rough2)">· 遇 X 跳过（水不通）</text>
+    <text x="46" y="206" filter="url(#rough2)">· flood[nr]=flood[r]+1</text>
+    <text x="46" y="226" filter="url(#rough2)">· 到不了 = ∞</text>
+  </g>
+  <text x="150" y="244" text-anchor="middle" font-size="10" fill="#b03a3a" font-weight="bold" filter="url(#rough2)">产出：洪水时间表 flood[][]</text>
+
+  <!-- Phase 2 panel -->
+  <rect x="290" y="100" width="240" height="150" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="410" y="122" text-anchor="middle" font-size="12" fill="#2b5d8a" font-weight="bold" filter="url(#rough2)">③ 人 BFS（单源）</text>
+  <g font-size="10" fill="#555">
+    <text x="306" y="146" filter="url(#rough2)">· 从 S 出发，dist=0</text>
+    <text x="306" y="166" filter="url(#rough2)">· 取当前格的四邻居 nc</text>
+    <text x="306" y="186" filter="url(#rough2)">· nc 非 X 且未访问</text>
+    <text x="306" y="206" filter="url(#rough2)">· 核对到达时限 ↓</text>
+    <text x="306" y="226" filter="url(#rough2)">· dist[nc]=dist[r]+1 入队</text>
+  </g>
+  <text x="410" y="244" text-anchor="middle" font-size="10" fill="#2b5d8a" font-weight="bold" filter="url(#rough2)">产出：到达时刻 dist[][]</text>
+
+  <!-- arrow from phase1 to phase2 (flood table feeds phase2) -->
+  <path d="M 270 175 L 288 175" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="279" y="168" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold" filter="url(#rough2)">喂入</text>
+
+  <!-- decision diamond -->
+  <path d="M 410 268 L 470 300 L 410 332 L 350 300 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="410" y="296" text-anchor="middle" font-size="10" fill="#7a5415" font-weight="bold" filter="url(#rough2)">arr ≤ flood[nc] ?</text>
+  <text x="410" y="312" text-anchor="middle" font-size="9" fill="#7a5415" filter="url(#rough2)">（或 flood=∞）</text>
+  <path d="M 410 250 L 410 268" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- yes branch -->
+  <path d="M 350 300 L 200 300" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="293" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是 → 入队继续</text>
+
+  <!-- D check box -->
+  <path d="M 200 300 L 150 330" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="60" y="320" width="180" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="150" y="342" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold" filter="url(#rough2)">nc == D ?</text>
+  <path d="M 60 337 L 40 337" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="330" text-anchor="end" font-size="8" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- success outcome -->
+  <rect x="40" y="370" width="170" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="125" y="388" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold" filter="url(#rough2)">返回 dist[D]</text>
+  <text x="125" y="402" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">最早安全到达秒数</text>
+
+  <!-- no / queue-empty outcome -->
+  <path d="M 470 300 L 510 300 L 510 370" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="486" y="293" font-size="8" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="350" y="370" width="180" height="40" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="440" y="388" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold" filter="url(#rough2)">队列空未到 D</text>
+  <text x="440" y="402" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold" filter="url(#rough2)">→ 返回 -1</text>
+
+  <!-- bottom warning -->
+  <rect x="30" y="420" width="500" height="0" fill="none"/>
+  <text x="280" y="430" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold" filter="url(#rough2)">⚠ 关键比较用 ≤（平手归人），误写 &lt; 会让所有示例退化为 -1</text>
+</svg>

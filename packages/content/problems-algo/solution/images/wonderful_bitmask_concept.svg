@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">10 位掩码 + 前缀异或：最美 = 至多 1 位不同</text>
+
+  <!-- char-to-bit mapping -->
+  <rect x="40" y="46" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">字符 → 位映射（1 = 奇数次，0 = 偶数次）</text>
+  <text x="280" y="78" text-anchor="middle" font-size="11" fill="#555">a→bit0 · b→bit1 · c→bit2 · d→bit3 · e→bit4 · f→bit5 · g→bit6 · h→bit7 · i→bit8 · j→bit9</text>
+
+  <!-- prefix mask row -->
+  <text x="30" y="112" font-size="12" fill="#888">前缀掩码 mask[i]：</text>
+  <rect x="40" y="118" width="100" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="141" text-anchor="middle" font-size="12" fill="#333" font-family="monospace">00…000</text>
+  <text x="90" y="166" text-anchor="middle" font-size="9.5" fill="#aaa">mask[0]=0（空前缀）</text>
+
+  <rect x="200" y="118" width="100" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="141" text-anchor="middle" font-size="12" fill="#333" font-family="monospace">00…001</text>
+  <text x="250" y="166" text-anchor="middle" font-size="9.5" fill="#aaa">mask[i]（含 a 奇）</text>
+
+  <rect x="360" y="118" width="100" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="141" text-anchor="middle" font-size="12" fill="#333" font-family="monospace">00…010</text>
+  <text x="410" y="166" text-anchor="middle" font-size="9.5" fill="#aaa">mask[j]（含 b 奇）</text>
+
+  <!-- XOR explanation -->
+  <text x="280" y="196" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">子串 word[i..j−1] 的奇偶增量 = mask[j] ⊕ mask[i]</text>
+
+  <!-- Case 1: all even -->
+  <rect x="30" y="214" width="250" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="236" text-anchor="middle" font-size="12.5" fill="#3a5a2a" font-weight="bold">情形一：全偶</text>
+  <text x="155" y="256" text-anchor="middle" font-size="11.5" fill="#333" font-family="monospace">mask[j] == mask[i]</text>
+  <text x="155" y="274" text-anchor="middle" font-size="11" fill="#555">⊕ = 0 → 所有字符偶数次</text>
+  <text x="155" y="288" text-anchor="middle" font-size="10.5" fill="#4a7a3a">ans += count[mask]</text>
+
+  <!-- Case 2: exactly 1 odd -->
+  <rect x="290" y="214" width="250" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="415" y="236" text-anchor="middle" font-size="12.5" fill="#7a5a20" font-weight="bold">情形二：恰 1 奇</text>
+  <text x="415" y="256" text-anchor="middle" font-size="11.5" fill="#333" font-family="monospace">mask[j] ⊕ mask[i] == (1&lt;&lt;k)</text>
+  <text x="415" y="274" text-anchor="middle" font-size="11" fill="#555">⊕ 有且仅有 1 位为 1</text>
+  <text x="415" y="288" text-anchor="middle" font-size="10.5" fill="#d6a040">ans += count[mask ⊕ (1&lt;&lt;k)]</text>
+
+  <!-- bottom summary -->
+  <rect x="40" y="310" width="480" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="12" fill="#333">最美 ⊕ 汉明重量 ≤ 1 ⊕ 0 种（全偶）+ 10 种（恰 1 奇）</text>
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">每步查询 1 + 10 = 11 次 count，总 O(11n) = O(n)</text>
+  <text x="280" y="372" text-anchor="middle" font-size="10.5" fill="#888">字符集仅 a–j（10 种）→ 10 位掩码 → 1024 种状态 → 定长数组 O(1) 查询</text>
+</svg>

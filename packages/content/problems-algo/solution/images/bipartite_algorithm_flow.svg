@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">二分图二着色：BFS 染色流程</text>
+
+  <!-- ===== B1: init ===== -->
+  <rect x="60" y="46" width="280" height="30" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="66" text-anchor="middle" font-size="12" fill="#333">① 初始化 color[] = 0（全部未染色）</text>
+  <path d="M 200 76 L 200 88" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== B2: outer loop ===== -->
+  <rect x="60" y="88" width="280" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="108" text-anchor="middle" font-size="12" fill="#333">② 遍历每个节点 u（覆盖各连通分量）</text>
+
+  <!-- B2 -> B7 (true terminal) when all visited -->
+  <path d="M 340 103 L 390 103" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="365" y="96" text-anchor="middle" font-size="10" fill="#888">遍历完</text>
+  <rect x="390" y="88" width="190" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="485" y="108" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">返回 true（二分图）✓</text>
+
+  <path d="M 200 118 L 200 124" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== D1: u 未染色? ===== -->
+  <polygon points="200,124 286,150 200,176 114,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="154" text-anchor="middle" font-size="12" fill="#333">u 未染色?</text>
+  <!-- D1 No: loop back to B2 (right side) -->
+  <path d="M 286 150 L 332 150 L 332 103 L 342 103" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="332" y="138" text-anchor="middle" font-size="10" fill="#888">否（已染）</text>
+  <!-- D1 Yes: down -->
+  <path d="M 200 176 L 200 196" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="214" y="190" font-size="11" fill="#4a7a3a">是</text>
+
+  <!-- ===== B3: color start ===== -->
+  <rect x="60" y="196" width="280" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="216" text-anchor="middle" font-size="12" fill="#333">③ color[u] = 1（蓝）；u 入队</text>
+  <path d="M 200 226 L 200 240" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== B4: BFS pop + neighbors ===== -->
+  <rect x="60" y="240" width="280" height="30" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="260" text-anchor="middle" font-size="12" fill="#333">④ 出队 u，遍历其邻居 v</text>
+  <path d="M 200 270 L 200 278" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== D2: v 未染色? ===== -->
+  <polygon points="200,278 286,304 200,330 114,304" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="308" text-anchor="middle" font-size="12" fill="#333">v 未染色?</text>
+  <!-- D2 Yes: right to B5 -->
+  <path d="M 286 304 L 340 304" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="306" y="296" text-anchor="middle" font-size="11" fill="#4a7a3a">是</text>
+  <rect x="340" y="288" width="240" height="32" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="460" y="308" text-anchor="middle" font-size="11" fill="#333">color[v] = −color[u]；v 入队</text>
+  <!-- B5 loop back up to B4 (continue next v) -->
+  <path d="M 580 304 L 580 255 L 342 255" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="462" y="248" text-anchor="middle" font-size="10" fill="#888">继续下一 v</text>
+  <!-- D2 No: down -->
+  <path d="M 200 330 L 200 348" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="214" y="342" font-size="10" fill="#888">否（已染）</text>
+
+  <!-- ===== D3: v 与 u 同色? ===== -->
+  <polygon points="200,348 292,374 200,400 108,374" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="378" text-anchor="middle" font-size="12" fill="#333">v 与 u 同色?</text>
+  <!-- D3 Yes: right to B6 (false terminal) -->
+  <path d="M 292 374 L 340 374" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="312" y="366" text-anchor="middle" font-size="10" fill="#b03a3a">是（冲突）</text>
+  <rect x="340" y="358" width="240" height="32" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="460" y="378" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold">返回 false（同色相邻 = 奇环）✗</text>
+  <!-- D3 No: loop back left/up to B4 (continue next v) -->
+  <path d="M 108 374 L 40 374 L 40 255 L 58 255" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="98" y="368" text-anchor="end" font-size="10" fill="#888">否</text>
+  <text x="46" y="248" font-size="10" fill="#888">否 → 下一 v</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="40" y="420" width="520" height="40" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="441" text-anchor="middle" font-size="11" fill="#444">外层 for 覆盖每个连通分量；任一分量染色冲突即返回 false，</text>
+  <text x="300" y="455" text-anchor="middle" font-size="11" fill="#444">全部分量染完无冲突才返回 true</text>
+</svg>

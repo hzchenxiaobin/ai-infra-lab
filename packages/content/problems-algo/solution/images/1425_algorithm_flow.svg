@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：单调队列优化 DP（每步均摊 O(1)）</text>
+  <text x="300" y="46" text-anchor="middle" font-size="11" fill="#888">遍历 i=0..n−1：过期出队 → 查询最大值算 dp[i] → 入队弹尾 → 更新答案</text>
+
+  <!-- ===== Start ===== -->
+  <ellipse cx="300" cy="72" rx="46" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="76" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">开始</text>
+  <path d="M 300 88 L 300 96" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Init ===== -->
+  <rect x="180" y="98" width="240" height="28" rx="6" fill="#f6f6f6" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="300" y="116" text-anchor="middle" font-size="11" fill="#444">i ← 0，ans ← −∞，deque 清空</text>
+  <path d="M 300 126 L 300 134" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 1: expire ===== -->
+  <rect x="70" y="136" width="460" height="44" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="84" y="154" font-size="12" fill="#b85450" font-weight="bold">① 过期出队（左端）</text>
+  <text x="84" y="172" font-size="11" fill="#555">while deque 非空 且 deque.front() &lt; i − k：deque.pop_front()</text>
+  <text x="446" y="156" font-size="9" fill="#b85450">去掉滑出窗口的</text>
+  <path d="M 300 180 L 300 188" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: query + compute dp[i] ===== -->
+  <rect x="70" y="190" width="460" height="58" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="84" y="208" font-size="12" fill="#446688" font-weight="bold">② 查询窗口最大值并计算 dp[i]</text>
+  <text x="84" y="225" font-size="11" fill="#555">best ← deque 为空 ? 0 : dp[deque.front()]</text>
+  <text x="84" y="241" font-size="11" fill="#555">dp[i] ← nums[i] + max(0, best)</text>
+  <text x="430" y="208" font-size="9" fill="#446688">队头即窗口内</text>
+  <text x="430" y="220" font-size="9" fill="#446688">dp 最大值</text>
+  <text x="430" y="234" font-size="9" fill="#446688">max(0,·) 另起</text>
+  <text x="430" y="246" font-size="9" fill="#446688">一段</text>
+  <path d="M 300 248 L 300 256" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: push ===== -->
+  <rect x="70" y="258" width="460" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="84" y="276" font-size="12" fill="#4a7a3a" font-weight="bold">③ 入队弹尾（右端）</text>
+  <text x="84" y="294" font-size="11" fill="#555">while dp[deque.back()] ≤ dp[i]：deque.pop_back()；deque.push_back(i)</text>
+  <text x="446" y="276" font-size="9" fill="#4a7a3a">弹出不可能再</text>
+  <text x="446" y="288" font-size="9" fill="#4a7a3a">成为最大的旧值</text>
+  <path d="M 300 302 L 300 310" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: update ans ===== -->
+  <rect x="70" y="312" width="460" height="34" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="84" y="334" font-size="12" fill="#d6a040" font-weight="bold">④ 更新答案：ans ← max(ans, dp[i])</text>
+  <text x="446" y="334" font-size="9" fill="#d6a040">答案=最大 dp</text>
+  <path d="M 300 346 L 300 354" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: i++ ; i < n ? ===== -->
+  <polygon points="300,356 376,386 300,416 224,386" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="382" text-anchor="middle" font-size="11" fill="#444">i ← i + 1</text>
+  <text x="300" y="398" text-anchor="middle" font-size="11" fill="#444">i &lt; n ?</text>
+
+  <!-- Loop back arrow: from left side of diamond up to step 1 -->
+  <path d="M 224 386 L 40 386 L 40 158 L 70 158" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="50" y="272" font-size="10" fill="#b85450" font-weight="bold" transform="rotate(-90 50 272)">是 → 继续遍历</text>
+
+  <!-- No arrow: down to return -->
+  <path d="M 300 416 L 300 424" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Return ===== -->
+  <ellipse cx="300" cy="446" rx="64" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="450" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">否 → 返回 ans</text>
+
+  <!-- ===== Amortized note ===== -->
+  <rect x="400" y="430" width="180" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="490" y="448" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">均摊 O(n)</text>
+  <text x="490" y="462" text-anchor="middle" font-size="9" fill="#555">每元素入队1次出队1次</text>
+</svg>

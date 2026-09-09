@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：双指针一次遍历</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">l 维护前缀和，r 维护后缀和，同步推进逐下标取 max</text>
+
+  <!-- ===== Start: init ===== -->
+  <rect x="150" y="56" width="240" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="76" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="270" y="92" text-anchor="middle" font-size="10.5" fill="#446688">total=Σnums, l=0, r=total, ans=极小值</text>
+  <path d="M 270 102 L 270 120" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: i < n ? ===== -->
+  <polygon points="270,124 370,164 270,204 170,164" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="160" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">还有元素</text>
+  <text x="270" y="176" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">nums[i] 未处理?</text>
+
+  <!-- No branch -> return -->
+  <path d="M 370 164 L 440 164 L 440 56" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="398" y="158" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="392" y="40" width="120" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="452" y="63" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">返回 ans</text>
+
+  <!-- Yes branch -> down -->
+  <path d="M 270 204 L 270 224" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="218" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- ===== Step 1: l += nums[i] ===== -->
+  <rect x="150" y="228" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="246" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">l += nums[i]</text>
+  <text x="270" y="261" text-anchor="middle" font-size="9.5" fill="#446688">此时 l = prefix[i]（前 i+1 个元素和）</text>
+  <path d="M 270 268 L 270 286" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: ans = max(ans, l, r) ===== -->
+  <rect x="150" y="290" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="308" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">ans = max(ans, l, r)</text>
+  <text x="270" y="323" text-anchor="middle" font-size="9.5" fill="#d6a040">r 仍为 suffix[i]，取下标 i 的总分</text>
+  <path d="M 270 330 L 270 348" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: r -= nums[i] ===== -->
+  <rect x="150" y="352" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="370" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">r -= nums[i]</text>
+  <text x="270" y="385" text-anchor="middle" font-size="9.5" fill="#4a7a3a">让 r 演进为 suffix[i+1]，供下一轮</text>
+
+  <!-- loop back: i++ and back to decision -->
+  <path d="M 270 392 L 270 410 L 90 410 L 90 164 L 168 164" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="60" y="392" width="64" height="28" fill="#fafafa" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="92" y="410" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">i++, 回到判定</text>
+
+  <!-- ===== Side note: order matters ===== -->
+  <rect x="410" y="290" width="120" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="310" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠️ 顺序不能颠倒</text>
+  <text x="416" y="326" font-size="9" fill="#555">必须先取 max 再</text>
+  <text x="416" y="338" font-size="9" fill="#555">r -= nums[i]，否则 r</text>
+  <text x="416" y="350" font-size="9" fill="#555">会提前变成 suffix[i+1]</text>
+  <text x="416" y="362" font-size="9" fill="#555">取到错误下标</text>
+  <path d="M 410 320 L 392 312" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 410 350 L 392 370" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Footer ===== -->
+  <rect x="40" y="424" width="465" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="272" y="442" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">一次遍历 O(n)，常数空间 O(1)：l/r 同步递推，ans 顺带维护双 max</text>
+</svg>

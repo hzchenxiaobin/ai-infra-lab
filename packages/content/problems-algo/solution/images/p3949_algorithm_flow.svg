@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">逆 BFS 序 + 三件套合并，O(n·k)</text>
+
+  <!-- ① BFS 定序 -->
+  <rect x="85" y="38" width="260" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">① BFS 定序</text>
+  <text x="215" y="73" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">求 parent[] 与拓扑序 order[]，链状树防爆栈</text>
+  <path d="M215,80 L215,96" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 逆序遍历 -->
+  <rect x="85" y="100" width="260" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">② 逆序遍历 v = order[i]</text>
+  <text x="215" y="135" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">孩子必先于父亲被处理</text>
+  <path d="M215,142 L215,158" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 流式合并 -->
+  <rect x="75" y="162" width="280" height="84" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="215" y="182" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5a10" filter="url(#rough2)">③ 逐孩子流式合并</text>
+  <text x="215" y="201" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">T[d] += 档案[c][d]（k+1 档全量累加）</text>
+  <text x="215" y="218" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">b[s] ↦ 最值( 档案[c][s] − 档案[c][K−s] )</text>
+  <text x="215" y="235" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">合并完立即释放 c 的两份档案（控内存）</text>
+  <path d="M215,246 L215,262" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 后缀最值 -->
+  <rect x="85" y="266" width="260" height="48" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="215" y="285" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5a10" filter="url(#rough2)">④ 后缀最值</text>
+  <text x="215" y="303" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">Q[s] = best( Q[s+1], T[K−s] + b[s] )</text>
+  <path d="M215,314 L215,330" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 组装档案 -->
+  <rect x="75" y="334" width="280" height="76" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="215" y="354" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e5a24" filter="url(#rough2)">⑤ 组装 v 的双档案</text>
+  <text x="215" y="373" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">X[0] = max( nums[v]+F(0), −nums[v]−Tn[k−1] )</text>
+  <text x="215" y="390" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">X[d≥1] = nums[v] + F(d−1)</text>
+  <text x="215" y="404" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">mn 侧对称：max 全换 min</text>
+  <path d="M215,410 L215,424" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ 根判定 -->
+  <rect x="85" y="428" width="260" height="34" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="215" y="450" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">v 是根 → 返回 mx[0][0]，否则档案待父挑档</text>
+
+  <!-- 右侧：常量速查 -->
+  <rect x="385" y="100" width="160" height="118" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="465" y="122" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">常量速查</text>
+  <text x="465" y="143" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">档位 d ∈ [0, k] 共 k+1 档</text>
+  <text x="465" y="162" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">K = max(0, k−2)：跨孩子</text>
+  <text x="465" y="177" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">　　　d1 + d2 ≥ K</text>
+  <text x="465" y="196" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">L = ⌈K/2⌉：至多一个</text>
+  <text x="465" y="211" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">　　　孩子档位 &lt; L</text>
+
+  <!-- 右侧：F(b) 两种形态 -->
+  <rect x="385" y="266" width="160" height="118" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="465" y="288" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e5a24" filter="url(#rough2)">F(b) 的两种形态</text>
+  <text x="465" y="309" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">全员统一 max(b, L) 档</text>
+  <text x="465" y="328" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">或特殊孩子 s ∈ [b, L)</text>
+  <text x="465" y="343" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">　+ 其余孩子 K − s 档</text>
+  <text x="465" y="366" text-anchor="middle" font-size="10.5" fill="#2e5a24" filter="url(#rough2)">后缀最值 ⇒ 每个 b 查 O(1)</text>
+</svg>

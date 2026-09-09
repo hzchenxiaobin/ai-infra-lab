@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：规范化 → 计数 → 取最大</text>
+
+  <!-- Step 1: normalize -->
+  <rect x="150" y="48" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">规范化 paragraph</text>
+  <text x="280" y="80" text-anchor="middle" font-size="10" fill="#666">lower() + 非字母转空格 + split()</text>
+  <path d="M 280 90 L 280 110" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: banned set -->
+  <rect x="120" y="114" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">建停用词集合 banned = set(banned)</text>
+  <text x="280" y="146" text-anchor="middle" font-size="10" fill="#666">O(1) 查询，跳过被禁词</text>
+  <path d="M 280 156 L 280 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop box -->
+  <rect x="80" y="180" width="400" height="150" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">遍历每个单词 w：</text>
+
+  <!-- decision diamond: in banned? -->
+  <polygon points="280,214 360,250 280,286 200,250" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">w ∈ banned?</text>
+  <text x="280" y="262" text-anchor="middle" font-size="10" fill="#b85450">是 → 跳过</text>
+
+  <!-- yes branch: skip -->
+  <path d="M 200 250 L 110 250" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="244" font-size="10" fill="#b85450">是</text>
+  <rect x="92" y="232" width="40" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="112" y="254" text-anchor="middle" font-size="11" fill="#b85450">skip</text>
+
+  <!-- no branch: count -->
+  <path d="M 360 250 L 440 250" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="244" font-size="10" fill="#4a7a3a">否</text>
+  <rect x="442" y="232" width="46" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="248" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">cnt[w]</text>
+  <text x="465" y="260" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">+= 1</text>
+
+  <!-- loop back arrow -->
+  <path d="M 465 232 C 465 200, 380 196, 280 196" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="194" font-size="10" fill="#4a7a3a">下一个单词</text>
+
+  <!-- step 4: argmax -->
+  <path d="M 280 330 L 280 352" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="120" y="356" width="320" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="376" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">取 cnt 中频次最大的词</text>
+  <text x="280" y="392" text-anchor="middle" font-size="10" fill="#666">max(cnt, key=cnt.get) / 遍历维护 (best, bestFreq)</text>
+
+  <!-- output -->
+  <path d="M 280 400 L 280 420" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="220" y="424" width="120" height="28" fill="#446688" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="442" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">返回 "ball"</text>
+</svg>

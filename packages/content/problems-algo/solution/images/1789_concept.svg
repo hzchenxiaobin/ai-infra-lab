@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">两种情况：单部门默认 vs 多部门看 flag</text>
+  <text x="320" y="44" text-anchor="middle" font-size="11" fill="#888">单部门员工 flag 可能是 'N'，但该部门仍为直属；多部门员工取 flag='Y' 的那行</text>
+
+  <!-- ===== Left: single department ===== -->
+  <text x="160" y="74" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">① 员工只属于 1 个部门</text>
+
+  <!-- employee box -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="86" width="200" height="32" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="80" y="106" font-size="10" fill="#888" font-weight="bold">emp</text>
+  <text x="120" y="106" font-size="11" fill="#333">1</text>
+  <text x="170" y="106" font-size="10" fill="#888">dept</text>
+  <text x="210" y="106" font-size="11" fill="#333">1</text>
+  <text x="238" y="106" font-size="10" fill="#b85450" font-weight="bold">N</text>
+
+  <!-- arrow down -->
+  <path d="M 160 120 L 160 148" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="186" y="138" font-size="9" fill="#888">仅 1 行 → 默认</text>
+
+  <!-- result -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="152" width="180" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="160" y="173" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">直属 = dept 1 ✓</text>
+
+  <text x="160" y="206" text-anchor="middle" font-size="10" fill="#d6a040">flag='N' 仍是直属</text>
+  <text x="160" y="222" text-anchor="middle" font-size="9" fill="#888">→ GROUP BY HAVING COUNT(*)=1</text>
+
+  <!-- divider -->
+  <path d="M 320 64 L 320 240" stroke="#ccc" stroke-width="1.2" stroke-dasharray="5 4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Right: multiple departments ===== -->
+  <text x="480" y="74" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">② 员工属于多个部门</text>
+
+  <!-- row Y -->
+  <g filter="url(#rough2)">
+    <rect x="380" y="86" width="200" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="400" y="105" font-size="10" fill="#888" font-weight="bold">emp</text>
+  <text x="440" y="105" font-size="11" fill="#333">2</text>
+  <text x="490" y="105" font-size="10" fill="#888">dept</text>
+  <text x="530" y="105" font-size="11" fill="#333">1</text>
+  <text x="558" y="105" font-size="10" fill="#4a7a3a" font-weight="bold">Y</text>
+
+  <!-- row N -->
+  <g filter="url(#rough2)">
+    <rect x="380" y="120" width="200" height="30" rx="6" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="400" y="139" font-size="10" fill="#888" font-weight="bold">emp</text>
+  <text x="440" y="139" font-size="11" fill="#333">2</text>
+  <text x="490" y="139" font-size="10" fill="#888">dept</text>
+  <text x="530" y="139" font-size="11" fill="#333">2</text>
+  <text x="558" y="139" font-size="10" fill="#b85450" font-weight="bold">N</text>
+
+  <!-- arrow down from Y row -->
+  <path d="M 480 152 L 480 180" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="506" y="170" font-size="9" fill="#888">flag='Y' → 选这行</text>
+
+  <!-- result -->
+  <g filter="url(#rough2)">
+    <rect x="390" y="184" width="180" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="480" y="205" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">直属 = dept 1 ✓</text>
+
+  <!-- strike through N row -->
+  <path d="M 384 134 L 576 134" stroke="#b85450" stroke-width="1.8" stroke-dasharray="4 3" fill="none" filter="url(#rough2)"/>
+
+  <text x="480" y="238" text-anchor="middle" font-size="10" fill="#446688">多行 → 取 flag='Y' 的行</text>
+  <text x="480" y="252" text-anchor="middle" font-size="9" fill="#888">→ WHERE primary_flag = 'Y'</text>
+
+  <!-- ===== Bottom: UNION merge ===== -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="270" width="520" height="112" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="320" y="294" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">两条分支用 UNION 合并（两情况互斥，去重安全）</text>
+
+  <text x="80" y="316" font-size="10" fill="#555" font-family="monospace">分支 A: SELECT ... WHERE primary_flag = 'Y'           -- 多部门取 Y</text>
+  <text x="80" y="334" font-size="10" fill="#555" font-family="monospace">UNION</text>
+  <text x="80" y="352" font-size="10" fill="#555" font-family="monospace">分支 B: SELECT ... GROUP BY emp HAVING COUNT(*)=1   -- 单部门全取</text>
+  <text x="80" y="372" font-size="10" fill="#888">两分支结果集无交集 → UNION 去重零副作用，也可用 UNION ALL</text>
+</svg>

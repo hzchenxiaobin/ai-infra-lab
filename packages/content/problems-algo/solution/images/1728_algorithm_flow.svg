@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 600" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="600" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：逆向归纳 BFS</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">从终止态出发，沿前驱边反传胜负结果</text>
+
+  <!-- Step 1 -->
+  <rect x="100" y="58" width="340" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="80" text-anchor="middle" font-size="11" fill="#333">① 解析 grid：找 mouseStart / catStart / food / walls</text>
+  <path d="M 270 94 L 270 110" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="70" y="112" width="400" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="134" text-anchor="middle" font-size="11" fill="#333">② 预计算 mouseReach[pos] / catReach[pos]（含原地，遇墙停）</text>
+  <path d="M 270 148 L 270 164" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="60" y="166" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="184" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 初始化终止态并入队</text>
+  <text x="270" y="198" text-anchor="middle" font-size="10" fill="#4a7a3a">m==food → 老鼠赢(1)</text>
+  <text x="270" y="210" text-anchor="middle" font-size="10" fill="#b85450">m==c 或 c==food → 猫赢(2)；非终止态记 degree</text>
+  <path d="M 270 212 L 270 228" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: BFS loop -->
+  <rect x="60" y="230" width="420" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="249" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">④ while 队列非空：弹出 (m, c, t, r)</text>
+  <path d="M 270 260 L 270 276" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Decision: which turn? -->
+  <polygon points="270,278 380,316 270,354 160,316" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="312" text-anchor="middle" font-size="11" fill="#333">t == 0 还是 1？</text>
+  <text x="270" y="328" text-anchor="middle" font-size="10" fill="#888">谁走入了此态？</text>
+
+  <!-- Branch t==0 (cat moved) -->
+  <text x="120" y="304" font-size="10" fill="#b85450" font-weight="bold">t==0: 猫刚走</text>
+  <path d="M 160 316 L 100 316 L 100 350" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="20" y="352" width="200" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="372" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">前驱 = (m, c_prev, 1)</text>
+  <text x="120" y="388" text-anchor="middle" font-size="9" fill="#333">c_prev ∈ catReach[c]</text>
+  <text x="120" y="404" text-anchor="middle" font-size="9" fill="#b85450">r==2: 猫能到达猫赢态</text>
+  <text x="120" y="416" text-anchor="middle" font-size="9" fill="#b85450">→ 前驱猫赢(2)，入队</text>
+  <text x="120" y="432" text-anchor="middle" font-size="9" fill="#4a7a3a">r==1: loss++，满degree</text>
+  <text x="120" y="444" text-anchor="middle" font-size="9" fill="#4a7a3a">→ 前驱老鼠赢(1)，入队</text>
+
+  <!-- Branch t==1 (mouse moved) -->
+  <text x="420" y="304" font-size="10" fill="#4a7a3a" font-weight="bold">t==1: 老鼠刚走</text>
+  <path d="M 380 316 L 440 316 L 440 350" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="320" y="352" width="200" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="372" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">前驱 = (m_prev, c, 0)</text>
+  <text x="420" y="388" text-anchor="middle" font-size="9" fill="#333">m_prev ∈ mouseReach[m]</text>
+  <text x="420" y="404" text-anchor="middle" font-size="9" fill="#4a7a3a">r==1: 鼠能到达鼠赢态</text>
+  <text x="420" y="416" text-anchor="middle" font-size="9" fill="#4a7a3a">→ 前驱鼠赢(1)，入队</text>
+  <text x="420" y="432" text-anchor="middle" font-size="9" fill="#b85450">r==2: loss++，满degree</text>
+  <text x="420" y="444" text-anchor="middle" font-size="9" fill="#b85450">→ 前驱猫赢(2)，入队</text>
+
+  <!-- merge -->
+  <path d="M 120 452 L 120 472 L 270 472" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 420 452 L 420 472 L 270 472" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 472 L 270 488" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- loop back -->
+  <rect x="100" y="490" width="340" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="509" text-anchor="middle" font-size="10" fill="#446688">跳过已解析的前驱；BFS 直到队空</text>
+  <path d="M 440 504 L 500 504 L 500 244 L 480 244" stroke="#666" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="508" y="375" font-size="9" fill="#888" transform="rotate(90 508 375)">循环回 ④</text>
+
+  <path d="M 270 522 L 270 540" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Final -->
+  <rect x="80" y="542" width="380" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="562" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑤ 未解析的状态 → 平局 → 猫赢(1000步限制)</text>
+  <text x="270" y="580" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return result[ms][cs][0] == 1</text>
+</svg>

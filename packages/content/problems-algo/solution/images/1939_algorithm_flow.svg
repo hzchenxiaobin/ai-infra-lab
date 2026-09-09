@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：自连接 → 时间序去重 → 24h 过滤 → DISTINCT</text>
+
+  <!-- ===== Start: FROM ===== -->
+  <rect x="130" y="40" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="62" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">FROM Confirmations c1</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 78 L 260 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Self Join ===== -->
+  <rect x="80" y="96" width="360" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="114" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">JOIN Confirmations c2</text>
+  <text x="260" y="130" text-anchor="middle" font-size="9" fill="#888">ON c1.user_id = c2.user_id  ← 同用户配对所有行</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 142 L 260 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision 1: c1.time_stamp < c2.time_stamp? ===== -->
+  <polygon points="260,160 400,206 260,252 120,206" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="200" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">c1.time_stamp</text>
+  <text x="260" y="214" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">&lt; c2.time_stamp?</text>
+  <text x="260" y="228" text-anchor="middle" font-size="8" fill="#888">（严格小于，去自匹配+去重）</text>
+
+  <!-- No branch (right) -->
+  <path d="M 400 206 L 460 206" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="200" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="456" y="190" width="60" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="486" y="210" text-anchor="middle" font-size="9" fill="#b85450">丢弃</text>
+
+  <!-- Yes branch (down) -->
+  <path d="M 260 252 L 260 266" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="262" font-size="9" fill="#4a7a3a">是</text>
+
+  <!-- ===== Decision 2: TIMESTAMPDIFF <= 86400? ===== -->
+  <polygon points="260,270 400,316 260,362 120,316" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="310" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">TIMESTAMPDIFF</text>
+  <text x="260" y="324" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">(SECOND,...) ≤ 86400?</text>
+  <text x="260" y="338" text-anchor="middle" font-size="8" fill="#888">（24h = 86400 秒，≤ 含恰好 24h）</text>
+
+  <!-- No branch (right) -->
+  <path d="M 400 316 L 460 316" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="310" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="456" y="300" width="60" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="486" y="320" text-anchor="middle" font-size="9" fill="#b85450">丢弃</text>
+
+  <!-- Yes branch (down) -->
+  <path d="M 260 362 L 260 376" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="372" font-size="9" fill="#4a7a3a">是</text>
+
+  <!-- ===== SELECT DISTINCT ===== -->
+  <rect x="100" y="380" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="398" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">SELECT DISTINCT c1.user_id</text>
+  <text x="260" y="412" text-anchor="middle" font-size="9" fill="#555">多对满足 → 同一 user_id 去重</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 424 L 260 432" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Side note: execution order ===== -->
+  <rect x="20" y="96" width="80" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="112" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">执行顺序</text>
+  <text x="28" y="128" font-size="8" fill="#666">FROM</text>
+  <text x="28" y="142" font-size="8" fill="#666">→ JOIN</text>
+  <text x="28" y="156" font-size="8" fill="#666">→ WHERE</text>
+  <text x="28" y="170" font-size="8" fill="#666">→ SELECT</text>
+
+  <!-- ===== Side note: why two filters ===== -->
+  <rect x="20" y="270" width="80" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="286" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">两个过滤</text>
+  <text x="28" y="302" font-size="8" fill="#666">① c1&lt;c2</text>
+  <text x="28" y="314" font-size="8" fill="#666">  去重</text>
+  <text x="28" y="330" font-size="8" fill="#666">② ≤86400</text>
+  <text x="28" y="342" font-size="8" fill="#666">  24h 窗</text>
+  <text x="28" y="354" font-size="7" fill="#888">缺任一即错</text>
+</svg>

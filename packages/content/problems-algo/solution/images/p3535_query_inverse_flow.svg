@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 390"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa7b5" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="390" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">无向树 BFS 预处理 + 逐查询模逆元</text>
+
+  <!-- A -->
+  <rect x="105" y="36" width="310" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="57" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">① 建无向邻接表：[s,t,w] → (t, ×w) 与 (s, ×w⁻¹)</text>
+  <line x1="260" y1="70" x2="260" y2="82" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B -->
+  <rect x="140" y="84" width="240" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="104" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② fromRoot[0] = 1；队列 q = [0]</text>
+  <line x1="260" y1="116" x2="260" y2="128" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- C decision -->
+  <polygon points="260,130 345,164 260,198 175,164" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="169" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#8a6d3a" filter="url(#rough2)">队列空？</text>
+
+  <!-- C -> D (no) -->
+  <line x1="260" y1="198" x2="260" y2="208" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="207" font-size="11" font-weight="bold" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <!-- D -->
+  <rect x="105" y="210" width="310" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="230" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">④ 出队 u；遍历邻边 (v, m)，v == parent[u] 则跳过</text>
+  <line x1="260" y1="242" x2="260" y2="252" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- E highlighted -->
+  <rect x="88" y="254" width="344" height="36" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="260" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a6d3a" filter="url(#rough2)">⑤ fromRoot[v] = fromRoot[u] × m mod M；v 入队</text>
+
+  <!-- loop back -->
+  <path d="M 88 272 L 55 272 L 55 164 L 172 164" fill="none" stroke="#9aa7b5" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrs)" filter="url(#rough2)"/>
+  <text x="78" y="256" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">下一轮</text>
+
+  <!-- C -> F (yes), route right and down into query box -->
+  <path d="M 345 164 L 475 164 L 475 300 L 420 300" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="362" y="156" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- F query -->
+  <rect x="105" y="278" width="310" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="296" text-anchor="middle" font-size="12" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">⑥ 逐查询 (a,b)：</text>
+  <text x="260" y="314" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">answer = fromRoot[b] × pow(fromRoot[a], M−2) mod M</text>
+  <line x1="260" y1="322" x2="260" y2="334" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- G output -->
+  <rect x="175" y="336" width="170" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="355" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑦ 返回 answer 数组</text>
+
+  <!-- note -->
+  <text x="260" y="382" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">一次 BFS O(n) + q 次快速幂 O(log M) ⇒ 总 O((n+q) log M)</text>
+</svg>

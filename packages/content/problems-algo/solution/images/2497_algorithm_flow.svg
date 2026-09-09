@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：建图存邻居值 → 逐中心排序 → 贪心累加前 k 正值</text>
+
+  <!-- Step 1 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="48" width="440" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="56" y="72" font-size="13" fill="#446688" font-weight="bold">① 建图（只存邻居的「值」）</text>
+    <text x="56" y="93" font-size="12" fill="#333">遍历 edges，g[a].push(vals[b])，g[b].push(vals[a])</text>
+  </g>
+  <path d="M260,106 L260,126" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="126" width="440" height="58" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="56" y="150" font-size="13" fill="#d6a040" font-weight="bold">② 逐中心：g[c] 降序排序</text>
+    <text x="56" y="171" font-size="12" fill="#333">sort(g[c].begin(), g[c].end(), greater&lt;int&gt;())</text>
+  </g>
+  <path d="M260,184 L260,204" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="204" width="440" height="66" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="56" y="228" font-size="13" fill="#4a7a3a" font-weight="bold">③ 贪心累加前 k 个正值</text>
+    <text x="56" y="249" font-size="12" fill="#333">sum = vals[c]；从头取至多 k 个，遇 g[c][i] ≤ 0 即 break</text>
+    <text x="56" y="263" font-size="11" fill="#666">「至多 k」用 break on ≤0 实现，负值不选</text>
+  </g>
+  <path d="M260,270 L260,290" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="290" width="440" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="56" y="314" font-size="13" fill="#b85450" font-weight="bold">④ 取 max 并返回</text>
+    <text x="56" y="332" font-size="12" fill="#333">ans = max(ans, sum)；遍历所有中心后返回 ans</text>
+  </g>
+
+  <!-- decision diamond: neighbor value > 0? -->
+  <g filter="url(#rough2)">
+    <path d="M486,325 L516,310 L546,325 L516,340 z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="516" y="329" text-anchor="middle" font-size="9" fill="#7a4a10">值&gt;0?</text>
+  </g>
+  <text x="476" y="362" font-size="10" fill="#b85450" filter="url(#rough2)">否 → break</text>
+
+  <!-- note -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="356" width="440" height="58" rx="8" fill="#fafafa" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="56" y="378" font-size="12" fill="#555">关键：各中心独立求解，无需全局连通/搜索；</text>
+    <text x="56" y="396" font-size="12" fill="#555">只存邻居「值」而非编号，省去后续 vals[] 查表</text>
+    <text x="56" y="410" font-size="11" fill="#888">答案上界 ≈ n × 10⁴ ≈ 10⁹ &lt; INT_MAX，int 即可</text>
+  </g>
+</svg>

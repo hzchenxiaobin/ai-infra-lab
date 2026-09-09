@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="30" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">
+    核心递推：走 2^i 步 = 两段 2^(i-1) 步拼接
+  </text>
+
+  <!-- top banner: total -->
+  <rect x="55" y="48" width="410" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="67" text-anchor="middle" font-size="13" fill="#a07828" filter="url(#rough2)">
+    合计 2^i 次传球：sum[i][x] = 前段 + 后段
+  </text>
+
+  <!-- splicing diagram -->
+  <ellipse cx="75" cy="122" rx="18" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="75" y="127" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">x</text>
+  <ellipse cx="260" cy="122" rx="18" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="127" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">mid</text>
+  <ellipse cx="445" cy="122" rx="18" ry="18" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="445" y="127" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">end</text>
+
+  <path d="M96,122 L236,122" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M281,122 L421,122" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="166" y="106" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">传 2^(i-1) 次</text>
+  <text x="351" y="106" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">传 2^(i-1) 次</text>
+  <text x="166" y="144" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">和 = sum[i-1][x]</text>
+  <text x="351" y="144" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">和 = sum[i-1][mid]</text>
+
+  <text x="75" y="162" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">起点 x</text>
+  <text x="260" y="162" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">mid = pa[i-1][x]</text>
+  <text x="445" y="162" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">end = pa[i][x]</text>
+
+  <!-- recurrence boxes -->
+  <rect x="45" y="192" width="210" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="216" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">落点表：pa[i][x]</text>
+  <text x="150" y="238" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">= pa[i-1][ pa[i-1][x] ]</text>
+
+  <rect x="265" y="192" width="210" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="370" y="216" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">区段和：sum[i][x]</text>
+  <text x="370" y="238" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">= sum[i-1][x] + sum[i-1][mid]</text>
+
+  <!-- notes -->
+  <text x="260" y="284" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">
+    前段终点 = 后段起点：接球序列首尾相接、不重不漏，和直接相加
+  </text>
+  <text x="260" y="312" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">
+    receiver 固定不变 → 两张表可 O(n log k) 预处理一次
+  </text>
+  <text x="260" y="340" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">
+    查询 f(x)：按 k 的二进制置数位逐位跳，O(log k) 出结果
+  </text>
+</svg>

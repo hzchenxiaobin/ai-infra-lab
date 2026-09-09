@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：f(s) = 最小字母频次，值域 [1,10] → 直方图 + 后缀和</text>
+
+  <!-- ===== Section A: f(s) definition ===== -->
+  <text x="40" y="52" font-size="11" fill="#446688" font-weight="bold">f(s) 的定义：找字典序最小字母，数它出现几次</text>
+
+  <!-- Example 1: dcce -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="62" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3"/>
+    <text x="52" y="79" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">d</text>
+    <rect x="66" y="62" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3"/>
+    <text x="78" y="79" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">c</text>
+    <rect x="92" y="62" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3"/>
+    <text x="104" y="79" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">c</text>
+    <rect x="118" y="62" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3"/>
+    <text x="130" y="79" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">e</text>
+  </g>
+  <path d="M 150 74 L 178 74" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="182" y="62" width="170" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="267" y="78" text-anchor="middle" font-size="11" fill="#333">最小='c', 出现 2 次 → f=2</text>
+
+  <!-- Example 2: zaaaz -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="96" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3"/>
+    <text x="52" y="113" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">z</text>
+    <rect x="66" y="96" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3"/>
+    <text x="78" y="113" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+    <rect x="92" y="96" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3"/>
+    <text x="104" y="113" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+    <rect x="118" y="96" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3"/>
+    <text x="130" y="113" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+    <rect x="144" y="96" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3"/>
+    <text x="156" y="113" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">z</text>
+  </g>
+  <path d="M 174 108 L 178 108" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="182" y="96" width="180" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="272" y="112" text-anchor="middle" font-size="11" fill="#333">最小='a', 出现 3 次 → f=3</text>
+
+  <!-- separator -->
+  <line x1="40" y1="138" x2="520" y2="138" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== Section B: value domain insight ===== -->
+  <text x="40" y="160" font-size="11" fill="#b85450" font-weight="bold">关键观察：串长 ≤ 10 ⇒ f(s) ∈ [1, 10]，值域极小</text>
+
+  <text x="40" y="182" font-size="11" fill="#446688">对 words 统计每个 f 值出现次数 → 直方图 cnt[v]：</text>
+
+  <!-- histogram: cnt[1..4] for example 2 words -->
+  <g filter="url(#rough2)">
+    <!-- axis -->
+    <line x1="60" y1="240" x2="340" y2="240" stroke="#888" stroke-width="1.5"/>
+    <!-- v=1 -->
+    <rect x="76" y="218" width="36" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="2"/>
+    <text x="94" y="234" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+    <text x="94" y="256" text-anchor="middle" font-size="10" fill="#888">v=1</text>
+    <!-- v=2 -->
+    <rect x="124" y="218" width="36" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="2"/>
+    <text x="142" y="234" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+    <text x="142" y="256" text-anchor="middle" font-size="10" fill="#888">v=2</text>
+    <!-- v=3 -->
+    <rect x="172" y="218" width="36" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="2"/>
+    <text x="190" y="234" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+    <text x="190" y="256" text-anchor="middle" font-size="10" fill="#888">v=3</text>
+    <!-- v=4 -->
+    <rect x="220" y="218" width="36" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="2"/>
+    <text x="238" y="234" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+    <text x="238" y="256" text-anchor="middle" font-size="10" fill="#888">v=4</text>
+    <!-- ... -->
+    <text x="300" y="240" font-size="11" fill="#aaa">… 0 …</text>
+    <text x="300" y="256" text-anchor="middle" font-size="10" fill="#aaa">v=5..10</text>
+  </g>
+
+  <!-- arrow down -->
+  <path d="M 160 266 L 160 280" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- suffix sum -->
+  <text x="40" y="292" font-size="11" fill="#4a7a3a" font-weight="bold">后缀和 suffix[v] = #{f(W) > v}，从右往左累加：</text>
+
+  <g filter="url(#rough2)">
+    <!-- suffix table: suffix[1]=3, suffix[2]=2, suffix[3]=1, suffix[4]=0 -->
+    <rect x="76" y="300" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2"/>
+    <text x="94" y="316" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">3</text>
+    <text x="94" y="334" text-anchor="middle" font-size="10" fill="#888">v=1</text>
+    <rect x="124" y="300" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2"/>
+    <text x="142" y="316" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+    <text x="142" y="334" text-anchor="middle" font-size="10" fill="#888">v=2</text>
+    <rect x="172" y="300" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2"/>
+    <text x="190" y="316" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+    <text x="190" y="334" text-anchor="middle" font-size="10" fill="#888">v=3</text>
+    <rect x="220" y="300" width="36" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2"/>
+    <text x="238" y="316" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+    <text x="238" y="334" text-anchor="middle" font-size="10" fill="#888">v=4</text>
+  </g>
+
+  <!-- query lookup -->
+  <path d="M 160 344 L 160 358" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="80" y="362" width="380" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="381" text-anchor="middle" font-size="12" fill="#333">查询：f(query)=q → answer[i] = suffix[q]，O(1)</text>
+
+  <!-- bottom note -->
+  <text x="280" y="406" text-anchor="middle" font-size="10" fill="#888">值域 1–10 是常数 → 预处理 O(ΣL) + 查询 O(n)，空间 O(1)</text>
+</svg>

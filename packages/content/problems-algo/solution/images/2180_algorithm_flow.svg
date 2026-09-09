@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：分块 + 尾部判定</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">q = num // 10，r = num % 10，p = digit_sum(q) 的奇偶</text>
+
+  <!-- Step 1: input -->
+  <rect x="210" y="60" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="82" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输入 num</text>
+
+  <!-- arrow -->
+  <path d="M 280 96 L 280 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: compute q, r -->
+  <rect x="180" y="120" width="200" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="138" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">q = num // 10，r = num % 10</text>
+  <text x="280" y="154" text-anchor="middle" font-size="10.5" fill="#666">完整块数 = q，尾部 = [q·10, num] 共 r+1 个数</text>
+
+  <!-- arrow -->
+  <path d="M 280 162 L 280 182" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: parity p -->
+  <rect x="150" y="186" width="260" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="204" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">p = digit_sum(q) mod 2</text>
+  <text x="280" y="220" text-anchor="middle" font-size="10.5" fill="#666">p=0 前缀数位和为偶；p=1 前缀数位和为奇</text>
+
+  <!-- arrow down splits -->
+  <path d="M 280 228 L 280 246" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: full contribution -->
+  <rect x="60" y="250" width="180" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="270" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">完整块贡献</text>
+  <text x="150" y="286" text-anchor="middle" font-size="11" fill="#446688">full = 5 × q</text>
+
+  <!-- Step 4b: tail contribution (diamond) -->
+  <rect x="300" y="250" width="200" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="400" y="270" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">尾部偶计数 tail</text>
+  <text x="400" y="286" text-anchor="middle" font-size="10.5" fill="#666">数 d ∈ [0, r] 使 (p+d) 为偶</text>
+
+  <!-- arrows from tail to two branches -->
+  <path d="M 360 296 L 360 316 L 200 316 L 200 338" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 440 296 L 440 338" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- branch: p even -->
+  <rect x="120" y="342" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="360" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">p = 0（前缀偶）</text>
+  <text x="210" y="376" text-anchor="middle" font-size="11" fill="#333">tail = r // 2 + 1</text>
+
+  <!-- branch: p odd -->
+  <rect x="340" y="342" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="360" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">p = 1（前缀奇）</text>
+  <text x="430" y="376" text-anchor="middle" font-size="11" fill="#333">tail = (r + 1) // 2</text>
+
+  <!-- bottom: combine -->
+  <rect x="120" y="392" width="320" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="407" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">return full + tail − 1   （减 1 扣除 0）</text>
+</svg>

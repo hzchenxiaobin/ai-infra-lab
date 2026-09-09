@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种解法对比：自连接 JOIN vs LAG/LEAD vs 岛屿分组</text>
+
+  <!-- Column 1: Self JOIN approach -->
+  <rect x="20" y="44" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="62" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">解法 A：自连接</text>
+  <text x="110" y="76" text-anchor="middle" font-size="9" fill="#666">表复制两份错位对齐</text>
+
+  <rect x="20" y="92" width="180" height="22" fill="#fff" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="106" font-size="9" fill="#333">FROM Cinema c1</text>
+  <rect x="20" y="114" width="180" height="22" fill="#fff" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="128" font-size="9" fill="#333">JOIN Cinema c2</text>
+  <rect x="20" y="136" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="150" font-size="9" fill="#333">ON ABS(c1.sid−c2.sid)=1</text>
+  <rect x="20" y="158" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="172" font-size="9" fill="#333">AND c1.free=1 AND c2.free=1</text>
+  <rect x="20" y="180" width="180" height="22" fill="#fff" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="194" font-size="9" fill="#333">SELECT DISTINCT c1.seat_id</text>
+  <rect x="20" y="202" width="180" height="22" fill="#fff" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="216" font-size="9" fill="#333">ORDER BY c1.seat_id</text>
+
+  <rect x="20" y="234" width="180" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="252" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">时间 O(n²) ~ O(n)</text>
+  <text x="110" y="268" text-anchor="middle" font-size="8" fill="#888">ABS 阻止索引，需 DISTINCT</text>
+
+  <!-- Column 2: Window function approach -->
+  <rect x="210" y="44" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="62" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">解法 B：LAG/LEAD ★</text>
+  <text x="300" y="76" text-anchor="middle" font-size="9" fill="#666">单趟扫描 + 前后各看 1 行</text>
+
+  <rect x="210" y="92" width="180" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="106" font-size="9" fill="#333">SELECT seat_id, free,</text>
+  <rect x="210" y="114" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="128" font-size="9" fill="#333">LAG(free,1) OVER(ORDER BY sid)</text>
+  <rect x="210" y="136" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="150" font-size="9" fill="#333">LEAD(free,1) OVER(ORDER BY sid)</text>
+  <rect x="210" y="158" width="180" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="172" font-size="9" fill="#333">FROM Cinema</text>
+  <rect x="210" y="180" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="194" font-size="9" fill="#333">WHERE free=1</text>
+  <rect x="210" y="202" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="216" font-size="9" fill="#333">AND (prev=1 OR next=1)</text>
+
+  <rect x="210" y="234" width="180" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="252" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">时间 O(n log n)</text>
+  <text x="300" y="268" text-anchor="middle" font-size="8" fill="#888">一次排序，无需 DISTINCT</text>
+
+  <!-- Column 3: Islands approach -->
+  <rect x="400" y="44" width="180" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="62" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">解法 C：岛屿分组</text>
+  <text x="490" y="76" text-anchor="middle" font-size="9" fill="#666">通用化"连续 N 个"</text>
+
+  <rect x="400" y="92" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="106" font-size="9" fill="#333">① 筛 free=1 的座位</text>
+  <rect x="400" y="114" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="128" font-size="9" fill="#333">② 标记 id 不连续断点</text>
+  <rect x="400" y="136" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="150" font-size="9" fill="#333">   (sid ≠ LAG(sid)+1 → 1)</text>
+  <rect x="400" y="158" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="172" font-size="9" fill="#333">③ SUM() OVER 前缀和分组</text>
+  <rect x="400" y="180" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="194" font-size="9" fill="#333">④ GROUP BY island_id</text>
+  <rect x="400" y="202" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="216" font-size="9" fill="#333">   HAVING COUNT(*) ≥ N</text>
+
+  <rect x="400" y="234" width="180" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="252" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">时间 O(n log n)</text>
+  <text x="490" y="268" text-anchor="middle" font-size="8" fill="#888">2 改 N 即通用化</text>
+
+  <!-- VS dividers -->
+  <line x1="205" y1="50" x2="205" y2="284" stroke="#bbb" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <line x1="395" y1="50" x2="395" y2="284" stroke="#bbb" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- Bottom comparison -->
+  <rect x="20" y="296" width="560" height="134" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="316" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">本质相同：都是把"前后行状态"拉到"当前行"做列比较</text>
+  <text x="38" y="336" font-size="10" fill="#333">A 自连接：用 JOIN 把相邻两行物理并排 → WHERE 比两列 free；ABS 简洁但失索引</text>
+  <text x="38" y="354" font-size="10" fill="#333">B LAG/LEAD：用窗口函数把前后行 free 复制到当前行 → WHERE 比三列；一次排序更高效</text>
+  <text x="38" y="372" font-size="10" fill="#333">C 岛屿分组：先筛 free=1 再按 seat_id 连续性分组 → HAVING 计数；最通用（任意 N）</text>
+  <text x="38" y="392" font-size="10" fill="#b85450" font-weight="bold">选型：B 推荐（一次排序、无需 DISTINCT）；A 面试经典；C 母题（601/180 通用化）</text>
+  <text x="38" y="412" font-size="10" fill="#4a7a3a">记忆口诀：连续 2 行用 LAG/LEAD，连续 N 行用岛屿分组</text>
+</svg>

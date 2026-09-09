@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="180" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">进阶：有限状态机（每个位独立）</text>
+  <text x="180" y="44" text-anchor="middle" font-size="11" fill="#888">状态 (twos, ones) 编码该位已见次数 mod 3</text>
+
+  <!-- ===== States (triangle) ===== -->
+  <!-- state 00 = 0次 -->
+  <ellipse cx="150" cy="100" rx="46" ry="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="150" y="98" text-anchor="middle" font-size="13" fill="#3a5a2a" font-weight="bold">00</text>
+  <text x="150" y="114" text-anchor="middle" font-size="10" fill="#3a5a2a">0 次</text>
+
+  <!-- state 01 = 1次 -->
+  <ellipse cx="75" cy="245" rx="46" ry="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="75" y="243" text-anchor="middle" font-size="13" fill="#6a4a10" font-weight="bold">01</text>
+  <text x="75" y="259" text-anchor="middle" font-size="10" fill="#6a4a10">1 次</text>
+
+  <!-- state 10 = 2次 -->
+  <ellipse cx="265" cy="245" rx="46" ry="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="265" y="243" text-anchor="middle" font-size="13" fill="#7a3a3a" font-weight="bold">10</text>
+  <text x="265" y="259" text-anchor="middle" font-size="10" fill="#7a3a3a">2 次</text>
+
+  <!-- transitions on x=1 (the cycle) -->
+  <!-- 00 -> 01 -->
+  <path d="M 122 122 Q 78 175 75 215" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="74" y="172" font-size="10" fill="#b85450" font-weight="bold">x=1</text>
+
+  <!-- 01 -> 10 -->
+  <path d="M 123 245 L 217 245" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="170" y="238" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">x=1</text>
+
+  <!-- 10 -> 00 (归零) -->
+  <path d="M 290 220 Q 320 158 192 112" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="300" y="170" font-size="10" fill="#b85450" font-weight="bold">x=1（归零）</text>
+
+  <!-- self loops on x=0 -->
+  <!-- 00 self -->
+  <path d="M 134 76 C 128 52 172 52 166 76" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="48" text-anchor="middle" font-size="9" fill="#4a7a3a">x=0</text>
+  <!-- 01 self -->
+  <path d="M 50 230 C 26 240 26 256 50 252" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="20" y="246" text-anchor="middle" font-size="9" fill="#4a7a3a">x=0</text>
+  <!-- 10 self -->
+  <path d="M 290 230 C 314 240 314 256 290 252" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="322" y="246" text-anchor="middle" font-size="9" fill="#4a7a3a">x=0</text>
+
+  <!-- ===== Formula box (right) ===== -->
+  <rect x="360" y="70" width="190" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="92" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">状态更新（每位同步）</text>
+
+  <rect x="372" y="104" width="166" height="28" fill="#fff" stroke="#446688" stroke-width="1" rx="5" filter="url(#rough2)"/>
+  <text x="455" y="123" text-anchor="middle" font-size="10.5" fill="#3a4a66">ones = (ones^x) &amp; ~twos</text>
+
+  <rect x="372" y="138" width="166" height="28" fill="#fff" stroke="#446688" stroke-width="1" rx="5" filter="url(#rough2)"/>
+  <text x="455" y="157" text-anchor="middle" font-size="10.5" fill="#3a4a66">twos = (twos^x) &amp; ~ones</text>
+
+  <text x="372" y="186" font-size="10" fill="#555">• 每位独立：无进位，互不干扰</text>
+  <text x="372" y="202" font-size="10" fill="#555">• 见 3 次 → 回到 00（抵消）</text>
+  <text x="372" y="218" font-size="10" fill="#555">• 落单数见 1 次 → 停在 01</text>
+  <text x="372" y="240" font-size="10.5" fill="#3a5a2a" font-weight="bold">⇒ 最终 ones 即为答案</text>
+
+  <!-- ===== Encoding legend (bottom) ===== -->
+  <rect x="60" y="300" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="74" y="320" font-size="10.5" fill="#6a4a10" font-weight="bold">状态编码 (twos, ones)：</text>
+  <text x="74" y="336" font-size="10" fill="#6a4a10">00→0次　01→1次　10→2次　（11 不出现）</text>
+</svg>

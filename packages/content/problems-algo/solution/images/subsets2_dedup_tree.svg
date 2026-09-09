@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">子集 II 去重原理：排序 + 同层剪枝（nums=[1,2,2]）</text>
+
+  <!-- ============ LEFT: decision tree ============ -->
+  <text x="30" y="52" font-size="12" fill="#888">决策树（排序后，start 索引循环版）:</text>
+
+  <!-- root -->
+  <ellipse cx="160" cy="74" rx="34" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="160" y="78" text-anchor="middle" font-size="11" fill="#333">[] 收集</text>
+
+  <!-- Level 1: pick 1 / 2(first) / 2(second pruned) -->
+  <line x1="160" y1="90" x2="90" y2="120" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <line x1="160" y1="90" x2="175" y2="120" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <line x1="160" y1="90" x2="260" y2="120" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="62" y="122" width="56" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="90" y="139" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[1]</text>
+  <text x="90" y="158" text-anchor="middle" font-size="9" fill="#4a7a3a">i=0 选 nums[0]</text>
+
+  <rect x="147" y="122" width="56" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="175" y="139" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[2]</text>
+  <text x="175" y="158" text-anchor="middle" font-size="9" fill="#d6a040">i=1 第一个 2</text>
+
+  <rect x="228" y="122" width="64" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" rx="5" filter="url(#rough2)"/>
+  <text x="260" y="139" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">[2] ✗</text>
+  <text x="260" y="158" text-anchor="middle" font-size="9" fill="#b85450">i=2 跳过同值</text>
+
+  <!-- Level 2 from [1]: pick 2(nums[1]) / 2(nums[2] pruned) -->
+  <line x1="90" y1="168" x2="70" y2="194" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <line x1="90" y1="168" x2="135" y2="194" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="42" y="196" width="56" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="212" text-anchor="middle" font-size="10" fill="#333">[1,2]</text>
+  <rect x="107" y="196" width="56" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="135" y="212" text-anchor="middle" font-size="10" fill="#b85450">[1,2] ✗</text>
+
+  <!-- Level 2 from [2]: pick 2(nums[2]) - deep level, legal -->
+  <line x1="175" y1="168" x2="175" y2="194" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="147" y="196" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="212" text-anchor="middle" font-size="10" fill="#333">[2,2]</text>
+  <text x="175" y="232" text-anchor="middle" font-size="9" fill="#4a7a3a">纵深同值 ✓</text>
+
+  <!-- Level 3: [1,2,2] leaf under [1,2] -->
+  <line x1="70" y1="220" x2="70" y2="248" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="36" y="250" width="68" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="266" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">[1,2,2] ✓</text>
+
+  <!-- results summary -->
+  <rect x="20" y="292" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="310" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">收集到 6 个子集（不重复不遗漏）</text>
+  <text x="170" y="324" text-anchor="middle" font-size="9" fill="#555">[], [1], [1,2], [1,2,2], [2], [2,2]</text>
+  <text x="170" y="346" text-anchor="middle" font-size="9" fill="#888">✗ = 同层重复被剪枝　✓ = 合法子集</text>
+
+  <!-- ============ RIGHT: dedup rule ============ -->
+  <text x="380" y="52" font-size="12" fill="#444" font-weight="bold">去重核心：同层不选重复值</text>
+
+  <!-- Step 1: sort -->
+  <rect x="380" y="68" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="88" text-anchor="middle" font-size="12" fill="#333">① 排序：让相同元素相邻</text>
+  <text x="500" y="104" text-anchor="middle" font-size="10" fill="#888">[2,1,2] → [1,2,2]</text>
+
+  <path d="M 500 112 L 500 124" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: prune condition -->
+  <rect x="380" y="128" width="240" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="148" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 剪枝条件</text>
+  <text x="500" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-family="monospace">i &gt; start &amp;&amp; nums[i]==nums[i-1]</text>
+  <text x="500" y="180" text-anchor="middle" font-size="10" fill="#888">→ continue 跳过 nums[i]</text>
+
+  <path d="M 500 186 L 500 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: why i > start -->
+  <rect x="380" y="202" width="240" height="104" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="500" y="222" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">为什么是 i &gt; start?</text>
+  <text x="500" y="240" text-anchor="middle" font-size="10" fill="#4a7a3a">i == start：本层首个，必选</text>
+  <text x="500" y="256" text-anchor="middle" font-size="10" fill="#b85450">i &gt; start 且同值：同层重复，剪！</text>
+  <text x="500" y="272" text-anchor="middle" font-size="10" fill="#555">纵深同值（[2,2]）：i==start</text>
+  <text x="500" y="286" text-anchor="middle" font-size="10" fill="#555">不触发剪枝，合法保留</text>
+  <text x="500" y="300" text-anchor="middle" font-size="9" fill="#888">若写成 i &gt; 0 会误杀 [2,2]</text>
+
+  <!-- bottom note: effect -->
+  <rect x="380" y="316" width="240" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="500" y="336" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">效果</text>
+  <text x="500" y="352" text-anchor="middle" font-size="10" fill="#555">8 个分支剪掉 2 个，只走 6 条路</text>
+  <text x="500" y="364" text-anchor="middle" font-size="10" fill="#555">先选的子树 ⊇ 后选的子树</text>
+
+  <text x="320" y="424" text-anchor="middle" font-size="11" fill="#888">关键直觉：排序让重复相邻，i &gt; start 保证「同层只选第一个」</text>
+  <text x="320" y="440" text-anchor="middle" font-size="11" fill="#888">对比 78 题：多一行排序 + 一行剪枝，其余完全相同</text>
+</svg>

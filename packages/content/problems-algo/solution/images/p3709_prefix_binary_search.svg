@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：有序时间轴 + 前缀和之差 + 二分定位</text>
+
+  <!-- ① 时间轴 -->
+  <text x="32" y="46" font-size="12" fill="#555" filter="url(#rough2)">① 时间轴：time 严格递增</text>
+
+  <rect x="88" y="54" width="292" height="70" fill="#e6f4ea" fill-opacity="0.45"
+        stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5 3" rx="6" filter="url(#rough2)"/>
+  <text x="234" y="70" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">查询窗口 [1, 5]（闭区间）</text>
+
+  <path d="M 70 112 L 455 112" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="462" y="116" font-size="11" fill="#446688" filter="url(#rough2)">time</text>
+
+  <line x1="90" y1="107" x2="90" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="162" y1="107" x2="162" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="234" y1="107" x2="234" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="306" y1="107" x2="306" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="378" y1="107" x2="378" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="450" y1="107" x2="450" y2="117" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="90" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">1</text>
+  <text x="162" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">2</text>
+  <text x="234" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">3</text>
+  <text x="306" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">4</text>
+  <text x="378" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">5</text>
+  <text x="450" y="134" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">6</text>
+
+  <circle cx="90" cy="112" r="10" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="90" y="116" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">98</text>
+  <text x="90" y="96" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">score 98</text>
+
+  <circle cx="378" cy="112" r="10" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="378" y="116" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">99</text>
+  <text x="378" y="96" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">score 99</text>
+
+  <!-- l / r 引导箭头 -->
+  <path d="M 90 140 L 90 152 L 175 152 L 175 168" fill="none" stroke="#b85450"
+        stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="118" y="149" font-size="10.5" fill="#b85450" filter="url(#rough2)">l = 0</text>
+
+  <path d="M 378 140 L 378 152 L 225 152 L 225 168" fill="none" stroke="#4a7a3a"
+        stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="330" y="149" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">r = 1</text>
+
+  <!-- ② times 数组 -->
+  <text x="140" y="191" text-anchor="end" font-size="12" fill="#333" filter="url(#rough2)">times</text>
+  <rect x="150" y="172" width="50" height="28" fill="#e8f0fe" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="191" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="200" y="172" width="50" height="28" fill="#e8f0fe" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="191" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">5</text>
+  <text x="175" y="216" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">0</text>
+  <text x="225" y="216" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">1</text>
+
+  <!-- ② prefix 数组 -->
+  <text x="140" y="253" text-anchor="end" font-size="12" fill="#333" filter="url(#rough2)">prefix</text>
+  <rect x="150" y="234" width="50" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="253" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="200" y="234" width="50" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="253" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">98</text>
+  <rect x="250" y="234" width="50" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="275" y="253" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">197</text>
+  <text x="175" y="278" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">0</text>
+  <text x="225" y="278" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">1</text>
+  <text x="275" y="278" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">2</text>
+  <text x="318" y="253" font-size="11" fill="#555" filter="url(#rough2)">prefix[i] = 前 i 场分数和</text>
+
+  <!-- ③ 公式 -->
+  <rect x="60" y="298" width="400" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="318" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">③ 总分 = prefix[r+1] − prefix[l] = 197 − 0 = 197</text>
+  <text x="260" y="338" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">l &gt; r（窗口内无考试）时返回 0</text>
+</svg>

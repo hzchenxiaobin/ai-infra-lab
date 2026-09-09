@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">滚动哈希 + 频率不变式：左端点固定，向右增量扩展</text>
+  <text x="290" y="46" text-anchor="middle" font-size="11" fill="#888">左端 i=0 固定，j 右移：每步 O(1) 更新 cnt / fof / 哈希，即时判定</text>
+
+  <!-- 四步扩展：1, 12, 121, 1212 -->
+  <!-- step 1: "1" -->
+  <rect x="24" y="64" width="128" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="86" font-size="11" fill="#3a5a2a" font-weight="bold">j=0  s[0..0]="1"</text>
+  <text x="40" y="106" font-size="10" fill="#444">cnt: 1→1</text>
+  <text x="40" y="122" font-size="10" fill="#444">fof: {1:1}</text>
+  <text x="40" y="138" font-size="10" fill="#4a7a3a" font-weight="bold">distinct=1 ✓</text>
+  <text x="40" y="152" font-size="9" fill="#666" font-family="monospace">h = 0*11 + 2 = 2</text>
+
+  <!-- step 2: "12" -->
+  <rect x="168" y="64" width="128" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="86" font-size="11" fill="#3a5a2a" font-weight="bold">j=1  s[0..1]="12"</text>
+  <text x="184" y="106" font-size="10" fill="#444">cnt: 1→1, 2→1</text>
+  <text x="184" y="122" font-size="10" fill="#444">fof: {1:2}</text>
+  <text x="184" y="138" font-size="10" fill="#4a7a3a" font-weight="bold">distinct=1 ✓</text>
+  <text x="184" y="152" font-size="9" fill="#666" font-family="monospace">h = 2*11 + 3 = 25</text>
+
+  <!-- step 3: "121" -->
+  <rect x="312" y="64" width="128" height="92" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="328" y="86" font-size="11" fill="#8a3a36" font-weight="bold">j=2  s[0..2]="121"</text>
+  <text x="328" y="106" font-size="10" fill="#444">cnt: 1→2, 2→1</text>
+  <text x="328" y="122" font-size="10" fill="#b85450">fof: {2:1, 1:1}</text>
+  <text x="328" y="138" font-size="10" fill="#b85450" font-weight="bold">distinct=2 ✗</text>
+  <text x="328" y="152" font-size="9" fill="#666" font-family="monospace">h = 25*11 + 2 = 277</text>
+
+  <!-- step 4: "1212" -->
+  <rect x="456" y="64" width="112" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="472" y="86" font-size="11" fill="#3a5a2a" font-weight="bold">j=3 "1212"</text>
+  <text x="472" y="106" font-size="10" fill="#444">cnt: 1→2, 2→2</text>
+  <text x="472" y="122" font-size="10" fill="#444">fof: {2:2}</text>
+  <text x="472" y="138" font-size="10" fill="#4a7a3a" font-weight="bold">distinct=1 ✓</text>
+  <text x="472" y="152" font-size="9" fill="#666" font-family="monospace">h=277*11+3=3050</text>
+
+  <!-- 横向箭头 -->
+  <line x1="152" y1="110" x2="168" y2="110" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <line x1="296" y1="110" x2="312" y2="110" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <line x1="440" y1="110" x2="456" y2="110" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 下方：增量更新机制说明 -->
+  <rect x="24" y="180" width="544" height="118" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="204" font-size="12" fill="#2a4a66" font-weight="bold">每加入一个数字 d（cnt[d]: c → c+1），三个量各 O(1) 更新：</text>
+
+  <text x="40" y="228" font-size="11" fill="#444" font-family="monospace">① 频率不变式：</text>
+  <text x="60" y="246" font-size="10" fill="#666" font-family="monospace">if c&gt;0 &amp; --fof[c]==0: distinct-- ;  if fof[c+1]==0: distinct++ ;  fof[c+1]++</text>
+  <text x="60" y="262" font-size="10" fill="#888">把 d 从「出现 c 次的桶」搬到「出现 c+1 次的桶」，搬动前后维护 distinct</text>
+
+  <text x="40" y="286" font-size="11" fill="#444" font-family="monospace">② 滚动哈希：h = h * 11 + (d + 1)</text>
+
+  <!-- 编码说明 -->
+  <rect x="24" y="312" width="544" height="116" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="336" font-size="12" fill="#7a5a20" font-weight="bold">为何基数 11、数字编码 d+1（1..10）？</text>
+  <text x="40" y="358" font-size="11" fill="#444">• 字母表大小 10（数字 0-9），基数 B=11 &gt; 10 保证编码无歧义</text>
+  <text x="40" y="378" font-size="11" fill="#444">• 编码 d+1 使 0 也映射为非零（1），<tspan fill="#b85450" font-weight="bold">消除前导 0 歧义</tspan>：</text>
+  <text x="60" y="396" font-size="10" fill="#888">"1" 的 h=2，而任何以 0 开头的串编码首位≥1，h≥11，故 "1" 与 "01" 不会撞</text>
+  <text x="40" y="416" font-size="11" fill="#4a7a3a">• Python 大整数免取模 ⟹ 哈希完美唯一；C++ 用双素数取模防碰撞</text>
+</svg>

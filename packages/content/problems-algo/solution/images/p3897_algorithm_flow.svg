@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 365"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="365" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：排序定序 + Horner 逐段累值（全程 mod 1e9+7）</text>
+  <text x="260" y="36" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">不必物化 2×10⁵ 长的串 —— 按段「左移 + 灌 1」即可</text>
+
+  <!-- Box1: build segments -->
+  <rect x="155" y="48" width="210" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="68" text-anchor="middle" font-size="10.5" fill="#33507a" filter="url(#rough2)">读入 nums1 / nums0 → 片段 (aᵢ, bᵢ)</text>
+  <path d="M 260 80 L 260 92" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box2: sort (greedy core) -->
+  <rect x="140" y="96" width="240" height="52" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="117" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">排序（贪心核心）</text>
+  <text x="260" y="137" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">全 1 最先 → a 降序 → b 升序</text>
+  <path d="M 260 148 L 260 160" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box3: precompute powers -->
+  <rect x="125" y="164" width="270" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="184" text-anchor="middle" font-size="10.5" fill="#33507a" filter="url(#rough2)">L = Σ(aᵢ+bᵢ)，预计算 pw[k] = 2ᵏ mod p</text>
+  <path d="M 260 196 L 260 208" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Diamond: more segments? -->
+  <path d="M 260 212 L 335 244 L 260 276 L 185 244 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="248" text-anchor="middle" font-size="10.5" fill="#8a3a36" filter="url(#rough2)">还有片段？</text>
+
+  <!-- no -> return -->
+  <path d="M 335 244 L 381 244" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="350" y="236" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="385" y="226" width="115" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="442" y="248" text-anchor="middle" font-size="11" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">返回 val</text>
+
+  <!-- yes -> process segment -->
+  <path d="M 260 276 L 260 296" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="270" y="292" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- Box4: Horner update -->
+  <rect x="90" y="300" width="340" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="318" text-anchor="middle" font-size="9.5" fill="#33507a" filter="url(#rough2)">取下段 (a, b)：val ← (val·pw[a] + pw[a] − 1) mod p</text>
+  <text x="260" y="336" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">再 val ← val·pw[b] mod p（追加 a 个 1，再补 b 个 0）</text>
+
+  <!-- loop back to diamond -->
+  <path d="M 90 322 L 62 322 L 62 244 L 181 244" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <text x="260" y="360" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">排序 O(n log n) + 求值 O(L)，L = Σ(aᵢ+bᵢ) ≤ 2×10⁵</text>
+</svg>

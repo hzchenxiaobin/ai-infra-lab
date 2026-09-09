@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">流程：聚合 → HAVING 过滤 → 自连接找连续年 → 去重输出</text>
+
+  <!-- ===== 1. FROM ===== -->
+  <rect x="110" y="40" width="220" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="220" y="61" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Orders</text>
+  <path d="M 220 74 L 220 88" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 2. GROUP BY ===== -->
+  <rect x="90" y="92" width="260" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="111" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② GROUP BY product_id, YEAR(date)</text>
+  <text x="220" y="128" text-anchor="middle" font-size="10" fill="#555">COUNT(*) AS cnt</text>
+  <path d="M 220 142 L 220 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 3. HAVING decision ===== -->
+  <rect x="100" y="160" width="240" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="180" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">③ HAVING COUNT(*) ≥ 3 ?</text>
+  <text x="220" y="196" text-anchor="middle" font-size="9" fill="#888">该年订单数是否达 3 笔</text>
+  <!-- No branch -->
+  <path d="M 340 183 L 388 183" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="362" y="178" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="392" y="166" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="452" y="187" text-anchor="middle" font-size="9" fill="#b85450">丢弃该 (产品,年) 组</text>
+  <!-- Yes branch -->
+  <path d="M 220 206 L 220 220" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="232" y="216" font-size="9" fill="#4a7a3a">是</text>
+
+  <!-- ===== 4. JOIN ===== -->
+  <rect x="90" y="224" width="260" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="243" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ JOIN yearly b</text>
+  <text x="220" y="260" text-anchor="middle" font-size="10" fill="#555">ON a.product_id = b.product_id AND a.yr = b.yr − 1</text>
+  <path d="M 220 274 L 220 288" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 5. adjacent decision ===== -->
+  <rect x="110" y="292" width="220" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="312" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑤ 相邻年差 = 1 ?</text>
+  <text x="220" y="328" text-anchor="middle" font-size="9" fill="#888">两达标年是否恰好相差 1</text>
+  <!-- No branch -->
+  <path d="M 330 315 L 388 315" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="362" y="310" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="392" y="298" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="452" y="319" text-anchor="middle" font-size="9" fill="#b85450">不配对，跳过</text>
+  <!-- Yes branch -->
+  <path d="M 220 338 L 220 352" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="232" y="348" font-size="9" fill="#4a7a3a">是</text>
+
+  <!-- ===== 6. SELECT DISTINCT ===== -->
+  <rect x="100" y="356" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="377" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑥ SELECT DISTINCT product_id</text>
+
+  <!-- ===== output ===== -->
+  <path d="M 220 390 L 220 406" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="410" width="140" height="44" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="220" y="426" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">结果</text>
+  <line x1="150" y1="430" x2="290" y2="430" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="220" y="446" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">product_id = 1</text>
+
+  <!-- bottom note -->
+  <text x="270" y="464" text-anchor="middle" font-size="8" fill="#888">HAVING 早过滤缩表，自连接只在达标年之间配对</text>
+</svg>

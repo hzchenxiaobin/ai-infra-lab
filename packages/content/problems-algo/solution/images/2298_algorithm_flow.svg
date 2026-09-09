@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">一次表扫描 + 条件聚合 → 单行两列</text>
+
+  <!-- Box1: FROM Tasks -->
+  <rect x="140" y="40" width="240" height="46" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">FROM Tasks</text>
+  <text x="260" y="76" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">每行 = 一次任务提交 (submit_date)</text>
+
+  <!-- arrow to Box2 -->
+  <path d="M 260 86 L 260 108" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box2: DAYOFWEEK -->
+  <rect x="130" y="110" width="260" height="46" rx="8" fill="#fff" stroke="#888" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="130" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">DAYOFWEEK(submit_date)</text>
+  <text x="260" y="146" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">把日期映射成 1..7 的星期序号</text>
+
+  <!-- split arrows -->
+  <path d="M 260 156 L 260 168 L 140 168 L 140 178" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 260 156 L 260 168 L 380 168 L 380 178" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box3a: weekend SUM -->
+  <rect x="40" y="180" width="200" height="62" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="140" y="202" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">周末计数</text>
+  <text x="140" y="220" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">SUM(DOW IN (1, 7))</text>
+  <text x="140" y="234" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">AS weekend_tasks</text>
+
+  <!-- Box3b: working SUM -->
+  <rect x="280" y="180" width="200" height="62" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="380" y="202" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">工作日计数</text>
+  <text x="380" y="220" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">SUM(DOW BETWEEN 2 AND 6)</text>
+  <text x="380" y="234" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">AS working_days_tasks</text>
+
+  <!-- arrows to Box4 -->
+  <path d="M 140 242 L 140 268" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 380 242 L 380 268" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box4: output row -->
+  <rect x="80" y="270" width="360" height="50" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="288" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">单行结果（无 GROUP BY）</text>
+  <text x="200" y="306" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">weekend_tasks</text>
+  <text x="330" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">working_days_tasks</text>
+
+  <!-- bottom note -->
+  <text x="260" y="350" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">整表只扫一遍：两个 SUM 在同一次聚合中并行完成</text>
+</svg>

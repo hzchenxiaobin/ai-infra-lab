@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">区间 DP + Minimax 算法流程</text>
+
+  <!-- Step 1: init dp table -->
+  <rect x="170" y="44" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">① 开 dp 表 (n+2)×(n+2)，全置 0</text>
+  <text x="280" y="78" text-anchor="middle" font-size="10" fill="#888">哨兵覆盖 i&gt;j / i==j 的空/单点区间</text>
+
+  <path d="M 280 86 L 280 104" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: enumerate length -->
+  <rect x="150" y="108" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="12" fill="#333">② 按 len = 2 … n 枚举区间长度</text>
+  <text x="280" y="142" text-anchor="middle" font-size="10" fill="#4a7a3a">保证子区间已算好（区间 DP 通用范式）</text>
+
+  <path d="M 280 150 L 280 168" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: enumerate i -->
+  <rect x="170" y="172" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="192" text-anchor="middle" font-size="12" fill="#333">③ 对每个左端 i，令 j = i + len - 1</text>
+  <text x="280" y="206" text-anchor="middle" font-size="10" fill="#888">遍历所有长度为 len 的区间</text>
+
+  <path d="M 280 214 L 280 232" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: enumerate k -->
+  <rect x="150" y="236" width="260" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="256" text-anchor="middle" font-size="12" fill="#333">④ 枚举本轮猜的 k = i … j</text>
+  <text x="280" y="270" text-anchor="middle" font-size="10" fill="#888">对每个 k 算一次最坏代价</text>
+
+  <path d="M 280 278 L 280 296" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: transition (decision diamond-ish) -->
+  <rect x="80" y="300" width="400" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">⑤ worst = k + max( dp[i][k-1], dp[k+1][j] )</text>
+  <text x="280" y="342" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">dp[i][j] = min( dp[i][j], worst )</text>
+
+  <!-- loop back arrow from step 5 to step 4 -->
+  <path d="M 480 328 Q 520 328 520 256 Q 520 256 410 256" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="510" y="294" text-anchor="middle" font-size="10" fill="#888" transform="rotate(0 510 294)">k++</text>
+
+  <path d="M 280 360 L 280 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop back arrow from step 3 to step 2 -->
+  <path d="M 150 192 Q 60 192 60 128 Q 60 128 150 128" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="48" y="160" text-anchor="middle" font-size="10" fill="#888">i++</text>
+
+  <!-- loop back arrow from step 2 to step 1 (outer len loop) -->
+  <path d="M 410 128 Q 510 128 510 64 Q 510 64 390 64" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="520" y="96" text-anchor="middle" font-size="10" fill="#888">len++</text>
+
+  <!-- Step 6: return -->
+  <rect x="170" y="382" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="408" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">⑥ 返回 dp[1][n]</text>
+
+  <!-- complexity note -->
+  <rect x="100" y="432" width="360" height="22" fill="none" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="448" text-anchor="middle" font-size="11" fill="#888">时间 O(n³) · 空间 O(n²) · n ≤ 200</text>
+</svg>

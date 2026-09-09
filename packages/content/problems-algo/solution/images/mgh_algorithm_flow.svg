@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：轮廓线 DP 记忆化搜索</text>
+
+  <!-- ① 初始化 -->
+  <rect x="180" y="48" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① dfs(0, ic, ec, mask=0)</text>
+  <text x="280" y="84" text-anchor="middle" font-size="10" fill="#888">从第 0 格出发，轮廓线全空</text>
+
+  <line x1="280" y1="94" x2="280" y2="110" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 终止判定 -->
+  <polygon points="280,114 380,150 280,186 180,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">pos == m×n ?</text>
+  <text x="280" y="162" text-anchor="middle" font-size="10" fill="#888">所有格填完</text>
+
+  <!-- 是：返回 0 -->
+  <line x1="180" y1="150" x2="130" y2="150" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="135" y="144" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="30" y="128" width="100" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="148" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 0</text>
+  <text x="80" y="164" text-anchor="middle" font-size="10" fill="#888">基准情形</text>
+
+  <!-- 否：向下 -->
+  <line x1="280" y1="186" x2="280" y2="204" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="200" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- ③ memo 查询 -->
+  <rect x="170" y="208" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 查 memo[pos][ic][ec][mask]</text>
+  <text x="280" y="244" text-anchor="middle" font-size="10" fill="#888">命中则直接返回</text>
+
+  <line x1="280" y1="254" x2="280" y2="270" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 提取邻居 -->
+  <rect x="150" y="274" width="260" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="294" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ c = pos % n</text>
+  <text x="280" y="310" text-anchor="middle" font-size="11" fill="#555">top = mask 第 c 位, left = mask 第 c−1 位</text>
+
+  <line x1="280" y1="324" x2="280" y2="338" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 三选一 -->
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">⑤ 三种选择取 max</text>
+
+  <!-- 选择 0：空 -->
+  <rect x="40" y="360" width="150" height="56" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="380" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">留空</text>
+  <text x="115" y="396" text-anchor="middle" font-size="10" fill="#888">增量 = 0</text>
+  <text x="115" y="408" text-anchor="middle" font-size="10" fill="#888">mask[c] ← 0</text>
+
+  <!-- 选择 1：内向 -->
+  <rect x="205" y="360" width="150" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="380" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">放内向 (ic&gt;0)</text>
+  <text x="280" y="396" text-anchor="middle" font-size="10" fill="#555">+120+score[1][·]</text>
+  <text x="280" y="408" text-anchor="middle" font-size="10" fill="#888">mask[c] ← 1, ic−−</text>
+
+  <!-- 选择 2：外向 -->
+  <rect x="370" y="360" width="150" height="56" fill="#f3e8f5" stroke="#884488" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="380" text-anchor="middle" font-size="11" fill="#884488" font-weight="bold">放外向 (ec&gt;0)</text>
+  <text x="445" y="396" text-anchor="middle" font-size="10" fill="#555">+40+score[2][·]</text>
+  <text x="445" y="408" text-anchor="middle" font-size="10" fill="#888">mask[c] ← 2, ec−−</text>
+
+  <!-- 汇合箭头 -->
+  <path d="M 115 416 L 115 430 L 445 430 L 445 416" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <line x1="280" y1="430" x2="280" y2="444" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ 写 memo 返回 -->
+  <rect x="170" y="448" width="220" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="466" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑥ 写 memo, return best</text>
+</svg>

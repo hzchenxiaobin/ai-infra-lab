@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)" font-weight="bold">核心结构：Map + setTimeout 自动回收</text>
+
+  <!-- ===== Panel A: 正常写入与自动过期 ===== -->
+  <rect x="40" y="48" width="460" height="150" rx="8" fill="none" stroke="#446688" stroke-width="1.4" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="56" y="68" font-size="13" fill="#446688" filter="url(#rough2)" font-weight="bold">A. set(1, 42, 100)：写入 + 注册定时器</text>
+
+  <!-- Map box -->
+  <rect x="56" y="84" width="200" height="100" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="156" y="102" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)" font-weight="bold">Map</text>
+  <rect x="68" y="110" width="176" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="78" y="128" font-size="12" fill="#333" filter="url(#rough2)">1 → {42, ⏱100ms}</text>
+  <rect x="68" y="144" width="176" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="78" y="162" font-size="12" fill="#333" filter="url(#rough2)">2 → {7,  ⏱250ms}</text>
+
+  <!-- timer fires -->
+  <path d="M 272 124 C 320 110, 360 110, 396 124" fill="none" stroke="#b85450" stroke-width="2.2" stroke-dasharray="6 4" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="334" y="104" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">100ms 到期</text>
+  <rect x="402" y="112" width="86" height="32" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="445" y="133" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">delete 1</text>
+  <text x="445" y="170" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">count() 即 size</text>
+
+  <!-- ===== Panel B: 覆盖写入 ===== -->
+  <rect x="40" y="214" width="460" height="150" rx="8" fill="none" stroke="#446688" stroke-width="1.4" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="56" y="234" font-size="13" fill="#446688" filter="url(#rough2)" font-weight="bold">B. 再次 set(1, 50, 100)：clearTimeout 旧定时器再设新</text>
+
+  <!-- old timer cancelled -->
+  <rect x="56" y="250" width="150" height="40" rx="5" fill="#eeeeee" stroke="#999999" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="131" y="274" text-anchor="middle" font-size="12" fill="#999999" filter="url(#rough2)">旧 ⏱100ms</text>
+  <path d="M 60 254 L 202 286" stroke="#b85450" stroke-width="2.4" filter="url(#rough2)"/>
+  <path d="M 202 254 L 60 286" stroke="#b85450" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="131" y="308" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">clearTimeout(旧)</text>
+
+  <!-- new timer -->
+  <rect x="270" y="250" width="210" height="40" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="375" y="274" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">1 → {50, ⏱100ms 新}</text>
+  <text x="375" y="308" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">设新 timer，返回 true</text>
+
+  <!-- warning note -->
+  <rect x="56" y="328" width="430" height="28" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough)"/>
+  <text x="72" y="346" font-size="12" fill="#333" filter="url(#rough)">⚠️ 不 clearTimeout 旧 timer → 到期会误删新值</text>
+</svg>

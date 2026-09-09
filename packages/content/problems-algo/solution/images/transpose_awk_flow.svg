@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <rect width="900" height="380" fill="#fafafa"/>
+
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">awk 列累加流程：逐行读 → 按字段号累加到 s[i] → END 输出</text>
+  <path d="M 250 44 Q 450 52 650 44" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ① 读取行 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="80" width="140" height="70" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="110" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">① 读取第 NR 行</text>
+  <text x="110" y="124" text-anchor="middle" font-size="11" fill="#446688">awk 自动切字段</text>
+  <text x="110" y="140" text-anchor="middle" font-size="10" fill="#888">$1 $2 ... $NF</text>
+
+  <!-- 箭头 -->
+  <path d="M 180 115 L 222 115" stroke="#3a3a3a" stroke-width="1.8" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- ② 遍历字段 -->
+  <g filter="url(#sk)">
+    <rect x="225" y="80" width="150" height="70" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="300" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">② 遍历字段</text>
+  <text x="300" y="124" text-anchor="middle" font-size="11" fill="#d6a040">for i = 1 .. NF</text>
+  <text x="300" y="140" text-anchor="middle" font-size="10" fill="#888">逐个字段累加</text>
+
+  <!-- 箭头 -->
+  <path d="M 375 115 L 417 115" stroke="#3a3a3a" stroke-width="1.8" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- ③ 判定 + 累加（决策菱形 + 矩形） -->
+  <g filter="url(#sk)">
+    <polygon points="490,80 565,115 490,150 415,115" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="490" y="112" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">NR==1?</text>
+  <text x="490" y="128" text-anchor="middle" font-size="9" fill="#b85450">首行特殊</text>
+
+  <!-- 是 分支 -->
+  <text x="490" y="72" text-anchor="middle" font-size="10" fill="#2e6e2e">是</text>
+  <path d="M 490 80 L 490 64 L 620 64 L 620 86" stroke="#2e6e2e" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="560" y="86" width="120" height="50" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+  </g>
+  <text x="620" y="108" text-anchor="middle" font-size="11" fill="#2e6e2e">s[i] = $i</text>
+  <text x="620" y="124" text-anchor="middle" font-size="9" fill="#888">首行直接赋值</text>
+
+  <!-- 否 分支 -->
+  <text x="580" y="108" text-anchor="middle" font-size="10" fill="#b85450">否</text>
+  <path d="M 565 115 L 700 115" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="700" y="86" width="150" height="58" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+  </g>
+  <text x="775" y="110" text-anchor="middle" font-size="11" fill="#b85450">s[i] = s[i] " " $i</text>
+  <text x="775" y="126" text-anchor="middle" font-size="9" fill="#888">后续行空格拼接</text>
+  <text x="775" y="138" text-anchor="middle" font-size="9" fill="#888">列字符串逐行增长</text>
+
+  <!-- 汇合向下 -->
+  <path d="M 620 136 L 620 165 L 450 165 L 450 200" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+  <path d="M 775 144 L 775 165 L 450 165" stroke="#3a3a3a" stroke-width="1.6" fill="none" filter="url(#sk)"/>
+
+  <!-- 循环回边 -->
+  <text x="110" y="170" text-anchor="middle" font-size="10" fill="#888">（每行重复 ①②③）</text>
+  <path d="M 110 150 L 110 180 L 30 180 L 30 115 L 38 115" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- ④ END 输出 -->
+  <g filter="url(#sk)">
+    <rect x="350" y="200" width="200" height="70" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="450" y="224" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">④ END 块输出</text>
+  <text x="450" y="244" text-anchor="middle" font-size="11" fill="#446688">for i = 1 .. C</text>
+  <text x="450" y="260" text-anchor="middle" font-size="11" fill="#446688">print s[i]</text>
+
+  <!-- 箭头到输出预览 -->
+  <path d="M 450 270 L 450 296" stroke="#3a3a3a" stroke-width="1.8" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- 输出预览 -->
+  <g filter="url(#sk)">
+    <rect x="350" y="298" width="200" height="60" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.6"/>
+  </g>
+  <text x="450" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">name alice ryan</text>
+  <text x="450" y="338" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">age 21 30</text>
+  <text x="450" y="352" text-anchor="middle" font-size="9" fill="#888">✓ 转置结果</text>
+
+  <!-- s[] 状态侧栏 -->
+  <g filter="url(#sk)">
+    <rect x="640" y="200" width="240" height="160" rx="8" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.2" stroke-dasharray="4 3"/>
+  </g>
+  <text x="760" y="222" text-anchor="middle" font-size="12" font-weight="bold" fill="#555">s[] 列累加数组</text>
+  <text x="660" y="244" font-size="10" fill="#2b6e9e">s[1]: name → name alice → name alice ryan</text>
+  <text x="660" y="262" font-size="10" fill="#2e6e2e">s[2]: age → age 21 → age 21 30</text>
+  <text x="660" y="288" font-size="10" fill="#888">每个 s[i] 累积「原第 i 列」</text>
+  <text x="660" y="304" font-size="10" fill="#888">的所有字段，用空格拼接，</text>
+  <text x="660" y="320" font-size="10" fill="#888">最终 s[i] 恰为「输出第 i 行」。</text>
+  <text x="660" y="346" font-size="10" fill="#b85450">⚠️ NF 在 END 中保留末行值</text>
+</svg>

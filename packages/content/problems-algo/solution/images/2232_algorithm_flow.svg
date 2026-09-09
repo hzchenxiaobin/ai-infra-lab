@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：双重枚举切分点取最小</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#888">i 枚举 num1 切分（b 非空）· j 枚举 num2 切分（c 非空）</text>
+
+  <!-- Step 1: locate + -->
+  <rect x="40" y="56" width="440" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="74" font-size="10.5" fill="#446688" font-weight="bold">① 定位 +</text>
+  <text x="260" y="84" text-anchor="middle" font-size="11" fill="#333">找到 '+' 下标 p，拆出 num1 = expr[:p], num2 = expr[p+1:]</text>
+
+  <path d="M 260 102 L 260 118" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: outer loop i -->
+  <rect x="40" y="122" width="440" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="140" font-size="10.5" fill="#d6a040" font-weight="bold">② 外层：枚举左括号位置 i</text>
+  <text x="260" y="158" text-anchor="middle" font-size="11" fill="#333">i ∈ [0, len(num1)-1]：a = num1[:i]，b = num1[i:]（b 非空）</text>
+  <text x="260" y="172" text-anchor="middle" font-size="10" fill="#555">A = int(a) if a else 1；B = int(b)</text>
+
+  <path d="M 260 180 L 260 196" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: inner loop j -->
+  <rect x="40" y="200" width="440" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="218" font-size="10.5" fill="#4a7a3a" font-weight="bold">③ 内层：枚举右括号位置 j</text>
+  <text x="260" y="236" text-anchor="middle" font-size="11" fill="#333">j ∈ [1, len(num2)]：c = num2[:j]，d = num2[j:]（c 非空）</text>
+  <text x="260" y="250" text-anchor="middle" font-size="10" fill="#555">C = int(c)；D = int(d) if d else 1</text>
+
+  <path d="M 260 258 L 260 274" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: compute & compare -->
+  <rect x="40" y="278" width="280" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="296" font-size="10.5" fill="#b85450" font-weight="bold">④ 计算 + 更新最小</text>
+  <text x="180" y="314" text-anchor="middle" font-size="11" fill="#333">val = A × (B + C) × D</text>
+  <text x="180" y="328" text-anchor="middle" font-size="10" fill="#555">若 val &lt; best：best = val，ans = a+(+b++c+)+d</text>
+
+  <!-- decision: loop back -->
+  <path d="M 320 306 L 360 306" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="364" y="284" width="116" height="44" fill="#fafafa" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="300" text-anchor="middle" font-size="9.5" fill="#555">j 未遍历完?</text>
+  <text x="422" y="314" text-anchor="middle" font-size="9.5" fill="#555">是→回③</text>
+  <text x="422" y="324" text-anchor="middle" font-size="9.5" fill="#555">否→i 未完?回②</text>
+
+  <!-- back arrows -->
+  <path d="M 422 284 L 422 232 L 480 232 L 480 150 L 480 150" stroke="#4a7a3a" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 480 150 L 460 150" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 5: return -->
+  <path d="M 180 336 L 180 352" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="356" width="280" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="374" font-size="10.5" fill="#446688" font-weight="bold">⑤ 返回 ans</text>
+  <text x="200" y="378" text-anchor="middle" font-size="10.5" fill="#333">枚举完毕，返回最小值对应表达式</text>
+
+  <!-- complexity note -->
+  <rect x="340" y="356" width="140" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="372" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">组合 ≤ 25 对</text>
+  <text x="410" y="384" text-anchor="middle" font-size="9" fill="#555">O(len1 × len2) ≈ O(1)</text>
+</svg>

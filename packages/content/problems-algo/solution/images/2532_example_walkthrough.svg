@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="500" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：n=3, k=2, time=[[1,5,1,8],[10,10,10,10]]</text>
+  <text x="330" y="44" text-anchor="middle" font-size="10" fill="#666">效率键：w0=(1+1,0)=2 ；w1=(10+10,1)=20 → w1 更低效，优先过桥</text>
+
+  <!-- vertical timeline axis -->
+  <line x1="96" y1="66" x2="96" y2="438" stroke="#aaa" stroke-width="2" filter="url(#rough2)"/>
+
+  <!-- Row 1: t=0 -->
+  <ellipse cx="96" cy="82" rx="7" ry="7" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="86" text-anchor="end" font-size="10" fill="#446688" font-weight="bold">t=0</text>
+  <text x="112" y="80" font-size="10" fill="#333">左岸派最低效 <tspan font-weight="bold" fill="#b85450">w1</tspan> 过桥→右（right_1=10）</text>
+  <text x="112" y="93" font-size="9" fill="#888">waitL={w0}；inflight=1</text>
+
+  <!-- Row 2: t=10 -->
+  <ellipse cx="96" cy="128" rx="7" ry="7" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="132" text-anchor="end" font-size="10" fill="#446688" font-weight="bold">t=10</text>
+  <text x="112" y="126" font-size="10" fill="#333">w1 到右岸取箱（pick_1=10→t=20）；派 <tspan font-weight="bold" fill="#4a7a3a">w0</tspan> 过桥→右（right_0=1）</text>
+  <text x="112" y="139" font-size="9" fill="#888">inflight=2</text>
+
+  <!-- Row 3: t=16 -->
+  <ellipse cx="96" cy="174" rx="7" ry="7" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="178" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">t=16</text>
+  <text x="112" y="172" font-size="10" fill="#333">w0 取箱完→waitR；过桥←左（left_0=1→t=17）</text>
+  <text x="112" y="185" font-size="9" fill="#888">放箱 put_0=8 → t=25</text>
+
+  <!-- Row 4: t=17 ARRIVE highlight -->
+  <rect x="106" y="204" width="510" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <ellipse cx="96" cy="219" rx="8" ry="8" fill="#b85450" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="223" text-anchor="end" font-size="10" fill="#b85450" font-weight="bold">t=17</text>
+  <text x="120" y="223" font-size="10" fill="#b85450" font-weight="bold">第 1 箱到达桥左侧 ✓（arrived=1）</text>
+
+  <!-- Row 5: t=20..30 -->
+  <ellipse cx="96" cy="258" rx="7" ry="7" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="262" text-anchor="end" font-size="10" fill="#446688" font-weight="bold">t=20</text>
+  <text x="112" y="256" font-size="10" fill="#333">w1 取箱完→waitR；过桥←左（left_1=10→t=30）</text>
+  <text x="112" y="269" font-size="9" fill="#888">放箱 → t=40</text>
+
+  <rect x="106" y="284" width="510" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <ellipse cx="96" cy="299" rx="8" ry="8" fill="#b85450" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="303" text-anchor="end" font-size="10" fill="#b85450" font-weight="bold">t=30</text>
+  <text x="120" y="303" font-size="10" fill="#b85450" font-weight="bold">第 2 箱到达桥左侧 ✓（arrived=2）</text>
+
+  <!-- Row: t=25 dispatch w0 again -->
+  <ellipse cx="96" cy="338" rx="7" ry="7" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="342" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">t=25</text>
+  <text x="112" y="336" font-size="10" fill="#333">w0 放箱完→waitL；inflight 0&lt;3−2 → 派 <tspan font-weight="bold" fill="#4a7a3a">w0</tspan> 过桥→右（→t=31）取箱（→t=36）</text>
+
+  <!-- Row: t=36 -->
+  <ellipse cx="96" cy="382" rx="7" ry="7" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="386" text-anchor="end" font-size="10" fill="#446688" font-weight="bold">t=36</text>
+  <text x="112" y="380" font-size="10" fill="#333">w0 取箱完→waitR；过桥←左（left_0=1→t=37）</text>
+
+  <!-- Row: t=37 ANSWER -->
+  <rect x="106" y="412" width="510" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <ellipse cx="96" cy="429" rx="9" ry="9" fill="#b85450" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="58" y="433" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold">t=37</text>
+  <text x="120" y="434" font-size="11" fill="#b85450" font-weight="bold">第 3 箱到达桥左侧 ✓ arrived==n → 返回 37</text>
+
+  <!-- answer box -->
+  <rect x="24" y="458" width="612" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="478" font-size="11" fill="#9a6a20" font-weight="bold">最后到达时刻 = 37（注意：最后的 put_0 不计入，答案只看到达桥左侧）</text>
+</svg>

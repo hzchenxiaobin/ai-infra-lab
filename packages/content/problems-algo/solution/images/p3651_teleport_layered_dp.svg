@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 450" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr3651a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arr3651b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="450" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：传送边反向看 + 按值排序的后缀最小值</text>
+  <text x="260" y="38" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">dp[t][i][j] = min( 同层右/下 + g[i][j] , 值 ≥ g[i][j] 的上一层 dp 最小值 )</text>
+
+  <!-- ============ Panel 1: teleport rule + example ============ -->
+  <text x="24" y="62" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 传送 = 「往低处免费跳」（示例 1，k = 2）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="34" y="76" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <rect x="74" y="76" width="40" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="114" y="76" width="40" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="34" y="116" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <rect x="74" y="116" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <rect x="114" y="116" width="40" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="34" y="156" width="40" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="74" y="156" width="40" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="114" y="156" width="40" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4"/>
+    <text x="54" y="101" text-anchor="middle" font-size="12" fill="#333">1</text>
+    <text x="94" y="101" text-anchor="middle" font-size="12" fill="#333">3</text>
+    <text x="134" y="101" text-anchor="middle" font-size="12" fill="#333">3</text>
+    <text x="54" y="141" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <text x="94" y="141" text-anchor="middle" font-size="12" fill="#333">5</text>
+    <text x="134" y="141" text-anchor="middle" font-size="12" fill="#333">4</text>
+    <text x="54" y="181" text-anchor="middle" font-size="12" fill="#333">4</text>
+    <text x="94" y="181" text-anchor="middle" font-size="12" fill="#333">3</text>
+    <text x="134" y="181" text-anchor="middle" font-size="12" fill="#8a6d1f" font-weight="bold">5</text>
+    <path d="M 54 100 V 126" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651a)"/>
+    <text x="60" y="118" font-size="9" fill="#446688">付 2</text>
+    <path d="M 58 136 H 88" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651a)"/>
+    <text x="72" y="130" font-size="9" fill="#446688">付 5</text>
+    <path d="M 100 144 Q 134 154 132 166" stroke="#d6a040" stroke-width="2.2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr3651b)"/>
+    <text x="112" y="152" font-size="9.5" fill="#8a6d1f" font-weight="bold">免费!</text>
+    <text x="94" y="232" text-anchor="middle" font-size="9.5" fill="#555">起点 (0,0)，目标 (2,2)</text>
+  </g>
+
+  <g filter="url(#rough2)" font-size="10" fill="#555">
+    <text x="172" y="90">普通移动：→ / ↓</text>
+    <text x="172" y="106">成本 = 目标格的值</text>
+    <text x="172" y="130">传送：跳到任意</text>
+    <text x="172" y="146">值 ≤ 当前值 的格子</text>
+    <text x="172" y="162">成本 0，至多 k 次</text>
+    <text x="172" y="188" fill="#8a6d1f">示例1：1 →付2→ 2 →付5→ 5</text>
+    <text x="172" y="204" fill="#8a6d1f">再免费传到右下角 5 (≤ 5)</text>
+    <text x="172" y="226" fill="#2a5a2a" font-weight="bold">总成本 = 7 ✓</text>
+  </g>
+
+  <!-- ============ Panel 2: layered DP ============ -->
+  <text x="268" y="62" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② 分层 DP：层内右/下，跨层传送</text>
+
+  <g filter="url(#rough2)">
+    <rect x="292" y="76" width="196" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="390" y="95" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">层 t−1：dp[t−1] 已全部算好</text>
+    <text x="390" y="112" text-anchor="middle" font-size="9" fill="#666">传送源候选 = 所有值 ≥ g[i][j] 的格子</text>
+    <rect x="316" y="156" width="196" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8"/>
+    <text x="414" y="175" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">层 t：行优先填 dp[t][i][j]</text>
+    <text x="414" y="192" text-anchor="middle" font-size="9" fill="#555">→ ↓ 同层普通移动（付 g）</text>
+    <path d="M 346 128 Q 356 146 368 154" stroke="#d6a040" stroke-width="2.2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr3651b)"/>
+    <text x="300" y="146" font-size="9.5" fill="#8a6d1f" font-weight="bold">传送 +0</text>
+  </g>
+
+  <g filter="url(#rough2)" font-size="9.5" fill="#666">
+    <text x="292" y="222">跨层只从 t−1 读，层内只往右/下</text>
+    <text x="292" y="238" fill="#2a5a2a">⇒ 无环：按「层数 t + 行优先」归纳</text>
+  </g>
+
+  <!-- ============ Panel 3: sorted suffix min ============ -->
+  <text x="24" y="264" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">③ 传送边反向：进入 (i,j) 的最优源 = 值 ≥ g[i][j] 的格子里 dp[t−1] 最小者</text>
+
+  <g filter="url(#rough2)">
+    <rect x="100" y="276" width="244" height="40" fill="#fff8e1" stroke="none" rx="4"/>
+    <rect x="36" y="278" width="32" height="36" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="70" y="278" width="32" height="36" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4"/>
+    <rect x="104" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="138" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="172" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="206" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="240" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="274" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <rect x="308" y="278" width="32" height="36" fill="#ffffff" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="52" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">1</text>
+    <text x="52" y="308" text-anchor="middle" font-size="9" fill="#888">0</text>
+    <text x="86" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">2</text>
+    <text x="86" y="308" text-anchor="middle" font-size="9" fill="#888">2</text>
+    <text x="120" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">3</text>
+    <text x="120" y="308" text-anchor="middle" font-size="9" fill="#888">3</text>
+    <text x="154" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">3</text>
+    <text x="154" y="308" text-anchor="middle" font-size="9" fill="#888">6</text>
+    <text x="188" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">3</text>
+    <text x="188" y="308" text-anchor="middle" font-size="9" fill="#888">9</text>
+    <text x="222" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">4</text>
+    <text x="222" y="308" text-anchor="middle" font-size="9" fill="#888">10</text>
+    <text x="256" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">4</text>
+    <text x="256" y="308" text-anchor="middle" font-size="9" fill="#888">6</text>
+    <text x="290" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">5</text>
+    <text x="290" y="308" text-anchor="middle" font-size="9" fill="#888">7</text>
+    <text x="324" y="292" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">5</text>
+    <text x="324" y="308" text-anchor="middle" font-size="9" fill="#888">14</text>
+    <path d="M 104 322 H 340" stroke="#8a6d1f" stroke-width="1.6" fill="none" marker-end="url(#arr3651b)"/>
+    <text x="222" y="336" text-anchor="middle" font-size="9.5" fill="#8a6d1f">查询 v = 3 ⟹ 源 = 值 ≥ 3 的后缀，teleMin = min(3,6,9,10,6,7,14) = 3</text>
+  </g>
+
+  <g filter="url(#rough2)" font-size="9.5" fill="#555">
+    <text x="360" y="286">格子按值升序排好（上=值, 下=dp[t−1]）</text>
+    <text x="360" y="302">「值 ≥ v 的源集合」= 一段连续后缀</text>
+    <text x="360" y="318">suf 倒序一趟扫描：O(mn)</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="24" y="352" width="472" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="260" y="368" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">dp[t][i][j] = min( dp[t][i−1][j] + g , dp[t][i][j−1] + g , suf[lower_bound(vals, g[i][j])] )</text>
+    <text x="260" y="383" text-anchor="middle" font-size="9.5" fill="#2a5a2a">前两项同层（行优先可填），第三项跨层（只读上一层）</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="24" y="402" width="472" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="260" y="418" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">等值也能传（条件是 ≤）⟹ lower_bound 恰把值 = v 的格子含进后缀</text>
+    <text x="260" y="433" text-anchor="middle" font-size="10" fill="#8a6d1f">k ≤ 10、mn ≤ 6400 ⟹ 总复杂度 O(k · mn · log mn)，轻松通过</text>
+  </g>
+</svg>

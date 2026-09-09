@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="640" viewBox="0 0 860 640" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+  </defs>
+  <rect width="860" height="640" fill="#fdfcf7"/>
+  <text x="430" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">逐格贪心算法流程</text>
+  <path d="M 280 46 Q 430 54 580 46" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="430" y="72" text-anchor="middle" font-size="11.5" fill="#666">对每个下标 i ∈ [0, n-1] 执行以下步骤；n 格走完则成功，中途堆空则失败</text>
+
+  <!-- ===== 起点 ===== -->
+  <g filter="url(#sk)"><ellipse cx="430" cy="100" rx="90" ry="22" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="430" y="105" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e6e2e">for i = 0 … n-1</text>
+  <path d="M 430 124 L 430 150" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== Step 1: 释放冷却 ===== -->
+  <g filter="url(#sk)"><rect x="180" y="152" width="500" height="64" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="200" y="176" font-size="12.5" font-weight="bold" fill="#7a5415">① 释放冷却</text>
+  <text x="200" y="196" font-size="12" fill="#333">while 队列非空 且 队首.unlock ≤ i：</text>
+  <text x="200" y="210" font-size="12" fill="#333">　队首出队 → 推回就绪堆 ready</text>
+  <text x="600" y="196" font-size="10.5" fill="#888">FIFO：队首最早解锁</text>
+  <path d="M 430 218 L 430 244" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== Decision: 堆空? ===== -->
+  <g filter="url(#sk)"><polygon points="300,246 560,246 510,296 350,296" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="430" y="276" text-anchor="middle" font-size="13" font-weight="bold" fill="#b03a3a">就绪堆 ready 为空?</text>
+
+  <!-- Yes 分支：返回空串 -->
+  <path d="M 300 271 Q 150 271 130 320" stroke="#b03a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="180" y="262" font-size="12" fill="#b03a3a" font-weight="bold">是 →</text>
+  <g filter="url(#sk)"><rect x="40" y="324" width="180" height="68" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="130" y="350" text-anchor="middle" font-size="13" font-weight="bold" fill="#b03a3a">返回 ""</text>
+  <text x="130" y="370" text-anchor="middle" font-size="10.5" fill="#7a4a4a">无可用字符但仍有空格</text>
+  <text x="130" y="384" text-anchor="middle" font-size="10.5" fill="#7a4a4a">→ 必产生 idle → 无解</text>
+
+  <!-- No 分支 -->
+  <path d="M 560 271 Q 700 271 720 320" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="640" y="262" font-size="12" fill="#2e6e2e" font-weight="bold">否 ↓</text>
+
+  <!-- ===== Step 2: 弹堆顶 ===== -->
+  <g filter="url(#sk)"><rect x="560" y="324" width="260" height="68" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="580" y="348" font-size="12.5" font-weight="bold" fill="#2b6e9e">② 弹堆顶</text>
+  <text x="580" y="368" font-size="12" fill="#333">ch = ready.pop()  （剩余次数最多）</text>
+  <text x="580" y="384" font-size="12" fill="#333">result.append(ch)</text>
+  <path d="M 690 394 L 690 420" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== Decision: 剩余 > 0? ===== -->
+  <g filter="url(#sk)"><polygon points="560,422 820,422 770,464 610,464" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.6"/></g>
+  <text x="690" y="450" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#7a5415">cnt - 1 > 0?</text>
+
+  <!-- Yes 分支：入冷却 -->
+  <path d="M 820 443 Q 870 443 870 500 Q 870 540 760 540" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="852" y="480" font-size="11" fill="#7a5415" font-weight="bold">是 ↓</text>
+
+  <g filter="url(#sk)"><rect x="500" y="516" width="260" height="56" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="520" y="540" font-size="12.5" font-weight="bold" fill="#7a5415">③ 入冷却队列</text>
+  <text x="520" y="560" font-size="12" fill="#333">cooldown.push(cnt-1, ch, i+k)</text>
+
+  <!-- No 分支：直接跳过 -->
+  <path d="M 560 443 Q 470 443 470 510" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="470" y="480" font-size="11" fill="#888">否（用完）</text>
+
+  <!-- ===== 回到循环顶部 ===== -->
+  <path d="M 500 544 Q 280 544 280 420 Q 280 200 180 184" stroke="#2e6e2e" stroke-width="1.4" fill="none" marker-end="url(#ar)" stroke-dasharray="5 3" filter="url(#sk)"/>
+  <text x="240" y="460" font-size="11" fill="#2e6e2e" font-weight="bold">i++ 回到循环</text>
+
+  <!-- ===== 终点：返回结果 ===== -->
+  <path d="M 430 296 Q 430 580 430 600" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <g filter="url(#sk)"><ellipse cx="430" cy="616" rx="120" ry="18" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="430" y="621" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2e6e2e">n 格走完 → 返回 result</text>
+
+  <!-- 底部注释 -->
+  <text x="430" y="636" text-anchor="middle" font-size="10" fill="#888">走完所有 n 格 ⇔ 存在合法排列（充要条件）</text>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="30" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">
+    算法流程：建表 → 拆位查询
+  </text>
+
+  <!-- step 1 -->
+  <rect x="15" y="46" width="270" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="62" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">① 算层数 m：使 2^m &gt; k</text>
+  <text x="150" y="79" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">（k ≤ 10^10 → m ≤ 34）</text>
+  <path d="M150,86 L150,100" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <rect x="15" y="104" width="270" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="124" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">② 建表：pa[0][x] = sum[0][x] = receiver[x]</text>
+  <text x="150" y="144" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">递推 i = 1..m-1（两段 2^(i-1) 拼接）</text>
+  <path d="M150,154 L150,168" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="132" font-size="11" fill="#4a7a3a" filter="url(#rough2)">预处理 O(n log k)</text>
+
+  <!-- step 3 -->
+  <rect x="15" y="172" width="270" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="195" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">③ 枚举起点 x：total = x，cur = x</text>
+  <path d="M150,208 L150,222" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="150,226 240,262 150,298 60,262" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="150" y="258" text-anchor="middle" font-size="12" fill="#a07828" filter="url(#rough2)">k 的二进制</text>
+  <text x="150" y="275" text-anchor="middle" font-size="12" fill="#a07828" filter="url(#rough2)">还有位未处理？</text>
+
+  <!-- yes branch -->
+  <path d="M243,262 L326,262" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="284" y="254" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <rect x="330" y="228" width="178" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="419" y="247" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">④ 该位 = 1：</text>
+  <text x="419" y="264" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">total += sum[i][cur]</text>
+  <text x="419" y="281" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">cur = pa[i][cur]</text>
+
+  <!-- loop back -->
+  <path d="M419,228 C419,172 176,158 174,220" stroke="#4a7a3a" stroke-width="1.8" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="298" y="164" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">i 移向下一位</text>
+  <text x="419" y="316" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">一次跳跃 = 2^i 步</text>
+
+  <!-- no branch -->
+  <path d="M150,298 L150,312" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="162" y="310" font-size="12" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <!-- step 5 -->
+  <rect x="15" y="316" width="270" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="330" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">⑤ ans = max(ans, total)</text>
+  <text x="150" y="347" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">全部起点处理完 → 返回 ans</text>
+</svg>

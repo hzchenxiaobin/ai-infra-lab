@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="20" text-anchor="middle" font-size="14.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：一次预处理，每查询二分定位 + 三路候选</text>
+
+  <!-- ===== 预处理 ===== -->
+  <rect x="70" y="30" width="380" height="48" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="49" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">预处理（一次）：s → 游程 st[i] / len[i]（编号 0..K−1）</text>
+  <text x="260" y="67" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">预存 val[j] = len[j−1] + len[j+1]（内部 1 段，其余 0）→ ST 表；数 ones</text>
+
+  <path d="M 260 78 L 260 92" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 查询定位 ===== -->
+  <rect x="100" y="92" width="320" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="112" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">查询 [l, r]：二分定位 a = run(l)，b = run(r)</text>
+
+  <path d="M 260 124 L 260 140" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 判定菱形 ===== -->
+  <path d="M 260 140 L 350 172 L 260 204 L 170 172 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="169" text-anchor="middle" font-size="12" fill="#8a6d3a" font-weight="bold" filter="url(#rough2)">b − a ≥ 2 ?</text>
+  <text x="260" y="186" text-anchor="middle" font-size="8.5" fill="#8a6d3a" filter="url(#rough2)">窗口里有内部段吗</text>
+
+  <path d="M 350 172 L 380 172" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="362" y="164" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="380" y="152" width="130" height="40" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="445" y="169" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">gain = 0</text>
+  <text x="445" y="184" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">answer = ones（无段可牺牲）</text>
+
+  <text x="270" y="216" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 260 204 L 260 220" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 三路候选 ===== -->
+  <rect x="26" y="220" width="468" height="92" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="239" text-anchor="middle" font-size="11" fill="#8a6d3a" font-weight="bold" filter="url(#rough2)">三路候选：牺牲内部 1 段 j，Δ = 左右 0 段「窗口内长度」之和</text>
+  <text x="40" y="259" font-size="9.5" fill="#333" filter="url(#rough2)">① j = a+1（首个内部段）：左截断 (st[a]+len[a]−l) + len[a+2]；若 a+2 = b 改右截断</text>
+  <text x="40" y="279" font-size="9.5" fill="#333" filter="url(#rough2)">② j = b−1（末个内部段）：len[b−2] + 右截断 (r−st[b]+1)</text>
+  <text x="40" y="299" font-size="9.5" fill="#333" filter="url(#rough2)">③ a+2 ≤ j ≤ b−2（两侧 0 段完整）：ST 表 rangeMax(val[j]) 一把取出</text>
+
+  <path d="M 260 312 L 260 324" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 答案 ===== -->
+  <rect x="100" y="324" width="320" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="343" text-anchor="middle" font-size="12" fill="#2a5a2a" font-weight="bold" filter="url(#rough2)">answer = ones + max(0, ①, ②, ③)</text>
+</svg>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="780" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="390" y="26" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流水线：FROM → GROUP BY → HAVING → SELECT → ORDER BY</text>
+  <path d="M 190 34 Q 390 42 590 34" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Left: clause order note ===== -->
+  <g filter="url(#rough2)"><rect x="36" y="96" width="176" height="252" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/></g>
+  <text x="124" y="120" text-anchor="middle" font-size="11" fill="#a06a10" font-weight="bold">子句执行顺序</text>
+  <text x="56" y="146" font-size="11" fill="#a06a10">① FROM ✓</text>
+  <text x="56" y="172" font-size="11" fill="#b85450">② WHERE（本题不用！）</text>
+  <text x="56" y="198" font-size="11" fill="#a06a10">③ GROUP BY ✓</text>
+  <text x="56" y="224" font-size="11" fill="#a06a10">④ HAVING ✓</text>
+  <text x="56" y="250" font-size="11" fill="#a06a10">⑤ SELECT ✓</text>
+  <text x="56" y="276" font-size="11" fill="#a06a10">⑥ ORDER BY ✓</text>
+  <text x="56" y="306" font-size="10" fill="#b85450">⚠ 行级筛选用 WHERE（分组前）</text>
+  <text x="56" y="324" font-size="10" fill="#b85450">⚠ 组级断言只能用 HAVING（分组后）</text>
+
+  <!-- ===== Main pipeline ===== -->
+  <!-- Step 1: FROM -->
+  <g filter="url(#rough2)"><rect x="250" y="52" width="280" height="36" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8"/></g>
+  <text x="390" y="74" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① FROM UserActivity</text>
+  <path d="M 390 88 L 390 108" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY -->
+  <g filter="url(#rough2)"><rect x="250" y="110" width="280" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/></g>
+  <text x="390" y="126" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">② GROUP BY user_id</text>
+  <text x="390" y="141" text-anchor="middle" font-size="9" fill="#446688">20 行折叠成 4 组（每用户一组）</text>
+  <path d="M 390 146 L 390 164" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: HAVING diamond -->
+  <g filter="url(#rough2)"><polygon points="390,166 530,212 390,258 250,212" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6"/></g>
+  <text x="390" y="208" text-anchor="middle" font-size="12" fill="#a06a10" font-weight="bold">③ 组内存在 paid 行？</text>
+  <text x="390" y="226" text-anchor="middle" font-size="9" fill="#a06a10">HAVING SUM(type='paid') &gt; 0</text>
+
+  <!-- No branch: eliminated -->
+  <path d="M 530 212 L 596 212" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="552" y="204" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <g filter="url(#rough2)"><rect x="600" y="188" width="150" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6"/></g>
+  <text x="675" y="206" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">整组淘汰</text>
+  <text x="675" y="224" text-anchor="middle" font-size="9" fill="#b85450">用户 2：只有 trial + cancelled</text>
+
+  <!-- Yes branch -->
+  <path d="M 390 258 L 390 274" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="404" y="272" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Step 4: SELECT -->
+  <g filter="url(#rough2)"><rect x="250" y="276" width="280" height="54" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/></g>
+  <text x="390" y="296" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">④ SELECT 两路条件聚合 + ROUND(,2)</text>
+  <text x="390" y="314" text-anchor="middle" font-size="9" fill="#4a7a3a">AVG(CASE free_trial) → trial_avg_duration</text>
+  <text x="390" y="326" text-anchor="middle" font-size="9" fill="#4a7a3a">AVG(CASE paid) → paid_avg_duration</text>
+  <path d="M 390 330 L 390 348" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: ORDER BY -->
+  <g filter="url(#rough2)"><rect x="250" y="350" width="280" height="36" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8"/></g>
+  <text x="390" y="372" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑤ ORDER BY user_id（升序输出 3 行）</text>
+
+  <!-- ===== Right bottom: output preview ===== -->
+  <g filter="url(#rough2)"><rect x="600" y="286" width="150" height="100" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6"/></g>
+  <text x="675" y="304" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">结果（3 行）</text>
+  <text x="616" y="326" font-size="10" fill="#4a8edb">1</text>
+  <text x="636" y="326" font-size="10" fill="#4a8edb">45.00</text>
+  <text x="700" y="326" font-size="10" fill="#4a8edb">76.67</text>
+  <text x="616" y="346" font-size="10" fill="#d6a040">3</text>
+  <text x="636" y="346" font-size="10" fill="#d6a040">70.00</text>
+  <text x="700" y="346" font-size="10" fill="#d6a040">63.33</text>
+  <text x="616" y="366" font-size="10" fill="#4a7a3a">4</text>
+  <text x="636" y="366" font-size="10" fill="#4a7a3a">37.50</text>
+  <text x="700" y="366" font-size="10" fill="#4a7a3a">45.00</text>
+  <text x="675" y="384" text-anchor="middle" font-size="8" fill="#999">trial_avg | paid_avg</text>
+  <path d="M 534 302 C 570 300 580 296 596 294" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom note ===== -->
+  <g filter="url(#rough2)"><rect x="36" y="366" width="200" height="46" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/></g>
+  <text x="136" y="384" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">反例：WHERE type='paid' ？</text>
+  <text x="136" y="400" text-anchor="middle" font-size="9" fill="#b85450">trial 行全被删，试用平均永远算不出</text>
+</svg>

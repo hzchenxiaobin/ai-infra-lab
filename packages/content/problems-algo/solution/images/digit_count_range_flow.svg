@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <text x="310" y="20" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：前缀差外壳 + 逐位循环（含 d=0 前导零分支）</text>
+
+  <!-- Start -->
+  <rect x="220" y="34" width="180" height="26" rx="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="51" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输入 d, low, high</text>
+  <line x1="310" y1="60" x2="310" y2="72" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- main formula -->
+  <rect x="190" y="74" width="240" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="91" text-anchor="middle" font-size="11" fill="#333">answer = count(d, high) − count(d, low−1)</text>
+  <line x1="310" y1="100" x2="310" y2="112" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- count(d,n) init -->
+  <rect x="170" y="114" width="280" height="26" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="310" y="131" text-anchor="middle" font-size="11" fill="#333">count(d, n)：n≤0 返回 0；ans=0, factor=1</text>
+  <line x1="310" y1="140" x2="310" y2="152" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- diamond factor<=n? -->
+  <polygon points="310,154 372,176 310,198 248,176" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="180" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">factor ≤ n ?</text>
+  <!-- No branch -->
+  <line x1="372" y1="176" x2="468" y2="176" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="420" y="170" text-anchor="middle" font-size="9" fill="#888">否</text>
+  <rect x="470" y="162" width="110" height="26" rx="13" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="525" y="179" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">return ans</text>
+  <!-- Yes branch -->
+  <line x1="310" y1="198" x2="310" y2="210" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="324" y="206" font-size="9" fill="#888">是</text>
+
+  <!-- split high/cur/low -->
+  <rect x="170" y="212" width="280" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="229" text-anchor="middle" font-size="10" fill="#333">拆分 high = n/(factor×10), cur, low</text>
+  <line x1="310" y1="238" x2="310" y2="250" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- diamond d==0? -->
+  <polygon points="310,252 372,274 310,296 248,274" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="278" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">d == 0 ?</text>
+  <!-- No (left) -->
+  <line x1="248" y1="274" x2="165" y2="274" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="206" y="268" text-anchor="middle" font-size="9" fill="#888">否 (d≠0)</text>
+  <line x1="165" y1="274" x2="165" y2="296" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Yes (right) -->
+  <line x1="372" y1="274" x2="455" y2="274" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="412" y="268" text-anchor="middle" font-size="9" fill="#888">是 (d=0)</text>
+  <line x1="455" y1="274" x2="455" y2="296" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Left panel: d != 0 -->
+  <rect x="40" y="298" width="250" height="92" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="165" y="316" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">d ≠ 0：按 cur 与 d 比较</text>
+  <text x="55" y="338" font-size="11" fill="#333">cur &lt; d → high × factor</text>
+  <text x="55" y="358" font-size="11" fill="#333">cur = d → high×factor+low+1</text>
+  <text x="55" y="378" font-size="11" fill="#333">cur &gt; d → (high+1) × factor</text>
+
+  <!-- Right panel: d == 0 -->
+  <rect x="330" y="298" width="250" height="92" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="455" y="316" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">d = 0：前导零处理</text>
+  <text x="345" y="338" font-size="11" fill="#333">high=0 → 0（跳过）</text>
+  <text x="345" y="358" font-size="10" fill="#333">high≥1,cur=0: (high−1)×factor+low+1</text>
+  <text x="345" y="378" font-size="11" fill="#333">high≥1,cur&gt;0: high × factor</text>
+
+  <!-- converge to bottom -->
+  <line x1="165" y1="390" x2="165" y2="402" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="455" y1="390" x2="455" y2="402" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="120" y="404" width="380" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="422" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">ans += 贡献；factor *= 10 ↑ 回到「factor ≤ n」</text>
+</svg>

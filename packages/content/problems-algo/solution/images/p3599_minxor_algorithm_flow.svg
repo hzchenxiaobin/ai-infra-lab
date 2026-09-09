@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="470" fill="#fafafa"/>
+
+  <text x="260" y="18" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：三重循环的划分 DP（O(n²k)）</text>
+
+  <!-- ============ main chain ============ -->
+  <g filter="url(#rough2)">
+    <rect x="46" y="30" width="350" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="221" y="48" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold">① 预处理 pre[i+1] = pre[i] ⊕ nums[i]</text>
+
+    <rect x="46" y="76" width="350" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="221" y="94" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold">② 初始化 dp[0][0] = 0，其余 +∞</text>
+
+    <rect x="46" y="122" width="350" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="221" y="140" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold">③ 枚举 i = 1..n（最后一段的右端）</text>
+
+    <rect x="46" y="168" width="350" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="221" y="186" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold">④ 枚举 j = 1..min(i, k)（段数）</text>
+
+    <rect x="46" y="214" width="350" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="221" y="232" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold">⑤ 枚举 t = j−1..i−1（最后一段的左端）</text>
+
+    <rect x="46" y="264" width="340" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4"/>
+    <text x="216" y="281" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold">⑥ cur = max( dp[t][j−1] , pre[i] ⊕ pre[t] )</text>
+    <text x="216" y="296" text-anchor="middle" font-size="8.5" fill="#8a6d1f">「前 t 个分 j−1 段」与「新末段」取大 = 该分割的最坏段</text>
+
+    <rect x="46" y="326" width="340" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="216" y="343" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">⑦ dp[i][j] = min( dp[i][j] , cur )</text>
+    <text x="216" y="358" text-anchor="middle" font-size="8.5" fill="#2a5a2a">在所有分割点 t 里挑「最大段异或」最小的一个</text>
+
+    <rect x="46" y="410" width="350" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="10"/>
+    <text x="221" y="432" text-anchor="middle" font-size="12" fill="#2a5a2a" font-weight="bold">⑧ 返回 dp[n][k]</text>
+  </g>
+
+  <!-- ============ down arrows of main chain ============ -->
+  <g filter="url(#rough2)">
+    <path d="M 221 58 L 221 72" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 221 104 L 221 118" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 221 150 L 221 164" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 221 196 L 221 210" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 221 242 L 221 260" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 221 304 L 221 322" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ============ diamonds & loop-backs ============ -->
+  <g filter="url(#rough2)">
+    <!-- D1: t done? -->
+    <polygon points="455,320 493,346 455,372 417,346" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="455" y="343" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">t 走完？</text>
+    <text x="455" y="354" text-anchor="middle" font-size="7.5" fill="#b85450">(t = i−1)</text>
+
+    <path d="M 386 346 L 415 346" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+
+    <!-- D1 no: next t, back to 5 -->
+    <path d="M 455 320 L 455 228 L 397 228" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="461" y="284" font-size="8.5" fill="#b85450" font-weight="bold">否：t+1</text>
+
+    <!-- D1 yes: down to D2 -->
+    <path d="M 455 372 L 455 402" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="462" y="392" font-size="8.5" fill="#b85450" font-weight="bold">是</text>
+
+    <!-- D2: more (i,j)? -->
+    <polygon points="455,404 493,430 455,456 417,430" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="455" y="427" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">还有</text>
+    <text x="455" y="437" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">(i,j)？</text>
+
+    <!-- D2 no: into final node 8 -->
+    <path d="M 417 430 L 397 430" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="408" y="420" text-anchor="end" font-size="8.5" fill="#b85450" font-weight="bold">否</text>
+
+    <!-- D2 yes: far right elbow back to 3 -->
+    <path d="M 493 430 L 508 430 L 508 136 L 397 136" fill="none" stroke="#b85450" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrR)"/>
+    <text x="498" y="418" text-anchor="end" font-size="8.5" fill="#b85450" font-weight="bold">是</text>
+    <text x="505" y="126" text-anchor="end" font-size="8.5" fill="#b85450" font-weight="bold">是：取下一组 (i, j)</text>
+  </g>
+</svg>

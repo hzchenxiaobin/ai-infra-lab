@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="340" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">Promise 对象池：n 个执行槽位 + FIFO 待执行队列，槽位一空就补队头</text>
+
+  <!-- Pending queue (left) -->
+  <rect x="24" y="120" width="150" height="160" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="99" y="108" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">待执行队列 (FIFO)</text>
+  <rect x="40" y="138" width="118" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="99" y="154" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">f₂  ← 队头</text>
+  <rect x="40" y="170" width="118" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="99" y="186" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">f₃</text>
+  <rect x="40" y="202" width="118" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="99" y="218" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">f₄</text>
+  <text x="99" y="252" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">…</text>
+
+  <!-- arrow queue -> pool -->
+  <path d="M 174 200 L 232 200" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="203" y="192" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">补位</text>
+
+  <!-- Pool with n=2 slots -->
+  <rect x="238" y="120" width="180" height="160" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="328" y="108" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">并发池 (n = 2)</text>
+  <rect x="254" y="138" width="148" height="56" fill="#fff" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="328" y="160" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">槽位 A：f₀ running</text>
+  <text x="328" y="180" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">↳ resolve → 补 f₂</text>
+  <rect x="254" y="208" width="148" height="56" fill="#fff" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="328" y="230" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">槽位 B：f₁ running</text>
+  <text x="328" y="250" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">↳ resolve → 补 f₃</text>
+
+  <!-- arrow pool -> done -->
+  <path d="M 418 200 L 476 200" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="447" y="192" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">完成</text>
+
+  <!-- Done collector -->
+  <rect x="478" y="120" width="138" height="160" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="547" y="108" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">已完成</text>
+  <text x="547" y="170" text-anchor="middle" font-size="26" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">✓</text>
+  <text x="547" y="200" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">completed++</text>
+  <text x="547" y="230" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">completed == total</text>
+  <text x="547" y="248" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">→ resolve()</text>
+
+  <!-- bottom note -->
+  <rect x="24" y="296" width="592" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="317" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">不变式：任意时刻 running ≤ n；谁先 resolve 谁先腾槽，补队列里最早的待执行函数</text>
+</svg>

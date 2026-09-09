@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+  <rect width="900" height="480" fill="#fdfcf7"/>
+
+  <text x="450" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">循环节检测与三段跳跃求和</text>
+  <path d="M 270 42 Q 450 50 630 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- state machine: states as circles -->
+  <text x="80" y="82" font-size="13" font-weight="bold" fill="#2b6e9e">状态机（s2pos 取值 0 ~ |s2|−1）</text>
+
+  <!-- pre-cycle states -->
+  <g filter="url(#sk)">
+    <circle cx="130" cy="130" r="22" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.6"/>
+  </g>
+  <text x="130" y="135" text-anchor="middle" font-size="12" fill="#2b6e9e">0</text>
+  <g filter="url(#sk)">
+    <circle cx="230" cy="130" r="22" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.6"/>
+  </g>
+  <text x="230" y="135" text-anchor="middle" font-size="12" fill="#2b6e9e">p₁</text>
+  <path d="M 152 130 L 206 130" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="179" y="120" text-anchor="middle" font-size="10" fill="#888">第 0 轮</text>
+
+  <!-- cycle states -->
+  <g filter="url(#sk2)">
+    <circle cx="350" cy="130" r="24" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+  </g>
+  <text x="350" y="135" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">pₐ</text>
+  <text x="350" y="172" text-anchor="middle" font-size="10" fill="#b85450">cycleStart</text>
+
+  <g filter="url(#sk2)">
+    <circle cx="450" cy="130" r="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+  </g>
+  <text x="450" y="135" text-anchor="middle" font-size="11" fill="#b85450">·</text>
+  <g filter="url(#sk2)">
+    <circle cx="540" cy="130" r="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+  </g>
+  <text x="540" y="135" text-anchor="middle" font-size="11" fill="#b85450">·</text>
+  <g filter="url(#sk2)">
+    <circle cx="630" cy="130" r="24" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+  </g>
+  <text x="630" y="135" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">pₐ</text>
+  <text x="630" y="172" text-anchor="middle" font-size="10" fill="#b85450">重复 → 发现循环节</text>
+
+  <path d="M 274 130 L 324 130" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 374 130 L 426 130" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arR)" filter="url(#sk2)"/>
+  <path d="M 472 130 L 516 130" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arR)" filter="url(#sk2)"/>
+  <path d="M 562 130 L 604 130" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arR)" filter="url(#sk2)"/>
+
+  <!-- cycle loop arrow back -->
+  <path d="M 630 106 Q 490 60 350 106" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="5 3" marker-end="url(#arR)" filter="url(#sk2)"/>
+  <text x="490" y="70" text-anchor="middle" font-size="11" fill="#b85450">循环节长度 cycleLen，每圈匹配 cycleCount 个 s2</text>
+
+  <!-- tail state -->
+  <g filter="url(#sk)">
+    <circle cx="750" cy="130" r="22" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/>
+  </g>
+  <text x="750" y="135" text-anchor="middle" font-size="12" fill="#2e6e2e">pₐ₊₁</text>
+  <text x="750" y="172" text-anchor="middle" font-size="10" fill="#4a7a3a">尾段</text>
+  <path d="M 654 130 L 726 130" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- three segments -->
+  <text x="80" y="220" font-size="13" font-weight="bold" fill="#2b2b2b">把 n1 轮分为三段：</text>
+
+  <!-- prefix -->
+  <g filter="url(#sk)">
+    <rect x="80" y="234" width="170" height="60" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="165" y="256" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">前缀</text>
+  <text x="165" y="274" text-anchor="middle" font-size="11" fill="#444">cycleStart 轮</text>
+  <text x="165" y="288" text-anchor="middle" font-size="11" fill="#444">贡献 C_cycleStart</text>
+
+  <!-- cycle -->
+  <g filter="url(#sk2)">
+    <rect x="280" y="234" width="300" height="60" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+  </g>
+  <text x="430" y="256" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">循环节 × numCycles</text>
+  <text x="430" y="274" text-anchor="middle" font-size="11" fill="#444">numCycles = ⌊(n1−cycleStart)/cycleLen⌋</text>
+  <text x="430" y="288" text-anchor="middle" font-size="11" fill="#444">贡献 numCycles × cycleCount</text>
+
+  <!-- tail -->
+  <g filter="url(#sk)">
+    <rect x="610" y="234" width="210" height="60" rx="8" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.4"/>
+  </g>
+  <text x="715" y="256" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">尾段</text>
+  <text x="715" y="274" text-anchor="middle" font-size="11" fill="#444">postReps = 余数</text>
+  <text x="715" y="288" text-anchor="middle" font-size="11" fill="#444">增量 C_{a+postReps}−C_a</text>
+
+  <!-- formula box -->
+  <g filter="url(#sk)">
+    <rect x="80" y="320" width="740" height="60" rx="10" fill="#fffdf3" stroke="#d6a040" stroke-width="1.4"/>
+  </g>
+  <text x="450" y="346" text-anchor="middle" font-size="13" fill="#7a5415">三段求和（前缀与尾段增量的 C_a 抵消，简化为）：</text>
+  <text x="450" y="368" text-anchor="middle" font-size="14" font-weight="bold" fill="#b85450">totalCount = C_{cycleStart+postReps} + numCycles × cycleCount</text>
+
+  <!-- pigeonhole note -->
+  <g filter="url(#sk2)">
+    <rect x="80" y="400" width="740" height="60" rx="10" fill="#f5f9fd" stroke="#4a8edb" stroke-dasharray="5 3" stroke-width="1.3"/>
+  </g>
+  <text x="100" y="424" font-size="12" font-weight="bold" fill="#2b6e9e">鸽笼原理：</text>
+  <text x="200" y="424" font-size="12" fill="#444">s2pos 仅 |s2| 种取值 → 至多模拟 |s2|+1 轮必现重复状态</text>
+  <text x="200" y="446" font-size="12" fill="#444">模拟阶段耗时 O(|s1|·|s2|)，与 n1 无关；之后 O(1) 跳跃求和</text>
+</svg>

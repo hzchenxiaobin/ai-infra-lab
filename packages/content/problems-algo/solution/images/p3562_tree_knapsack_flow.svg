@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 540"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="540" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：后序 DFS + 树上分组背包</text>
+
+  <!-- 开始 -->
+  <rect x="210" y="36" width="100" height="28" rx="9" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="55" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">开始</text>
+  <path d="M 260 64 L 260 80" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- DFS 初始化 -->
+  <rect x="140" y="82" width="240" height="42" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="100" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">DFS(u)：初始化</text>
+  <text x="260" y="117" text-anchor="middle" font-size="11.5" fill="#666" filter="url(#rough2)">g₀ = g₁ = 全 0（B+1 维，「花费 ≤ j」）</text>
+  <path d="M 260 124 L 260 140" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 菱形：还有孩子？ -->
+  <polygon points="260,142 356,174 260,206 164,174" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="170" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">还有未合并的</text>
+  <text x="260" y="186" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">孩子 v？</text>
+
+  <!-- 是 -> 右侧合并框 -->
+  <path d="M 356 174 L 378 174" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="362" y="166" font-size="11" fill="#a07818" filter="url(#rough2)">是</text>
+  <rect x="380" y="140" width="134" height="108" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="447" y="160" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">fv0, fv1 = dfs(v)</text>
+  <text x="447" y="176" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">（递归 · 后序）</text>
+  <text x="447" y="194" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">g₀ = merge(g₀, fv0)</text>
+  <text x="447" y="210" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">g₁ = merge(g₁, fv1)</text>
+  <text x="447" y="228" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">每次合并 O(B²)</text>
+  <path d="M 447 138 C 447 118, 340 126, 276 138" fill="none" stroke="#446688" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="372" y="118" font-size="10" fill="#446688" filter="url(#rough2)">合并完一个孩子后继续判断</text>
+
+  <!-- 否 -> 组装 -->
+  <path d="M 260 206 L 260 226" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="268" y="222" font-size="11" fill="#666" filter="url(#rough2)">否</text>
+
+  <rect x="110" y="228" width="300" height="98" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="248" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">组装两条线（cf = 全价, ch = ⌊cf/2⌋）</text>
+  <text x="260" y="268" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">f₀[j] = max(g₀[j], fut−cf + g₁[j−cf])</text>
+  <text x="260" y="286" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">f₁[j] = max(g₀[j], fut−ch + g₁[j−ch])</text>
+  <text x="260" y="304" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">⚠ 负利润分支也保留 max，不能剪！</text>
+  <text x="260" y="320" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">（fut = future[u]）</text>
+  <path d="M 260 326 L 260 346" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 返回 -->
+  <rect x="195" y="348" width="130" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <rect x="199" y="352" width="122" height="28" rx="6" fill="none" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="260" y="371" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">返回 (f₀, f₁)</text>
+
+  <!-- merge 说明框 -->
+  <rect x="30" y="416" width="216" height="106" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="138" y="438" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">merge(a, b)：背包卷积</text>
+  <text x="138" y="458" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">tmp[j+k] = max(·, a[j]+b[k])</text>
+  <text x="138" y="476" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">再做一遍前缀 max</text>
+  <text x="138" y="494" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">⇒「总花费 ≤ j」语义</text>
+  <text x="138" y="512" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">数组恒非负，无 −∞ 哨兵</text>
+
+  <!-- 根答案框 -->
+  <rect x="272" y="428" width="226" height="82" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="385" y="452" text-anchor="middle" font-size="12" fill="#a07818" filter="url(#rough2)">最后在根节点取答案：</text>
+  <text x="385" y="474" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">ans = f[1][0][budget]</text>
+  <text x="385" y="496" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">（根没有父 ⇒ b = 0）</text>
+
+  <path d="M 260 384 C 260 404, 200 410, 150 416" fill="none" stroke="#446688" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 290 384 C 320 402, 350 412, 378 428" fill="none" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrO)" filter="url(#rough2)"/>
+</svg>

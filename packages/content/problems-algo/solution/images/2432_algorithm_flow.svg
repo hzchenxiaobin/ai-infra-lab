@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：单遍扫描，差分算 dur，维护 maxDur / ans</text>
+
+  <!-- ① Input -->
+  <rect x="195" y="42" width="150" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="64" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 输入 n, logs</text>
+  <line x1="270" y1="76" x2="270" y2="94" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② Init -->
+  <rect x="140" y="98" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="115" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② prev = 0; maxDur = -1; ans = -1</text>
+  <text x="270" y="129" text-anchor="middle" font-size="9.5" fill="#888">（prev 即 leaveTime[-1] = 0）</text>
+  <line x1="270" y1="138" x2="270" y2="156" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ◇ D0: i < m ? -->
+  <polygon points="270,160 360,200 270,240 180,200" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="196" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">i &lt; m ?</text>
+  <text x="270" y="210" text-anchor="middle" font-size="9.5" fill="#888">（还有未处理任务）</text>
+
+  <!-- No branch (right) → return -->
+  <line x1="360" y1="200" x2="416" y2="200" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="388" y="194" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="416" y="182" width="110" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="471" y="199" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑥ return</text>
+  <text x="471" y="213" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">ans</text>
+
+  <!-- Yes branch (down) -->
+  <line x1="270" y1="240" x2="270" y2="258" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="284" y="252" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- ③ take task + diff -->
+  <rect x="160" y="262" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="279" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ [id, leave] = logs[i]</text>
+  <text x="270" y="295" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">dur = leave - prev</text>
+  <line x1="270" y1="302" x2="270" y2="318" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ compare & update (three-way process box) -->
+  <rect x="110" y="322" width="320" height="72" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="340" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">④ 比较 &amp; 更新</text>
+  <text x="125" y="356" font-size="10.5" fill="#4a7a3a" font-weight="bold">dur &gt; maxDur →</text>
+  <text x="232" y="356" font-size="10.5" fill="#333">maxDur = dur; ans = id</text>
+  <text x="125" y="370" font-size="10.5" fill="#d6a040" font-weight="bold">dur == maxDur →</text>
+  <text x="232" y="370" font-size="10.5" fill="#333">ans = min(ans, id)  ⚠ 平局取小</text>
+  <text x="125" y="384" font-size="10.5" fill="#b85450" font-weight="bold">dur &lt; maxDur →</text>
+  <text x="232" y="384" font-size="10.5" fill="#333">不变</text>
+  <line x1="270" y1="394" x2="270" y2="410" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ prev = leave; i++ -->
+  <rect x="170" y="414" width="200" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="431" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">⑤ prev = leave; i++</text>
+  <text x="270" y="446" text-anchor="middle" font-size="9.5" fill="#888">（更新上一任务结束时刻）</text>
+
+  <!-- loop-back: from ⑤ bottom up the left side to D0 -->
+  <path d="M 170 433 L 70 433 L 70 200 L 178 200" fill="none" stroke="#446688" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="70" y="316" text-anchor="middle" font-size="9.5" fill="#888">下一任务</text>
+</svg>

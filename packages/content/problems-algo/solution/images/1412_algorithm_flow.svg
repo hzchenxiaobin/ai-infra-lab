@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">SQL 逻辑流程：排除极端 → 筛参加考试 → 排序输出</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">三步走：找极端学生集合 → 从 Student 表中排除 → 只留参加了考试的</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="64" width="540" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="64" width="36" height="64" rx="8" fill="#446688" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="102" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">①</text>
+  <text x="90" y="84" font-size="12" fill="#446688" font-weight="bold">每个考试的极值：GROUP BY exam_id + MAX / MIN</text>
+  <text x="90" y="102" font-size="10" fill="#666" font-family="'Courier New', monospace">SELECT exam_id, MAX(score) AS max_s, MIN(score) AS min_s FROM Exam GROUP BY exam_id</text>
+  <text x="90" y="120" font-size="10" fill="#888">→ 产出：exam 10{max:90, min:70} · exam 20{max:80, min:80} · exam 30{max:90, min:70} · exam 40{max:80, min:60}</text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M 310 130 L 310 148" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="152" width="540" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="152" width="36" height="64" rx="8" fill="#d6a040" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="190" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">②</text>
+  <text x="90" y="172" font-size="12" fill="#d6a040" font-weight="bold">标记极端学生：JOIN Exam + WHERE score = max OR score = min</text>
+  <text x="90" y="190" font-size="10" fill="#666" font-family="'Courier New', monospace">SELECT e.student_id FROM Exam e JOIN mm m ON e.exam_id=m.exam_id WHERE e.score=m.max_s OR e.score=m.min_s</text>
+  <text x="90" y="208" font-size="10" fill="#888">→ 极端学生集合 = { 1, 3, 4 }（stu 1 四次全极端 · stu 3 考试 10 max · stu 4 考试 30/40 max）</text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M 310 218 L 310 236" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="40" y="240" width="540" height="64" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="240" width="36" height="64" rx="8" fill="#b85450" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="278" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">③</text>
+  <text x="90" y="260" font-size="12" fill="#b85450" font-weight="bold">双重过滤：NOT IN 极端集合 + IN 参加考试集合</text>
+  <text x="90" y="278" font-size="10" fill="#666" font-family="'Courier New', monospace">WHERE student_id NOT IN (extreme) AND student_id IN (SELECT DISTINCT student_id FROM Exam)</text>
+  <text x="90" y="296" font-size="10" fill="#888">→ Student {1,2,3,4,5} − 极端{1,3,4} − 未考{5} = { 2 }</text>
+
+  <!-- Arrow 3→4 -->
+  <path d="M 310 306 L 310 324" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="40" y="328" width="540" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="40" y="328" width="36" height="56" rx="8" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="362" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">④</text>
+  <text x="90" y="348" font-size="12" fill="#4a7a3a" font-weight="bold">排序输出：ORDER BY student_id</text>
+  <text x="90" y="366" font-size="10" fill="#888">→ 最终结果：student_id = 2, student_name = 'Jade'</text>
+
+  <!-- Key insight box -->
+  <rect x="40" y="400" width="540" height="48" rx="8" fill="#fafafa" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="60" y="422" font-size="11" fill="#444" font-weight="bold">💡 两个过滤条件缺一不可</text>
+  <text x="60" y="440" font-size="10" fill="#888">NOT IN 排除极端学生（含独自考试的）；IN (DISTINCT) 排除从未参加考试的学生（如 stu 5）。两者交集 = 中游学生。</text>
+</svg>

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN 子查询 vs 窗口函数</text>
+
+  <!-- ===== Left column: JOIN approach ===== -->
+  <text x="150" y="52" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">解法 A：子查询 JOIN</text>
+
+  <!-- Step ① -->
+  <rect x="40" y="62" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="78" font-size="9" fill="#446688" font-weight="bold">① 子查询 avg</text>
+  <text x="50" y="94" font-size="8.5" fill="#333">SELECT event_type, AVG(occ) avg_occ</text>
+  <text x="170" y="94" font-size="8.5" fill="#333">FROM Events GROUP BY event_type</text>
+
+  <path d="M150 104 L150 118" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step ② -->
+  <rect x="40" y="120" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="136" font-size="9" fill="#4a7a3a" font-weight="bold">② JOIN + WHERE</text>
+  <text x="50" y="152" font-size="8.5" fill="#333">Events e JOIN avg a ON e.event_type=a.event_type</text>
+  <text x="80" y="164" font-size="8" fill="#b85450">WHERE e.occ &gt; a.avg_occ</text>
+
+  <path d="M150 168 L150 182" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step ③ -->
+  <rect x="40" y="184" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="200" font-size="9" fill="#d6a040" font-weight="bold">③ GROUP BY + HAVING</text>
+  <text x="50" y="216" font-size="8.5" fill="#333">GROUP BY business_id</text>
+  <text x="80" y="228" font-size="8" fill="#b85450">HAVING COUNT(*) &gt; 1</text>
+
+  <path d="M150 228 L150 242" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="60" y="244" width="180" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="264" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">SELECT business_id</text>
+
+  <rect x="40" y="284" width="220" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="300" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">特点</text>
+  <text x="50" y="314" font-size="8" fill="#333">• 两趟扫描：子查询聚合 + JOIN</text>
+  <text x="50" y="328" font-size="8" fill="#333">• 逻辑分层清晰：算均值→比较→计数</text>
+  <text x="50" y="342" font-size="8" fill="#333">• 兼容所有数据库版本</text>
+
+  <!-- ===== Right column: Window function approach ===== -->
+  <text x="410" y="52" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">解法 B：窗口函数</text>
+
+  <!-- Step ① -->
+  <rect x="300" y="62" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="78" font-size="9" fill="#d6a040" font-weight="bold">① 行级打标 is_above</text>
+  <text x="310" y="94" font-size="8.5" fill="#333">occ &gt; AVG(occ) OVER (</text>
+  <text x="310" y="106" font-size="8" fill="#333">PARTITION BY event_type) AS is_above</text>
+
+  <path d="M410 112 L410 126" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step ② -->
+  <rect x="300" y="128" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="144" font-size="9" fill="#4a7a3a" font-weight="bold">② WHERE 筛超均值行</text>
+  <text x="310" y="160" font-size="8.5" fill="#333">FROM (子查询) WHERE is_above = 1</text>
+
+  <path d="M410 172 L410 186" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step ③ -->
+  <rect x="300" y="188" width="220" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="204" font-size="9" fill="#b85450" font-weight="bold">③ GROUP BY + HAVING</text>
+  <text x="310" y="220" font-size="8.5" fill="#333">GROUP BY business_id</text>
+  <text x="310" y="232" font-size="8" fill="#b85450">HAVING COUNT(*) &gt; 1</text>
+
+  <path d="M410 232 L410 246" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="320" y="248" width="180" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="410" y="268" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">SELECT business_id</text>
+
+  <rect x="300" y="284" width="220" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="410" y="300" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">特点</text>
+  <text x="310" y="314" font-size="8" fill="#333">• 单趟扫描：窗口函数行级计算</text>
+  <text x="310" y="328" font-size="8" fill="#333">• 无需 JOIN，代码更简洁</text>
+  <text x="310" y="342" font-size="8" fill="#333">• 需 MySQL 8.0+ / 支持 OVER 子句</text>
+
+  <!-- ===== Bottom: SQL logical execution order ===== -->
+  <rect x="40" y="356" width="480" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="374" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">SQL 逻辑执行顺序（关键！）</text>
+  <text x="60" y="392" font-size="9" fill="#333"><tspan fill="#446688" font-weight="bold">FROM</tspan> → <tspan fill="#d6a040" font-weight="bold">JOIN</tspan> → <tspan fill="#b85450" font-weight="bold">WHERE</tspan> → <tspan fill="#4a7a3a" font-weight="bold">GROUP BY</tspan> → <tspan fill="#b85450" font-weight="bold">HAVING</tspan> → <tspan fill="#446688" font-weight="bold">SELECT</tspan> → ORDER BY</text>
+  <text x="60" y="410" font-size="8.5" fill="#888">窗口函数在 GROUP BY/HAVING 之后、SELECT 之前计算 → 必须包裹子查询才能用 WHERE 过滤窗口函数结果</text>
+</svg>

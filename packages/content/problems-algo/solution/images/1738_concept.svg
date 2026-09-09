@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">二维前缀异或：容斥全部变成 XOR</text>
+
+  <!-- 列标号 0..4 -->
+  <text x="133" y="62" text-anchor="middle" font-size="10" fill="#999">c=0</text>
+  <text x="177" y="62" text-anchor="middle" font-size="10" fill="#999">1</text>
+  <text x="221" y="62" text-anchor="middle" font-size="10" fill="#999">2</text>
+  <text x="265" y="62" text-anchor="middle" font-size="10" fill="#999">3</text>
+  <text x="309" y="62" text-anchor="middle" font-size="10" fill="#999">4</text>
+
+  <!-- 行标号 0..4 -->
+  <text x="98" y="98" text-anchor="end" font-size="10" fill="#999">r=0</text>
+  <text x="98" y="142" text-anchor="end" font-size="10" fill="#999">1</text>
+  <text x="98" y="186" text-anchor="end" font-size="10" fill="#999">2</text>
+  <text x="98" y="230" text-anchor="end" font-size="10" fill="#999">3</text>
+  <text x="98" y="274" text-anchor="end" font-size="10" fill="#999">4</text>
+
+  <!-- 网格背景 -->
+  <rect x="112" y="72" width="220" height="220" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <!-- 网格线（竖） -->
+  <path d="M156 72 V292 M200 72 V292 M244 72 V292 M288 72 V292" stroke="#d8d8d8" stroke-width="1" filter="url(#rough2)"/>
+  <!-- 网格线（横） -->
+  <path d="M112 116 H332 M112 160 H332 M112 204 H332 M112 248 H332" stroke="#d8d8d8" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- 左上角重叠块 pref[i-1][j-1] 绿色（行0..2, 列0..2） -->
+  <rect x="112" y="72" width="132" height="132" fill="#e6f4ea" opacity="0.85" filter="url(#rough2)"/>
+  <text x="178" y="142" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">pref[i-1][j-1]</text>
+  <text x="178" y="156" text-anchor="middle" font-size="9" fill="#4a7a3a">重叠块（被 XOR 两次）</text>
+
+  <!-- 上方块 pref[i-1][j] 蓝色描边（行0..2, 列0..3 的右半露出的部分） -->
+  <rect x="244" y="72" width="44" height="132" fill="#e8f0fe" opacity="0.85" filter="url(#rough2)"/>
+  <text x="266" y="142" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">上方</text>
+  <text x="266" y="156" text-anchor="middle" font-size="8" fill="#446688">pref[i-1][j]</text>
+
+  <!-- 左方块 pref[i][j-1] 橙色描边（行0..3, 列0..2 下半露出的部分） -->
+  <rect x="112" y="204" width="132" height="44" fill="#fff8e1" opacity="0.85" filter="url(#rough2)"/>
+  <text x="178" y="230" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">左方 pref[i][j-1]</text>
+
+  <!-- 当前格 matrix[i][j] 红色 -->
+  <rect x="244" y="204" width="44" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="266" y="222" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">matrix</text>
+  <text x="266" y="234" text-anchor="middle" font-size="8" fill="#b85450">[i][j]</text>
+
+  <!-- (i,j) 坐标标注 -->
+  <text x="300" y="196" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">(i, j)</text>
+  <path d="M296 200 L270 212" stroke="#b85450" stroke-width="1.2" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- 公式框 -->
+  <rect x="36" y="312" width="488" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="338" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">二维前缀异或递推公式</text>
+  <text x="280" y="364" text-anchor="middle" font-size="13" fill="#444">
+    <tspan fill="#b85450" font-weight="bold">matrix[i][j]</tspan>
+    <tspan fill="#333">  ^  </tspan>
+    <tspan fill="#446688" font-weight="bold">pref[i-1][j]</tspan>
+    <tspan fill="#333">  ^  </tspan>
+    <tspan fill="#d6a040" font-weight="bold">pref[i][j-1]</tspan>
+    <tspan fill="#333">  ^  </tspan>
+    <tspan fill="#4a7a3a" font-weight="bold">pref[i-1][j-1]</tspan>
+  </text>
+  <text x="280" y="388" text-anchor="middle" font-size="10" fill="#888">加法版是 +A+B−C（重叠减一次）；XOR 自逆 → 重叠 ^ 两次归零，再 ^ 一次补回</text>
+</svg>

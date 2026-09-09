@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">maxProfit：位掩码 DP 流程</text>
+
+  <!-- A 建 pre -->
+  <rect x="80" y="36" width="170" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="56" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">由 edges 建 pre[v] 前驱掩码</text>
+
+  <!-- B 初始化 -->
+  <rect x="80" y="88" width="170" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="108" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">dp[0] = 0，其余初始化为 −1</text>
+
+  <!-- C 菱形 mask 范围 -->
+  <polygon points="165,132 240,158 165,184 90,158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="162" text-anchor="middle" font-size="11" fill="#8a6d3a" filter="url(#rough2)">mask &lt; 2ⁿ ?</text>
+
+  <!-- D 菱形 可达性 -->
+  <polygon points="165,212 240,238 165,264 90,238" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="242" text-anchor="middle" font-size="11" fill="#8a6d3a" filter="url(#rough2)">dp[mask] ≥ 0 ?</text>
+
+  <!-- E pos -->
+  <rect x="80" y="296" width="170" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="316" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">pos = popcount(mask) + 1</text>
+
+  <!-- F 松弛 -->
+  <rect x="315" y="282" width="185" height="56" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="407" y="302" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">对每个可放 v：</text>
+  <text x="407" y="318" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">松弛 dp[mask|1&lt;&lt;v] ←</text>
+  <text x="407" y="332" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">dp[mask] + score[v]·pos</text>
+
+  <!-- G mask++ -->
+  <rect x="315" y="182" width="185" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="407" y="206" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">mask ← mask + 1</text>
+
+  <!-- H 返回 -->
+  <rect x="315" y="88" width="185" height="44" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="407" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">返回 dp[2ⁿ − 1]</text>
+  <text x="407" y="124" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">（必可达：DAG 必有拓扑序）</text>
+
+  <!-- 连线 -->
+  <path d="M 165 68 L 165 86" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 165 120 L 165 130" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <path d="M 165 184 L 165 210" fill="none" stroke="#d6a040" stroke-width="2" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="176" y="202" font-size="9.5" fill="#8a6d3a" filter="url(#rough2)">是</text>
+
+  <!-- C 否 → H -->
+  <path d="M 240 158 L 280 158 L 280 110 L 313 110" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="286" y="150" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">否：枚举完毕</text>
+
+  <!-- D 是 → E -->
+  <path d="M 165 264 L 165 294" fill="none" stroke="#d6a040" stroke-width="2" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="176" y="284" font-size="9.5" fill="#8a6d3a" filter="url(#rough2)">是</text>
+
+  <!-- D 否 → G -->
+  <path d="M 240 238 L 290 238 L 290 202 L 313 202" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="230" font-size="9.5" fill="#446688" filter="url(#rough2)">否：跳过</text>
+  <text x="296" y="252" font-size="8.5" fill="#888" filter="url(#rough2)">（非前缀封闭）</text>
+
+  <!-- E → F -->
+  <path d="M 250 312 L 313 312" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arrr)" filter="url(#rough2)"/>
+
+  <!-- F → G -->
+  <path d="M 407 282 L 407 224" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="415" y="256" font-size="9" fill="#446688" filter="url(#rough2)">该 mask 的可放节点处理完</text>
+
+  <!-- G → C（带跳线） -->
+  <path d="M 407 182 L 407 126 L 288 126 A 8 8 0 0 0 272 126 L 165 126 L 165 130" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="118" font-size="9.5" fill="#446688" filter="url(#rough2)">下一个 mask</text>
+
+  <!-- 底部注释 -->
+  <text x="165" y="348" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">mask 升序枚举 ⇒ mask|1&lt;&lt;v 恒大于 mask：先被转移、后被枚举</text>
+  <text x="440" y="360" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">时间 O(2ⁿ·n)，空间 O(2ⁿ)</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="460" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：四堆事件模拟 + 效率大根堆</text>
+
+  <!-- init -->
+  <rect x="200" y="40" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="58" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">初始化</text>
+  <text x="330" y="72" text-anchor="middle" font-size="9" fill="#4a7a3a">k 人入 waitL；cur=picked=arrived=inflight=0</text>
+  <path d="M 330 80 L 330 96" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- drain step -->
+  <rect x="150" y="98" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="116" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① 回收就绪工人（ready ≤ cur）</text>
+  <text x="330" y="132" text-anchor="middle" font-size="9" fill="#446688">pickR→waitR（inflight−1, picked+1）；pickL→waitL</text>
+  <path d="M 330 148 L 330 164" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision diamond: waitR? -->
+  <path d="M 330 168 L 410 206 L 330 244 L 250 206 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="330" y="204" text-anchor="middle" font-size="10" fill="#9a6a20" font-weight="bold">waitR 非空？</text>
+  <text x="330" y="218" text-anchor="middle" font-size="9" fill="#9a6a20">（右岸有人待回）</text>
+
+  <!-- YES branch -->
+  <path d="M 410 206 L 500 206" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="450" y="200" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="500" y="176" width="146" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="573" y="194" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">取最低效 i</text>
+  <text x="573" y="208" text-anchor="middle" font-size="9" fill="#b85450">cur+=left_i</text>
+  <text x="573" y="220" text-anchor="middle" font-size="9" fill="#b85450">arrived++</text>
+  <text x="573" y="232" text-anchor="middle" font-size="9" fill="#b85450">arrived==n? 返回</text>
+
+  <!-- NO branch -->
+  <path d="M 250 206 L 160 206" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="205" y="200" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">否</text>
+
+  <!-- second decision -->
+  <path d="M 160 210 L 90 248 L 160 286 L 230 248 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="160" y="246" text-anchor="middle" font-size="9" fill="#9a6a20" font-weight="bold">waitL非空且</text>
+  <text x="160" y="260" text-anchor="middle" font-size="9" fill="#9a6a20" font-weight="bold">inflight&lt;n−picked?</text>
+
+  <!-- dispatch YES -->
+  <path d="M 160 286 L 160 312" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="175" y="302" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="60" y="314" width="200" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="160" y="332" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">取最低效 i</text>
+  <text x="160" y="346" text-anchor="middle" font-size="9" fill="#4a7a3a">cur+=right_i；inflight++</text>
+  <text x="160" y="360" text-anchor="middle" font-size="9" fill="#4a7a3a">pickR.push(cur+pick_i)</text>
+
+  <!-- dispatch NO -->
+  <path d="M 90 248 L 60 248 L 60 314" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="40" y="284" font-size="9" fill="#888" font-weight="bold">否</text>
+  <rect x="300" y="314" width="300" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="332" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">桥空闲：跳到下一事件</text>
+  <text x="450" y="346" text-anchor="middle" font-size="9" fill="#446688">cur = min(pickR.top.ready,</text>
+  <text x="450" y="360" text-anchor="middle" font-size="9" fill="#446688">           pickL.top.ready)</text>
+
+  <!-- loop back arrow -->
+  <path d="M 160 376 Q 60 410 60 120 Q 60 100 150 122" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="70" y="404" font-size="9" fill="#666">回到①</text>
+
+  <!-- heaps legend -->
+  <rect x="300" y="392" width="340" height="58" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="312" y="410" font-size="9" fill="#555" font-weight="bold">四个堆</text>
+  <text x="312" y="424" font-size="9" fill="#555">waitL / waitR：大根堆，键=(l+r, i)，大者低效先出</text>
+  <text x="312" y="438" font-size="9" fill="#555">pickL / pickR：小根堆，键=ready_time（取箱/放箱中）</text>
+</svg>

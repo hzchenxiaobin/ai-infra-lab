@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M 0 0 L 4 7 L 8 0 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">一次扫描算法流程：数「战舰头」</text>
+
+  <!-- Start -->
+  <ellipse cx="230" cy="60" rx="120" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="230" y="64" text-anchor="middle" font-size="12" fill="#333">开始：count = 0</text>
+
+  <path d="M 230 80 L 230 96" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond 1: 还有单元格? -->
+  <polygon points="230,98 330,128 230,158 130,128" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="124" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">还有单元格?</text>
+  <text x="230" y="142" text-anchor="middle" font-size="10.5" fill="#777">行优先遍历 (i, j)</text>
+
+  <!-- No -> return count -->
+  <path d="M 330 128 L 404 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="368" y="120" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <ellipse cx="450" cy="128" rx="56" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="450" y="132" text-anchor="middle" font-size="12" fill="#333">return count</text>
+
+  <!-- Yes -> decision -->
+  <path d="M 230 158 L 230 176" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="244" y="172" font-size="11" fill="#82b366" font-weight="bold">是</text>
+
+  <!-- Diamond 2: 是战舰头? -->
+  <polygon points="230,178 350,214 230,250 110,214" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="210" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">是战舰头?</text>
+  <text x="230" y="228" text-anchor="middle" font-size="10" fill="#777">X 且 上方左方均无 X</text>
+
+  <!-- No -> 跳过 -->
+  <path d="M 350 214 L 404 214" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="378" y="206" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="404" y="198" width="92" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="220" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">跳过</text>
+
+  <!-- Yes -> count++ -->
+  <path d="M 230 250 L 230 268" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="244" y="264" font-size="11" fill="#82b366" font-weight="bold">是</text>
+  <rect x="170" y="270" width="120" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="292" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">count++</text>
+
+  <!-- 跳过 box -> down to merge -->
+  <path d="M 450 232 L 450 318" stroke="#666" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <path d="M 450 318 L 290 318" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- count++ -> 下一格 box -->
+  <path d="M 230 304 L 230 318" stroke="#666" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+
+  <!-- 下一格 box -->
+  <rect x="170" y="320" width="120" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="341" text-anchor="middle" font-size="11.5" fill="#333">下一个 (i, j)</text>
+
+  <!-- loop back: from 下一格 box up to diamond1 -->
+  <path d="M 170 336 L 60 336 L 60 128 L 130 128" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="50" y="232" text-anchor="middle" font-size="9.5" fill="#888" transform="rotate(-90 50 232)">继续扫描</text>
+
+  <!-- footer -->
+  <text x="260" y="392" text-anchor="middle" font-size="11" fill="#888">只看「上方 + 左方」两格 → 无需 visited、不改 board，O(mn) 时间 / O(1) 空间</text>
+  <text x="260" y="408" text-anchor="middle" font-size="10.5" fill="#aaa">（题目保证战舰不相邻，故「上方/左方无 X」即可判定为头）</text>
+</svg>

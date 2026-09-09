@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#6a9acc"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="430" fill="#fafafa"/>
+
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：先全取短位数，再贴上界逐位枚举 + 掩码</text>
+
+  <!-- step 1: shorter digits -->
+  <rect x="30" y="40" width="520" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="62" text-anchor="middle" font-size="12.5" fill="#2f5a26">① 累加位数 k=1..L−1 的全自由排列：ans += 9 × P(9, k−1)</text>
+  <text x="290" y="78" text-anchor="middle" font-size="10.5" fill="#888">位数少于 L 的数一定 &lt; n，全部计入</text>
+
+  <!-- step 2: init mask -->
+  <rect x="200" y="100" width="180" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="123" text-anchor="middle" font-size="12.5" fill="#7a5a20">② used = 0（掩码清空）</text>
+
+  <path d="M 290 138 L 290 158" stroke="#6a9acc" stroke-width="2" fill="none" marker-end="url(#ar)" filter="url(#rough2)"/>
+
+  <!-- step 3: loop header -->
+  <rect x="120" y="162" width="340" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="185" text-anchor="middle" font-size="12.5" fill="#2b4a66">③ 遍历每一位 i = 0..L−1，设当前位数字 cur = s[i]</text>
+
+  <path d="M 290 200 L 290 216" stroke="#6a9acc" stroke-width="2" fill="none" marker-end="url(#ar)" filter="url(#rough2)"/>
+
+  <!-- step 4: try smaller unused digits -->
+  <rect x="30" y="220" width="280" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="240" text-anchor="middle" font-size="11.5" fill="#2b4a66">d 从 (首位 1 / 其余 0) 到 cur−1：</text>
+  <text x="170" y="258" text-anchor="middle" font-size="11" fill="#555">若 d 未用过 → ans += P(10−已用数, L−1−i)</text>
+  <text x="170" y="273" text-anchor="middle" font-size="10" fill="#888">「该位取更小未用数」× 剩余位排列</text>
+
+  <!-- step 5: place cur / check used -->
+  <rect x="330" y="220" width="220" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="240" text-anchor="middle" font-size="11.5" fill="#7a3a36">cur 已用过？</text>
+  <text x="440" y="258" text-anchor="middle" font-size="11" fill="#555">是 → break（n 不特殊）</text>
+  <text x="440" y="273" text-anchor="middle" font-size="11" fill="#555">否 → used |= 1&lt;&lt;cur，进下一位</text>
+
+  <path d="M 170 280 L 170 300 L 440 300 L 440 280" stroke="#6a9acc" stroke-width="1.6" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+
+  <path d="M 290 300 L 290 318" stroke="#6a9acc" stroke-width="2" fill="none" marker-end="url(#ar)" filter="url(#rough2)"/>
+
+  <!-- step 6: n itself -->
+  <rect x="150" y="322" width="280" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="347" text-anchor="middle" font-size="12.5" fill="#7a5a20">④ 若未 break：n 各位互异 → ans += 1</text>
+
+  <path d="M 290 364 L 290 382" stroke="#6a9acc" stroke-width="2" fill="none" marker-end="url(#ar)" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="210" y="386" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="408" text-anchor="middle" font-size="13" fill="#2f5a26" font-weight="bold">返回 ans</text>
+</svg>

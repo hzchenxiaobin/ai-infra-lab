@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="500" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 执行流程：JOIN → GROUP BY → HAVING 条件聚合</text>
+
+  <!-- Step 1: JOIN Product -->
+  <text x="40" y="58" font-size="11.5" fill="#888">① Sales JOIN Product — 用 product_id 桥接拿到 product_name</text>
+  <rect x="40" y="66" width="520" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="88" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">FROM Sales s JOIN Product p ON s.product_id = p.product_id</text>
+  <text x="300" y="106" text-anchor="middle" font-size="10.5" fill="#555">每行带上 product_name（S8 / G4 / iPhone），才能按商品名判定</text>
+
+  <path d="M 300 124 L 300 144" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY buyer_id -->
+  <text x="40" y="158" font-size="11.5" fill="#888">② GROUP BY buyer_id — 每个买家合并为一组</text>
+  <rect x="50" y="166" width="500" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="188" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">GROUP BY buyer_id</text>
+  <text x="300" y="204" text-anchor="middle" font-size="10.5" fill="#555">买家 1 的所有购买行 → 一组；买家 3 的所有购买行 → 一组……</text>
+
+  <path d="M 300 218 L 300 238" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: HAVING conditional aggregation -->
+  <text x="40" y="252" font-size="11.5" fill="#888">③ HAVING — 条件聚合同时判定「有 S8」且「无 iPhone」</text>
+  <rect x="50" y="260" width="500" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="282" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">HAVING SUM(CASE WHEN p.product_name='S8' THEN 1 ELSE 0 END) &gt; 0</text>
+  <text x="300" y="300" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">   AND SUM(CASE WHEN p.product_name='iPhone' THEN 1 ELSE 0 END) = 0</text>
+  <text x="300" y="320" text-anchor="middle" font-size="10.5" fill="#555">SUM(CASE…) 在每组内数「该商品出现次数」</text>
+  <text x="300" y="336" text-anchor="middle" font-size="10.5" fill="#555">&gt;0 = 买过；=0 = 没买过 → 两条件同时满足才保留该组</text>
+
+  <path d="M 300 354 L 300 374" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="310" y="369" font-size="10" fill="#888">输出</text>
+
+  <!-- Result -->
+  <rect x="50" y="378" width="500" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="400" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">SELECT buyer_id</text>
+  <text x="300" y="416" text-anchor="middle" font-size="10.5" fill="#555">结果 = 买过 S8 且从未买过 iPhone 的 buyer_id 集合</text>
+
+  <!-- Key insight box -->
+  <rect x="40" y="442" width="520" height="48" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="462" font-size="11" fill="#555" font-weight="bold">💡 为什么一条 HAVING 就够？</text>
+  <text x="60" y="478" font-size="10.5" fill="#888">CASE 把「商品名」翻译成 0/1 计数，SUM 聚合后即「该买家买过几次某商品」，</text>
+  <text x="60" y="490" font-size="10.5" fill="#888">两个条件 AND 连起来 = 一次扫描同时判定「有 A 无 B」，无需写两个子查询。</text>
+</svg>

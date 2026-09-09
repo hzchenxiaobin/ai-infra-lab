@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">分层图 Dijkstra 流程</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">状态 (v,c)；同层付权 w，跨层付权 0 且 c+1</text>
+
+  <!-- 1. init -->
+  <rect x="70" y="64" width="300" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="82" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">初始化</text>
+  <text x="220" y="97" text-anchor="middle" font-size="10" fill="#666">dist[s][0]=0，其余 ∞；堆 ← (0, s, 0)</text>
+
+  <path d="M 220 104 L 220 122" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. diamond: heap empty? -->
+  <polygon points="220,124 300,162 220,200 140,162" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="220" y="159" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">堆空？</text>
+  <text x="220" y="173" text-anchor="middle" font-size="9" fill="#666">(还有状态未处理)</text>
+
+  <!-- yes -> terminate -->
+  <path d="M 300 162 L 360 162" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="318" y="156" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="360" y="142" width="180" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="160" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">汇总答案</text>
+  <text x="450" y="176" text-anchor="middle" font-size="9" fill="#666">ans = min_c dist[d][c]</text>
+  <text x="450" y="187" text-anchor="middle" font-size="9" fill="#666">全 ∞ → 返回 -1</text>
+
+  <!-- no -> down -->
+  <path d="M 220 200 L 220 218" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="226" y="214" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- 3. pop -->
+  <rect x="80" y="220" width="280" height="36" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="220" y="243" text-anchor="middle" font-size="11" fill="#444">弹出 (cost, v, c)（最小代价优先）</text>
+
+  <path d="M 220 256 L 220 272" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4. diamond: stale? -->
+  <polygon points="220,274 300,310 220,346 140,310" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="220" y="307" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">cost &gt; dist[v][c]？</text>
+  <text x="220" y="321" text-anchor="middle" font-size="9" fill="#666">（旧记录）</text>
+
+  <!-- yes -> loop back up to heap empty (right side) -->
+  <path d="M 300 310 L 350 310 L 350 162 L 300 162" stroke="#b85450" stroke-width="1.3" fill="none"
+        stroke-dasharray="5 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="354" y="240" font-size="10" fill="#b85450" font-weight="bold">是·懒删除</text>
+
+  <!-- no -> down -->
+  <path d="M 220 346 L 220 364" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="226" y="360" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- 5. relax box -->
+  <rect x="60" y="366" width="320" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="384" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">松弛 v 的每条邻接边 (to, w)</text>
+  <text x="220" y="400" text-anchor="middle" font-size="10" fill="#444">① 同层：cost+w &lt; dist[to][c] → 更新并入堆</text>
+  <text x="220" y="415" text-anchor="middle" font-size="10" fill="#444">② 跨层(c&lt;k)：cost &lt; dist[to][c+1] → 更新(权0)入堆</text>
+
+  <!-- loop back up to heap-empty diamond (left side) -->
+  <path d="M 60 397 L 30 397 L 30 162 L 140 162" stroke="#4a7a3a" stroke-width="1.3" fill="none"
+        stroke-dasharray="5 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="34" y="285" font-size="10" fill="#4a7a3a" font-weight="bold">继续</text>
+
+  <!-- footer -->
+  <text x="280" y="464" text-anchor="middle" font-size="10" fill="#888">不显式建分层图：遍历邻接表时就地生成同层/跨层两种转移</text>
+</svg>

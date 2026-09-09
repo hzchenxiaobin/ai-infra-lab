@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：右扫定位 + 左填贪心</text>
+
+  <!-- Step 1: right-to-left scan -->
+  <text x="40" y="58" font-size="11" fill="#b85450" font-weight="bold">① 从右往左找：s[i] 能否增大</text>
+
+  <!-- string boxes a b c z with index markers -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="70" width="44" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="82" y="99" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">a</text>
+    <text x="82" y="128" text-anchor="middle" font-size="9" fill="#888">0</text>
+    <rect x="108" y="70" width="44" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="130" y="99" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">b</text>
+    <text x="130" y="128" text-anchor="middle" font-size="9" fill="#888">1</text>
+    <rect x="156" y="70" width="44" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4"/>
+    <text x="178" y="99" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">c</text>
+    <text x="178" y="128" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">2 增大点</text>
+    <rect x="204" y="70" width="44" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4"/>
+    <text x="226" y="99" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">z</text>
+    <text x="226" y="128" text-anchor="middle" font-size="9" fill="#b85450">3 失败</text>
+  </g>
+
+  <!-- right-to-left arrow above boxes -->
+  <path d="M 238 56 L 70 56" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="154" y="48" text-anchor="middle" font-size="9" fill="#b85450">i 从 n-1 向左扫</text>
+
+  <!-- i=3 z: max char, can't increase -->
+  <rect x="260" y="148" width="250" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="385" y="164" text-anchor="middle" font-size="10" fill="#b85450">i=3：z 已是最大字母，无法增大 ✗</text>
+
+  <!-- i=2 c: try d..z, d valid -->
+  <rect x="260" y="176" width="250" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="385" y="192" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">i=2：c→d（d≠b 且 d≠a）✓ 定位成功</text>
+
+  <!-- Divider -->
+  <line x1="40" y1="214" x2="520" y2="214" stroke="#ddd" stroke-width="1" stroke-dasharray="3 3" filter="url(#rough2)"/>
+
+  <!-- Step 2: set s[i] = smallest valid c > s[i] -->
+  <text x="40" y="236" font-size="11" fill="#d6a040" font-weight="bold">② s[i] ← 能增大的最小合法字符</text>
+
+  <g filter="url(#rough2)">
+    <rect x="60" y="250" width="44" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="82" y="279" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">a</text>
+    <rect x="108" y="250" width="44" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="130" y="279" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">b</text>
+    <rect x="156" y="250" width="44" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4"/>
+    <text x="178" y="279" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">d</text>
+    <text x="178" y="308" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">改</text>
+    <rect x="204" y="250" width="44" height="44" fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="3 2" rx="4"/>
+    <text x="226" y="279" text-anchor="middle" font-size="16" fill="#bbb" font-weight="bold">?</text>
+    <text x="226" y="308" text-anchor="middle" font-size="9" fill="#888">待填</text>
+  </g>
+
+  <!-- Step 3: greedily fill right part with smallest valid chars -->
+  <text x="300" y="236" font-size="11" fill="#4a7a3a" font-weight="bold">③ 贪心填后续：每个取最小 ≠前 ≠前前</text>
+
+  <!-- fill note box -->
+  <rect x="300" y="250" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="270" text-anchor="middle" font-size="10" fill="#333">pos3：≠d 且 ≠b</text>
+  <text x="410" y="286" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">取 a（最小合法）✓</text>
+
+  <!-- final result -->
+  <line x1="40" y1="330" x2="520" y2="330" stroke="#ddd" stroke-width="1" stroke-dasharray="3 3" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">结果：保持公共前缀尽可能长 → 字典序最小</text>
+
+  <g filter="url(#rough2)">
+    <rect x="120" y="362" width="44" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="142" y="381" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+    <rect x="168" y="362" width="44" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="190" y="381" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">b</text>
+    <rect x="216" y="362" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4"/>
+    <text x="238" y="381" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">d</text>
+    <rect x="264" y="362" width="44" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="4"/>
+    <text x="286" y="381" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+    <text x="330" y="381" font-size="13" fill="#4a7a3a" font-weight="bold">= "abda" &gt; "abcz"</text>
+  </g>
+</svg>

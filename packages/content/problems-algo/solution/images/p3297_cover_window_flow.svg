@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a07830"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">欠账滑窗：shrink while covered</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">less = 还没凑够的字符种类数（欠账），less = 0 即覆盖达成</text>
+
+  <!-- 开始 -->
+  <rect x="200" y="52" width="120" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="15" filter="url(#rough2)"/>
+  <text x="260" y="72" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">开始：less = 种类数</text>
+
+  <path d="M 260 82 L 260 100" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 入窗 -->
+  <rect x="140" y="102" width="240" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="121" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">word1[right] 入窗</text>
+  <text x="260" y="139" text-anchor="middle" font-size="10.5" fill="#33506b" filter="url(#rough2)">cnt[c]++；若恰好升到 need[c] → less−−</text>
+
+  <path d="M 260 150 L 260 168" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形：less==0? -->
+  <polygon points="260,170 340,204 260,238 180,204" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="200" text-anchor="middle" font-size="11.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">less == 0 ?</text>
+  <text x="260" y="216" text-anchor="middle" font-size="10" fill="#a07830" filter="url(#rough2)">（覆盖达成？）</text>
+
+  <!-- 是 → 收缩（右侧） -->
+  <path d="M 340 204 L 368 204" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="354" y="196" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="370" y="152" width="136" height="104" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="438" y="172" text-anchor="middle" font-size="11.5" fill="#8a3833" font-weight="bold" filter="url(#rough2)">收缩左端</text>
+  <text x="438" y="190" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">d = word1[left]</text>
+  <text x="438" y="205" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">若 cnt[d] == need[d]</text>
+  <text x="438" y="220" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">→ less++（即将不够）</text>
+  <text x="438" y="235" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">cnt[d]−−；left++</text>
+  <text x="438" y="250" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">回到菱形再判!</text>
+  <path d="M 438 152 C 438 132, 300 140, 264 166" fill="none" stroke="#a07830" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 否 → 计数 -->
+  <path d="M 180 204 L 130 204 L 130 262" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="156" y="196" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">否（或收缩完）</text>
+
+  <rect x="60" y="264" width="300" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="284" text-anchor="middle" font-size="12" fill="#33506b" font-weight="bold" filter="url(#rough2)">ans += left</text>
+  <text x="210" y="304" text-anchor="middle" font-size="10.5" fill="#33506b" filter="url(#rough2)">起点 0..left−1 共 left 个合法（都是 [left−1,right] 的超集）</text>
+
+  <!-- 循环 -->
+  <path d="M 60 290 L 44 290 L 44 126 L 138 126" fill="none" stroke="#a07830" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="38" y="212" text-anchor="middle" font-size="10" fill="#999" transform="rotate(-90 38 212)" filter="url(#rough2)">right++ 直到末尾</text>
+
+  <!-- 返回 -->
+  <path d="M 210 316 L 210 334" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="140" y="336" width="140" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="15" filter="url(#rough2)"/>
+  <text x="210" y="356" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">返回 ans（long long）</text>
+
+  <!-- 易错点标注 -->
+  <rect x="370" y="270" width="136" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="438" y="290" text-anchor="middle" font-size="11" fill="#8a3833" font-weight="bold" filter="url(#rough2)">⚠ 易错点</text>
+  <text x="438" y="308" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">不是 right−left+1！</text>
+  <text x="438" y="324" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">合法对「扩窗」封闭，</text>
+  <text x="438" y="339" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">合法起点在左侧连成</text>
+  <text x="438" y="354" text-anchor="middle" font-size="10" fill="#8a3833" filter="url(#rough2)">前缀段 → 数 left 个</text>
+</svg>

@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="340" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：年维度表 → JOIN 相交 → 求重叠天数 → 乘日均</text>
+
+  <!-- ============ Box 1: years dimension ============ -->
+  <rect x="15" y="46" width="160" height="252" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="15" y="46" width="160" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 年维度表 years</text>
+
+  <rect x="25" y="80" width="140" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="32" y="94" font-size="8.5" fill="#333">SELECT 2018 UNION ALL</text>
+  <text x="32" y="106" font-size="8.5" fill="#333">SELECT 2019 UNION ALL</text>
+  <text x="32" y="118" font-size="8.5" fill="#d6a040" font-weight="bold">SELECT 2020</text>
+
+  <!-- mini table -->
+  <rect x="40" y="132" width="50" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="65" y="146" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">yr</text>
+
+  <rect x="40" y="152" width="50" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="65" y="164" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">2018</text>
+  <rect x="40" y="170" width="50" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="65" y="182" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">2019</text>
+  <rect x="40" y="188" width="50" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="65" y="200" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">2020</text>
+
+  <rect x="25" y="218" width="140" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="32" y="232" font-size="8.5" fill="#333">题面限定年份</text>
+  <text x="32" y="244" font-size="8.5" fill="#333">2018 ~ 2020</text>
+  <text x="32" y="258" font-size="8.5" fill="#4a7a3a" font-weight="bold">固定 3 行维度表</text>
+  <text x="32" y="272" font-size="8.5" fill="#555">用 UNION ALL 构造</text>
+  <text x="32" y="284" font-size="8.5" fill="#555">无需查原表</text>
+
+  <!-- arrow 1 -> 2 -->
+  <path d="M180 172 L202 172" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="191" y="165" text-anchor="middle" font-size="8" fill="#d6a040">JOIN</text>
+
+  <!-- ============ Box 2: overlap days ============ -->
+  <rect x="205" y="46" width="160" height="252" fill="#ffffff" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="205" y="46" width="160" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="285" y="63" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 相交 + 求天数</text>
+
+  <rect x="215" y="80" width="140" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="222" y="94" font-size="8" fill="#333">ON YEAR(ps) ≤ yr</text>
+  <text x="222" y="106" font-size="8" fill="#333">  AND YEAR(pe) ≥ yr</text>
+  <text x="222" y="120" font-size="8" fill="#d6a040" font-weight="bold">只保留有交集的年份</text>
+  <text x="222" y="132" font-size="8" fill="#555">跨年期 → 切成多行</text>
+
+  <!-- overlap formula mini -->
+  <rect x="220" y="148" width="130" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="162" font-size="8" fill="#b85450" font-weight="bold">重叠天数 days =</text>
+  <text x="225" y="174" font-size="7.5" fill="#333">DATEDIFF(</text>
+  <text x="232" y="184" font-size="7.5" fill="#333">LEAST(pe, year_end),</text>
+  <text x="232" y="194" font-size="7.5" fill="#333">GREATEST(ps, year_start)</text>
+  <text x="290" y="204" font-size="7.5" fill="#b85450" font-weight="bold">)+1</text>
+
+  <!-- example: T-Shirt splits to 3 rows -->
+  <rect x="220" y="218" width="130" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="232" font-size="8.5" fill="#4a7a3a" font-weight="bold">T-Shirt 一行 → 三行</text>
+  <text x="225" y="246" font-size="8" fill="#333">yr=2018 → days=31</text>
+  <text x="225" y="258" font-size="8" fill="#333">yr=2019 → days=365</text>
+  <text x="225" y="270" font-size="8" fill="#333">yr=2020 → days=1</text>
+  <text x="225" y="282" font-size="8" fill="#555">单年期仍为一行</text>
+
+  <!-- arrow 2 -> 3 -->
+  <path d="M370 172 L392 172" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="381" y="165" text-anchor="middle" font-size="8" fill="#d6a040">JOIN</text>
+
+  <!-- ============ Box 3: total + output ============ -->
+  <rect x="395" y="46" width="160" height="252" fill="#ffffff" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="395" y="46" width="160" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="63" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 乘日均 + 输出</text>
+
+  <rect x="405" y="80" width="140" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="412" y="94" font-size="8.5" fill="#333">JOIN Product p</text>
+  <text x="412" y="106" font-size="8.5" fill="#333">ON p.id = s.id</text>
+  <text x="412" y="118" font-size="8.5" fill="#b85450" font-weight="bold">补 product_name</text>
+
+  <rect x="405" y="132" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="412" y="146" font-size="8.5" fill="#333">total_amount =</text>
+  <text x="412" y="158" font-size="8" fill="#b85450" font-weight="bold">avg_daily_sales × days</text>
+  <text x="412" y="168" font-size="8" fill="#555">日均 × 重叠天数</text>
+
+  <!-- output mini table -->
+  <rect x="410" y="180" width="44" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="432" y="192" text-anchor="middle" font-size="7.5" fill="#446688" font-weight="bold">id</text>
+  <rect x="454" y="180" width="44" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="476" y="192" text-anchor="middle" font-size="7.5" fill="#446688" font-weight="bold">name</text>
+  <rect x="498" y="180" width="32" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="514" y="192" text-anchor="middle" font-size="7.5" fill="#446688" font-weight="bold">amt</text>
+
+  <rect x="410" y="198" width="120" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="432" y="209" text-anchor="middle" font-size="7.5" fill="#4a7a3a">1</text>
+  <text x="476" y="209" text-anchor="middle" font-size="7.5" fill="#4a7a3a">Phone</text>
+  <text x="514" y="209" text-anchor="middle" font-size="7.5" fill="#4a7a3a">3500</text>
+
+  <rect x="410" y="214" width="120" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="432" y="225" text-anchor="middle" font-size="7.5" fill="#d6a040">2</text>
+  <text x="476" y="225" text-anchor="middle" font-size="7.5" fill="#d6a040">T-Shirt</text>
+  <text x="514" y="225" text-anchor="middle" font-size="7.5" fill="#d6a040">310</text>
+
+  <rect x="410" y="230" width="120" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="432" y="241" text-anchor="middle" font-size="7.5" fill="#d6a040">2</text>
+  <text x="476" y="241" text-anchor="middle" font-size="7.5" fill="#d6a040">T-Shirt</text>
+  <text x="514" y="241" text-anchor="middle" font-size="7.5" fill="#d6a040">3650</text>
+
+  <rect x="410" y="246" width="120" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="432" y="257" text-anchor="middle" font-size="7.5" fill="#b85450">…</text>
+  <text x="476" y="257" text-anchor="middle" font-size="7.5" fill="#b85450">…</text>
+  <text x="514" y="257" text-anchor="middle" font-size="7.5" fill="#b85450">…</text>
+
+  <rect x="405" y="270" width="140" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="475" y="284" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">ORDER BY id, year</text>
+
+  <!-- bottom note -->
+  <rect x="15" y="306" width="540" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="35" y="323" font-size="9.5" fill="#333">三步：<tspan fill="#446688" font-weight="bold">年维度表</tspan>（UNION ALL 构造 2018-2020）→ <tspan fill="#d6a040" font-weight="bold">相交 JOIN</tspan>（按 YEAR 范围筛选 + DATEDIFF 算重叠天数）→ <tspan fill="#b85450" font-weight="bold">乘日均输出</tspan>（JOIN Product 取名 + 排序）。</text>
+</svg>

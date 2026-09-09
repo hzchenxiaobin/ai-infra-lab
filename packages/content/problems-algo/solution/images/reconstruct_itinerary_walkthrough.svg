@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" font-family="'Comic Sans MS','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="520" fill="#fafafa"/>
+
+  <text x="380" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#333">示例 2 演算：贪心选边顺序 + 死胡同回退</text>
+  <path d="M 225 42 Q 380 50 535 42" stroke="#333" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- nodes -->
+  <g filter="url(#rough2)"><ellipse cx="130" cy="300" rx="38" ry="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/></g>
+  <text x="130" y="306" text-anchor="middle" font-size="15" font-weight="bold" fill="#7a5415">JFK</text>
+  <text x="130" y="342" text-anchor="middle" font-size="10" fill="#d6a040">起点</text>
+
+  <g filter="url(#rough2)"><ellipse cx="400" cy="110" rx="38" ry="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/></g>
+  <text x="400" y="116" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b4a6b">ATL</text>
+
+  <g filter="url(#rough2)"><ellipse cx="640" cy="300" rx="38" ry="24" fill="#fce4ec" stroke="#b85450" stroke-width="2.2"/></g>
+  <text x="640" y="306" text-anchor="middle" font-size="15" font-weight="bold" fill="#7a2b28">SFO</text>
+  <text x="640" y="342" text-anchor="middle" font-size="10" fill="#b85450">终点·死胡同</text>
+
+  <!-- edges with consumption order -->
+  <!-- ① JFK→ATL (upper-left, bulge up) -->
+  <path d="M 160 283 Q 195 165 372 128" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><circle cx="190" cy="178" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="190" y="183" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">①</text>
+
+  <!-- ② ATL→JFK (lower-left, bulge down) -->
+  <path d="M 372 132 Q 250 250 162 290" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><circle cx="252" cy="248" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="252" y="253" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">②</text>
+
+  <!-- ③ JFK→SFO (bottom, bulge down) -->
+  <path d="M 167 312 Q 400 388 603 312" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><circle cx="400" cy="370" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="400" y="375" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">③</text>
+
+  <!-- ⑤ ATL→SFO (upper-right, bulge up) -->
+  <path d="M 428 128 Q 605 165 622 283" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><circle cx="570" cy="178" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="570" y="183" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">⑤</text>
+
+  <!-- ④ SFO→ATL (lower-right, bulge down) -->
+  <path d="M 620 290 Q 510 250 428 132" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><circle cx="508" cy="248" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="508" y="253" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">④</text>
+
+  <!-- note box -->
+  <g filter="url(#rough2)"><rect x="40" y="410" width="680" height="92" rx="10" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/></g>
+  <text x="56" y="434" font-size="12" font-weight="bold" fill="#4a7a3a">选边顺序（每步取当前节点字典序最小的未用出边）：</text>
+  <text x="56" y="454" font-size="11" fill="#444">① JFK→ATL → ② ATL→JFK → ③ JFK→SFO → ④ SFO→ATL → ⑤ ATL→SFO</text>
+  <text x="56" y="472" font-size="11" fill="#b85450">→ SFO 无出边（死胡同），开始回退入栈：SFO ① ATL ② SFO ③ JFK ④ ATL ⑤ JFK ⑥</text>
+  <text x="56" y="494" font-size="12" font-weight="bold" fill="#7a2b28">逆序后最终行程：JFK → ATL → JFK → SFO → ATL → SFO</text>
+</svg>

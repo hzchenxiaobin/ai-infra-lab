@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#777"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">单次查询流程：改一个格子 → 修区间 → 树根读答案</text>
+
+  <!-- ① -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="40" width="310" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="250" y="61" text-anchor="middle" font-size="12.5" fill="#33517a">① 读查询 [idx, val]，old ← nums[idx]</text>
+  </g>
+  <path d="M 250 74 L 250 90" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="92" width="310" height="60" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="250" y="110" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2d5a1e">② 若 old 是质数</text>
+    <text x="250" y="126" text-anchor="middle" font-size="11.5" fill="#333">occ[old]：撤旧区间(−1) → 删下标 idx → 建新区间(+1)</text>
+    <text x="250" y="142" text-anchor="middle" font-size="11.5" fill="#333">集合被删空 ⇒ total −−</text>
+  </g>
+  <path d="M 95 108 C 58 108 58 140 92 140" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="64" y="102" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 250 152 L 250 168" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="170" width="310" height="60" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="250" y="188" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2d5a1e">③ 若 val 是质数</text>
+    <text x="250" y="204" text-anchor="middle" font-size="11.5" fill="#333">occ[val]：撤旧区间(−1) → 插下标 idx → 建新区间(+1)</text>
+    <text x="250" y="220" text-anchor="middle" font-size="11.5" fill="#333">新出现的质数 ⇒ total ++</text>
+  </g>
+  <path d="M 95 186 C 58 186 58 218 92 218" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="64" y="180" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 250 230 L 250 246" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="248" width="310" height="34" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2"/>
+    <text x="250" y="269" text-anchor="middle" font-size="12.5" fill="#333">④ nums[idx] ← val（修改持久化）</text>
+  </g>
+  <path d="M 250 282 L 250 298" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="300" width="310" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="250" y="321" text-anchor="middle" font-size="13" font-weight="bold" fill="#a03a34">⑤ ans = total + 线段树根最大值</text>
+    <text x="250" y="339" text-anchor="middle" font-size="11" fill="#a03a34">（区间加懒标记；树根 = 全局最大重叠 cross）</text>
+  </g>
+
+  <!-- 回环：下一查询 -->
+  <path d="M 250 350 L 250 386 L 500 386 L 500 57 L 408 57" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="380" font-size="11" fill="#888" filter="url(#rough2)">下一查询</text>
+
+  <!-- 底部数据结构备忘 -->
+  <g filter="url(#rough2)">
+    <rect x="55" y="412" width="450" height="52" rx="6" fill="#ffffff" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="280" y="432" text-anchor="middle" font-size="11" fill="#555">occ[v]：质数 v 的出现下标有序集合（set / SortedList），区间 = [first+1, last]</text>
+    <text x="280" y="450" text-anchor="middle" font-size="11" fill="#555">线段树：叶子 = 分割点 k ∈ [1, n−1]，区间加 ±1，树根即全局最大重叠数</text>
+  </g>
+</svg>

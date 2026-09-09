@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：四队分数更新前后排名对照</text>
+
+  <!-- ===== Step 1: Two input tables ===== -->
+  <text x="30" y="44" font-size="9" fill="#888">输入：TeamPoints</text>
+  <rect x="20" y="50" width="220" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="32" y="66" font-size="8" fill="#446688" font-weight="bold">team_id  name         points</text>
+  <line x1="20" y1="72" x2="240" y2="72" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="32" y="86" font-size="9" fill="#333">3   Algeria       1431</text>
+  <text x="32" y="100" font-size="9" fill="#333">1   Senegal       2132</text>
+  <text x="32" y="114" font-size="9" fill="#333">2   New Zealand   1402</text>
+  <text x="32" y="128" font-size="9" fill="#333">4   Croatia       1817</text>
+
+  <text x="300" y="44" font-size="9" fill="#888">输入：PointsChange</text>
+  <rect x="290" y="50" width="180" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="302" y="66" font-size="8" fill="#d6a040" font-weight="bold">team_id  points_change</text>
+  <line x1="290" y1="72" x2="470" y2="72" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="302" y="86" font-size="9" fill="#333">3        +399</text>
+  <text x="302" y="100" font-size="9" fill="#333">2           0</text>
+  <text x="302" y="114" font-size="9" fill="#333">4         +13</text>
+  <text x="302" y="128" font-size="9" fill="#333">1         -22</text>
+
+  <!-- arrow JOIN -->
+  <path d="M 240 96 Q 265 96 290 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="265" y="88" text-anchor="middle" font-size="8" fill="#888">JOIN</text>
+
+  <!-- ===== Step 2: Old ranking (sorted) ===== -->
+  <text x="30" y="160" font-size="9" fill="#888">① 旧排名：按 points DESC, name ASC 排序</text>
+  <rect x="20" y="166" width="290" height="96" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="32" y="182" font-size="8" fill="#446688" font-weight="bold">name         points  rank_old</text>
+  <line x1="20" y1="188" x2="310" y2="188" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="32" y="202" font-size="9" fill="#333">Senegal      2132      1</text>
+  <text x="32" y="216" font-size="9" fill="#d6a040">Croatia      1817      2</text>
+  <text x="32" y="230" font-size="9" fill="#b85450">Algeria      1431      3</text>
+  <text x="32" y="244" font-size="9" fill="#333">New Zealand  1402      4</text>
+
+  <!-- arrow to new -->
+  <path d="M 310 214 Q 330 214 350 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="206" text-anchor="middle" font-size="8" fill="#888">+change</text>
+  <text x="330" y="226" text-anchor="middle" font-size="8" fill="#888">重排</text>
+
+  <!-- ===== Step 3: New ranking (sorted) ===== -->
+  <text x="350" y="160" font-size="9" fill="#888">② 新排名：points+change DESC, name ASC</text>
+  <rect x="340" y="166" width="290" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="352" y="182" font-size="8" fill="#4a7a3a" font-weight="bold">name         points'  rank_new</text>
+  <line x1="340" y1="188" x2="630" y2="188" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="352" y="202" font-size="9" fill="#333">Senegal      2110       1</text>
+  <text x="352" y="216" font-size="9" fill="#b85450" font-weight="bold">Algeria      1830       2</text>
+  <text x="352" y="230" font-size="9" fill="#d6a040" font-weight="bold">Croatia      1830       3</text>
+  <text x="352" y="244" font-size="9" fill="#333">New Zealand  1402       4</text>
+
+  <!-- note about tie -->
+  <text x="490" y="256" font-size="7" fill="#b85450">↑ 同分按 name 字典序：Al&lt;Cr</text>
+
+  <!-- ===== Step 4: rank_diff ===== -->
+  <text x="30" y="284" font-size="9" fill="#888">③ rank_diff = rank_old − rank_new</text>
+  <rect x="20" y="290" width="600" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="32" y="308" font-size="8" fill="#b85450" font-weight="bold">team_id  name         rank_old  rank_new  rank_diff   说明</text>
+  <line x1="20" y1="314" x2="620" y2="314" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="32" y="328" font-size="9" fill="#333">1        Senegal      1         1         0           失22分但排名不变</text>
+  <text x="32" y="342" font-size="9" fill="#d6a040">4        Croatia      2         3        -1           得13分却下降1名</text>
+  <text x="32" y="356" font-size="9" fill="#b85450">3        Algeria      3         2        +1           得399分上升1名</text>
+  <text x="32" y="370" font-size="9" fill="#333">2        New Zealand  4         4         0           无变化</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="20" y="398" width="600" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="416" text-anchor="middle" font-size="9" fill="#666">关键洞察：Croatia 虽得分增加(+13)，却被 Algeria(+399) 反超 → 排名下降</text>
+  <text x="320" y="428" text-anchor="middle" font-size="8" fill="#888">排名变化是「相对位次」——自身分数涨不代表名次涨，取决于他人涨跌幅</text>
+</svg>

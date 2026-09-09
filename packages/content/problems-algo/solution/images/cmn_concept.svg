@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="520" viewBox="0 0 920 520" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="520" fill="#fafafa"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">核心思路：三步分解 — 枚举分配 · 单调栈取子序列 · 贪心合并</text>
+  <path d="M 240 44 Q 460 52 680 44" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- 输入 -->
+  <text x="80" y="80" font-size="13" font-weight="bold" fill="#555">输入：</text>
+  <g filter="url(#sk)">
+    <rect x="150" y="64" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="190" y="64" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="230" y="64" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="270" y="64" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688"/>
+  </g>
+  <text x="170" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">3</text>
+  <text x="210" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">4</text>
+  <text x="250" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">6</text>
+  <text x="290" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">5</text>
+  <text x="318" y="84" font-size="12" fill="#888">nums1</text>
+
+  <g filter="url(#sk)">
+    <rect x="400" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+    <rect x="440" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+    <rect x="480" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+    <rect x="520" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+    <rect x="560" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+    <rect x="600" y="64" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+  </g>
+  <text x="420" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">9</text>
+  <text x="460" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">1</text>
+  <text x="500" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">2</text>
+  <text x="540" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">5</text>
+  <text x="580" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">8</text>
+  <text x="620" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">3</text>
+  <text x="650" y="84" font-size="12" fill="#888">nums2</text>
+
+  <g filter="url(#sk)">
+    <rect x="720" y="64" width="110" height="30" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="775" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">k = 5</text>
+
+  <path d="M 460 100 L 460 122" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- 步骤1：枚举分配 -->
+  <g filter="url(#sk)">
+    <rect x="120" y="126" width="680" height="64" rx="10" fill="#f7faff" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="160" y="150" font-size="14" font-weight="bold" fill="#446688">① 枚举分配</text>
+  <text x="160" y="170" font-size="12" fill="#555">枚举 i ∈ [max(0, k−n), min(k, m)]：从 nums1 取 i 位、nums2 取 k−i 位</text>
+  <text x="160" y="184" font-size="11" fill="#888">i 是分配给 nums1 的位数；合法范围保证两边都不超长</text>
+  <g filter="url(#sk)">
+    <rect x="640" y="140" width="120" height="40" rx="6" fill="#e8f0fe" stroke="#446688"/>
+  </g>
+  <text x="700" y="158" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688">例：i = 2</text>
+  <text x="700" y="174" text-anchor="middle" font-size="11" fill="#555">nums1 出 2 位</text>
+  <path d="M 460 194 L 460 216" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- 步骤2：单调栈取最大子序列 -->
+  <g filter="url(#sk)">
+    <rect x="120" y="220" width="680" height="74" rx="10" fill="#fffdf3" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="160" y="244" font-size="14" font-weight="bold" fill="#7a5415">② 单调栈取最大子序列（保持相对顺序）</text>
+  <text x="160" y="264" font-size="12" fill="#555">maxSubsequence(nums, k)：允许弹出 n−k 个较小前驱，栈顶更小且还能弹就弹</text>
+  <text x="160" y="280" font-size="11" fill="#888">即「移掉 n−k 位使剩余最大」，单调递减栈（栈顶尽量大）</text>
+
+  <g filter="url(#sk)">
+    <rect x="600" y="232" width="80" height="30" rx="4" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="640" y="232" width="40" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+  </g>
+  <text x="620" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">6</text>
+  <text x="660" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">5</text>
+  <text x="690" y="252" font-size="11" fill="#888">← A</text>
+
+  <g filter="url(#sk)">
+    <rect x="740" y="232" width="120" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a"/>
+  </g>
+  <text x="760" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">9</text>
+  <text x="800" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">8</text>
+  <text x="840" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">3</text>
+  <text x="780" y="276" text-anchor="middle" font-size="11" fill="#888">← B</text>
+
+  <path d="M 460 298 L 460 320" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- 步骤3：贪心合并 -->
+  <g filter="url(#sk)">
+    <rect x="120" y="324" width="680" height="74" rx="10" fill="#f7fff7" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="160" y="348" font-size="14" font-weight="bold" fill="#4a7a3a">③ 贪心合并（前缀字典序比较）</text>
+  <text x="160" y="368" font-size="12" fill="#555">merge(A, B)：每步取 A[i:] 与 B[j:] 字典序较大者的首位；相等时必须看后缀</text>
+  <text x="160" y="384" font-size="11" fill="#888">A[i]≠B[j] 取大者；A[i]==B[j] 比较后续谁更大再决定（关键陷阱）</text>
+
+  <g filter="url(#sk)">
+    <rect x="640" y="336" width="200" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+  </g>
+  <text x="660" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">9</text>
+  <text x="700" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">8</text>
+  <text x="740" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">6</text>
+  <text x="780" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">5</text>
+  <text x="820" y="356" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">3</text>
+  <text x="740" y="380" text-anchor="middle" font-size="11" fill="#888">merge(A, B)</text>
+
+  <path d="M 460 402 L 460 424" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#arL)" filter="url(#sk)"/>
+
+  <!-- 保留最大 -->
+  <g filter="url(#sk)">
+    <rect x="220" y="428" width="480" height="46" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="460" y="448" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">枚举所有合法 i，对每个候选 merge 取最大</text>
+  <text x="460" y="466" text-anchor="middle" font-size="12" fill="#b85450">ans = max over i { merge( maxSubsequence(nums1,i), maxSubsequence(nums2,k−i) ) }</text>
+
+  <path d="M 460 478 L 460 496" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+
+  <text x="460" y="512" text-anchor="middle" font-size="12" fill="#888">三个子问题各自独立、模板化：单调栈 + 字典序合并 + 枚举拼接。</text>
+</svg>

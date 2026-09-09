@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">流程：ROW_NUMBER 编号 → 条件聚合 MAX+CASE → GROUP BY rn</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">两阶段：子查询为每个洲内学生编号，外层按编号分组做行转列</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: FROM student -->
+    <rect x="30" y="64" width="480" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="84" font-size="12" fill="#446688" font-weight="bold">① FROM student</text>
+    <text x="220" y="84" font-family="monospace" font-size="10" fill="#555">读取所有行 (name, continent)</text>
+    <text x="44" y="102" font-size="9" fill="#888">长格式数据：每行一个学生，continent 标识所属洲</text>
+
+    <path d="M 270 116 L 270 130" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: ROW_NUMBER -->
+    <rect x="30" y="134" width="480" height="72" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="154" font-size="12" fill="#4a7a3a" font-weight="bold">② ROW_NUMBER() OVER (PARTITION BY continent ORDER BY name) AS rn</text>
+    <text x="44" y="172" font-family="monospace" font-size="10" fill="#555">按洲分组，组内按 name 字母序编号 1, 2, 3 ...</text>
+    <text x="44" y="188" font-size="9" fill="#888">每个洲各自从 1 开始编号；字母序保证列内有序</text>
+    <text x="44" y="202" font-size="9" fill="#4a7a3a">rn 是行转列的「对齐键」——同 rn 的不同洲学生落在同一输出行</text>
+
+    <path d="M 270 208 L 270 222" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: Conditional Aggregation -->
+    <rect x="30" y="226" width="480" height="88" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="246" font-size="12" fill="#d6a040" font-weight="bold">③ MAX(CASE WHEN continent = 'America' THEN name END) AS America</text>
+    <text x="44" y="264" font-family="monospace" font-size="10" fill="#555">      MAX(CASE WHEN continent = 'Asia'    THEN name END) AS Asia</text>
+    <text x="44" y="280" font-family="monospace" font-size="10" fill="#555">      MAX(CASE WHEN continent = 'Europe'  THEN name END) AS Europe</text>
+    <text x="44" y="296" font-size="9" fill="#888">CASE 筛出本洲的 name，非本洲行为 NULL；MAX 聚合取唯一非 NULL 值</text>
+    <text x="44" y="310" font-size="9" fill="#d6a040">⚠ 必须用 MAX / MIN 聚合——GROUP BY 要求非分组列为聚合函数</text>
+
+    <path d="M 270 316 L 270 330" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 4: GROUP BY rn -->
+    <rect x="30" y="334" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="354" font-size="12" fill="#b85450" font-weight="bold">④ GROUP BY rn</text>
+    <text x="44" y="372" font-size="9" fill="#888">按 rn 分组：同 rn 的行压成一行，三个 MAX 各取一个洲的名字</text>
+    <text x="44" y="384" font-size="9" fill="#888">某洲无此 rn → 该列 MAX(NULL) = NULL → 自动补 NULL</text>
+
+    <path d="M 270 392 L 270 406" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 5: Output -->
+    <rect x="30" y="410" width="480" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="430" font-size="12" fill="#4a7a3a" font-weight="bold">⑤ 输出宽格式表</text>
+    <text x="200" y="430" font-family="monospace" font-size="10" fill="#555">America | Asia | Europe（每列字母序，NULL 填充）</text>
+    <text x="44" y="444" font-size="9" fill="#888">行数 = 各洲最大学生数</text>
+  </g>
+</svg>

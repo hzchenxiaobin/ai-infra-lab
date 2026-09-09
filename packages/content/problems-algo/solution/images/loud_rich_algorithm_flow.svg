@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DFS + 记忆化流程：递归求每个点的「富有锥最安静者」</text>
+
+  <!-- Step 1: entry -->
+  <rect x="200" y="48" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="69" text-anchor="middle" font-size="11" fill="#333">对每个 x 调用 dfs(x)</text>
+
+  <!-- arrow down -->
+  <path d="M 280 84 L 280 100" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: check memo -->
+  <rect x="180" y="104" width="200" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="121" text-anchor="middle" font-size="11" fill="#333">ans[x] 已算过？</text>
+  <text x="280" y="136" text-anchor="middle" font-size="10" fill="#888">是 → 直接返回（记忆化剪枝）</text>
+
+  <!-- yes branch (left) -->
+  <path d="M 180 124 L 120 124" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="100" y="118" text-anchor="end" font-size="10" fill="#4a7a3a">已算</text>
+  <rect x="40" y="110" width="76" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="78" y="129" text-anchor="middle" font-size="10" fill="#333">return ans[x]</text>
+
+  <!-- no branch (down) -->
+  <path d="M 280 146 L 280 162" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="296" y="158" font-size="10" fill="#b85450">未算</text>
+
+  <!-- Step 3: init ans[x]=x -->
+  <rect x="180" y="166" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="187" text-anchor="middle" font-size="11" fill="#333">先令 ans[x] = x（自己至少和自己一样富）</text>
+
+  <!-- arrow down -->
+  <path d="M 280 202 L 280 218" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: loop over richer neighbors -->
+  <rect x="120" y="222" width="320" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="240" text-anchor="middle" font-size="11" fill="#333">遍历邻接表 adj[x]（每个比 x 富的直接邻居 v）</text>
+  <text x="280" y="256" text-anchor="middle" font-size="10" fill="#666">dfs(v) 递归求 v 的答案，再比较</text>
+
+  <!-- arrow down -->
+  <path d="M 280 270 L 280 286" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: relax -->
+  <rect x="120" y="290" width="320" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="308" text-anchor="middle" font-size="11" fill="#333">若 quiet[ans[v]] &lt; quiet[ans[x]]</text>
+  <text x="280" y="322" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">则 ans[x] = ans[v]（更安静的人顶上来）</text>
+
+  <!-- arrow down -->
+  <path d="M 280 332 L 280 348" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 6: return -->
+  <rect x="200" y="352" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="373" text-anchor="middle" font-size="11" fill="#333">返回 ans[x]</text>
+
+  <!-- side note -->
+  <rect x="20" y="290" width="92" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)" opacity="0.95"/>
+  <text x="66" y="307" text-anchor="middle" font-size="9" fill="#444">DAG 无环</text>
+  <text x="66" y="319" text-anchor="middle" font-size="9" fill="#666">递归必终止</text>
+  <text x="66" y="331" text-anchor="middle" font-size="9" fill="#666">每点只算一次</text>
+</svg>

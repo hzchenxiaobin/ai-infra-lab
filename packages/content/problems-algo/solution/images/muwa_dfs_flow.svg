@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="560" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DFS 枚举位掩码 + 剪枝（逐位决定 保留 / 缩写）</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="58" rx="150" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333">开始: dfs(pos=0, mask=0, len=0, prev_abbr=False)</text>
+
+  <path d="M 280 78 L 280 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Prune check -->
+  <polygon points="280,96 400,140 280,184 160,140" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="134" text-anchor="middle" font-size="12" fill="#333">len &gt;= best ?</text>
+  <text x="280" y="152" text-anchor="middle" font-size="10" fill="#888">(剪枝：当前已不优于最优)</text>
+
+  <!-- Yes -> return -->
+  <path d="M 400 140 L 470 140" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="436" y="132" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <ellipse cx="504" cy="140" rx="44" ry="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="504" y="144" text-anchor="middle" font-size="11" fill="#333">return</text>
+
+  <!-- No -> down -->
+  <path d="M 280 184 L 280 206" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="200" font-size="11" fill="#82b366">否</text>
+
+  <!-- pos == m ? -->
+  <polygon points="280,208 400,252 280,296 160,252" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="246" text-anchor="middle" font-size="12" fill="#333">pos == m ?</text>
+  <text x="280" y="264" text-anchor="middle" font-size="10" fill="#888">(所有位都已决定)</text>
+
+  <!-- Yes (leaf) -> conflict check -->
+  <path d="M 160 252 L 96 252" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="130" y="244" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+
+  <rect x="24" y="292" width="160" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="104" y="312" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">叶节点：检查冲突</text>
+  <text x="104" y="330" text-anchor="middle" font-size="10" fill="#446688">对每个 diff d：</text>
+  <text x="104" y="346" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">if mask &amp; d == 0</text>
+  <text x="104" y="360" text-anchor="middle" font-size="10" fill="#888">→ 与该词冲突，无效</text>
+  <text x="104" y="372" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">全部 ≠ 0 → 更新 best</text>
+  <path d="M 104 270 L 104 292" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No (not leaf) -> two branches -->
+  <path d="M 280 296 L 280 318" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="312" font-size="11" fill="#b85450">否</text>
+
+  <rect x="150" y="320" width="260" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="342" text-anchor="middle" font-size="11" fill="#333">对位置 pos 产生两个分支</text>
+
+  <!-- branch arrows -->
+  <path d="M 220 354 L 160 388" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 340 354 L 400 388" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Left branch: abbreviate -->
+  <rect x="60" y="392" width="200" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="412" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">分支①缩写 pos（bit=0）</text>
+  <text x="160" y="432" text-anchor="middle" font-size="10" fill="#555">prev_abbr? len 不变(续段)</text>
+  <text x="160" y="448" text-anchor="middle" font-size="10" fill="#555">否则 len+1(新数字段)</text>
+  <text x="160" y="466" text-anchor="middle" font-size="10" fill="#888">→ dfs(pos+1, mask, len', True)</text>
+  <text x="160" y="478" text-anchor="middle" font-size="9" fill="#888">倾向先走此枝→前导数字(字典序小)</text>
+
+  <!-- Right branch: keep -->
+  <rect x="300" y="392" width="200" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="400" y="412" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">分支②保留 pos（bit=1）</text>
+  <text x="400" y="432" text-anchor="middle" font-size="10" fill="#555">len+1（加一个字母）</text>
+  <text x="400" y="448" text-anchor="middle" font-size="10" fill="#555">prev_abbr 置 False</text>
+  <text x="400" y="466" text-anchor="middle" font-size="10" fill="#888">→ dfs(pos+1, mask|1&lt;&lt;pos, len+1, F)</text>
+
+  <!-- loop back -->
+  <path d="M 160 484 L 160 510 L 504 510 L 504 158 L 470 158" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 400 484 L 400 510" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="330" y="526" text-anchor="middle" font-size="10" fill="#888">递归下一位置</text>
+
+  <!-- bottom notes -->
+  <rect x="40" y="536" width="480" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="549" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">约束 log₂n + m ≤ 20 → 总工作量 O(2ᵐ·n) ≤ 2²⁰ ≈ 10⁶</text>
+</svg>

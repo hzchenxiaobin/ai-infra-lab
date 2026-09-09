@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="420" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：筛 report 行 → 按原因分组 → 计数不同 post_id</text>
+
+  <!-- ===== Left: Actions table (raw) ===== -->
+  <text x="85" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Actions 表（原始）</text>
+  <rect x="18" y="60" width="150" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="33" y="75" font-size="7.5" fill="#446688" font-weight="bold">user</text>
+  <text x="62" y="75" font-size="7.5" fill="#446688" font-weight="bold">post</text>
+  <text x="92" y="75" font-size="7.5" fill="#446688" font-weight="bold">date</text>
+  <text x="124" y="75" font-size="7.5" fill="#446688" font-weight="bold">action</text>
+  <text x="153" y="75" font-size="7.5" fill="#446688" font-weight="bold">extra</text>
+  <line x1="46" y1="60" x2="46" y2="82" stroke="#446688" stroke-width="0.7" filter="url(#rough2)"/>
+  <line x1="74" y1="60" x2="74" y2="82" stroke="#446688" stroke-width="0.7" filter="url(#rough2)"/>
+  <line x1="107" y1="60" x2="107" y2="82" stroke="#446688" stroke-width="0.7" filter="url(#rough2)"/>
+  <line x1="141" y1="60" x2="141" y2="82" stroke="#446688" stroke-width="0.7" filter="url(#rough2)"/>
+
+  <!-- row: view (non-report, greyed) -->
+  <rect x="18" y="82" width="150" height="15" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="93" text-anchor="middle" font-size="7.5" fill="#888">1</text>
+  <text x="62" y="93" text-anchor="middle" font-size="7.5" fill="#888">1</text>
+  <text x="92" y="93" text-anchor="middle" font-size="7" fill="#888">07-04</text>
+  <text x="124" y="93" text-anchor="middle" font-size="7" fill="#888">view</text>
+  <text x="153" y="93" text-anchor="middle" font-size="7" fill="#888">null</text>
+
+  <!-- row: like (non-report, greyed) -->
+  <rect x="18" y="97" width="150" height="15" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="108" text-anchor="middle" font-size="7.5" fill="#888">1</text>
+  <text x="62" y="108" text-anchor="middle" font-size="7.5" fill="#888">1</text>
+  <text x="92" y="108" text-anchor="middle" font-size="7" fill="#888">07-04</text>
+  <text x="124" y="108" text-anchor="middle" font-size="7" fill="#888">like</text>
+  <text x="153" y="108" text-anchor="middle" font-size="7" fill="#888">null</text>
+
+  <!-- row: report spam post 2 (KEEP) -->
+  <rect x="18" y="112" width="150" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="124" text-anchor="middle" font-size="7.5" fill="#333">2</text>
+  <text x="62" y="124" text-anchor="middle" font-size="7.5" fill="#333">2</text>
+  <text x="92" y="124" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">07-04</text>
+  <text x="124" y="124" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">report</text>
+  <text x="153" y="124" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">spam</text>
+
+  <!-- row: report spam post 2 user 3 (KEEP, dup post) -->
+  <rect x="18" y="128" width="150" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="140" text-anchor="middle" font-size="7.5" fill="#333">3</text>
+  <text x="62" y="140" text-anchor="middle" font-size="7.5" fill="#333">2</text>
+  <text x="92" y="140" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">07-04</text>
+  <text x="124" y="140" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">report</text>
+  <text x="153" y="140" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">spam</text>
+
+  <!-- row: report racism post 3 (KEEP) -->
+  <rect x="18" y="144" width="150" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="156" text-anchor="middle" font-size="7.5" fill="#333">4</text>
+  <text x="62" y="156" text-anchor="middle" font-size="7.5" fill="#333">3</text>
+  <text x="92" y="156" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">07-04</text>
+  <text x="124" y="156" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">report</text>
+  <text x="153" y="156" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">racism</text>
+
+  <!-- row: response (non-report, greyed) -->
+  <rect x="18" y="160" width="150" height="15" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="171" text-anchor="middle" font-size="7.5" fill="#888">5</text>
+  <text x="62" y="171" text-anchor="middle" font-size="7.5" fill="#888">4</text>
+  <text x="92" y="171" text-anchor="middle" font-size="7" fill="#888">07-04</text>
+  <text x="124" y="171" text-anchor="middle" font-size="7" fill="#888">response</text>
+  <text x="153" y="171" text-anchor="middle" font-size="7" fill="#888">null</text>
+
+  <!-- row: report spam post 3 (KEEP) -->
+  <rect x="18" y="175" width="150" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="187" text-anchor="middle" font-size="7.5" fill="#333">7</text>
+  <text x="62" y="187" text-anchor="middle" font-size="7.5" fill="#333">3</text>
+  <text x="92" y="187" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">07-04</text>
+  <text x="124" y="187" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">report</text>
+  <text x="153" y="187" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">spam</text>
+
+  <!-- row: report on 07-05 (wrong date, greyed red) -->
+  <rect x="18" y="191" width="150" height="15" fill="#fce4ec" stroke="#b85450" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="202" text-anchor="middle" font-size="7.5" fill="#888">6</text>
+  <text x="62" y="202" text-anchor="middle" font-size="7.5" fill="#888">3</text>
+  <text x="92" y="202" text-anchor="middle" font-size="7" fill="#b85450">07-05</text>
+  <text x="124" y="202" text-anchor="middle" font-size="7" fill="#888">report</text>
+  <text x="153" y="202" text-anchor="middle" font-size="7" fill="#888">spam</text>
+
+  <text x="93" y="220" text-anchor="middle" font-size="8" fill="#888">灰行 = 非报告 / 日期不符</text>
+
+  <!-- arrow ① from Actions to filtered -->
+  <path d="M170 150 L205 150" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="187" y="144" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">①</text>
+  <text x="187" y="163" text-anchor="middle" font-size="7" fill="#d6a040">WHERE</text>
+
+  <!-- ===== Middle: filtered reports (post_id, extra) ===== -->
+  <text x="290" y="54" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">筛出的 report 行（07-04）</text>
+  <rect x="220" y="60" width="140" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="75" font-size="8.5" fill="#4a7a3a" font-weight="bold">post_id</text>
+  <text x="312" y="75" font-size="8.5" fill="#4a7a3a" font-weight="bold">extra（原因）</text>
+  <line x1="278" y1="60" x2="278" y2="82" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="220" y="82" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="95" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">2</text>
+  <text x="312" y="95" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">spam</text>
+  <line x1="278" y1="82" x2="278" y2="100" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="220" y="100" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="113" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">2</text>
+  <text x="312" y="113" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">spam</text>
+  <line x1="278" y1="100" x2="278" y2="118" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="220" y="118" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="131" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">3</text>
+  <text x="312" y="131" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">racism</text>
+  <line x1="278" y1="118" x2="278" y2="136" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="220" y="136" width="140" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="149" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">3</text>
+  <text x="312" y="149" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">spam</text>
+  <line x1="278" y1="136" x2="278" y2="154" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="220" y="160" width="140" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="290" y="175" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">post 2 的 spam 出现 2 次！</text>
+
+  <!-- arrow ② from filtered to result -->
+  <path d="M360 130 L398 130" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="379" y="124" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">②</text>
+  <text x="379" y="143" text-anchor="middle" font-size="7" fill="#d6a040">GROUP BY</text>
+
+  <!-- ===== Right: Final result ===== -->
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">最终结果</text>
+  <rect x="400" y="60" width="160" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="75" font-size="9" fill="#b85450" font-weight="bold">report_reason</text>
+  <text x="520" y="75" font-size="9" fill="#b85450" font-weight="bold">report_count</text>
+  <line x1="480" y1="60" x2="480" y2="82" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="400" y="82" width="160" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="96" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">racism</text>
+  <text x="520" y="96" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">1</text>
+  <line x1="480" y1="82" x2="480" y2="102" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="400" y="102" width="160" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="116" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">spam</text>
+  <text x="520" y="116" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">2</text>
+  <line x1="480" y1="102" x2="480" y2="122" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- DISTINCT highlight box -->
+  <rect x="382" y="140" width="196" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="158" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">COUNT(DISTINCT post_id)</text>
+  <text x="480" y="173" text-anchor="middle" font-size="8" fill="#b85450">spam 去重：{2,3} → 2（非 3）</text>
+
+  <!-- bottom summary -->
+  <rect x="18" y="208" width="544" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="38" y="226" font-size="10" fill="#333">① <tspan fill="#d6a040" font-weight="bold">WHERE action='report' AND action_date='2019-07-04'</tspan> → 只留当日举报行</text>
+  <text x="38" y="242" font-size="10" fill="#333">② <tspan fill="#4a7a3a" font-weight="bold">GROUP BY extra</tspan> + <tspan fill="#b85450" font-weight="bold">COUNT(DISTINCT post_id)</tspan> → 每个原因涉及几个不同帖子</text>
+
+  <!-- Key insight box -->
+  <rect x="18" y="260" width="544" height="140" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="280" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">关键洞察：为何用 DISTINCT 而非 COUNT(*)</text>
+
+  <text x="38" y="300" font-size="9.5" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">action</tspan> 含 view/like/response/report 多种，<tspan fill="#d6a040">extra</tspan> 仅 report 行非空 → 必须 <tspan fill="#d6a040" font-weight="bold">WHERE action='report'</tspan></text>
+  <text x="38" y="318" font-size="9.5" fill="#333">• 同一帖子可被<tspan fill="#b85450" font-weight="bold">多个用户</tspan>以同原因举报（post 2 被 user 2、3 都举报 spam）→ 两行但同一帖子</text>
+  <text x="38" y="336" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">COUNT(*)</tspan> 会把 post 2 的 spam 算成 2 → <tspan fill="#888">错！</tspan> 题目问"多少个不同帖子"而非"多少次举报"</text>
+  <text x="38" y="354" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">COUNT(DISTINCT post_id)</tspan> 对 post_id 去重 → spam 组 {2,3} = 2，racism 组 {3} = 1 → <tspan fill="#4a7a3a">正解</tspan></text>
+  <text x="38" y="372" font-size="9.5" fill="#333">• <tspan fill="#d6a040" font-weight="bold">extra</tspan> 即举报原因（spam/racism/...），作为 <tspan fill="#4a7a3a" font-weight="bold">GROUP BY</tspan> 键；非 report 行 extra 为 NULL 自动被 WHERE 排除</text>
+  <text x="38" y="390" font-size="9.5" fill="#333">• 结果无特定顺序要求；<tspan fill="#4a7a3a" font-weight="bold">GROUP BY extra</tspan> 天然把 NULL 原因排除（NULL 组不输出）</text>
+</svg>

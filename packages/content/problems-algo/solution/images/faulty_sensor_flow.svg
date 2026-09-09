@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 640" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="640" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：定位失配点 + 双向左移验证</text>
+
+  <!-- Phase 1 label -->
+  <rect x="36" y="44" width="110" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="91" y="59" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">阶段一：定位</text>
+
+  <!-- Start node -->
+  <ellipse cx="310" cy="56" rx="90" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="60" text-anchor="middle" font-size="12" fill="#333">开始: i = 0</text>
+
+  <!-- Arrow down to D1 -->
+  <path d="M 310 74 L 310 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D1: i < n-1 且 sensor1[i]==sensor2[i] ? -->
+  <polygon points="310,98 450,142 310,186 170,142" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="136" text-anchor="middle" font-size="11" fill="#333">i &lt; n-1 且</text>
+  <text x="310" y="152" text-anchor="middle" font-size="11" fill="#333">sensor1[i]==sensor2[i]?</text>
+
+  <!-- D1 Yes -> i++ (right) -->
+  <path d="M 450 142 L 500 142" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="475" y="134" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="500" y="120" width="80" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="540" y="147" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">i++</text>
+
+  <!-- i++ loop back to D1 (up and left) -->
+  <path d="M 540 120 L 540 80 L 310 80 L 310 94" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="425" y="74" text-anchor="middle" font-size="10" fill="#888">跳过相等位</text>
+
+  <!-- D1 No -> down to D2 -->
+  <path d="M 310 186 L 310 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="324" y="206" font-size="11" fill="#b85450">否</text>
+
+  <!-- D2: i < n-1 ? (found mismatch before last position?) -->
+  <polygon points="310,218 410,258 310,298 210,258" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="262" text-anchor="middle" font-size="11" fill="#333">i &lt; n-1 ?</text>
+  <text x="310" y="278" text-anchor="middle" font-size="9" fill="#888">(失配在末位前?)</text>
+
+  <!-- D2 No -> return -1 (left) -->
+  <path d="M 210 258 L 150 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="250" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="40" y="236" width="110" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="256" text-anchor="middle" font-size="10" fill="#333">失配仅在末位</text>
+  <text x="95" y="272" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 -1</text>
+
+  <!-- Phase 2 label -->
+  <rect x="474" y="236" width="110" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="529" y="251" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">阶段二：验证</text>
+
+  <!-- D2 Yes -> down to D3 -->
+  <path d="M 310 298 L 310 326" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="324" y="318" font-size="11" fill="#82b366">是</text>
+
+  <!-- D3: i < n-1 ? (verification loop) -->
+  <polygon points="310,330 410,370 310,410 210,370" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="374" text-anchor="middle" font-size="11" fill="#333">i &lt; n-1 ?</text>
+
+  <!-- D3 No -> return -1 (right) -->
+  <path d="M 410 370 L 470 370" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="362" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="470" y="348" width="130" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="535" y="368" text-anchor="middle" font-size="10" fill="#333">两条左移都成立</text>
+  <text x="535" y="384" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 -1</text>
+
+  <!-- D3 Yes -> down to C1 -->
+  <path d="M 310 410 L 310 438" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="324" y="430" font-size="11" fill="#82b366">是</text>
+
+  <!-- C1: sensor1[i+1] != sensor2[i] ? -->
+  <polygon points="310,442 430,486 310,530 190,486" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="482" text-anchor="middle" font-size="10" fill="#333">sensor1[i+1]</text>
+  <text x="310" y="498" text-anchor="middle" font-size="10" fill="#333">!= sensor2[i] ?</text>
+
+  <!-- C1 Yes -> return 1 (left) -->
+  <path d="M 190 486 L 130 486" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="160" y="478" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="30" y="464" width="100" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="484" text-anchor="middle" font-size="9" fill="#333">sensor2 非缺陷</text>
+  <text x="80" y="500" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">返回 1</text>
+
+  <!-- C1 No -> right to C2 -->
+  <path d="M 430 486 L 470 486" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="450" y="478" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+
+  <!-- C2: sensor1[i] != sensor2[i+1] ? (shown as rounded rect) -->
+  <rect x="470" y="464" width="130" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="535" y="482" text-anchor="middle" font-size="10" fill="#333">sensor1[i]</text>
+  <text x="535" y="498" text-anchor="middle" font-size="10" fill="#333">!= sensor2[i+1] ?</text>
+
+  <!-- C2 Yes -> return 2 (down) -->
+  <path d="M 535 508 L 535 540" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="548" y="528" font-size="11" fill="#82b366">是</text>
+  <rect x="470" y="544" width="130" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="535" y="564" text-anchor="middle" font-size="9" fill="#333">sensor1 非缺陷</text>
+  <text x="535" y="580" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">返回 2</text>
+
+  <!-- C2 No -> i++ loop back to D3 (route from C2 box left edge up to D3) -->
+  <path d="M 470 486 L 448 486 L 448 370 L 430 370" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="456" y="430" font-size="10" fill="#888">否</text>
+  <text x="456" y="418" font-size="10" fill="#888">i++ 继续</text>
+
+  <!-- Summary note -->
+  <text x="310" y="616" text-anchor="middle" font-size="10" fill="#888">关键：末位不参与比较；首个失配点起，谁先打破「左移关系」谁就不是缺陷方</text>
+</svg>

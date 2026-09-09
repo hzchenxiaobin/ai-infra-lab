@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="470" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：backtrack(start, path, sum) — 双重剪枝</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">在 77 组合模板上加 sum 参数：size==k 验和、sum+i&gt;n 即 break</text>
+
+  <g filter="url(#rough2)" font-size="11">
+    <!-- Entry -->
+    <rect x="180" y="58" width="220" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="290" y="76" text-anchor="middle" fill="#446688" font-weight="bold">进入 backtrack(start, path, sum)</text>
+    <text x="290" y="90" text-anchor="middle" fill="#555" font-size="9">从 start 往后选下一个数，sum 为当前路径之和</text>
+
+    <path d="M 290 94 L 290 110" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 1. size==k check -->
+    <polygon points="290,112 410,148 290,184 170,148" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="290" y="144" text-anchor="middle" fill="#4a7a3a" font-weight="bold">path.size() == k ?</text>
+    <text x="290" y="160" text-anchor="middle" fill="#555" font-size="9">(已选够 k 个)</text>
+
+    <!-- Yes -> sum==n check -->
+    <path d="M 410 148 L 460 148" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)"/>
+    <text x="435" y="140" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <polygon points="460,148 540,168 460,188 380,168" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4"/>
+    <text x="460" y="165" text-anchor="middle" fill="#4a7a3a" font-size="10" font-weight="bold">sum == n ?</text>
+    <text x="460" y="180" text-anchor="middle" fill="#555" font-size="9">是→收集 / 否→弃</text>
+
+    <path d="M 540 168 L 560 168 L 560 132 L 510 132" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+    <rect x="410" y="114" width="100" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="460" y="130" text-anchor="middle" fill="#4a7a3a" font-weight="bold">① 收集并返回</text>
+    <text x="460" y="144" text-anchor="middle" fill="#555" font-family="monospace" font-size="9">ans.push_back(path)</text>
+
+    <!-- size==k but sum!=n: return without collect -->
+    <path d="M 460 188 L 460 210" stroke="#888" stroke-width="1.2" stroke-dasharray="3,3" fill="none" marker-end="url(#arrN)"/>
+    <text x="470" y="204" font-size="9" fill="#888">否</text>
+    <rect x="406" y="210" width="108" height="26" fill="#f5f5f5" stroke="#888" stroke-width="1.2" stroke-dasharray="3,3" rx="6"/>
+    <text x="460" y="227" text-anchor="middle" fill="#888" font-size="10">返回（不收集）</text>
+
+    <!-- No -> down to sum prune -->
+    <path d="M 290 184 L 290 246" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="300" y="200" font-size="10" fill="#666" font-weight="bold">否</text>
+
+    <!-- 2. sum prune check -->
+    <polygon points="290,248 410,286 290,324 170,286" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <text x="290" y="282" text-anchor="middle" fill="#b85450" font-weight="bold">sum &gt; n ?</text>
+    <text x="290" y="298" text-anchor="middle" fill="#555" font-size="9">（或长度不足 9−start+1 &lt; k−size）</text>
+
+    <path d="M 410 286 L 470 286" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arrR)"/>
+    <text x="440" y="278" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+    <rect x="430" y="268" width="120" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" rx="6"/>
+    <text x="490" y="286" text-anchor="middle" fill="#b85450" font-weight="bold">✂ 剪枝返回</text>
+    <text x="490" y="301" text-anchor="middle" fill="#555" font-size="9">凑不出合法解</text>
+
+    <!-- No -> loop -->
+    <path d="M 290 324 L 290 342" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="300" y="338" font-size="10" fill="#666" font-weight="bold">否</text>
+
+    <!-- 3. Loop -->
+    <rect x="120" y="344" width="340" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="6"/>
+    <text x="290" y="360" text-anchor="middle" fill="#446688" font-weight="bold">② for i = start … 9−need+1</text>
+
+    <path d="M 290 368 L 290 384" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 4. sum+i > n break -->
+    <polygon points="290,386 380,410 290,434 200,410" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+    <text x="290" y="408" text-anchor="middle" fill="#d6a040" font-size="10" font-weight="bold">sum + i &gt; n ?</text>
+    <text x="290" y="422" text-anchor="middle" fill="#555" font-size="9">i 递增 → 后续更大</text>
+
+    <path d="M 380 410 L 430 410" stroke="#b85450" stroke-width="1.3" stroke-dasharray="3,3" fill="none" marker-end="url(#arrR)"/>
+    <text x="405" y="402" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">是</text>
+    <text x="440" y="406" fill="#b85450" font-size="10" font-weight="bold">break</text>
+    <text x="440" y="418" fill="#888" font-size="9">整枝剪掉</text>
+
+    <!-- No -> loop body -->
+    <path d="M 290 434 L 290 448" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="300" y="444" font-size="9" fill="#666" font-weight="bold">否</text>
+  </g>
+
+  <!-- ===== Loop body box ===== -->
+  <rect x="100" y="448" width="380" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="461" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" font-family="monospace">③ path.push(i); backtrack(i+1, sum+i); path.pop()</text>
+</svg>

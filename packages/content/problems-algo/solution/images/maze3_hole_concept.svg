@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <pattern id="wallHatch3" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#5a5a5a"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#3a3a3a" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：球滚过洞即掉入，Dijkstra 按距离+路径字典序求最优</text>
+
+  <!-- 5x5 maze grid: cell 44x44, origin (55,70) -->
+  <g filter="url(#rough2)" font-size="13">
+    <!-- row 0 -->
+    <rect x="55" y="70" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="99" y="70" width="44" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="3"/>
+    <rect x="143" y="70" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="187" y="70" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="231" y="70" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <!-- row 1 -->
+    <rect x="55" y="114" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <rect x="99" y="114" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <rect x="143" y="114" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="187" y="114" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="231" y="114" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <!-- row 2 -->
+    <rect x="55" y="158" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="99" y="158" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="143" y="158" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="187" y="158" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="231" y="158" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <!-- row 3 -->
+    <rect x="55" y="202" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="99" y="202" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <rect x="143" y="202" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="187" y="202" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="231" y="202" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <!-- row 4 -->
+    <rect x="55" y="246" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="99" y="246" width="44" height="44" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1.4" rx="3"/>
+    <rect x="143" y="246" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+    <rect x="187" y="246" width="44" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="3"/>
+    <rect x="231" y="246" width="44" height="44" fill="#ffffff" stroke="#888" stroke-width="1.3" rx="3"/>
+  </g>
+
+  <!-- hole at (0,1) center (121, 92) -->
+  <g filter="url(#rough2)">
+    <circle cx="121" cy="92" r="9" fill="#2a2a2a" stroke="#000" stroke-width="1.5"/>
+    <text x="121" y="96" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">洞</text>
+  </g>
+
+  <!-- ball at (4,3) center (209, 268) -->
+  <g filter="url(#rough2)">
+    <circle cx="209" cy="268" r="10" fill="#b85450" stroke="#7a3030" stroke-width="1.6"/>
+    <text x="209" y="272" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">球</text>
+  </g>
+
+  <!-- Path "lul" (green): (4,3)->(4,2)->(0,2)->(0,1)hole -->
+  <g filter="url(#rough2)" stroke="#4a7a3a" stroke-width="2.2" fill="none">
+    <!-- l: (4,3) -> (4,2) -->
+    <path d="M 196 268 L 188 268" marker-end="url(#arrG)"/>
+    <!-- u: (4,2) -> (0,2) -->
+    <path d="M 165 256 L 165 104" marker-end="url(#arrG)"/>
+    <!-- l: (0,2) -> (0,1) hole -->
+    <path d="M 152 92 L 134 92" marker-end="url(#arrG)" stroke-width="2.6"/>
+  </g>
+  <g filter="url(#rough2)" font-size="11" fill="#4a7a3a" font-weight="bold">
+    <text x="182" y="260">l (1)</text>
+    <text x="172" y="180">u (4)</text>
+    <text x="140" y="84">l (1)→掉入洞</text>
+  </g>
+
+  <!-- Alternative path "ul" (blue, dashed): (4,3)->(0,3)->(0,1)hole -->
+  <g filter="url(#rough2)" stroke="#446688" stroke-width="1.6" fill="none" stroke-dasharray="4,3">
+    <!-- u: (4,3) -> (0,3) -->
+    <path d="M 209 256 L 209 104" marker-end="url(#arrB)"/>
+    <!-- l: (0,3) -> (0,1) hole, offset slightly to avoid overlap -->
+    <path d="M 187 96 L 134 96" marker-end="url(#arrB)"/>
+  </g>
+  <g filter="url(#rough2)" font-size="10" fill="#446688" font-weight="bold">
+    <text x="216" y="180">u (4)</text>
+    <text x="150" y="106">l (2)</text>
+  </g>
+
+  <!-- distance label on "lul" path -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="310" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6"/>
+    <text x="210" y="329" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">lul: 距离 = 6 ✓</text>
+  </g>
+
+  <!-- concept boxes on the right -->
+  <g filter="url(#rough2)" font-size="11">
+    <!-- Box 1: hole mechanic -->
+    <rect x="330" y="60" width="230" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="445" y="82" text-anchor="middle" fill="#b85450" font-weight="bold" font-size="12">① 洞：滚过即掉入</text>
+    <text x="340" y="102" fill="#555" font-size="10">球沿方向滚动时，若途中经过洞的</text>
+    <text x="340" y="116" fill="#555" font-size="10">位置，立即掉入并停止——</text>
+    <text x="340" y="130" fill="#b85450" font-size="10" font-weight="bold">roll 需逐步检查是否到达洞</text>
+
+    <!-- Box 2: edge weight -->
+    <rect x="330" y="152" width="230" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="445" y="174" text-anchor="middle" fill="#446688" font-weight="bold" font-size="12">② 边权 = 滚动格数</text>
+    <text x="340" y="194" fill="#555" font-size="10">每次滚动经过的格数即边权（不</text>
+    <text x="340" y="208" fill="#555" font-size="10">等权），490 边权=1 用 BFS，</text>
+    <text x="340" y="222" fill="#446688" font-size="10" font-weight="bold">本题升级为 Dijkstra</text>
+
+    <!-- Box 3: lexicographic tie-break -->
+    <rect x="330" y="244" width="230" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8"/>
+    <text x="445" y="266" text-anchor="middle" fill="#4a7a3a" font-weight="bold" font-size="12">③ Dijkstra + 字典序</text>
+    <text x="340" y="286" fill="#555" font-size="10">PQ 按 (距离, 路径字符串) 取最小</text>
+    <text x="340" y="300" fill="#555" font-size="10">距离相同则路径字典序更小者先弹出</text>
+    <text x="340" y="314" fill="#555" font-size="10">d &lt; l &lt; r &lt; u（ASCII 序）</text>
+    <text x="340" y="328" fill="#4a7a3a" font-size="10" font-weight="bold">"lul" &lt; "ul"（l &lt; u）✓</text>
+  </g>
+
+  <!-- legend -->
+  <g filter="url(#rough2)" font-size="9">
+    <rect x="60" y="356" width="14" height="12" fill="url(#wallHatch3)" stroke="#3a3a3a" stroke-width="1" rx="2"/>
+    <text x="78" y="366" fill="#555">墙</text>
+    <circle cx="120" cy="362" r="5" fill="#b85450" stroke="#7a3030" stroke-width="1"/>
+    <text x="130" y="366" fill="#555">球</text>
+    <circle cx="165" cy="362" r="5" fill="#2a2a2a" stroke="#000" stroke-width="1"/>
+    <text x="175" y="366" fill="#555">洞</text>
+    <line x1="210" y1="362" x2="232" y2="362" stroke="#4a7a3a" stroke-width="2.2"/>
+    <text x="238" y="366" fill="#555">lul 路径</text>
+    <line x1="280" y1="362" x2="302" y2="362" stroke="#446688" stroke-width="1.6" stroke-dasharray="4,3"/>
+    <text x="308" y="366" fill="#555">ul 路径</text>
+  </g>
+</svg>

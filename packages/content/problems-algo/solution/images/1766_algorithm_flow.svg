@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：预处理互质表 → DFS 进/出栈维护 → 查栈顶取最深</text>
+
+  <!-- ===== Step 1: preprocess ===== -->
+  <rect x="40" y="44" width="520" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="64" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 预处理互质表 coprimes[1..50]</text>
+  <text x="56" y="80" font-size="9.5" fill="#555" filter="url(#rough2)">for v in 1..50, for u in 1..50: if gcd(u,v)==1 → coprimes[v].append(u)</text>
+  <text x="56" y="94" font-size="9" fill="#888" filter="url(#rough2)">O(50²·log50)，DFS 中不再调用 gcd，数论运算前移</text>
+
+  <!-- arrow -->
+  <path d="M 300 102 L 300 120" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: build tree ===== -->
+  <rect x="40" y="120" width="520" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="140" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 建无向邻接表，以 0 为根，初始化 path[1..50]=空栈、depth[0]=0</text>
+  <text x="56" y="156" font-size="9" fill="#888" filter="url(#rough2)">迭代 DFS 栈 stk=[(0,-1,进入)]，避免链状树递归溢出</text>
+
+  <!-- arrow -->
+  <path d="M 300 170 L 300 188" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: DFS loop (diamond) ===== -->
+  <polygon points="300,190 460,250 300,310 140,250" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="240" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ 弹出 (node,parent,state)</text>
+  <text x="300" y="256" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">state == 进入 ?</text>
+  <text x="300" y="272" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">否则 state == 退出</text>
+
+  <!-- Yes branch (enter) -->
+  <path d="M 140 250 L 70 250 L 70 330" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="78" y="244" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">进入</text>
+
+  <rect x="40" y="332" width="180" height="108" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="350" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">进入处理</text>
+  <text x="50" y="366" font-size="9" fill="#555" filter="url(#rough2)">val = nums[node]</text>
+  <text x="50" y="380" font-size="9" fill="#555" filter="url(#rough2)">best=-1</text>
+  <text x="50" y="394" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">for u in coprimes[val]:</text>
+  <text x="58" y="406" font-size="8.5" fill="#888" filter="url(#rough2)">if path[u]顶更深 → best</text>
+  <text x="50" y="420" font-size="9" fill="#555" filter="url(#rough2)">ans[node]=best</text>
+  <text x="50" y="432" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">path[val].push(node)</text>
+
+  <!-- No branch (exit) -->
+  <path d="M 460 250 L 530 250 L 530 330" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="490" y="244" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">退出</text>
+
+  <rect x="430" y="332" width="140" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="350" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">退出处理</text>
+  <text x="442" y="370" font-size="9.5" fill="#555" filter="url(#rough2)">回溯：当前节点</text>
+  <text x="442" y="384" font-size="9.5" fill="#555" filter="url(#rough2)">已不在路径上</text>
+  <text x="442" y="398" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">path[val].pop()</text>
+
+  <!-- After enter: push children + exit marker -->
+  <path d="M 130 440 L 130 446" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="446" width="180" height="0" fill="none"/>
+
+  <!-- side note: push children -->
+  <rect x="240" y="332" width="180" height="68" fill="#f0f0f0" stroke="#aaa" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="350" text-anchor="middle" font-size="10" fill="#666" font-weight="bold" filter="url(#rough2)">压子节点</text>
+  <text x="252" y="368" font-size="9" fill="#555" filter="url(#rough2)">push (node,p,退出标记)</text>
+  <text x="252" y="382" font-size="9" fill="#555" filter="url(#rough2)">逆序 push 子节点(进入)</text>
+  <text x="252" y="396" font-size="9" fill="#888" filter="url(#rough2)">depth[child]=depth[node]+1</text>
+
+  <!-- Footer -->
+  <text x="300" y="448" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">进/出栈配对：进入时压栈+登记退出+压子节点；退出时弹栈 → path 始终精确反映当前路径</text>
+</svg>

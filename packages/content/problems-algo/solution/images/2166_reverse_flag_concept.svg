@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：flipped 标志位让 flip() 从 O(n) 降到 O(1)</text>
+  <text x="270" y="44" text-anchor="middle" font-size="10.5" fill="#888">逻辑值 = 物理值 ⊕ flipped，flip 只翻一个标志</text>
+
+  <!-- ===== Top: naive flip (red, O(n)) ===== -->
+  <rect x="30" y="60" width="480" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="80" font-size="11.5" fill="#b85450" font-weight="bold">朴素 flip()：逐位翻转 → O(n)</text>
+  <text x="50" y="96" font-size="9.5" fill="#b85450">每位都要动手写，n 大时必超时</text>
+
+  <!-- naive bit row before -->
+  <text x="50" y="118" font-size="9.5" fill="#888">翻转前:</text>
+  <rect x="92" y="106" width="26" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="105" y="121" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="120" y="106" width="26" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="133" y="121" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="148" y="106" width="26" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="161" y="121" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="176" y="106" width="26" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="189" y="121" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="214" y="121" font-size="13" fill="#b85450" font-weight="bold">→</text>
+  <rect x="238" y="106" width="26" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="251" y="121" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="266" y="106" width="26" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="279" y="121" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="294" y="106" width="26" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="307" y="121" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="322" y="106" width="26" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="335" y="121" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="360" y="118" font-size="9.5" fill="#b85450">翻转后</text>
+  <text x="400" y="118" font-size="10" fill="#b85450" font-weight="bold">每个格子都要碰!</text>
+
+  <!-- ===== Bottom: lazy flip (green, O(1)) ===== -->
+  <rect x="30" y="152" width="480" height="210" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="172" font-size="11.5" fill="#4a7a3a" font-weight="bold">懒惰 flip()：只翻 flipped 标志 → O(1)</text>
+  <text x="50" y="188" font-size="9.5" fill="#4a7a3a">物理数组一个字节不动，逻辑视图自动取反</text>
+
+  <!-- Physical array label -->
+  <text x="50" y="212" font-size="10" fill="#555" font-weight="bold">物理 bits[]</text>
+  <rect x="120" y="200" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="135" y="218" text-anchor="middle" font-size="12" fill="#333">0</text>
+  <rect x="152" y="200" width="30" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="167" y="218" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <rect x="184" y="200" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="199" y="218" text-anchor="middle" font-size="12" fill="#333">0</text>
+  <rect x="216" y="200" width="30" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="231" y="218" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <text x="258" y="216" font-size="9.5" fill="#888">(不变)</text>
+
+  <!-- flipped flag toggle -->
+  <text x="50" y="252" font-size="10" fill="#555" font-weight="bold">flipped 标志</text>
+  <rect x="120" y="240" width="60" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="258" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">false</text>
+  <path d="M 186 253 L 218 253" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="202" y="247" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">flip</text>
+  <rect x="224" y="240" width="60" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="254" y="258" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">true</text>
+  <text x="298" y="256" font-size="10" fill="#4a7a3a" font-weight="bold">只需翻这一个标志!</text>
+
+  <!-- Logical view = bits XOR flipped -->
+  <text x="50" y="296" font-size="10" fill="#555" font-weight="bold">逻辑视图</text>
+  <text x="120" y="296" font-size="10" fill="#446688">= bits ⊕ flipped</text>
+  <rect x="120" y="302" width="30" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="135" y="320" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <rect x="152" y="302" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="167" y="320" text-anchor="middle" font-size="12" fill="#333">0</text>
+  <rect x="184" y="302" width="30" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="199" y="320" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <rect x="216" y="302" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="231" y="320" text-anchor="middle" font-size="12" fill="#333">0</text>
+  <text x="258" y="318" font-size="9.5" fill="#4a7a3a" font-weight="bold">(自动取反)</text>
+
+  <!-- ones update -->
+  <rect x="300" y="300" width="200" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="400" y="318" text-anchor="middle" font-size="10.5" fill="#444" font-weight="bold">ones 也同步更新</text>
+  <text x="400" y="334" text-anchor="middle" font-size="10.5" fill="#555">ones_new = n − ones_old</text>
+
+  <!-- Footer -->
+  <text x="270" y="356" text-anchor="middle" font-size="10" fill="#aaa">flip() = 翻一个 bool + 一次减法，物理数组零改动</text>
+  <text x="270" y="370" text-anchor="middle" font-size="10" fill="#aaa">与 OS 的 Copy-on-Write / DB 的 MVCC 同构：延迟执行，按需翻译</text>
+</svg>

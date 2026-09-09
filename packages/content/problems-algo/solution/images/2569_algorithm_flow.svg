@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="430" fill="#fafafa"/>
+  <text x="320" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：建树 → 遍历查询分类处理</text>
+
+  <!-- Step 1 build -->
+  <rect x="40" y="50" width="560" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="71" font-size="12" fill="#333" font-weight="bold">① 建线段树：叶子 cnt1 = nums1[i]；内部 cnt1 = 左+右</text>
+  <text x="60" y="88" font-size="11" fill="#555">sum2 = Σnums2[i]（标量初始化）</text>
+  <path d="M 320 96 L 320 106" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 loop -->
+  <rect x="40" y="108" width="560" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="131" font-size="12" fill="#333" font-weight="bold">② 遍历 queries，按 q[0] 分类：</text>
+  <path d="M 320 146 L 320 156" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- branch 1 -->
+  <rect x="40" y="160" width="178" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="56" y="182" font-size="12" fill="#446688" font-weight="bold">q[0]==1 区间翻转</text>
+  <text x="56" y="200" font-size="11" fill="#555">update(1,0,n-1,l,r)</text>
+  <text x="56" y="214" font-size="10" fill="#888">cnt1←len−cnt1 + 懒标记</text>
+
+  <!-- branch 2 -->
+  <rect x="231" y="160" width="178" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="247" y="182" font-size="12" fill="#d6a040" font-weight="bold">q[0]==2 标量加法</text>
+  <text x="247" y="200" font-size="11" fill="#555">sum2 += cnt1[根] × p</text>
+  <text x="247" y="214" font-size="10" fill="#888">读根节点 cnt1，O(1)</text>
+
+  <!-- branch 3 -->
+  <rect x="422" y="160" width="178" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="438" y="182" font-size="12" fill="#b85450" font-weight="bold">q[0]==3 记录答案</text>
+  <text x="438" y="200" font-size="11" fill="#555">ans.append(sum2)</text>
+  <text x="438" y="214" font-size="10" fill="#888">直接取标量，O(1)</text>
+
+  <path d="M 120 144 L 120 158" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 320 144 L 320 158" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 511 144 L 511 158" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <path d="M 320 218 L 320 228" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="40" y="232" width="560" height="40" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="60" y="257" font-size="12" fill="#b85450" font-weight="bold">③ 返回 ans（所有操作三的结果序列）</text>
+
+  <!-- notes -->
+  <rect x="40" y="290" width="560" height="128" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="60" y="314" font-size="12" fill="#444" font-weight="bold">实现要点：</text>
+  <text x="60" y="334" font-size="11" fill="#555">① apply(node)：cnt1 = len − cnt1；rev ^= 1。翻转两次复原，故懒标记用 XOR。</text>
+  <text x="60" y="354" font-size="11" fill="#555">② pushdown：若有 rev，对左右子各 apply 一次，再清零本节点 rev。</text>
+  <text x="60" y="374" font-size="11" fill="#555">③ 操作二只读根节点 cnt1[1]（整段 1 的总数），无需区间查询。</text>
+  <text x="60" y="394" font-size="11" fill="#555">④ sum2 累加可达 10¹⁴+，C++ 用 long long；cnt1×p 也先转 64 位防溢出。</text>
+  <text x="60" y="412" font-size="11" fill="#555">⑤ 递归深度 O(log n)，Python 默认栈限足够。</text>
+</svg>

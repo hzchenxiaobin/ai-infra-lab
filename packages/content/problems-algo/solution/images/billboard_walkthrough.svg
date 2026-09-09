@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="540" fill="#fafafa"/>
+
+  <text x="300" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：rods = [1, 2, 3, 6]</text>
+
+  <!-- 初始状态 -->
+  <rect x="30" y="40" width="540" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="58" font-size="12" fill="#446688" font-weight="bold">初始</text>
+  <text x="50" y="74" font-size="11" fill="#555">dp = {0: 0}</text>
+  <text x="430" y="64" font-size="10" fill="#888">diff → taller（shorter = taller − diff）</text>
+
+  <!-- r=1 -->
+  <rect x="30" y="92" width="540" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="110" font-size="12" fill="#d6a040" font-weight="bold">r=1</text>
+  <text x="50" y="128" font-size="10.5" fill="#555">从 {0:0}：</text>
+  <text x="50" y="144" font-size="10.5" fill="#555">  放高侧→dp[1]=1; 放低侧(r&gt;0)→dp[1]=max(1, 1)=1</text>
+  <text x="50" y="158" font-size="11" fill="#446688" font-weight="bold">dp = {0:0, 1:1}</text>
+  <text x="460" y="120" font-size="10" fill="#888">dp[1]=1：T=1, S=0</text>
+  <text x="460" y="136" font-size="10" fill="#888">（1 放某侧）</text>
+
+  <!-- r=2 -->
+  <rect x="30" y="176" width="540" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="194" font-size="12" fill="#d6a040" font-weight="bold">r=2</text>
+  <text x="50" y="212" font-size="10.5" fill="#555">从 {0:0}：放高→dp[2]=2; 放低→dp[2]=2</text>
+  <text x="50" y="228" font-size="10.5" fill="#555">从 {1:1}：放高→dp[3]=3; 放低(r&gt;1)→dp[1]=max(1, 1-1+2)=2</text>
+  <text x="50" y="246" font-size="11" fill="#446688" font-weight="bold">dp = {0:0, 1:2, 2:2, 3:3}</text>
+  <text x="430" y="200" font-size="10" fill="#888">dp[1]=2：T=2, S=1</text>
+  <text x="430" y="216" font-size="10" fill="#888">（{2} vs {1}）</text>
+  <text x="430" y="236" font-size="10" fill="#4a7a3a" font-weight="bold">关键：dp[1] 从 1 升到 2</text>
+
+  <!-- r=3 -->
+  <rect x="30" y="268" width="540" height="88" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="286" font-size="12" fill="#d6a040" font-weight="bold">r=3</text>
+  <text x="50" y="304" font-size="10.5" fill="#555">从 {0:0}：放高→dp[3]=3; 放低→dp[3]=3</text>
+  <text x="50" y="320" font-size="10.5" fill="#555">从 {1:2}：放高→dp[4]=5; 放低(r&gt;1)→dp[2]=max(2, 2-1+3)=4</text>
+  <text x="50" y="336" font-size="10.5" fill="#555">从 {2:2}：放高→dp[5]=5; 放低(r&gt;2)→dp[1]=max(2, 2-2+3)=3</text>
+  <text x="50" y="352" font-size="10.5" fill="#555">从 {3:3}：放高→dp[6]=6; 放低(r≤3)→dp[0]=max(0, 3)=3 ★</text>
+  <text x="350" y="352" font-size="11" fill="#446688" font-weight="bold">dp = {0:3, …, 6:6}</text>
+  <text x="430" y="296" font-size="10" fill="#888">dp[0]=3：T=3, S=3</text>
+  <text x="430" y="312" font-size="10" fill="#888">（{1,2} vs {3}）</text>
+  <text x="430" y="328" font-size="10" fill="#4a7a3a" font-weight="bold">首次出现 diff=0！</text>
+
+  <!-- r=6 -->
+  <rect x="30" y="368" width="540" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="386" font-size="12" fill="#d6a040" font-weight="bold">r=6</text>
+  <text x="50" y="404" font-size="10.5" fill="#555">从 {0:3}：放高→dp[6]=9; 放低(r&gt;0)→dp[6]=9</text>
+  <text x="50" y="420" font-size="10.5" fill="#555">…（略中间状态）…</text>
+  <text x="50" y="436" font-size="10.5" fill="#555">从 {6:6}：放高→dp[12]=12; 放低(r≤6)→dp[0]=max(3, 6)=6 ★★</text>
+  <text x="50" y="454" font-size="11" fill="#446688" font-weight="bold">dp = {0:6, …}</text>
+  <text x="430" y="396" font-size="10" fill="#888">dp[0] 从 3 升到 6</text>
+  <text x="430" y="412" font-size="10" fill="#888">T=6, S=6</text>
+  <text x="430" y="428" font-size="10" fill="#4a7a3a" font-weight="bold">{1,2,3} vs {6}</text>
+
+  <!-- 结果 -->
+  <rect x="30" y="476" width="540" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="498" font-size="13" fill="#4a7a3a" font-weight="bold">答案 = dp[0] = 6 ✅</text>
+  <text x="50" y="516" font-size="11" fill="#555">左支架 {1,2,3}=6，右支架 {6}=6，广告牌高度=6</text>
+
+  <!-- 右侧标注：关键转折 -->
+  <path d="M 425 340 L 425 395" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="435" y="370" font-size="10" fill="#b85450">r=6 时 dp[6]=6</text>
+  <text x="435" y="384" font-size="10" fill="#b85450">放低侧→dp[0]=6</text>
+</svg>

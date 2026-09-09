@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 680" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="680" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：nums=[−2,5,−1], lower=−2, upper=2 → 3</text>
+  <text x="300" y="44" text-anchor="middle" font-size="11" fill="#888">pref=[0,−2,3,2]，递归切分 idx 0..3，每层合并前双指针统计跨段合法对</text>
+
+  <!-- ===== Initial pref ===== -->
+  <text x="20" y="72" font-size="11" fill="#446688" font-weight="bold">初始 pref（下标标在格子顶上）</text>
+  <text x="74" y="90" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">0</text>
+  <text x="124" y="90" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">1</text>
+  <text x="174" y="90" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">2</text>
+  <text x="224" y="90" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">3</text>
+  <rect x="54" y="96" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="74" y="114" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="104" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="124" y="114" text-anchor="middle" font-size="11" fill="#333">−2</text>
+  <rect x="154" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="174" y="114" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <rect x="204" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="114" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="280" y="112" font-size="10" fill="#888">合法配对预览（l&lt;r，差∈[−2,2]）：</text>
+  <text x="280" y="126" font-size="10" fill="#888">(0,1):−2 ✓　(0,3):2 ✓　(2,3):−1 ✓　共 3 个</text>
+
+  <path d="M 300 132 L 300 148" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Level 1a: merge [0]·[1] ===== -->
+  <rect x="20" y="152" width="560" height="64" fill="#f6f6f6" stroke="#aaa" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="30" y="170" font-size="11" fill="#446688" font-weight="bold">第1层 a：merge(0,0,1) → 左=[0(值0)] 右=[1(值−2)]</text>
+  <text x="30" y="186" font-size="10" fill="#333">j=1, r=−2：lo_bound=−2−2=−4，hi_bound=−2−(−2)=0 → 找 pref[l]∈[−4,0]</text>
+  <text x="30" y="200" font-size="10" fill="#333">p1: pref[0]=0 ≥ −4 → p1=0　p2: pref[0]=0 ≤ 0 → p2=1　ans += 1−0 = </text>
+  <text x="408" y="200" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="430" y="200" font-size="9" fill="#888">（配对(0,1): −2−0=−2 ✓）</text>
+  <text x="30" y="214" font-size="9" fill="#888">合并后 pref[0..1] = [−2, 0]</text>
+  <text x="430" y="214" font-size="9" fill="#4a7a3a">累计 ans = 1</text>
+
+  <!-- ===== Level 1b: merge [2]·[3] ===== -->
+  <rect x="20" y="224" width="560" height="64" fill="#f6f6f6" stroke="#aaa" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="30" y="242" font-size="11" fill="#446688" font-weight="bold">第1层 b：merge(2,2,3) → 左=[2(值3)] 右=[3(值2)]</text>
+  <text x="30" y="258" font-size="10" fill="#333">j=3, r=2：lo_bound=2−2=0，hi_bound=2−(−2)=4 → 找 pref[l]∈[0,4]</text>
+  <text x="30" y="272" font-size="10" fill="#333">p1: pref[2]=3 ≥ 0 → p1=2　p2: pref[2]=3 ≤ 4 → p2=3　ans += 3−2 = </text>
+  <text x="408" y="272" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="430" y="272" font-size="9" fill="#888">（配对(2,3): 2−3=−1 ✓）</text>
+  <text x="30" y="286" font-size="9" fill="#888">合并后 pref[2..3] = [2, 3]</text>
+  <text x="430" y="286" font-size="9" fill="#4a7a3a">累计 ans = 2</text>
+
+  <path d="M 300 290 L 300 306" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Level 0: detailed merge ===== -->
+  <text x="20" y="320" font-size="12" fill="#b85450" font-weight="bold">第0层：merge(0,1,3) → 左=[−2,0]（原idx1,0） 右=[2,3]（原idx3,2），lo=0, mid=1, hi=3</text>
+
+  <rect x="20" y="328" width="560" height="180" fill="#f6f6f6" stroke="#aaa" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+
+  <!-- header row -->
+  <text x="30" y="348" font-size="9" fill="#888" font-weight="bold">j</text>
+  <text x="60" y="348" font-size="9" fill="#888" font-weight="bold">pref[j]</text>
+  <text x="120" y="348" font-size="9" fill="#888" font-weight="bold">[lo,hi]_bound</text>
+  <text x="220" y="348" font-size="9" fill="#888" font-weight="bold">p1 扫描</text>
+  <text x="320" y="348" font-size="9" fill="#888" font-weight="bold">p2 扫描</text>
+  <text x="420" y="348" font-size="9" fill="#888" font-weight="bold">ans +=</text>
+  <text x="500" y="348" font-size="9" fill="#888" font-weight="bold">命中配对</text>
+
+  <!-- Row j=2 -->
+  <rect x="24" y="354" width="552" height="30" fill="#e8f0fe" stroke="none" rx="3" filter="url(#rough2)" opacity="0.45"/>
+  <text x="30" y="372" font-size="9" fill="#333">2</text>
+  <text x="60" y="372" font-size="9" fill="#b85450" font-weight="bold">2</text>
+  <text x="120" y="372" font-size="9" fill="#333">[0, 4]</text>
+  <text x="220" y="372" font-size="9" fill="#446688">pref[0]=−2 &lt; 0 → p1=1; pref[1]=0 ≥ 0 停</text>
+  <text x="320" y="372" font-size="9" fill="#4a7a3a">pref[0]=−2 ≤4 → p2=1; pref[1]=0 ≤4 → p2=2</text>
+  <text x="420" y="372" font-size="9" fill="#b85450" font-weight="bold">2−1 = 1</text>
+  <text x="500" y="372" font-size="9" fill="#888">(0,3): 2−0=2 ✓</text>
+
+  <!-- Row j=3 -->
+  <rect x="24" y="386" width="552" height="30" fill="#fce4ec" stroke="none" rx="3" filter="url(#rough2)" opacity="0.45"/>
+  <text x="30" y="404" font-size="9" fill="#333">3</text>
+  <text x="60" y="404" font-size="9" fill="#b85450" font-weight="bold">3</text>
+  <text x="120" y="404" font-size="9" fill="#333">[1, 5]</text>
+  <text x="220" y="404" font-size="9" fill="#446688">pref[1]=0 &lt; 1 → p1=2（超 mid 停）</text>
+  <text x="320" y="404" font-size="9" fill="#4a7a3a">p2=2 超 mid 停</text>
+  <text x="420" y="404" font-size="9" fill="#b85450" font-weight="bold">2−2 = 0</text>
+  <text x="500" y="404" font-size="9" fill="#888">无</text>
+
+  <!-- count snapshot -->
+  <text x="30" y="436" font-size="10" fill="#4a7a3a" font-weight="bold">本层新增 = 1（配对 (orig0, orig3)：pref[3]−pref[0]=2−0=2 ∈ [−2,2] ✓）</text>
+  <text x="30" y="454" font-size="10" fill="#888">合并后 pref[0..3] = [−2, 0, 2, 3]（整体有序，供上层使用——本题已是最顶层，无需再用）</text>
+  <text x="30" y="476" font-size="10" fill="#888">⚠️ 注意：跨段配对只看「左半值 vs 右半值」是否满足差式，不必关心原下标——</text>
+  <text x="30" y="492" font-size="10" fill="#888">　因为分治已保证左半原下标全 &lt; 右半原下标，l&lt;r 自动成立</text>
+
+  <!-- ===== Final result ===== -->
+  <rect x="80" y="524" width="440" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="546" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">最终 ans = 1 + 1 + 1 = 3</text>
+  <text x="300" y="566" text-anchor="middle" font-size="10" fill="#888">合法区间和：S(0,0)=−2 ｜ S(0,2)=2 ｜ S(2,2)=−1</text>
+
+  <!-- ===== Notes ===== -->
+  <text x="20" y="600" font-size="10" fill="#888">💡 三层累加：第1a层(配对0,1) + 第1b层(配对2,3) + 第0层(配对0,3) = 全部 3 个合法配对，不重不漏</text>
+  <text x="20" y="618" font-size="10" fill="#888">💡 任意配对(l,r) 恰在「l 落左半、r 落右半」的那一层被统计一次：分治递归树天然把所有 l&lt;r 配对划归到唯一跨段层</text>
+  <text x="20" y="636" font-size="10" fill="#888">⚠️ p1、p2 在一层内只前进不回退（pref[j] 递增 → 两个界点递增），所以双指针部分总 O(n)，不是 O(n²)</text>
+  <text x="20" y="654" font-size="10" fill="#888">⚠️ 计数循环跑在合并之前：合并会重写 pref[lo..hi]，破坏「左半、右半各自有序」的结构</text>
+</svg>

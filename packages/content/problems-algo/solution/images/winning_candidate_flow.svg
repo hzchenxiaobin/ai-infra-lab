@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">执行流程：JOIN 连表 → GROUP BY 计票 → ORDER BY DESC → LIMIT 1 → 取名</text>
+
+  <!-- Step 1: FROM + JOIN -->
+  <rect x="60" y="48" width="440" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="63" font-size="10" fill="#b85450" font-weight="bold">① FROM</text>
+  <text x="130" y="63" font-size="10" fill="#333">Candidate c JOIN Vote v ON c.id = v.CandidateId</text>
+  <text x="130" y="76" font-size="9" fill="#888">把每张选票行与候选人行并排 → 5 行（A 无票被 INNER JOIN 丢弃）</text>
+
+  <path d="M280 84 L280 100" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY -->
+  <rect x="60" y="102" width="440" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="117" font-size="10" fill="#b85450" font-weight="bold">② GROUP BY</text>
+  <text x="170" y="117" font-size="10" fill="#333">c.id, c.name —— 按候选人分桶</text>
+  <text x="170" y="130" font-size="9" fill="#888">B 桶 2 行 / C 桶 1 行 / D 桶 1 行 / E 桶 1 行</text>
+
+  <path d="M280 138 L280 154" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 3: COUNT -->
+  <rect x="60" y="156" width="440" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="171" font-size="10" fill="#b85450" font-weight="bold">③ COUNT</text>
+  <text x="145" y="171" font-size="10" fill="#333">COUNT(v.id) AS cnt —— 每桶计票数</text>
+  <text x="145" y="184" font-size="9" fill="#888">B=2, C=1, D=1, E=1</text>
+
+  <path d="M280 192 L280 208" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="60" y="210" width="440" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="225" font-size="10" fill="#b85450" font-weight="bold">④ ORDER BY</text>
+  <text x="170" y="225" font-size="10" fill="#d6a040" font-weight="bold">COUNT(v.id) DESC —— 按票数降序</text>
+  <text x="170" y="238" font-size="9" fill="#888">B(2) → C(1) / D(1) / E(1)</text>
+
+  <path d="M280 246 L280 262" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 5: LIMIT 1 -->
+  <rect x="60" y="264" width="440" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="279" font-size="10" fill="#b85450" font-weight="bold">⑤ LIMIT 1</text>
+  <text x="150" y="279" font-size="10" fill="#333">只取票数最高的第 1 行</text>
+  <text x="150" y="292" font-size="9" fill="#888">题目保证胜者票数严格最多 → 无并列，LIMIT 1 安全</text>
+
+  <path d="M280 300 L280 316" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 6: SELECT name -->
+  <rect x="60" y="318" width="440" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="337" font-size="10" fill="#b85450" font-weight="bold">⑥ SELECT</text>
+  <text x="140" y="337" font-size="10" fill="#333">c.name —— 输出当选者姓名 B</text>
+
+  <path d="M280 350 L280 372" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="180" y="376" width="200" height="60" fill="#fff8e1" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="396" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">最终输出</text>
+  <rect x="240" y="402" width="80" height="24" fill="#fff" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="419" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">B</text>
+
+  <!-- Side note: execution order reminder -->
+  <text x="280" y="460" text-anchor="middle" font-size="9" fill="#888">逻辑顺序：FROM → JOIN → GROUP BY → HAVING(无) → SELECT(含聚合) → ORDER BY → LIMIT</text>
+</svg>

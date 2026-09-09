@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：三个有序变量 a &gt; b &gt; c 维护「已见过的前三大不同值」</text>
+
+  <!-- Step 1: three slots -->
+  <text x="40" y="62" font-size="12" fill="#446688" font-weight="bold">① 三个槽位 a &gt; b &gt; c（初始为 −∞ 哨兵）</text>
+
+  <!-- slot a (max) -->
+  <rect x="60" y="76" width="80" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="102" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+  <text x="100" y="130" text-anchor="middle" font-size="10" fill="#d6a040">最大</text>
+
+  <!-- slot b -->
+  <rect x="160" y="76" width="80" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="102" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">b</text>
+  <text x="200" y="130" text-anchor="middle" font-size="10" fill="#446688">第二</text>
+
+  <!-- slot c -->
+  <rect x="260" y="76" width="80" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="102" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">c</text>
+  <text x="300" y="130" text-anchor="middle" font-size="10" fill="#4a7a3a">第三 ← 答案</text>
+
+  <text x="360" y="100" font-size="11" fill="#888">遍历结束看 c 是否填上</text>
+
+  <!-- divider -->
+  <path d="M 40 148 L 520 148" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: classify new x -->
+  <text x="40" y="176" font-size="12" fill="#446688" font-weight="bold">② 新数 x 按区间落入并级联移位</text>
+
+  <!-- incoming x -->
+  <rect x="40" y="196" width="48" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="64" y="217" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">x</text>
+
+  <!-- arrow -->
+  <path d="M 92 212 L 130 212" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- branch 1: x > a -->
+  <rect x="140" y="190" width="120" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="208" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">x &gt; a</text>
+  <text x="200" y="223" text-anchor="middle" font-size="10" fill="#555">c←b, b←a, a←x</text>
+
+  <!-- branch 2: a > x > b -->
+  <rect x="280" y="190" width="120" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="340" y="208" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">a &gt; x &gt; b</text>
+  <text x="340" y="223" text-anchor="middle" font-size="10" fill="#555">c←b, b←x</text>
+
+  <!-- branch 3: b > x > c -->
+  <rect x="420" y="190" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="208" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">b &gt; x &gt; c</text>
+  <text x="480" y="223" text-anchor="middle" font-size="10" fill="#555">c←x</text>
+
+  <!-- ignore branch -->
+  <text x="200" y="250" font-size="10" fill="#888">x &lt; c：忽略（不影响前三）</text>
+
+  <!-- divider -->
+  <path d="M 40 268 L 520 268" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: dedup -->
+  <text x="40" y="296" font-size="12" fill="#446688" font-weight="bold">③ 先判重：x 已等于 a/b/c 之一则跳过</text>
+
+  <!-- dup case -->
+  <rect x="60" y="312" width="48" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="84" y="333" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">x</text>
+  <text x="84" y="358" text-anchor="middle" font-size="9" fill="#888">新来的 x</text>
+
+  <text x="120" y="332" font-size="11" fill="#888">x == a ?</text>
+  <path d="M 168 328 L 196 328" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="200" y="312" width="56" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="228" y="333" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">a</text>
+
+  <text x="272" y="332" font-size="11" fill="#b85450" font-weight="bold">⇒ 跳过</text>
+
+  <!-- note -->
+  <rect x="350" y="308" width="180" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="326" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠ 去重最易踩坑</text>
+  <text x="440" y="340" text-anchor="middle" font-size="9.5" fill="#555">不判重会把 a,b,c 挤成同值</text>
+
+  <!-- footer -->
+  <rect x="40" y="370" width="480" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="388" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">遍历后：c ≠ −∞ → 返回 c；否则返回 a（不足 3 个不同值）</text>
+  <text x="280" y="402" text-anchor="middle" font-size="10.5" fill="#555">哨兵用 LLONG_MIN：nums[i] 可能为 INT_MIN，须可区分</text>
+</svg>

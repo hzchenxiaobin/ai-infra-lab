@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrBlue" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">Floyd-Warshall：枚举中转点 k，用 i→k→j 更新 i→j</text>
+  <text x="280" y="50" text-anchor="middle" font-size="11" fill="#888">dist[i][j] = min( dist[i][j], dist[i][k] + dist[k][j] )</text>
+
+  <!-- ===== top: direct edge i->j (old path) ===== -->
+  <text x="40" y="92" font-size="11" fill="#888" font-weight="bold">情形 A：不经过 k（保留旧值）</text>
+
+  <!-- node i -->
+  <ellipse cx="80" cy="130" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="80" y="135" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">i</text>
+
+  <!-- node j -->
+  <ellipse cx="320" cy="130" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="320" y="135" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">j</text>
+
+  <!-- direct arc -->
+  <path d="M 108 124 Q 200 96 292 124" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrBlue)" filter="url(#rough2)"/>
+  <text x="200" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">dist[i][j]</text>
+  <text x="200" y="150" text-anchor="middle" font-size="10" fill="#888">沿用上一轮的值</text>
+
+  <!-- ===== bottom: via k ===== -->
+  <text x="40" y="196" font-size="11" fill="#4a7a3a" font-weight="bold">情形 B：经过中转点 k（拆两段相加）</text>
+
+  <!-- node i -->
+  <ellipse cx="80" cy="250" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="80" y="255" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">i</text>
+
+  <!-- node k (highlighted) -->
+  <ellipse cx="200" cy="280" rx="30" ry="25" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="200" y="285" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">k</text>
+  <text x="200" y="312" text-anchor="middle" font-size="9" fill="#d6a040">中转点</text>
+
+  <!-- node j -->
+  <ellipse cx="320" cy="250" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="320" y="255" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">j</text>
+
+  <!-- i -> k -->
+  <path d="M 104 258 L 172 276" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="120" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dist[i][k]</text>
+
+  <!-- k -> j -->
+  <path d="M 228 276 L 296 258" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="280" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dist[k][j]</text>
+
+  <!-- = ====== min box ===== -->
+  <rect x="380" y="226" width="150" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="248" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">取两者较小</text>
+  <text x="455" y="266" text-anchor="middle" font-size="10" fill="#4a7a3a">min(旧值,</text>
+  <text x="455" y="280" text-anchor="middle" font-size="10" fill="#4a7a3a">  i→k + k→j)</text>
+
+  <!-- arrow from k path to min box -->
+  <path d="M 350 252 L 378 252" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <!-- footer note -->
+  <text x="40" y="350" font-size="10" fill="#888">k 在最外层循环 → 每轮只允许经过编号 ≤ k 的节点，DP 阶段清晰</text>
+  <text x="40" y="366" font-size="10" fill="#888">原地更新：第 k 轮 dist[i][k]、dist[k][j] 不变（dist[k][k]=0），读到的仍是 k-1 轮值</text>
+</svg>

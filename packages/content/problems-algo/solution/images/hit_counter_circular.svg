@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrOrange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="460" fill="#fafafa"/>
+
+  <text x="290" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">进阶：300 槽环形数组（应对每秒海量敲击）</text>
+  <text x="290" y="46" text-anchor="middle" font-size="11" fill="#888">slot[t % 300] = (timestamp, count)，固定 300 空间，O(1) 写 / O(300) 查</text>
+
+  <!-- ===== circular array ===== -->
+  <text x="30" y="76" font-size="12" fill="#444" font-weight="bold">环形数组（300 槽，每槽存 (ts, count)）</text>
+
+  <!-- slot 0 (highlighted, will be overwritten) -->
+  <rect x="30" y="86" width="85" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="72" y="102" text-anchor="middle" font-size="9" fill="#888">slot[0]</text>
+  <text x="72" y="118" text-anchor="middle" font-size="10" fill="#333">ts=1</text>
+  <text x="72" y="132" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">cnt=1</text>
+
+  <!-- slot 1 -->
+  <rect x="120" y="86" width="85" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="162" y="102" text-anchor="middle" font-size="9" fill="#888">slot[1]</text>
+  <text x="162" y="118" text-anchor="middle" font-size="10" fill="#333">ts=2</text>
+  <text x="162" y="132" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">cnt=1</text>
+
+  <!-- slot 2 -->
+  <rect x="210" y="86" width="85" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="252" y="102" text-anchor="middle" font-size="9" fill="#888">slot[2]</text>
+  <text x="252" y="118" text-anchor="middle" font-size="10" fill="#333">ts=3</text>
+  <text x="252" y="132" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">cnt=1</text>
+
+  <text x="327" y="116" text-anchor="middle" font-size="14" fill="#888">…</text>
+
+  <!-- slot 299 -->
+  <rect x="365" y="86" width="85" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="407" y="102" text-anchor="middle" font-size="9" fill="#888">slot[299]</text>
+  <text x="407" y="118" text-anchor="middle" font-size="10" fill="#888">ts=—</text>
+  <text x="407" y="132" text-anchor="middle" font-size="10" fill="#888">cnt=0</text>
+
+  <!-- modulo arrow -->
+  <text x="490" y="100" font-size="9" fill="#d6a040">t % 300</text>
+  <text x="490" y="114" font-size="9" fill="#d6a040">→ 槽号</text>
+
+  <!-- wrap-around arrow from slot 299 back to slot 0 -->
+  <path d="M 450 86 Q 490 86 490 60 L 72 60 L 72 86" fill="none" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arrOrange)" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="260" y="56" text-anchor="middle" font-size="9" fill="#d6a040">300 后循环回绕 → 覆盖旧槽（旧值必过期）</text>
+
+  <!-- ===== hit operation (left) ===== -->
+  <rect x="30" y="160" width="250" height="108" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="182" font-size="12" fill="#4a7a3a" font-weight="bold">hit(timestamp):</text>
+  <text x="44" y="200" font-size="10" fill="#555">i = timestamp % 300</text>
+  <text x="44" y="216" font-size="10" fill="#555">if slot[i].ts == timestamp:</text>
+  <text x="56" y="230" font-size="10" fill="#4a7a3a">slot[i].count++</text>
+  <text x="200" y="230" font-size="9" fill="#888">← 同秒累加</text>
+  <text x="44" y="246" font-size="10" fill="#555">else:</text>
+  <text x="56" y="260" font-size="10" fill="#b85450">slot[i] = (timestamp, 1)</text>
+  <text x="220" y="260" font-size="9" fill="#888">← 新秒重置</text>
+
+  <!-- ===== getHits operation (right) ===== -->
+  <rect x="300" y="160" width="250" height="108" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="314" y="182" font-size="12" fill="#b85450" font-weight="bold">getHits(timestamp):</text>
+  <text x="314" y="200" font-size="10" fill="#555">total = 0</text>
+  <text x="314" y="216" font-size="10" fill="#555">for i in 0..299:</text>
+  <text x="326" y="230" font-size="10" fill="#555">if slot[i].ts &gt; ts−300:</text>
+  <text x="338" y="244" font-size="10" fill="#4a7a3a">total += slot[i].count</text>
+  <text x="314" y="260" font-size="10" fill="#b85450" font-weight="bold">return total</text>
+  <text x="380" y="260" font-size="9" fill="#888">← O(300) 遍历</text>
+
+  <!-- ===== example: hit(300) overwrites slot[0] ===== -->
+  <rect x="30" y="288" width="520" height="158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="310" font-size="11" fill="#d6a040" font-weight="bold">示例：hit(300) 覆盖 slot[0]</text>
+
+  <!-- before -->
+  <rect x="50" y="322" width="80" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="338" text-anchor="middle" font-size="9" fill="#888">slot[0] 旧</text>
+  <text x="90" y="352" text-anchor="middle" font-size="10" fill="#333">ts=1, cnt=1</text>
+
+  <line x1="134" y1="344" x2="156" y2="344" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="145" y="336" text-anchor="middle" font-size="9" fill="#b85450">300%300=0</text>
+  <text x="145" y="358" text-anchor="middle" font-size="8" fill="#b85450">ts≠300</text>
+
+  <!-- after -->
+  <rect x="160" y="322" width="80" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="338" text-anchor="middle" font-size="9" fill="#b85450">slot[0] 新</text>
+  <text x="200" y="352" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">ts=300, cnt=1</text>
+
+  <text x="270" y="340" font-size="10" fill="#555">300 % 300 = 0 → 查 slot[0]</text>
+  <text x="270" y="356" font-size="10" fill="#555">slot[0].ts=1 ≠ 300 → 旧值已过期（1 秒距今 299s，但下次必 ≥ 300s）</text>
+  <text x="270" y="372" font-size="10" fill="#b85450" font-weight="bold">→ 原地覆盖为 (300, 1)，无需扩容</text>
+
+  <!-- key benefits -->
+  <line x1="44" y1="386" x2="536" y2="386" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="44" y="406" font-size="10" fill="#4a7a3a" font-weight="bold">优势：</text>
+  <text x="90" y="406" font-size="10" fill="#555">空间恒为 300 个 (ts, count) 对 = O(1)，与敲击总量无关</text>
+  <text x="44" y="424" font-size="10" fill="#555">          每秒 10⁹ 次敲击 → 只让 count 涨到 10⁹，不存逐条记录</text>
+  <text x="44" y="442" font-size="10" fill="#b85450" font-weight="bold">代价：</text>
+  <text x="90" y="442" font-size="10" fill="#555">getHits 需遍历 300 槽 = O(300) = O(1) 严格（非均摊）</text>
+</svg>

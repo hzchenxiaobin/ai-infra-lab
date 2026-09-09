@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">一次遍历：维护上一段长 prev 与当前段长 cur</text>
+
+  <!-- Init rect -->
+  <rect x="150" y="32" width="220" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="51" text-anchor="middle" font-size="11" fill="#333">初始化 prev=0, cur=1, ans=0, i=1</text>
+
+  <!-- arrow to diamond1 -->
+  <path d="M 260 60 L 260 74" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond1: i < n ? -->
+  <polygon points="260,76 322,100 260,124 198,100" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="104" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i &lt; n ?</text>
+
+  <!-- 否 branch to return -->
+  <path d="M 322 100 L 345 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="332" y="94" font-size="10" fill="#b85450">否</text>
+  <rect x="345" y="86" width="120" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="405" y="104" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回 ans</text>
+
+  <!-- 是 branch down -->
+  <path d="M 260 124 L 260 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="268" y="140" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- Diamond2: s[i]==s[i-1] ? -->
+  <polygon points="260,150 332,176 260,202 188,176" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="180" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">s[i] == s[i−1] ?</text>
+
+  <!-- 是 branch left -->
+  <path d="M 188 176 L 168 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="176" y="170" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="48" y="163" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="108" y="180" text-anchor="middle" font-size="11" fill="#333">cur += 1</text>
+
+  <!-- 否 branch right -->
+  <path d="M 332 176 L 352 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="338" y="170" font-size="10" fill="#b85450">否</text>
+  <rect x="352" y="163" width="140" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="422" y="180" text-anchor="middle" font-size="11" fill="#333">prev=cur; cur=1</text>
+
+  <!-- merge bus at y=210 -->
+  <path d="M 108 189 L 108 210 L 422 210" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 422 189 L 422 210" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 260 210 L 260 226" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond3: s[i]=='1' ? -->
+  <polygon points="260,228 332,254 260,280 188,254" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="258" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">s[i] == '1' ?</text>
+
+  <!-- 是 branch right -->
+  <path d="M 332 254 L 352 254" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="338" y="248" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="352" y="241" width="160" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="432" y="258" text-anchor="middle" font-size="10.5" fill="#333">ans=max(ans, 2·min(prev,cur))</text>
+
+  <!-- 否 branch down to i+=1 -->
+  <path d="M 260 280 L 260 302" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="268" y="294" font-size="10" fill="#b85450">否</text>
+
+  <!-- 是 branch rejoin into i+=1 right -->
+  <path d="M 432 267 L 432 315 L 314 315" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- i += 1 rect -->
+  <rect x="210" y="302" width="104" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="262" y="319" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i += 1</text>
+
+  <!-- loop back to diamond1 -->
+  <path d="M 262 328 L 262 346 L 30 346 L 30 100 L 196 100" stroke="#d6a040" stroke-width="1.8" fill="none" stroke-dasharray="5 3" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="44" y="340" font-size="10" fill="#d6a040" font-weight="bold">回到判断 i &lt; n</text>
+
+  <!-- Footer note -->
+  <text x="260" y="370" text-anchor="middle" font-size="10" fill="#888">当 s[i]=='1' 时，prev 必是紧邻其前的 0 段长度 → 用 2·min(prev,cur) 试更新</text>
+</svg>

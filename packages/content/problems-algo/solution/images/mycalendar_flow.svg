@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">book(start, end) 流程：定位分界点 + 双侧各查一次</text>
+
+  <rect x="70" y="44" width="420" height="22" fill="#ffffff" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="59" text-anchor="middle" font-size="10.5" fill="#333">① it = lower_bound({start, -∞})  // 首个起点 ≥ start 的事件</text>
+  <path d="M 280 68 L 280 76" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="80" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="98" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">② 若 it != end() 且 it.start &lt; end ？</text>
+  <text x="280" y="115" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是 → 与「后一段」重叠，return false</text>
+  <path d="M 280 126 L 280 134" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="138" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="156" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">③ 若 it != begin() 且 prev(it).end &gt; start ？</text>
+  <text x="280" y="173" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是 → 与「前一段」重叠，return false</text>
+  <path d="M 280 184 L 280 192" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="196" width="420" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="211" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">④ 插入 (start, end)；return true</text>
+
+  <text x="36" y="244" font-size="12.5" fill="#446688" font-weight="bold">为什么这样定位是对的？</text>
+
+  <rect x="36" y="252" width="488" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="274" font-size="11" fill="#555">• 事件按起点有序、互不相交；新事件 [s, e) 若与某段重叠，该段必是</text>
+  <text x="56" y="292" font-size="11" fill="#555">  「起点 &lt; s 的最后一段」(prev) 或「起点 ≥ s 的第一段」(it) 之一</text>
+  <text x="56" y="310" font-size="11" fill="#b85450" font-weight="bold">• 更早的段 end ≤ prev.start &lt; prev.end ≤ s，更晚的段 start ≥ it.start ≥ e，都不可能重叠</text>
+
+  <rect x="36" y="340" width="488" height="116" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="362" font-size="12" fill="#d6a040" font-weight="bold">实现细节（C++）</text>
+  <text x="56" y="382" font-size="10.5" fill="#555">• 用 set&lt;pair&lt;int,int&gt;&gt;，pair 天然按 (start, end) 字典序排</text>
+  <text x="56" y="400" font-size="10.5" fill="#555">• lower_bound({start, INT_MIN})：首个 (s', e') 满足 s' ≥ start</text>
+  <text x="56" y="418" font-size="10.5" fill="#555">• prev(it) = it != begin() 时 --it，即「起点 &lt; start 的最后一段」</text>
+  <text x="56" y="438" font-size="10.5" fill="#b85450" font-weight="bold">• 边界守卫 it != end() / it != begin() 必须先判，否则越界 UB</text>
+</svg>

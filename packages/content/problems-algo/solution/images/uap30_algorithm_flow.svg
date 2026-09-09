@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">算法流程：过滤日期 → 去重计数会话/用户 → 相除 → 四舍五入 → 空值兜底</text>
+
+  <!-- Step 1: Input -->
+  <rect x="130" y="42" width="280" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Activity 表（user_id, session_id, activity_date, activity_type）</text>
+
+  <path d="M270 76 L270 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE date filter -->
+  <rect x="80" y="94" width="380" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="114" font-size="10" fill="#d6a040" font-weight="bold">① WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'</text>
+  <text x="100" y="130" font-size="9" fill="#d6a040">截取以 07-27 结束的 30 天窗口（含首尾），丢弃区间外记录</text>
+
+  <path d="M270 140 L270 156" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: COUNT DISTINCT division -->
+  <rect x="50" y="158" width="440" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="178" font-size="10" fill="#4a7a3a" font-weight="bold">② COUNT(DISTINCT session_id) / COUNT(DISTINCT user_id)</text>
+  <text x="70" y="194" font-size="9" fill="#4a7a3a">分子 = 去重会话数（一个 session 有多行 activity，必须 DISTINCT）</text>
+  <text x="70" y="207" font-size="9" fill="#4a7a3a">分母 = 去重用户数（同一用户多会话只算一人）</text>
+
+  <path d="M270 214 L270 230" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ROUND -->
+  <rect x="120" y="232" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="251" font-size="10" fill="#446688" font-weight="bold">③ ROUND(..., 2)</text>
+  <text x="140" y="266" font-size="9" fill="#446688">四舍五入保留两位小数（如 4/3 → 1.33）</text>
+
+  <path d="M270 272 L270 288" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: IFNULL -->
+  <rect x="100" y="290" width="340" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="310" font-size="10" fill="#b85450" font-weight="bold">④ IFNULL(..., 0)</text>
+  <text x="120" y="326" font-size="9" fill="#b85450">区间内无用户时除零得 NULL → 兜底返回 0（避免空结果）</text>
+
+  <path d="M270 336 L270 352" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="110" y="354" width="320" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="375" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出：average_sessions_per_user（单行单列）</text>
+
+  <!-- side annotation: alternative GROUP BY approach -->
+  <path d="M495 158 L505 158 L505 214 L495 214" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="515" y="175" font-size="8.5" fill="#4a7a3a" font-weight="bold">等价写法</text>
+  <text x="515" y="189" font-size="8" fill="#4a7a3a">GROUP BY</text>
+  <text x="515" y="201" font-size="8" fill="#4a7a3a">user_id</text>
+  <text x="515" y="213" font-size="8" fill="#4a7a3a">+ AVG</text>
+
+  <!-- left side: data flow annotation -->
+  <text x="60" y="117" font-size="8" fill="#888" text-anchor="middle">全表</text>
+  <text x="60" y="186" font-size="8" fill="#4a7a3a" text-anchor="middle">去重计数</text>
+  <text x="60" y="252" font-size="8" fill="#446688" text-anchor="middle">两位小数</text>
+  <text x="60" y="313" font-size="8" fill="#b85450" text-anchor="middle">空值兜底</text>
+
+  <!-- SQL snippet at bottom -->
+  <rect x="20" y="402" width="500" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="418" font-size="8" fill="#446688" font-family="monospace">SELECT IFNULL(ROUND(COUNT(DISTINCT session_id)</text>
+  <text x="30" y="432" font-size="8" fill="#446688" font-family="monospace">  / COUNT(DISTINCT user_id), 2), 0) AS average_sessions_per_user</text>
+  <text x="30" y="446" font-size="8" fill="#446688" font-family="monospace">FROM Activity WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27';</text>
+</svg>

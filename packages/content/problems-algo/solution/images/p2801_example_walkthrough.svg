@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：count("101") − count("89") = 27 − 25 = 2</text>
+
+  <!-- ===== dp2 mini table ===== -->
+  <text x="30" y="48" font-size="11" fill="#666" font-weight="bold">dp[L][d] 预处理（首位为 d、长度 L 的步进序列数）</text>
+  <!-- header row: d=0..9 -->
+  <g font-size="10" fill="#888">
+    <text x="36" y="70" text-anchor="middle">d</text>
+    <text x="72" y="70" text-anchor="middle">0</text>
+    <text x="96" y="70" text-anchor="middle">1</text>
+    <text x="120" y="70" text-anchor="middle">2</text>
+    <text x="144" y="70" text-anchor="middle">3</text>
+    <text x="168" y="70" text-anchor="middle">4</text>
+    <text x="192" y="70" text-anchor="middle">5</text>
+    <text x="216" y="70" text-anchor="middle">6</text>
+    <text x="240" y="70" text-anchor="middle">7</text>
+    <text x="264" y="70" text-anchor="middle">8</text>
+    <text x="288" y="70" text-anchor="middle">9</text>
+  </g>
+  <!-- L=1 row -->
+  <g font-size="10.5" fill="#333">
+    <text x="36" y="88" text-anchor="middle" fill="#888">L=1</text>
+    <rect x="62" y="76" width="22" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="72" y="88" text-anchor="middle">1</text>
+    <rect x="86" y="76" width="22" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="96" y="88" text-anchor="middle">1</text>
+    <rect x="110" y="76" width="22" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="120" y="88" text-anchor="middle">1</text>
+    <text x="144" y="88" text-anchor="middle">1</text>
+    <text x="168" y="88" text-anchor="middle">1</text>
+    <text x="192" y="88" text-anchor="middle">1</text>
+    <text x="216" y="88" text-anchor="middle">1</text>
+    <text x="240" y="88" text-anchor="middle">1</text>
+    <rect x="278" y="76" width="22" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="288" y="88" text-anchor="middle">1</text>
+  </g>
+  <!-- L=2 row -->
+  <g font-size="10.5" fill="#333">
+    <text x="36" y="106" text-anchor="middle" fill="#888">L=2</text>
+    <rect x="62" y="94" width="22" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="72" y="106" text-anchor="middle">1</text>
+    <rect x="86" y="94" width="22" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="96" y="106" text-anchor="middle">2</text>
+    <rect x="110" y="94" width="22" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="120" y="106" text-anchor="middle">2</text>
+    <text x="144" y="106" text-anchor="middle">2</text>
+    <text x="168" y="106" text-anchor="middle">2</text>
+    <text x="192" y="106" text-anchor="middle">2</text>
+    <text x="216" y="106" text-anchor="middle">2</text>
+    <text x="240" y="106" text-anchor="middle">2</text>
+    <rect x="278" y="94" width="22" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="288" y="106" text-anchor="middle">1</text>
+  </g>
+  <text x="320" y="98" font-size="10" fill="#888">d=0,9 只有一个邻居</text>
+  <text x="320" y="110" font-size="10" fill="#888">故 dp[2][0]=1, dp[2][9]=1</text>
+
+  <!-- ===== Left column: count("101") ===== -->
+  <rect x="20" y="126" width="260" height="316" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)" opacity="0.95"/>
+  <text x="150" y="146" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">count("101")，n = 3</text>
+
+  <text x="34" y="166" font-size="10.5" fill="#333" font-weight="bold">Part A（位数 &lt; 3）</text>
+  <text x="34" y="182" font-size="10.5" fill="#555">  L=1: Σdp[1][1..9] = 9</text>
+  <text x="34" y="196" font-size="10.5" fill="#555">  L=2: Σdp[2][1..9] = 2×8+1 = 17</text>
+  <text x="34" y="210" font-size="10.5" fill="#333">Part A = 9 + 17 = </text>
+  <text x="138" y="210" font-size="11.5" fill="#4a7a3a" font-weight="bold">26</text>
+
+  <text x="34" y="232" font-size="10.5" fill="#333" font-weight="bold">Part B（位数 = 3，逐位 ≤ "101"）</text>
+  <!-- digit boxes -->
+  <g font-size="11" fill="#333" font-weight="bold">
+    <rect x="34" y="240" width="24" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="46" y="255" text-anchor="middle">1</text>
+    <rect x="60" y="240" width="24" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="72" y="255" text-anchor="middle">0</text>
+    <rect x="86" y="240" width="24" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="98" y="255" text-anchor="middle">1</text>
+  </g>
+  <text x="120" y="255" font-size="10" fill="#888">s = "101"</text>
+
+  <text x="34" y="276" font-size="10.5" fill="#555">i=0: d∈[1,0] 空 → 无自由贡献</text>
+  <text x="34" y="290" font-size="10" fill="#4a7a3a">  tight: prev=1 ✓</text>
+  <text x="34" y="304" font-size="10.5" fill="#555">i=1: d∈[0,−1] 空 → 无自由贡献</text>
+  <text x="34" y="318" font-size="10" fill="#4a7a3a">  tight: |0−1|=1 ✓ prev=0</text>
+  <text x="34" y="332" font-size="10.5" fill="#555">i=2: d∈{0}, |0−0|=0 ✗ 跳过</text>
+  <text x="34" y="346" font-size="10" fill="#4a7a3a">  tight: |1−0|=1 ✓ prev=1</text>
+
+  <text x="34" y="364" font-size="10.5" fill="#333">Part B（自由）= 0</text>
+  <rect x="34" y="372" width="232" height="22" fill="#4a7a3a" opacity="0.16" stroke="#4a7a3a" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="150" y="387" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">未 break + |1−0|=|0−1|=1 → "101" 是步进数 +1</text>
+
+  <text x="34" y="410" font-size="11.5" fill="#333">count("101") = 26 + 0 + 1 = </text>
+  <text x="178" y="410" font-size="13" fill="#4a7a3a" font-weight="bold">27</text>
+
+  <text x="34" y="432" font-size="9.5" fill="#888">步进数含 1,2,…,9, 10,12,21,23,…,98,101</text>
+
+  <!-- ===== Right column: count("89") ===== -->
+  <rect x="290" y="126" width="250" height="316" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)" opacity="0.95"/>
+  <text x="415" y="146" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">count("89")，n = 2</text>
+
+  <text x="304" y="166" font-size="10.5" fill="#333" font-weight="bold">Part A（位数 &lt; 2）</text>
+  <text x="304" y="182" font-size="10.5" fill="#555">  L=1: Σdp[1][1..9] = 9</text>
+  <text x="304" y="196" font-size="10.5" fill="#333">Part A = </text>
+  <text x="352" y="196" font-size="11.5" fill="#b85450" font-weight="bold">9</text>
+
+  <text x="304" y="220" font-size="10.5" fill="#333" font-weight="bold">Part B（位数 = 2，逐位 ≤ "89"）</text>
+  <g font-size="11" fill="#333" font-weight="bold">
+    <rect x="304" y="228" width="24" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="316" y="243" text-anchor="middle">8</text>
+    <rect x="330" y="228" width="24" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="342" y="243" text-anchor="middle">9</text>
+  </g>
+  <text x="360" y="243" font-size="10" fill="#888">s = "89"</text>
+
+  <text x="304" y="264" font-size="10.5" fill="#555">i=0: d∈[1,7], 各 dp[2][d]=2</text>
+  <text x="304" y="278" font-size="10" fill="#b85450">  贡献 7×2 = 14</text>
+  <text x="304" y="292" font-size="10" fill="#4a7a3a">  tight: prev=8 ✓</text>
+  <text x="304" y="306" font-size="10.5" fill="#555">i=1: d∈[0,8], |d−8|=1 → d=7</text>
+  <text x="304" y="320" font-size="10" fill="#b85450">  贡献 dp[1][7] = 1</text>
+  <text x="304" y="334" font-size="10" fill="#4a7a3a">  tight: |9−8|=1 ✓ prev=9</text>
+
+  <text x="304" y="352" font-size="10.5" fill="#333">Part B（自由）= 14 + 1 = </text>
+  <text x="448" y="352" font-size="11.5" fill="#b85450" font-weight="bold">15</text>
+  <rect x="304" y="360" width="222" height="22" fill="#b85450" opacity="0.16" stroke="#b85450" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="415" y="375" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">未 break + |8−9|=1 → "89" 是步进数 +1</text>
+
+  <text x="304" y="398" font-size="11.5" fill="#333">count("89") = 9 + 15 + 1 = </text>
+  <text x="438" y="398" font-size="13" fill="#b85450" font-weight="bold">25</text>
+
+  <text x="304" y="420" font-size="9.5" fill="#888">low="90"→low−1="89"</text>
+
+  <!-- ===== Bottom: subtraction ===== -->
+  <rect x="60" y="456" width="440" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="476" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">answer = count("101") − count("89") = 27 − 25 = </text>
+  <text x="470" y="476" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">2</text>
+  <text x="280" y="494" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">区间 [90,101] 内步进数：98, 101 → 共 2 个 ✓</text>
+</svg>

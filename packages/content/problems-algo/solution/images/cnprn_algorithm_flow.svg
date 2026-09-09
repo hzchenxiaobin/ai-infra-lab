@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：换根 DP（O(n)）</text>
+  <text x="280" y="46" text-anchor="middle" font-size="10.5" fill="#888">两遍迭代 DFS：先求根 0 的正确猜测数 cnt[0]，再按先序把 cnt 沿边传给儿子</text>
+
+  <!-- ===== Step 1 ===== -->
+  <rect x="80" y="60" width="400" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="100" y="84" font-size="12.5" fill="#224466" font-weight="bold">① 建邻接表 g；把 guesses 存入哈希集合 S</text>
+  <text x="100" y="104" font-size="11" fill="#557799">有向猜测 (a,b) → 键 = a·n + b，O(1) 查「是否猜 a 是 b 父」</text>
+
+  <line x1="280" y1="120" x2="280" y2="138" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2 ===== -->
+  <rect x="80" y="142" width="400" height="74" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="100" y="166" font-size="12.5" fill="#3a5a2a" font-weight="bold">② DFS1（迭代，任选 0 为根）</text>
+  <text x="100" y="186" font-size="11" fill="#4a6a3a">求父节点 par[]、先序序列 order（迭代栈防爆栈）</text>
+  <text x="100" y="206" font-size="11.5" fill="#3a5a2a" font-weight="bold">cnt[0] = Σ { (par[u], u) ∈ S }  （根 0 的正确猜测数）</text>
+
+  <line x1="280" y1="218" x2="280" y2="236" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3 ===== -->
+  <rect x="80" y="240" width="400" height="86" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="100" y="264" font-size="12.5" fill="#7a5a20" font-weight="bold">③ 换根（按 order 先序，父先于子）</text>
+  <text x="100" y="286" font-size="12.5" fill="#b85450" font-weight="bold">cnt[v] = cnt[par[v]] + [ (v,par[v])∈S ] − [ (par[v],v)∈S ]</text>
+  <text x="100" y="306" font-size="11" fill="#7a5a20">跨越一条边只翻转该边方向：原命中 (par[v],v) 转未中、原未中 (v,par[v]) 转命中</text>
+  <text x="100" y="322" font-size="10.5" fill="#9a7a40">每点 O(1) 转移，总 O(n)</text>
+
+  <line x1="280" y1="328" x2="280" y2="346" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4 ===== -->
+  <rect x="80" y="350" width="400" height="58" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="100" y="374" font-size="12.5" fill="#b03a3a" font-weight="bold">④ 统计 { i : cnt[i] ≥ k } 的元素个数</text>
+  <text x="100" y="394" font-size="11" fill="#a85a56">即 Alice 说「至少 k 个猜对」时，可能成为根的节点数目 → 返回</text>
+
+  <text x="280" y="430" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">时间 O(n)、空间 O(n)；猜测集合构建 O(|guesses|)</text>
+</svg>

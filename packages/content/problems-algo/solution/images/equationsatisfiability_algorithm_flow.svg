@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两遍扫描流程：先 union 所有 ==，再查 != 冲突</text>
+
+  <!-- init -->
+  <rect x="200" y="44" width="160" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">初始化</text>
+  <text x="280" y="77" text-anchor="middle" font-size="10.5" fill="#666">parent[c]=c, c ∈ a..z</text>
+  <line x1="280" y1="84" x2="280" y2="104" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- pass 1 header -->
+  <rect x="160" y="104" width="240" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="125" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">第一遍：遍历每条方程 e</text>
+  <line x1="280" y1="138" x2="280" y2="158" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 1 -->
+  <path d="M 280 158 L 380 200 L 280 242 L 180 200 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="195" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">e[1]=='=' ?</text>
+  <text x="280" y="211" text-anchor="middle" font-size="10" fill="#888">(是 == 方程)</text>
+
+  <!-- yes branch -->
+  <text x="395" y="196" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="380" y1="200" x2="424" y2="200" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="424" y="180" width="118" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="483" y="198" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">union(e[0], e[3])</text>
+  <text x="483" y="213" text-anchor="middle" font-size="10" fill="#666">合并两端字母</text>
+  <path d="M 483 222 Q 483 250 380 250 L 280 250" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- no branch (skip) -->
+  <text x="150" y="196" font-size="11" fill="#888">否(!=)</text>
+  <path d="M 180 200 L 130 200 L 130 124 L 160 124" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="84" y="118" font-size="10" fill="#888">跳过，留到第二遍</text>
+
+  <!-- end of pass 1 -> pass 2 -->
+  <line x1="280" y1="250" x2="280" y2="276" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="170" y="276" width="220" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">等价类已建完整（传递闭包）</text>
+  <line x1="280" y1="306" x2="280" y2="326" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- pass 2 header -->
+  <rect x="160" y="326" width="240" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="346" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">第二遍：遍历每条方程 e</text>
+  <line x1="280" y1="356" x2="280" y2="372" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 2: != and same root -->
+  <path d="M 280 372 L 400 404 L 280 436 L 160 404 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">e[1]=='!' 且</text>
+  <text x="280" y="413" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">find(e[0])==find(e[3])?</text>
+
+  <text x="412" y="400" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <line x1="400" y1="404" x2="448" y2="404" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="448" y="386" width="96" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="496" y="404" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">冲突</text>
+  <text x="496" y="418" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return false ⛔</text>
+
+  <text x="120" y="400" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M 160 404 L 110 404 L 110 342 L 160 342" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="336" font-size="10" fill="#888">继续下一条</text>
+
+  <!-- final true -->
+  <line x1="280" y1="436" x2="280" y2="436" stroke="#888" stroke-width="1.6"/>
+  <rect x="180" y="436" width="200" height="0" fill="none"/>
+  <text x="280" y="450" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">全部通过 → return true ✓</text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">最接近原点的 K 个点 —— 比较平方距离即可</text>
+
+  <!-- Coordinate axes -->
+  <!-- y-axis -->
+  <path d="M 230 250 L 230 70" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- x-axis -->
+  <path d="M 150 190 L 420 190" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="236" y="84" font-size="11" fill="#888">y</text>
+  <text x="412" y="184" font-size="11" fill="#888">x</text>
+
+  <!-- grid ticks -->
+  <text x="226" y="204" text-anchor="end" font-size="10" fill="#aaa">0</text>
+
+  <!-- concentric distance circles (light) through closest points -->
+  <circle cx="230" cy="190" r="22" fill="none" stroke="#cde2c0" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <circle cx="230" cy="190" r="31" fill="none" stroke="#cde2c0" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <circle cx="230" cy="190" r="93" fill="none" stroke="#cde2c0" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- Origin -->
+  <circle cx="230" cy="190" r="4" fill="#b85450" filter="url(#rough2)"/>
+  <text x="240" y="200" font-size="11" fill="#b85450" font-weight="bold">(0,0)</text>
+
+  <!-- Points: [0,1] d=1 (closest) -->
+  <circle cx="230" cy="168" r="5" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="238" y="166" font-size="11" fill="#333">[0,1]  d²=1</text>
+
+  <!-- [1,1] d=2 (closest) -->
+  <circle cx="252" cy="168" r="5" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="260" y="160" font-size="11" fill="#333">[1,1]  d²=2</text>
+
+  <!-- [3,3] d=18 (closest) -->
+  <circle cx="296" cy="124" r="5" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="304" y="120" font-size="11" fill="#333">[3,3]  d²=18</text>
+
+  <!-- [-2,4] d=20 (farther) -->
+  <circle cx="186" cy="102" r="5" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="118" y="98" font-size="11" fill="#666">[-2,4]  d²=20</text>
+
+  <!-- [5,-1] d=26 (farther) -->
+  <circle cx="340" cy="212" r="5" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="348" y="214" font-size="11" fill="#666">[5,-1]  d²=26</text>
+
+  <!-- green dashed boundary enclosing the k=3 closest -->
+  <ellipse cx="260" cy="155" rx="78" ry="50" fill="none" stroke="#4a7a3a" stroke-width="2" stroke-dasharray="6,4" filter="url(#rough2)"/>
+  <text x="190" y="142" font-size="11" fill="#4a7a3a" font-weight="bold">k=3 最近</text>
+
+  <!-- distance line sample to [3,3] -->
+  <path d="M 230 190 L 296 124" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Insight box -->
+  <rect x="40" y="280" width="460" height="84" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="304" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">关键观察：Top-K 不需要全排序</text>
+  <text x="270" y="324" text-anchor="middle" font-size="11" fill="#666">① 距离 d = √(x²+y²) 单调于 d² = x²+y²，比平方距离省去 sqrt、避免浮点</text>
+  <text x="270" y="342" text-anchor="middle" font-size="11" fill="#666">② 只需找到第 k 小的距离作分界，分界左侧即答案——快速选择 O(n) 平均</text>
+  <text x="270" y="358" text-anchor="middle" font-size="11" fill="#888">（若 k 很小，用大小为 k 的大顶堆 O(n log k) 也行，见第 5 节）</text>
+</svg>

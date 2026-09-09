@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">贪心核心：每个位置取「严格大于前值的最小可达值」</text>
+  <text x="300" y="46" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">此位 x = 6，prev = 3，target = x − prev = 3</text>
+
+  <!-- allowed / forbidden background tints -->
+  <rect x="150" y="58" width="300" height="104" fill="#e6f4ea" stroke="none" filter="url(#rough2)"/>
+  <rect x="150" y="162" width="300" height="100" fill="#fce4ec" stroke="none" filter="url(#rough2)"/>
+  <text x="466" y="76" font-size="10" fill="#4a7a3a" filter="url(#rough2)">可取（&gt; prev）</text>
+  <text x="466" y="180" font-size="10" fill="#b85450" filter="url(#rough2)">不可取（≤ prev）</text>
+
+  <!-- candidate ladder: value (p) -->
+  <!-- value 6  p=0 -->
+  <rect x="180" y="70" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="92" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">值 6 （不操作，p = 0）</text>
+
+  <!-- value 4  p=2  PICK -->
+  <rect x="180" y="120" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="142" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">值 4 （p = 2）← 选它</text>
+
+  <!-- threshold line -->
+  <line x1="120" y1="160" x2="520" y2="160" stroke="#b85450" stroke-width="2" stroke-dasharray="7 5" filter="url(#rough2)"/>
+  <text x="524" y="164" font-size="11" fill="#b85450" filter="url(#rough2)">prev = 3</text>
+
+  <!-- value 3  p=3  excluded -->
+  <rect x="180" y="170" width="240" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <line x1="184" y1="202" x2="416" y2="172" stroke="#bbb" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="192" text-anchor="middle" font-size="12" fill="#999" filter="url(#rough2)">值 3 （p = 3，等于 prev，不严格大于）</text>
+
+  <!-- value 1  p=5  excluded -->
+  <rect x="180" y="220" width="240" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <line x1="184" y1="252" x2="416" y2="222" stroke="#bbb" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="242" text-anchor="middle" font-size="12" fill="#999" filter="url(#rough2)">值 1 （p = 5，小于 prev）</text>
+
+  <!-- pick annotation -->
+  <path d="M 430 137 L 470 137" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="476" y="132" font-size="11" fill="#4a7a3a" filter="url(#rough2)">最小且 &gt; prev</text>
+  <text x="476" y="146" font-size="11" fill="#4a7a3a" filter="url(#rough2)">= 6 − 2</text>
+
+  <!-- bottom caption -->
+  <rect x="40" y="290" width="520" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="312" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">可达值 = { x } ∪ { x − p : p 为质数且 p &lt; x }，均 ≤ x</text>
+  <text x="300" y="332" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">取其中「严格大于 prev」的最小者 = x − （小于 target 的最大质数）</text>
+  <text x="300" y="350" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">因 p &lt; target = x − prev ≤ x，自动满足操作约束 p &lt; x</text>
+</svg>

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心思路：枚举子集 → 验连通 → 求直径</text>
+
+  <!-- ===== Left: the tree (n=4) ===== -->
+  <text x="130" y="52" text-anchor="middle" font-size="11" fill="#888">原树（n = 4）</text>
+
+  <!-- edges -->
+  <path d="M 130 88 L 70 150" stroke="#999" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 88 L 190 150" stroke="#999" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 88 L 130 150" stroke="#999" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- node 2 (center) -->
+  <circle cx="130" cy="88" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="130" y="93" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">2</text>
+
+  <!-- node 1 (left, selected) -->
+  <circle cx="70" cy="160" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="70" y="165" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <!-- node 3 (center, selected) -->
+  <circle cx="130" cy="160" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="130" y="165" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">3</text>
+
+  <!-- node 4 (right, NOT selected) -->
+  <circle cx="190" cy="160" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="190" y="165" text-anchor="middle" font-size="12" fill="#b85450">4</text>
+
+  <!-- selected edges highlighted -->
+  <path d="M 130 88 L 70 150" stroke="#4a7a3a" stroke-width="2.2" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 88 L 130 150" stroke="#4a7a3a" stroke-width="2.2" fill="none" filter="url(#rough2)"/>
+
+  <!-- subset label -->
+  <rect x="30" y="200" width="200" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="221" text-anchor="middle" font-size="11" fill="#333">子集 mask = {1,2,3}（绿圈选中）</text>
+
+  <!-- ===== Middle: connectivity check ===== -->
+  <rect x="250" y="58" width="150" height="90" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="325" y="80" text-anchor="middle" font-size="11.5" fill="#a87020" font-weight="bold">① 连通性判定</text>
+  <text x="325" y="100" text-anchor="middle" font-size="10.5" fill="#555">诱导子图是森林（无环）</text>
+  <text x="325" y="116" text-anchor="middle" font-size="10.5" fill="#555">连通 ⟺ 边数 = 点数 − 1</text>
+  <text x="325" y="134" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">2 条边 = 3 点 − 1 ✓</text>
+
+  <!-- arrow down -->
+  <path d="M 325 148 L 325 168" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Middle: diameter ===== -->
+  <rect x="250" y="172" width="150" height="90" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="325" y="194" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">② 求直径</text>
+  <text x="325" y="214" text-anchor="middle" font-size="10.5" fill="#555">枚举子集内所有点对</text>
+  <text x="325" y="230" text-anchor="middle" font-size="10.5" fill="#555">直径 = max dist(i,j)</text>
+  <text x="325" y="248" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">dist(1,3) = 2 ⭐</text>
+
+  <!-- arrow to bucket -->
+  <path d="M 325 262 L 325 282" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom: bucket count ===== -->
+  <rect x="180" y="286" width="290" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="325" y="308" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">③ ans[直径 − 1] += 1   →   ans[1] += 1</text>
+
+  <!-- ===== Right: bitmask note ===== -->
+  <rect x="410" y="58" width="120" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="78" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">n ≤ 15 甜区</text>
+  <text x="470" y="96" text-anchor="middle" font-size="10" fill="#555">2¹⁵ = 32768</text>
+  <text x="470" y="110" text-anchor="middle" font-size="10" fill="#555">枚举全部子集</text>
+  <text x="470" y="124" text-anchor="middle" font-size="10" fill="#555">用 mask 位掩码</text>
+
+  <!-- distance precompute note -->
+  <rect x="410" y="148" width="120" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="168" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">预处理 dist</text>
+  <text x="470" y="182" text-anchor="middle" font-size="9.5" fill="#555">从每点 BFS</text>
+  <text x="470" y="196" text-anchor="middle" font-size="9.5" fill="#555">O(n²) 查表 O(1)</text>
+
+  <!-- footnote -->
+  <rect x="30" y="338" width="480" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="359" text-anchor="middle" font-size="10.5" fill="#555">树的诱导子图必为森林：连通 ⟺ 边数 = 点数 − 1（无需并查集，数边即可）</text>
+</svg>

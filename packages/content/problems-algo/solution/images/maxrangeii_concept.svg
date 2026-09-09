@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="13.5" fill="#444" font-weight="bold">核心观察：banned 把 [1, n] 切成可用空隙，每段从左侧批量取最小</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">II 版 n ≤ 10⁹、maxSum ≤ 10¹⁵，逐个枚举会超时，须整段批量计数</text>
+
+  <!-- ====== number line cells 1..8, banned at 3 and 6 ====== -->
+  <text x="52" y="78" text-anchor="end" font-size="11.5" fill="#888" font-weight="bold">[1, n]</text>
+  <!-- 1 -->
+  <rect x="64" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="86" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <!-- 2 -->
+  <rect x="110" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="132" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">2</text>
+  <!-- 3 banned -->
+  <rect x="156" y="58" width="44" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="80" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">3</text>
+  <!-- 4 -->
+  <rect x="202" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">4</text>
+  <!-- 5 -->
+  <rect x="248" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">5</text>
+  <!-- 6 banned -->
+  <rect x="294" y="58" width="44" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="316" y="80" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">6</text>
+  <!-- 7 -->
+  <rect x="340" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="362" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">7</text>
+  <!-- ... -->
+  <text x="404" y="80" text-anchor="middle" font-size="16" fill="#888" font-weight="bold">⋯</text>
+  <!-- n -->
+  <rect x="424" y="58" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="446" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">n</text>
+
+  <text x="178" y="108" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">banned ✗</text>
+  <text x="316" y="108" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">banned ✗</text>
+
+  <!-- ====== gap brackets ====== -->
+  <!-- gap1 [1,2] -->
+  <path d="M64,124 L64,132 L154,132 L154,124" fill="none" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="109" y="148" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">空隙 [1, 2]</text>
+  <text x="109" y="161" text-anchor="middle" font-size="9" fill="#4a7a3a">L=1, cnt 个数待定</text>
+  <!-- gap2 [4,5] -->
+  <path d="M202,124 L202,132 L292,132 L292,124" fill="none" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="247" y="148" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">空隙 [4, 5]</text>
+  <text x="247" y="161" text-anchor="middle" font-size="9" fill="#4a7a3a">L=4, 紧接上段</text>
+  <!-- gap3 [7,n] -->
+  <path d="M340,124 L340,132 L468,132 L468,124" fill="none" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="404" y="148" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">空隙 [7, n]</text>
+  <text x="404" y="161" text-anchor="middle" font-size="9" fill="#4a7a3a">长段可批量</text>
+
+  <text x="270" y="184" text-anchor="middle" font-size="10" fill="#888">↑ 按位置从左到右处理 = 全局贪心「先取最小」</text>
+
+  <!-- ====== arithmetic series box ====== -->
+  <rect x="40" y="196" width="460" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="218" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">空隙 [L, R] 内取最小的 cnt 个：L, L+1, …, L+cnt−1</text>
+  <text x="60" y="242" font-size="13" fill="#333" font-family="'Comic Sans MS','Segoe UI',serif">sum = L + (L+1) + … + (L+cnt−1) =</text>
+  <text x="392" y="242" font-size="14" fill="#446688" font-weight="bold">cnt·(2L + cnt − 1) / 2</text>
+  <text x="60" y="266" font-size="10.5" fill="#555">二分最大 cnt ∈ [0, R−L+1]，使 sum ≤ 剩余预算 rem；</text>
+  <text x="60" y="280" font-size="10.5" fill="#b85450" font-weight="bold">cnt = 段长 ⇒ 整段取完转下一段；cnt &lt; 段长 ⇒ 预算耗尽，终止。</text>
+
+  <!-- ====== optimality note ====== -->
+  <rect x="40" y="300" width="220" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="150" y="322" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">为何「先取最小」最优？</text>
+  <text x="50" y="340" font-size="9.5" fill="#555">求「数量最大」在「和约束」下，</text>
+  <text x="50" y="354" font-size="9.5" fill="#555">最优解必取最小的若干可用数。</text>
+  <text x="50" y="368" font-size="9.5" fill="#555">交换论证：若选了大数 x 而小</text>
+  <text x="50" y="382" font-size="9.5" fill="#555">数 y 未用，换 y 进 x 出和更小，</text>
+  <text x="50" y="392" font-size="9.5" fill="#d6a040" font-weight="bold">不损数量 ⇒ 可继续多取 ⇒ 更优。</text>
+
+  <!-- ====== complexity note ====== -->
+  <rect x="280" y="300" width="220" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="390" y="322" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">为何是 O(banned·log n)？</text>
+  <text x="290" y="340" font-size="9.5" fill="#555">空隙数 ≤ banned 数 + 1 ≤ 10⁵。</text>
+  <text x="290" y="354" font-size="9.5" fill="#555">每段二分 cnt ∈ [0, 段长]，</text>
+  <text x="290" y="368" font-size="9.5" fill="#555">log n ≈ 30 步即定 cnt。</text>
+  <text x="290" y="382" font-size="9.5" fill="#555">总 ≈ 10⁵ × 30 = 3×10⁶，</text>
+  <text x="290" y="392" font-size="9.5" fill="#4a7a3a" font-weight="bold">Python 亦轻松 AC。</text>
+</svg>

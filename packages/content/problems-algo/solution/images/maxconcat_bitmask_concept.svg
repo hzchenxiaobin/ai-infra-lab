@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">26 位掩码编码 + 按位与判互斥</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">每个字母占一比特；两串可拼接 ⇔ mask &amp; mask == 0</text>
+
+  <!-- ===== Encoding: string -> letter set -> mask ===== -->
+  <g filter="url(#rough2)" font-size="11">
+    <!-- "un" -->
+    <rect x="40" y="64" width="50" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="5"/>
+    <text x="65" y="82" text-anchor="middle" fill="#446688" font-weight="bold">"un"</text>
+    <path d="M 90 77 L 118 77" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="122" y="64" width="86" height="26" fill="#f5f5f5" stroke="#888" stroke-width="1.2" rx="5"/>
+    <text x="165" y="82" text-anchor="middle" fill="#555" font-weight="bold">{u, n}</text>
+    <path d="M 208 77 L 236 77" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="240" y="64" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="5"/>
+    <text x="300" y="82" text-anchor="middle" fill="#4a7a3a" font-family="monospace" font-weight="bold">mask = ...u..n..</text>
+
+    <!-- "iq" -->
+    <rect x="40" y="100" width="50" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="5"/>
+    <text x="65" y="118" text-anchor="middle" fill="#446688" font-weight="bold">"iq"</text>
+    <path d="M 90 113 L 118 113" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="122" y="100" width="86" height="26" fill="#f5f5f5" stroke="#888" stroke-width="1.2" rx="5"/>
+    <text x="165" y="118" text-anchor="middle" fill="#555" font-weight="bold">{i, q}</text>
+    <path d="M 208 113 L 236 113" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="240" y="100" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="5"/>
+    <text x="300" y="118" text-anchor="middle" fill="#4a7a3a" font-family="monospace" font-weight="bold">mask = .i...q...</text>
+
+    <!-- "ue" -->
+    <rect x="40" y="136" width="50" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="5"/>
+    <text x="65" y="154" text-anchor="middle" fill="#446688" font-weight="bold">"ue"</text>
+    <path d="M 90 149 L 118 149" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="122" y="136" width="86" height="26" fill="#f5f5f5" stroke="#888" stroke-width="1.2" rx="5"/>
+    <text x="165" y="154" text-anchor="middle" fill="#555" font-weight="bold">{u, e}</text>
+    <path d="M 208 149 L 236 149" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <rect x="240" y="136" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="5"/>
+    <text x="300" y="154" text-anchor="middle" fill="#4a7a3a" font-family="monospace" font-weight="bold">mask = .e..u....</text>
+  </g>
+
+  <!-- 26-bit register sketch -->
+  <g filter="url(#rough2)" font-size="9">
+    <text x="40" y="184" font-size="10" fill="#888" font-weight="bold">26 位寄存器（a..z）示意：</text>
+    <rect x="40" y="190" width="480" height="22" fill="#fff" stroke="#bbb" stroke-width="1" rx="3"/>
+    <!-- 12 cells a..l -->
+    <rect x="40" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="60" y="205" text-anchor="middle" fill="#aaa">a</text>
+    <rect x="80" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="100" y="205" text-anchor="middle" fill="#aaa">b</text>
+    <rect x="120" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="140" y="205" text-anchor="middle" fill="#aaa">c</text>
+    <rect x="160" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="180" y="205" text-anchor="middle" fill="#aaa">d</text>
+    <rect x="200" y="190" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1"/>
+    <text x="220" y="205" text-anchor="middle" fill="#4a7a3a" font-weight="bold">e</text>
+    <rect x="240" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="260" y="205" text-anchor="middle" fill="#aaa">f</text>
+    <rect x="280" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="300" y="205" text-anchor="middle" fill="#aaa">g</text>
+    <rect x="320" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="340" y="205" text-anchor="middle" fill="#aaa">h</text>
+    <rect x="360" y="190" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1"/>
+    <text x="380" y="205" text-anchor="middle" fill="#4a7a3a" font-weight="bold">i</text>
+    <rect x="400" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="420" y="205" text-anchor="middle" fill="#aaa">j</text>
+    <rect x="440" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="460" y="205" text-anchor="middle" fill="#aaa">k</text>
+    <rect x="480" y="190" width="40" height="22" fill="#fff" stroke="#bbb" stroke-width="0.8"/>
+    <text x="500" y="205" text-anchor="middle" fill="#aaa">l</text>
+    <text x="528" y="205" font-size="9" fill="#aaa">…</text>
+    <text x="300" y="226" text-anchor="middle" font-size="9" fill="#888">绿色 = 该比特为 1（字母出现）；掩码即字符集合的位图编码</text>
+  </g>
+
+  <!-- ===== AND checks: two cases ===== -->
+  <text x="280" y="252" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">按位与判定：&amp; 为 0 ⇒ 可拼接</text>
+
+  <!-- Case 1: un & iq == 0 (disjoint, OK) -->
+  <g filter="url(#rough2)" font-size="11">
+    <rect x="30" y="262" width="245" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8"/>
+    <text x="152" y="282" text-anchor="middle" fill="#4a7a3a" font-weight="bold">un &amp; iq == 0  ✓ 可拼</text>
+    <text x="50" y="304" fill="#555" font-family="monospace">un : {u, n}</text>
+    <text x="50" y="322" fill="#555" font-family="monospace">iq : {i, q}</text>
+    <text x="50" y="342" fill="#555" font-family="monospace">&amp;  : ∅  → 无公共字母</text>
+    <text x="220" y="324" text-anchor="middle" fill="#4a7a3a" font-weight="bold">"uniq"</text>
+    <text x="220" y="342" text-anchor="middle" fill="#4a7a3a" font-weight="bold">长度 4 ⭐</text>
+  </g>
+
+  <!-- Case 2: un & ue != 0 (overlap u, reject) -->
+  <g filter="url(#rough2)" font-size="11">
+    <rect x="285" y="262" width="245" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="407" y="282" text-anchor="middle" fill="#b85450" font-weight="bold">un &amp; ue ≠ 0  ✗ 冲突</text>
+    <text x="305" y="304" fill="#555" font-family="monospace">un : {u, n}</text>
+    <text x="305" y="322" fill="#555" font-family="monospace">ue : {u, e}</text>
+    <text x="305" y="342" fill="#555" font-family="monospace">&amp;  : {u} → 共享字母 u</text>
+    <text x="475" y="324" text-anchor="middle" fill="#b85450" font-weight="bold">跳过</text>
+    <text x="475" y="342" text-anchor="middle" fill="#b85450" font-weight="bold">剪枝 ✂</text>
+  </g>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：预处理按深度分桶，两类查询分治处理</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">预处理 O(n log n)，每条查询 O(log n)，总计 O((n + q) log n)</text>
+
+  <g filter="url(#rough2)">
+    <!-- 开始 -->
+    <rect x="212" y="54" width="96" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="14"/>
+    <text x="260" y="72" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">开始</text>
+    <path d="M260,82 L260,96" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- 预处理 -->
+    <rect x="92" y="98" width="336" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="260" y="116" text-anchor="middle" font-size="10.5" fill="#33455e" font-weight="bold">预处理：算出 dep[i] = depth(nums[i])（每个值至多 4 次 popcount）</text>
+    <text x="260" y="133" text-anchor="middle" font-size="10" fill="#33455e">对每棵 fenw[dep[i]].add(i + 1, 1)，建好 6 棵 0/1 树状数组</text>
+    <path d="M260,142 L260,156" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- 取查询 -->
+    <rect x="152" y="158" width="216" height="30" fill="#ffffff" stroke="#999" stroke-width="1.5" rx="6"/>
+    <text x="260" y="177" text-anchor="middle" font-size="10.5" fill="#444">取出下一条查询 query</text>
+    <path d="M260,188 L260,202" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- 判断菱形 -->
+    <polygon points="260,204 344,240 260,276 176,240" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="260" y="236" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold">query[0] == 1 ？</text>
+    <text x="260" y="252" text-anchor="middle" font-size="9" fill="#8a6d1f">（是查询还是更新）</text>
+
+    <!-- 左分支：类型 1 -->
+    <path d="M176,240 L130,240 L130,286" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="150" y="232" font-size="9.5" fill="#446688" font-weight="bold">是</text>
+    <rect x="28" y="288" width="216" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="136" y="308" text-anchor="middle" font-size="10.5" fill="#33455e" font-weight="bold">类型 1 [1, l, r, k]：区间计数</text>
+    <text x="136" y="326" text-anchor="middle" font-size="9.5" fill="#33455e">ans.append(</text>
+    <text x="136" y="342" text-anchor="middle" font-size="9.5" fill="#33455e">fenw[k].pre(r+1) − fenw[k].pre(l))</text>
+
+    <!-- 右分支：类型 2 -->
+    <path d="M344,240 L390,240 L390,286" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="356" y="232" font-size="9.5" fill="#8a6d1f" font-weight="bold">否</text>
+    <rect x="282" y="288" width="216" height="66" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="390" y="308" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">类型 2 [2, idx, val]：单点换桶</text>
+    <text x="390" y="326" text-anchor="middle" font-size="9.5" fill="#33455e">nd = depth(val)；nd ≠ dep[idx] 时</text>
+    <text x="390" y="342" text-anchor="middle" font-size="9.5" fill="#33455e">fenw[dep[idx]].add(idx+1,−1)，fenw[nd].add(idx+1,+1)</text>
+
+    <!-- 汇合到判断 -->
+    <path d="M136,354 L136,368 L390,368 L390,354" stroke="#999" stroke-width="1.2" stroke-dasharray="4,4"/>
+    <path d="M260,368 L260,378" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="152" y="378" width="216" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/>
+    <text x="260" y="392" text-anchor="middle" font-size="9.5" fill="#2a5a2a" font-weight="bold">还有查询？有则回到取查询，无则返回 ans</text>
+
+    <!-- 侧注 -->
+    <text x="470" y="222" text-anchor="middle" font-size="9" fill="#b85450">每次 O(log n)</text>
+  </g>
+</svg>

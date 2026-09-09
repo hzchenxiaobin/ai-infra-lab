@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 620" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="620" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：归并排序 + 合并前独立计数</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">递归排序两半 → ①双指针统计跨段翻转对 → ②常规归并写回</text>
+
+  <!-- ===== Start ===== -->
+  <rect x="200" y="56" width="180" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="14" filter="url(#rough2)"/>
+  <text x="290" y="75" text-anchor="middle" font-size="11" fill="#333">mergeSort(lo, hi)</text>
+  <path d="M 290 84 L 290 96" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: lo >= hi ===== -->
+  <polygon points="290,98 380,128 290,158 200,128" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="124" text-anchor="middle" font-size="10" fill="#444">lo ≥ hi ?</text>
+  <text x="290" y="138" text-anchor="middle" font-size="9" fill="#888">(长度≤1)</text>
+
+  <path d="M 380 128 L 430 128" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="122" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="432" y="116" width="110" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="487" y="132" text-anchor="middle" font-size="10" fill="#4a7a3a">return（无翻转对）</text>
+
+  <path d="M 290 158 L 290 170" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="298" y="168" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== mid + recurse ===== -->
+  <rect x="150" y="172" width="280" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="190" text-anchor="middle" font-size="10" fill="#333">mid = lo + (hi−lo)/2</text>
+  <text x="290" y="205" text-anchor="middle" font-size="10" fill="#333">递归 mergeSort(lo, mid) + mergeSort(mid+1, hi)</text>
+  <path d="M 290 212 L 290 224" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="200" font-size="9" fill="#888">段内对数已由子调用统计</text>
+
+  <!-- ===== Phase 1: Count ===== -->
+  <rect x="30" y="226" width="520" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="244" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">阶段① 计数跨段翻转对（两半已各自有序）</text>
+  <text x="290" y="259" text-anchor="middle" font-size="9" fill="#888">i=lo, j=mid+1; while i≤mid: while j≤hi 且 nums[i] &gt; 2LL·nums[j]: j++; ans += j−(mid+1); i++</text>
+  <path d="M 290 266 L 290 278" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- count detail box -->
+  <rect x="80" y="280" width="420" height="58" fill="#f6f6f6" stroke="#aaa" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="298" font-size="10" fill="#446688" font-weight="bold">双指针计数细节：</text>
+  <text x="100" y="314" font-size="9" fill="#333">• j 从 mid+1 出发，对每个 i 只前进不回退（两半有序保证单调性）</text>
+  <text x="100" y="328" font-size="9" fill="#333">• 满足 nums[i] &gt; 2·nums[j] 的右半元素个数 = j − (mid+1)，累加进 ans</text>
+  <path d="M 290 338 L 290 350" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Phase 2: Merge ===== -->
+  <rect x="30" y="352" width="520" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="374" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">阶段② 常规归并合并（按 nums[i] ≤ nums[j] 取小写回 tmp）</text>
+  <path d="M 290 388 L 290 400" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Merge loop ===== -->
+  <polygon points="290,402 400,432 290,462 180,432" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="428" text-anchor="middle" font-size="10" fill="#444">i ≤ mid 且 j ≤ hi ?</text>
+  <text x="290" y="442" text-anchor="middle" font-size="9" fill="#888">(合并循环)</text>
+
+  <path d="M 180 432 L 110 432" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="140" y="426" font-size="10" fill="#446688" font-weight="bold">左≤右</text>
+  <rect x="20" y="420" width="88" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="64" y="437" text-anchor="middle" font-size="9" fill="#446688">tmp[k++]=nums[i++]</text>
+
+  <path d="M 400 432 L 460 432" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="420" y="426" font-size="10" fill="#b85450" font-weight="bold">左&gt;右</text>
+  <rect x="462" y="420" width="96" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="510" y="437" text-anchor="middle" font-size="9" fill="#b85450">tmp[k++]=nums[j++]</text>
+
+  <!-- loop back -->
+  <path d="M 64 446 L 64 432 L 64 480 L 290 480 L 290 462" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 510 446 L 510 480 L 290 480" stroke="#666" stroke-width="1.1" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- ===== Drain + copy back ===== -->
+  <rect x="80" y="496" width="420" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="515" text-anchor="middle" font-size="9" fill="#446688">剩余左/右半直接复制到 tmp；拷贝 tmp[lo..hi] 回 nums[lo..hi]</text>
+
+  <!-- ===== Notes ===== -->
+  <text x="20" y="548" font-size="10" fill="#888" font-weight="bold">⚡ 与「315 / 逆序对」的关键区别：</text>
+  <text x="20" y="566" font-size="10" fill="#888">① 计数条件 nums[i] &gt; 2·nums[j] 与合并条件 nums[i] ≤ nums[j] 不同 → 必须分两趟</text>
+  <text x="20" y="584" font-size="10" fill="#888">② 计数在合并之前，此时两半仍各自有序，双指针 O(n) 完成</text>
+  <text x="20" y="602" font-size="10" fill="#888">③ 只求总数 → 直接对 nums 归并，无需索引数组（315 需逐位置计数才用 idx）</text>
+</svg>

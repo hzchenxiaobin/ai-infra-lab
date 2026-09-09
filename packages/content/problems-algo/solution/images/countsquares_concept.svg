@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">dp[i][j] = min(上, 左, 左上) + 1 = 以 (i,j) 为右下角的正方形个数</text>
+
+  <!-- ====== Top: recurrence grid ====== -->
+  <text x="40" y="62" font-size="12" fill="#888">转移：三邻居取最小 +1</text>
+
+  <!-- grid 3x3, cell 44x32, origin x=90 y=80 -->
+  <!-- (0,0) left-up neighbor region: highlight -->
+  <rect x="90" y="80" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="112" y="100" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dp</text>
+  <text x="112" y="112" text-anchor="middle" font-size="9" fill="#4a7a3a">i-1,j-1</text>
+
+  <!-- (0,1) top neighbor -->
+  <rect x="136" y="80" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">dp</text>
+  <text x="158" y="112" text-anchor="middle" font-size="9" fill="#446688">i-1,j</text>
+
+  <!-- (0,2) empty -->
+  <rect x="182" y="80" width="44" height="32" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+
+  <!-- (1,0) left neighbor -->
+  <rect x="90" y="116" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="112" y="136" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">dp</text>
+  <text x="112" y="148" text-anchor="middle" font-size="9" fill="#446688">i,j-1</text>
+
+  <!-- (1,1) current cell -->
+  <rect x="136" y="116" width="44" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="136" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp</text>
+  <text x="158" y="148" text-anchor="middle" font-size="9" fill="#b85450">i,j</text>
+
+  <!-- (1,2) empty -->
+  <rect x="182" y="116" width="44" height="32" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+
+  <!-- arrows from three neighbors to current -->
+  <path d="M 112 112 L 140 120" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 158 112 L 158 116" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 134 132 L 136 132" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- formula box -->
+  <rect x="250" y="92" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="112" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">dp[i][j] = min(三邻居) + 1</text>
+  <text x="390" y="128" text-anchor="middle" font-size="11" fill="#888">（matrix[i][j]=1 时；=0 则 dp=0）</text>
+
+  <!-- divider -->
+  <path d="M 40 168 L 520 168" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ====== Bottom: dp=t means t squares ====== -->
+  <text x="40" y="192" font-size="12" fill="#888">关键：dp[i][j]=t ⟹ 恰好 t 个正方形（边长 1..t）</text>
+
+  <!-- Big 3x3 square representing dp=3 -->
+  <text x="80" y="220" font-size="11" fill="#555" font-weight="bold">dp=3：</text>
+
+  <!-- size 3 square (outer) -->
+  <rect x="80" y="228" width="120" height="120" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <!-- size 2 square -->
+  <rect x="80" y="228" width="80" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <!-- size 1 square -->
+  <rect x="80" y="228" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+
+  <!-- labels for each size -->
+  <text x="140" y="360" text-anchor="middle" font-size="10" fill="#b85450">边长 3</text>
+  <text x="120" y="320" text-anchor="middle" font-size="10" fill="#446688">边长 2</text>
+  <text x="100" y="252" text-anchor="middle" font-size="10" fill="#4a7a3a">边长 1</text>
+
+  <!-- right side explanation -->
+  <rect x="230" y="220" width="300" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="238" text-anchor="middle" font-size="11.5" fill="#3a5a2a">最大边长 t = 3</text>
+  <text x="380" y="253" text-anchor="middle" font-size="11" fill="#555">⟹ 边长 1, 2, 3 的方块都全 1</text>
+
+  <rect x="230" y="276" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="294" text-anchor="middle" font-size="11.5" fill="#335">以 (i,j) 为右下角的正方形</text>
+  <text x="380" y="309" text-anchor="middle" font-size="11.5" fill="#335" font-weight="bold">恰好有 t = 3 个</text>
+
+  <!-- final formula -->
+  <rect x="100" y="372" width="360" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="395" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">答案 = Σ dp[i][j]</text>
+</svg>

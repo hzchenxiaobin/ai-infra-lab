@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：预计算共线掩码 → 状压 DP</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="44" width="440" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="66" font-size="12" fill="#333" font-weight="bold">① 预计算 lineMask[i][j]</text>
+  <text x="56" y="82" font-size="11" fill="#555">枚举所有点对 (i,j)，用叉积 (x₁−x₀)(y₂−y₀)==(y₁−y₀)(x₂−x₀) 收集共线点 → O(n³)</text>
+
+  <path d="M 260 92 L 260 104" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="108" width="440" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="130" font-size="12" fill="#333" font-weight="bold">② 初始化 DP</text>
+  <text x="56" y="146" font-size="11" fill="#555">dp[0] = 0（空集 0 条直线），其余 dp[mask] = +∞；目标 dp[full]，full = (1&lt;&lt;n) − 1</text>
+
+  <path d="M 260 156 L 260 168" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="40" y="172" width="440" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="194" font-size="12" fill="#333" font-weight="bold">③ 枚举 mask，找最低未覆盖点 i</text>
+  <text x="56" y="210" font-size="11" fill="#555">i = mask 中首个 0 位；固定 i 穷尽其覆盖方式，去重且常数小</text>
+
+  <path d="M 260 220 L 260 232" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: two branches -->
+  <rect x="40" y="236" width="210" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="145" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">分支 A：单独盖 i</text>
+  <text x="145" y="276" text-anchor="middle" font-size="11" fill="#555">dp[mask | (1&lt;&lt;i)]</text>
+  <text x="145" y="290" text-anchor="middle" font-size="10" fill="#888">= min(·, dp[mask]+1)</text>
+
+  <rect x="270" y="236" width="210" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="375" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">分支 B：过 i 与未覆盖 j</text>
+  <text x="375" y="276" text-anchor="middle" font-size="11" fill="#555">dp[mask | lineMask[i][j]]</text>
+  <text x="375" y="290" text-anchor="middle" font-size="10" fill="#888">= min(·, dp[mask]+1)</text>
+
+  <path d="M 260 300 L 260 312" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="40" y="316" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="340" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ 返回 dp[full]：覆盖全部点所需最少直线数</text>
+
+  <!-- complexity tag -->
+  <rect x="40" y="366" width="440" height="24" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="382" text-anchor="middle" font-size="11" fill="#666">复杂度：O(n³) 预计算 + O(n·2ⁿ) DP；n=10 时约 10⁴ 次转移</text>
+</svg>

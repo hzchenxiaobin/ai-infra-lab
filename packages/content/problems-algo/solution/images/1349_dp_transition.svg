@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">状态压缩 DP：逐行转移，位掩码编码每行就座方案</text>
+  <text x="280" y="42" text-anchor="middle" font-size="11" fill="#888">prev = 上一行掩码, mask = 当前行掩码；三条约束决定兼容性</text>
+
+  <!-- ===== row i-1 (prev) ===== -->
+  <text x="60" y="76" font-size="11" fill="#446688" font-weight="bold">row i−1  prev = 010010</text>
+  <g font-size="13">
+    <!-- 6 cells, 48×40, origin x=60, y=82 -->
+    <rect x="60" y="82" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="84" y="108" text-anchor="middle" fill="#999">0</text>
+    <rect x="108" y="82" width="48" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <circle cx="132" cy="102" r="13" fill="#446688" filter="url(#rough2)"/>
+    <text x="132" y="106" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">1</text>
+    <rect x="156" y="82" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="180" y="108" text-anchor="middle" fill="#999">0</text>
+    <rect x="204" y="82" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="228" y="108" text-anchor="middle" fill="#999">0</text>
+    <rect x="252" y="82" width="48" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <circle cx="276" cy="102" r="13" fill="#446688" filter="url(#rough2)"/>
+    <text x="276" y="106" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">1</text>
+    <rect x="300" y="82" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="324" y="108" text-anchor="middle" fill="#999">0</text>
+  </g>
+  <!-- col labels -->
+  <g font-size="9" fill="#888">
+    <text x="84" y="76" text-anchor="middle">col0</text>
+    <text x="132" y="76" text-anchor="middle">col1</text>
+    <text x="180" y="76" text-anchor="middle">col2</text>
+    <text x="228" y="76" text-anchor="middle">col3</text>
+    <text x="276" y="76" text-anchor="middle">col4</text>
+    <text x="324" y="76" text-anchor="middle">col5</text>
+  </g>
+
+  <!-- ===== row i (mask) ===== -->
+  <text x="60" y="148" font-size="11" fill="#b85450" font-weight="bold">row i    mask = 100001（冲突！）</text>
+  <g font-size="13">
+    <rect x="60" y="154" width="48" height="40" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+    <circle cx="84" cy="174" r="13" fill="#b85450" filter="url(#rough2)"/>
+    <text x="84" y="178" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">1</text>
+    <rect x="108" y="154" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="132" y="180" text-anchor="middle" fill="#999">0</text>
+    <rect x="156" y="154" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="180" y="180" text-anchor="middle" fill="#999">0</text>
+    <rect x="204" y="154" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="228" y="180" text-anchor="middle" fill="#999">0</text>
+    <rect x="252" y="154" width="48" height="40" rx="4" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="276" y="180" text-anchor="middle" fill="#999">0</text>
+    <rect x="300" y="154" width="48" height="40" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+    <circle cx="324" cy="174" r="13" fill="#b85450" filter="url(#rough2)"/>
+    <text x="324" y="178" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">1</text>
+  </g>
+
+  <!-- conflict arrows -->
+  <path d="M 84 154 L 132 122" stroke="#b85450" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="120" y="142" font-size="9" fill="#b85450" font-weight="bold">右上冲突</text>
+  <path d="M 324 154 L 276 122" stroke="#b85450" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="282" y="142" font-size="9" fill="#b85450" font-weight="bold">左上冲突</text>
+
+  <!-- ===== constraint boxes ===== -->
+  <text x="60" y="224" font-size="12" fill="#444" font-weight="bold">三条合法性约束（mask 为合法就座方案需同时满足）：</text>
+
+  <!-- constraint 1 -->
+  <rect x="40" y="234" width="480" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="56" y="257" font-size="11" fill="#4a7a3a" font-weight="bold">① 座位可用</text>
+  <text x="150" y="257" font-size="11" fill="#444" font-family="monospace">mask &amp; available == mask</text>
+  <text x="330" y="257" font-size="10" fill="#888">只在 '.' 好座位上坐人，坏座位 '#' 对应位为 0</text>
+
+  <!-- constraint 2 -->
+  <rect x="40" y="276" width="480" height="36" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="56" y="299" font-size="11" fill="#d6a040" font-weight="bold">② 同行不邻</text>
+  <text x="150" y="299" font-size="11" fill="#444" font-family="monospace">mask &amp; (mask &lt;&lt; 1) == 0</text>
+  <text x="330" y="299" font-size="10" fill="#888">左右相邻位不能同时坐人（水平可视）</text>
+
+  <!-- constraint 3 -->
+  <rect x="40" y="318" width="480" height="36" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="56" y="341" font-size="11" fill="#b85450" font-weight="bold">③ 跨行不斜</text>
+  <text x="150" y="341" font-size="11" fill="#444" font-family="monospace">mask &amp; ((prev&lt;&lt;1) | (prev&gt;&gt;1)) == 0</text>
+  <text x="370" y="341" font-size="10" fill="#888">左上/右上斜对角不能坐人</text>
+
+  <!-- ===== DP formula ===== -->
+  <rect x="40" y="370" width="480" height="52" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="392" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">DP 转移方程</text>
+  <text x="280" y="412" text-anchor="middle" font-size="12" fill="#444" font-family="monospace">dp[i][mask] = popcount(mask) + max{ dp[i−1][prev] : prev 兼容 mask }</text>
+</svg>

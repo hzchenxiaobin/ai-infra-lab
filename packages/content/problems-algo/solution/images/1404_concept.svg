@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：从最低位逐位处理 + 进位懒传播</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">s 长达 500 位装不下整数 → 在字符串上按位模拟，用 carry 懒记录 +1 的进位</text>
+
+  <!-- binary string 1101 -->
+  <text x="206" y="86" text-anchor="end" font-size="12" fill="#666" font-weight="bold">s =</text>
+  <g font-size="16">
+    <rect x="216" y="66" width="44" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="238" y="92" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="264" y="66" width="44" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="286" y="92" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="312" y="66" width="44" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="334" y="92" text-anchor="middle" fill="#446688" font-weight="bold">0</text>
+    <rect x="360" y="66" width="44" height="40" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+    <text x="382" y="92" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+  </g>
+  <text x="238" y="122" text-anchor="middle" font-size="9" fill="#999">MSB</text>
+  <text x="382" y="122" text-anchor="middle" font-size="9" fill="#999">LSB</text>
+  <text x="414" y="86" font-size="10" fill="#d6a040" font-weight="bold">← 从右开始</text>
+
+  <!-- processing direction arrow (right to left) -->
+  <path d="M 396 134 L 224 134" stroke="#d6a040" stroke-width="2" marker-end="url(#arrO)" fill="none" filter="url(#rough2)"/>
+  <text x="310" y="150" text-anchor="middle" font-size="10" fill="#d6a040">处理方向：LSB → MSB（最高位留到最后单独判定）</text>
+
+  <!-- two rule boxes -->
+  <rect x="40" y="168" width="270" height="92" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="190" font-size="13" fill="#4a7a3a" font-weight="bold">偶数（最低位 0）</text>
+  <text x="60" y="210" font-size="11" fill="#555">÷ 2 = 右移丢掉最低位</text>
+  <text x="60" y="228" font-size="11" fill="#555">这一位直接消费掉</text>
+  <text x="60" y="250" font-size="12" fill="#4a7a3a" font-weight="bold">→ 计 1 步，carry 不变</text>
+
+  <rect x="330" y="168" width="270" height="92" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="350" y="190" font-size="13" fill="#d6a040" font-weight="bold">奇数（最低位 1）</text>
+  <text x="350" y="210" font-size="11" fill="#555">+ 1 → 触发进位链（懒记录为 carry）</text>
+  <text x="350" y="228" font-size="11" fill="#555">变偶数后再 ÷ 2 消费该位</text>
+  <text x="350" y="250" font-size="12" fill="#d6a040" font-weight="bold">→ 计 2 步，carry 置 1</text>
+
+  <!-- carry chain illustration -->
+  <rect x="40" y="276" width="560" height="92" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="60" y="298" font-size="12" fill="#446688" font-weight="bold">进位链：一串尾部 1 遇 +1 翻成 0，首个 0 翻成 1</text>
+  <g font-size="15">
+    <rect x="90" y="312" width="30" height="32" rx="4" fill="#fafafa" stroke="#999" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="105" y="334" text-anchor="middle" fill="#777">0</text>
+    <rect x="124" y="312" width="30" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="139" y="334" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+    <rect x="158" y="312" width="30" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="173" y="334" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+    <rect x="192" y="312" width="30" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="207" y="334" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+  </g>
+  <text x="240" y="334" font-size="14" fill="#b85450" font-weight="bold">+ 1</text>
+  <path d="M 268 328 L 296 328" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <g font-size="15">
+    <rect x="306" y="312" width="30" height="32" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="321" y="334" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <rect x="340" y="312" width="30" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="355" y="334" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="374" y="312" width="30" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="389" y="334" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="408" y="312" width="30" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="423" y="334" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+  </g>
+  <text x="448" y="320" font-size="9" fill="#b85450">↑翻1</text>
+  <text x="448" y="348" font-size="9" fill="#4a7a3a">↑全翻0</text>
+
+  <!-- sticky carry note -->
+  <rect x="40" y="380" width="560" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="60" y="402" font-size="12" fill="#b85450" font-weight="bold">💡 carry 是「粘性」标志</text>
+  <text x="60" y="420" font-size="11" fill="#666">一旦因遇到 1 而置 1，便一路向左传播到最高位，无需真改字符串——只记一个标志位即可</text>
+</svg>

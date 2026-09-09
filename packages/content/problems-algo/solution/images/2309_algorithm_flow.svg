@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="480" height="500" fill="#fafafa"/>
+
+  <text x="240" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：扫 s 建双掩码 → 相与 → 取最高置位</text>
+
+  <!-- Start -->
+  <ellipse cx="240" cy="56" rx="46" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="240" y="61" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">开始</text>
+
+  <line x1="240" y1="74" x2="240" y2="92" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 1: init -->
+  <rect x="80" y="94" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="116" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① lower = 0, upper = 0, i = 0</text>
+
+  <line x1="240" y1="128" x2="240" y2="146" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond 1: i &lt; n ? -->
+  <polygon points="240,146 330,172 240,198 150,172" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="240" y="176" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">i &lt; n ?</text>
+  <!-- 否 → right → both -->
+  <text x="338" y="166" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <line x1="330" y1="172" x2="346" y2="172" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="346" y="156" width="124" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="408" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">both=lower&amp;upper</text>
+  <!-- 是 ↓ -->
+  <text x="250" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="240" y1="198" x2="240" y2="218" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2: set bit by case -->
+  <rect x="70" y="220" width="340" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="238" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② 若 s[i] 小写：lower |= 1&lt;&lt;(s[i]-'a')</text>
+  <text x="240" y="254" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">若大写：upper |= 1&lt;&lt;(s[i]-'A')</text>
+
+  <line x1="240" y1="260" x2="240" y2="276" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- i++ loop back to diamond 1 -->
+  <rect x="160" y="278" width="160" height="28" fill="#f0f0f0" stroke="#aaaaaa" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="296" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">i++，下一字符</text>
+  <path d="M 160 292 L 40 292 L 40 172 L 150 172" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- arrow from both to diamond 2 -->
+  <line x1="408" y1="188" x2="408" y2="332" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 408 332 L 240 332" stroke="#4a7a3a" stroke-width="1.6" fill="none"/>
+
+  <!-- diamond 2: both == 0 ? -->
+  <polygon points="240,316 332,342 240,368 148,342" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="240" y="346" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">both == 0 ?</text>
+  <!-- 是 → right → return "" -->
+  <text x="340" y="336" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <line x1="332" y1="342" x2="346" y2="342" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="346" y="326" width="116" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="404" y="346" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">return ""</text>
+  <!-- 否 ↓ -->
+  <text x="250" y="384" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <line x1="240" y1="368" x2="240" y2="386" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 3: highest set bit -->
+  <rect x="70" y="388" width="340" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="410" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ k = 最高置位下标 → 'A'+k</text>
+
+  <line x1="240" y1="422" x2="240" y2="438" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End -->
+  <rect x="140" y="440" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="465" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">return char('A' + k)</text>
+</svg>

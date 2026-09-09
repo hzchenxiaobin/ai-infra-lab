@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr_blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arr_orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arr_grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">核心观察：虚拟源点 S + 边权放大 (k+1) 倍</text>
+
+  <!-- ===== 上半：单次往返成本拆解 ===== -->
+  <text x="280" y="56" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">① 从 i 出发买苹果再回 i，成本可拆三段</text>
+
+  <!-- city i -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="74" width="56" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="88" y="99" text-anchor="middle" font-size="15" fill="#334455">i</text>
+  </g>
+  <!-- city u -->
+  <g filter="url(#rough2)">
+    <rect x="444" y="74" width="56" height="40" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="472" y="99" text-anchor="middle" font-size="15" fill="#7a4a10">u</text>
+  </g>
+
+  <!-- forward arrow i -> u -->
+  <path d="M116,88 L444,88" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr_blue)" filter="url(#rough2)"/>
+  <text x="280" y="80" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">去程 = d(i, u)</text>
+
+  <!-- apple (buy) box on u -->
+  <g filter="url(#rough2)">
+    <rect x="430" y="124" width="84" height="26" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <text x="472" y="142" text-anchor="middle" font-size="11" fill="#b85450">购买 appleCost[u]</text>
+  </g>
+  <path d="M472,114 L472,124" fill="none" stroke="#b85450" stroke-width="1.4" marker-end="url(#arr_grey)" filter="url(#rough2)"/>
+
+  <!-- return arrow u -> i (curved below) -->
+  <path d="M444,108 C300,150 220,150 116,108" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr_orange)" filter="url(#rough2)"/>
+  <text x="280" y="158" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">回程 = k · d(i, u)（带苹果，路费 ×k）</text>
+
+  <!-- combined formula -->
+  <g filter="url(#rough2)">
+    <rect x="90" y="172" width="380" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.7"/>
+    <text x="280" y="194" text-anchor="middle" font-size="14" fill="#7a4a10">合计 = appleCost[u] + (k+1) · d(i, u)</text>
+  </g>
+
+  <!-- divider -->
+  <path d="M40,222 L520,222" fill="none" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 4" filter="url(#rough2)"/>
+
+  <!-- ===== 下半：虚拟源点 → 一次 Dijkstra 出全部答案 ===== -->
+  <text x="280" y="244" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">② 图无向 → d(i,u)=d(u,i)；放大边权 (k+1) 倍，加虚拟源点 S</text>
+
+  <!-- virtual source S -->
+  <g filter="url(#rough2)">
+    <rect x="244" y="258" width="72" height="42" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="2.2"/>
+    <text x="280" y="285" text-anchor="middle" font-size="16" fill="#b85450" font-weight="bold">S</text>
+  </g>
+  <text x="280" y="252" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">虚拟源点</text>
+
+  <!-- city row: 1 - 2 - 3 (schematic line) -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="350" width="56" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="98" y="375" text-anchor="middle" font-size="14" fill="#334455">1</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="252" y="350" width="56" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="280" y="375" text-anchor="middle" font-size="14" fill="#334455">2</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="434" y="350" width="56" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="462" y="375" text-anchor="middle" font-size="14" fill="#334455">3</text>
+  </g>
+
+  <!-- city-to-city edges (scaled weight) -->
+  <path d="M126,370 L252,370" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="189" y="362" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">(k+1)·w</text>
+  <path d="M308,370 L434,370" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="371" y="362" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">(k+1)·w</text>
+
+  <!-- S -> each city (orange dashed, weight = appleCost) -->
+  <path d="M258,300 L110,350" fill="none" stroke="#d6a040" stroke-width="1.7" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="150" y="328" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">appleCost[1]</text>
+  <path d="M280,300 L280,350" fill="none" stroke="#d6a040" stroke-width="1.7" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="312" y="328" text-anchor="start" font-size="10" fill="#d6a040" filter="url(#rough2)">appleCost[2]</text>
+  <path d="M302,300 L448,350" fill="none" stroke="#d6a040" stroke-width="1.7" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="392" y="328" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">appleCost[3]</text>
+
+  <!-- final formula -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="402" width="480" height="22" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="280" y="418" text-anchor="middle" font-size="12" fill="#3a5a2a">dist(S, i) = min_u { appleCost[u] + (k+1)·d(u,i) } = ans[i]</text>
+  </g>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：ping(t) 三步走</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">入队 → 左弹过期 → 返回队列长度</text>
+
+  <!-- Step 1: enqueue -->
+  <rect x="170" y="62" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="80" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">① q.append(t)</text>
+  <text x="260" y="95" text-anchor="middle" font-size="9" fill="#555">新 ping 入队尾（时间最大）</text>
+
+  <path d="M 260 104 L 260 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: front < t-3000 ? -->
+  <polygon points="260,130 360,178 260,226 160,178" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="172" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">q.front()</text>
+  <text x="260" y="186" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">&lt; t − 3000 ?</text>
+  <text x="260" y="202" text-anchor="middle" font-size="9" fill="#888">队首是否过期</text>
+
+  <!-- Yes branch: pop left, loop back -->
+  <path d="M 160 178 L 90 178 L 90 82 L 168 82" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="44" y="120" width="92" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="135" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">② q.popleft()</text>
+  <text x="90" y="148" text-anchor="middle" font-size="8" fill="#b85450">是 → 弹出，回判</text>
+  <text x="120" y="170" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- No branch: return -->
+  <path d="M 260 226 L 260 252" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="280" y="244" font-size="9" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Step 3: return len -->
+  <rect x="150" y="256" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="276" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">③ return len(q)</text>
+  <text x="260" y="291" text-anchor="middle" font-size="9" fill="#555">队列剩余元素全部落在 [t−3000, t]</text>
+
+  <!-- amortized note -->
+  <rect x="40" y="318" width="440" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="338" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">均摊 O(1)：每个 ping 入队 1 次、出队至多 1 次</text>
+  <text x="260" y="354" text-anchor="middle" font-size="9" fill="#555">while 循环看似最坏 O(n)，但总出队次数 ≤ 总入队次数 = n</text>
+  <text x="260" y="366" text-anchor="middle" font-size="9" fill="#555">n 次 ping 总操作 ≤ 2n → 均摊每次 O(1)</text>
+</svg>

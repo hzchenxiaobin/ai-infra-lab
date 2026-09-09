@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">前缀和 + 单调队列：负数破坏单调性，化归为 P[i] ≤ P[j]−k</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">子数组和 = P[j]−P[i]；队列存下标、P 值单调递增；队头查条件，队尾保单调</text>
+
+  <!-- ===== Panel A: prefix sum reformulation ===== -->
+  <rect x="24" y="56" width="250" height="150" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="76" font-size="11" fill="#446688" font-weight="bold">① 前缀和化归</text>
+
+  <text x="36" y="98" font-size="10" fill="#555">子数组 nums[i..j) 的和</text>
+  <text x="36" y="114" font-size="11" fill="#333" font-weight="bold">  = P[j] − P[i]   (P[0]=0)</text>
+  <text x="36" y="134" font-size="10" fill="#555">要求和 ≥ k ，即：</text>
+  <text x="36" y="152" font-size="11" fill="#b85450" font-weight="bold">  P[j] − P[i] ≥ k</text>
+  <text x="36" y="170" font-size="11" fill="#b85450" font-weight="bold">  ⟺  P[i] ≤ P[j] − k</text>
+  <text x="36" y="190" font-size="9" fill="#888">→ 对每个右端 j，找满足条件的</text>
+  <text x="36" y="200" font-size="9" fill="#888">   最大 i（离 j 最近 ⇒ 最短）</text>
+
+  <!-- ===== Panel B: why sliding window fails ===== -->
+  <rect x="286" y="56" width="250" height="150" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="298" y="76" font-size="11" fill="#b85450" font-weight="bold">② 为什么不能用普通滑窗？</text>
+
+  <text x="298" y="96" font-size="9" fill="#555">209 题全是正数：窗口扩展</text>
+  <text x="298" y="108" font-size="9" fill="#555">和单调增，可 left 收缩。</text>
+  <text x="298" y="126" font-size="9" fill="#b85450" font-weight="bold">有负数时和会下降：</text>
+
+  <g font-size="10">
+    <rect x="298" y="134" width="34" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="315" y="150" text-anchor="middle">84</text>
+    <rect x="334" y="134" width="34" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="351" y="150" text-anchor="middle" fill="#b85450" font-weight="bold">−37</text>
+    <rect x="370" y="134" width="34" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="387" y="150" text-anchor="middle">32</text>
+    <rect x="406" y="134" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="423" y="150" text-anchor="middle" fill="#4a7a3a" font-weight="bold">95</text>
+  </g>
+  <text x="298" y="172" font-size="9" fill="#555">收缩 left 去掉 84 → 和反降</text>
+  <text x="298" y="184" font-size="9" fill="#b85450" font-weight="bold">滑窗卡住，错过 [32,40,95]</text>
+  <text x="298" y="198" font-size="9" fill="#888">→ 需前缀和 + 单调队列</text>
+
+  <!-- ===== Panel C: monotonic deque ===== -->
+  <rect x="24" y="216" width="512" height="170" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="236" font-size="11" fill="#d6a040" font-weight="bold">③ 单调队列（存下标，对应 P 值单调递增）—— 示例 P = [0, 3, 1, 6, ...]</text>
+
+  <!-- deque cells: indices [0,2] with P values [0,1] (from walkthrough j=3 before processing) -->
+  <g font-size="10">
+    <rect x="60" y="252" width="78" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="99" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">i=0</text>
+    <text x="99" y="284" text-anchor="middle" fill="#4a7a3a">P=0</text>
+    <text x="60" y="248" font-size="8" fill="#4a7a3a" font-weight="bold">队头 ← P 最小</text>
+
+    <rect x="148" y="252" width="78" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="187" y="270" text-anchor="middle" fill="#446688" font-weight="bold">i=2</text>
+    <text x="187" y="284" text-anchor="middle" fill="#446688">P=1</text>
+    <text x="187" y="248" font-size="8" fill="#446688">队尾 ← 新元素入队</text>
+
+    <!-- dots -->
+    <text x="240" y="276" font-size="12" fill="#888">…</text>
+  </g>
+
+  <!-- P increasing arrow -->
+  <text x="100" y="312" font-size="9" fill="#888">P 值递增 ⟶</text>
+  <path d="M 70 306 L 220 306" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- front pop operation -->
+  <rect x="300" y="248" width="220" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="410" y="266" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">左端查条件：P[front] ≤ P[j]−k ?</text>
+  <text x="410" y="278" text-anchor="middle" font-size="9" fill="#4a7a3a">满足 → 记 j−front，弹掉 front</text>
+
+  <!-- back pop operation -->
+  <rect x="300" y="290" width="220" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="410" y="308" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">右端保单调：P[back] ≥ P[j] ?</text>
+  <text x="410" y="320" text-anchor="middle" font-size="9" fill="#b85450">满足 → back 被支配，弹掉</text>
+
+  <!-- dominance explanation -->
+  <rect x="60" y="332" width="460" height="44" fill="#fafafa" stroke="#bbb" stroke-width="0.8" rx="5" filter="url(#rough2)"/>
+  <text x="290" y="350" text-anchor="middle" font-size="9" fill="#555">支配关系：若 P[back] ≥ P[j] 且 back &lt; j，则 back 「前缀和更大、位置更靠前」</text>
+  <text x="290" y="364" text-anchor="middle" font-size="9" fill="#555">对任何未来右端 j'，back 能满足 P[back]≤P[j']−k 时 j 也满足且 j'−j &lt; j'−back ⇒ back 无用，安全弹出</text>
+  <text x="290" y="374" text-anchor="middle" font-size="8" fill="#888">队头查到一次即弃（未来 j' 更大 ⇒ 子数组更长，不可能更优）</text>
+</svg>

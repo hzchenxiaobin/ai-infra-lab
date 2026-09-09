@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,3 L8,3" fill="none" stroke="#446688" stroke-width="1.5"/>
+      <path d="M6,0 L9,3 L6,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：n = 20，掐头去尾各 1 个，中间 18 个求均值</text>
+
+  <!-- Example input -->
+  <text x="40" y="54" text-anchor="start" font-size="11" fill="#888" font-weight="bold">输入 arr（n = 20）：</text>
+  <text x="40" y="72" text-anchor="start" font-size="10.5" fill="#555" font-family="monospace">[6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0]</text>
+
+  <!-- Sort arrow -->
+  <text x="40" y="100" text-anchor="start" font-size="11" fill="#888" font-weight="bold">排序后：</text>
+  <path d="M 110 96 L 150 96" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Sorted array cells: 20 cells, 26 wide, starting x=40, y=110 -->
+  <!-- values sorted: 0,0,0,0,1,2,2,2,3,5,5,5,6,6,7,7,8,8,10 -->
+  <!-- Wait that's 19. Let me recount: 6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0
+       zeros: positions with 0: 0,0,0,0 = 4 zeros (indices 6,11,14,19)
+       ones: 1 = 1
+       twos: 2,2,2 = 3
+       threes: 3 = 1
+       fives: 5,5,5 = 3
+       sixes: 6,6 = 2
+       sevens: 7,7 = 2
+       eights: 8,8 = 2
+       tens: 10 = 1
+       Total: 4+1+3+1+3+2+2+2+1 = 19. Hmm should be 20.
+       Let me recount original: 6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0
+       1:6, 2:2, 3:7, 4:5, 5:1, 6:2, 7:0, 8:3, 9:10, 10:2, 11:5, 12:0, 13:5, 14:5, 15:0, 16:8, 17:7, 18:6, 19:8, 20:0
+       That's 20 values.
+       Count: 0→4 (idx7,12,15,20), 1→1, 2→3, 3→1, 5→3, 6→2, 7→2, 8→2, 10→1 = 4+1+3+1+3+2+2+2+1=19
+       Missing one. Let me carefully list: 6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0
+       6,2,7,5,1,2,0,3,10,2 = first 10
+       5,0,5,5,0,8,7,6,8,0 = last 10
+       0s: in first 10: one 0 (position 7). in last 10: 0 at positions 12,15,20 → three 0s. Total 0s = 4
+       1s: 1 (position 5)
+       2s: positions 2,6,10 → 3
+       3s: position 8 → 1
+       5s: position 4, 11,13,14 → 4! I missed one. Let me recount: first 10: 5 at position 4. last 10: 5,0,5,5,0,8,7,6,8,0 → 5 at positions 11,13,14. So 5s = 1+3 = 4.
+       6s: position 1, 18 → 2
+       7s: position 3, 17 → 2
+       8s: position 16, 19 → 2
+       10s: position 9 → 1
+       Total: 4+1+3+1+4+2+2+2+1 = 20 ✓
+       Sorted: 0,0,0,0,1,2,2,2,3,5,5,5,5,6,6,7,7,8,8,10
+  -->
+
+  <!-- cell width 26, start x=40, y=110. 20 cells → 520 wide, ends at 560 -->
+  <!-- idx 0: 0 (trim) -->
+  <rect x="40" y="110" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="53" y="128" text-anchor="middle" font-size="10" fill="#b85450" font-family="monospace">0</text>
+  <!-- idx 1: 0 -->
+  <rect x="66" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="79" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">0</text>
+  <!-- idx 2: 0 -->
+  <rect x="92" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="105" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">0</text>
+  <!-- idx 3: 0 -->
+  <rect x="118" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="131" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">0</text>
+  <!-- idx 4: 1 -->
+  <rect x="144" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="157" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">1</text>
+  <!-- idx 5: 2 -->
+  <rect x="170" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="183" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">2</text>
+  <!-- idx 6: 2 -->
+  <rect x="196" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="209" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">2</text>
+  <!-- idx 7: 2 -->
+  <rect x="222" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="235" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">2</text>
+  <!-- idx 8: 3 -->
+  <rect x="248" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="261" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">3</text>
+  <!-- idx 9: 5 -->
+  <rect x="274" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="287" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">5</text>
+  <!-- idx 10: 5 -->
+  <rect x="300" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="313" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">5</text>
+  <!-- idx 11: 5 -->
+  <rect x="326" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="339" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">5</text>
+  <!-- idx 12: 5 -->
+  <rect x="352" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="365" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">5</text>
+  <!-- idx 13: 6 -->
+  <rect x="378" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="391" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">6</text>
+  <!-- idx 14: 6 -->
+  <rect x="404" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="417" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">6</text>
+  <!-- idx 15: 7 -->
+  <rect x="430" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="443" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">7</text>
+  <!-- idx 16: 7 -->
+  <rect x="456" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="469" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">7</text>
+  <!-- idx 17: 8 -->
+  <rect x="482" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="495" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">8</text>
+  <!-- idx 18: 8 -->
+  <rect x="508" y="110" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="521" y="128" text-anchor="middle" font-size="10" fill="#333" font-family="monospace">8</text>
+  <!-- idx 19: 10 (trim) -->
+  <rect x="534" y="110" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="547" y="128" text-anchor="middle" font-size="10" fill="#b85450" font-family="monospace">10</text>
+
+  <!-- Index labels -->
+  <text x="53" y="152" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">m=1</text>
+  <text x="79" y="152" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="183" y="152" text-anchor="middle" font-size="9" fill="#888">...</text>
+  <text x="417" y="152" text-anchor="middle" font-size="9" fill="#888">...</text>
+  <text x="547" y="152" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">n−m=19</text>
+
+  <!-- Trim annotations -->
+  <path d="M 40 162 L 40 168 L 66 168 L 66 162" fill="none" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="53" y="180" text-anchor="middle" font-size="9.5" fill="#b85450">去掉最小 1 个</text>
+  <path d="M 534 162 L 534 168 L 560 168 L 560 162" fill="none" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="547" y="180" text-anchor="middle" font-size="9.5" fill="#b85450">去掉最大 1 个</text>
+
+  <!-- Calculation box -->
+  <rect x="40" y="200" width="540" height="118" fill="#f0f7ff" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="222" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">中间 18 个元素求和</text>
+  <line x1="60" y1="230" x2="560" y2="230" stroke="#446688" stroke-width="0.6" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <text x="60" y="248" text-anchor="start" font-size="10.5" fill="#555" font-family="monospace">保留段 arr[1..18] = [0,0,0,1,2,2,2,3,5,5,5,5,6,6,7,7,8,8]</text>
+  <text x="60" y="268" text-anchor="start" font-size="10.5" fill="#555" font-family="monospace">sum = 0+0+0+1+2+2+2+3+5+5+5+5+6+6+7+7+8+8</text>
+  <text x="60" y="288" text-anchor="start" font-size="10.5" fill="#4a7a3a" font-family="monospace" font-weight="bold">    = 72</text>
+  <text x="60" y="308" text-anchor="start" font-size="10.5" fill="#b85450" font-family="monospace" font-weight="bold">mean = 72 / 18 = 4.00000 ✓</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="332" width="540" height="108" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="354" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">关键点</text>
+  <line x1="60" y1="362" x2="560" y2="362" stroke="#d6a040" stroke-width="0.6" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="60" y="380" text-anchor="start" font-size="10" fill="#555">• n = 20 → m = n/20 = 1，恰好掐掉最小 1 个（0）和最大 1 个（10）</text>
+  <text x="60" y="398" text-anchor="start" font-size="10" fill="#555">• 中间段下标范围 [m, n−m) = [1, 19)，共 n−2m = 18 个元素</text>
+  <text x="60" y="416" text-anchor="start" font-size="10" fill="#555">• 最小值 0 有 4 个，只去掉 1 个 → 保留段仍含 0；最大值 10 只 1 个 → 全去掉</text>
+  <text x="60" y="434" text-anchor="start" font-size="10" fill="#b85450" font-weight="bold">  「掐头去尾」按个数而非按值，故重复极值可能残留</text>
+</svg>

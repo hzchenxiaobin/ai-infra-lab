@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="540" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：三种「取最大值对应分组」写法对比</text>
+
+  <!-- 左列：解法 A HAVING + ALL -->
+  <text x="155" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：HAVING + ALL（推荐）</text>
+
+  <rect x="45" y="64" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① GROUP BY project_id</text>
+  <text x="155" y="100" text-anchor="middle" font-size="10.5" fill="#555">COUNT(employee_id) AS cnt</text>
+
+  <path d="M 155 110 L 155 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="45" y="130" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② HAVING cnt &gt;= ALL</text>
+  <text x="155" y="166" text-anchor="middle" font-size="10.5" fill="#555">( SELECT COUNT … GROUP BY )</text>
+
+  <path d="M 155 176 L 155 192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="45" y="196" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="216" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ cnt 不小于任一组</text>
+  <text x="155" y="232" text-anchor="middle" font-size="10.5" fill="#555">即等于全局最大值</text>
+
+  <path d="M 155 242 L 155 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="45" y="262" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="282" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出 project_id</text>
+  <text x="155" y="298" text-anchor="middle" font-size="10.5" fill="#b85450">（含并列最大）</text>
+
+  <rect x="45" y="318" width="220" height="40" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="336" text-anchor="middle" font-size="10" fill="#888">✅ 标准写法，无需 LIMIT</text>
+  <text x="155" y="350" text-anchor="middle" font-size="10" fill="#888">✅ 天然处理并列最大</text>
+
+  <!-- 中列：解法 B 子查询 MAX/LIMIT -->
+  <text x="465" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 B：子查询取 MAX（最直观）</text>
+
+  <rect x="355" y="64" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 子查询求最大 cnt</text>
+  <text x="465" y="100" text-anchor="middle" font-size="10.5" fill="#555">ORDER BY cnt DESC LIMIT 1</text>
+
+  <path d="M 465 110 L 465 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="355" y="130" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 外层 GROUP BY</text>
+  <text x="465" y="166" text-anchor="middle" font-size="10.5" fill="#555">project_id</text>
+
+  <path d="M 465 176 L 465 192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="355" y="196" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="216" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ HAVING cnt = max_cnt</text>
+  <text x="465" y="232" text-anchor="middle" font-size="10.5" fill="#555">等于最大值的全部入选</text>
+
+  <path d="M 465 242 L 465 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="355" y="262" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="465" y="282" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出 project_id</text>
+  <text x="465" y="298" text-anchor="middle" font-size="10.5" fill="#b85450">（含并列最大）</text>
+
+  <rect x="355" y="318" width="220" height="40" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="336" text-anchor="middle" font-size="10" fill="#888">✅ 思路最直白易懂</text>
+  <text x="465" y="350" text-anchor="middle" font-size="10" fill="#888">⚠️ LIMIT 取一行为 max</text>
+
+  <!-- 底部：解法 C RANK 窗口 + 陷阱 -->
+  <rect x="30" y="378" width="560" height="148" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="400" font-size="11.5" fill="#555" font-weight="bold">💡 解法 C：RANK() OVER (ORDER BY COUNT(employee_id) DESC) ，外层 WHERE rk = 1（需 MySQL 8+）</text>
+  <text x="50" y="420" font-size="10.5" fill="#888">• ALL 写法：HAVING cnt &gt;= ALL (子查询所有组计数) — 「不小于任何一个」即等于最大，标准 SQL 最简洁</text>
+  <text x="50" y="438" font-size="10.5" fill="#888">• 子查询 MAX：先 ORDER BY cnt DESC LIMIT 1 取出最大值，再 HAVING cnt = 该值 — 直观但 LIMIT 非全数据库通用</text>
+  <text x="50" y="456" font-size="10.5" fill="#888">• RANK()：按计数降序排名，并列最大均 rk=1，外层 WHERE rk=1 取出 — 窗口语义，天然处理 ties</text>
+  <text x="50" y="478" font-size="10.5" fill="#b85450" font-weight="bold">⚠️ 题目要求「员工数最多的所有项目」→ 必须保留并列，不可用 ROW_NUMBER/LIMIT 单行返回</text>
+  <text x="50" y="498" font-size="10.5" fill="#4a7a3a">✅ ALL 与 RANK 天然处理并列；子查询 MAX 用 HAVING = 也保留并列，仅「内层取 max 那步」用了 LIMIT 一行</text>
+  <text x="50" y="516" font-size="10.5" fill="#555">面试结论：ALL 最简洁标准；子查询 MAX 最易讲清；RANK 适合同时取 Top-K</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：单次遍历 + seen 集合 / 位掩码</text>
+
+  <!-- Start -->
+  <rect x="225" y="40" width="90" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="16" filter="url(#rough2)"/>
+  <text x="270" y="61" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">开始</text>
+  <path d="M 270 74 L 270 88" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Init -->
+  <rect x="195" y="92" width="150" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="115" text-anchor="middle" font-size="12" fill="#333">ans = 1, seen = ∅ (mask=0)</text>
+  <path d="M 270 130 L 270 144" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Fetch char -->
+  <rect x="200" y="148" width="140" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="168" text-anchor="middle" font-size="12" fill="#333">取下一字符 c = s[i]</text>
+  <path d="M 270 182 L 270 196" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: c in seen? -->
+  <polygon points="270,200 360,248 270,296 180,248" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="244" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">c ∈ seen ?</text>
+  <text x="270" y="260" text-anchor="middle" font-size="10" fill="#888">(mask &amp; bit ≠ 0)</text>
+
+  <!-- Yes branch (right) -->
+  <path d="M 360 248 L 410 248" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="382" y="242" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="414" y="222" width="116" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="472" y="242" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">切割！</text>
+  <text x="472" y="258" text-anchor="middle" font-size="11" fill="#333">ans += 1</text>
+  <text x="472" y="270" text-anchor="middle" font-size="11" fill="#333">seen = ∅</text>
+
+  <!-- back from yes to join -->
+  <path d="M 472 274 L 472 320 L 270 320" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- No branch (down) -->
+  <path d="M 270 296 L 270 312" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="282" y="308" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Join: seen.add(c) -->
+  <rect x="195" y="316" width="150" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="338" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">seen.add(c) (mask |= bit)</text>
+
+  <!-- loop back note -->
+  <text x="270" y="366" text-anchor="middle" font-size="10.5" fill="#888">↑ 回到「取下一字符」；遍历完返回 ans</text>
+</svg>

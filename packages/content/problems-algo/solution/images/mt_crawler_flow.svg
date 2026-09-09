@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="620" height="520" fill="#fdfcf7"/>
+
+  <!-- Title -->
+  <text x="310" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b2b2b">Worker 线程循环流程</text>
+  <path d="M 180 36 Q 310 44 440 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- Step 1: Wait + Dequeue (locked) -->
+  <g filter="url(#sk)">
+    <rect x="40" y="56" width="220" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="150" y="78" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">① 等待并取任务 🔒</text>
+  <text x="52" y="96" font-size="9.5" fill="#555">cv.wait(q 非空 OR working==0)</text>
+  <text x="52" y="110" font-size="9.5" fill="#555">if q 空 &amp; working==0 → 退出</text>
+  <text x="52" y="124" font-size="9.5" fill="#555">url = q.pop() → 释放锁</text>
+
+  <!-- arrow down -->
+  <path d="M 150 132 L 150 152" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Step 2: getUrls (no lock, concurrent) -->
+  <g filter="url(#sk)">
+    <rect x="40" y="156" width="220" height="60" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="150" y="178" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② 调用 getUrls(url) 🟦</text>
+  <text x="52" y="196" font-size="9.5" fill="#555">并发网络请求（无需加锁）</text>
+  <text x="52" y="210" font-size="9.5" fill="#555">返回该页所有链接 List</text>
+
+  <!-- arrow right -->
+  <path d="M 262 186 L 290 186" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Step 3: Filter hostname (no lock) -->
+  <g filter="url(#sk)">
+    <rect x="294" y="156" width="220" height="60" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="404" y="178" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ 主机名过滤 🟩</text>
+  <text x="306" y="196" font-size="9.5" fill="#555">仅保留 hostname 相同的 URL</text>
+  <text x="306" y="210" font-size="9.5" fill="#555">得到 candidates 列表</text>
+
+  <!-- arrow down from step 3 -->
+  <path d="M 404 218 L 404 238" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Step 4: Lock + check visited + enqueue (locked) -->
+  <g filter="url(#sk)">
+    <rect x="294" y="242" width="220" height="100" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="404" y="264" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">④ 加锁更新临界区 🔒</text>
+  <text x="306" y="282" font-size="9.5" fill="#555">for nxt in candidates:</text>
+  <text x="318" y="296" font-size="9" fill="#555">if nxt ∉ visited:</text>
+  <text x="330" y="310" font-size="9" fill="#d6a040" font-weight="bold">visited.add(nxt)</text>
+  <text x="330" y="324" font-size="9" fill="#d6a040" font-weight="bold">q.push(nxt); ++working</text>
+  <text x="306" y="338" font-size="9" fill="#b85450">--working; cv.notify_all()</text>
+
+  <!-- arrow left -->
+  <path d="M 292 292 L 262 292" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Decision: working == 0? -->
+  <g filter="url(#sk)">
+    <path d="M 150 270 L 210 300 L 150 330 L 90 300 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="150" y="298" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">working</text>
+  <text x="150" y="312" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">== 0 ?</text>
+
+  <!-- Yes: exit -->
+  <path d="M 90 300 L 56 300" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="20" y="288" width="40" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+  </g>
+  <text x="40" y="304" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">退出</text>
+
+  <!-- No: loop back up to step 1 -->
+  <path d="M 210 300 Q 280 300 280 152 Q 280 100 150 152" stroke="#4a8e4a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="240" y="294" font-size="9" fill="#4a8e4a" font-weight="bold">否 → 循环</text>
+
+  <!-- ===== Bottom: Main thread ===== -->
+  <path d="M 36 372 L 584 372" stroke="#ddd" stroke-width="1" stroke-dasharray="4 3" filter="url(#sk)"/>
+
+  <text x="36" y="394" font-size="11" fill="#888" font-weight="bold">主线程：启动 → 等待 → 返回</text>
+
+  <g filter="url(#sk)">
+    <rect x="44" y="404" width="140" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="114" y="422" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">初始化</text>
+  <text x="114" y="438" text-anchor="middle" font-size="9" fill="#666">visited={start}, q=[start], working=1</text>
+
+  <path d="M 186 426 L 214 426" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)">
+    <rect x="218" y="404" width="150" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="293" y="422" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">启动线程池</text>
+  <text x="293" y="438" text-anchor="middle" font-size="9" fill="#666">N 个 worker 线程</text>
+
+  <path d="M 370 426 L 398 426" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)">
+    <rect x="402" y="404" width="160" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="482" y="422" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">join 全部线程</text>
+  <text x="482" y="438" text-anchor="middle" font-size="9" fill="#666">working==0 后自动退出</text>
+
+  <!-- note -->
+  <g filter="url(#sk)">
+    <rect x="44" y="462" width="532" height="44" rx="6" fill="#fff" stroke="#ddd" stroke-width="1" stroke-dasharray="4 2"/>
+  </g>
+  <text x="56" y="482" font-size="10" fill="#888">🟦 蓝色 = 无锁区（可并发，getUrls 是线程安全的）  🔒 橙色 = 临界区（持锁，串行）</text>
+  <text x="56" y="498" font-size="10" fill="#888">关键：把 getUrls（慢 I/O）放锁外，把 visited 检查+入队（快操作）放锁内 → 最大化并发</text>
+</svg>

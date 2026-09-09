@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" font-family="'Comic Sans MS','Marker Felt','Kaiti SC',楷体,'Segoe UI',cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="460" fill="#fdfcf7"/>
+
+  <text x="360" y="34" text-anchor="middle" font-size="18" fill="#2b2b2b" font-weight="bold">LCP 比较 + 前缀和优化</text>
+  <path d="M 220 44 Q 360 52 500 44" stroke="#2b2b2b" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="360" y="60" text-anchor="middle" font-size="11" fill="#888">dp[i][l] 由 dp[s][l'] 转移，s = i-l，分两种长度关系</text>
+
+  <!-- 上方：当前段 -->
+  <text x="50" y="92" font-size="12" fill="#4a7a3a" font-weight="bold">当前最后一个数（长度 l，起点 s）</text>
+  <g filter="url(#sk)">
+    <rect x="50" y="100" width="180" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="140" y="120" text-anchor="middle" font-size="12" fill="#2b2b2b">num[s .. i-1]</text>
+  <text x="245" y="120" font-size="10" fill="#888">长度 l = i - s</text>
+
+  <!-- 前一段 -->
+  <text x="50" y="150" font-size="12" fill="#4a8edb" font-weight="bold">前一个数（长度 l'，起点 s-l'）</text>
+  <g filter="url(#sk)">
+    <rect x="50" y="158" width="180" height="30" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/>
+  </g>
+  <text x="140" y="178" text-anchor="middle" font-size="12" fill="#2b2b2b">num[s-l' .. s-1]</text>
+  <text x="245" y="178" font-size="10" fill="#888">长度 l'，结尾接在 s 前</text>
+
+  <!-- 情况 1: l' < l -->
+  <g filter="url(#sk)">
+    <rect x="40" y="208" width="320" height="92" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="232" font-size="13" fill="#4a8edb" font-weight="bold">情况 1：l' &lt; l（更短）</text>
+  <text x="60" y="252" font-size="11" fill="#444">位数更少的正整数 &lt; 位数更多的</text>
+  <text x="60" y="270" font-size="11" fill="#444">（无前导 0 保证位数即量级）</text>
+  <text x="60" y="290" font-size="11" fill="#b03a3a" font-weight="bold">→ 直接累加，用前缀和 O(1) 取</text>
+  <text x="200" y="290" font-size="11" fill="#444">ps[s][l-1]</text>
+
+  <!-- 情况 2: l' == l -->
+  <g filter="url(#sk)">
+    <rect x="380" y="208" width="320" height="92" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.4"/>
+  </g>
+  <text x="400" y="232" font-size="13" fill="#b03a3a" font-weight="bold">情况 2：l' == l（等长）</text>
+  <text x="400" y="252" font-size="11" fill="#444">需比较 num[s-l..s-1] ≤ num[s..i-1]</text>
+  <text x="400" y="270" font-size="11" fill="#444">用 LCP 判定同长字符串大小</text>
+  <text x="400" y="290" font-size="11" fill="#b03a3a" font-weight="bold">→ 命中才加 dp[s][l]</text>
+
+  <!-- LCP 判定说明 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="318" width="660" height="60" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" stroke-dasharray="5,3"/>
+  </g>
+  <text x="60" y="340" font-size="12" fill="#d6a040" font-weight="bold">LCP（最长公共前缀）加速比较</text>
+  <text x="60" y="358" font-size="11" fill="#444">lcp[a][b] = num[a:] 与 num[b:] 的公共前缀长度</text>
+  <text x="60" y="374" font-size="11" fill="#444">c = lcp[a][b]：若 c ≥ l 则相等；否则比 num[a+c] 与 num[b+c] 一字符定大小</text>
+
+  <!-- 底部公式 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="392" width="660" height="54" rx="8" fill="#f3eef9" stroke="#7a5a9a" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="414" font-size="12" fill="#7a5a9a" font-weight="bold">转移式</text>
+  <text x="60" y="434" font-size="11" fill="#2b2b2b">dp[i][l] = ps[s][min(l-1,s)]  +  ( l≤s 且 leq(s-l, s, l) ? dp[s][l] : 0 )</text>
+  <text x="430" y="434" font-size="10" fill="#888">ps 为同行前缀和，dp 可由 ps 差分还原</text>
+</svg>

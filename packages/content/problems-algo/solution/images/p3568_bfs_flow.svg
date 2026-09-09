@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 640"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="640" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：能量 × 掩码 BFS + 支配剪枝</text>
+
+  <text x="16" y="44" font-size="11" fill="#b85450" filter="url(#rough2)">※ 队列空仍未收齐 ⇒ 返回 -1</text>
+
+  <!-- 开始 -->
+  <rect x="210" y="38" width="90" height="26" rx="9" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="255" y="56" text-anchor="middle" font-size="13" fill="#4a7a3a" filter="url(#rough2)">开始</text>
+  <path d="M 255 64 L 255 78" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 初始化 -->
+  <rect x="110" y="80" width="290" height="46" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="255" y="99" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">定位 S；给每个 L 编号；full = (1&lt;&lt;cnt) − 1</text>
+  <text x="255" y="116" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">best[sx][sy][0] = energy，起点入队</text>
+  <path d="M 255 126 L 255 140" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 出队 -->
+  <rect x="110" y="142" width="290" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="255" y="163" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">按层出队 (x, y, mask, e) —— 层数即步数</text>
+  <path d="M 255 176 L 255 190" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- D1: 收齐？ -->
+  <polygon points="255,192 368,224 255,256 142,224" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="255" y="220" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">mask == full？</text>
+  <text x="255" y="236" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">垃圾收齐？</text>
+  <path d="M 368 224 L 390 224" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="375" y="216" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="394" y="202" width="100" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <rect x="398" y="206" width="92" height="36" rx="6" fill="none" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="444" y="228" text-anchor="middle" font-size="14" fill="#4a7a3a" filter="url(#rough2)">返回 steps</text>
+  <path d="M 255 256 L 255 270" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="262" y="266" font-size="11" fill="#666" filter="url(#rough2)">否</text>
+
+  <!-- D2: 能量耗尽？ -->
+  <polygon points="255,272 360,304 255,336 150,304" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="255" y="300" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">e == 0？</text>
+  <text x="255" y="316" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">能量耗尽？</text>
+  <path d="M 360 304 L 382 304" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="366" y="296" font-size="11" fill="#a07818" filter="url(#rough2)">是</text>
+  <rect x="386" y="282" width="118" height="46" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="445" y="300" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">跳过：不在 R 上必卡死</text>
+  <text x="445" y="315" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">（R 上 e 恒为满，不会为 0）</text>
+  <path d="M 445 280 C 445 212, 432 170, 404 160" fill="none" stroke="#446688" stroke-width="1.6"
+        stroke-dasharray="6 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="452" y="222" font-size="10" fill="#446688" filter="url(#rough2)">重新出队</text>
+  <path d="M 255 336 L 255 350" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="262" y="346" font-size="11" fill="#666" filter="url(#rough2)">否</text>
+
+  <!-- 枚举邻居 -->
+  <rect x="110" y="352" width="290" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="255" y="373" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">枚举四方向邻居 (nx, ny)</text>
+  <path d="M 255 386 L 255 400" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- D3: 邻居可用？ -->
+  <polygon points="255,402 358,434 255,466 152,434" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="255" y="439" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">界内 且 非 'X'？</text>
+  <path d="M 152 434 C 104 434, 104 392, 108 372" fill="none" stroke="#446688" stroke-width="1.6"
+        marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="84" y="410" font-size="10" fill="#666" filter="url(#rough2)">否·跳过</text>
+  <path d="M 255 466 L 255 480" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="262" y="477" font-size="11" fill="#666" filter="url(#rough2)">是</text>
+
+  <!-- 转移 -->
+  <rect x="110" y="482" width="290" height="46" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="255" y="501" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">ne = e − 1；'R' ⇒ ne = energy（回满）</text>
+  <text x="255" y="518" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">'L' ⇒ nmask |= 1 &lt;&lt; 编号</text>
+  <path d="M 255 528 L 255 542" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- D4: 支配剪枝 -->
+  <polygon points="255,544 362,576 255,608 148,576" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="255" y="572" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">ne &gt; best</text>
+  <text x="255" y="588" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">[nx][ny][nmask]？</text>
+  <path d="M 362 576 L 384 576" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="368" y="568" font-size="11" fill="#446688" filter="url(#rough2)">是</text>
+  <rect x="388" y="554" width="108" height="46" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="442" y="572" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">best 更新为 ne</text>
+  <text x="442" y="588" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">新状态入队</text>
+  <path d="M 442 552 C 512 518, 512 185, 404 158" fill="none" stroke="#446688" stroke-width="1.6"
+        stroke-dasharray="6 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="516" y="360" font-size="10" fill="#446688" transform="rotate(-90 516 360)" filter="url(#rough2)">回到出队</text>
+  <path d="M 148 576 L 126 576" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="128" y="568" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="28" y="554" width="94" height="46" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="75" y="572" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">剪掉</text>
+  <text x="75" y="588" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">（被支配）</text>
+  <path d="M 75 552 C 38 516, 38 415, 146 390" fill="none" stroke="#446688" stroke-width="1.6"
+        stroke-dasharray="6 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="44" y="478" font-size="10" fill="#666" transform="rotate(-90 44 478)" filter="url(#rough2)">下一邻居</text>
+</svg>

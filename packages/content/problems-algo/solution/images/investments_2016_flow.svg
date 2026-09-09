@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：双子查询分组 → WHERE AND 过滤 → SUM → ROUND</text>
+
+  <!-- Step 1: FROM -->
+  <rect x="180" y="44" width="200" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Insurance</text>
+  <text x="280" y="74" text-anchor="middle" font-size="9" fill="#666">读取全部 4 行作为候选</text>
+
+  <!-- arrow down splits to two branches -->
+  <path d="M280 82 L280 96" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M280 96 L140 96 L140 110" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M280 96 L420 96 L420 110" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 2a: Subquery A -->
+  <rect x="40" y="116" width="200" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="134" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">② 子查询 A</text>
+  <text x="140" y="150" text-anchor="middle" font-size="9" fill="#666">GROUP BY tiv_2015</text>
+  <text x="140" y="164" text-anchor="middle" font-size="9" fill="#666">HAVING COUNT(*) &gt; 1</text>
+  <text x="140" y="176" text-anchor="middle" font-size="9" fill="#d6a040">→ A = {10}</text>
+
+  <!-- Step 2b: Subquery B -->
+  <rect x="320" y="116" width="200" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="134" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">③ 子查询 B</text>
+  <text x="420" y="150" text-anchor="middle" font-size="9" fill="#666">GROUP BY lat, lon</text>
+  <text x="420" y="164" text-anchor="middle" font-size="9" fill="#666">HAVING COUNT(*) = 1</text>
+  <text x="420" y="176" text-anchor="middle" font-size="9" fill="#4a7a3a">→ B = {(10,10),(40,40)}</text>
+
+  <!-- arrows merge to WHERE -->
+  <path d="M140 182 L140 210 L280 210 L280 224" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M420 182 L420 210 L280 210" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: WHERE AND -->
+  <rect x="100" y="228" width="360" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ WHERE tiv_2015 IN A AND (lat,lon) IN B</text>
+  <text x="280" y="264" text-anchor="middle" font-size="9.5" fill="#666">行级过滤：保留同时命中两个白名单的行</text>
+  <text x="280" y="278" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">命中：pid 1（tiv_16=5）+ pid 4（tiv_16=40）</text>
+
+  <!-- arrow down to SUM -->
+  <path d="M280 286 L280 312" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SUM -->
+  <rect x="150" y="316" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="336" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑤ SUM(tiv_2016)</text>
+  <text x="280" y="350" text-anchor="middle" font-size="9.5" fill="#666">对筛选后的行求和：5 + 40 = 45</text>
+
+  <!-- arrow down to ROUND -->
+  <path d="M280 358 L280 384" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: ROUND -->
+  <rect x="150" y="388" width="260" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="408" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑥ ROUND(45, 2)</text>
+  <text x="280" y="422" text-anchor="middle" font-size="9.5" fill="#666">四舍五入到两位小数（包在 SUM 外层）</text>
+
+  <!-- arrow down to result -->
+  <path d="M280 430 L280 456" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="190" y="460" width="180" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="478" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">输出 tiv_2016</text>
+  <text x="280" y="496" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">45.00</text>
+
+  <!-- side note: non-correlated -->
+  <rect x="40" y="430" width="100" height="70" fill="#f5f5f5" stroke="#888" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="448" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">⚠ 非相关子查询</text>
+  <text x="90" y="464" text-anchor="middle" font-size="8.5" fill="#666">不引用外层列</text>
+  <text x="90" y="478" text-anchor="middle" font-size="8.5" fill="#666">物化一次 / 半连接</text>
+  <text x="90" y="492" text-anchor="middle" font-size="8.5" fill="#888">O(n) 非 O(n²)</text>
+</svg>

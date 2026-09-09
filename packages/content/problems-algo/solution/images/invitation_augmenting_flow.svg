@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">匈牙利算法流程：逐个男孩寻找增广路径</text>
+
+  <!-- ===== left: flowchart ===== -->
+  <g font-size="11" fill="#333">
+    <!-- start -->
+    <rect x="40" y="48" width="150" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="14" filter="url(#rough2)"/>
+    <text x="115" y="68" text-anchor="middle" font-weight="bold">match=[-1]*n, ans=0</text>
+    <path d="M 115 78 L 115 96" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+    <!-- for each boy -->
+    <rect x="40" y="98" width="150" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="115" y="120" text-anchor="middle" font-weight="bold">for boy i in 0..m-1</text>
+    <path d="M 115 132 L 115 150" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+    <!-- reset vis -->
+    <rect x="40" y="152" width="150" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+    <text x="115" y="172" text-anchor="middle">vis = set()（本轮重置）</text>
+    <path d="M 115 182 L 115 200" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+    <!-- DFS find -->
+    <rect x="30" y="202" width="170" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+    <text x="115" y="221" text-anchor="middle" font-weight="bold">if find(i):</text>
+    <text x="115" y="237" text-anchor="middle">ans += 1</text>
+    <path d="M 115 246 L 115 268" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+
+    <!-- end loop / done -->
+    <rect x="50" y="270" width="130" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="14" filter="url(#rough2)"/>
+    <text x="115" y="290" text-anchor="middle" font-weight="bold">return ans</text>
+  </g>
+
+  <!-- loop back arrow -->
+  <path d="M 190 116 Q 220 116 220 168 L 220 168" stroke="#666" stroke-width="1.2" stroke-dasharray="3 2" fill="none" filter="url(#rough2)"/>
+  <text x="225" y="142" font-size="9" fill="#888">下一男孩</text>
+
+  <!-- ===== right: find(i) expansion ===== -->
+  <rect x="260" y="48" width="270" height="178" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="68" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">find(i) — DFS 寻找增广路径</text>
+  <g font-size="10" fill="#333">
+    <text x="276" y="90">遍历男孩 i 能邀请的女孩 j：</text>
+    <text x="288" y="110">若 j 已在本轮 vis 中 → 跳过</text>
+    <text x="288" y="130">vis.add(j)（防止回头）</text>
+    <text x="288" y="150">若 match[j]==-1（j 未配对）</text>
+    <text x="300" y="168">→ match[j]=i，return True</text>
+    <text x="288" y="186">或 find(match[j]) 成功</text>
+    <text x="300" y="204">→ match[j]=i，return True</text>
+  </g>
+
+  <!-- ===== bottom: augmenting path illustration ===== -->
+  <rect x="30" y="320" width="500" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="340" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">增广路径：未匹配男孩 →（候选）→ 已配对女孩 →（匹配）→ 已配对男孩 → … → 未配对女孩</text>
+
+  <!-- path nodes -->
+  <g font-size="10" fill="#333">
+    <!-- B_i (unmatched, current) -->
+    <rect x="50" y="356" width="50" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+    <text x="75" y="373" text-anchor="middle" font-weight="bold">B_i</text>
+    <text x="75" y="394" text-anchor="middle" font-size="8" fill="#4a7a3a">未匹配</text>
+
+    <!-- edge to G_j1 (candidate, dashed) -->
+    <path d="M 100 369 L 150 369" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- G_j1 (matched) -->
+    <rect x="152" y="356" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+    <text x="177" y="373" text-anchor="middle" font-weight="bold">G_j1</text>
+    <text x="177" y="394" text-anchor="middle" font-size="8" fill="#b85450">已配对</text>
+
+    <!-- matched edge to B_k (solid green) -->
+    <path d="M 202 369 L 252 369" stroke="#4a7a3a" stroke-width="2.2" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+
+    <!-- B_k (matched boy) -->
+    <rect x="254" y="356" width="50" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+    <text x="279" y="373" text-anchor="middle" font-weight="bold">B_k</text>
+    <text x="279" y="394" text-anchor="middle" font-size="8" fill="#446688">被腾挪</text>
+
+    <!-- edge to G_j2 (candidate) -->
+    <path d="M 304 369 L 354 369" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- G_j2 (unmatched) -->
+    <rect x="356" y="356" width="56" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+    <text x="384" y="373" text-anchor="middle" font-weight="bold">G_j2</text>
+    <text x="384" y="394" text-anchor="middle" font-size="8" fill="#4a7a3a">未匹配</text>
+
+    <!-- result note -->
+    <text x="448" y="370" font-size="9" fill="#d6a040" font-weight="bold">找到！</text>
+    <text x="448" y="384" font-size="8" fill="#666">翻转匹配</text>
+  </g>
+</svg>

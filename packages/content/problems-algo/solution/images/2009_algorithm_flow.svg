@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 540"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：排序去重 + 滑动窗口求最大保留数</text>
+  <text x="300" y="44" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">双指针 right 不回退，整体 O(n log n)（排序主导）</text>
+
+  <!-- Step 1: sort + dedup -->
+  <rect x="200" y="60" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="80" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">排序 + 去重 → a</text>
+  <text x="300" y="96" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">sort + unique / sorted(set)</text>
+
+  <path d="M 300 104 L 300 124" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Init: left=0, right=0, maxKeep=0 -->
+  <rect x="200" y="128" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="148" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">初始化 left=0, right=0</text>
+  <text x="300" y="164" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">maxKeep = 0</text>
+
+  <path d="M 300 172 L 300 192" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Loop entry -->
+  <rect x="190" y="196" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="16" filter="url(#rough2)"/>
+  <text x="300" y="218" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">for left in 0..m−1</text>
+
+  <path d="M 300 230 L 300 250" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Compute hi -->
+  <rect x="180" y="254" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="274" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">hi = a[left] + n − 1</text>
+  <text x="300" y="290" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">窗口上界（n 为原数组长度）</text>
+
+  <path d="M 300 298 L 300 318" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Decision: advance right -->
+  <polygon points="300,322 410,366 300,410 190,366" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="300" y="360" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">right &lt; m 且</text>
+  <text x="300" y="378" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">a[right] ≤ hi ?</text>
+
+  <!-- Yes: advance right, loop back to decision -->
+  <path d="M 410 366 L 480 366 L 480 332 L 410 332" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="445" y="358" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <text x="445" y="372" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">++right</text>
+
+  <!-- No: down to compute c -->
+  <path d="M 300 410 L 300 432" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="316" y="428" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- Compute c and update maxKeep -->
+  <rect x="160" y="436" width="280" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="456" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">c = right − left</text>
+  <text x="300" y="474" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">maxKeep = max(maxKeep, c)</text>
+  <text x="300" y="488" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">窗口内已有元素数 → 更新最大保留</text>
+
+  <!-- Loop back to for (left side) -->
+  <path d="M 160 464 L 100 464 L 100 213 L 190 213" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="80" y="340" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">下一个 left</text>
+
+  <!-- Final: return n - maxKeep -->
+  <path d="M 440 464 L 520 464 L 520 213 L 410 213" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="528" y="340" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">循环结束</text>
+
+  <rect x="380" y="496" width="200" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="480" y="519" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">return n − maxKeep</text>
+
+  <!-- Note -->
+  <rect x="40" y="496" width="320" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="200" y="513" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">right 不回退：hi 随 left 单调递增</text>
+  <text x="200" y="526" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">→ right 终止位置单调不降 → 摊还 O(1)</text>
+</svg>

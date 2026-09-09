@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L8,0 L4,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两遍 DFS：求权和 → 查询/插入 0-1 Trie</text>
+
+  <!-- ===== Phase 1 box ===== -->
+  <rect x="26" y="40" width="250" height="135" rx="10" fill="#fff" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="151" y="60" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① dfs1：后序求子树权和</text>
+
+  <!-- mini tree for dfs1 -->
+  <circle cx="150" cy="95" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="150" y="99" text-anchor="middle" font-size="9" fill="#2b3f5e" font-weight="bold">i</text>
+  <circle cx="108" cy="140" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="108" y="143" text-anchor="middle" font-size="8" fill="#2b3f5e">j₁</text>
+  <circle cx="192" cy="140" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="192" y="143" text-anchor="middle" font-size="8" fill="#2b3f5e">j₂</text>
+  <!-- bubble-up arrows -->
+  <path d="M 112 131 L 142 104" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 188 131 L 158 104" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="150" y="125" text-anchor="middle" font-size="8" fill="#4a7a3a">+</text>
+
+  <rect x="34" y="158" width="234" height="14" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" opacity="0.6" filter="url(#rough2)"/>
+  <text x="151" y="169" text-anchor="middle" font-size="9.5" fill="#2b3f5e" font-weight="bold">s[i] = values[i] + Σ s[children]</text>
+
+  <!-- ===== Phase 2 box ===== -->
+  <rect x="296" y="40" width="240" height="135" rx="10" fill="#fff" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="416" y="60" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② dfs2(i)：查询→递归→插入</text>
+
+  <!-- step 1 query -->
+  <rect x="312" y="70" width="208" height="22" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="416" y="85" text-anchor="middle" font-size="10" fill="#2c5e22" font-weight="bold">① 查询 ans = max(ans, trie.search(s[i]))</text>
+  <path d="M 416 94 L 416 104" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <!-- step 2 recurse -->
+  <rect x="312" y="106" width="208" height="22" rx="5" fill="#f2f2f2" stroke="#999" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="416" y="121" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">② 递归 dfs2(j, i) for j ∈ children</text>
+  <path d="M 416 130 L 416 140" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <!-- step 3 insert -->
+  <rect x="312" y="142" width="208" height="22" rx="5" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="416" y="157" text-anchor="middle" font-size="10" fill="#a8680a" font-weight="bold">③ 插入 trie.insert(s[i])</text>
+
+  <text x="416" y="195" text-anchor="middle" font-size="9" fill="#b85450" font-style="italic">⚠ 顺序不可颠倒：先插后查会让 i 配到自己后代（重叠）</text>
+
+  <!-- ===== Invariant box ===== -->
+  <rect x="26" y="210" width="510" height="195" rx="10" fill="#fff" stroke="#888" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="281" y="232" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">查询 s[i] 时，Trie 里有什么？</text>
+  <text x="281" y="248" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">＝ 全体与 i 不重叠的「已结算」子树和</text>
+
+  <!-- mini tree showing i in context -->
+  <text x="100" y="278" text-anchor="middle" font-size="9" fill="#888">DFS 上下文</text>
+  <!-- ancestors path -->
+  <circle cx="100" cy="295" r="11" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="298" text-anchor="middle" font-size="7.5" fill="#b85450">祖</text>
+  <path d="M 100 306 L 100 318" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <circle cx="100" cy="330" r="11" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="333" text-anchor="middle" font-size="7.5" fill="#b85450">祖</text>
+  <path d="M 100 341 L 100 353" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <!-- i node -->
+  <circle cx="100" cy="365" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="100" y="369" text-anchor="middle" font-size="9" fill="#2b3f5e" font-weight="bold">i</text>
+  <!-- descendants -->
+  <path d="M 88 375 L 70 386" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <path d="M 112 375 L 130 386" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <circle cx="64" cy="392" r="9" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="64" y="395" text-anchor="middle" font-size="6.5" fill="#b85450">后</text>
+  <circle cx="136" cy="392" r="9" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="136" y="395" text-anchor="middle" font-size="6.5" fill="#b85450">后</text>
+
+  <!-- three verdict columns -->
+  <!-- col1: ancestors (out) -->
+  <rect x="160" y="262" width="120" height="48" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="220" y="280" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">✗ 祖先们</text>
+  <text x="220" y="296" text-anchor="middle" font-size="8" fill="#b85450">待 i 子树走完才后序入库</text>
+  <text x="220" y="306" text-anchor="middle" font-size="8" fill="#b85450">此刻不在 Trie</text>
+
+  <!-- col2: i + descendants (out) -->
+  <rect x="290" y="262" width="120" height="48" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="350" y="280" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">✗ i 及其后代</text>
+  <text x="350" y="296" text-anchor="middle" font-size="8" fill="#b85450">查询在前、插入在后</text>
+  <text x="350" y="306" text-anchor="middle" font-size="8" fill="#b85450">此刻不在 Trie</text>
+
+  <!-- col3: settled siblings/cousins (in) -->
+  <rect x="420" y="262" width="110" height="48" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="475" y="280" text-anchor="middle" font-size="10" fill="#2c5e22" font-weight="bold">✓ 已结算兄弟</text>
+  <text x="475" y="296" text-anchor="middle" font-size="8" fill="#4a7a3a">整棵先于 i 走完</text>
+  <text x="475" y="306" text-anchor="middle" font-size="8" fill="#4a7a3a">已入库 → 候选</text>
+
+  <!-- arrows from tree nodes to verdicts -->
+  <path d="M 111 326 C 160 250, 180 250, 220 262" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4,3" fill="none" opacity="0.7" filter="url(#rough2)"/>
+  <path d="M 100 365 C 300 360, 320 320, 350 310" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4,3" fill="none" opacity="0.7" filter="url(#rough2)"/>
+
+  <!-- bottom takeaway -->
+  <rect x="160" y="322" width="370" height="70" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="345" y="345" text-anchor="middle" font-size="10" fill="#a8680a" font-weight="bold">遍历顺序天然保证「不重叠」</text>
+  <text x="345" y="362" text-anchor="middle" font-size="9" fill="#666">祖先与后代（与 i 重叠者）按后序排在 i 之后入库</text>
+  <text x="345" y="377" text-anchor="middle" font-size="9" fill="#666">查询 i 时它们都不在 Trie，省掉 O(n²) 的显式判定</text>
+  <text x="345" y="392" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">→ 每个合法对恰在「后结算者被查询」时考察一次</text>
+</svg>

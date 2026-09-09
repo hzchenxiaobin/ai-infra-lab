@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">活字印刷：位置回溯 vs 频率回溯（tiles="AAB"）</text>
+
+  <!-- ============ LEFT: position-based ============ -->
+  <rect x="20" y="44" width="270" height="320" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="66" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">① 位置回溯（先生成再过滤）</text>
+
+  <text x="36" y="88" font-size="11" fill="#555">按"下标"枚举，A₀ 与 A₁ 被当成两个不同元素：</text>
+
+  <!-- position tiles -->
+  <rect x="36" y="100" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="58" y="119" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">A₀</text>
+  <rect x="84" y="100" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="106" y="119" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">A₁</text>
+  <rect x="132" y="100" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="119" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">B</text>
+
+  <!-- generated dups -->
+  <text x="36" y="148" font-size="11" fill="#555">生成的排列中：</text>
+  <rect x="36" y="156" width="96" height="24" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="84" y="172" text-anchor="middle" font-size="11" fill="#333" font-family="monospace">A₀A₁B</text>
+  <rect x="36" y="184" width="96" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="84" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-family="monospace">A₁A₀B</text>
+
+  <text x="150" y="172" font-size="11" fill="#888">→ "AAB"</text>
+  <text x="150" y="200" font-size="11" fill="#b85450" font-weight="bold">→ "AAB" 重复!</text>
+
+  <!-- set dedup -->
+  <rect x="36" y="220" width="200" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="136" y="238" text-anchor="middle" font-size="11" fill="#444">需 HashSet 存全部序列去重</text>
+  <text x="136" y="252" text-anchor="middle" font-size="10" fill="#b85450">先生成重复 → 再过滤，浪费搜索</text>
+
+  <!-- verdict -->
+  <rect x="36" y="276" width="238" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="296" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">痛点</text>
+  <text x="155" y="312" text-anchor="middle" font-size="10" fill="#555">同字母的字模"本质相同"</text>
+  <text x="155" y="326" text-anchor="middle" font-size="10" fill="#555">但位置法把它们当不同元素</text>
+  <text x="155" y="340" text-anchor="middle" font-size="10" fill="#b85450">→ 必然产生重复分支</text>
+
+  <!-- ============ RIGHT: frequency-based ============ -->
+  <rect x="310" y="44" width="270" height="320" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="445" y="66" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 频率回溯（天然不重复）</text>
+
+  <text x="326" y="88" font-size="11" fill="#555">先统计字母频次，按"不同字母"枚举：</text>
+
+  <!-- counter -->
+  <rect x="326" y="100" width="100" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="376" y="119" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">A: 2</text>
+  <rect x="432" y="100" width="100" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="482" y="119" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">B: 1</text>
+
+  <text x="326" y="148" font-size="11" fill="#555">每层只遍历 {A, B} 两个不同字母：</text>
+
+  <!-- branch A -->
+  <rect x="326" y="158" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="386" y="176" text-anchor="middle" font-size="11" fill="#333" font-family="monospace">选 A: cnt[A]--</text>
+  <text x="455" y="176" font-size="10" fill="#4a7a3a">一条分支</text>
+
+  <!-- branch B -->
+  <rect x="326" y="190" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="386" y="208" text-anchor="middle" font-size="11" fill="#333" font-family="monospace">选 B: cnt[B]--</text>
+  <text x="455" y="208" font-size="10" fill="#4a7a3a">一条分支</text>
+
+  <!-- no set needed -->
+  <rect x="326" y="226" width="232" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="442" y="244" text-anchor="middle" font-size="11" fill="#444">无需 HashSet</text>
+  <text x="442" y="258" text-anchor="middle" font-size="10" fill="#4a7a3a">同一字母无论剩几张，只走一条分支</text>
+
+  <!-- verdict -->
+  <rect x="326" y="276" width="238" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="296" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">关键直觉</text>
+  <text x="445" y="312" text-anchor="middle" font-size="10" fill="#555">"选哪个字母" 才是本质决策</text>
+  <text x="445" y="326" text-anchor="middle" font-size="10" fill="#555">而不是 "选哪个下标"</text>
+  <text x="445" y="340" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">→ 频次表天然合并同字母</text>
+
+  <!-- bottom takeaway -->
+  <rect x="20" y="376" width="560" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="396" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">位置法</text>
+  <text x="300" y="396" text-anchor="middle" font-size="11" fill="#444">需 set 去重　→　换频次表　→ </text>
+  <text x="445" y="396" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">频率法天然不重复</text>
+</svg>

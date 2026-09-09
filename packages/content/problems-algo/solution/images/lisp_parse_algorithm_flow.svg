@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">evalExpr 递归下降流程</text>
+
+  <!-- Start -->
+  <rect x="220" y="42" width="120" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="16" filter="url(#rough2)"/>
+  <text x="280" y="63" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">读 token t</text>
+
+  <!-- Decision: t == "(" -->
+  <polygon points="280,90 380,130 280,170 180,130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="12" fill="#444">t == "(" ?</text>
+  <line x1="280" y1="74" x2="280" y2="90" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Yes branch: compound -->
+  <line x1="180" y1="130" x2="120" y2="130" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="124" font-size="11" fill="#4a7a3a">是</text>
+  <rect x="40" y="112" width="80" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="135" text-anchor="middle" font-size="11" fill="#446688">复合表达式</text>
+  <text x="80" y="160" text-anchor="middle" font-size="10" fill="#888">读 op → add/mult/let</text>
+
+  <!-- No branch: atom -->
+  <line x1="380" y1="130" x2="440" y2="130" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="124" font-size="11" fill="#b85450">否</text>
+  <rect x="440" y="112" width="90" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="135" text-anchor="middle" font-size="11" fill="#b85450">原子</text>
+  <text x="485" y="160" text-anchor="middle" font-size="10" fill="#888">整数→int / 变量→lookup</text>
+
+  <!-- let block -->
+  <rect x="40" y="180" width="480" height="180" fill="#f4f4f4" stroke="#888" stroke-width="1.2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">let 循环：绑定对 vs 最终表达式</text>
+
+  <!-- let decision -->
+  <polygon points="280,214 410,250 280,286 150,250" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="11" fill="#444">t=="(" 或</text>
+  <text x="280" y="262" text-anchor="middle" font-size="11" fill="#444">next==")" ?</text>
+
+  <!-- final expr -->
+  <line x1="410" y1="250" x2="460" y2="250" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="425" y="244" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="460" y="232" width="60" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="248" text-anchor="middle" font-size="10" fill="#4a7a3a">最终表达式</text>
+  <text x="490" y="262" text-anchor="middle" font-size="10" fill="#4a7a3a">求值→返回</text>
+
+  <!-- binding pair -->
+  <line x1="150" y1="250" x2="110" y2="250" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="244" font-size="10" fill="#b85450">否</text>
+  <rect x="48" y="232" width="62" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="79" y="248" text-anchor="middle" font-size="10" fill="#b85450">变量 vi</text>
+  <text x="79" y="262" text-anchor="middle" font-size="10" fill="#b85450">+ 值 ei</text>
+
+  <!-- binding steps -->
+  <line x1="79" y1="268" x2="79" y2="300" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="48" y="300" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="168" y="318" text-anchor="middle" font-size="11" fill="#446688">① 先求值 v = evalExpr(ei)</text>
+  <text x="168" y="335" text-anchor="middle" font-size="11" fill="#446688">② 再写入 scopes[vi] = v</text>
+
+  <!-- loop back -->
+  <path d="M 48 322 Q 20 322 20 250 Q 20 214 150 232" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="30" y="285" font-size="10" fill="#888" transform="rotate(-90 30 285)">继续下一对</text>
+
+  <!-- footer -->
+  <text x="280" y="386" text-anchor="middle" font-size="11" fill="#888">关键前瞻：t=="(" 必为最终表达式（绑定对以变量名开头）</text>
+  <text x="280" y="404" text-anchor="middle" font-size="11" fill="#888">原子 t 且后跟 ")" → 最终表达式；否则 t 是变量，下一项是值</text>
+  <text x="280" y="426" text-anchor="middle" font-size="11" fill="#b85450">⚠ 最易写错处：把「最终表达式」误判为「变量」</text>
+</svg>

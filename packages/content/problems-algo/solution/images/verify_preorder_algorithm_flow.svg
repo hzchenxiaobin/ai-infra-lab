@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="500" height="520" fill="#fafafa"/>
+  <text x="250" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">槽位计数流程：O(n) 一趟扫描</text>
+
+  <!-- init -->
+  <rect x="110" y="44" width="280" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="250" y="64" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">slots = 1, 按逗号切分 preorder</text>
+  <text x="250" y="80" text-anchor="middle" font-size="10.5" fill="#555">初始 1 个根槽位</text>
+
+  <path d="M 250 92 L 250 108" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- loop check -->
+  <polygon points="250,112 370,158 250,204 130,158" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="250" y="154" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">还有 token ?</text>
+  <text x="250" y="172" text-anchor="middle" font-size="10.5" fill="#777">未遍历完？</text>
+
+  <!-- No -> return slots == 0 -->
+  <path d="M 370 158 L 440 158 L 440 250" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="388" y="150" font-size="11" fill="#b85450" font-weight="bold">No</text>
+  <rect x="356" y="254" width="130" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="421" y="276" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return slots == 0</text>
+  <text x="421" y="292" text-anchor="middle" font-size="10" fill="#888">槽位恰好填满？</text>
+
+  <!-- Yes down -->
+  <path d="M 250 204 L 250 226" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="268" y="220" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+
+  <!-- read token & consume -->
+  <rect x="130" y="230" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="250" y="256" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">读入 token, slots -= 1</text>
+
+  <path d="M 250 270 L 250 288" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- diamond: slots < 0 ? -->
+  <polygon points="250,292 370,338 250,384 130,338" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="250" y="334" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">slots &lt; 0 ?</text>
+  <text x="250" y="352" text-anchor="middle" font-size="10.5" fill="#777">无槽可放？</text>
+
+  <!-- Yes -> return false (left) -->
+  <path d="M 130 338 L 70 338 L 70 410" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="92" y="330" font-size="11" fill="#b85450" font-weight="bold">Yes</text>
+  <rect x="20" y="414" width="120" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="80" y="436" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return false</text>
+  <text x="80" y="452" text-anchor="middle" font-size="10" fill="#888">序列提前溢出</text>
+
+  <!-- No -> down -->
+  <path d="M 250 384 L 250 408" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="268" y="402" font-size="10" fill="#82b366" font-weight="bold">No</text>
+
+  <!-- diamond: token != "#" ? -->
+  <polygon points="250,412 360,452 250,492 140,452" fill="#f0f0f0" stroke="#888" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="448" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">token ≠ "#" ?</text>
+
+  <!-- Yes -> slots += 2 (right) -->
+  <path d="M 360 452 L 420 452 L 420 408" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="378" y="444" font-size="10" fill="#4a7a3a" font-weight="bold">Yes</text>
+  <rect x="370" y="372" width="110" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="425" y="395" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">slots += 2</text>
+
+  <!-- loop back from slots+=2 to loop top -->
+  <path d="M 425 372 L 425 158 L 370 158" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="445" y="265" font-size="9.5" fill="#888" transform="rotate(-90, 445, 265)">回到循环</text>
+
+  <!-- No -> loop back (left side) -->
+  <path d="M 140 452 L 100 452 L 100 496 L 60 496 L 60 158 L 130 158" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="120" y="460" font-size="9.5" fill="#888" font-weight="bold">No</text>
+  <text x="48" y="330" font-size="9.5" fill="#888" transform="rotate(-90, 48, 330)">空节点，不补槽</text>
+</svg>

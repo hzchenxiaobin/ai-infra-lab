@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">前缀和优化：滑动窗口将 O(i) 求和降到 O(1)</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">窗口大小 i 在 dp[i−1] 行上滑动，dp[i][j] = 窗口内元素之和</text>
+
+  <!-- ===== dp[i-1] row label ===== -->
+  <text x="30" y="78" font-size="12" fill="#446688" font-weight="bold">dp[i−1] 行（以 i=4, dp[3]=[1,2,2,1,0,0,0] 为例）：</text>
+
+  <!-- ===== dp[i-1] values: 7 cells, j=0..6 ===== -->
+  <!-- cell size 44x36, start x=80 -->
+  <g font-size="12">
+    <!-- j labels -->
+    <text x="102" y="96" text-anchor="middle" font-size="9" fill="#888">j=0</text>
+    <text x="146" y="96" text-anchor="middle" font-size="9" fill="#888">j=1</text>
+    <text x="190" y="96" text-anchor="middle" font-size="9" fill="#888">j=2</text>
+    <text x="234" y="96" text-anchor="middle" font-size="9" fill="#888">j=3</text>
+    <text x="278" y="96" text-anchor="middle" font-size="9" fill="#888">j=4</text>
+    <text x="322" y="96" text-anchor="middle" font-size="9" fill="#888">j=5</text>
+    <text x="366" y="96" text-anchor="middle" font-size="9" fill="#888">j=6</text>
+
+    <!-- cells -->
+    <rect x="80" y="100" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="102" y="122" text-anchor="middle" fill="#446688">1</text>
+    <rect x="124" y="100" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="146" y="122" text-anchor="middle" fill="#446688">2</text>
+    <rect x="168" y="100" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="190" y="122" text-anchor="middle" fill="#446688">2</text>
+    <rect x="212" y="100" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="234" y="122" text-anchor="middle" fill="#446688">1</text>
+    <rect x="256" y="100" width="44" height="36" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="278" y="122" text-anchor="middle" fill="#ccc">0</text>
+    <rect x="300" y="100" width="44" height="36" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="322" y="122" text-anchor="middle" fill="#ccc">0</text>
+    <rect x="344" y="100" width="44" height="36" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="366" y="122" text-anchor="middle" fill="#ccc">0</text>
+  </g>
+
+  <!-- ===== Window 1: j=3, window covers j=0..3 (size 4) ===== -->
+  <text x="30" y="162" font-size="10" fill="#4a7a3a" font-weight="bold">窗口 j=3（大小 i=4）：</text>
+  <rect x="78" y="148" width="180" height="40" fill="none" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="172" font-size="11" fill="#4a7a3a">dp[4][3] = 1+2+2+1 = 6</text>
+
+  <!-- arrow down -->
+  <path d="M 234 190 L 234 206" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Window 2: j=4, window covers j=1..4 ===== -->
+  <text x="30" y="228" font-size="10" fill="#d6a040" font-weight="bold">窗口 j=4（右移 1 格）：</text>
+  <rect x="122" y="214" width="180" height="40" fill="none" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <!-- crossed out j=0 -->
+  <line x1="82" y1="152" x2="122" y2="186" stroke="#b85450" stroke-width="1.2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="270" y="238" font-size="11" fill="#d6a040">dp[4][4] = 2+2+1+0 = 5</text>
+
+  <path d="M 234 256 L 234 272" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Window 3: j=5, window covers j=2..5 ===== -->
+  <text x="30" y="294" font-size="10" fill="#b85450" font-weight="bold">窗口 j=5（再右移）：</text>
+  <rect x="166" y="280" width="180" height="40" fill="none" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="304" font-size="11" fill="#b85450">dp[4][5] = 2+1+0+0 = 3</text>
+
+  <!-- ===== Summary ===== -->
+  <rect x="30" y="332" width="500" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="352" font-size="10.5" fill="#6a4a10" font-weight="bold">增量递推：cur[j] = cur[j−1] + dp[j] − (j≥i ? dp[j−i] : 0)</text>
+  <text x="50" y="368" font-size="10" fill="#6a4a10">窗口右移：加入 dp[j]（右端新元素），弹出 dp[j−i]（左端旧元素）→ O(1) 转移</text>
+</svg>

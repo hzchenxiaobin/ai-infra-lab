@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560"
+     font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n2"/>
+      <feDisplacementMap in="SourceGraphic" in2="n2" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="560" fill="#fafafa"/>
+  <text x="450" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b" filter="url(#sk)">核心观察：每排空位是从 used 起的连续段，线段树维护 mx 与 sum</text>
+  <text x="450" y="54" text-anchor="middle" font-size="12" fill="#666" filter="url(#sk)">gather/scatter 永远从最小排、最小座号填 → 同排已订座位必是 [0, used−1]，空位必是 [used, m−1] 一整段</text>
+
+  <!-- ===== 左侧：四排座位 ===== -->
+  <text x="30" y="88" font-size="13" font-weight="bold" fill="#2b5588" filter="url(#sk)">每排 m=5 座，free[r] = m − used[r]</text>
+
+  <!-- row 0: used=4 free=[4] -->
+  <text x="34" y="118" font-size="12" fill="#333" filter="url(#sk)">排0 used=4</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="104" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="176" y="104" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="222" y="104" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="268" y="104" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="314" y="104" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <g font-size="11" fill="#333" text-anchor="middle" filter="url(#sk)">
+    <text x="151" y="124">0</text><text x="197" y="124">1</text><text x="243" y="124">2</text><text x="289" y="124">3</text><text x="335" y="124" fill="#2e6e2e" font-weight="bold">4</text>
+  </g>
+  <!-- bracket over free block -->
+  <path d="M 314 96 L 314 90 L 356 90 L 356 96" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="335" y="84" text-anchor="middle" font-size="10" fill="#2e6e2e" filter="url(#sk)">空位段=1</text>
+
+  <!-- row 1: used=2 free=[2,4] -->
+  <text x="34" y="160" font-size="12" fill="#333" filter="url(#sk)">排1 used=2</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="146" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="176" y="146" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="222" y="146" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="268" y="146" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="314" y="146" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <g font-size="11" fill="#333" text-anchor="middle" filter="url(#sk)">
+    <text x="151" y="166">0</text><text x="197" y="166">1</text><text x="243" y="166" fill="#2e6e2e" font-weight="bold">2</text><text x="289" y="166" fill="#2e6e2e" font-weight="bold">3</text><text x="335" y="166" fill="#2e6e2e" font-weight="bold">4</text>
+  </g>
+  <path d="M 222 138 L 222 132 L 356 132 L 356 138" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="289" y="126" text-anchor="middle" font-size="10" fill="#2e6e2e" filter="url(#sk)">空位段=3</text>
+
+  <!-- row 2: used=5 full -->
+  <text x="34" y="202" font-size="12" fill="#b85450" filter="url(#sk)">排2 used=5</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="188" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="176" y="188" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="222" y="188" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="268" y="188" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <rect x="314" y="188" width="42" height="30" rx="4" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="380" y="208" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#sk)">满排 free=0（跳过）</text>
+
+  <!-- row 3: used=0 free=[0,4] -->
+  <text x="34" y="244" font-size="12" fill="#333" filter="url(#sk)">排3 used=0</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="230" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="176" y="230" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="222" y="230" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="268" y="230" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="314" y="230" width="42" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <path d="M 130 222 L 130 216 L 356 216 L 356 222" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="243" y="210" text-anchor="middle" font-size="10" fill="#2e6e2e" filter="url(#sk)">空位段=5</text>
+
+  <!-- legend -->
+  <g filter="url(#sk)">
+    <rect x="430" y="104" width="22" height="16" rx="3" fill="#cfe0f5" stroke="#446688" stroke-width="1.4"/>
+    <text x="458" y="116" font-size="11" fill="#333">已订 used</text>
+    <rect x="430" y="130" width="22" height="16" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4"/>
+    <text x="458" y="142" font-size="11" fill="#333">空位 free</text>
+  </g>
+
+  <!-- ===== 右侧：线段树 ===== -->
+  <text x="600" y="88" font-size="13" font-weight="bold" fill="#7a5415" filter="url(#sk)">线段树（每节点存 mx / sum）</text>
+
+  <!-- root [0,3] -->
+  <g filter="url(#sk2)">
+    <rect x="640" y="100" width="150" height="46" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="715" y="120" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold" filter="url(#sk2)">区间 [0,3]</text>
+  <text x="715" y="138" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#sk2)">mx=5  sum=9</text>
+
+  <!-- edges to children -->
+  <path d="M 690 146 L 600 180" stroke="#999" stroke-width="1.3" fill="none" filter="url(#sk2)"/>
+  <path d="M 740 146 L 780 180" stroke="#999" stroke-width="1.3" fill="none" filter="url(#sk2)"/>
+
+  <!-- left child [0,1] -->
+  <g filter="url(#sk2)">
+    <rect x="540" y="182" width="120" height="42" rx="7" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+  </g>
+  <text x="600" y="200" text-anchor="middle" font-size="10.5" fill="#7a5415" font-weight="bold" filter="url(#sk2)">[0,1]</text>
+  <text x="600" y="216" text-anchor="middle" font-size="11" fill="#333" filter="url(#sk2)">mx=3 sum=4</text>
+
+  <!-- right child [2,3] -->
+  <g filter="url(#sk2)">
+    <rect x="720" y="182" width="120" height="42" rx="7" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+  </g>
+  <text x="780" y="200" text-anchor="middle" font-size="10.5" fill="#7a5415" font-weight="bold" filter="url(#sk2)">[2,3]</text>
+  <text x="780" y="216" text-anchor="middle" font-size="11" fill="#333" filter="url(#sk2)">mx=5 sum=5</text>
+
+  <!-- edges to leaves -->
+  <path d="M 575 224 L 540 256" stroke="#999" stroke-width="1.2" fill="none" filter="url(#sk2)"/>
+  <path d="M 625 224 L 660 256" stroke="#999" stroke-width="1.2" fill="none" filter="url(#sk2)"/>
+  <path d="M 755 224 L 720 256" stroke="#999" stroke-width="1.2" fill="none" filter="url(#sk2)"/>
+  <path d="M 805 224 L 840 256" stroke="#999" stroke-width="1.2" fill="none" filter="url(#sk2)"/>
+
+  <!-- leaves row0..3 -->
+  <g filter="url(#sk2)">
+    <rect x="500" y="258" width="80" height="36" rx="6" fill="#f5f9fd" stroke="#446688" stroke-width="1.4"/>
+    <rect x="620" y="258" width="80" height="36" rx="6" fill="#f5f9fd" stroke="#446688" stroke-width="1.4"/>
+    <rect x="700" y="258" width="80" height="36" rx="6" fill="#f5f9fd" stroke="#446688" stroke-width="1.4"/>
+    <rect x="820" y="258" width="80" height="36" rx="6" fill="#f5f9fd" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <g font-size="10.5" text-anchor="middle" filter="url(#sk2)">
+    <text x="540" y="274" fill="#446688" font-weight="bold">排0</text><text x="540" y="288" fill="#333">1/1</text>
+    <text x="660" y="274" fill="#446688" font-weight="bold">排1</text><text x="660" y="288" fill="#333">3/3</text>
+    <text x="740" y="274" fill="#b85450" font-weight="bold">排2</text><text x="740" y="288" fill="#b85450">0/0</text>
+    <text x="860" y="274" fill="#446688" font-weight="bold">排3</text><text x="860" y="288" fill="#333">5/5</text>
+  </g>
+  <text x="600" y="306" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#sk2)">叶节点存 free = m − used（格式 mx/sum）</text>
+
+  <!-- ===== 两个操作 callout ===== -->
+  <!-- gather -->
+  <g filter="url(#sk)">
+    <rect x="40" y="330" width="400" height="92" rx="10" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/>
+  </g>
+  <text x="60" y="354" font-size="13" font-weight="bold" fill="#2e6e2e" filter="url(#sk)">gather(k, maxRow)：本排连续 k 座</text>
+  <text x="60" y="374" font-size="11" fill="#333" filter="url(#sk)">① 用 mx 查 [0,maxRow] 内第一个 free≥k 的排 r</text>
+  <text x="60" y="392" font-size="11" fill="#333" filter="url(#sk)">② c = used[r]；订 [c, c+k−1]；used[r]+=k，更新叶节点</text>
+  <text x="60" y="410" font-size="11" fill="#b85450" filter="url(#sk)">找不到（mx&lt;k）返回 []</text>
+
+  <!-- scatter -->
+  <g filter="url(#sk)">
+    <rect x="460" y="330" width="400" height="92" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+  </g>
+  <text x="480" y="354" font-size="13" font-weight="bold" fill="#2b5588" filter="url(#sk)">scatter(k, maxRow)：跨排凑 k 座</text>
+  <text x="480" y="374" font-size="11" fill="#333" filter="url(#sk)">① 用 sum 查 [0,maxRow] 总空位 ≥ k？否→false</text>
+  <text x="480" y="392" font-size="11" fill="#333" filter="url(#sk)">② 从指针 lo（首个未满排）起逐排填 min(free,rem)</text>
+  <text x="480" y="410" font-size="11" fill="#4a7a3a" filter="url(#sk)">满排跳过，lo 只前进，摊还 O(log n)</text>
+
+  <!-- footer -->
+  <g filter="url(#sk)">
+    <rect x="40" y="438" width="820" height="100" rx="10" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.3" stroke-dasharray="5 3"/>
+  </g>
+  <text x="450" y="462" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2b2b2b" filter="url(#sk)">为什么「同排空位必连续」是关键？</text>
+  <text x="60" y="484" font-size="11" fill="#444" filter="url(#sk)">• 规则要求「优先最小排、再最小座号」→ 每次都从 used 处往后订，绝不留中间空隙</text>
+  <text x="60" y="502" font-size="11" fill="#444" filter="url(#sk)">• 于是 free[r] 退化成单值 m−used[r]，整排状态压缩为一个数 → 可上线段树</text>
+  <text x="60" y="520" font-size="11" fill="#444" filter="url(#sk)">• mx 支撑 gather 的「找第一个够 k 的排」；sum 支撑 scatter 的「区间够不够 k」</text>
+  <text x="60" y="536" font-size="10.5" fill="#888" filter="url(#sk)">n≤5×10⁴，m,k≤10⁹ → 不能开 n×m 数组，只能按排压缩 + 区间聚合</text>
+</svg>

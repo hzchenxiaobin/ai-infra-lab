@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">核心观察：SQL 版 Map-Reduce —— 拆词 → 逐词变形 → 按序拼回</text>
+
+  <text x="150" y="52" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">✗ 整串级函数不会「逐词」</text>
+  <rect x="30" y="60" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="75" text-anchor="middle" font-size="9.5" fill="#8a3030" filter="url(#rough2)">UPPER(s) / LOWER(s)：一口气吃掉整串</text>
+  <text x="150" y="88" text-anchor="middle" font-size="9" fill="#8a3030" filter="url(#rough2)">"hello world of SQL" → "HELLO WORLD OF SQL"</text>
+  <rect x="30" y="102" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="117" text-anchor="middle" font-size="9.5" fill="#8a3030" filter="url(#rough2)">只做大写首字母？只处理到第 1 个词</text>
+  <text x="150" y="130" text-anchor="middle" font-size="9" fill="#8a3030" filter="url(#rough2)">"hello world of SQL" → "Hello world of sql"</text>
+  <text x="150" y="154" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">MySQL 没有 INITCAP()！这就是 Hard 的来源</text>
+
+  <path d="M 280 100 L 280 100" stroke="#666" filter="url(#rough2)"/>
+  <text x="392" y="52" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">✓ 单词级变换函数是现成的（1667 idiom）</text>
+  <rect x="290" y="60" width="240" height="76" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="78" text-anchor="middle" font-size="9.5" fill="#2d5a1e" font-weight="bold" filter="url(#rough2)">CONCAT(</text>
+  <text x="410" y="92" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">UPPER(LEFT(w, 1)),</text>
+  <text x="410" y="105" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">LOWER(SUBSTRING(w, 2)))</text>
+  <text x="410" y="124" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">QUICK → Quick ✓</text>
+
+  <text x="150" y="184" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">难点不在变形，在「让每个单词单独流过这个函数」</text>
+
+  <rect x="30" y="196" width="160" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="214" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① explode 拆词</text>
+  <text x="110" y="230" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">一行句子 → 一行一单词</text>
+  <text x="110" y="244" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">数字表 + 双层 SUBSTRING_INDEX</text>
+  <text x="110" y="256" text-anchor="middle" font-size="8" fill="#888" filter="url(#rough2)">(word_pos, word)</text>
+
+  <path d="M 196 229 L 220 229" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="224" y="196" width="150" height="66" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="299" y="214" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② transform 变形</text>
+  <text x="299" y="230" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">逐词首字母大写</text>
+  <text x="299" y="244" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">the → The</text>
+  <text x="299" y="256" text-anchor="middle" font-size="8" fill="#888" filter="url(#rough2)">(word_pos, cap_word)</text>
+
+  <path d="M 380 229 L 404 229" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="408" y="196" width="150" height="66" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="483" y="214" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ implode 拼回</text>
+  <text x="483" y="230" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">按 word_pos 排序拼串</text>
+  <text x="483" y="244" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">GROUP_CONCAT</text>
+  <text x="483" y="256" text-anchor="middle" font-size="8" fill="#888" filter="url(#rough2)">SEPARATOR ' '</text>
+
+  <rect x="30" y="274" width="528" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="294" y="290" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">词数 = 空格数 + 1 = CHAR_LENGTH(s) − CHAR_LENGTH(REPLACE(s,' ','')) + 1</text>
+  <text x="294" y="306" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">"the QUICK brown fox"：3 个空格 → 4 个词，正好数出来</text>
+
+  <rect x="30" y="324" width="528" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="294" y="342" text-anchor="middle" font-size="10" fill="#444" font-weight="bold" filter="url(#rough2)">一行 → 多行 → 一行：CROSS JOIN 炸开，GROUP BY 收回</text>
+  <text x="294" y="358" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">输出两列：original_text（原样保留）+ converted_text（转换结果）</text>
+  <text x="294" y="372" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">单词级变换从未缺席，缺席的是 SQL 里的「单词」抽象 —— 自己造一个</text>
+</svg>

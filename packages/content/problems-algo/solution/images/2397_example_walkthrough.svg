@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：matrix=[[0,0,0],[1,0,1],[0,1,1],[0,0,1]], numSelect=2</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">n=3 → C(3,2)=3 种组合，逐一枚举取最大</text>
+
+  <!-- ============ Row masks summary ============ -->
+  <text x="60" y="70" text-anchor="start" font-size="11" fill="#446688" font-weight="bold">预处理行掩码（bit j = col j）：</text>
+  <g filter="url(#rough2)">
+    <rect x="60"  y="78" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4"/>
+    <text x="108" y="95" text-anchor="middle" font-size="11" fill="#333">r0 = 000</text>
+    <rect x="160" y="78" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4"/>
+    <text x="208" y="95" text-anchor="middle" font-size="11" fill="#333">r1 = 101</text>
+    <rect x="260" y="78" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4"/>
+    <text x="308" y="95" text-anchor="middle" font-size="11" fill="#333">r2 = 110</text>
+    <rect x="360" y="78" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4"/>
+    <text x="408" y="95" text-anchor="middle" font-size="11" fill="#333">r3 = 100</text>
+  </g>
+  <text x="470" y="95" text-anchor="start" font-size="9.5" fill="#888">（位串 col2 col1 col0）</text>
+
+  <!-- separator -->
+  <line x1="40" y1="112" x2="520" y2="112" stroke="#ddd" stroke-width="1.2" stroke-dasharray="3,4" filter="url(#rough2)"/>
+
+  <!-- ============ Combination table header ============ -->
+  <text x="60" y="130" text-anchor="start" font-size="11" fill="#446688" font-weight="bold">枚举 3 种组合（sel &amp; popcount==2）：</text>
+
+  <g filter="url(#rough2)">
+    <text x="78"  y="152" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold">组合 sel</text>
+    <text x="156" y="152" text-anchor="middle" font-size="10.5" fill="#888">r0</text>
+    <text x="206" y="152" text-anchor="middle" font-size="10.5" fill="#888">r1</text>
+    <text x="256" y="152" text-anchor="middle" font-size="10.5" fill="#888">r2</text>
+    <text x="306" y="152" text-anchor="middle" font-size="10.5" fill="#888">r3</text>
+    <text x="378" y="152" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold">覆盖数 cnt</text>
+  </g>
+  <!-- header underline -->
+  <line x1="40" y1="158" x2="460" y2="158" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ====== combo 1: {0,1} = 011, cnt=1 ====== -->
+  <g filter="url(#rough2)">
+    <text x="78"  y="180" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">{0,1}=011</text>
+    <rect x="142" y="166" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4"/>
+    <text x="156" y="182" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="192" y="166" width="28" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4"/>
+    <text x="206" y="182" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="242" y="166" width="28" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4"/>
+    <text x="256" y="182" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="292" y="166" width="28" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4"/>
+    <text x="306" y="182" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+    <text x="378" y="182" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+  </g>
+  <text x="430" y="180" text-anchor="start" font-size="9" fill="#888">col2 未选，r1/r2/r3 都含 col2</text>
+
+  <!-- ====== combo 2: {0,2} = 101, cnt=3 (best) ====== -->
+  <rect x="44" y="192" width="420" height="28" fill="#fff8e1" stroke="none" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <text x="78"  y="210" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">{0,2}=101</text>
+    <rect x="142" y="196" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="156" y="212" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="192" y="196" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="206" y="212" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="242" y="196" width="28" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4"/>
+    <text x="256" y="212" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="292" y="196" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="306" y="212" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <text x="378" y="212" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">3 ←</text>
+  </g>
+  <text x="430" y="210" text-anchor="start" font-size="9" fill="#4a7a3a" font-weight="bold">r2 含 col1 未选</text>
+
+  <!-- ====== combo 3: {1,2} = 110, cnt=3 (best) ====== -->
+  <rect x="44" y="226" width="420" height="28" fill="#fff8e1" stroke="none" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <text x="78"  y="244" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">{1,2}=110</text>
+    <rect x="142" y="230" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="156" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="192" y="230" width="28" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4"/>
+    <text x="206" y="246" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="242" y="230" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="256" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="292" y="230" width="28" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4"/>
+    <text x="306" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓</text>
+    <text x="378" y="246" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">3 ←</text>
+  </g>
+  <text x="430" y="244" text-anchor="start" font-size="9" fill="#4a7a3a" font-weight="bold">r1 含 col0 未选</text>
+
+  <line x1="40" y1="264" x2="460" y2="264" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- arrow down -->
+  <path d="M280 268 L280 286" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ============ Result box ============ -->
+  <rect x="40" y="290" width="480" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="314" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">ans = max(1, 3, 3) = 3</text>
+  <text x="280" y="336" text-anchor="middle" font-size="10.5" fill="#888">两种组合 {0,2}、{1,2} 并列最优，均覆盖 3 行</text>
+
+  <!-- ============ Note box ============ -->
+  <rect x="40" y="366" width="480" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="388" text-anchor="middle" font-size="10.5" fill="#333">每组判定：cnt = Σ[(row[i] &amp; sel) == row[i]]，全 0 行恒计入</text>
+  <text x="280" y="408" text-anchor="middle" font-size="10.5" fill="#4a7a3a">n=3 时仅 3 组；n=12 最坏 C(12,6)=924 组，秒杀</text>
+</svg>

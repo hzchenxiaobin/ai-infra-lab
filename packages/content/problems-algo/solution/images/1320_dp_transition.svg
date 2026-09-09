@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="560" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">DP 状态转移：每步二选一（同指续打 / 换指落键）</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">打字指刚落在 word[i−1]；要打 word[i]，要么续用同指，要么换另一指</text>
+
+  <!-- step 1: init -->
+  <rect x="150" y="58" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="80" text-anchor="middle" font-size="12" fill="#333">① 初始化 dp[26]=0（打 word[0]，另一指空闲）</text>
+  <path d="M 270 94 L 270 110" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- step 2: loop header -->
+  <rect x="120" y="112" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="134" text-anchor="middle" font-size="12" fill="#333">② for i = 1 … n−1：prev=word[i−1], cur=word[i]</text>
+  <path d="M 270 148 L 270 166" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision: which finger? -->
+  <polygon points="270,168 380,210 270,252 160,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="206" text-anchor="middle" font-size="11" fill="#333">哪根指落 cur？</text>
+  <text x="270" y="222" text-anchor="middle" font-size="11" fill="#333">两择取较小</text>
+
+  <!-- branch labels -->
+  <text x="150" y="200" font-size="11" fill="#446688" font-weight="bold">A 续同指</text>
+  <path d="M 160 210 L 110 210 L 110 250" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="392" y="200" font-size="11" fill="#4a7a3a" font-weight="bold">B 换另指</text>
+  <path d="M 380 210 L 430 210 L 430 250" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Case A box -->
+  <rect x="20" y="252" width="220" height="132" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="272" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A：同指续打 prev → cur</text>
+  <!-- mini schema A -->
+  <g font-size="10">
+    <rect x="40" y="282" width="34" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="57" y="297" text-anchor="middle" fill="#333">prev</text>
+    <path d="M 76 293 L 108 293" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+    <rect x="110" y="282" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="127" y="297" text-anchor="middle" fill="#b85450" font-weight="bold">cur</text>
+    <rect x="160" y="282" width="34" height="22" fill="#f0f0f0" stroke="#999" stroke-width="1.1" rx="3" filter="url(#rough2)"/>
+    <text x="177" y="297" text-anchor="middle" fill="#666">j</text>
+    <text x="177" y="316" text-anchor="middle" font-size="8" fill="#888">闲置不动</text>
+  </g>
+  <text x="130" y="338" text-anchor="middle" font-size="10" fill="#333">代价 +dist(prev, cur)</text>
+  <text x="130" y="356" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">ndp[j] = dp[j] + d</text>
+  <text x="130" y="372" text-anchor="middle" font-size="9" fill="#888">另一指 j 保持不变</text>
+
+  <!-- Case B box -->
+  <rect x="300" y="252" width="220" height="132" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="272" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">B：换指落键 k → cur</text>
+  <!-- mini schema B -->
+  <g font-size="10">
+    <rect x="320" y="282" width="34" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="337" y="297" text-anchor="middle" fill="#333">k</text>
+    <path d="M 356 293 L 388 293" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+    <rect x="390" y="282" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+    <text x="407" y="297" text-anchor="middle" fill="#b85450" font-weight="bold">cur</text>
+    <rect x="440" y="282" width="34" height="22" fill="#f0f0f0" stroke="#999" stroke-width="1.1" rx="3" filter="url(#rough2)"/>
+    <text x="457" y="297" text-anchor="middle" fill="#666">prev</text>
+    <text x="457" y="316" text-anchor="middle" font-size="8" fill="#888">变闲置</text>
+  </g>
+  <text x="410" y="338" text-anchor="middle" font-size="10" fill="#333">代价 +dist(k, cur)（k=26 则 0）</text>
+  <text x="410" y="356" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">ndp[prev] = minₖ(dp[k]+dist(k,cur))</text>
+  <text x="410" y="372" text-anchor="middle" font-size="9" fill="#888">原打字指 prev 变新的“另一指”</text>
+
+  <!-- merge arrows -->
+  <path d="M 130 386 L 130 408 L 270 408" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 410 386 L 410 408 L 270 408" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 408 L 270 424" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- merge: rolling update -->
+  <rect x="120" y="426" width="300" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="448" text-anchor="middle" font-size="11" fill="#333">③ 同 j 取 A/B 较小写入 ndp；dp ← ndp（一维滚动）</text>
+
+  <!-- loop back to step 2 -->
+  <path d="M 420 443 L 480 443 L 480 130 L 420 130" stroke="#666" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="488" y="290" font-size="9" fill="#888">循环回 ②</text>
+
+  <path d="M 270 462 L 270 478" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="150" y="480" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="270" y="502" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ return min(dp[0..26])</text>
+
+  <text x="270" y="540" text-anchor="middle" font-size="10" fill="#888">状态仅依赖上一步 → 一维滚动数组，空间 O(27)</text>
+</svg>

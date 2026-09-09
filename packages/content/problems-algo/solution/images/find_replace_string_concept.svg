@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="400" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思想：所有匹配对「原串」判定，输出是全新累积的字符串</text>
+
+  <!-- Original string label -->
+  <text x="40" y="60" font-size="12" fill="#888">原串 s（不变）</text>
+
+  <!-- index labels -->
+  <text x="40" y="86" font-size="10" fill="#888">下标</text>
+  <rect x="120" y="70" width="48" height="22" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="144" y="85" text-anchor="middle" font-size="10" fill="#888">0</text>
+  <rect x="168" y="70" width="48" height="22" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="192" y="85" text-anchor="middle" font-size="10" fill="#888">1</text>
+  <rect x="216" y="70" width="48" height="22" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="85" text-anchor="middle" font-size="10" fill="#888">2</text>
+  <rect x="264" y="70" width="48" height="22" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="288" y="85" text-anchor="middle" font-size="10" fill="#888">3</text>
+
+  <!-- char cells: abcd, src ranges highlighted -->
+  <text x="40" y="122" font-size="11" fill="#888">字符</text>
+  <!-- op0 src "a" at index0 -> red -->
+  <rect x="120" y="100" width="48" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="144" y="122" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">a</text>
+  <rect x="168" y="100" width="48" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="192" y="122" text-anchor="middle" font-size="14" fill="#333">b</text>
+  <!-- op1 src "cd" at index2-3 -> green -->
+  <rect x="216" y="100" width="48" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="122" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">c</text>
+  <rect x="264" y="100" width="48" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="288" y="122" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">d</text>
+
+  <!-- operation annotations -->
+  <text x="335" y="110" font-size="11" fill="#b85450" font-weight="bold">操作0：src "a" → tgt "eee"</text>
+  <text x="335" y="126" font-size="10" fill="#888">匹配 s[0:1] == "a"  ✅</text>
+
+  <text x="335" y="150" font-size="11" fill="#4a7a3a" font-weight="bold">操作1：src "cd" → tgt "ffff"</text>
+  <text x="335" y="166" font-size="10" fill="#888">匹配 s[2:4] == "cd"  ✅</text>
+
+  <!-- arrow down -->
+  <path d="M 192 140 L 192 176" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="200" y="162" font-size="10" fill="#446688">扫描构建</text>
+
+  <!-- Result building row -->
+  <text x="40" y="200" font-size="12" fill="#888">结果 res（累积）</text>
+
+  <!-- result pieces: eee | b | ffff -->
+  <rect x="120" y="186" width="72" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="207" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">eee</text>
+  <rect x="192" y="186" width="48" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="216" y="207" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="240" y="186" width="96" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="288" y="207" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">ffff</text>
+
+  <text x="350" y="207" font-size="12" fill="#333" font-weight="bold">= "eeebffff"</text>
+
+  <!-- key insight box -->
+  <rect x="40" y="236" width="540" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">同时替换 = 基于原串构建新串</text>
+  <text x="310" y="278" text-anchor="middle" font-size="11" fill="#444">从不修改 s：indices 定位 &amp; source 匹配都针对同一份原串；res 独立累积，互不干扰</text>
+
+  <!-- footer note -->
+  <text x="40" y="320" font-size="11" fill="#888">指针 j 在原串坐标上移动：</text>
+  <text x="40" y="340" font-size="11" fill="#4a7a3a" font-weight="bold">→ 遇匹配追加 target 并跳过 len(source)；否则追加 s[j] 前进 1。</text>
+  <text x="40" y="362" font-size="10" fill="#888">跳过的是原串 source 区间，追加的是 target（两者长度可不同）</text>
+</svg>

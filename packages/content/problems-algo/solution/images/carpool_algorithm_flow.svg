@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="410" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：差分数组 + 前缀和检查容量</text>
+
+  <!-- Box 1 -->
+  <rect x="90" y="44" width="340" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="69" text-anchor="middle" font-size="13" fill="#333">① 初始化 diff[0..1001] = 0（位置上限 1000）</text>
+
+  <path d="M 260 86 L 260 102" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 2 -->
+  <rect x="90" y="104" width="340" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="129" text-anchor="middle" font-size="13" fill="#333">② 取下一条行程 [num, from, to]</text>
+
+  <path d="M 260 146 L 260 162" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 3 -->
+  <rect x="90" y="164" width="340" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="184" text-anchor="middle" font-size="13" fill="#333">③ diff[from] += num</text>
+  <text x="260" y="201" text-anchor="middle" font-size="13" fill="#333">diff[to] −= num  （to 下车，区间 [from, to) ）</text>
+
+  <!-- loop arrow back to Box 2 -->
+  <path d="M 430 186 L 466 186 L 466 124 L 432 124" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="5,3" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="472" y="158" font-size="10" fill="#b85450" font-weight="bold">还有</text>
+  <text x="472" y="172" font-size="10" fill="#b85450" font-weight="bold">行程</text>
+
+  <!-- after loop arrow -->
+  <path d="M 260 210 L 260 228" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="224" font-size="10" fill="#888">遍历完</text>
+
+  <!-- Box 4: prefix sum loop start -->
+  <rect x="90" y="230" width="340" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="255" text-anchor="middle" font-size="13" fill="#333">④ cur += diff[i]（i = 0..1000）</text>
+
+  <path d="M 260 272 L 260 288" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: cur > capacity? -->
+  <polygon points="260,290 360,322 260,354 160,322" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="318" text-anchor="middle" font-size="12" fill="#333">cur &gt; capacity ?</text>
+  <text x="260" y="334" text-anchor="middle" font-size="10" fill="#b85450">超载判定</text>
+
+  <!-- Yes branch -> return false -->
+  <path d="M 360 322 L 410 322" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="368" y="316" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="410" y="304" width="92" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="327" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return false</text>
+
+  <!-- No branch -> loop back to Box 4 -->
+  <path d="M 160 322 L 60 322 L 60 250 L 88 250" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="44" y="290" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <text x="44" y="304" font-size="9" fill="#4a7a3a">下一位置</text>
+
+  <!-- after scanning all positions -->
+  <path d="M 260 354 L 260 372" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="368" font-size="10" fill="#888">扫描完</text>
+
+  <!-- Box 5: return true -->
+  <rect x="110" y="374" width="300" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="393" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">⑤ return true（全程未超载）</text>
+</svg>

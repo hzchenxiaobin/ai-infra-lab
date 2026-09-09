@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">延迟删除（Lazy Deletion）</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">堆不支持 O(1) 删任意元素 → 标记待删，堆顶清理时才真正弹出</text>
+
+  <!-- ===== Step 1: Mark delayed ===== -->
+  <text x="30" y="74" font-size="11" fill="#446688" font-weight="bold">① remove(3)：标记 3 为待删，不立即搜索堆</text>
+
+  <!-- Max-heap before: [5, 3, 2, 1] (tree) -->
+  <g filter="url(#rough2)">
+    <line x1="120" y1="100" x2="85" y2="140" stroke="#446688" stroke-width="1"/>
+    <line x1="120" y1="100" x2="155" y2="140" stroke="#446688" stroke-width="1"/>
+    <line x1="85" y1="140" x2="65" y2="180" stroke="#446688" stroke-width="1"/>
+    <line x1="85" y1="140" x2="105" y2="180" stroke="#446688" stroke-width="1"/>
+    <circle cx="120" cy="100" r="16" fill="#fff" stroke="#446688" stroke-width="2"/>
+    <circle cx="85" cy="140" r="14" fill="#fce4ec" stroke="#b85450" stroke-width="2" stroke-dasharray="3,2"/>
+    <circle cx="155" cy="140" r="14" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <circle cx="65" cy="180" r="12" fill="#fff" stroke="#446688" stroke-width="1"/>
+    <circle cx="105" cy="180" r="12" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2"/>
+  </g>
+  <g font-size="11" text-anchor="middle" font-weight="bold">
+    <text x="120" y="104" fill="#446688">5</text>
+    <text x="85" y="144" fill="#b85450">3</text>
+    <text x="155" y="144" fill="#446688">2</text>
+    <text x="65" y="184" fill="#446688">1</text>
+    <text x="105" y="184" fill="#b85450">0</text>
+  </g>
+  <text x="120" y="88" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">堆顶(live)</text>
+  <text x="85" y="128" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">待删 ✗</text>
+  <text x="105" y="200" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">待删 ✗</text>
+
+  <!-- Delayed hash map -->
+  <rect x="230" y="86" width="130" height="56" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="295" y="104" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">delayed 计数表</text>
+  <text x="245" y="122" font-size="9" fill="#555">3 → 1</text>
+  <text x="245" y="136" font-size="9" fill="#555">0 → 1</text>
+  <text x="320" y="122" font-size="8" fill="#888">↑ 标记 O(1)</text>
+
+  <text x="280" y="160" text-anchor="middle" font-size="9" fill="#888">3 不在堆顶 → 留在堆里（buried），不影响堆顶读取中位数</text>
+
+  <!-- ===== Step 2: Prune at top ===== -->
+  <text x="30" y="190" font-size="11" fill="#446688" font-weight="bold">② 当待删元素到达堆顶时 → prune 连续弹出</text>
+
+  <!-- Heap after 5 is moved to right: top becomes 3 (delayed) -->
+  <g filter="url(#rough2)">
+    <line x1="120" y1="216" x2="85" y2="256" stroke="#446688" stroke-width="1"/>
+    <line x1="120" y1="216" x2="155" y2="256" stroke="#446688" stroke-width="1"/>
+    <circle cx="120" cy="216" r="16" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" stroke-dasharray="3,2"/>
+    <circle cx="85" cy="256" r="14" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <circle cx="155" cy="256" r="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2"/>
+  </g>
+  <g font-size="11" text-anchor="middle" font-weight="bold">
+    <text x="120" y="220" fill="#b85450">3</text>
+    <text x="85" y="260" fill="#446688">2</text>
+    <text x="155" y="260" fill="#b85450">0</text>
+  </g>
+
+  <!-- Prune arrow -->
+  <path d="M 145 216 L 195 216" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="215" y="214" font-size="9" fill="#b85450" font-weight="bold">prune</text>
+  <text x="215" y="228" font-size="8" fill="#b85450">弹 3</text>
+
+  <!-- After prune 3: top becomes 2 (live) -->
+  <g filter="url(#rough2)">
+    <line x1="340" y1="216" x2="305" y2="256" stroke="#446688" stroke-width="1"/>
+    <circle cx="340" cy="216" r="16" fill="#fff" stroke="#446688" stroke-width="2"/>
+    <circle cx="305" cy="256" r="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2"/>
+  </g>
+  <g font-size="11" text-anchor="middle" font-weight="bold">
+    <text x="340" y="220" fill="#446688">2</text>
+    <text x="305" y="260" fill="#b85450">0</text>
+  </g>
+  <text x="340" y="204" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">堆顶(live) ✓</text>
+  <text x="375" y="220" font-size="8" fill="#888">3 已弹出</text>
+  <text x="375" y="234" font-size="8" fill="#888">0 仍 buried</text>
+
+  <!-- ===== Step 3: Summary ===== -->
+  <rect x="30" y="290" width="500" height="96" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="280" y="312" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">核心要点</text>
+  <text x="45" y="332" font-size="10" fill="#555">• remove(num)：在 delayed 表里 +1 计数，O(1) 标记，不搜索堆</text>
+  <text x="45" y="350" font-size="10" fill="#555">• prune(heap)：堆顶是待删元素时才弹出，循环直到堆顶为 live 元素</text>
+  <text x="45" y="368" font-size="10" fill="#555">• buried 的待删元素不影响正确性：堆顶始终是 live 的最值</text>
+  <text x="45" y="382" font-size="10" fill="#555">• 每个元素入堆 1 次、弹出 1 次，总操作 O(n)，单次均摊 O(log k)</text>
+</svg>

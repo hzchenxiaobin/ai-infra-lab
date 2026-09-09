@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：FROM → GROUP BY → 条件聚合 → ORDER BY → LIMIT 1 → IFNULL</text>
+
+  <!-- Step 1: FROM SurveyLog -->
+  <rect x="60" y="48" width="440" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="67" font-size="10" fill="#b85450" font-weight="bold">① FROM</text>
+  <text x="130" y="67" font-size="10" fill="#333">SurveyLog —— 数据源：6 行问卷日志（含 show / answer / skip）</text>
+
+  <path d="M280 80 L280 96" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY question_id -->
+  <rect x="60" y="98" width="440" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="117" font-size="10" fill="#b85450" font-weight="bold">② GROUP BY</text>
+  <text x="160" y="117" font-size="10" fill="#333">question_id —— 按「问题」分桶：285 桶 2 行 / 369 桶 4 行</text>
+
+  <path d="M280 130 L280 146" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 3: conditional aggregation -->
+  <rect x="60" y="148" width="440" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="167" font-size="10" fill="#b85450" font-weight="bold">③ SELECT</text>
+  <text x="130" y="167" font-size="9.5" fill="#d6a040" font-weight="bold">SUM(IF(action='answer',1,0)) / SUM(IF(action='show',1,0)) AS rate</text>
+  <text x="130" y="184" font-size="9.5" fill="#666">条件聚合：每桶数 answer 行 ÷ show 行 → 285: 1/1=1.0、369: 1/2=0.5</text>
+
+  <path d="M280 196 L280 212" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="60" y="214" width="440" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="233" font-size="10" fill="#b85450" font-weight="bold">④ ORDER BY</text>
+  <text x="170" y="233" font-size="10" fill="#333">rate DESC, question_id ASC —— 按回答率降序，同率取小号</text>
+
+  <path d="M280 246 L280 262" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: LIMIT 1 -->
+  <rect x="60" y="264" width="440" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="283" font-size="10" fill="#b85450" font-weight="bold">⑤ LIMIT 1</text>
+  <text x="150" y="283" font-size="10" fill="#333">取回答率最高的第一行 → question_id = 285</text>
+
+  <path d="M280 296 L280 312" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 6: IFNULL -->
+  <rect x="60" y="314" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="333" font-size="10" fill="#b85450" font-weight="bold">⑥ IFNULL</text>
+  <text x="150" y="333" font-size="10" fill="#333">(子查询, 0) —— 空表/无展示时返回 0（题目要求）</text>
+
+  <path d="M280 346 L280 368" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="180" y="372" width="200" height="60" fill="#fff8e1" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="392" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">最终输出</text>
+  <rect x="240" y="398" width="80" height="24" fill="#fff" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="414" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">285</text>
+
+  <!-- Side note: execution order -->
+  <rect x="60" y="438" width="440" height="18" fill="none" stroke="none"/>
+  <text x="280" y="452" text-anchor="middle" font-size="9" fill="#888">逻辑顺序：FROM → GROUP BY → SELECT（条件聚合）→ ORDER BY → LIMIT（SELECT 后排序取首行）</text>
+</svg>

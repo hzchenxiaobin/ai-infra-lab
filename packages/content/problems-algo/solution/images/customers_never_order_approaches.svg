@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种"反连接"解法对比：找"从未出现"的行</text>
+
+  <!-- Approach A: LEFT JOIN + IS NULL -->
+  <rect x="20" y="44" width="175" height="332" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="107" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A. LEFT JOIN + IS NULL</text>
+  <text x="107" y="80" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 首选</text>
+
+  <rect x="30" y="90" width="155" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="106" font-size="9" fill="#333">SELECT c.name AS Customers</text>
+  <text x="40" y="120" font-size="9" fill="#333">FROM Customers c</text>
+  <text x="40" y="134" font-size="9" fill="#333">LEFT JOIN Orders o</text>
+  <text x="40" y="148" font-size="9" fill="#333">  ON c.id = o.customerId</text>
+  <text x="40" y="158" font-size="9" fill="#b85450" font-weight="bold">WHERE o.id IS NULL;</text>
+
+  <text x="107" y="182" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">核心思想</text>
+  <text x="30" y="198" font-size="9" fill="#333">左表全保留，右表无匹配</text>
+  <text x="30" y="210" font-size="9" fill="#333">则右表列补 NULL，</text>
+  <text x="30" y="222" font-size="9" fill="#b85450" font-weight="bold">筛 NULL 即"从未匹配"</text>
+
+  <text x="107" y="246" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">关键点</text>
+  <text x="30" y="262" font-size="9" fill="#333">① 保留全部左表行</text>
+  <text x="30" y="276" font-size="9" fill="#333">② NULL 判定用 IS NULL</text>
+  <text x="30" y="290" font-size="9" fill="#333">  （= NULL 永为未知）</text>
+  <text x="30" y="304" font-size="9" fill="#333">③ 判 o.id（PK）非 NULL</text>
+  <text x="30" y="318" font-size="9" fill="#333">  列最稳，不惧 o.* 全 NULL</text>
+  <text x="30" y="340" font-size="9" fill="#4a7a3a">语义最直观、最通用</text>
+  <text x="30" y="354" font-size="9" fill="#4a7a3a">NULL 安全性需注意</text>
+  <text x="30" y="368" font-size="9" fill="#4a7a3a">性能：左表全扫一次</text>
+
+  <!-- Approach B: NOT IN -->
+  <rect x="205" y="44" width="175" height="332" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="292" y="66" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">B. NOT IN 子查询</text>
+  <text x="292" y="80" text-anchor="middle" font-size="9" fill="#555">经典简洁</text>
+
+  <rect x="215" y="90" width="155" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="106" font-size="9" fill="#333">SELECT name AS Customers</text>
+  <text x="225" y="120" font-size="9" fill="#333">FROM Customers</text>
+  <text x="225" y="134" font-size="9" fill="#333">WHERE id NOT IN (</text>
+  <text x="225" y="148" font-size="9" fill="#333">  SELECT customerId</text>
+  <text x="225" y="158" font-size="9" fill="#b85450" font-weight="bold">  FROM Orders);</text>
+
+  <text x="292" y="182" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">核心思想</text>
+  <text x="215" y="198" font-size="9" fill="#333">先算"已下单的 id 集合"，</text>
+  <text x="215" y="210" font-size="9" fill="#333">再取 Customers 中</text>
+  <text x="215" y="222" font-size="9" fill="#b85450" font-weight="bold">不在该集合的 id</text>
+
+  <text x="292" y="246" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">关键点</text>
+  <text x="215" y="262" font-size="9" fill="#333">① 子查询只跑一次</text>
+  <text x="215" y="276" font-size="9" fill="#333">② 集合判定，易读</text>
+  <text x="215" y="290" font-size="9" fill="#b85450" font-weight="bold">⚠ 子查询含 NULL 则</text>
+  <text x="215" y="304" font-size="9" fill="#b85450" font-weight="bold">  NOT IN 全返回空！</text>
+  <text x="215" y="318" font-size="9" fill="#333">③ 需 customerId NOT NULL</text>
+  <text x="215" y="340" font-size="9" fill="#333">或加 AND customerId</text>
+  <text x="215" y="354" font-size="9" fill="#333">IS NOT NULL 防护</text>
+  <text x="215" y="368" font-size="9" fill="#555">性能：依赖子查询物化</text>
+
+  <!-- Approach C: NOT EXISTS -->
+  <rect x="390" y="44" width="170" height="332" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="475" y="66" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">C. NOT EXISTS</text>
+  <text x="475" y="80" text-anchor="middle" font-size="9" fill="#555">NULL 安全、可优化</text>
+
+  <rect x="398" y="90" width="155" height="72" fill="#fff" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="406" y="106" font-size="9" fill="#333">SELECT name AS Customers</text>
+  <text x="406" y="120" font-size="9" fill="#333">FROM Customers c</text>
+  <text x="406" y="134" font-size="9" fill="#333">WHERE NOT EXISTS (</text>
+  <text x="406" y="148" font-size="9" fill="#333">  SELECT 1 FROM Orders o</text>
+  <text x="406" y="158" font-size="9" fill="#b85450" font-weight="bold">  WHERE o.cId = c.id);</text>
+
+  <text x="475" y="182" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">核心思想</text>
+  <text x="398" y="198" font-size="9" fill="#333">对每个顾客 c，</text>
+  <text x="398" y="210" font-size="9" fill="#333">检查"是否存在订单</text>
+  <text x="398" y="222" font-size="9" fill="#b85450" font-weight="bold">指向 c.id"——</text>
+  <text x="398" y="234" font-size="9" fill="#333">不存在即从未下单</text>
+
+  <text x="475" y="258" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">关键点</text>
+  <text x="398" y="274" font-size="9" fill="#333">① 相关子查询（引用</text>
+  <text x="398" y="288" font-size="9" fill="#333">  外层 c.id）</text>
+  <text x="398" y="302" font-size="9" fill="#4a7a3a" font-weight="bold">② NULL 安全！</text>
+  <text x="398" y="316" font-size="9" fill="#333">  EXISTS 只判有无行</text>
+  <text x="398" y="330" font-size="9" fill="#333">  不比较值，无视 NULL</text>
+  <text x="398" y="352" font-size="9" fill="#333">③ 早停优化：找到 1 行</text>
+  <text x="398" y="366" font-size="9" fill="#333">  即返回，无需扫全表</text>
+</svg>

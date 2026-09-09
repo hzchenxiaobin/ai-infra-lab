@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="500" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="250" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：8 方向 fail-fast 探测</text>
+
+  <!-- Start -->
+  <rect x="195" y="40" width="110" height="28" rx="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="59" text-anchor="middle" font-size="11.5" fill="#333">输入 (rMove,cMove,color)</text>
+  <path d="M 250 68 L 250 84" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- opp -->
+  <rect x="175" y="84" width="150" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="250" y="101" text-anchor="middle" font-size="11.5" fill="#333">opp = 另一颜色</text>
+  <path d="M 250 110 L 250 124" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- for-dir (loop hub) -->
+  <rect x="165" y="124" width="170" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="143" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">for (dr,dc) ∈ 8 方向</text>
+  <path d="M 250 152 L 250 168" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- step -->
+  <rect x="145" y="168" width="210" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="250" y="187" text-anchor="middle" font-size="11.5" fill="#333">(r,c) ← (rMove+dr, cMove+dc)</text>
+  <path d="M 250 196 L 250 212" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Diamond 1: 越界 or board[r][c]≠opp? -->
+  <path d="M 250 212 L 346 238 L 250 264 L 154 238 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="242" text-anchor="middle" font-size="11" fill="#333">越界 or board[r][c]≠opp?</text>
+
+  <!-- D1 Yes → right rail up to for-dir -->
+  <path d="M 346 238 L 430 238 L 430 140 L 335 140" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="374" y="232" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">是</text>
+  <text x="448" y="195" font-size="10.5" fill="#888" transform="rotate(-90 448 195)">下一方向</text>
+
+  <!-- D1 No → down -->
+  <path d="M 250 264 L 250 290" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="266" y="282" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- walk while opp -->
+  <rect x="125" y="290" width="250" height="42" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="250" y="308" text-anchor="middle" font-size="11.5" fill="#333">while 未越界 and board[r][c]==opp:</text>
+  <text x="250" y="324" text-anchor="middle" font-size="11.5" fill="#555">    r+=dr, c+=dc</text>
+  <path d="M 250 332 L 250 348" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Diamond 2: in bounds and board[r][c]==color? -->
+  <path d="M 250 348 L 372 378 L 250 408 L 128 378 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="374" text-anchor="middle" font-size="11" fill="#333">未越界 and</text>
+  <text x="250" y="389" text-anchor="middle" font-size="11" fill="#333">board[r][c]==color?</text>
+
+  <!-- D2 Yes → left to return true -->
+  <path d="M 128 378 L 104 378" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="118" y="372" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="20" y="364" width="84" height="28" rx="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="62" y="383" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">return true</text>
+
+  <!-- D2 No → right rail up to for-dir -->
+  <path d="M 372 378 L 430 378 L 430 238" stroke="#888" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="398" y="372" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">否</text>
+
+  <!-- return false (top-left, dashed from for-dir) -->
+  <rect x="20" y="124" width="96" height="28" rx="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="68" y="143" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">return false</text>
+  <path d="M 165 138 L 116 138" stroke="#b85450" stroke-width="1.8" stroke-dasharray="5,3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="140" y="130" text-anchor="middle" font-size="10" fill="#b85450">遍历完 8 方向</text>
+
+  <!-- footer note -->
+  <text x="250" y="438" text-anchor="middle" font-size="10.5" fill="#888">每方向三道关卡：① 首格须为 opp  ② 持续走 opp  ③ 终点须为 color</text>
+</svg>

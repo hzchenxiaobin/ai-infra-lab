@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13.5" fill="#333" filter="url(#rough2)">扫描线 + 线段树：一趟扫描，精确插值</text>
+  <text x="145" y="38" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">· 扫描阶段 ·</text>
+  <text x="394" y="38" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">· 定位与插值 ·</text>
+
+  <!-- 左列：扫描阶段 -->
+  <rect x="35" y="46" width="220" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="64" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">① x 离散化：收集全部 x_i 与 x_i+l_i</text>
+  <text x="145" y="81" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">排序去重 → 基本条带 [xs[j], xs[j+1])</text>
+
+  <path d="M145,90 L145,100" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="35" y="100" width="220" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="118" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">② 生成 2n 个 y 事件，按 y 升序排序</text>
+  <text x="145" y="135" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">(y_i,+1,[L,R)) 与 (y_i+l_i,−1,[L,R))</text>
+
+  <path d="M145,144 L145,154" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="35" y="154" width="220" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="175" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">③ 取下一组同一 y 的事件</text>
+
+  <path d="M145,188 L145,198" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="35" y="198" width="220" height="46" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="217" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">④ 先结算条带 [y_prev, y)</text>
+  <text x="145" y="234" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">记录 (y0, dy, W = cov[root])</text>
+
+  <path d="M145,244 L145,254" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="35" y="254" width="220" height="42" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="273" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⑤ 逐个 update：线段树区间 ±1</text>
+  <text x="145" y="289" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">叶子 = 基本条带，维护覆盖长度 cov</text>
+
+  <path d="M145,296 L145,306" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <path d="M145,306 L176,328 L145,350 L114,328 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="145" y="332" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">还有事件？</text>
+
+  <path d="M114,328 L24,328 L24,171 L33,171" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="322" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <path d="M176,328 L262,328 L262,67 L293,67" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="184" y="321" font-size="9" fill="#b85450" filter="url(#rough2)">否（扫描完）</text>
+
+  <!-- 右列：定位与插值 -->
+  <rect x="293" y="46" width="202" height="42" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="394" y="64" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⑥ T = Σ dy·W（并集总面积）</text>
+  <text x="394" y="80" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">cum = 0，从最下方条带开始</text>
+
+  <path d="M394,88 L394,102" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <path d="M394,102 L439,128 L394,154 L349,128 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="394" y="124" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">越过半面积？</text>
+  <text x="394" y="138" text-anchor="middle" font-size="8" fill="#b85450" filter="url(#rough2)">2(cum+W·dy) ≥ T</text>
+
+  <path d="M394,154 L394,180" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="402" y="170" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <rect x="293" y="180" width="202" height="46" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="394" y="201" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">⑧ return y0 + (T − 2·cum)/(2·W)</text>
+  <text x="394" y="218" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">精确解：全程唯一一次除法</text>
+
+  <path d="M349,128 L282,128 L282,268 L291,268" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="150" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <rect x="293" y="251" width="202" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="394" y="265" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⑨ cum += W·dy</text>
+  <text x="394" y="279" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">移到下一块条带</text>
+
+  <path d="M495,268 L507,268 L507,128 L439,128" fill="none" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="293" y="300" width="202" height="52" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="5,4" filter="url(#rough2)"/>
+  <text x="394" y="318" text-anchor="middle" font-size="10.5" fill="#7a6220" filter="url(#rough2)">要点：W、dy、cum、T 全是整数</text>
+  <text x="394" y="333" text-anchor="middle" font-size="10.5" fill="#7a6220" filter="url(#rough2)">仅 ⑧ 做一次除法 → 无浮点误差</text>
+  <text x="394" y="347" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（T ≤ 10^15，64 位整数安全）</text>
+</svg>

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：扩展下标空间 + BIT 计数前置位置</text>
+  <text x="320" y="46" text-anchor="middle" font-size="11" fill="#888">前插 = 新位置打 1 / 旧位置打 0；位次 = 前缀和 − 自身 1</text>
+
+  <!-- index axis: positions 1..9 (n=4, m=5, N=9) -->
+  <text x="48" y="92" text-anchor="end" font-size="12" fill="#666" font-weight="bold">位置轴</text>
+  <line x1="60" y1="88" x2="600" y2="88" stroke="#999" stroke-width="1.4" filter="url(#rough2)"/>
+
+  <!-- reserved zone label -->
+  <rect x="60" y="58" width="240" height="60" rx="6" fill="none" stroke="#d6a040" stroke-width="1.4" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="180" y="76" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">预留前插落点 [1..n]</text>
+  <text x="180" y="132" text-anchor="middle" font-size="10" fill="#999">第 i 次查询落到 n−i（单调递减）</text>
+
+  <!-- initial zone label -->
+  <rect x="300" y="58" width="300" height="60" rx="6" fill="none" stroke="#446688" stroke-width="1.4" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="450" y="76" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">初始数值 v 落在 n+v [n+1..n+m]</text>
+  <text x="450" y="132" text-anchor="middle" font-size="10" fill="#999">数值 1..m 保持初始相对顺序</text>
+
+  <!-- 9 cells: positions 1..9 -->
+  <g font-size="13">
+    <!-- reserved empty positions 1..4 -->
+    <rect x="72"  y="150" width="48" height="44" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="96"  y="178" text-anchor="middle" fill="#d6a040" font-weight="bold">空</text>
+    <rect x="124" y="150" width="48" height="44" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="148" y="178" text-anchor="middle" fill="#d6a040" font-weight="bold">空</text>
+    <rect x="176" y="150" width="48" height="44" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="200" y="178" text-anchor="middle" fill="#d6a040" font-weight="bold">空</text>
+    <rect x="228" y="150" width="48" height="44" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="252" y="178" text-anchor="middle" fill="#d6a040" font-weight="bold">空</text>
+    <!-- occupied positions 5..9 holding values 1..5 -->
+    <rect x="300" y="150" width="48" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="324" y="178" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="352" y="150" width="48" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="376" y="178" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="404" y="150" width="48" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="428" y="178" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+    <rect x="456" y="150" width="48" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="480" y="178" text-anchor="middle" fill="#446688" font-weight="bold">4</text>
+    <rect x="508" y="150" width="48" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="532" y="178" text-anchor="middle" fill="#446688" font-weight="bold">5</text>
+  </g>
+  <!-- position numbers -->
+  <g font-size="9" fill="#999">
+    <text x="96"  y="210" text-anchor="middle">1</text>
+    <text x="148" y="210" text-anchor="middle">2</text>
+    <text x="200" y="210" text-anchor="middle">3</text>
+    <text x="252" y="210" text-anchor="middle">4</text>
+    <text x="324" y="210" text-anchor="middle">5</text>
+    <text x="376" y="210" text-anchor="middle">6</text>
+    <text x="428" y="210" text-anchor="middle">7</text>
+    <text x="480" y="210" text-anchor="middle">8</text>
+    <text x="532" y="210" text-anchor="middle">9</text>
+  </g>
+  <text x="60" y="210" font-size="10" fill="#666">BIT[ ]</text>
+
+  <!-- occupancy row (0/1) -->
+  <text x="48" y="246" text-anchor="end" font-size="12" fill="#666" font-weight="bold">占据</text>
+  <g font-size="13">
+    <rect x="72"  y="226" width="48" height="32" rx="4" fill="#fafafa" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="96"  y="248" text-anchor="middle" fill="#999">0</text>
+    <rect x="124" y="226" width="48" height="32" rx="4" fill="#fafafa" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="148" y="248" text-anchor="middle" fill="#999">0</text>
+    <rect x="176" y="226" width="48" height="32" rx="4" fill="#fafafa" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="200" y="248" text-anchor="middle" fill="#999">0</text>
+    <rect x="228" y="226" width="48" height="32" rx="4" fill="#fafafa" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="252" y="248" text-anchor="middle" fill="#999">0</text>
+    <rect x="300" y="226" width="48" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="324" y="248" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="352" y="226" width="48" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="376" y="248" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="404" y="226" width="48" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="428" y="248" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="456" y="226" width="48" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="480" y="248" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="508" y="226" width="48" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="532" y="248" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+  </g>
+
+  <!-- query v=3 example: pos[3]=7, prefix sum=3, ans=2 -->
+  <text x="48" y="300" text-anchor="end" font-size="12" fill="#666" font-weight="bold">查 v=3</text>
+  <rect x="404" y="278" width="48" height="44" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="428" y="306" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+  <text x="428" y="340" text-anchor="middle" font-size="9" fill="#b85450">pos[3]=7</text>
+  <!-- prefix range bracket [1..7] -->
+  <path d="M 96 332 L 96 340 L 428 340 L 428 332" stroke="#b85450" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="262" y="356" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">前缀和 query(7) = 3 （位置 5,6,7 占据）</text>
+
+  <!-- formula box -->
+  <rect x="60" y="372" width="540" height="68" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="80" y="396" font-size="13" fill="#446688" font-weight="bold">位次 = query(pos[v]) − 1</text>
+  <text x="80" y="416" font-size="11" fill="#555">前缀和包含了 v 自身（pos[v] 处为 1），减 1 即得「严格在 v 之前」的元素数 = 0-indexed 下标</text>
+  <text x="80" y="432" font-size="11" fill="#b85450" font-weight="bold">→ v=3：query(7) − 1 = 3 − 1 = 2  ✓（真实排列 [1,2,3,4,5] 中 3 的下标恰为 2）</text>
+</svg>

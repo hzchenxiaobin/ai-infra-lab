@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：时间约束限制路径深度，DFS 回溯枚举所有合法路径</text>
+  <text x="260" y="42" text-anchor="middle" font-size="10.5" fill="#888">maxTime ≤ 100, time ≥ 10 → 最多 10 步 · 每节点 ≤ 4 边 → 4^10 ≈ 10^6</text>
+
+  <!-- ============ Left: Graph with optimal path ============ -->
+  <text x="130" y="66" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">示例 1 图与最优路径</text>
+
+  <!-- Edges (drawn first, below nodes) -->
+  <!-- 0 -- 1, time=10 -->
+  <line x1="75" y1="130" x2="185" y2="100" stroke="#ccc" stroke-width="2" filter="url(#rough2)"/>
+  <text x="122" y="108" font-size="9" fill="#999">10</text>
+  <!-- 1 -- 2, time=15 -->
+  <line x1="185" y1="100" x2="225" y2="170" stroke="#ccc" stroke-width="2" filter="url(#rough2)"/>
+  <text x="215" y="140" font-size="9" fill="#999">15</text>
+  <!-- 0 -- 3, time=10 -->
+  <line x1="75" y1="130" x2="185" y2="200" stroke="#ccc" stroke-width="2" filter="url(#rough2)"/>
+  <text x="118" y="172" font-size="9" fill="#999">10</text>
+
+  <!-- Optimal path 0→3→0→1→0, highlighted in green -->
+  <!-- 0 -> 3 -->
+  <path d="M 75 130 Q 120 165, 185 200" stroke="#4a7a3a" stroke-width="3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 3 -> 0 -->
+  <path d="M 185 200 Q 135 170, 75 130" stroke="#4a7a3a" stroke-width="3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" stroke-dasharray="5,3"/>
+  <!-- 0 -> 1 -->
+  <path d="M 75 130 Q 120 100, 185 100" stroke="#4a7a3a" stroke-width="3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 1 -> 0 -->
+  <path d="M 185 100 Q 120 115, 75 130" stroke="#4a7a3a" stroke-width="3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" stroke-dasharray="5,3"/>
+
+  <!-- Node 0 (start/end, highlighted) -->
+  <circle cx="75" cy="130" r="22" fill="#e8f0fe" stroke="#446688" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="75" y="127" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">节点0</text>
+  <text x="75" y="140" text-anchor="middle" font-size="10" fill="#666">val=0</text>
+
+  <!-- Node 1 -->
+  <circle cx="185" cy="100" r="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="185" y="97" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">节点1</text>
+  <text x="185" y="110" text-anchor="middle" font-size="10" fill="#666">val=32</text>
+
+  <!-- Node 2 -->
+  <circle cx="225" cy="170" r="20" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="225" y="167" text-anchor="middle" font-size="10.5" fill="#999">节点2</text>
+  <text x="225" y="180" text-anchor="middle" font-size="9.5" fill="#999">val=10</text>
+
+  <!-- Node 3 -->
+  <circle cx="185" cy="200" r="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="185" y="197" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">节点3</text>
+  <text x="185" y="210" text-anchor="middle" font-size="10" fill="#666">val=43</text>
+
+  <!-- Path label -->
+  <rect x="30" y="240" width="210" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="135" y="258" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">0→3→0→1→0 = 40s, 价值 75</text>
+
+  <!-- ============ Right: Key observations ============ -->
+  <text x="380" y="66" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">三个关键观察</text>
+
+  <!-- Observation 1 -->
+  <rect x="290" y="78" width="210" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="96" font-size="10.5" fill="#446688" font-weight="bold">① 时间 = 深度上限</text>
+  <text x="300" y="111" font-size="9.5" fill="#555">maxTime / min_time = 100/10</text>
+  <text x="300" y="124" font-size="9.5" fill="#555">→ 最多走 10 步</text>
+
+  <!-- Observation 2 -->
+  <rect x="290" y="138" width="210" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="156" font-size="10.5" fill="#d6a040" font-weight="bold">② 度数 = 分支数</text>
+  <text x="300" y="171" font-size="9.5" fill="#555">每节点 ≤ 4 条边</text>
+  <text x="300" y="184" font-size="9.5" fill="#555">→ 搜索树 ≤ 4^10 ≈ 10^6</text>
+
+  <!-- Observation 3 -->
+  <rect x="290" y="198" width="210" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="216" font-size="10.5" fill="#b85450" font-weight="bold">③ 计数管价值</text>
+  <text x="300" y="231" font-size="9.5" fill="#555">visited: 0→1 时加值</text>
+  <text x="300" y="244" font-size="9.5" fill="#555">visited: 1→0 时减值</text>
+
+  <!-- Complexity summary -->
+  <rect x="290" y="258" width="210" height="40" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="276" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">复杂度</text>
+  <text x="395" y="290" text-anchor="middle" font-size="10" fill="#777">时间 O(4^10) · 空间 O(n)</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="310" width="460" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="328" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">为何不用状压 DP？</text>
+  <text x="260" y="344" text-anchor="middle" font-size="10" fill="#555">n ≤ 1000 → 2^1000 不可行；时间约束把深度限到 10，回溯反而更优</text>
+  <text x="260" y="356" text-anchor="middle" font-size="10" fill="#888">路径可重复经过节点，但价值只算一次（visited 计数管理）</text>
+</svg>

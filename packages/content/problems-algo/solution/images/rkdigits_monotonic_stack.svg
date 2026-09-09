@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：高位权优先小 → 维护单调不降栈</text>
+
+  <!-- 位权 arrow bar -->
+  <text x="80" y="56" text-anchor="end" font-size="11" fill="#888">位权高</text>
+  <text x="500" y="56" font-size="11" fill="#888">位权低</text>
+  <path d="M 88 52 L 492 52" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="46" text-anchor="middle" font-size="10" fill="#999">(左边一位决定大小，最关键)</text>
+
+  <!-- Number cells: 1 4 3 2 2 1 9 -->
+  <!-- idx0 = 1 (kept green) -->
+  <rect x="115" y="70" width="50" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="140" y="100" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">1</text>
+  <!-- idx1 = 4 (removed red) -->
+  <rect x="165" y="70" width="50" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="100" text-anchor="middle" font-size="18" fill="#b85450" font-weight="bold">4</text>
+  <line x1="168" y1="108" x2="212" y2="76" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <!-- idx2 = 3 (removed red) -->
+  <rect x="215" y="70" width="50" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="100" text-anchor="middle" font-size="18" fill="#b85450" font-weight="bold">3</text>
+  <line x1="218" y1="108" x2="262" y2="76" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <!-- idx3 = 2 (kept green) -->
+  <rect x="265" y="70" width="50" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="290" y="100" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">2</text>
+  <!-- idx4 = 2 (removed red) -->
+  <rect x="315" y="70" width="50" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="340" y="100" text-anchor="middle" font-size="18" fill="#b85450" font-weight="bold">2</text>
+  <line x1="318" y1="108" x2="362" y2="76" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <!-- idx5 = 1 (kept green) -->
+  <rect x="365" y="70" width="50" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="100" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">1</text>
+  <!-- idx6 = 9 (kept green) -->
+  <rect x="415" y="70" width="50" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="100" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">9</text>
+
+  <!-- removal reason annotations -->
+  <text x="190" y="132" text-anchor="middle" font-size="10" fill="#b85450">4&gt;3 删</text>
+  <text x="240" y="132" text-anchor="middle" font-size="10" fill="#b85450">3&gt;2 删</text>
+  <text x="340" y="132" text-anchor="middle" font-size="10" fill="#b85450">2&gt;1 删</text>
+
+  <!-- 贪心原则 callout -->
+  <rect x="40" y="152" width="500" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="176" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">贪心原则：高位权优先小</text>
+  <text x="290" y="198" text-anchor="middle" font-size="11" fill="#666">数字位权从左到右递减，让靠左的位尽量小，整体就更小</text>
+  <text x="290" y="220" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">栈顶 &gt; 当前数字 且 k&gt;0 ⇒ 弹栈顶（删掉「又大又靠左」的数字）</text>
+  <text x="290" y="242" text-anchor="middle" font-size="11" fill="#4a7a3a">⇒ 等价于维护一个单调不降的栈，每个元素进出栈各一次，O(n)</text>
+  <text x="290" y="260" text-anchor="middle" font-size="10" fill="#888">红色删除线 = 被弹栈的高位偏大数字；绿色 = 最终保留</text>
+
+  <!-- Result row -->
+  <text x="150" y="316" text-anchor="middle" font-size="13" fill="#999">1432219</text>
+  <path d="M 196 312 L 252 312" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="224" y="304" text-anchor="middle" font-size="10" fill="#b85450">删 3 个</text>
+  <text x="380" y="316" text-anchor="middle" font-size="20" fill="#4a7a3a" font-weight="bold">1219</text>
+  <text x="290" y="346" text-anchor="middle" font-size="10" fill="#888">高位偏大的 4、3、2 被删，更小的 2、1 顶替到更高位</text>
+</svg>

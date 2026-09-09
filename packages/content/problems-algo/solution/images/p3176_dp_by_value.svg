@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="16.5" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：状态按「值」聚合，转移只有两个分支</text>
+
+  <rect x="90" y="44" width="340" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="65" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">dp[j][x]：以值 x 结尾、至多 j 个</text>
+  <text x="260" y="84" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">相邻不同对的最长子序列长度</text>
+
+  <text x="260" y="104" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">x 直接做哈希键，值域 10⁹ 也免离散化</text>
+
+  <rect x="205" y="110" width="110" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="133" text-anchor="middle" font-size="12.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">当前元素 x</text>
+
+  <path d="M 232 146 C 218 160, 182 158, 156 167" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 288 146 C 302 160, 338 158, 364 167" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="45" y="170" width="210" height="98" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="192" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">分支① 同值免费续</text>
+  <text x="150" y="214" text-anchor="middle" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">…… x x（尾巴同为 x）</text>
+  <text x="150" y="238" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">dp[j][x] ← dp[j][x] + 1</text>
+  <text x="150" y="258" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">预算原封不动 ✓</text>
+
+  <rect x="285" y="170" width="210" height="98" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="192" text-anchor="middle" font-size="12.5" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">分支② 换值花一枪</text>
+  <text x="390" y="214" text-anchor="middle" font-size="11.5" fill="#8a3a34" filter="url(#rough2)">…… y x（y ≠ x）</text>
+  <text x="390" y="238" text-anchor="middle" font-size="12" fill="#8a3a34" filter="url(#rough2)">dp[j][x] ← best[j−1] + 1</text>
+  <text x="390" y="258" text-anchor="middle" font-size="11" fill="#8a3a34" filter="url(#rough2)">消耗 1 个预算</text>
+
+  <rect x="90" y="280" width="340" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="300" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">best[j] = 第 j 层所有值 dp[j][·] 的最大值</text>
+
+  <text x="260" y="328" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">· best[j−1] 撞上 x 也不怕：同值相接实际没花钱，长度真实可达</text>
+  <text x="260" y="347" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">· j 从 k 倒序到 0：防 best[j−1] 被当前元素污染（0-1 背包同款）</text>
+</svg>

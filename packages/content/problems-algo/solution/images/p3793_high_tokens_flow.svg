@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333"
+        filter="url(#rough2)">算法流程：一趟聚合 → HAVING 双条件 → ROUND → 双键排序</text>
+
+  <!-- ① FROM -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="32" width="280" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="52" text-anchor="middle" font-size="11" fill="#446688">① FROM prompts（n 行全部参与统计）</text>
+    <path d="M 280 62 L 280 74" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ② GROUP BY -->
+  <g filter="url(#rough2)">
+    <rect x="90" y="76" width="380" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="280" y="94" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② GROUP BY user_id —— 每用户一组，一趟算出</text>
+    <text x="280" y="112" text-anchor="middle" font-size="10" fill="#446688">COUNT(*) · AVG(tokens) · MAX(tokens)</text>
+    <path d="M 280 122 L 280 134" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ③ HAVING 菱形 -->
+  <g filter="url(#rough2)">
+    <path d="M 280 136 L 392 170 L 280 204 L 168 170 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="164" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">HAVING：count ≥ 3</text>
+    <text x="280" y="182" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">且 MAX &gt; AVG ？</text>
+  </g>
+
+  <!-- 否 → 出局 -->
+  <g filter="url(#rough2)">
+    <path d="M 168 170 L 156 170" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="36" y="140" width="118" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="95" y="158" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否 → 整组出局</text>
+    <text x="95" y="174" text-anchor="middle" font-size="9" fill="#b85450">用户 2：仅 2 条</text>
+    <text x="95" y="188" text-anchor="middle" font-size="9" fill="#b85450">MAX &gt; avg 过了也没用</text>
+  </g>
+
+  <!-- 是 → ④ -->
+  <g filter="url(#rough2)">
+    <path d="M 280 204 L 280 216" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="291" y="214" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="120" y="218" width="320" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="236" text-anchor="middle" font-size="10.5" fill="#446688">④ SELECT user_id, COUNT(*), ROUND(AVG(tokens), 2)</text>
+    <path d="M 280 246 L 280 258" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ⑤ ORDER BY -->
+  <g filter="url(#rough2)">
+    <rect x="110" y="260" width="340" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="278" text-anchor="middle" font-size="10.5" fill="#446688">⑤ ORDER BY avg_tokens DESC, user_id ASC</text>
+    <path d="M 280 288 L 280 300" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 输出 -->
+  <g filter="url(#rough2)">
+    <rect x="110" y="302" width="340" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="280" y="320" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">输出：user_id · prompt_count · avg_tokens（3 | 4 | 237.5）</text>
+  </g>
+
+  <!-- 底部提示 -->
+  <g filter="url(#rough2)">
+    <rect x="36" y="336" width="448" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8"/>
+    <text x="260" y="350" text-anchor="middle" font-size="9.5" fill="#333">💡 ROUND 只出现在 SELECT；HAVING 里比较用未舍入的 AVG(tokens)</text>
+  </g>
+</svg>

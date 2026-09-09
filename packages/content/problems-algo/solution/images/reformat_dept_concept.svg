@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：行转列 — 条件聚合实现透视</text>
+
+  <!-- ===== Left: Department table (long format) ===== -->
+  <text x="90" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Department 表（长格式）</text>
+  <rect x="20" y="60" width="140" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="76" font-size="9" fill="#446688" font-weight="bold">id</text>
+  <text x="82" y="76" font-size="9" fill="#446688" font-weight="bold">revenue</text>
+  <text x="128" y="76" font-size="9" fill="#446688" font-weight="bold">month</text>
+  <line x1="58" y1="60" x2="58" y2="84" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="108" y1="60" x2="108" y2="84" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row 1: id=1, 8000, Jan -->
+  <rect x="20" y="84" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="40" y="97" text-anchor="middle" font-size="9" fill="#333">1</text>
+  <text x="82" y="97" text-anchor="middle" font-size="9" fill="#333">8000</text>
+  <text x="128" y="97" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">Jan</text>
+  <line x1="58" y1="84" x2="58" y2="102" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="108" y1="84" x2="108" y2="102" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 2: id=2, 9000, Jan -->
+  <rect x="20" y="102" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="40" y="115" text-anchor="middle" font-size="9" fill="#333">2</text>
+  <text x="82" y="115" text-anchor="middle" font-size="9" fill="#333">9000</text>
+  <text x="128" y="115" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">Jan</text>
+  <line x1="58" y1="102" x2="58" y2="120" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="108" y1="102" x2="108" y2="120" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 3: id=3, 10000, Feb -->
+  <rect x="20" y="120" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="40" y="133" text-anchor="middle" font-size="9" fill="#333">3</text>
+  <text x="82" y="133" text-anchor="middle" font-size="9" fill="#333">10000</text>
+  <text x="128" y="133" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">Feb</text>
+  <line x1="58" y1="120" x2="58" y2="138" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="108" y1="120" x2="108" y2="138" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 4: id=1, 7000, Feb -->
+  <rect x="20" y="138" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="40" y="151" text-anchor="middle" font-size="9" fill="#333">1</text>
+  <text x="82" y="151" text-anchor="middle" font-size="9" fill="#333">7000</text>
+  <text x="128" y="151" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">Feb</text>
+  <line x1="58" y1="138" x2="58" y2="156" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="108" y1="138" x2="108" y2="156" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 5: id=1, 6000, Mar -->
+  <rect x="20" y="156" width="140" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="40" y="169" text-anchor="middle" font-size="9" fill="#333">1</text>
+  <text x="82" y="169" text-anchor="middle" font-size="9" fill="#333">6000</text>
+  <text x="128" y="169" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Mar</text>
+  <line x1="58" y1="156" x2="58" y2="174" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="108" y1="156" x2="108" y2="174" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <text x="90" y="186" text-anchor="middle" font-size="8" fill="#888">每行 = 一个部门一个月</text>
+
+  <!-- annotation: id=1 appears 3 times -->
+  <path d="M165 93 L165 170" stroke="#d6a040" stroke-width="1.2" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="172" y="130" font-size="7.5" fill="#d6a040" font-weight="bold">id=1</text>
+  <text x="172" y="140" font-size="7.5" fill="#d6a040" font-weight="bold">有3行</text>
+
+  <!-- arrow from Department to step 1 -->
+  <path d="M165 130 L205 130" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="185" y="124" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">①</text>
+  <text x="185" y="142" text-anchor="middle" font-size="6.5" fill="#d6a040">GROUP BY id</text>
+
+  <!-- ===== Middle: Grouped + conditional aggregation ===== -->
+  <text x="300" y="54" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">按 id 分组 + 条件聚合</text>
+  <rect x="210" y="60" width="180" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="76" font-size="8.5" fill="#4a7a3a" font-weight="bold">id</text>
+  <text x="300" y="76" font-size="8" fill="#4a7a3a" font-weight="bold">month 分桶</text>
+  <text x="370" y="76" font-size="8" fill="#4a7a3a" font-weight="bold">revenue</text>
+  <line x1="260" y1="60" x2="260" y2="84" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="340" y1="60" x2="340" y2="84" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- group id=1 -->
+  <rect x="210" y="84" width="180" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="97" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">1</text>
+  <text x="300" y="97" text-anchor="middle" font-size="8" fill="#d6a040">Jan</text>
+  <text x="370" y="97" text-anchor="middle" font-size="8" fill="#333">8000</text>
+  <line x1="260" y1="84" x2="260" y2="122" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="340" y1="84" x2="340" y2="122" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="300" y="111" text-anchor="middle" font-size="8" fill="#4a7a3a">Feb</text>
+  <text x="370" y="111" text-anchor="middle" font-size="8" fill="#333">7000</text>
+  <text x="300" y="119" text-anchor="middle" font-size="6" fill="#b85450">Mar → 6000</text>
+
+  <!-- group id=2 -->
+  <rect x="210" y="122" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="136" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">2</text>
+  <text x="300" y="136" text-anchor="middle" font-size="8" fill="#d6a040">Jan</text>
+  <text x="370" y="136" text-anchor="middle" font-size="8" fill="#333">9000</text>
+  <line x1="260" y1="122" x2="260" y2="144" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="340" y1="122" x2="340" y2="144" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- group id=3 -->
+  <rect x="210" y="144" width="180" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="158" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">3</text>
+  <text x="300" y="158" text-anchor="middle" font-size="8" fill="#4a7a3a">Feb</text>
+  <text x="370" y="158" text-anchor="middle" font-size="8" fill="#333">10000</text>
+  <line x1="260" y1="144" x2="260" y2="166" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="340" y1="144" x2="340" y2="166" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <text x="300" y="180" text-anchor="middle" font-size="7.5" fill="#4a7a3a">SUM(IF(month='Jan', revenue, NULL))</text>
+
+  <!-- arrow from step 1 to step 2 -->
+  <path d="M395 130 L430 130" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="412" y="124" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">②</text>
+  <text x="412" y="142" text-anchor="middle" font-size="6.5" fill="#d6a040">12列展开</text>
+
+  <!-- ===== Right: Final result (wide format) ===== -->
+  <text x="500" y="54" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">结果表（宽格式）</text>
+  <rect x="435" y="60" width="130" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="448" y="76" font-size="8" fill="#b85450" font-weight="bold">id</text>
+  <text x="480" y="76" font-size="7" fill="#b85450" font-weight="bold">Jan</text>
+  <text x="510" y="76" font-size="7" fill="#b85450" font-weight="bold">Feb</text>
+  <text x="545" y="76" font-size="7" fill="#b85450" font-weight="bold">...</text>
+  <line x1="460" y1="60" x2="460" y2="84" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="495" y1="60" x2="495" y2="84" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="525" y1="60" x2="525" y2="84" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- id=1 -->
+  <rect x="435" y="84" width="130" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="448" y="98" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">1</text>
+  <text x="480" y="98" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">8000</text>
+  <text x="510" y="98" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">7000</text>
+  <text x="545" y="98" text-anchor="middle" font-size="7" fill="#888">null</text>
+  <line x1="460" y1="84" x2="460" y2="106" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="495" y1="84" x2="495" y2="106" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="525" y1="84" x2="525" y2="106" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- id=2 -->
+  <rect x="435" y="106" width="130" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="448" y="120" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">2</text>
+  <text x="480" y="120" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">9000</text>
+  <text x="510" y="120" text-anchor="middle" font-size="7" fill="#888">null</text>
+  <text x="545" y="120" text-anchor="middle" font-size="7" fill="#888">null</text>
+  <line x1="460" y1="106" x2="460" y2="128" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="495" y1="106" x2="495" y2="128" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="525" y1="106" x2="525" y2="128" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- id=3 -->
+  <rect x="435" y="128" width="130" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="448" y="142" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">3</text>
+  <text x="480" y="142" text-anchor="middle" font-size="7" fill="#888">null</text>
+  <text x="510" y="142" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">10000</text>
+  <text x="545" y="142" text-anchor="middle" font-size="7" fill="#888">null</text>
+  <line x1="460" y1="128" x2="460" y2="150" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="495" y1="128" x2="495" y2="150" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="525" y1="128" x2="525" y2="150" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <text x="500" y="164" text-anchor="middle" font-size="7" fill="#888">每行 = 一个部门全年</text>
+
+  <!-- ===== Bottom: Key insight box ===== -->
+  <rect x="20" y="200" width="540" height="230" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="222" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">关键洞察：条件聚合 = 行转列的核心武器</text>
+
+  <text x="40" y="244" font-size="9.5" fill="#333">• <tspan fill="#446688" font-weight="bold">长格式</tspan>（原始表）：每行 = 一个部门一个月，month 是<tspan fill="#d6a040">列值</tspan></text>
+  <text x="40" y="262" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">宽格式</tspan>（目标表）：每行 = 一个部门全年，month 变成<tspan fill="#d6a040">列名</tspan></text>
+  <text x="40" y="284" font-size="9.5" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">GROUP BY id</tspan>：把同一部门的 N 行折叠成 1 行</text>
+  <text x="40" y="302" font-size="9.5" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">SUM(IF(month='Jan', revenue, NULL))</tspan>：只取 month=Jan 的 revenue</text>
+  <text x="40" y="320" font-size="9.5" fill="#333">  ↳ 每个 month 值写一个这样的列，共 12 列（Jan_Revenue ~ Dec_Revenue）</text>
+  <text x="40" y="342" font-size="9.5" fill="#333">• <tspan fill="#d6a040" font-weight="bold">为什么用 SUM？</tspan>(id, month) 是联合主键 → 每组最多 1 行</text>
+  <text x="40" y="360" font-size="9.5" fill="#333">  ↳ SUM / MAX / MIN 等价（单值聚合恒等于该值），SUM 最常用</text>
+  <text x="40" y="382" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">无数据的月份 → NULL</tspan>：IF 条件不满足时返回 NULL，SUM(NULL) = NULL</text>
+  <text x="40" y="404" font-size="9.5" fill="#333">• ⚠️ 不能用 <tspan fill="#b85450">WHERE month='Jan'</tspan>：一次只能筛一个月，无法同时出 12 列</text>
+  <text x="40" y="422" font-size="9.5" fill="#333">• 透视 = <tspan fill="#d6a040" font-weight="bold">GROUP BY + 条件聚合</tspan>，SQL 行转列的万能模板</text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：预处理 rank/match → 逐人判定</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="42" width="200" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="60" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① 预处理 rank 矩阵</text>
+  <text x="140" y="78" text-anchor="middle" font-size="10.5" fill="#555">rank[x][u] = u 在 preferences[x] 的下标</text>
+
+  <!-- Step 2 -->
+  <rect x="280" y="42" width="200" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="60" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② 建立 match 数组</text>
+  <text x="380" y="78" text-anchor="middle" font-size="10.5" fill="#555">遍历 pairs：match[xi]=yi, match[yi]=xi</text>
+
+  <!-- arrows down -->
+  <path d="M 140 94 L 140 112" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 380 94 L 380 112" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop -->
+  <rect x="40" y="116" width="440" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="134" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ 对每个朋友 x：令 y = match[x]</text>
+  <text x="260" y="152" text-anchor="middle" font-size="10.5" fill="#555">遍历 preferences[x] 中排在 y 之前的每个 u（即 rank[x][u] &lt; rank[x][y]）</text>
+
+  <path d="M 260 168 L 260 184" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: decision diamond -->
+  <polygon points="260,188 360,228 260,268 160,228" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="220" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">rank[u][x] &lt;</text>
+  <text x="260" y="236" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">rank[u][match[u]] ?</text>
+
+  <!-- Yes branch -->
+  <text x="370" y="222" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <path d="M 360 228 L 410 228" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="410" y="208" width="86" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="453" y="226" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">x 不开心</text>
+  <text x="453" y="241" text-anchor="middle" font-size="10" fill="#555">标记 ans++, break</text>
+
+  <!-- No branch -->
+  <text x="120" y="222" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M 160 228 L 110 228" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="24" y="208" width="86" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="67" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">换下一个 u</text>
+  <text x="67" y="241" text-anchor="middle" font-size="10" fill="#555">继续内层循环</text>
+
+  <!-- loop back arrow from "换下一个u" up to step3 -->
+  <path d="M 67 208 Q 67 192 110 192" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: next x -->
+  <path d="M 260 268 L 260 286" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="120" y="290" width="280" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="308" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">④ 所有 x 处理完 → 返回 ans</text>
+  <text x="260" y="322" text-anchor="middle" font-size="10.5" fill="#555">ans 即不开心的朋友数目</text>
+
+  <!-- Footer -->
+  <text x="260" y="352" text-anchor="middle" font-size="10.5" fill="#888">关键：用 rank 把「更喜欢」从 O(n) 扫描降为 O(1) 比较</text>
+  <text x="260" y="370" text-anchor="middle" font-size="10" fill="#aaa">总复杂度 O(n²)：建表 O(n²) + 每人至多扫 n-1 个 u 各 O(1)</text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 340" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="340" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → GROUP BY → SELECT（COUNT DISTINCT）→ 输出</text>
+
+  <!-- ===== Step 1: FROM ===== -->
+  <rect x="30" y="50" width="130" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="70" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① FROM DailySales</text>
+  <text x="95" y="86" text-anchor="middle" font-size="9" fill="#888">读取全部 10 行</text>
+  <text x="95" y="98" text-anchor="middle" font-size="8.5" fill="#888">（含重复行）</text>
+
+  <path d="M160 75 L195 75" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: GROUP BY ===== -->
+  <rect x="200" y="50" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">② GROUP BY</text>
+  <text x="280" y="86" text-anchor="middle" font-size="9" fill="#333">date_id, make_name</text>
+  <text x="280" y="98" text-anchor="middle" font-size="8.5" fill="#888">折叠成 4 组</text>
+
+  <path d="M360 75 L395 75" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: SELECT ===== -->
+  <rect x="400" y="50" width="220" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="510" y="68" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">③ SELECT（组内聚合）</text>
+  <text x="510" y="84" text-anchor="middle" font-size="8.5" fill="#333">COUNT(DISTINCT lead_id)</text>
+  <text x="510" y="97" text-anchor="middle" font-size="8.5" fill="#333">COUNT(DISTINCT partner_id)</text>
+
+  <!-- ===== Execution order note ===== -->
+  <rect x="30" y="120" width="600" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="135" font-size="9.5" fill="#b85450" font-weight="bold">⚠ SQL 逻辑执行顺序 ≠ 书写顺序</text>
+  <text x="50" y="150" font-size="9" fill="#333">FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT（本题无 WHERE/HAVING/ORDER BY）</text>
+
+  <!-- ===== Detailed per-step breakdown ===== -->
+  <text x="330" y="182" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">逐步拆解</text>
+
+  <!-- Step 1 detail -->
+  <rect x="30" y="194" width="190" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="125" y="212" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">① FROM：全表扫描</text>
+  <text x="40" y="228" font-size="8.5" fill="#333">原始行（节选）：</text>
+  <text x="40" y="242" font-size="8" fill="#888">12-8 toyota 0→1</text>
+  <text x="40" y="255" font-size="8" fill="#888">12-8 toyota 1→0</text>
+  <text x="40" y="268" font-size="8" fill="#888">12-8 toyota 1→2</text>
+  <text x="40" y="281" font-size="8" fill="#888">12-7 toyota 0→2</text>
+  <text x="40" y="294" font-size="8" fill="#888">…（共 10 行）</text>
+  <text x="40" y="307" font-size="8" fill="#b85450">⚠ lead 1 在 toyota 12-8 重复</text>
+
+  <!-- Step 2 detail -->
+  <rect x="235" y="194" width="190" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="212" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">② GROUP BY：二维折叠</text>
+  <text x="245" y="228" font-size="8.5" fill="#333">按 (date_id, make_name) 分组：</text>
+  <text x="245" y="244" font-size="8" fill="#446688">[12-8, toyota] 3 行</text>
+  <text x="245" y="258" font-size="8" fill="#4a7a3a">[12-7, toyota] 2 行</text>
+  <text x="245" y="272" font-size="8" fill="#d6a040">[12-8, honda]  2 行</text>
+  <text x="245" y="286" font-size="8" fill="#b85450">[12-7, honda]  3 行</text>
+  <text x="245" y="304" font-size="8" fill="#888">10 行 → 4 组（每组 ≥1 行）</text>
+
+  <!-- Step 3 detail -->
+  <rect x="440" y="194" width="190" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="535" y="212" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">③ SELECT：组内去重计数</text>
+  <text x="450" y="228" font-size="8.5" fill="#333">每组算两个 DISTINCT 计数：</text>
+  <text x="450" y="244" font-size="8" fill="#446688">12-8 toyota: {0,1}→2 {0,1,2}→3</text>
+  <text x="450" y="258" font-size="8" fill="#4a7a3a">12-7 toyota: {0}→1 {1,2}→2</text>
+  <text x="450" y="272" font-size="8" fill="#d6a040">12-8 honda:  {1,2}→2 {1,2}→2</text>
+  <text x="450" y="286" font-size="8" fill="#b85450">12-7 honda:  {0,1,2}→3 {1,2}→2</text>
+  <text x="450" y="304" font-size="8" fill="#888">→ unique_leads / unique_partners</text>
+  <text x="450" y="316" font-size="8" fill="#b85450">DISTINCT 消除组内重复值</text>
+</svg>

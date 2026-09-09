@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+  </defs>
+
+  <rect width="580" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">示例演算：cuboids = [[50,45,20],[95,37,53],[45,23,12]]</text>
+  <text x="290" y="44" text-anchor="middle" font-size="10" fill="#999">每块内部排序 → 字典序排序 → dp[i] = h_i + max{dp[j] : l_j≤l_i, h_j≤h_i}</text>
+
+  <!-- ===== Step 1: Per-cuboid sort ===== -->
+  <text x="36" y="72" font-size="11" fill="#888" font-weight="bold" filter="url(#rough2)">① 每块内部排序：</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="80" width="160" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4"/>
+    <rect x="220" y="80" width="160" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4"/>
+    <rect x="400" y="80" width="160" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4"/>
+  </g>
+  <g font-size="11" fill="#b85450" text-anchor="middle" font-weight="bold">
+    <text x="120" y="101" filter="url(#rough2)">[50,45,20]</text>
+    <text x="300" y="101" filter="url(#rough2)">[95,37,53]</text>
+    <text x="480" y="101" filter="url(#rough2)">[45,23,12]</text>
+  </g>
+
+  <!-- Arrows down -->
+  <path d="M 120 116 L 120 130" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 300 116 L 300 130" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 480 116 L 480 130" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="128" y="128" font-size="9" fill="#4a7a3a" filter="url(#rough2)">sort</text>
+  <text x="308" y="128" font-size="9" fill="#4a7a3a" filter="url(#rough2)">sort</text>
+  <text x="488" y="128" font-size="9" fill="#4a7a3a" filter="url(#rough2)">sort</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="132" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <rect x="220" y="132" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <rect x="400" y="132" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+  </g>
+  <g font-size="11" fill="#4a7a3a" text-anchor="middle" font-weight="bold">
+    <text x="120" y="153" filter="url(#rough2)">[20,45,50]</text>
+    <text x="300" y="153" filter="url(#rough2)">[37,53,95]</text>
+    <text x="480" y="153" filter="url(#rough2)">[12,23,45]</text>
+  </g>
+  <g font-size="9" fill="#888" text-anchor="middle">
+    <text x="120" y="178" filter="url(#rough2)">原下标 0</text>
+    <text x="300" y="178" filter="url(#rough2)">原下标 1</text>
+    <text x="480" y="178" filter="url(#rough2)">原下标 2</text>
+  </g>
+
+  <!-- ===== Step 2: Lexicographic sort ===== -->
+  <text x="36" y="202" font-size="11" fill="#888" font-weight="bold" filter="url(#rough2)">② 按 (w,l,h) 字典序排序：</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="210" width="170" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="220" y="210" width="170" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="400" y="210" width="170" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+  </g>
+  <g font-size="10" fill="#888" text-anchor="middle">
+    <text x="125" y="226" filter="url(#rough2)">序号 0 (原 2)</text>
+    <text x="305" y="226" filter="url(#rough2)">序号 1 (原 0)</text>
+    <text x="485" y="226" filter="url(#rough2)">序号 2 (原 1)</text>
+  </g>
+  <g font-size="12" fill="#333" text-anchor="middle" font-weight="bold">
+    <text x="125" y="248" filter="url(#rough2)">(12, 23, 45)</text>
+    <text x="305" y="248" filter="url(#rough2)">(20, 45, 50)</text>
+    <text x="485" y="248" filter="url(#rough2)">(37, 53, 95)</text>
+  </g>
+
+  <!-- ===== Step 3: DP Table ===== -->
+  <text x="36" y="284" font-size="11" fill="#888" font-weight="bold" filter="url(#rough2)">③ DP 递推（w 维已由排序保证，查 l, h）：</text>
+
+  <rect x="40" y="292" width="510" height="142" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+
+  <!-- Header row -->
+  <rect x="40" y="292" width="510" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <g font-size="11" fill="#446688" font-weight="bold" text-anchor="middle">
+    <text x="68" y="310" filter="url(#rough2)">i</text>
+    <text x="130" y="310" filter="url(#rough2)">(w,l,h)</text>
+    <text x="320" y="310" filter="url(#rough2)">可接前驱（l_j≤l_i 且 h_j≤h_i）</text>
+    <text x="500" y="310" filter="url(#rough2)">dp[i]</text>
+  </g>
+  <g stroke="#dde" stroke-width="1" filter="url(#rough2)">
+    <line x1="96" y1="292" x2="96" y2="434"/>
+    <line x1="170" y1="292" x2="170" y2="434"/>
+    <line x1="470" y1="292" x2="470" y2="434"/>
+  </g>
+
+  <!-- Row 0 -->
+  <g font-size="11" fill="#333" text-anchor="middle">
+    <text x="68" y="340" filter="url(#rough2)">0</text>
+    <text x="130" y="340" font-weight="bold" fill="#446688" filter="url(#rough2)">(12,23,45)</text>
+    <text x="320" y="340" fill="#999" filter="url(#rough2)">无（首块）</text>
+    <text x="500" y="340" fill="#333" font-weight="bold" filter="url(#rough2)">45</text>
+  </g>
+
+  <!-- Row 1 -->
+  <g font-size="11" fill="#333" text-anchor="middle">
+    <text x="68" y="368" filter="url(#rough2)">1</text>
+    <text x="130" y="368" font-weight="bold" fill="#446688" filter="url(#rough2)">(20,45,50)</text>
+    <text x="320" y="368" fill="#446688" filter="url(#rough2)">j=0：23≤50 ✓ 且 45≤50 ✓</text>
+    <text x="500" y="368" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">95</text>
+  </g>
+
+  <!-- Row 2 PEAK -->
+  <rect x="42" y="382" width="506" height="28" fill="#fce4ec" stroke="none" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" text-anchor="middle">
+    <text x="68" y="402" filter="url(#rough2)">2</text>
+    <text x="130" y="402" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">(37,53,95)</text>
+    <text x="320" y="398" fill="#4a7a3a" filter="url(#rough2)">j=0：23≤95,45≤95 ✓</text>
+    <text x="320" y="412" fill="#4a7a3a" filter="url(#rough2)">j=1：45≤95,50≤95 ✓ → max=95</text>
+    <text x="500" y="402" fill="#b85450" font-weight="bold" filter="url(#rough2)">190</text>
+  </g>
+
+  <!-- Row separators -->
+  <g stroke="#eef" stroke-width="1" filter="url(#rough2)">
+    <line x1="40" y1="348" x2="550" y2="348"/>
+    <line x1="40" y1="376" x2="550" y2="376"/>
+    <line x1="40" y1="410" x2="550" y2="410"/>
+  </g>
+
+  <!-- Peak annotation -->
+  <text x="538" y="402" font-size="10" fill="#b85450" font-weight="bold" text-anchor="end" filter="url(#rough2)">← 峰值</text>
+
+  <!-- Result row -->
+  <rect x="40" y="442" width="510" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="290" y="462" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">答案 = max(45, 95, 190) = 190 ✓</text>
+
+  <!-- Observation box -->
+  <rect x="40" y="482" width="510" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="500" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">对应堆叠（底→顶）：</text>
+  <text x="56" y="512" font-size="10" fill="#555" filter="url(#rough2)">原下标 {1, 0, 2} = (37,53,95)→(20,45,50)→(12,23,45)，高度 95+50+45 = 190</text>
+</svg>

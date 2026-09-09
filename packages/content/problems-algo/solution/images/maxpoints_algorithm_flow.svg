@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：遍历每个点 → 计算斜率 → GCD 化简 → 哈希分组</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">O(n²) = 外层 n 轮 × 内层 O(n) + GCD O(log M)</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: init -->
+    <rect x="40" y="64" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="84" font-size="12" fill="#446688" font-weight="bold">① 初始化</text>
+    <text x="130" y="84" font-family="monospace" font-size="10" fill="#555">ans = 1</text>
+    <text x="54" y="98" font-size="9" fill="#888">至少 1 个点；n ≤ 2 直接返回 n（两点必共线）</text>
+
+    <path d="M 260 106 L 260 120" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: outer loop -->
+    <rect x="40" y="124" width="440" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="144" font-size="12" fill="#4a7a3a" font-weight="bold">② 固定点 i</text>
+    <text x="150" y="144" font-family="monospace" font-size="10" fill="#555">for i in 0..n-1:</text>
+    <text x="54" y="160" font-family="monospace" font-size="10" fill="#555">  duplicates = 1; slope_count = {}</text>
+    <text x="54" y="174" font-size="9" fill="#888">duplicates 计重合点（含 i 自身），slope_count 按斜率分组</text>
+
+    <path d="M 260 176 L 260 190" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: inner loop -->
+    <rect x="40" y="194" width="440" height="110" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="214" font-size="12" fill="#d6a040" font-weight="bold">③ 遍历其余点 j</text>
+    <text x="200" y="214" font-family="monospace" font-size="10" fill="#555">for j in i+1..n-1:</text>
+    <text x="54" y="232" font-family="monospace" font-size="10" fill="#b85450">  if dy==0 and dx==0: duplicates++; continue</text>
+    <text x="54" y="248" font-size="9" fill="#888">重合点单独计数，不参与斜率分组</text>
+    <text x="54" y="266" font-family="monospace" font-size="10" fill="#446688">  g = gcd(|dy|, |dx|); dy/=g; dx/=g</text>
+    <text x="54" y="282" font-family="monospace" font-size="10" fill="#4a7a3a">  if dx &lt; 0: dy=-dy; dx=-dx  // 符号统一</text>
+    <text x="54" y="298" font-family="monospace" font-size="10" fill="#d6a040">  slope_count[(dy,dx)]++; cur_max = max(cur_max, ...)</text>
+
+    <path d="M 260 306 L 260 320" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 4: update ans -->
+    <rect x="40" y="324" width="440" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="344" font-size="12" fill="#b85450" font-weight="bold">④ 更新答案</text>
+    <text x="170" y="344" font-family="monospace" font-size="10" fill="#555">ans = max(ans, cur_max + duplicates)</text>
+    <text x="54" y="360" font-size="9" fill="#888">最大斜率组点数 + 重合点数 = 经过点 i 的最多共线点数</text>
+
+    <!-- Complexity bar -->
+    <rect x="40" y="380" width="440" height="44" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+    <text x="260" y="398" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">时间 O(n²) · 空间 O(n) · GCD O(log M) 为常数</text>
+    <text x="260" y="414" text-anchor="middle" font-size="9" fill="#888">每对点只检查一次，是该问题的最优解</text>
+  </g>
+</svg>

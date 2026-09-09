@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="520" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：seat() 选最大距离座位，leave(p) 从集合删除</text>
+
+  <!-- ========== seat() flow ========== -->
+  <rect x="40" y="42" width="260" height="460" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="170" y="64" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">seat()</text>
+
+  <!-- step 1: check empty -->
+  <rect x="70" y="76" width="200" height="40" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="94" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 集合为空？</text>
+  <text x="170" y="110" text-anchor="middle" font-size="10" fill="#444">是 → 插入 0，返回 0</text>
+
+  <path d="M 170 120 L 170 134" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2: left boundary -->
+  <rect x="70" y="138" width="200" height="44" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="156" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 左端区间</text>
+  <text x="170" y="172" text-anchor="middle" font-size="10" fill="#444">dist = *begin(), seat = 0</text>
+
+  <path d="M 170 186 L 170 200" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 3: internal intervals -->
+  <rect x="60" y="204" width="220" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="222" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 遍历相邻对 (prev, curr)</text>
+  <text x="170" y="238" text-anchor="middle" font-size="10" fill="#444">dist = (curr − prev) ÷ 2</text>
+  <text x="170" y="252" text-anchor="middle" font-size="10" fill="#444">seat = (prev + curr) ÷ 2</text>
+  <text x="170" y="262" text-anchor="middle" font-size="9" fill="#888">dist &gt; maxDist 时更新</text>
+
+  <path d="M 170 268 L 170 282" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 4: right boundary -->
+  <rect x="70" y="286" width="200" height="44" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="304" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ 右端区间</text>
+  <text x="170" y="320" text-anchor="middle" font-size="10" fill="#444">dist = N−1−*rbegin(), seat = N−1</text>
+
+  <path d="M 170 334 L 170 348" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 5: insert and return -->
+  <rect x="70" y="352" width="200" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="370" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">⑤ 插入 bestSeat</text>
+  <text x="170" y="386" text-anchor="middle" font-size="10" fill="#444">seats.insert(bestSeat), return bestSeat</text>
+
+  <!-- note for seat() -->
+  <rect x="60" y="410" width="220" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="428" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠️ 平局取最小编号</text>
+  <text x="170" y="444" text-anchor="middle" font-size="10" fill="#444">左→右遍历，仅 dist &gt; maxDist</text>
+  <text x="170" y="458" text-anchor="middle" font-size="10" fill="#444">（严格大于）时更新</text>
+  <text x="170" y="472" text-anchor="middle" font-size="10" fill="#444">→ 自动保留最小编号</text>
+  <text x="170" y="484" text-anchor="middle" font-size="9" fill="#888">复杂度 O(P)，P = 已坐人数</text>
+
+  <!-- ========== leave() flow ========== -->
+  <rect x="320" y="42" width="260" height="220" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="450" y="64" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">leave(p)</text>
+
+  <!-- step 1: erase -->
+  <rect x="350" y="80" width="200" height="48" fill="#fafafa" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="100" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 从集合删除 p</text>
+  <text x="450" y="118" text-anchor="middle" font-size="10" fill="#444">seats.erase(p)</text>
+
+  <path d="M 450 132 L 450 146" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- step 2: done -->
+  <rect x="350" y="150" width="200" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 完成</text>
+  <text x="450" y="188" text-anchor="middle" font-size="10" fill="#444">删除后区间自动合并</text>
+
+  <!-- note for leave() -->
+  <rect x="340" y="210" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="228" text-anchor="middle" font-size="10" fill="#444">无需显式维护区间表</text>
+  <text x="450" y="244" text-anchor="middle" font-size="10" fill="#888">seat() 时实时遍历相邻对</text>
+
+  <!-- ========== key insight ========== -->
+  <rect x="320" y="280" width="260" height="222" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="300" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">设计要点</text>
+
+  <text x="340" y="322" font-size="10" fill="#444">• 有序集合存已坐位置</text>
+  <text x="340" y="340" font-size="10" fill="#444">• seat() 遍历相邻对算距离</text>
+  <text x="340" y="358" font-size="10" fill="#444">• 三类区间：左端/中间/右端</text>
+  <text x="340" y="376" font-size="10" fill="#444">  左端：dist = first</text>
+  <text x="340" y="392" font-size="10" fill="#444">  中间：dist = (b−a)÷2</text>
+  <text x="340" y="408" font-size="10" fill="#444">  右端：dist = N−1−last</text>
+  <text x="340" y="428" font-size="10" fill="#b85450">• 贴墙全段 vs 中间半段</text>
+  <text x="340" y="448" font-size="10" fill="#444">• leave 只删不重建区间</text>
+  <text x="340" y="466" font-size="10" fill="#444">  → 惰性：seat 时现算</text>
+  <text x="340" y="486" font-size="10" fill="#888">• C++ set: O(log P) 删除</text>
+  <text x="340" y="498" font-size="10" fill="#888">  Python list: O(P) 删除</text>
+</svg>

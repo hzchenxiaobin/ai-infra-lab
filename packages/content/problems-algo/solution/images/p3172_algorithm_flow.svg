@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#999999"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：JOIN + 双谓词 + DISTINCT + 升序输出</text>
+
+  <!-- step 1 -->
+  <rect x="150" y="42" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="58" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① FROM emails JOIN texts</text>
+  <text x="260" y="74" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">ON email_id（注册行 ↔ 短信行配对）</text>
+
+  <path d="M 260 82 L 260 98" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2: decision diamond -->
+  <polygon points="260,100 410,152 260,204 110,152" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="124" text-anchor="middle" font-size="11.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">② WHERE 逐行判定</text>
+  <text x="260" y="143" text-anchor="middle" font-size="9.5" fill="#8a6d3b" filter="url(#rough2)">DATEDIFF(action_date, signup_date) = 1 ?</text>
+  <text x="260" y="159" text-anchor="middle" font-size="9.5" fill="#8a6d3b" filter="url(#rough2)">signup_action = 'Verified' ?</text>
+  <text x="260" y="177" text-anchor="middle" font-size="9" fill="#a08430" filter="url(#rough2)">（AND：两个都要满足）</text>
+
+  <!-- false branch -->
+  <path d="M 110 152 C 84 172, 76 194, 76 216" stroke="#999999" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="52" y="196" font-size="10" fill="#888" filter="url(#rough2)">任一为否</text>
+  <rect x="14" y="218" width="124" height="46" fill="#f0f0f0" stroke="#999" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="236" text-anchor="middle" font-size="10.5" fill="#777" filter="url(#rough2)">丢弃</text>
+  <text x="76" y="252" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">如 1052：Not Verified</text>
+
+  <!-- true branch -->
+  <path d="M 260 204 L 260 224" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="274" y="218" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">两个都满足</text>
+
+  <!-- step 3 -->
+  <rect x="150" y="226" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="243" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">③ SELECT DISTINCT user_id</text>
+  <text x="260" y="259" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">DISTINCT：抵御一对多的 JOIN 放大</text>
+
+  <path d="M 260 270 L 260 286" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- output -->
+  <rect x="150" y="288" width="220" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="306" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ ORDER BY user_id ASC</text>
+  <text x="260" y="324" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">输出：user_id ∈ {7005, 7771}</text>
+
+  <!-- side note -->
+  <rect x="390" y="226" width="118" height="108" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="449" y="246" text-anchor="middle" font-size="10" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">为什么 DISTINCT？</text>
+  <text x="449" y="264" text-anchor="middle" font-size="9.5" fill="#8a6d3b" filter="url(#rough2)">一对多放大：</text>
+  <text x="449" y="280" text-anchor="middle" font-size="9.5" fill="#8a6d3b" filter="url(#rough2)">一邮箱多条短信</text>
+  <text x="449" y="296" text-anchor="middle" font-size="9.5" fill="#8a6d3b" filter="url(#rough2)">一用户多个邮箱</text>
+  <text x="449" y="314" text-anchor="middle" font-size="9.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">→ DISTINCT 去重</text>
+  <text x="449" y="328" text-anchor="middle" font-size="8.5" fill="#a08430" filter="url(#rough2)">（或改用 EXISTS）</text>
+
+  <text x="260" y="352" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">内连接下谓词放 ON 或 WHERE 等价；ORDER BY 1 是按第 1 个输出列排序的简写</text>
+</svg>

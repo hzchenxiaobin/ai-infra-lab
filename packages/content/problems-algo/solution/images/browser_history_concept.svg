@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心模型：数组存历史 + 双指针 cur / last</text>
+
+  <!-- Browser tab -->
+  <rect x="40" y="46" width="480" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="68" font-size="11" fill="#888" font-weight="bold">浏览器</text>
+  <circle cx="62" cy="84" r="4" fill="#b85450" filter="url(#rough2)"/>
+  <circle cx="76" cy="84" r="4" fill="#d6a040" filter="url(#rough2)"/>
+  <circle cx="90" cy="84" r="4" fill="#4a7a3a" filter="url(#rough2)"/>
+  <rect x="110" y="76" width="380" height="20" fill="#fff" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="90" font-size="11" fill="#446688" font-weight="bold">当前页：facebook.com</text>
+
+  <!-- History array label -->
+  <text x="40" y="138" font-size="11" fill="#888" font-weight="bold">history 数组（按访问顺序存 URL）</text>
+
+  <!-- History cells: leetcode, google, facebook, youtube, linkedin -->
+  <rect x="40" y="146" width="96" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="88" y="166" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">leetcode</text>
+  <text x="88" y="182" text-anchor="middle" font-size="9.5" fill="#888">[0]</text>
+
+  <rect x="136" y="146" width="96" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="184" y="166" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">google</text>
+  <text x="184" y="182" text-anchor="middle" font-size="9.5" fill="#888">[1]</text>
+
+  <rect x="232" y="146" width="96" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="166" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">facebook</text>
+  <text x="280" y="182" text-anchor="middle" font-size="9.5" fill="#888">[2]</text>
+
+  <rect x="328" y="146" width="96" height="44" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="376" y="166" text-anchor="middle" font-size="11" fill="#aaa" font-weight="bold">youtube</text>
+  <text x="376" y="182" text-anchor="middle" font-size="9.5" fill="#aaa">[3] 失效</text>
+
+  <rect x="424" y="146" width="96" height="44" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="472" y="166" text-anchor="middle" font-size="11" fill="#aaa" font-weight="bold">linkedin</text>
+  <text x="472" y="182" text-anchor="middle" font-size="9.5" fill="#aaa">[4] 失效</text>
+
+  <!-- cur pointer -->
+  <path d="M 280 210 L 280 196" stroke="#d6a040" stroke-width="2.2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="244" y="212" width="72" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="230" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">cur = 2</text>
+
+  <!-- last pointer -->
+  <path d="M 280 268 L 280 252" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="244" y="270" width="72" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="288" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">last = 2</text>
+
+  <!-- back / forward range -->
+  <rect x="40" y="312" width="480" height="0" fill="none"/>
+
+  <!-- back arrow region -->
+  <path d="M 88 322 L 88 322" stroke="none"/>
+  <rect x="40" y="316" width="288" height="44" fill="none" stroke="#446688" stroke-width="1.4" stroke-dasharray="5,3" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="336" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">back(steps)：cur 左移（≥0）</text>
+  <text x="184" y="352" text-anchor="middle" font-size="10" fill="#888">cur = max(0, cur − steps)</text>
+
+  <!-- forward arrow region -->
+  <rect x="232" y="316" width="96" height="44" fill="none" stroke="#b85450" stroke-width="1.4" stroke-dasharray="5,3" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="392" text-anchor="middle" font-size="0" fill="none"/>
+
+  <!-- legend -->
+  <rect x="336" y="316" width="184" height="44" fill="#f8f8f8" stroke="#888" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <rect x="346" y="324" width="14" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="366" y="335" font-size="10" fill="#555">cur=当前页</text>
+  <rect x="346" y="342" width="14" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="366" y="353" font-size="10" fill="#555">last=有效末尾</text>
+  <rect x="450" y="324" width="14" height="14" fill="#f0f0f0" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,2" rx="3" filter="url(#rough2)"/>
+  <text x="470" y="335" font-size="10" fill="#555">失效页</text>
+  <rect x="450" y="342" width="14" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="470" y="353" font-size="10" fill="#555">有效页</text>
+</svg>

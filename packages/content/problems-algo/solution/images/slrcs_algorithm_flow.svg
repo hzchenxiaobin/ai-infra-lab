@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">maxRepOpt1 算法流程：分组 + 两种情形</text>
+
+  <!-- Step 1: grouping -->
+  <rect x="30" y="44" width="200" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="130" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 压缩成连续段</text>
+  <line x1="42" y1="74" x2="218" y2="74" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="130" y="94" text-anchor="middle" font-size="10.5" fill="#444">遍历 text，合并相同字符</text>
+  <text x="130" y="110" text-anchor="middle" font-size="10.5" fill="#444">得 groups = [(c,len)...]</text>
+  <text x="130" y="126" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">O(n)</text>
+
+  <!-- Step 2: count -->
+  <rect x="250" y="44" width="180" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="340" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">② 统计字符总数</text>
+  <line x1="262" y1="74" x2="418" y2="74" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="340" y="94" text-anchor="middle" font-size="10.5" fill="#444">cnt[c] = c 出现总次数</text>
+  <text x="340" y="110" text-anchor="middle" font-size="10.5" fill="#444">用于判定「有无富余」</text>
+  <text x="340" y="126" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">O(n)</text>
+
+  <!-- arrow down -->
+  <path d="M 130 130 L 130 150" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 340 130 L 340 150" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: iterate groups -->
+  <rect x="60" y="154" width="400" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="178" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ 遍历每个 group i = (c, len)</text>
+  <text x="260" y="198" text-anchor="middle" font-size="10.5" fill="#555">对每个 i 评估下面两种情形，取最大</text>
+  <text x="260" y="212" text-anchor="middle" font-size="9.5" fill="#888">（i+2 越界则只做情形 A）</text>
+
+  <path d="M 260 214 L 260 230" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- two branches -->
+  <!-- Case A -->
+  <rect x="30" y="234" width="210" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="135" y="256" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">情形 A：单段延长</text>
+  <line x1="42" y1="264" x2="228" y2="264" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="135" y="284" text-anchor="middle" font-size="10" fill="#444">cnt[c] &gt; len ?</text>
+  <text x="135" y="300" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">  是 → ans = max(ans, len+1)</text>
+  <text x="135" y="316" text-anchor="middle" font-size="10" fill="#888">  否 → ans = max(ans, len)</text>
+
+  <!-- Case B -->
+  <rect x="270" y="234" width="220" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="380" y="256" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">情形 B：桥接合并</text>
+  <line x1="282" y1="264" x2="478" y2="264" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="380" y="282" text-anchor="middle" font-size="9.5" fill="#444">groups[i+2].c==c 且 gap==1 ?</text>
+  <text x="380" y="298" text-anchor="middle" font-size="9.5" fill="#444">merged = len + groups[i+2].len</text>
+  <text x="380" y="314" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">cnt[c]&gt;merged ? merged+1 : merged</text>
+
+  <path d="M 135 330 L 135 348" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 380 330 L 380 348" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="120" y="352" width="280" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="374" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历结束 → 返回 ans</text>
+  <text x="260" y="390" text-anchor="middle" font-size="9.5" fill="#888">每组 O(1) 判定，整体 O(n)</text>
+
+  <text x="260" y="414" text-anchor="middle" font-size="10" fill="#aaa" font-style="italic">压缩 O(n) · 计数 O(n) · 扫描 O(n) · 总 O(n)</text>
+</svg>

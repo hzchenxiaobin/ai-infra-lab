@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="380" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">示例 1 演算：fn.callPolyfill({a:5}, 7) → 12</text>
+
+  <!-- code line -->
+  <rect x="20" y="42" width="560" height="26" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="30" y="60" font-size="11" fill="#333" font-family="monospace" filter="url(#rough2)">fn = function add(b) { return this.a + b; }   // 调用 callPolyfill({"a":5}, 7)</text>
+
+  <!-- Step 1 -->
+  <rect x="20" y="86" width="560" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="103" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">① fn = this</text>
+  <text x="34" y="119" font-size="10" fill="#555" filter="url(#rough2)">this 指向 add 函数本身（callPolyfill 由 fn 调用）</text>
+  <path d="M 300 126 L 300 134" stroke="#446688" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="20" y="134" width="560" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="151" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">② key = Symbol()</text>
+  <text x="34" y="167" font-size="10" fill="#555" filter="url(#rough2)">生成唯一符号键，不影响对象已有属性</text>
+  <path d="M 300 174 L 300 182" stroke="#446688" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="20" y="182" width="560" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="199" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ context[key] = fn</text>
+  <text x="34" y="215" font-size="10" fill="#555" filter="url(#rough2)">挂载后 context = { a: 5, [Symbol()]: add }</text>
+  <path d="M 300 222 L 300 230" stroke="#446688" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="20" y="230" width="560" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="248" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ result = context[key](7)  ← 方法调用，this = context</text>
+  <text x="34" y="266" font-size="10" fill="#555" filter="url(#rough2)">函数体内 this.a = 5, b = 7 → return 5 + 7 = 12</text>
+  <path d="M 300 278 L 300 286" stroke="#446688" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="20" y="286" width="560" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="303" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">⑤ delete context[key]</text>
+  <text x="34" y="319" font-size="10" fill="#555" filter="url(#rough2)">清理后 context = { a: 5 }  恢复原貌</text>
+  <path d="M 300 326 L 300 334" stroke="#446688" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6 -->
+  <rect x="20" y="334" width="560" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="34" y="351" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">⑥ return result</text>
+  <text x="34" y="367" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 12 ✓</text>
+</svg>

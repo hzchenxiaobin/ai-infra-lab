@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrFlow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrLoop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建图 → 枚举起点 BFS → 取最大可达数</text>
+
+  <!-- Step 1: Build adjacency list -->
+  <rect x="60" y="48" width="440" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="70" font-size="12" fill="#335" font-weight="bold">① 建有向邻接表</text>
+  <text x="80" y="88" font-size="11" fill="#555">双层循环 i, j：若 (xᵢ−xⱼ)²+(yᵢ−yⱼ)² ≤ rᵢ² 则 g[i].push_back(j)</text>
+  <text x="80" y="102" font-size="10" fill="#888">复杂度 O(n²)，用 long long 防溢出</text>
+
+  <!-- arrow down -->
+  <path d="M 280 110 L 280 128" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrFlow)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Enumerate start -->
+  <rect x="60" y="132" width="440" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="154" font-size="12" fill="#3a5a2a" font-weight="bold">② 枚举起点 s = 0 .. n−1</text>
+  <text x="80" y="170" font-size="10" fill="#888">对每个炸弹尝试作为引爆起点，独立做一次 BFS</text>
+
+  <!-- arrow down -->
+  <path d="M 280 178 L 280 196" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrFlow)" filter="url(#rough2)"/>
+
+  <!-- Step 3: BFS -->
+  <rect x="60" y="200" width="440" height="108" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="222" font-size="12" fill="#a87020" font-weight="bold">③ 从 s 出发 BFS（计数可达节点）</text>
+  <text x="80" y="240" font-size="11" fill="#555">vis[s] = true; queue.push(s); cnt = 0</text>
+  <text x="80" y="256" font-size="11" fill="#555">while queue 非空：</text>
+  <text x="100" y="272" font-size="11" fill="#555">u = pop; cnt++</text>
+  <text x="100" y="288" font-size="11" fill="#555">for v in g[u]: 若 !vis[v] → vis[v]=true, push(v)</text>
+  <text x="80" y="302" font-size="10" fill="#888">入队时即标记，避免重复入队</text>
+
+  <!-- arrow down -->
+  <path d="M 280 310 L 280 328" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrFlow)" filter="url(#rough2)"/>
+
+  <!-- Step 4: update max -->
+  <rect x="60" y="332" width="440" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="354" font-size="12" fill="#b85450" font-weight="bold">④ ans = max(ans, cnt)</text>
+  <text x="80" y="370" font-size="10" fill="#888">记录所有起点中可达数的最大值</text>
+
+  <!-- loop back arrow from step4 to step2 -->
+  <path d="M 500 354 Q 540 200 500 154" fill="none" stroke="#d6a040" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrLoop)" filter="url(#rough2)"/>
+  <text x="528" y="258" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" transform="rotate(90 528 258)">下一个 s</text>
+
+  <!-- arrow down to return -->
+  <path d="M 280 378 L 280 396" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrFlow)" filter="url(#rough2)"/>
+
+  <!-- Return -->
+  <rect x="120" y="400" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="20" filter="url(#rough2)"/>
+  <text x="280" y="426" text-anchor="middle" font-size="13" fill="#335" font-weight="bold">return ans</text>
+
+  <!-- Complexity box -->
+  <text x="280" y="452" text-anchor="middle" font-size="11" fill="#888">总复杂度 O(n³)：n 个起点 × 每次 BFS O(n²) ；n≤100 → 10⁶ 毫秒级</text>
+</svg>

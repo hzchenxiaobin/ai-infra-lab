@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：贪心填满 repeatLimit，用次大字符做间隔</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">例 s = "cczazcc"，repeatLimit = 3 → 字典序最大 "zzcccac"</text>
+
+  <!-- ===== Frequency table ===== -->
+  <text x="60" y="78" font-size="11" fill="#888" font-weight="bold">字符计数（从大到小）</text>
+  <!-- z : 2 -->
+  <rect x="80" y="86" width="80" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="108" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">z</text>
+  <text x="140" y="108" text-anchor="middle" font-size="12" fill="#446688">×2</text>
+  <!-- c : 4 -->
+  <rect x="170" y="86" width="80" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="108" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">c</text>
+  <text x="230" y="108" text-anchor="middle" font-size="12" fill="#446688">×4</text>
+  <!-- a : 1 -->
+  <rect x="260" y="86" width="80" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="108" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+  <text x="320" y="108" text-anchor="middle" font-size="12" fill="#446688">×1</text>
+  <text x="360" y="108" font-size="10.5" fill="#888">最大字符 = z，次大 = c…</text>
+
+  <!-- arrow down -->
+  <path d="M 280 124 L 280 144" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Construction blocks ===== -->
+  <text x="60" y="162" font-size="11" fill="#888" font-weight="bold">贪心构造</text>
+
+  <!-- block 1: zz (blue, fill largest) -->
+  <rect x="80" y="170" width="56" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="108" y="196" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">zz</text>
+  <text x="108" y="226" text-anchor="middle" font-size="9.5" fill="#446688">z 用 2 个</text>
+
+  <!-- block 2: ccc (blue, fill to repeatLimit=3) -->
+  <rect x="146" y="170" width="84" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="188" y="196" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">ccc</text>
+  <text x="188" y="226" text-anchor="middle" font-size="9.5" fill="#446688">c 填满 3(=limit)</text>
+
+  <!-- block 3: a (orange/red, SEPARATOR) -->
+  <rect x="240" y="170" width="28" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" rx="6" filter="url(#rough2)"/>
+  <text x="254" y="196" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">a</text>
+  <text x="254" y="226" text-anchor="middle" font-size="9.5" fill="#b85450">间隔!</text>
+
+  <!-- block 4: c (blue, back to largest) -->
+  <rect x="278" y="170" width="28" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="292" y="196" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">c</text>
+  <text x="292" y="226" text-anchor="middle" font-size="9.5" fill="#446688">回 c 续用</text>
+
+  <!-- result string -->
+  <text x="324" y="196" font-size="13" fill="#333" font-weight="bold">= zzcccac</text>
+
+  <!-- rhythm annotation -->
+  <text x="108" y="244" text-anchor="middle" font-size="10" fill="#446688">填满</text>
+  <text x="188" y="244" text-anchor="middle" font-size="10" fill="#446688">填满</text>
+  <text x="254" y="244" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">间隔</text>
+  <text x="292" y="244" text-anchor="middle" font-size="10" fill="#446688">回来</text>
+
+  <!-- rhythm arrow -->
+  <path d="M 108 250 C 180 268, 220 268, 254 258" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Conclusion box ===== -->
+  <rect x="40" y="276" width="480" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="298" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">节奏：填满 max 个最大字符 → 插 1 个次大做间隔 → 回到最大字符</text>
+  <text x="280" y="318" text-anchor="middle" font-size="11" fill="#555">① 每步取 t = min(cnt, repeatLimit) 个当前最大字符（总是放满）</text>
+  <text x="280" y="336" text-anchor="middle" font-size="11" fill="#555">② 仍有剩余则插恰好 1 个次大字符打断连续段（间隔越短越早回最大）</text>
+  <text x="280" y="354" text-anchor="middle" font-size="10.5" fill="#888">无次大字符可用时，剩余的最大字符丢弃并结束</text>
+</svg>

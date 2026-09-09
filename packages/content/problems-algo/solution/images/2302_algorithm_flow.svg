@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">统计得分小于 K 的子数组：滑动窗口流程</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="60" rx="110" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">开始: left=0, sum=0, ans=0</text>
+
+  <!-- arrow down to diamond B -->
+  <path d="M 280 80 L 280 98" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond B: right < n ? -->
+  <polygon points="280,102 374,148 280,194 186,148" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="144" text-anchor="middle" font-size="12" fill="#333">right &lt; n ?</text>
+  <text x="280" y="160" text-anchor="middle" font-size="10" fill="#888">(遍历右端点)</text>
+
+  <!-- B: No -> return ans -->
+  <path d="M 374 148 L 446 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="140" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="486" cy="148" rx="50" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="152" text-anchor="middle" font-size="12" fill="#333">返回 ans</text>
+
+  <!-- B: Yes -> down -->
+  <path d="M 280 194 L 280 212" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="208" font-size="11" fill="#82b366">是</text>
+
+  <!-- Process: sum += nums[right] -->
+  <rect x="176" y="214" width="208" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="239" text-anchor="middle" font-size="12" fill="#333">sum += nums[right]   (len = right−left+1)</text>
+
+  <!-- arrow down to diamond C -->
+  <path d="M 280 254 L 280 272" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond C: sum * len >= k ? -->
+  <polygon points="280,276 392,322 280,368 168,322" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="318" text-anchor="middle" font-size="12" fill="#333">sum × len ≥ k ?</text>
+  <text x="280" y="334" text-anchor="middle" font-size="10" fill="#888">(需收缩?)</text>
+
+  <!-- C: Yes -> shrink box (left) -->
+  <path d="M 168 322 L 110 322" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="142" y="314" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="12" y="300" width="98" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="61" y="318" text-anchor="middle" font-size="10" fill="#333">sum −= nums[left]</text>
+  <text x="61" y="334" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">left++</text>
+
+  <!-- inner loop: shrink box back up to diamond C top -->
+  <path d="M 61 300 L 61 274 L 280 274 L 280 276" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="170" y="268" text-anchor="middle" font-size="10" fill="#888">重判 sum×len ≥ k</text>
+
+  <!-- C: No -> down -->
+  <path d="M 280 368 L 280 386" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="382" font-size="11" fill="#82b366">否</text>
+
+  <!-- Process: ans += right - left + 1 -->
+  <rect x="176" y="388" width="208" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="409" text-anchor="middle" font-size="12" fill="#333">ans += right − left + 1</text>
+
+  <!-- outer loop: ans box back up to diamond B (far left, dashed) -->
+  <path d="M 176 404 L 10 404 L 10 148 L 186 148" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="10" y="276" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 10 276)">right++ 继续循环</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="442" width="480" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="464" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">复杂度：right 遍历 n 步，left 累计最多右移 n 步（均摊 O(1)）</text>
+  <text x="280" y="484" text-anchor="middle" font-size="11" fill="#666">时间 O(n)，空间 O(1)；注意 score 用 64 位整数防溢出</text>
+  <text x="280" y="504" text-anchor="middle" font-size="11" fill="#888">（sum ≤ 10^10，len ≤ 10^5，score ≤ 10^15，需 long long）</text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：枚举至多 2 个候选值，逐个 O(n) 验证</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="140" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: ans = +∞, 候选 = { tops[0], bottoms[0] }</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: more candidates? -->
+  <polygon points="270,104 390,150 270,196 150,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333">还有未试的候选 x ?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">(至多 2 个)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 390 150 L 452 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="416" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="486" cy="150" rx="48" ry="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="146" text-anchor="middle" font-size="11" fill="#333">返回</text>
+  <text x="486" y="160" text-anchor="middle" font-size="11" fill="#333">ans==∞ ? -1 : ans</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 196 L 270 216" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- scan process -->
+  <rect x="130" y="220" width="280" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="242" text-anchor="middle" font-size="12" fill="#333">对候选 x，逐张扫描 i = 0 … n−1</text>
+
+  <!-- arrow down -->
+  <path d="M 270 254 L 270 272" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: feasible? -->
+  <polygon points="270,276 400,322 270,368 140,322" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="316" text-anchor="middle" font-size="11" fill="#333">存在牌:</text>
+  <text x="270" y="332" text-anchor="middle" font-size="11" fill="#333">tops[i]≠x 且 bottoms[i]≠x ?</text>
+
+  <!-- Yes (infeasible) -> left box -->
+  <path d="M 140 322 L 96 322" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="314" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="14" y="302" width="80" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="54" y="320" text-anchor="middle" font-size="11" fill="#333">x 不可行</text>
+  <text x="54" y="336" text-anchor="middle" font-size="11" fill="#555">跳过</text>
+
+  <!-- No (feasible) -> down -->
+  <path d="M 270 368 L 270 386" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="380" font-size="11" fill="#82b366">否</text>
+
+  <!-- update ans -->
+  <rect x="80" y="390" width="380" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="408" text-anchor="middle" font-size="11" fill="#333">topRot = #{tops[i]≠x},  botRot = #{bottoms[i]≠x}</text>
+  <text x="270" y="424" text-anchor="middle" font-size="11" fill="#333">ans = min( ans, min(topRot, botRot) )</text>
+
+  <!-- loop back from infeasible box up to candidate diamond -->
+  <path d="M 54 302 L 54 150 L 150 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop back from ans box up to candidate diamond (right side) -->
+  <path d="M 460 410 L 500 410 L 500 150 L 390 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="508" y="280" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 508 280)">换下一个候选</text>
+
+  <!-- summary -->
+  <text x="270" y="458" text-anchor="middle" font-size="11" fill="#888">每个候选 O(n) 扫描，候选至多 2 个 ⟹ 总 O(n)；空间 O(1)</text>
+</svg>

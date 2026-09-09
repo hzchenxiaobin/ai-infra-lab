@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：词→分值哈希表 O(1) 查表；逐词累加 + 排序取 Top-K</text>
+
+  <!-- ① 建表 -->
+  <text x="30" y="48" font-size="12" fill="#d6a040" font-weight="bold">① 建表（一次性，O(P+N)）</text>
+
+  <rect x="30" y="58" width="208" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="76" font-size="10.5" fill="#446688" font-weight="bold">positive_feedback</text>
+  <text x="40" y="94" font-size="10.5" fill="#333">(smart, brilliant, studious …)</text>
+
+  <rect x="30" y="110" width="208" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="128" font-size="10.5" fill="#b85450" font-weight="bold">negative_feedback</text>
+  <text x="40" y="144" font-size="10.5" fill="#333">(not …)</text>
+
+  <path d="M 238 81 L 280 86" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 238 129 L 280 120" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="280" y="58" width="232" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="396" y="76" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">哈希表 word → Δ分</text>
+  <text x="296" y="94" font-size="10.5" fill="#333">smart → +3</text>
+  <text x="296" y="110" font-size="10.5" fill="#333">brilliant → +3</text>
+  <text x="296" y="126" font-size="10.5" fill="#333">studious → +3</text>
+  <text x="296" y="142" font-size="10.5" fill="#333">not → −1　（其余词 → 0）</text>
+
+  <!-- ② 计分 -->
+  <text x="30" y="176" font-size="12" fill="#d6a040" font-weight="bold">② 评语逐词计分（每词 O(1) 查表，总 O(W)）</text>
+  <text x="30" y="194" font-size="10.5" fill="#888">report = "this student is not studious"</text>
+
+  <!-- 5 个词格子 -->
+  <rect x="30" y="202" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="220" text-anchor="middle" font-size="11" fill="#333">this</text>
+  <rect x="118" y="202" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="220" text-anchor="middle" font-size="11" fill="#333">student</text>
+  <rect x="206" y="202" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="246" y="220" text-anchor="middle" font-size="11" fill="#333">is</text>
+  <rect x="294" y="202" width="80" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="334" y="220" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">not</text>
+  <rect x="382" y="202" width="80" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="422" y="220" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">studious</text>
+
+  <!-- Δ 值 -->
+  <text x="70" y="244" text-anchor="middle" font-size="10.5" fill="#888">Δ=0</text>
+  <text x="158" y="244" text-anchor="middle" font-size="10.5" fill="#888">Δ=0</text>
+  <text x="246" y="244" text-anchor="middle" font-size="10.5" fill="#888">Δ=0</text>
+  <text x="334" y="244" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">Δ=−1</text>
+  <text x="422" y="244" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">Δ=+3</text>
+
+  <!-- 求和 -->
+  <text x="30" y="270" font-size="11" fill="#333">score = 0 + 0 + 0 + (−1) + (+3) = </text>
+  <rect x="250" y="258" width="56" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="278" y="274" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">2</text>
+
+  <!-- ③ 排序取 Top-K -->
+  <text x="30" y="304" font-size="12" fill="#d6a040" font-weight="bold">③ 收集 n 个 (score, id) → 按得分↓、ID↑排序 → 取前 k 个</text>
+
+  <text x="30" y="326" font-size="10.5" fill="#333">学生列表：(score=2, id=1)　(score=3, id=2)　…</text>
+  <text x="30" y="344" font-size="10.5" fill="#333">排序键 (−score, id)：[(−3,2), (−2,1), …]　→　取前 k=2 个 id：</text>
+  <rect x="430" y="332" width="82" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="471" y="348" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">[2, 1] ✓</text>
+
+  <rect x="30" y="358" width="480" height="18" fill="none" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)" stroke-dasharray="3,2"/>
+  <text x="270" y="371" text-anchor="middle" font-size="10" fill="#888">建表 O(P+N) + 计分 O(W) + 排序 O(n log n)；蓝=中性词 红=负面词 绿=正面词</text>
+</svg>

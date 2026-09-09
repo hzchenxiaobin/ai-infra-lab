@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="28" text-anchor="middle" font-size="16" fill="#444" font-weight="bold">单调栈 = 维护「单调序列」，在「出栈瞬间」结算答案</text>
+  <text x="320" y="48" text-anchor="middle" font-size="11" fill="#888">每个元素入栈一次、出栈一次 → 总 O(n)。出栈的那个瞬间，就是它「下一个更 X」被确定的时刻。</text>
+
+  <!-- ===== Left: the monotonic stack loop ===== -->
+  <text x="40" y="82" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">单调栈骨架：</text>
+
+  <rect x="40" y="96" width="230" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="116" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 新元素 cur 入栈前先「弹」</text>
+  <text x="155" y="132" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">while 栈非空 且 cur 破坏单调性：</text>
+
+  <path d="M 155 140 L 155 154" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="158" width="230" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="178" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② 弹出栈顶 top</text>
+  <text x="155" y="194" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">⭐ 这一刻：top 的答案 = cur</text>
+
+  <path d="M 155 202 L 155 216" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="220" width="230" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="240" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ cur 压入栈顶</text>
+  <text x="155" y="256" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">（恢复单调，等后续更大/更小来结算它）</text>
+
+  <path d="M 155 264 L 155 278" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="282" width="230" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="302" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">④ 遍历完 → 栈中残留者无答案</text>
+  <text x="155" y="318" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">（填 -1 / 0，或加哨兵强制清空）</text>
+
+  <!-- loop back -->
+  <path d="M 40 304 L 18 304 L 18 118 L 40 118" stroke="#4a7a3a" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="10" y="216" font-size="9" fill="#4a7a3a" transform="rotate(-90 10 216)" filter="url(#rough2)">下一个 cur</text>
+
+  <!-- ===== Right: the core insight ===== -->
+  <text x="340" y="82" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">为什么 O(n)？</text>
+
+  <rect x="340" y="96" width="260" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="470" y="116" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">每个元素一进一出</text>
+  <text x="350" y="134" font-size="10" fill="#555" filter="url(#rough2)">入栈 1 次、出栈 1 次，</text>
+  <text x="350" y="148" font-size="10" fill="#555" filter="url(#rough2)">无论 while 弹多少个，</text>
+  <text x="350" y="162" font-size="10" fill="#555" filter="url(#rough2)">总弹出次数 ≤ 总入栈次数 ≤ n</text>
+  <text x="350" y="176" font-size="10" fill="#888" filter="url(#rough2)">→ 均摊每元素 O(1)</text>
+
+  <rect x="340" y="184" width="260" height="92" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="470" y="204" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">出栈 = 结算时刻</text>
+  <text x="350" y="222" font-size="10" fill="#555" filter="url(#rough2)">栈顶 top 被 cur 弹出，</text>
+  <text x="350" y="236" font-size="10" fill="#555" filter="url(#rough2)">说明 cur 是 top 右侧</text>
+  <text x="350" y="250" font-size="10" fill="#555" filter="url(#rough2)">「第一个破坏单调性」的元素</text>
+  <text x="350" y="264" font-size="10" fill="#888" filter="url(#rough2)">→ 递减栈：cur 是 top 的下一个更大</text>
+  <text x="350" y="276" font-size="10" fill="#888" filter="url(#rough2)">→ 递增栈：cur 是 top 的下一个更小</text>
+
+  <rect x="340" y="286" width="260" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="470" y="306" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">栈存什么？</text>
+  <text x="350" y="324" font-size="10" fill="#555" filter="url(#rough2)">• 要算距离/位置 → 存下标</text>
+  <text x="350" y="338" font-size="10" fill="#555" filter="url(#rough2)">  （如 739 隔几天 = i − top）</text>
+  <text x="350" y="352" font-size="10" fill="#555" filter="url(#rough2)">• 要查值/聚合 → 存值或 (值, 计数)</text>
+  <text x="350" y="362" font-size="10" fill="#888" filter="url(#rough2)">  （如 901 跨度合并、496 哈希查值）</text>
+
+  <!-- bottom note -->
+  <text x="320" y="408" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">所有「找下一个更大 / 更小 / 更靠左 / 更靠右」类问题，</text>
+  <text x="320" y="424" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">只要能把暴力 O(n²) 的「向后扫描」换成「栈顶 O(1) 比较」，就是单调栈的甜区。</text>
+  <text x="320" y="446" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">⭐ 记住一句话：栈里留着的都是「还没等到答案」的，弹出去的都「当场结算」了。</text>
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：逐条加边 + DFS 校验已有路径比值</text>
+
+  <!-- start -->
+  <rect x="200" y="44" width="160" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="63" text-anchor="middle" font-size="11.5" fill="#333">遍历每条等式 (a, b, v)</text>
+
+  <path d="M 280 74 L 280 86" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision a==b? -->
+  <polygon points="280,90 380,124 280,158 180,124" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="11" fill="#333">a == b ?</text>
+
+  <!-- yes branch (a==b) -->
+  <path d="M 380 124 L 430 124" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="390" y="118" font-size="10" fill="#4a7a3a">是</text>
+  <polygon points="475,124 540,148 475,172 410,148" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="475" y="146" text-anchor="middle" font-size="10" fill="#333">|1 − v| &gt; 1e-5 ?</text>
+  <path d="M 540 148 L 540 210" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="546" y="182" font-size="10" fill="#b85450">是</text>
+  <rect x="486" y="214" width="110" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="541" y="233" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return true</text>
+
+  <!-- no branch -->
+  <path d="M 280 158 L 280 170" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="286" y="168" font-size="10" fill="#b85450">否</text>
+
+  <!-- decision both in graph? -->
+  <polygon points="280,174 388,210 280,246 172,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="214" text-anchor="middle" font-size="10.5" fill="#333">a、b 都已在图中?</text>
+
+  <!-- yes: DFS -->
+  <path d="M 280 246 L 280 260" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="286" y="258" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="170" y="264" width="220" height="36" fill="#fff" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="280" text-anchor="middle" font-size="10.5" fill="#333">DFS 从 a 找 b，累乘得 r = a/b</text>
+  <text x="280" y="294" text-anchor="middle" font-size="9" fill="#888">无可达路径则 r 缺省</text>
+
+  <path d="M 280 300 L 280 312" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- check contradiction -->
+  <polygon points="280,316 392,348 280,380 168,348" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="10" fill="#333">r 可达且 |r − v| &gt; 1e-5 ?</text>
+
+  <!-- yes contradiction -->
+  <path d="M 168 348 L 120 348" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="128" y="342" font-size="10" fill="#b85450">是</text>
+  <rect x="14" y="334" width="104" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="66" y="353" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return true</text>
+
+  <!-- no: add edge -->
+  <path d="M 280 380 L 280 392" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="286" y="390" font-size="10" fill="#4a7a3a">否</text>
+  <rect x="160" y="396" width="240" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="415" text-anchor="middle" font-size="10.5" fill="#4a7a3a">加边 a→b(v)、b→a(1/v)，继续下一条</text>
+</svg>

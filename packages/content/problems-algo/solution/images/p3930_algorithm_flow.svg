@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：离线离散化 + 值域 BIT 查排名 + 快速幂</text>
+
+  <!-- step 1 -->
+  <rect x="40" y="48" width="210" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="70" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 离线收集全体值</text>
+  <text x="145" y="90" text-anchor="middle" font-size="10.5" fill="#444">nums ∪ {所有 xᵢ} 排序去重 → vals</text>
+
+  <path d="M 252 76 L 266 76" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <rect x="270" y="48" width="210" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="375" y="70" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 建值域 BIT 并初始化</text>
+  <text x="375" y="90" text-anchor="middle" font-size="10.5" fill="#444">初始 nums 逐个 add(pos(v), +1)，size = n</text>
+
+  <path d="M 375 108 L 375 122" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- loop box -->
+  <rect x="40" y="126" width="440" height="196" fill="#f6faf7" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="150" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ 逐个处理查询 [x, k]</text>
+
+  <!-- inner step a -->
+  <rect x="60" y="162" width="190" height="46" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="182" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a. 插入 x</text>
+  <text x="155" y="198" text-anchor="middle" font-size="10" fill="#444">add(pos(x), +1)，size++</text>
+
+  <!-- inner step b -->
+  <rect x="270" y="162" width="190" height="46" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="365" y="182" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">b. 排名转换</text>
+  <text x="365" y="198" text-anchor="middle" font-size="10" fill="#444">r = size − k + 1</text>
+
+  <!-- inner step c -->
+  <rect x="60" y="222" width="190" height="46" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="242" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">c. BIT 倍增查第 r 小</text>
+  <text x="155" y="258" text-anchor="middle" font-size="10" fill="#444">得第 k 大的值 v，O(log m)</text>
+
+  <!-- inner step d -->
+  <rect x="270" y="222" width="190" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="365" y="242" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">d. 快速幂更新</text>
+  <text x="365" y="258" text-anchor="middle" font-size="10" fill="#444">p = pᵛ mod 10⁹⁺⁷，ans[i] = p</text>
+
+  <path d="M 252 185 L 268 185" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 365 210 L 365 220" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 268 245 L 252 245" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <text x="260" y="294" text-anchor="middle" font-size="10.5" fill="#4a7a3a">每步对数级：插入 O(log m) · 查排名 O(log m) · 快速幂 O(log v)</text>
+  <text x="260" y="312" text-anchor="middle" font-size="10.5" fill="#b85450">⚠️ 不维护 top-k 集合 ⇒ k 跳多远都不怕</text>
+
+  <path d="M 260 326 L 260 338" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- output -->
+  <rect x="160" y="344" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="369" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ 返回 ans 数组</text>
+</svg>

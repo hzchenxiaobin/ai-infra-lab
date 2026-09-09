@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：三个快速幂拼一个闭式，O(log k)</text>
+
+  <!-- 左：四步流水线 -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="48" width="300" height="54" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="180" y="68" text-anchor="middle" font-size="12" fill="#33506b" font-weight="bold">① 预处理 m 与 S</text>
+    <text x="180" y="88" text-anchor="middle" font-size="11" fill="#333">m = r−l+1；S = (l+r)·m/2 ≤ 45（直接整除）</text>
+    <path d="M 180 102 L 180 114" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+
+    <rect x="30" y="116" width="300" height="54" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="180" y="136" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">② 快速幂：出现次数</text>
+    <text x="180" y="156" text-anchor="middle" font-size="11" fill="#333">cnt = m^(k−1) mod p（k=1 时 = 1）</text>
+    <path d="M 180 170 L 180 182" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+
+    <rect x="30" y="184" width="300" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="180" y="204" text-anchor="middle" font-size="12" fill="#8a6d1a" font-weight="bold">③ 快速幂：循环数 R(k)</text>
+    <text x="180" y="224" text-anchor="middle" font-size="11" fill="#333">rep = (10^k mod p − 1) × 9⁻¹ mod p</text>
+    <text x="180" y="242" text-anchor="middle" font-size="11" fill="#333">9⁻¹ = 9^(p−2) mod p（费马小定理）</text>
+    <path d="M 180 248 L 180 260" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+
+    <rect x="30" y="262" width="300" height="54" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="180" y="282" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">④ 合并输出</text>
+    <text x="180" y="304" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">ans = rep × S × cnt mod p</text>
+  </g>
+
+  <!-- 右上：模世界除法说明 -->
+  <g filter="url(#rough2)">
+    <rect x="352" y="48" width="178" height="128" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="441" y="68" text-anchor="middle" font-size="12" fill="#8a6d1a" font-weight="bold">模世界除法说明书</text>
+    <text x="441" y="90" text-anchor="middle" font-size="10.5" fill="#8a6d1a">÷9 → ×9⁻¹ = 9^(p−2)</text>
+    <text x="441" y="108" text-anchor="middle" font-size="10.5" fill="#8a6d1a">p = 10⁹+7 质数，gcd(9,p)=1</text>
+    <text x="441" y="128" text-anchor="middle" font-size="10.5" fill="#8a6d1a">彩蛋：(p+1)/9 = 111111112</text>
+    <text x="441" y="146" text-anchor="middle" font-size="10.5" fill="#8a6d1a">恰整除，逆元白送</text>
+    <text x="441" y="166" text-anchor="middle" font-size="10.5" fill="#8a6d1a">S 的 ÷2 在小整数世界完成</text>
+  </g>
+
+  <!-- 右下：自检清单 -->
+  <g filter="url(#rough2)">
+    <rect x="352" y="188" width="178" height="128" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="441" y="208" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">三例自检 + 边界</text>
+    <text x="441" y="228" text-anchor="middle" font-size="10.5" fill="#2f5d24">例1：11×3×2 = 66 ✓</text>
+    <text x="441" y="246" text-anchor="middle" font-size="10.5" fill="#2f5d24">例2：111×1×4 = 444 ✓</text>
+    <text x="441" y="264" text-anchor="middle" font-size="10.5" fill="#2f5d24">例3：R(10) ≡ 111111104</text>
+    <text x="452" y="282" text-anchor="middle" font-size="10.5" fill="#2f5d24">×5 → 555555520 ✓</text>
+    <text x="441" y="304" text-anchor="middle" font-size="10.5" fill="#2f5d24">k=1 → S；l=r → d·R(k)</text>
+  </g>
+
+  <text x="280" y="342" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">全程 3 次快速幂 ≈ 90 轮乘法取模，k = 10⁹ 也瞬完</text>
+</svg>

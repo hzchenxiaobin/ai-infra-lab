@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：分组求 MAX → JOIN 关联部门 → IN 筛选最高者</text>
+
+  <!-- Step 1: Employee table -->
+  <text x="100" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Employee 表（按 departmentId 着色分组）</text>
+  <rect x="40" y="64" width="120" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="58" y="79" font-size="10" fill="#333">id</text>
+  <text x="88" y="79" font-size="10" fill="#333">name</text>
+  <text x="128" y="79" font-size="9" fill="#333">sal</text>
+  <text x="150" y="79" font-size="9" fill="#333">dId</text>
+  <line x1="70" y1="64" x2="70" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="112" y1="64" x2="112" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="138" y1="64" x2="138" y2="86" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="40" y="86" width="120" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="58" y="100" font-size="10" fill="#333">1</text>
+  <text x="88" y="100" font-size="10" fill="#333">Joe</text>
+  <text x="128" y="100" font-size="9" fill="#333">70k</text>
+  <text x="150" y="100" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="106" width="120" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="3" filter="url(#rough2)"/>
+  <text x="58" y="120" font-size="10" fill="#333">2</text>
+  <text x="88" y="120" font-size="10" fill="#4a7a3a" font-weight="bold">Jim</text>
+  <text x="128" y="120" font-size="9" fill="#4a7a3a" font-weight="bold">90k</text>
+  <text x="150" y="120" font-size="9" fill="#333">1</text>
+
+  <rect x="40" y="126" width="120" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="3" filter="url(#rough2)"/>
+  <text x="58" y="140" font-size="10" fill="#333">3</text>
+  <text x="88" y="140" font-size="10" fill="#d6a040" font-weight="bold">Henry</text>
+  <text x="128" y="140" font-size="9" fill="#d6a040" font-weight="bold">80k</text>
+  <text x="150" y="140" font-size="9" fill="#333">2</text>
+
+  <rect x="40" y="146" width="120" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="58" y="160" font-size="10" fill="#333">4</text>
+  <text x="88" y="160" font-size="10" fill="#333">Sam</text>
+  <text x="128" y="160" font-size="9" fill="#333">60k</text>
+  <text x="150" y="160" font-size="9" fill="#333">2</text>
+  <line x1="70" y1="86" x2="70" y2="166" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="112" y1="86" x2="112" y2="166" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="138" y1="86" x2="138" y2="166" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- Arrow: Employee -> GROUP BY MAX -->
+  <path d="M160 116 L210 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="185" y="110" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">GROUP BY</text>
+  <text x="185" y="128" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">dId, MAX(sal)</text>
+
+  <!-- Step 2: subquery result (max salary per dept) -->
+  <text x="305" y="78" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">② 子查询：每部门最大工资</text>
+  <rect x="230" y="86" width="150" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="265" y="101" font-size="10" fill="#333">departmentId</text>
+  <text x="335" y="101" font-size="10" fill="#333">MAX(salary)</text>
+  <line x1="295" y1="86" x2="295" y2="108" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="230" y="108" width="150" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="265" y="122" font-size="10" fill="#333">1</text>
+  <text x="335" y="122" font-size="10" fill="#4a7a3a" font-weight="bold">90k</text>
+
+  <rect x="230" y="128" width="150" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="265" y="142" font-size="10" fill="#333">2</text>
+  <text x="335" y="142" font-size="10" fill="#d6a040" font-weight="bold">80k</text>
+  <line x1="295" y1="108" x2="295" y2="148" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- Department table -->
+  <text x="305" y="178" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Department 表（关联部门名）</text>
+  <rect x="240" y="184" width="130" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="262" y="199" font-size="10" fill="#333">id</text>
+  <text x="305" y="199" font-size="10" fill="#333">name</text>
+  <line x1="280" y1="184" x2="280" y2="206" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <rect x="240" y="206" width="130" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="262" y="220" font-size="10" fill="#333">1</text>
+  <text x="305" y="220" font-size="10" fill="#4a7a3a" font-weight="bold">IT</text>
+  <rect x="240" y="226" width="130" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="262" y="240" font-size="10" fill="#333">2</text>
+  <text x="305" y="240" font-size="10" fill="#d6a040" font-weight="bold">Sales</text>
+  <line x1="280" y1="206" x2="280" y2="246" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- Arrow: subquery + Department -> JOIN + IN filter -->
+  <path d="M380 118 Q440 130 470 180" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M370 216 Q420 200 470 200" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="430" y="160" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">IN 筛选</text>
+  <text x="430" y="194" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">JOIN</text>
+
+  <!-- Step 3: filter box -->
+  <text x="540" y="172" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ WHERE (dId, sal)</text>
+  <text x="540" y="186" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">IN 子查询</text>
+  <rect x="470" y="196" width="140" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" stroke-dasharray="5,3" rx="8" filter="url(#rough2)"/>
+  <text x="540" y="216" text-anchor="middle" font-size="9" fill="#333">Jim: (1, 90k) ∈ {(1,90k)}</text>
+  <text x="540" y="232" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 保留</text>
+  <text x="540" y="248" text-anchor="middle" font-size="9" fill="#333">Joe: (1, 70k) ∉</text>
+
+  <!-- Arrow down to final result -->
+  <path d="M540 262 L540 296" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Final result -->
+  <text x="540" y="316" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">最终结果</text>
+  <rect x="450" y="324" width="180" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="480" y="339" font-size="10" fill="#333">Department</text>
+  <text x="540" y="339" font-size="10" fill="#333">Employee</text>
+  <text x="595" y="339" font-size="10" fill="#333">Salary</text>
+  <line x1="510" y1="324" x2="510" y2="346" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="570" y1="324" x2="570" y2="346" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="450" y="346" width="180" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="480" y="360" font-size="10" fill="#4a7a3a" font-weight="bold">IT</text>
+  <text x="540" y="360" font-size="10" fill="#4a7a3a" font-weight="bold">Jim</text>
+  <text x="595" y="360" font-size="10" fill="#4a7a3a" font-weight="bold">90k</text>
+
+  <rect x="450" y="366" width="180" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="480" y="380" font-size="10" fill="#d6a040" font-weight="bold">Sales</text>
+  <text x="540" y="380" font-size="10" fill="#d6a040" font-weight="bold">Henry</text>
+  <text x="595" y="380" font-size="10" fill="#d6a040" font-weight="bold">80k</text>
+  <line x1="510" y1="346" x2="510" y2="386" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="570" y1="346" x2="570" y2="386" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- footnote -->
+  <text x="310" y="420" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">两步走：① GROUP BY 算每部门 MAX → ② JOIN 部门名 + IN 筛"等于 MAX"的行</text>
+  <text x="310" y="438" text-anchor="middle" font-size="9" fill="#888">分组聚合与行筛选解耦——MAX 只算一次，IN 把"组统计"回填到"行级"</text>
+</svg>

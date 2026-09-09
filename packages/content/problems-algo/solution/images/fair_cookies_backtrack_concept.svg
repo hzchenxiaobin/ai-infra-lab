@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#b85450" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">回溯分配：逐一试分零食包，超限即剪枝</text>
+
+  <!-- best threshold line -->
+  <rect x="40" y="44" width="440" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="12" fill="#444">当前最优 best = 31（max loads 的下界需越小越好）</text>
+
+  <!-- three child buckets (k = 3) -->
+  <text x="30" y="120" font-size="12" fill="#888">孩子:</text>
+
+  <!-- Child A: load 15, tall -->
+  <rect x="60" y="92" width="90" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <rect x="60" y="160" width="90" height="24" fill="#b8c8e8" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="105" y="120" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">A</text>
+  <text x="105" y="148" text-anchor="middle" font-size="12" fill="#333">已得 15</text>
+
+  <!-- Child B: load 8, short -->
+  <rect x="200" y="140" width="90" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <rect x="200" y="160" width="90" height="24" fill="#b8c8e8" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="158" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">B</text>
+  <text x="245" y="178" text-anchor="middle" font-size="11" fill="#333">已得 8</text>
+
+  <!-- Child C: empty -->
+  <rect x="340" y="160" width="90" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="385" y="178" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">C (空)</text>
+
+  <!-- current bag -->
+  <rect x="218" y="200" width="84" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="222" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">当前包 = 20</text>
+
+  <!-- try A: prune -->
+  <path d="M 256 234 Q 180 240 130 184" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="120" y="244" width="150" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="195" y="261" text-anchor="middle" font-size="11" fill="#b85450">试 A: 15+20=35 ≥ 31 ✗剪</text>
+
+  <!-- try B: ok -->
+  <path d="M 260 234 L 248 182" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="270" y="244" width="150" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="345" y="261" text-anchor="middle" font-size="11" fill="#4a7a3a">试 B: 8+20=28 &lt; 31 ✓递归</text>
+
+  <!-- symmetry note for C -->
+  <path d="M 300 217 Q 360 210 380 184" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="3,2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- bottom insight boxes -->
+  <rect x="40" y="284" width="205" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="142" y="306" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 降序排列</text>
+  <text x="142" y="324" text-anchor="middle" font-size="11" fill="#555">大包先放，best 下降快</text>
+
+  <rect x="275" y="284" width="205" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="377" y="306" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 对称剪枝</text>
+  <text x="377" y="324" text-anchor="middle" font-size="11" fill="#555">loads[c]==0 时 break</text>
+  <text x="377" y="338" text-anchor="middle" font-size="11" fill="#999">空桶互换，只试一个</text>
+</svg>

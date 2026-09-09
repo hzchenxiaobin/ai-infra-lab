@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：最小堆 add/replace 双分支枚举 k 小子集和</text>
+
+  <!-- sorted abs array -->
+  <text x="40" y="58" font-size="12" fill="#446688" font-weight="bold">排序后的 |nums|</text>
+  <g filter="url(#rough2)">
+    <rect x="150" y="44" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="170" y="64" text-anchor="middle" font-size="13" fill="#446688">a0</text>
+    <rect x="190" y="44" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="210" y="64" text-anchor="middle" font-size="13" fill="#446688">a1</text>
+    <rect x="230" y="44" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="250" y="64" text-anchor="middle" font-size="13" fill="#446688">a2</text>
+    <text x="276" y="64" font-size="13" fill="#888">…</text>
+  </g>
+  <text x="310" y="64" font-size="11" fill="#888">升序：a0 ≤ a1 ≤ …</text>
+
+  <!-- state def -->
+  <rect x="40" y="92" width="520" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="116" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">堆中状态 (s, i)：子集和 = s，下一个待处理下标 = i（a[i−1] 是最后加入的）</text>
+
+  <!-- initial state -->
+  <rect x="40" y="146" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="168" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">初始 (0, 0)：空子集</text>
+
+  <!-- pop arrow -->
+  <path d="M 240 163 L 300 163" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="156" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">弹出堆顶</text>
+
+  <!-- popped state -->
+  <rect x="300" y="146" width="160" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="380" y="168" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">(s, i) 当前最小</text>
+
+  <!-- two branches -->
+  <text x="380" y="196" text-anchor="middle" font-size="11" fill="#888">若 i &lt; n，分裂出两个后继</text>
+
+  <!-- branch 1: add -->
+  <path d="M 350 186 Q 250 220 150 236" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="40" y="236" width="250" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="258" font-size="12.5" fill="#4a7a3a" font-weight="bold">① 加 a[i]（extend）</text>
+  <text x="60" y="278" font-size="12" fill="#444">新状态 (s + a[i], i + 1)</text>
+  <text x="60" y="296" font-size="10.5" fill="#888">把 a[i] 追加到子集末尾，下标后移</text>
+
+  <!-- branch 2: replace -->
+  <path d="M 410 186 Q 510 220 560 236" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <rect x="310" y="236" width="250" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="330" y="258" font-size="12.5" fill="#d6a040" font-weight="bold">② 替换 a[i−1]→a[i]（replace）</text>
+  <text x="330" y="278" font-size="12" fill="#444">新状态 (s + a[i] − a[i−1], i + 1)</text>
+  <text x="330" y="296" font-size="10.5" fill="#888">仅当 i &gt; 0；把最后加入的换成更大的</text>
+
+  <!-- monotonic note -->
+  <rect x="40" y="330" width="520" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="350" text-anchor="middle" font-size="12" fill="#444">两分支的新和 ≥ 原和（a 已升序：a[i]≥0、a[i]−a[i−1]≥0）</text>
+  <text x="300" y="367" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">→ 堆每次弹出的即当前最小，天然升序、无重复路径</text>
+
+  <!-- loop + result -->
+  <rect x="40" y="392" width="280" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="180" y="414" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">重复 k − 1 次「弹堆顶 + 分裂」</text>
+  <text x="180" y="434" text-anchor="middle" font-size="12" fill="#444">第 k 次堆顶 = 第 k 小子集和</text>
+
+  <path d="M 322 421 L 378 421" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="380" y="392" width="180" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="470" y="414" text-anchor="middle" font-size="12" fill="#4a7a3a">答案</text>
+  <text x="470" y="434" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">total − 第 k 小子集和</text>
+</svg>

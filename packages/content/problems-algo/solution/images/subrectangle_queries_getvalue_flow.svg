@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="4.5" refY="8" orient="auto">
+      <path d="M0,0 L4.5,8 L9,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">getValue(row, col) 流程：倒序扫描更新栈</text>
+
+  <!-- Start oval -->
+  <rect x="110" y="42" width="120" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="16" filter="url(#rough2)"/>
+  <text x="170" y="63" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">getValue(row, col)</text>
+
+  <!-- i = n-1 box -->
+  <rect x="100" y="92" width="140" height="30" fill="#fff" stroke="#888" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="112" text-anchor="middle" font-size="11" fill="#555">i = updates.size() − 1</text>
+
+  <!-- diamond1: i >= 0 ? -->
+  <path d="M170,140 L236,172 L170,204 L104,172 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="170" y="176" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">i ≥ 0 ?</text>
+
+  <!-- diamond2: covers (row,col) ? -->
+  <path d="M170,240 L250,272 L170,304 L90,272 Z" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="170" y="268" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">row1≤row≤row2</text>
+  <text x="170" y="282" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">且 col1≤col≤col2 ?</text>
+
+  <!-- No branch from diamond1 -> fallback -->
+  <path d="M236,172 L300,172" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="268" y="166" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="300" y="156" width="196" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="398" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 rectangle[row][col]</text>
+
+  <!-- Yes branch from diamond1 -> diamond2 -->
+  <path d="M170,204 L170,240" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="184" y="226" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Yes branch from diamond2 -> return newValue -->
+  <path d="M250,272 L300,272" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="274" y="266" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="300" y="256" width="196" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="398" y="276" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">返回 updates[i].newValue</text>
+
+  <!-- No branch from diamond2 -> i-- -->
+  <path d="M170,304 L170,336" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="184" y="324" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="140" y="338" width="60" height="28" fill="#fff" stroke="#888" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="357" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">i −−</text>
+
+  <!-- loopback: i-- -> back to diamond1 -->
+  <path d="M140,352 L48,352 L48,172 L104,172" stroke="#888" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="40" y="266" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 40 266)">继续下一个更新</text>
+</svg>

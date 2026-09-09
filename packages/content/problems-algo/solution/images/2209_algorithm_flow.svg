@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">DP 双层循环流程</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">i 从 n−1 递减到 0；j 从 0 递增到 numCarpets</text>
+
+  <!-- Start -->
+  <rect x="230" y="56" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="15" filter="url(#rough2)"/>
+  <text x="280" y="76" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">开始</text>
+  <path d="M280,86 L280,96" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init -->
+  <rect x="170" y="98" width="220" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="117" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="280" y="133" text-anchor="middle" font-size="10.5" fill="#555">dp[n][*] = 0；i = n − 1</text>
+  <path d="M280,140 L280,150" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: i >= 0 ? -->
+  <polygon points="280,152 380,190 280,228 180,190" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="186" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i ≥ 0 ?</text>
+  <!-- No -> return (right) -->
+  <path d="M380,190 L418,190" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="184" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="420" y="176" width="120" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="15" filter="url(#rough2)"/>
+  <text x="480" y="196" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 dp[0][K]</text>
+
+  <!-- Yes -> j = 0 (down) -->
+  <path d="M280,228 L280,238" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="236" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="210" y="240" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="262" text-anchor="middle" font-size="10.5" fill="#555">j = 0</text>
+  <path d="M280,274 L280,284" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: j <= K ? -->
+  <polygon points="280,286 380,322 280,358 180,322" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="318" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">j ≤ K ?</text>
+  <!-- No -> i-- , back to i>=0 (right then up) -->
+  <path d="M380,322 L420,322 L420,190 L380,190" stroke="#b85450" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="398" y="316" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <text x="436" y="258" font-size="10" fill="#b85450" font-weight="bold">i −−</text>
+  <text x="436" y="272" font-size="9.5" fill="#b85450">回到外层</text>
+
+  <!-- Yes -> compute (down) -->
+  <path d="M280,358 L280,368" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="366" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Compute box -->
+  <rect x="80" y="370" width="400" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="390" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">计算 dp[i][j]</text>
+  <text x="94" y="408" font-size="10" fill="#555">skip = [floor[i]='1'] + dp[i+1][j]</text>
+  <text x="94" y="423" font-size="10" fill="#555">place = j&gt;0 ? dp[min(i+L,n)][j−1] : +∞ ;  dp[i][j] = min(skip, place)</text>
+  <text x="94" y="436" font-size="9.5" fill="#888">然后 j ++，回到内层判定</text>
+  <!-- loop back from compute to inner decision (left side up) -->
+  <path d="M80,404 L40,404 L40,322 L180,322" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="40" y="364" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">j++</text>
+  <text x="40" y="378" text-anchor="middle" font-size="9.5" fill="#4a7a3a">内层循环</text>
+
+  <text x="280" y="452" text-anchor="middle" font-size="10" fill="#aaa">K = numCarpets, L = carpetLen · 每步 O(1) · 共 (n+1)(K+1) 步 ⇒ O(n·K)</text>
+</svg>

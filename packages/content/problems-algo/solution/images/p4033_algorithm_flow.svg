@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 550"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="550" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="310" y="22" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：前缀异或 + 两次滑动窗口 + O(1) 查询判定</text>
+
+    <!-- step 1 -->
+    <rect x="50" y="38" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="58" text-anchor="middle" font-size="9.5" fill="#333">① 每个值 v 分配随机 64 位哈希 h[v]，求前缀异或 P</text>
+    <text x="220" y="76" text-anchor="middle" font-size="9" fill="#6b7f99">P[0] = 0，P[i+1] = P[i] ⊕ h[nums[i]]，一趟 O(n)</text>
+
+    <path d="M 220 88 L 220 100" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="50" y="104" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="124" text-anchor="middle" font-size="9.5" fill="#333">② 滑动窗口求 reachK[l]：distinct(l..r) 首达 k 的最小 r</text>
+    <text x="220" y="142" text-anchor="middle" font-size="9" fill="#6b7f99">l 右移只丢值 ⇒ A(l) 单调不减，指针不回退；无解记哨兵 n</text>
+
+    <path d="M 220 154 L 220 166" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 3 -->
+    <rect x="50" y="170" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="190" text-anchor="middle" font-size="9.5" fill="#333">③ 同法求 reachK1[l]：首达 k+1 的最小 r（B = reachK1 − 1）</text>
+    <text x="220" y="208" text-anchor="middle" font-size="9" fill="#6b7f99">复用同一 firstReach(D)，换阈值 D = k+1，再一趟 O(n)</text>
+
+    <path d="M 220 220 L 220 232" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 4: per query -->
+    <rect x="50" y="236" width="340" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="256" text-anchor="middle" font-size="9.5" fill="#333">④ 逐查询取出 l = queries[i][0]，r = queries[i][1]</text>
+
+    <path d="M 220 268 L 220 280" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- decision diamond 1 -->
+    <polygon points="220,284 316,316 220,348 124,316" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <text x="220" y="320" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">P[r+1] = P[l] ?</text>
+
+    <!-- no -> false -->
+    <path d="M 316 316 L 380 316" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" fill="none"/>
+    <text x="348" y="308" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <rect x="384" y="288" width="132" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="450" y="310" text-anchor="middle" font-size="10" fill="#8a3a35" font-weight="bold">ans[i] = false</text>
+    <text x="450" y="330" text-anchor="middle" font-size="8.5" fill="#8a3a35">（存在奇频值）</text>
+
+    <!-- yes -> diamond 2 -->
+    <path d="M 220 348 L 220 362" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="233" y="358" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <!-- decision diamond 2 -->
+    <polygon points="220,366 326,398 220,430 114,398" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <text x="220" y="402" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold">reachK[l] ≤ r &lt; reachK1[l] ?</text>
+
+    <!-- no -> false -->
+    <path d="M 326 398 L 380 398" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" fill="none"/>
+    <text x="352" y="390" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <rect x="384" y="370" width="132" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="450" y="392" text-anchor="middle" font-size="10" fill="#8a3a35" font-weight="bold">ans[i] = false</text>
+    <text x="450" y="412" text-anchor="middle" font-size="8.5" fill="#8a3a35">（不同值个数 ≠ k）</text>
+
+    <!-- yes -> true -->
+    <path d="M 220 430 L 220 444" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="233" y="440" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <rect x="50" y="448" width="340" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <text x="220" y="470" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">ans[i] = true：恰 k 个不同且频率全偶</text>
+
+    <!-- loop back to step 4 -->
+    <path d="M 50 466 H 26 V 252 H 46" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="18" y="360" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 18 360)">下一个查询</text>
+
+    <!-- right: complexity -->
+    <rect x="410" y="38" width="164" height="96" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="492" y="58" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">复杂度</text>
+    <text x="492" y="80" text-anchor="middle" font-size="9" fill="#7a5c1a">时间 O(n + q)</text>
+    <text x="492" y="98" text-anchor="middle" font-size="9" fill="#7a5c1a">预处理三趟 O(n)</text>
+    <text x="492" y="116" text-anchor="middle" font-size="9" fill="#7a5c1a">每查询 O(1)，空间 O(n+V)</text>
+
+    <!-- right: pitfalls -->
+    <rect x="410" y="150" width="164" height="126" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="492" y="170" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">易踩的坑</text>
+    <text x="422" y="190" font-size="8.5" fill="#8a3a35">① 「恰 k」别只判 ≥ k——</text>
+    <text x="422" y="204" font-size="8.5" fill="#8a3a35">查询 [1,2] 异或过关仍 false</text>
+    <text x="422" y="222" font-size="8.5" fill="#8a3a35">② 哨兵统一 n：reachK=n</text>
+    <text x="422" y="236" font-size="8.5" fill="#8a3a35">自动否、reachK1=n 放行 n−1</text>
+    <text x="422" y="254" font-size="8.5" fill="#8a3a35">③ 哈希要 64 位且运行期随机</text>
+    <text x="422" y="268" font-size="8.5" fill="#8a3a35">（32 位期望约 1 个假阳性）</text>
+
+    <!-- bottom note -->
+    <rect x="50" y="496" width="524" height="46" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="312" y="514" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">与莫队的关系：官方 hint 用莫队 O((n+q)√n) 增量维护 distinct 与奇频个数；</text>
+    <text x="312" y="532" text-anchor="middle" font-size="9" fill="#446688">本题把两个条件各自坍缩成 O(1) 判定——偶频 → 前缀状态相等、恰 k → 连续段定界——降到 O(n+q)</text>
+  </g>
+</svg>

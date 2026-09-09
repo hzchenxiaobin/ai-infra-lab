@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">BFS 逐层求和：每层累加成一个 sum，滚动比较找最大</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">不收集每层列表，只需一个 sum 标量 → 边走边比</text>
+
+  <!-- ===== Tree ===== -->
+  <text x="30" y="72" font-size="11" fill="#446688" font-weight="bold">二叉树 [1,7,0,7,-8]</text>
+  <g font-size="11">
+    <!-- L1: root 1 -->
+    <circle cx="110" cy="92" r="17" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="110" y="97" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <!-- L2 -->
+    <circle cx="70" cy="150" r="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="70" y="155" text-anchor="middle" fill="#446688" font-weight="bold">7</text>
+    <circle cx="170" cy="150" r="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="170" y="155" text-anchor="middle" fill="#446688" font-weight="bold">0</text>
+    <line x1="100" y1="104" x2="80" y2="138" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <line x1="120" y1="104" x2="160" y2="138" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <!-- L3 (children of 7) -->
+    <circle cx="45" cy="210" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="45" y="215" text-anchor="middle" fill="#4a7a3a" font-weight="bold">7</text>
+    <circle cx="105" cy="210" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="105" y="215" text-anchor="middle" fill="#4a7a3a" font-weight="bold">−8</text>
+    <line x1="62" y1="162" x2="52" y2="198" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <line x1="80" y1="162" x2="95" y2="198" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+
+    <!-- level labels -->
+    <text x="14" y="97" font-size="9" fill="#b85450" font-weight="bold">L1</text>
+    <text x="14" y="155" font-size="9" fill="#446688" font-weight="bold">L2</text>
+    <text x="14" y="215" font-size="9" fill="#4a7a3a" font-weight="bold">L3</text>
+  </g>
+
+  <!-- arrows tree -> sum boxes -->
+  <path d="M 195 92 L 278 92" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 195 150 L 278 150" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 130 210 L 278 210" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Sum boxes ===== -->
+  <text x="290" y="72" font-size="11" fill="#444" font-weight="bold">每层 sum</text>
+  <g font-size="10">
+    <rect x="282" y="78" width="135" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="292" y="98" fill="#b85450">L1: 1</text>
+    <text x="395" y="98" text-anchor="end" fill="#b85450" font-weight="bold">= 1</text>
+
+    <rect x="282" y="136" width="135" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="292" y="156" fill="#446688">L2: 7 + 0</text>
+    <text x="395" y="156" text-anchor="end" fill="#446688" font-weight="bold">= 7</text>
+
+    <rect x="282" y="194" width="135" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="292" y="214" fill="#4a7a3a">L3: 7 + (−8)</text>
+    <text x="395" y="214" text-anchor="end" fill="#4a7a3a" font-weight="bold">= −1</text>
+  </g>
+
+  <!-- ===== Comparison ===== -->
+  <path d="M 350 226 L 350 246" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="250" width="440" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="270" font-family="monospace" font-size="11" fill="#d6a040" font-weight="bold">if (sum &gt; maxSum) { maxSum = sum; ans = level; }</text>
+  <text x="60" y="286" font-size="10" fill="#555">L1: 1 &gt; −∞ → max=1, ans=1</text>
+  <text x="60" y="300" font-size="10" fill="#555">L2: 7 &gt; 1 → max=7, ans=2  ✅  |  L3: −1 &gt; 7? 否，不动</text>
+
+  <rect x="40" y="324" width="440" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="343" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">最大 sum = 7 → 返回层号 2</text>
+  <text x="260" y="358" text-anchor="middle" font-size="9" fill="#888">maxSum 初值设 INT_MIN（val 可为负，不能用 0）；平局用严格 &gt; 保留更小层号</text>
+</svg>

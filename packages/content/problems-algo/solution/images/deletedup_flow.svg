@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">Self JOIN + DELETE 算法流程</text>
+
+  <!-- Step 1: start -->
+  <ellipse cx="270" cy="58" rx="60" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="11" fill="#333">读取 Person 表</text>
+  <path d="M270 78 L270 100" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: self join -->
+  <rect x="150" y="102" width="240" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="122" text-anchor="middle" font-size="11" fill="#333">Person 自身做 JOIN（p1 / p2 两个副本）</text>
+  <text x="270" y="138" text-anchor="middle" font-size="10" fill="#446688">同表两两配对候选</text>
+  <path d="M270 148 L270 170" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: decision -->
+  <polygon points="270,172 360,212 270,252 180,212" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="206" text-anchor="middle" font-size="10" fill="#333">配对是否满足</text>
+  <text x="270" y="220" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">email 相同</text>
+  <text x="270" y="234" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">且 p1.id &gt; p2.id?</text>
+
+  <!-- No branch -->
+  <path d="M180 212 L120 212 L120 300" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="135" y="206" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="70" y="302" width="100" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="320" text-anchor="middle" font-size="10" fill="#333">p1 行保留</text>
+  <text x="120" y="334" text-anchor="middle" font-size="9" fill="#4a7a3a">无配对 → 不删</text>
+
+  <!-- Yes branch -->
+  <path d="M360 212 L420 212 L420 300" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="395" y="206" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="370" y="302" width="100" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="320" text-anchor="middle" font-size="10" fill="#333">p1 行标记删除</text>
+  <text x="420" y="334" text-anchor="middle" font-size="9" fill="#b85450">留 p2（更小 id）</text>
+
+  <!-- converge -->
+  <path d="M120 342 L120 372 L265 372" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M420 342 L420 372 L275 372" stroke="#b85450" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: delete -->
+  <rect x="170" y="374" width="200" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="392" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">DELETE p1：删除所有标记行</text>
+  <text x="270" y="406" text-anchor="middle" font-size="9" fill="#333">每组重复 email 仅留最小 id</text>
+
+  <!-- side note -->
+  <rect x="380" y="100" width="150" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="118" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">为何用 &gt; 而非 &lt;&gt;</text>
+  <text x="390" y="134" font-size="9" fill="#333">&gt; 只单向配对：</text>
+  <text x="390" y="148" font-size="9" fill="#333">id=3 配 id=1（3&gt;1）</text>
+  <text x="390" y="162" font-size="9" fill="#333">删的是大 id 那行</text>
+  <text x="390" y="176" font-size="9" fill="#333">&lt;&gt; 会双向配对，</text>
+  <text x="390" y="188" font-size="9" fill="#b85450">需小心重复删/报错</text>
+</svg>

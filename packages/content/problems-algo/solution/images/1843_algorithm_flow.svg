@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：过滤 → 按月聚合 → 标记 → 自连接找连续</text>
+
+  <!-- ===== Step 1: Filter ===== -->
+  <rect x="160" y="40" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① WHERE type = 'Creditor'</text>
+  <text x="280" y="72" text-anchor="middle" font-size="9" fill="#888">只保留存入交易，忽略 Debtor</text>
+
+  <!-- Arrow -->
+  <path d="M 280 84 L 280 98" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Group by month + Sum ===== -->
+  <rect x="120" y="104" width="320" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② GROUP BY account_id, DATE_FORMAT(day, '%Y%m')</text>
+  <text x="280" y="140" text-anchor="middle" font-size="9" fill="#888">SUM(amount) → 每月总收入</text>
+
+  <!-- Arrow -->
+  <path d="M 280 154 L 280 168" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Join + HAVING ===== -->
+  <rect x="120" y="174" width="320" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="194" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">③ JOIN Accounts + HAVING SUM &gt; max_income</text>
+  <text x="280" y="210" text-anchor="middle" font-size="9" fill="#888">标记「月收入超过阈值」的 (account, month)</text>
+
+  <!-- Arrow -->
+  <path d="M 280 224 L 280 238" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: CTE result ===== -->
+  <rect x="100" y="244" width="360" height="56" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="260" font-size="9" fill="#446688" font-weight="bold">CTE SuspiciousMonths：</text>
+  <line x1="100" y1="266" x2="460" y2="266" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="110" y="280" font-size="9" fill="#666">account_id=3, yearmonth=202106</text>
+  <text x="110" y="294" font-size="9" fill="#666">account_id=3, yearmonth=202107</text>
+
+  <!-- Arrow -->
+  <path d="M 280 304 L 280 318" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: Self-join decision ===== -->
+  <polygon points="280,322 440,372 280,422 120,372" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="362" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">④ 自连接</text>
+  <text x="280" y="378" text-anchor="middle" font-size="10" fill="#d6a040">PERIOD_ADD(ym, 1)</text>
+  <text x="280" y="394" text-anchor="middle" font-size="10" fill="#d6a040">也在 CTE 中？</text>
+
+  <!-- No branch (left) -->
+  <path d="M 120 372 L 70 372" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="95" y="366" text-anchor="middle" font-size="9" fill="#b85450">否</text>
+  <rect x="10" y="358" width="58" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="39" y="378" text-anchor="middle" font-size="9" fill="#b85450">不连续</text>
+
+  <!-- Yes branch (right) -->
+  <path d="M 440 372 L 490 372" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="465" y="366" text-anchor="middle" font-size="9" fill="#4a7a3a">是</text>
+  <rect x="492" y="356" width="62" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="523" y="372" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">连续</text>
+  <text x="523" y="386" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">→ 可疑</text>
+
+  <!-- Arrow down from yes -->
+  <path d="M 523 396 L 523 410 L 280 410 L 280 424" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Output ===== -->
+  <rect x="180" y="430" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="448" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ SELECT DISTINCT account_id</text>
+  <text x="280" y="462" text-anchor="middle" font-size="9" fill="#888">输出可疑账户编号</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="484" width="480" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="502" text-anchor="middle" font-size="10" fill="#d6a040">关键：连续月份判定 = 自连接 + PERIOD_ADD(ym, 1) 或 TIMESTAMPDIFF(MONTH) = 1</text>
+</svg>

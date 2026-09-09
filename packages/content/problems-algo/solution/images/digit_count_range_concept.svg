@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思想：前缀差 + 按位分解（统计任意数字 d 的出现次数）</text>
+
+  <!-- ① Prefix difference -->
+  <text x="40" y="52" font-size="12" fill="#4a7a3a" font-weight="bold">① 前缀差：区间 [low, high] = [1, high] − [1, low−1]</text>
+  <rect x="70" y="64" width="180" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <rect x="250" y="64" width="310" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="78" y="84" font-size="11" fill="#b85450">1</text>
+  <text x="246" y="84" text-anchor="end" font-size="11" fill="#b85450">low−1</text>
+  <text x="258" y="84" font-size="11" fill="#4a7a3a">low</text>
+  <text x="552" y="84" text-anchor="end" font-size="11" fill="#4a7a3a">high</text>
+  <text x="160" y="108" text-anchor="middle" font-size="10" fill="#b85450">− count(d, low−1) 减去</text>
+  <text x="405" y="108" text-anchor="middle" font-size="10" fill="#4a7a3a">= count(d, [low, high]) 保留 ✓</text>
+  <text x="310" y="130" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">answer = count(d, high) − count(d, low − 1)</text>
+
+  <!-- ② Per-position decomposition -->
+  <text x="40" y="158" font-size="12" fill="#446688" font-weight="bold">② 按位分解：固定某位切成 high / cur / low，按 cur 分情况（以 n=250, d=3, 十位为例）</text>
+  <text x="150" y="200" font-size="12" fill="#555">n =</text>
+  <rect x="180" y="178" width="44" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="200" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">2</text>
+  <text x="202" y="226" text-anchor="middle" font-size="9" fill="#888">百位</text>
+  <rect x="228" y="178" width="44" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="200" text-anchor="middle" font-size="16" fill="#d6a040" font-weight="bold">5</text>
+  <text x="250" y="226" text-anchor="middle" font-size="9" fill="#888">十位 (cur)</text>
+  <rect x="276" y="178" width="44" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="298" y="200" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">0</text>
+  <text x="298" y="226" text-anchor="middle" font-size="9" fill="#888">个位</text>
+  <path d="M 180 216 Q 180 224 186 224 L 222 224 Q 228 224 228 216" fill="none" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="204" y="240" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">high=2</text>
+  <path d="M 228 218 Q 228 228 234 228 L 266 228 Q 272 228 272 218" fill="none" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="250" y="244" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">cur=5</text>
+  <path d="M 276 216 Q 276 224 282 224 L 318 224 Q 324 224 324 216" fill="none" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="240" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">low=0</text>
+  <text x="360" y="198" font-size="11" fill="#888">factor = 10¹ = 10</text>
+  <text x="360" y="216" font-size="11" fill="#888">d = 3</text>
+
+  <!-- ③ Three cases -->
+  <text x="40" y="272" font-size="12" fill="#b85450" font-weight="bold">③ 按 cur 与 d 的大小分三情况（d ∈ 1..9；d = 0 见另图）</text>
+  <rect x="40" y="286" width="170" height="74" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="125" y="308" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">cur &lt; d</text>
+  <text x="125" y="330" text-anchor="middle" font-size="13" fill="#333">high × factor</text>
+  <text x="125" y="348" text-anchor="middle" font-size="9" fill="#888">高位 0..high−1，各 factor 个</text>
+  <rect x="225" y="286" width="170" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="308" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">cur == d</text>
+  <text x="310" y="330" text-anchor="middle" font-size="12" fill="#333">high×factor + low + 1</text>
+  <text x="310" y="348" text-anchor="middle" font-size="9" fill="#888">高位=high 时低位 0..low</text>
+  <rect x="410" y="286" width="170" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="6" filter="url(#rough2)"/>
+  <text x="495" y="308" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">cur &gt; d  ← 本例</text>
+  <text x="495" y="330" text-anchor="middle" font-size="13" fill="#333">(high + 1) × factor</text>
+  <text x="495" y="348" text-anchor="middle" font-size="9" fill="#888">高位可到 high，各 factor 个</text>
+  <rect x="40" y="374" width="540" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="396" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">本例十位 cur=5 &gt; d=3：(2+1) × 10 = 30</text>
+  <text x="310" y="414" text-anchor="middle" font-size="10" fill="#888">个位 cur=0&lt;d → 25×1=25　百位 cur=2&lt;d → 0×100=0　→ count(3, 250) = 55</text>
+</svg>

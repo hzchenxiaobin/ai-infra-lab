@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="880" height="540" fill="#fdfcf7"/>
+  <text x="440" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">迷宫 = 无权图，BFS 按层扩展首次命中出口 = 最近</text>
+  <path d="M 300 40 Q 440 48 580 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== LEFT: maze grid with entrance + exits ===== -->
+  <g filter="url(#sk)">
+    <rect x="24" y="66" width="400" height="450" rx="10" fill="#eef3fb" stroke="#446688" stroke-width="1.6"/>
+  </g>
+  <text x="224" y="92" text-anchor="middle" font-size="15" font-weight="bold" fill="#34506e">① 迷宫 → 无权图：空格=节点，相邻=边</text>
+
+  <!-- maze grid 4x4 for illustration (example 1 variant) -->
+  <!-- cell size 60, start at (52, 116) -->
+  <!-- row0: + + . +  -->
+  <!-- row1: . . . +  -->
+  <!-- row2: + + + .  -->
+  <g font-size="14" text-anchor="middle">
+    <!-- row 0 -->
+    <g filter="url(#sk)"><rect x="52" y="116" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="82" y="152" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="112" y="116" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="142" y="152" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="172" y="116" width="60" height="60" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.2"/></g>
+    <text x="202" y="152" fill="#2e6e2e" font-weight="bold">·</text>
+    <g filter="url(#sk)"><rect x="232" y="116" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="262" y="152" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 1 -->
+    <g filter="url(#sk)"><rect x="52" y="176" width="60" height="60" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.2"/></g>
+    <text x="82" y="212" fill="#2e6e2e" font-weight="bold">·</text>
+    <g filter="url(#sk)"><rect x="112" y="176" width="60" height="60" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="142" y="212" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="172" y="176" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="2.5"/></g>
+    <text x="202" y="212" fill="#34506e" font-weight="bold">E</text>
+    <g filter="url(#sk)"><rect x="232" y="176" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="262" y="212" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 2 -->
+    <g filter="url(#sk)"><rect x="52" y="236" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="82" y="272" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="112" y="236" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="142" y="272" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="172" y="236" width="60" height="60" fill="#fdecee" stroke="#b85450" stroke-width="1.6"/></g>
+    <text x="202" y="272" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="232" y="236" width="60" height="60" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.2"/></g>
+    <text x="262" y="272" fill="#2e6e2e" font-weight="bold">·</text>
+  </g>
+
+  <!-- labels for entrance and exits -->
+  <text x="202" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#34506e">入口 E</text>
+  <text x="202" y="100" text-anchor="middle" font-size="9" fill="#34506e">(1,2)</text>
+  <!-- exit markers -->
+  <text x="82" y="166" text-anchor="middle" font-size="9" fill="#4a8e4a">出口</text>
+  <text x="202" y="108" text-anchor="middle" font-size="0" fill="#34506e"></text>
+  <text x="262" y="312" text-anchor="middle" font-size="9" fill="#4a8e4a">出口</text>
+  <text x="82" y="250" text-anchor="middle" font-size="9" fill="#4a8e4a">出口</text>
+
+  <!-- BFS arrow from entrance to (0,2) -->
+  <path d="M 202 176 L 202 176" stroke="#4a8e4a" stroke-width="0" fill="none"/>
+  <path d="M 202 176 L 202 176" stroke="#4a8e4a" stroke-width="2" fill="none" marker-end="url(#arg)"/>
+
+  <!-- legend -->
+  <g filter="url(#sk)">
+    <rect x="44" y="316" width="360" height="100" rx="6" fill="#fffdf3" stroke="#c9a93a" stroke-width="1.2" stroke-dasharray="5 3"/>
+  </g>
+  <text x="60" y="340" font-size="11.5" fill="#7a5415">• E = 入口（已标记 +，不算出口）</text>
+  <text x="60" y="360" font-size="11.5" fill="#7a5415">• 绿框 · = 边界空格 = 出口候选</text>
+  <text x="60" y="380" font-size="11.5" fill="#7a5415">• 红框 + = 墙（不可进入）</text>
+  <text x="60" y="400" font-size="11.5" font-weight="bold" fill="#b85450">→ BFS 从 E 按层扩展，首个命中绿框即返回</text>
+
+  <!-- ===== RIGHT: BFS layer expansion ===== -->
+  <g filter="url(#sk)">
+    <rect x="444" y="66" width="412" height="450" rx="10" fill="#eef6ef" stroke="#4a7e4a" stroke-width="1.6"/>
+  </g>
+  <text x="650" y="92" text-anchor="middle" font-size="15" font-weight="bold" fill="#2e6e2e">② BFS 按层扩展：层 = 步数</text>
+
+  <!-- concentric layers around entrance -->
+  <!-- entrance at (650, 200) -->
+  <!-- layer 1 -->
+  <g filter="url(#sk)">
+    <rect x="540" y="150" width="220" height="100" rx="14" fill="none" stroke="#9ec9a0" stroke-width="1.6" stroke-dasharray="6 4"/>
+  </g>
+  <text x="556" y="168" font-size="10.5" fill="#6a9a6a">层 1 · 1 步</text>
+
+  <!-- layer 0 (entrance) -->
+  <g filter="url(#sk)">
+    <rect x="610" y="184" width="80" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+  </g>
+  <text x="650" y="210" text-anchor="middle" font-size="14" font-weight="bold" fill="#34506e">入口 E</text>
+  <text x="650" y="244" text-anchor="middle" font-size="10" fill="#5a5a5a">层 0 · 0 步</text>
+
+  <!-- layer 1 neighbors: (0,2)=exit, (1,1), (2,2) -->
+  <!-- exit node -->
+  <g filter="url(#sk)">
+    <rect x="558" y="128" width="84" height="32" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.2"/>
+  </g>
+  <text x="600" y="149" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">(0,2) 出口</text>
+  <!-- arrows from entrance to layer 1 nodes -->
+  <path d="M 620 184 L 605 160" stroke="#4a8e4a" stroke-width="1.8" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+
+  <!-- other layer 1 neighbors (not exits) -->
+  <g filter="url(#sk)">
+    <rect x="724" y="184" width="80" height="32" rx="6" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/>
+  </g>
+  <text x="764" y="205" text-anchor="middle" font-size="11" fill="#34506e">(1,1)</text>
+  <path d="M 690 204 L 724 200" stroke="#5a5a5a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- highlight: first exit found = nearest -->
+  <g filter="url(#sk)">
+    <rect x="470" y="280" width="362" height="92" rx="8" fill="#fff0f3" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="651" y="304" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">⭐ 首次命中边界 = 最近出口</text>
+  <text x="651" y="326" text-anchor="middle" font-size="11" fill="#b85450">BFS 按距离单调不减出队</text>
+  <text x="651" y="344" text-anchor="middle" font-size="11" fill="#b85450">→ 第 1 层发现 (0,2) → 返回 steps=1</text>
+  <text x="651" y="362" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">无需继续搜索！</text>
+
+  <!-- key insight box -->
+  <g filter="url(#sk)">
+    <rect x="470" y="388" width="362" height="112" rx="8" fill="#fffdf3" stroke="#c9a93a" stroke-width="1.2" stroke-dasharray="5 3"/>
+  </g>
+  <text x="651" y="412" text-anchor="middle" font-size="11.5" fill="#7a5415">迷宫 = 无权图（每条边权 = 1）</text>
+  <text x="651" y="434" text-anchor="middle" font-size="11.5" fill="#7a5415">BFS 队列按距离单调不减排列</text>
+  <text x="651" y="456" text-anchor="middle" font-size="11.5" fill="#7a5415">入口标记 + → 不会被误判为出口</text>
+  <text x="651" y="480" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2e6e2e">→ 单源 BFS O(mn) 一趟搞定</text>
+
+  <!-- bottom note -->
+  <text x="440" y="528" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold">入口不算出口——标记为 + 后 BFS 天然绕开，无需特判</text>
+</svg>

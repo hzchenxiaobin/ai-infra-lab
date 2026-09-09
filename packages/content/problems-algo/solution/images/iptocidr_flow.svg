@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#555"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：解析 IP → 循环取最大对齐块 → 拼装 CIDR</text>
+
+  <!-- Step 1: parse IP -->
+  <rect x="40" y="44" width="480" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="64" font-size="12" fill="#446688" font-weight="bold">步骤 1：解析 IP 为 32 位整数 start（用 long，避免溢出）</text>
+  <text x="60" y="82" font-size="11" fill="#444" font-family="monospace">for (seg in ip.split('.'))  start = start*256 + seg;</text>
+  <text x="60" y="98" font-size="10" fill="#888">例 "255.0.0.7" → start = 0xFF000007 = 4278190087</text>
+
+  <path d="M 280 112 L 280 130" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop header (decision diamond-ish -> use rect) -->
+  <rect x="40" y="134" width="480" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="158" font-size="12" fill="#d6a040" font-weight="bold">步骤 2：while (n &gt; 0)   —— 还剩地址未覆盖则继续</text>
+
+  <path d="M 280 178 L 280 196" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: two constraints -->
+  <rect x="40" y="200" width="480" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="220" font-size="12" fill="#d6a040" font-weight="bold">步骤 3：算两个约束</text>
+  <text x="60" y="238" font-size="11" fill="#444" font-family="monospace">aligned = (start==0) ? 无界 : start &amp; -start;   // 对齐约束</text>
+  <text x="60" y="254" font-size="11" fill="#444" font-family="monospace">maxByN = 1 &lt;&lt; (31 - clz(n));               // ≤ n 的最大 2 幂</text>
+  <text x="60" y="270" font-size="10" fill="#888">start &amp; -start 取最低置位 bit = 整除 start 的最大 2 幂</text>
+
+  <path d="M 280 280 L 280 298" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: take block -->
+  <rect x="40" y="302" width="480" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="322" font-size="12" fill="#d6a040" font-weight="bold">步骤 4：取块 + 算前缀</text>
+  <text x="60" y="340" font-size="11" fill="#444" font-family="monospace">block  = min(aligned, maxByN);</text>
+  <text x="60" y="356" font-size="11" fill="#444" font-family="monospace">prefix = 32 - log2(block);   // block=8 ⇒ prefix=29</text>
+
+  <path d="M 280 366 L 280 384" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: output + advance -->
+  <rect x="40" y="388" width="480" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="408" font-size="12" fill="#4a7a3a" font-weight="bold">步骤 5：输出 longToIP(start)/prefix；start += block；n -= block</text>
+  <text x="60" y="426" font-size="11" fill="#444" font-family="monospace">ans.push_back(longToIP(start) + "/" + prefix);</text>
+
+  <!-- loop back arrow to step 2 -->
+  <path d="M 510 413 Q 545 413 545 280 Q 545 154 520 154" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="552" y="284" font-size="10" fill="#888" text-anchor="middle" transform="rotate(90 552 284)">n 仍 &gt; 0，回到步骤 2</text>
+
+  <!-- return -->
+  <rect x="40" y="444" width="480" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="459" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">n == 0 → 返回 ans（最少块数覆盖）</text>
+</svg>

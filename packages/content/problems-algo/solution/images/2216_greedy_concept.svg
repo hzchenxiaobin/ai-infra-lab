@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：相邻不等→配对；相邻相等→删前者</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#888">贪心扫描存活数组，逐对判定 nums[i] vs nums[i+1]</text>
+
+  <!-- ===== Original array: nums = [1,1,2,3,5] ===== -->
+  <text x="28" y="68" font-size="10.5" fill="#666">原数组</text>
+  <!-- index labels -->
+  <text x="78" y="60" text-anchor="middle" font-size="9" fill="#888">0</text>
+  <text x="118" y="60" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="158" y="60" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="198" y="60" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="238" y="60" text-anchor="middle" font-size="9" fill="#888">4</text>
+  <!-- value boxes: index 0 deleted (red), rest kept -->
+  <rect x="58" y="64" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="78" y="84" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <line x1="62" y1="92" x2="94" y2="66" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="98" y="64" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="84" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="138" y="64" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="84" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="178" y="64" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="198" y="84" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <rect x="218" y="64" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="238" y="84" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+
+  <!-- annotation for step 1: 1==1, delete -->
+  <text x="88" y="108" text-anchor="middle" font-size="9.5" fill="#b85450">1==1 删</text>
+  <text x="168" y="108" text-anchor="middle" font-size="9.5" fill="#4a7a3a">1≠2 配对</text>
+  <text x="228" y="108" text-anchor="middle" font-size="9.5" fill="#4a7a3a">3≠5 配对</text>
+
+  <!-- arrow down to surviving array -->
+  <path d="M 168 96 L 168 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="182" y="120" font-size="9.5" fill="#888">删 1 个</text>
+
+  <!-- ===== Surviving beautiful array ===== -->
+  <text x="28" y="148" font-size="10.5" fill="#666">存活数组</text>
+  <!-- pair 1: (1,2) highlighted green -->
+  <rect x="100" y="138" width="84" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <rect x="104" y="142" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="121" y="161" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="144" y="142" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="161" y="161" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <text x="142" y="186" text-anchor="middle" font-size="9" fill="#4a7a3a">配对 (1,2) ✓</text>
+
+  <!-- pair 2: (3,5) highlighted blue -->
+  <rect x="200" y="138" width="84" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <rect x="204" y="142" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="221" y="161" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <rect x="244" y="142" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="261" y="161" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+  <text x="242" y="186" text-anchor="middle" font-size="9" fill="#446688">配对 (3,5) ✓</text>
+
+  <text x="310" y="161" font-size="11" fill="#333" font-weight="bold">→ 美丽数组</text>
+  <text x="310" y="178" font-size="10" fill="#555">偶长 + 每对不等</text>
+
+  <!-- ===== Two rule boxes ===== -->
+  <text x="28" y="216" font-size="11" fill="#444" font-weight="bold">贪心规则</text>
+
+  <!-- Rule 1: not equal -> pair (green) -->
+  <rect x="40" y="224" width="220" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="244" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">nums[i] ≠ nums[i+1]</text>
+  <text x="150" y="262" text-anchor="middle" font-size="10.5" fill="#4a7a3a">→ 配对成功，i += 2</text>
+
+  <!-- Rule 2: equal -> delete (red) -->
+  <rect x="270" y="224" width="220" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="244" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">nums[i] == nums[i+1]</text>
+  <text x="380" y="262" text-anchor="middle" font-size="10.5" fill="#b85450">→ 删前者，ans++，i += 1</text>
+
+  <!-- ===== Why delete is necessary ===== -->
+  <text x="28" y="298" font-size="10.5" fill="#666">为什么必须删？</text>
+  <rect x="58" y="284" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="78" y="304" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="98" y="284" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="304" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <path d="M 138 299 L 158 299" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="148" y="293" text-anchor="middle" font-size="9" fill="#b85450">相等</text>
+  <rect x="160" y="284" width="180" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="304" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">无法组成不等对 → 必删一个</text>
+
+  <!-- ===== Footer ===== -->
+  <rect x="40" y="328" width="440" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="346" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">保留不亏：保留要么配对成功，要么等待后续</text>
+  <text x="260" y="361" text-anchor="middle" font-size="10" fill="#555">唯一需删：待配对值与新元素相等 → 删掉新元素继续找</text>
+</svg>

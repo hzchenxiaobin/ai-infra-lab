@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：分组 → 逐组 t = C(c,2) → 前缀和累乘，一趟 O(n)</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">关键一步：「与之前所有组配对」压成一次乘法——免去 O(G²) 两两枚举</text>
+
+  <!-- ============ 左侧主流程 ============ -->
+  <g filter="url(#rough2)">
+    <!-- ① 分组 -->
+    <rect x="48" y="58" width="190" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="143" y="78" text-anchor="middle" font-size="11" fill="#33455e" font-weight="bold">① 哈希表按 y 分组</text>
+    <text x="143" y="95" text-anchor="middle" font-size="9.5" fill="#556">cnt[y] += 1（x 坐标不看）</text>
+
+    <line x1="143" y1="104" x2="143" y2="122" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- ② 计算组合数 -->
+    <rect x="48" y="124" width="190" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="143" y="144" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">② 取一组：t = C(c,2) mod M</text>
+    <text x="143" y="162" text-anchor="middle" font-size="9" fill="#556">c(c−1)/2 ≈ 5×10⁹ → 必须 long long</text>
+
+    <line x1="143" y1="176" x2="143" y2="194" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- ③ 前缀和累乘 -->
+    <rect x="48" y="196" width="190" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="143" y="216" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">③ ans = (ans + t × pre) mod M</text>
+    <text x="143" y="234" text-anchor="middle" font-size="10" fill="#2a5a2a">pre = (pre + t) mod M</text>
+
+    <line x1="143" y1="248" x2="143" y2="264" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- 判断菱形 -->
+    <polygon points="143,264 205,294 143,324 81,294" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="143" y="291" text-anchor="middle" font-size="10.5" fill="#8a3a36" font-weight="bold">还有组？</text>
+    <text x="143" y="306" text-anchor="middle" font-size="8.5" fill="#996">（遍历哈希表）</text>
+
+    <!-- 循环回路：是 → 回到 ② -->
+    <path d="M205,294 L254,294 L254,150 L240,150" fill="none" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="248" y="288" font-size="9.5" fill="#8a3a36" font-weight="bold">是</text>
+
+    <!-- 否 → 返回 -->
+    <line x1="143" y1="324" x2="143" y2="344" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="152" y="340" font-size="9.5" fill="#4a7a3a" font-weight="bold">否</text>
+
+    <rect x="48" y="346" width="190" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="143" y="364" text-anchor="middle" font-size="11" fill="#33455e" font-weight="bold">④ 返回 ans</text>
+    <text x="143" y="380" text-anchor="middle" font-size="9" fill="#556">所有跨线梯形数 mod 10⁹+7</text>
+  </g>
+
+  <!-- ============ 右侧说明面板 ============ -->
+  <text x="397" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">三档做法的复杂度账</text>
+
+  <g filter="url(#rough2)">
+    <text x="308" y="92" font-size="9.5" fill="#8a3a36">暴力枚举四点组合</text>
+    <text x="486" y="92" text-anchor="end" font-size="9.5" fill="#8a3a36" font-weight="bold">O(n⁴) ≈ 10²⁰ ✗</text>
+    <line x1="308" y1="100" x2="486" y2="100" stroke="#ddd" stroke-width="1"/>
+
+    <text x="308" y="118" font-size="9.5" fill="#8a6d1f">分组后两两配对</text>
+    <text x="486" y="118" text-anchor="end" font-size="9.5" fill="#8a6d1f" font-weight="bold">O(G²) ≈ 2.5×10⁹ ✗</text>
+    <line x1="308" y1="126" x2="486" y2="126" stroke="#ddd" stroke-width="1"/>
+
+    <text x="308" y="144" font-size="9.5" fill="#2a5a2a">前缀和累乘（本解法）</text>
+    <text x="486" y="144" text-anchor="end" font-size="9.5" fill="#2a5a2a" font-weight="bold">O(n) ✓</text>
+    <text x="308" y="162" font-size="8.5" fill="#996">G ≤ n/2 = 5×10⁴（每组恰 2 点时最多）</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="300" y="176" width="195" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="397" y="196" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">⚠️ 模运算与溢出</text>
+    <text x="397" y="214" text-anchor="middle" font-size="9.5" fill="#33455e">t、pre 先各自取模再相乘</text>
+    <text x="397" y="230" text-anchor="middle" font-size="9.5" fill="#33455e">t × pre &lt; (10⁹+7)² ≈ 10¹⁸ &lt; 2⁶³ ✓</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="300" y="252" width="195" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="397" y="272" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">💡 前缀和的等价变形</text>
+    <text x="397" y="292" text-anchor="middle" font-size="11" fill="#2a5a2a">Σ_{i&lt;j} tᵢ·tⱼ = (S² − Σtᵢ²) / 2</text>
+    <text x="397" y="312" text-anchor="middle" font-size="9" fill="#33455e">除法在模意义下需逆元</text>
+    <text x="397" y="328" text-anchor="middle" font-size="9" fill="#33455e">（2⁻¹ = (M+1)/2），前缀和版</text>
+    <text x="397" y="340" text-anchor="middle" font-size="9" fill="#33455e">全程只加乘，无须逆元更稳</text>
+  </g>
+</svg>

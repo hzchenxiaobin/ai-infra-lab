@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：按开始时间排序，最小堆维护「最早结束」</text>
+
+  <!-- timeline -->
+  <line x1="50" y1="252" x2="510" y2="252" stroke="#888" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M 510 252 L 502 248 L 502 256 Z" fill="#888" filter="url(#rough2)"/>
+  <text x="518" y="256" font-size="10.5" fill="#888">t</text>
+  <!-- ticks 0..30 step 5, origin x=70 unit=14 -->
+  <g font-size="10" fill="#888" text-anchor="middle">
+    <line x1="70" y1="248" x2="70" y2="258" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="70" y="272">0</text>
+    <line x1="210" y1="248" x2="210" y2="258" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="210" y="272">10</text>
+    <line x1="350" y1="248" x2="350" y2="258" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="350" y="272">20</text>
+    <line x1="490" y1="248" x2="490" y2="258" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="490" y="272">30</text>
+  </g>
+
+  <!-- meeting A [0,30] on row 1 (room needed) -->
+  <rect x="70" y="76" width="420" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="78" y="93" font-size="12" fill="#b85450" font-weight="bold">A [0,30]</text>
+
+  <!-- meeting B [5,10] overlaps A -->
+  <rect x="140" y="116" width="70" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="133" text-anchor="end" font-size="11.5" fill="#446688" font-weight="bold">B [5,10]</text>
+
+  <!-- meeting C [15,20] does NOT overlap A... overlaps A but not B -->
+  <rect x="280" y="156" width="70" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="173" text-anchor="end" font-size="11.5" fill="#4a7a3a" font-weight="bold">C [15,20]</text>
+
+  <!-- overlap note between A and B -->
+  <path d="M 175 100 L 175 116" stroke="#b85450" stroke-width="1.4" stroke-dasharray="3 2" fill="none" filter="url(#rough2)"/>
+  <text x="182" y="112" font-size="9.5" fill="#b85450">重叠</text>
+
+  <!-- min-heap of end times -->
+  <text x="430" y="196" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">最小堆（结束时刻）</text>
+  <ellipse cx="430" cy="222" rx="44" ry="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="430" y="218" text-anchor="middle" font-size="10" fill="#b85450">堆顶=最早</text>
+  <text x="430" y="232" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">10</text>
+  <ellipse cx="386" cy="262" rx="36" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="386" y="267" text-anchor="middle" font-size="12" fill="#333">30</text>
+  <line x1="416" y1="240" x2="392" y2="248" stroke="#bbb" stroke-width="1.3" filter="url(#rough2)"/>
+
+  <!-- reuse arrow: B ends(10) before C starts(15) -->
+  <path d="M 430 244 Q 360 270 280 184" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="318" y="214" font-size="10" fill="#4a7a3a">10 ≤ 15 → 复用房间</text>
+
+  <!-- conclusion -->
+  <rect x="32" y="300" width="476" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="48" y="322" font-size="12" fill="#7a5415" font-weight="bold">关键直觉：堆里每个元素 = 一间正在被占用的房间。</text>
+  <text x="48" y="340" font-size="11" fill="#444">新会议开始时，若堆顶（最早结束）已 ≤ 当前开始，可腾出该房间复用；否则必须新开一间。</text>
+  <text x="48" y="356" font-size="11" fill="#444">堆的大小峰值 = 所需房间数。</text>
+</svg>

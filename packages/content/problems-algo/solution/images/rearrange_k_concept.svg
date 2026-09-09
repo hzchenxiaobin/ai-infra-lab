@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="460" viewBox="0 0 880 460" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+  </defs>
+  <rect width="880" height="460" fill="#fafafa"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">最大堆 + 冷却队列：逐格选最高频可用字符</text>
+  <path d="M 280 44 Q 440 52 600 44" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="440" y="74" text-anchor="middle" font-size="11.5" fill="#666">每格 i：① 释放冷却到期的字符回堆  ② 弹堆顶写入结果  ③ 用过的字符入冷却队列（i+k 后解锁）</text>
+
+  <!-- ===== 就绪堆（最大堆）===== -->
+  <g filter="url(#sk)"><rect x="40" y="96" width="220" height="240" rx="10" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.6"/></g>
+  <text x="150" y="118" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b6e9e">就绪堆 ready（最大堆）</text>
+  <text x="150" y="134" text-anchor="middle" font-size="10.5" fill="#555">按剩余次数排序，堆顶=最紧迫</text>
+
+  <!-- 堆顶 a:3 高亮 -->
+  <g filter="url(#sk)"><rect x="80" y="148" width="140" height="36" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="150" y="172" text-anchor="middle" font-size="14" font-weight="bold" fill="#b03a3a">a : 3  ← 堆顶</text>
+  <g filter="url(#sk)"><rect x="96" y="190" width="108" height="30" rx="4" fill="#fff" stroke="#4a8edb" stroke-width="1.2"/></g>
+  <text x="150" y="210" text-anchor="middle" font-size="12.5" fill="#333">b : 2</text>
+  <g filter="url(#sk)"><rect x="108" y="226" width="84" height="28" rx="4" fill="#fff" stroke="#4a8edb" stroke-width="1.2"/></g>
+  <text x="150" y="245" text-anchor="middle" font-size="12.5" fill="#333">c : 2</text>
+  <text x="150" y="284" text-anchor="middle" font-size="10.5" fill="#888">（次数大者在上）</text>
+  <text x="150" y="304" text-anchor="middle" font-size="10" fill="#888">弹堆顶 → 取走 1 个 a</text>
+
+  <!-- 堆 → 结果 箭头 -->
+  <path d="M 222 166 Q 300 166 360 200" stroke="#b03a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="276" y="158" font-size="10.5" fill="#b03a3a" font-weight="bold">弹堆顶</text>
+
+  <!-- ===== 结果字符串 ===== -->
+  <g filter="url(#sk)"><rect x="360" y="200" width="160" height="60" rx="8" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="440" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e6e2e">结果 result</text>
+  <g filter="url(#sk)">
+    <g stroke="#4a7a3a" stroke-width="1.2">
+      <rect x="372" y="228" width="22" height="24" rx="3" fill="#bfe0bf"/>
+      <rect x="396" y="228" width="22" height="24" rx="3" fill="#fff" stroke-dasharray="3 2"/>
+      <rect x="420" y="228" width="22" height="24" rx="3" fill="#fff" stroke-dasharray="3 2"/>
+      <rect x="444" y="228" width="22" height="24" rx="3" fill="#fff" stroke-dasharray="3 2"/>
+      <rect x="468" y="228" width="22" height="24" rx="3" fill="#fff" stroke-dasharray="3 2"/>
+      <rect x="492" y="228" width="22" height="24" rx="3" fill="#fff" stroke-dasharray="3 2"/>
+    </g>
+  </g>
+  <text x="383" y="245" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e6e2e">a</text>
+  <text x="407" y="245" text-anchor="middle" font-size="11" fill="#bbb">_</text>
+  <text x="431" y="245" text-anchor="middle" font-size="11" fill="#bbb">_</text>
+  <text x="455" y="245" text-anchor="middle" font-size="11" fill="#bbb">_</text>
+  <text x="479" y="245" text-anchor="middle" font-size="11" fill="#bbb">_</text>
+  <text x="503" y="245" text-anchor="middle" font-size="11" fill="#bbb">_</text>
+  <text x="440" y="278" text-anchor="middle" font-size="10" fill="#888">下标 i = 0 处写入 a</text>
+
+  <!-- 结果 → 冷却 箭头 -->
+  <path d="M 440 262 Q 440 300 540 300" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="470" y="288" font-size="10.5" fill="#444" font-weight="bold">用完入队</text>
+
+  <!-- ===== 冷却队列 ===== -->
+  <g filter="url(#sk)"><rect x="540" y="96" width="300" height="240" rx="10" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.6"/></g>
+  <text x="690" y="118" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a5415">冷却队列 cooldown（FIFO）</text>
+  <text x="690" y="134" text-anchor="middle" font-size="10.5" fill="#555">存 (余, ch, 解锁时刻)；先用的先解锁</text>
+
+  <!-- 队首高亮 -->
+  <g filter="url(#sk)"><rect x="556" y="150" width="120" height="40" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="616" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a">(2, a, i+k)</text>
+  <text x="616" y="182" text-anchor="middle" font-size="10" fill="#b03a3a">队首 ← 最早解锁</text>
+
+  <g filter="url(#sk)"><rect x="690" y="150" width="120" height="40" rx="5" fill="#fff" stroke="#c98a2b" stroke-width="1.2"/></g>
+  <text x="750" y="166" text-anchor="middle" font-size="12" fill="#333">(1, b, i+2k)</text>
+  <text x="750" y="182" text-anchor="middle" font-size="10" fill="#888">后续</text>
+
+  <g filter="url(#sk)"><rect x="556" y="200" width="120" height="36" rx="5" fill="#fff" stroke="#c98a2b" stroke-width="1.2"/></g>
+  <text x="616" y="223" text-anchor="middle" font-size="12" fill="#333">(1, c, i+3k)</text>
+
+  <text x="690" y="262" text-anchor="middle" font-size="10.5" fill="#7a5415">unlock ≤ 当前下标 → 出队回堆</text>
+
+  <!-- 冷却 → 堆 回流箭头（大弧） -->
+  <path d="M 556 170 Q 380 60 222 150" stroke="#2e6e2e" stroke-width="1.8" fill="none" marker-end="url(#ar)" stroke-dasharray="5 3" filter="url(#sk)"/>
+  <text x="380" y="92" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">解锁后回到就绪堆</text>
+
+  <!-- ===== 底部说明 ===== -->
+  <g filter="url(#sk)"><rect x="40" y="356" width="800" height="86" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/></g>
+  <text x="60" y="380" font-size="12.5" font-weight="bold" fill="#2b2b2b">为什么这样设计？</text>
+  <text x="60" y="402" font-size="11.5" fill="#444">① 堆保证「先排最紧迫的高频字符」——它最易在末尾挤不下，先排腾出空间（贪心交换论证）</text>
+  <text x="60" y="422" font-size="11.5" fill="#444">② 队列保证「刚用的字符 k 格内不再出现」——使用时刻单调递增 → 解锁时刻也单调 → FIFO 队首即最早解锁</text>
+  <text x="60" y="438" font-size="11" fill="#888">堆空且队首未到解锁时刻 → 无可用字符 → 必产生 idle → 返回 ""</text>
+</svg>

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="410" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">行程长度编码（RLE）：贡献只与段长有关</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">cnt 个同字符 → “字符+计数”，单字符不附计数；阈值 10 / 100 决定位数</text>
+
+  <!-- encLen table -->
+  <text x="40" y="74" font-size="11" fill="#446688" font-weight="bold">encLen(cnt)：</text>
+
+  <g font-size="11">
+    <!-- cnt = 1 -->
+    <rect x="40" y="82" width="105" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="92" y="100" text-anchor="middle" fill="#333">cnt = 1</text>
+    <text x="92" y="118" text-anchor="middle" fill="#446688" font-weight="bold">“a”</text>
+    <text x="92" y="132" text-anchor="middle" fill="#b85450" font-weight="bold">长度 1</text>
+
+    <!-- cnt = 2..9 -->
+    <rect x="155" y="82" width="105" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="207" y="100" text-anchor="middle" fill="#333">cnt = 2~9</text>
+    <text x="207" y="118" text-anchor="middle" fill="#4a7a3a" font-weight="bold">“a9”</text>
+    <text x="207" y="132" text-anchor="middle" fill="#b85450" font-weight="bold">长度 2</text>
+
+    <!-- cnt = 10..99 -->
+    <rect x="270" y="82" width="105" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="322" y="100" text-anchor="middle" fill="#333">cnt = 10~99</text>
+    <text x="322" y="118" text-anchor="middle" fill="#d6a040" font-weight="bold">“a99”</text>
+    <text x="322" y="132" text-anchor="middle" fill="#b85450" font-weight="bold">长度 3</text>
+
+    <!-- cnt = 100 -->
+    <rect x="385" y="82" width="105" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="437" y="100" text-anchor="middle" fill="#333">cnt = 100</text>
+    <text x="437" y="118" text-anchor="middle" fill="#b85450" font-weight="bold">“a100”</text>
+    <text x="437" y="132" text-anchor="middle" fill="#b85450" font-weight="bold">长度 4</text>
+  </g>
+
+  <text x="270" y="158" text-anchor="middle" font-size="10" fill="#888">阈值 9→10、99→100 各多一位 → 压过阈值能省 1 位</text>
+
+  <!-- divider -->
+  <path d="M 40 176 L 500 176" stroke="#ccc" stroke-width="1" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- deletion merge example -->
+  <text x="40" y="198" font-size="11" fill="#4a7a3a" font-weight="bold">删除异字符 → 合并两侧同字符段（核心收益来源）</text>
+
+  <!-- row 1: original string aaabcccd -->
+  <text x="40" y="226" font-size="10" fill="#666">原串：</text>
+  <g font-size="12">
+    <rect x="86" y="212" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="99" y="230" text-anchor="middle" fill="#333">a</text>
+    <rect x="114" y="212" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="127" y="230" text-anchor="middle" fill="#333">a</text>
+    <rect x="142" y="212" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="155" y="230" text-anchor="middle" fill="#333">a</text>
+    <rect x="170" y="212" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="183" y="230" text-anchor="middle" fill="#b85450" font-weight="bold">b</text>
+    <rect x="198" y="212" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="211" y="230" text-anchor="middle" fill="#333">c</text>
+    <rect x="226" y="212" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="239" y="230" text-anchor="middle" fill="#333">c</text>
+    <rect x="254" y="212" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="267" y="230" text-anchor="middle" fill="#333">c</text>
+    <rect x="282" y="212" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="295" y="230" text-anchor="middle" fill="#b85450" font-weight="bold">d</text>
+  </g>
+  <text x="320" y="230" font-size="10" fill="#888">RLE: “a3bc3d” 长度 6</text>
+
+  <!-- delete marks -->
+  <text x="183" y="252" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+  <text x="295" y="252" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗</text>
+  <text x="240" y="252" text-anchor="middle" font-size="9" fill="#b85450">删 b、d（用 2 次）</text>
+
+  <!-- arrow down -->
+  <path d="M 183 258 L 183 276" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <path d="M 295 258 L 295 276" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+
+  <!-- row 2: merged aaaccc -->
+  <text x="40" y="300" font-size="10" fill="#666">合并：</text>
+  <g font-size="12">
+    <rect x="120" y="286" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="133" y="304" text-anchor="middle" fill="#333">a</text>
+    <rect x="148" y="286" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="161" y="304" text-anchor="middle" fill="#333">a</text>
+    <rect x="176" y="286" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="189" y="304" text-anchor="middle" fill="#333">a</text>
+    <rect x="218" y="286" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="231" y="304" text-anchor="middle" fill="#333">c</text>
+    <rect x="246" y="286" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="259" y="304" text-anchor="middle" fill="#333">c</text>
+    <rect x="274" y="286" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="287" y="304" text-anchor="middle" fill="#333">c</text>
+  </g>
+  <!-- merge bracket -->
+  <path d="M 120 322 L 120 330 L 202 330 L 202 322" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="161" y="344" text-anchor="middle" font-size="10" fill="#446688">a 段 cnt=3</text>
+  <path d="M 218 322 L 218 330 L 300 330 L 300 322" stroke="#4a7a3a" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="259" y="344" text-anchor="middle" font-size="10" fill="#4a7a3a">c 段 cnt=3</text>
+
+  <!-- arrow down to result -->
+  <path d="M 210 352 L 210 368" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="130" y="372" width="160" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="210" y="392" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">“a3c3”  长度 = 2 + 2 = 4</text>
+
+  <text x="320" y="392" font-size="10" fill="#888">删 2 个 → 6 降到 4</text>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#b85450" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#4a7a3a" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <!-- 起点 / 终点 -->
+  <rect x="190" y="12" width="140" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="260" y="31" text-anchor="middle" font-size="13" font-weight="bold" fill="#333" filter="url(#rough2)">输入 n, k</text>
+
+  <rect x="30" y="12" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="90" y="31" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e4d24" filter="url(#rough2)">返回 ans</text>
+
+  <path d="M 260 40 L 260 56" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ① 打表 -->
+  <rect x="40" y="60" width="330" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="84" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">① 打表 dep[v] = 1 + dep[popcount(v)]，v = 2…63</text>
+
+  <path d="M 205 100 L 205 116" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 特判 -->
+  <rect x="40" y="120" width="330" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="144" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">② ans ← 1（若 k = 0）—— 特判 x = 1，其深度为 0</text>
+
+  <path d="M 205 160 L 205 176" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 枚举 -->
+  <rect x="40" y="180" width="330" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="203" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">③ 枚举 j = 1 … 50</text>
+
+  <path d="M 205 216 L 205 226" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="205,230 295,258 205,286 115,258" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="205" y="262" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">1 + dep[j] = k ?</text>
+
+  <!-- 是：向下 -->
+  <path d="M 205 286 L 205 306" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="217" y="301" font-size="11.5" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- 否：右侧回环 -->
+  <path d="M 295 258 L 455 258" fill="none" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="372" y="251" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否（j 不命中，跳过）</text>
+
+  <!-- ④ 组合计数 -->
+  <rect x="40" y="310" width="330" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="331" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">④ cnt ← count(n, j)：组合计数「≤ n 且恰含 j 个 1」</text>
+  <text x="205" y="351" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">j = 1 时 cnt−−（扣除 x = 1）；ans += cnt</text>
+
+  <!-- 回环：下一个 j -->
+  <path d="M 370 336 L 455 336 L 455 198 L 376 198" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="412" y="330" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">下一个 j</text>
+
+  <!-- 退出：j 用完 -->
+  <path d="M 40 198 L 16 198 L 16 26 L 24 26" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="52" y="190" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">j &gt; 50（枚举完毕）</text>
+</svg>

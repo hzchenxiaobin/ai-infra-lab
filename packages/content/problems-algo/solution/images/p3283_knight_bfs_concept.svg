@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">核心概念：马走「日」字 + 每个源点 BFS 出两两马步距离</text>
+
+  <!-- 左：6x6 局部棋盘 -->
+  <text x="120" y="50" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">棋盘一角（50×50 太大，截 6×6）</text>
+
+  <rect x="36" y="64" width="168" height="168" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <path d="M 64 64 L 64 232 M 92 64 L 92 232 M 120 64 L 120 232 M 148 64 L 148 232 M 176 64 L 176 232 M 36 92 L 204 92 M 36 120 L 204 120 M 36 148 L 204 148 M 36 176 L 204 176 M 36 204 L 204 204" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- 列/行坐标 -->
+  <text x="50" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">0</text>
+  <text x="78" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">1</text>
+  <text x="106" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">2</text>
+  <text x="134" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">3</text>
+  <text x="162" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">4</text>
+  <text x="190" y="60" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">5</text>
+  <text x="32" y="80" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">0</text>
+  <text x="32" y="108" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">1</text>
+  <text x="32" y="136" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">2</text>
+  <text x="32" y="164" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">3</text>
+  <text x="32" y="192" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">4</text>
+  <text x="32" y="220" text-anchor="end" font-size="8" fill="#999" filter="url(#rough2)">5</text>
+
+  <!-- 马的 8 个落点（蓝） -->
+  <rect x="36" y="92" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="36" y="148" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="64" y="64" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="64" y="176" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="120" y="64" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="120" y="176" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="148" y="92" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="148" y="148" width="28" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- 马所在格（橙） -->
+  <rect x="92" y="120" width="28" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="106" y="139" text-anchor="middle" font-size="13" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">马</text>
+
+  <!-- 兵A：恰在落点上 -->
+  <circle cx="162" cy="162" r="9" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="162" y="166" text-anchor="middle" font-size="9" fill="#3a5a2e" font-weight="bold" filter="url(#rough2)">A</text>
+
+  <!-- 兵B：远处的兵 -->
+  <circle cx="50" cy="218" r="9" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="50" y="222" text-anchor="middle" font-size="9" fill="#3a5a2e" font-weight="bold" filter="url(#rough2)">B</text>
+
+  <!-- 马 → 兵A 的跳跃箭头 -->
+  <path d="M 112 134 Q 134 126 148 152" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="140" y="122" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">1 步</text>
+
+  <text x="120" y="248" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">马走「日」：横 2 竖 1 / 横 1 竖 2，共 8 个落点（蓝）</text>
+  <text x="120" y="265" text-anchor="middle" font-size="10.5" fill="#555" filter="url(#rough2)">兵A 恰在落点上 → 1 步；兵B → 3 步（肉眼难数，BFS 说了算）</text>
+
+  <!-- 右：dist 矩阵（示例 2） -->
+  <text x="370" y="76" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">dist[i][j]（以示例 2 为例）</text>
+
+  <rect x="242" y="88" width="66" height="24" fill="#f0f0f0" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="275" y="104" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">源点 \ 兵</text>
+  <rect x="308" y="88" width="44" height="24" fill="#f0f0f0" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="104" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵0</text>
+  <rect x="352" y="88" width="44" height="24" fill="#f0f0f0" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="374" y="104" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵1</text>
+  <rect x="396" y="88" width="44" height="24" fill="#f0f0f0" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="418" y="104" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵2</text>
+
+  <rect x="242" y="112" width="66" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="275" y="128" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵0 (1,1)</text>
+  <rect x="308" y="112" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="128" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="352" y="112" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="374" y="128" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="396" y="112" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="418" y="128" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">4</text>
+
+  <rect x="242" y="136" width="66" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="275" y="152" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵1 (2,2)</text>
+  <rect x="308" y="136" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="152" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="352" y="136" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="374" y="152" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="396" y="136" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="418" y="152" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">2</text>
+
+  <rect x="242" y="160" width="66" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="275" y="176" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">兵2 (3,3)</text>
+  <rect x="308" y="160" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="176" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">4</text>
+  <rect x="352" y="160" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="374" y="176" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="396" y="160" width="44" height="24" fill="#ffffff" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="418" y="176" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">0</text>
+
+  <rect x="242" y="184" width="66" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="275" y="200" text-anchor="middle" font-size="9.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">起点 (0,2)</text>
+  <rect x="308" y="184" width="44" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="330" y="200" text-anchor="middle" font-size="10.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">2</text>
+  <rect x="352" y="184" width="44" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="374" y="200" text-anchor="middle" font-size="10.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">2</text>
+  <rect x="396" y="184" width="44" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="418" y="200" text-anchor="middle" font-size="10.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">2</text>
+
+  <text x="370" y="222" text-anchor="middle" font-size="10" fill="#8a6a20" filter="url(#rough2)">起点视作编号 n 的「虚拟兵」，统一进矩阵</text>
+
+  <!-- 关键结论框 -->
+  <rect x="236" y="238" width="264" height="66" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="368" y="260" text-anchor="middle" font-size="11" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">途中经过的兵不会被吃！</text>
+  <text x="368" y="278" text-anchor="middle" font-size="10" fill="#8a3a34" filter="url(#rough2)">⇒ 任意两站的代价 = 棋盘马步最短路，</text>
+  <text x="368" y="294" text-anchor="middle" font-size="10" fill="#8a3a34" filter="url(#rough2)">与吃过谁、走过哪条路无关</text>
+
+  <text x="368" y="326" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">n+1 个源点各 BFS 一次：O((n+1)·50²·8)</text>
+  <text x="368" y="344" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">之后一切决策只查表，不再碰棋盘</text>
+</svg>

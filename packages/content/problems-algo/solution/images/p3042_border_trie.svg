@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">扩展（3045）：是前后缀 ⟺ 是 border，再用 Trie 沿前缀漫步计数</text>
+
+  <!-- section A: border enumeration -->
+  <text x="44" y="46" text-anchor="start" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">w = "ababa"：枚举前缀长度 k，判断「前缀 == 后缀」</text>
+
+  <rect x="48" y="58" width="84" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="77" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">k=1 a ✓</text>
+  <rect x="141" y="58" width="84" height="30" fill="#ffffff" stroke="#999" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="183" y="77" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">k=2 ab ✗</text>
+  <rect x="234" y="58" width="84" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="276" y="77" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">k=3 aba ✓</text>
+  <rect x="327" y="58" width="84" height="30" fill="#ffffff" stroke="#999" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="369" y="77" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">k=4 abab ✗</text>
+  <rect x="420" y="58" width="84" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="462" y="77" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">k=5 ababa ✓</text>
+
+  <text x="260" y="110" text-anchor="middle" font-size="11.5" fill="#8a6d3b" filter="url(#rough2)">→ border 长度集合 B = {1, 3, 5}（Z 函数 / KMP 失配链，O(|w|) 一趟求出）</text>
+
+  <!-- section B: trie walk -->
+  <text x="44" y="136" text-anchor="start" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">Trie 已插入之前的词 {"a"、"aba"、"ab"}（节点存结尾计数 cnt）。</text>
+  <text x="44" y="152" text-anchor="start" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">处理 w：沿 w 的字符从 root 向右漫步 ——</text>
+
+  <!-- above-node labels -->
+  <text x="125" y="192" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">+1</text>
+  <text x="190" y="192" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">跳过</text>
+  <text x="255" y="192" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">+1</text>
+  <text x="320" y="192" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">—</text>
+  <text x="385" y="192" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">+0</text>
+
+  <!-- root -->
+  <ellipse cx="52" cy="215" rx="24" ry="15" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="52" y="220" text-anchor="middle" font-size="10.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">root</text>
+  <path d="M 76 215 L 105 215" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 1: a (border, cnt=1) -->
+  <circle cx="125" cy="215" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="125" y="220" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">a</text>
+  <text x="125" y="252" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">d=1 cnt=1</text>
+  <path d="M 142 215 L 171 215" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 2: b (not border, cnt=1) -->
+  <circle cx="190" cy="215" r="17" fill="#ffffff" stroke="#999" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="190" y="220" text-anchor="middle" font-size="13" fill="#888" font-weight="bold" filter="url(#rough2)">b</text>
+  <text x="190" y="252" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">d=2 cnt=1</text>
+  <path d="M 207 215 L 236 215" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 3: a (border, cnt=1) -->
+  <circle cx="255" cy="215" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="255" y="220" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">a</text>
+  <text x="255" y="252" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">d=3 cnt=1</text>
+  <path d="M 272 215 L 301 215" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 4: b (not border, cnt=0) -->
+  <circle cx="320" cy="215" r="17" fill="#ffffff" stroke="#999" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="320" y="220" text-anchor="middle" font-size="13" fill="#888" font-weight="bold" filter="url(#rough2)">b</text>
+  <text x="320" y="252" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">d=4 cnt=0</text>
+  <path d="M 337 215 L 366 215" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 5: a (border, cnt=0) -->
+  <circle cx="385" cy="215" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="385" y="220" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">a</text>
+  <text x="385" y="252" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">d=5 cnt=0</text>
+
+  <text x="470" y="220" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">（✦ = border</text>
+  <text x="470" y="234" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">深度，绿色）</text>
+
+  <!-- callout box -->
+  <rect x="32" y="266" width="456" height="88" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="288" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">漫步到深度 d：d ∈ B → ans += cnt（恰有 cnt 个之前的词等于这个 border）</text>
+  <text x="260" y="306" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">本例收账：d=1 +1、d=3 +1、d=5 +0（是 border 但无词结尾）→ 这一步共 +2</text>
+  <text x="260" y="324" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">深度 2 的 "ab" 虽有词结尾（cnt=1），但它不是 w 的后缀 → 不计</text>
+  <text x="260" y="342" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">查完把 w 整串插入 Trie；每词 O(|w|)，总计 O(∑|w|)，3045 的 10⁵ 规模稳过</text>
+</svg>

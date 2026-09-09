@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：从右向左遍历 + 单调递减栈</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">栈存下标（高度从底到顶递减）；弹矮的计数，剩栈顶=首个更高再 +1</text>
+
+  <!-- ===== heights array ===== -->
+  <text x="30" y="74" font-size="11" fill="#446688" font-weight="bold">heights[]</text>
+  <g font-size="10">
+    <rect x="30" y="82" width="50" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="55" y="102" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">10</text>
+    <text x="55" y="76" text-anchor="middle" font-size="8" fill="#888">[0]</text>
+
+    <rect x="84" y="82" width="50" height="32" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="109" y="102" text-anchor="middle" font-size="10" fill="#888">6</text>
+    <text x="109" y="76" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+    <rect x="138" y="82" width="50" height="32" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="163" y="102" text-anchor="middle" font-size="10" fill="#888">8</text>
+    <text x="163" y="76" text-anchor="middle" font-size="8" fill="#888">[2]</text>
+
+    <rect x="192" y="82" width="50" height="32" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="217" y="102" text-anchor="middle" font-size="10" fill="#888">5</text>
+    <text x="217" y="76" text-anchor="middle" font-size="8" fill="#888">[3]</text>
+
+    <rect x="246" y="82" width="50" height="32" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="271" y="102" text-anchor="middle" font-size="10" fill="#888">11</text>
+    <text x="271" y="76" text-anchor="middle" font-size="8" fill="#888">[4]</text>
+
+    <rect x="300" y="82" width="50" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="325" y="102" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">9</text>
+    <text x="325" y="76" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">[5] 起点</text>
+  </g>
+
+  <!-- reverse traversal arrow -->
+  <path d="M 325 122 L 60 122" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="190" y="138" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">i 从 n-1 → 0 反向扫描</text>
+
+  <!-- ===== step boxes ===== -->
+  <!-- Step 1: pop shorter -->
+  <rect x="30" y="156" width="250" height="118" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="48" y="178" font-size="12" fill="#4a7a3a" font-weight="bold">步骤 1：弹掉所有比 h[i] 矮的</text>
+  <text x="48" y="198" font-size="11" fill="#555">while 栈非空 and h[栈顶] &lt; h[i]：</text>
+  <text x="48" y="216" font-size="11" fill="#4a7a3a" font-weight="bold">  pop → cnt++</text>
+  <text x="48" y="236" font-size="10" fill="#555">每个被弹的都是 i 能看到的「矮阶梯」</text>
+  <text x="48" y="252" font-size="10" fill="#888">（它们递增地排在前方，均矮于 h[i]）</text>
+  <text x="48" y="268" font-size="10" fill="#4a7a3a">→ 弹完栈顶若存在，必 &gt; h[i]</text>
+
+  <!-- Step 2: first taller -->
+  <rect x="290" y="156" width="250" height="118" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="308" y="178" font-size="12" fill="#d6a040" font-weight="bold">步骤 2：首个更高者 +1</text>
+  <text x="308" y="198" font-size="11" fill="#555">if 栈非空：</text>
+  <text x="308" y="216" font-size="11" fill="#d6a040" font-weight="bold">  cnt++   // 首个 &gt; h[i]</text>
+  <text x="308" y="236" font-size="10" fill="#555">栈顶是右侧第一个比 i 高的人</text>
+  <text x="308" y="252" font-size="10" fill="#555">min(h[i],h[顶])=h[i] &gt; 中间所有</text>
+  <text x="308" y="268" font-size="10" fill="#d6a040">→ 看到此人后，更右的都看不到</text>
+
+  <!-- Step 3: push -->
+  <rect x="160" y="288" width="250" height="78" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="178" y="310" font-size="12" fill="#446688" font-weight="bold">步骤 3：i 入栈，answer[i]=cnt</text>
+  <text x="178" y="330" font-size="11" fill="#555">stack.push(i)</text>
+  <text x="178" y="348" font-size="10" fill="#555">弹完矮的、剩高者在下方 → 入栈后</text>
+  <text x="178" y="362" font-size="10" fill="#446688">栈仍保持「高度底→顶递减」</text>
+
+  <!-- arrows between steps -->
+  <path d="M 280 276 L 280 286" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== stack invariant ===== -->
+  <rect x="30" y="384" width="500" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="48" y="406" font-size="11" fill="#b85450" font-weight="bold">栈不变式（底→顶高度递减）：</text>
+  <text x="48" y="424" font-size="10" fill="#555">栈中元素是「从右向左的左向极大值」候选 —— 它们互不相同且递减，正是左侧某人向右看时的可见阶梯序列</text>
+</svg>

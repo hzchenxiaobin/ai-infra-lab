@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="520" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：四方向 DP，两遍扫描求 min</text>
+
+  <!-- N1 start -->
+  <ellipse cx="260" cy="56" rx="50" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="61" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">开始</text>
+
+  <!-- N2 init -->
+  <rect x="80" y="92" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="112" text-anchor="middle" font-size="11.5" fill="#333">构造 grid：全部置 1，mines 中坐标置 0</text>
+  <text x="260" y="130" text-anchor="middle" font-size="11.5" fill="#333">dp[i][j] ← n（上界）；ans ← 0</text>
+
+  <!-- Pass 1 box -->
+  <rect x="50" y="166" width="420" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="186" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">第一遍：正向扫描 ↘  （i: 0→n−1, j: 0→n−1）</text>
+  <text x="260" y="206" text-anchor="middle" font-size="11.5" fill="#333">L = grid[i][j]==1 ? L+1 : 0      （L 按行重置）</text>
+  <text x="260" y="224" text-anchor="middle" font-size="11.5" fill="#333">U[j] = grid[i][j]==1 ? U[j]+1 : 0  （U 按列延续）</text>
+  <text x="260" y="244" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">dp[i][j] = min(L, U[j])</text>
+
+  <!-- Pass 2 box -->
+  <rect x="50" y="282" width="420" height="100" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">第二遍：逆向扫描 ↖  （i: n−1→0, j: n−1→0）</text>
+  <text x="260" y="322" text-anchor="middle" font-size="11.5" fill="#333">R = grid[i][j]==1 ? R+1 : 0      （R 按行重置）</text>
+  <text x="260" y="340" text-anchor="middle" font-size="11.5" fill="#333">D[j] = grid[i][j]==1 ? D[j]+1 : 0  （D 按列延续）</text>
+  <text x="260" y="358" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">dp[i][j] = min(dp[i][j], R, D[j])</text>
+  <text x="260" y="376" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">ans = max(ans, dp[i][j])</text>
+
+  <!-- Nend return ans -->
+  <ellipse cx="260" cy="430" rx="60" ry="17" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="435" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">返回 ans</text>
+
+  <!-- arrows -->
+  <path d="M 260 72 L 260 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrf)" filter="url(#rough2)"/>
+  <path d="M 260 142 L 260 166" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrf)" filter="url(#rough2)"/>
+  <path d="M 260 258 L 260 282" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrf)" filter="url(#rough2)"/>
+  <path d="M 260 382 L 260 413" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrf)" filter="url(#rough2)"/>
+
+  <!-- side note -->
+  <rect x="50" y="462" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="481" text-anchor="middle" font-size="11" fill="#666">L/R 为行内变量（换行清零），U[j]/D[j] 为列数组（跨行延续）</text>
+  <text x="260" y="498" text-anchor="middle" font-size="11" fill="#666">两遍各 O(n²)，dp 复用同一张表，空间 O(n²)</text>
+</svg>

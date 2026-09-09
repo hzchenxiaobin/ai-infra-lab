@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">迭代栈流程：用显式栈模拟递归，规避深嵌套爆栈</text>
+
+  <!-- start -->
+  <rect x="250" y="46" width="140" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="66" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">res=[]; stack=[[arr,0,0]]</text>
+
+  <path d="M 320 80 L 320 100" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop check -->
+  <polygon points="320,104 430,150 320,196 210,150" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="320" y="142" text-anchor="middle" font-size="11" fill="#333">栈空？</text>
+  <text x="320" y="160" text-anchor="middle" font-size="11" fill="#333">/ 顶帧 idx ≥ len？</text>
+
+  <!-- yes -> return -->
+  <path d="M 430 150 L 510 150 L 510 196" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="452" y="144" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="450" y="196" width="130" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="515" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return res</text>
+
+  <!-- no -->
+  <path d="M 320 196 L 320 220" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- advance index & fetch -->
+  <rect x="190" y="224" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="320" y="246" text-anchor="middle" font-size="11" fill="#333">顶帧 idx++；item = 顶帧.array[idx−1]</text>
+
+  <path d="M 320 260 L 320 280" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision: array? -->
+  <polygon points="320,284 450,330 320,376 190,330" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="320" y="322" text-anchor="middle" font-size="11" fill="#333">isArray(item)</text>
+  <text x="320" y="340" text-anchor="middle" font-size="11" fill="#333">且 depth &lt; n？</text>
+
+  <!-- yes -> push frame -->
+  <path d="M 450 330 L 520 330" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="458" y="324" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="452" y="314" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="532" y="336" text-anchor="middle" font-size="11" fill="#333">push [item, 0, depth+1]</text>
+
+  <!-- no -> push to res -->
+  <path d="M 190 330 L 120 330" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="140" y="324" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="28" y="314" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="88" y="336" text-anchor="middle" font-size="11" fill="#333">res.push(item)</text>
+
+  <!-- loop back -->
+  <path d="M 532 348 L 532 150 L 430 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 88 348 L 88 150 L 210 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="540" y="250" font-size="10" fill="#888">回到循环判定</text>
+
+  <text x="320" y="424" text-anchor="middle" font-size="11" fill="#888">栈帧 [array, idx, depth]：idx 记录该层处理到第几个，depth 记剩余预算对应的下钻层数</text>
+  <text x="320" y="440" text-anchor="middle" font-size="10" fill="#888">用显式栈替代递归调用 → maxDepth=1000 也不爆栈；用循环 push 替代 …spread → 10⁵ 元素不爆栈</text>
+</svg>

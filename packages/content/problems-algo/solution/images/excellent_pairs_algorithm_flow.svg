@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrL" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：去重 → bitCount → 升序排序 → 双指针计数</text>
+
+  <!-- Step 1: dedup -->
+  <rect x="120" y="44" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 去重 nums → distinct 数组（m 个不同值）</text>
+  <text x="280" y="80" text-anchor="middle" font-size="10.5" fill="#888">只关心"值是否存在"，重复值不产生新数对</text>
+
+  <path d="M 280 90 L 280 110" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: bitcount + sort -->
+  <rect x="120" y="114" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="134" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">② 对每个值算 bitCount，升序排序得 arr[]</text>
+  <text x="280" y="150" text-anchor="middle" font-size="10.5" fill="#888">arr[i] ∈ [0, 30]，排序后阈值 k−arr[i] 单调下降</text>
+
+  <path d="M 280 160 L 280 180" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: init -->
+  <rect x="120" y="184" width="320" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="208" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ 初始化 j = m，ans = 0</text>
+
+  <path d="M 280 224 L 280 244" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 4: loop -->
+  <rect x="80" y="248" width="400" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="272" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">④ 遍历 i = 0 … m−1（arr[i] 升序）</text>
+
+  <path d="M 280 290 L 280 310" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 5: move j -->
+  <rect x="60" y="314" width="440" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="336" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">while j &gt; 0 且 arr[j−1] ≥ k − arr[i]：j −−</text>
+  <text x="280" y="354" text-anchor="middle" font-size="11" fill="#b85450">阈值随 arr[i]↑ 而↓，合格下标 j 只向左移（单调）</text>
+  <text x="280" y="368" text-anchor="middle" font-size="10.5" fill="#888">j 最终 = 最左满足 arr[j] ≥ 阈值 的下标</text>
+
+  <path d="M 280 372 L 280 392" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 6: accumulate -->
+  <rect x="60" y="396" width="440" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="416" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">⑤ ans += m − j</text>
+  <text x="280" y="432" text-anchor="middle" font-size="11" fill="#4a7a3a">合格搭档数 = 后缀 arr[j … m−1] 的长度（含 j == i，即 (a,a) 自配）</text>
+
+  <!-- loop back arrow -->
+  <path d="M 500 416 L 540 416 L 540 268 L 480 268" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrL)" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="548" y="346" text-anchor="middle" font-size="10.5" fill="#4a7a3a" transform="rotate(90 548 346)">下一 i</text>
+
+  <!-- end -->
+  <ellipse cx="280" cy="470" rx="70" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="475" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">遍历结束，返回 ans</text>
+</svg>

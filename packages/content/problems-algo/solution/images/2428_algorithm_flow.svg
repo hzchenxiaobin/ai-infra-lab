@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 464"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="464" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：建行前缀和 → 枚举所有 (i,j) → O(1) 算沙漏和 → 维护最大</text>
+
+  <!-- ① Input -->
+  <rect x="180" y="40" width="180" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 输入 m×n 矩阵 grid</text>
+  <line x1="270" y1="74" x2="270" y2="90" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② build prefix -->
+  <rect x="90" y="92" width="360" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="110" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 构建行前缀和 pref[r][c]</text>
+  <text x="270" y="125" text-anchor="middle" font-size="10" fill="#888">pref[r][0]=0；pref[r][c]=pref[r][c−1]+grid[r][c−1]</text>
+  <line x1="270" y1="132" x2="270" y2="148" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ init -->
+  <rect x="150" y="150" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="172" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ ans = 0；i = 0, j = 0</text>
+  <line x1="270" y1="184" x2="270" y2="200" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ◇ Diamond 1: in range -->
+  <polygon points="270,204 372,244 270,284 168,244" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="240" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">i ≤ m−3 且 j ≤ n−3 ?</text>
+  <text x="270" y="256" text-anchor="middle" font-size="9.5" fill="#888">（沙漏未越界）</text>
+
+  <!-- No branch (left) → return -->
+  <line x1="168" y1="244" x2="108" y2="244" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="140" y="238" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="20" y="226" width="88" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="64" y="241" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ return</text>
+  <text x="64" y="254" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">ans</text>
+
+  <!-- Yes branch (down) -->
+  <line x1="270" y1="284" x2="270" y2="302" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="284" y="296" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- ⑤ compute hourglass sum -->
+  <rect x="60" y="304" width="420" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="322" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">⑤ s = (pref[i][j+3]−pref[i][j]) + grid[i+1][j+1] + (pref[i+2][j+3]−pref[i+2][j])</text>
+  <text x="270" y="338" text-anchor="middle" font-size="9.5" fill="#888">顶行 3 连和 + 中格 + 底行 3 连和，全程 O(1)</text>
+  <line x1="270" y1="348" x2="270" y2="364" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ update -->
+  <rect x="150" y="366" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="388" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">⑥ ans = max(ans, s)</text>
+
+  <!-- j++ box (right) -->
+  <rect x="420" y="368" width="92" height="30" fill="#f4f7fb" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="466" y="387" text-anchor="middle" font-size="11.5" fill="#666" font-weight="bold">j++（行末 j=0,i++）</text>
+
+  <!-- ⑥ → j++ -->
+  <path d="M 390 383 L 416 383" fill="none" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- j++ → loop back to Diamond 1 (up then left) -->
+  <path d="M 466 368 L 466 244 L 376 244" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="496" y="306" text-anchor="middle" font-size="9.5" fill="#888">下一格</text>
+
+  <!-- footer -->
+  <rect x="30" y="420" width="480" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="439" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">共 (m−2)(n−2) 个沙漏，每个 O(1)，总体 O(m·n) / O(n) 空间</text>
+</svg>

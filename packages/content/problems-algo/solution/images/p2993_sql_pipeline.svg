@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">SQL 逻辑执行流水线：过滤 → 分桶 → 聚合 → 排序</text>
+
+  <rect x="60" y="44" width="260" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="61" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">FROM Purchases</text>
+  <text x="190" y="78" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">8 行原始交易（含 5 个非周五的干扰行）</text>
+
+  <path d="M 190 86 L 190 108" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="60,148 190,110 320,148 190,186" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="142" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">WHERE：是 2023 年 11 月的周五吗？</text>
+  <text x="190" y="160" text-anchor="middle" font-size="9" fill="#8a6d1f" filter="url(#rough2)">YEAR=2023 ∧ MONTH=11 ∧ DAYOFWEEK=6</text>
+
+  <path d="M 320 148 L 376 148" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="380" y="120" width="152" height="56" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="141" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">✗ 5 行被滤除</text>
+  <text x="456" y="159" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">周二 / 周日 / 周二 / 周四 / 周四</text>
+
+  <path d="M 190 186 L 190 208" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="204" y="202" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">剩 3 行</text>
+
+  <rect x="60" y="212" width="260" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="231" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">GROUP BY CEIL(DAY(purchase_date)/7)</text>
+  <text x="190" y="250" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">按「当月第几个周五」分桶：{11-03}→1，{11-24}→4</text>
+
+  <path d="M 190 264 L 190 286" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="60" y="290" width="260" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="309" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">SELECT SUM(amount_spend) 每组聚合</text>
+  <text x="190" y="327" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">week 1 → 5117</text>
+  <text x="190" y="345" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">week 4 → 9692 + 12000 = 21692 ★</text>
+
+  <path d="M 190 360 L 190 382" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="60" y="386" width="260" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="407" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">ORDER BY week_of_month ASC → 输出 2 行</text>
+
+  <rect x="380" y="290" width="152" height="130" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="312" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">输出的分组只有 2 个：</text>
+  <text x="456" y="330" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">week 2 / week 3 无交易</text>
+  <text x="456" y="348" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">不会凭空出现在结果里</text>
+  <text x="456" y="370" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">（聚合不会发明数据——</text>
+  <text x="456" y="386" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">想补 0 行需造日历表</text>
+  <text x="456" y="402" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">LEFT JOIN，见 2994）</text>
+</svg>

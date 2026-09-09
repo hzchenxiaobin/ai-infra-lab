@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：workers=[[0,0],[2,1]], bikes=[[1,2],[3,3]]</text>
+
+  <!-- ===== Distance matrix ===== -->
+  <text x="30" y="54" font-size="11.5" fill="#446688" font-weight="bold">Step 1: 距离矩阵</text>
+
+  <!-- Table header -->
+  <rect x="30" y="62" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="78" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold"></text>
+  <rect x="90" y="62" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="78" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">B0 [1,2]</text>
+  <rect x="150" y="62" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="78" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">B1 [3,3]</text>
+
+  <!-- Row W0 -->
+  <rect x="30" y="86" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="102" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">W0 [0,0]</text>
+  <rect x="90" y="86" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="102" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">3</text>
+  <rect x="150" y="86" width="60" height="24" fill="#fafafa" stroke="#ccc" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="102" text-anchor="middle" font-size="11" fill="#888">6</text>
+
+  <!-- Row W1 -->
+  <rect x="30" y="110" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="126" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">W1 [2,1]</text>
+  <rect x="90" y="110" width="60" height="24" fill="#fafafa" stroke="#ccc" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="126" text-anchor="middle" font-size="11" fill="#888">2</text>
+  <rect x="150" y="110" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="126" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">3</text>
+
+  <!-- ===== Step 2: DP transitions ===== -->
+  <text x="250" y="54" font-size="11.5" fill="#446688" font-weight="bold">Step 2: DP 状态转移</text>
+
+  <!-- mask=00, dp=0 -->
+  <rect x="250" y="62" width="110" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="305" y="78" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">mask=00, dp=0</text>
+  <text x="305" y="92" text-anchor="middle" font-size="9" fill="#888">分 W0</text>
+
+  <!-- Arrow right to mask=01 -->
+  <path d="M 360 75 L 410 75" stroke="#4a7a3a" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <polygon points="410,72 416,75 410,78" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="385" y="68" text-anchor="middle" font-size="8.5" fill="#4a7a3a">W0→B0</text>
+  <text x="385" y="90" text-anchor="middle" font-size="8.5" fill="#888">+3</text>
+
+  <!-- mask=01, dp=3 -->
+  <rect x="416" y="62" width="110" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="471" y="78" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">mask=01, dp=3</text>
+  <text x="471" y="92" text-anchor="middle" font-size="9" fill="#888">分 W1</text>
+
+  <!-- Arrow down from mask=00 to mask=10 -->
+  <path d="M 305 98 L 305 130 L 305 148" stroke="#b85450" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <polygon points="302,148 305,154 308,148" fill="#b85450" filter="url(#rough2)"/>
+  <text x="270" y="130" text-anchor="middle" font-size="8.5" fill="#b85450">W0→B1</text>
+  <text x="340" y="130" text-anchor="middle" font-size="8.5" fill="#888">+6</text>
+
+  <!-- mask=10, dp=6 -->
+  <rect x="250" y="154" width="110" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="305" y="170" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">mask=10, dp=6</text>
+  <text x="305" y="184" text-anchor="middle" font-size="9" fill="#888">分 W1</text>
+
+  <!-- Arrow from mask=01 to mask=11 (down then right) -->
+  <path d="M 471 98 L 471 200 L 471 218" stroke="#4a7a3a" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <polygon points="468,218 471,224 474,218" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="496" y="155" font-size="8.5" fill="#4a7a3a">W1→B1</text>
+  <text x="496" y="170" font-size="8.5" fill="#888">+3</text>
+
+  <!-- Arrow from mask=10 to mask=11 (right then up) -->
+  <path d="M 360 172 L 400 172 L 400 224 L 430 224" stroke="#b85450" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <polygon points="430,221 436,224 430,227" fill="#b85450" filter="url(#rough2)"/>
+  <text x="380" y="165" font-size="8.5" fill="#b85450">W1→B0</text>
+  <text x="380" y="210" font-size="8.5" fill="#888">+2</text>
+
+  <!-- mask=11 results: two dp values -->
+  <rect x="436" y="206" width="90" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="481" y="222" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">mask=11</text>
+  <text x="481" y="238" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">dp=min(6,8)=6</text>
+
+  <!-- ===== Step 3: DP table summary ===== -->
+  <text x="30" y="160" font-size="11.5" fill="#446688" font-weight="bold">Step 3: DP 表</text>
+
+  <!-- Table -->
+  <rect x="30" y="168" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="184" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">mask</text>
+  <rect x="90" y="168" width="55" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="117" y="184" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">popcnt</text>
+  <rect x="145" y="168" width="65" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="177" y="184" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">dp 值</text>
+
+  <!-- Row 00 -->
+  <rect x="30" y="192" width="60" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="206" text-anchor="middle" font-size="9.5" fill="#555">00</text>
+  <rect x="90" y="192" width="55" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="117" y="206" text-anchor="middle" font-size="9.5" fill="#555">0</text>
+  <rect x="145" y="192" width="65" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="177" y="206" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">0</text>
+
+  <!-- Row 01 -->
+  <rect x="30" y="214" width="60" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="228" text-anchor="middle" font-size="9.5" fill="#555">01</text>
+  <rect x="90" y="214" width="55" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="117" y="228" text-anchor="middle" font-size="9.5" fill="#555">1</text>
+  <rect x="145" y="214" width="65" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="177" y="228" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">3</text>
+
+  <!-- Row 10 -->
+  <rect x="30" y="236" width="60" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="250" text-anchor="middle" font-size="9.5" fill="#555">10</text>
+  <rect x="90" y="236" width="55" height="22" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="117" y="250" text-anchor="middle" font-size="9.5" fill="#555">1</text>
+  <rect x="145" y="236" width="65" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="177" y="250" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">6</text>
+
+  <!-- Row 11 -->
+  <rect x="30" y="258" width="60" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="60" y="272" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">11</text>
+  <rect x="90" y="258" width="55" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="117" y="272" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">2=n</text>
+  <rect x="145" y="258" width="65" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="177" y="272" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">6 ★</text>
+
+  <!-- ===== Bottom: answer ===== -->
+  <rect x="30" y="300" width="500" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="322" font-size="11" fill="#4a7a3a" font-weight="bold">✓ 答案：popcount(mask)==n=2 的最小 dp 值</text>
+  <text x="50" y="340" font-size="10.5" fill="#555">dp[11] = min(dp[01]+dist(W1,B1), dp[10]+dist(W1,B0)) = min(3+3, 6+2) = min(6, 8) = 6</text>
+
+  <!-- ===== Key takeaway ===== -->
+  <rect x="30" y="362" width="500" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="384" font-size="11" fill="#446688" font-weight="bold">💡 关键点：</text>
+  <text x="50" y="402" font-size="10.5" fill="#555">• 贪心给出 8（W1→B0=2 + W0→B1=6），DP 找到全局最优 6（W0→B0=3 + W1→B1=3）</text>
+  <text x="50" y="418" font-size="10.5" fill="#555">• mask 的 popcount 天然映射到工人编号，无需额外维度记录"当前分到第几个工人"</text>
+  <text x="50" y="434" font-size="10.5" fill="#555">• m≤10 → 2^10=1024 个状态，O(n·m·2^m) ≈ 10万次运算，毫秒级</text>
+</svg>

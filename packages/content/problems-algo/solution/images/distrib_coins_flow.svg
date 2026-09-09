@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：后序 DFS + 子树净流量累计</text>
+
+  <!-- 1. dfs(node) -->
+  <rect x="210" y="44" width="140" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">dfs(node)</text>
+  <line x1="280" y1="76" x2="280" y2="90" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. null? -->
+  <polygon points="280,92 380,128 280,164 180,128" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="11" fill="#7a5a20" font-weight="bold">node ==</text>
+  <text x="280" y="138" text-anchor="middle" font-size="11" fill="#7a5a20" font-weight="bold">null ?</text>
+
+  <!-- 是 → return 0 -->
+  <line x1="380" y1="128" x2="440" y2="128" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="120" text-anchor="middle" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="440" y="112" width="100" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="490" y="133" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return 0</text>
+
+  <!-- 否 ↓ -->
+  <line x1="280" y1="164" x2="280" y2="178" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="174" font-size="10" fill="#446688">否</text>
+
+  <!-- 3. 递归左右 -->
+  <rect x="170" y="180" width="220" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="11" fill="#446688">left = dfs(L); right = dfs(R)</text>
+  <line x1="280" y1="212" x2="280" y2="226" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4. balance -->
+  <rect x="150" y="228" width="260" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="11" fill="#446688">balance = node.val − 1 + left + right</text>
+  <line x1="280" y1="260" x2="280" y2="274" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 5. moves -->
+  <rect x="170" y="276" width="220" height="32" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">moves += |left| + |right|</text>
+  <line x1="280" y1="308" x2="280" y2="322" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 6. return balance -->
+  <rect x="210" y="324" width="140" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="345" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return balance</text>
+
+  <!-- 侧注 -->
+  <rect x="40" y="180" width="110" height="84" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="95" y="200" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">后序遍历</text>
+  <text x="95" y="218" text-anchor="middle" font-size="9" fill="#555">先递归左、右子</text>
+  <text x="95" y="232" text-anchor="middle" font-size="9" fill="#555">再处理当前节点</text>
+  <text x="95" y="252" text-anchor="middle" font-size="9" fill="#b85450">子结果 → 父决策</text>
+
+  <!-- 底注 -->
+  <rect x="40" y="378" width="480" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="10" fill="#555">dfs(root) 必返回 0（硬币守恒），无需对根特判</text>
+  <text x="280" y="416" text-anchor="middle" font-size="10" fill="#888">moves 即为答案</text>
+</svg>

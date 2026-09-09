@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：BFS 预处理 → 状态压缩博弈 DP</text>
+
+  <!-- ① BFS 预处理 -->
+  <rect x="80" y="42" width="360" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="11" fill="#2e4460" font-weight="bold" filter="url(#rough2)">① 预处理：n 个兵 + 马起点 = n+1 个源点</text>
+  <text x="260" y="78" text-anchor="middle" font-size="10.5" fill="#2e4460" filter="url(#rough2)">各跑一次 BFS，得两两马步距离表 dist[(n+1)×n]</text>
+
+  <path d="M 260 86 L 260 102" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 状态定义 -->
+  <rect x="80" y="106" width="360" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="124" text-anchor="middle" font-size="11" fill="#3a5a2e" font-weight="bold" filter="url(#rough2)">② 状态 dp[mask][i]：已吃集合 mask、马停在 i</text>
+  <text x="260" y="142" text-anchor="middle" font-size="10.5" fill="#3a5a2e" filter="url(#rough2)">= 双方最优策略下，从现在到结束的总步数（i∈mask 或 mask=∅ 时 i=n）</text>
+
+  <path d="M 260 150 L 260 166" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形：轮到谁 -->
+  <polygon points="260,170 350,200 260,230 170,200" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="196" text-anchor="middle" font-size="10.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">popcount(mask)</text>
+  <text x="260" y="212" text-anchor="middle" font-size="10.5" fill="#8a6a20" filter="url(#rough2)">是偶数？</text>
+
+  <!-- 分支：Alice / Bob -->
+  <path d="M 350 200 L 386 200" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="366" y="192" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="390" y="184" width="118" height="32" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="449" y="197" text-anchor="middle" font-size="10.5" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">Alice 回合（先手）</text>
+  <text x="449" y="211" text-anchor="middle" font-size="10.5" fill="#8a3a34" filter="url(#rough2)">目标 max → 取最大</text>
+
+  <path d="M 170 200 L 134 200" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="154" y="192" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">否</text>
+  <rect x="12" y="184" width="118" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="71" y="197" text-anchor="middle" font-size="10.5" fill="#2e4460" font-weight="bold" filter="url(#rough2)">Bob 回合（后手）</text>
+  <text x="71" y="211" text-anchor="middle" font-size="10.5" fill="#2e4460" filter="url(#rough2)">目标 min → 取最小</text>
+
+  <path d="M 449 216 Q 449 240 380 246" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 71 216 Q 71 240 140 246" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 转移 -->
+  <rect x="80" y="250" width="360" height="46" rx="8" fill="#f0f0f0" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="268" text-anchor="middle" font-size="10.5" fill="#444" font-weight="bold" filter="url(#rough2)">③ 转移：dp[mask][i] = opt(dist[i][j] + dp[mask∪{j}][j])</text>
+  <text x="260" y="286" text-anchor="middle" font-size="10" fill="#444" filter="url(#rough2)">j 取遍还没吃的兵；mask 从 full−1 倒序枚举，保证目标状态已算好</text>
+
+  <path d="M 260 296 L 260 310" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 答案 -->
+  <rect x="140" y="314" width="240" height="34" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="336" text-anchor="middle" font-size="12" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">④ 答案 = dp[∅][n]（马在起点，轮到 Alice）</text>
+</svg>

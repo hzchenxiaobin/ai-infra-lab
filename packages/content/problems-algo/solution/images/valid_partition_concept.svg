@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：三类合法子段 + 前缀可行性 DP</text>
+
+  <!-- ===== 三类合法子段 ===== -->
+  <text x="280" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">合法子段只有这三种</text>
+
+  <!-- pattern 1: [a a] -->
+  <rect x="60" y="66" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="88" text-anchor="middle" font-size="13" fill="#333">a</text>
+  <rect x="100" y="66" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="88" text-anchor="middle" font-size="13" fill="#333">a</text>
+  <text x="100" y="118" text-anchor="middle" font-size="11" fill="#446688">① 2 个相等</text>
+
+  <!-- pattern 2: [b b b] -->
+  <rect x="210" y="66" width="40" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="230" y="88" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="250" y="66" width="40" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="88" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="290" y="66" width="40" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="88" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <text x="270" y="118" text-anchor="middle" font-size="11" fill="#4a7a3a">② 3 个相等</text>
+
+  <!-- pattern 3: [c c+1 c+2] -->
+  <rect x="360" y="66" width="40" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="88" text-anchor="middle" font-size="12" fill="#333">c</text>
+  <rect x="400" y="66" width="40" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="420" y="88" text-anchor="middle" font-size="11" fill="#333">c+1</text>
+  <rect x="440" y="66" width="40" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="460" y="88" text-anchor="middle" font-size="11" fill="#333">c+2</text>
+  <text x="420" y="118" text-anchor="middle" font-size="11" fill="#d6a040">③ 3 连续递增（差 1）</text>
+
+  <!-- divider -->
+  <path d="M 40 138 L 520 138" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== DP 转移 ===== -->
+  <text x="280" y="160" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">dp[i] = 前 i 个元素能否有效划分（前缀可行性）</text>
+  <text x="280" y="178" text-anchor="middle" font-size="10.5" fill="#888">末段长度只可能是 2 或 3 → 只回看 dp[i−2] 或 dp[i−3]</text>
+
+  <!-- dp cells row -->
+  <rect x="110" y="200" width="64" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="142" y="225" text-anchor="middle" font-size="12" fill="#333">dp[i−3]</text>
+
+  <rect x="202" y="200" width="64" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="234" y="225" text-anchor="middle" font-size="12" fill="#333">dp[i−2]</text>
+
+  <rect x="294" y="200" width="64" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.4" rx="4" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="326" y="225" text-anchor="middle" font-size="12" fill="#999">dp[i−1]</text>
+  <text x="326" y="256" text-anchor="middle" font-size="10" fill="#999" font-style="italic">× 不回看</text>
+
+  <rect x="386" y="200" width="64" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="418" y="225" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">dp[i]</text>
+
+  <!-- arrow from dp[i-2] to dp[i] (len=2) -->
+  <path d="M 234 240 Q 326 270 414 240" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="320" y="266" text-anchor="middle" font-size="10.5" fill="#446688" font-style="italic">len=2 合法（①）</text>
+
+  <!-- arrow from dp[i-3] to dp[i] (len=3) -->
+  <path d="M 142 240 Q 278 312 414 240" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="250" y="306" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-style="italic">len=3 合法（② 或 ③）</text>
+
+  <!-- recurrence + base -->
+  <path d="M 40 340 L 520 340" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="50" y="362" font-size="11" fill="#555">• 转移：dp[i] = (dp[i−2] ∧ ①) ∨ (dp[i−3] ∧ ②) ∨ (dp[i−3] ∧ ③)</text>
+  <text x="50" y="382" font-size="11" fill="#555">• 基准：dp[0] = true（空前缀视为已划分）；答案 = dp[n]</text>
+  <text x="50" y="402" font-size="11" fill="#888">• 每个位置只看末段 2~3 个元素，转移 O(1)，整体 O(n)</text>
+</svg>

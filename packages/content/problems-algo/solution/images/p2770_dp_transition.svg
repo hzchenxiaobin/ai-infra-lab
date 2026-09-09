@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">线性 DP：一次跳跃即一次状态转移</text>
+
+  <!-- nums row -->
+  <text x="30" y="68" font-size="12" fill="#888">nums:</text>
+  <rect x="80" y="50" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="105" y="70" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <text x="105" y="96" text-anchor="middle" font-size="9" fill="#888">0</text>
+
+  <rect x="150" y="50" width="50" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="70" text-anchor="middle" font-size="12" fill="#333">3</text>
+  <text x="175" y="96" text-anchor="middle" font-size="9" fill="#888">j</text>
+
+  <rect x="220" y="50" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="70" text-anchor="middle" font-size="12" fill="#333">6</text>
+  <text x="245" y="96" text-anchor="middle" font-size="9" fill="#888">2</text>
+
+  <rect x="290" y="50" width="50" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="315" y="70" text-anchor="middle" font-size="12" fill="#333">4</text>
+  <text x="315" y="96" text-anchor="middle" font-size="9" fill="#888">i</text>
+
+  <rect x="360" y="50" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="385" y="70" text-anchor="middle" font-size="12" fill="#333">1</text>
+  <text x="385" y="96" text-anchor="middle" font-size="9" fill="#888">4</text>
+
+  <rect x="430" y="50" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="70" text-anchor="middle" font-size="12" fill="#333">2</text>
+  <text x="455" y="96" text-anchor="middle" font-size="9" fill="#888">5</text>
+
+  <!-- jump arrow from j=1 (val 3) to i=3 (val 4) -->
+  <path d="M 175 50 Q 245 18 315 50" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="245" y="14" text-anchor="middle" font-size="10" fill="#b85450">j&lt;i, |nums[i]−nums[j]| ≤ target</text>
+
+  <!-- dp relationship -->
+  <text x="30" y="138" font-size="12" fill="#888">dp[i]:</text>
+  <text x="30" y="158" font-size="11" fill="#666">到达下标 i 的</text>
+  <text x="30" y="174" font-size="11" fill="#666">最大跳跃数</text>
+
+  <rect x="100" y="128" width="340" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="152" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">dp[i] = max { dp[j] + 1 }</text>
+  <text x="270" y="172" text-anchor="middle" font-size="11" fill="#888">对所有 j &lt; i 且 |nums[i] − nums[j]| ≤ target 取最大</text>
+
+  <!-- band / unreachable note -->
+  <rect x="30" y="206" width="200" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="130" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">转移条件 = 值域带宽</text>
+  <text x="130" y="244" text-anchor="middle" font-size="10" fill="#888">nums[j] ∈ [nums[i]−t, nums[i]+t]</text>
+
+  <rect x="250" y="206" width="240" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="370" y="226" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">不可达记 dp[i] = −1</text>
+  <text x="370" y="244" text-anchor="middle" font-size="10" fill="#888">后续从 −1 出发不转移</text>
+
+  <!-- LIS analogy -->
+  <rect x="30" y="276" width="460" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="298" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">结构同构于最长递增子序列 LIS (300)</text>
+  <text x="260" y="318" text-anchor="middle" font-size="11" fill="#888">LIS 条件单调(nums[j]&lt;nums[i])可二分优化；本题为带宽，不单调 → O(n²)</text>
+</svg>

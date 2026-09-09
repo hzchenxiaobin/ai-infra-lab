@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：占位符依赖是 DAG —— 每个键的展开值唯一</text>
+  <text x="280" y="38" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">示例 2：A→bce，B→ace，C→abc%B%（C 的值引用了 B）</text>
+
+  <!-- left: replacements table -->
+  <g filter="url(#rough2)">
+    <rect x="16" y="54" width="140" height="100" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8"/>
+    <text x="86" y="72" text-anchor="middle" font-size="10" font-weight="bold" fill="#8a6d1f">replacements</text>
+    <path d="M 24 80 L 148 80" stroke="#d6a040" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+    <text x="28" y="100" font-size="10" fill="#333">A → "bce"</text>
+    <text x="28" y="120" font-size="10" fill="#333">B → "ace"</text>
+    <text x="28" y="140" font-size="10" fill="#333">C → "abc<tspan fill="#b85450" font-weight="bold">%B%</tspan>"</text>
+  </g>
+  <path d="M 160 90 L 182 90" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- middle: dependency DAG -->
+  <g filter="url(#rough2)">
+    <rect x="188" y="76" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="13"/>
+    <text x="208" y="94" text-anchor="middle" font-size="12" font-weight="bold" fill="#33506b">A</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="188" y="186" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="13"/>
+    <text x="208" y="204" text-anchor="middle" font-size="12" font-weight="bold" fill="#33506b">B</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="292" y="130" width="40" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="13"/>
+    <text x="312" y="148" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450">C</text>
+  </g>
+  <path d="M 230 192 C 256 184 268 168 290 153" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <text x="318" y="176" text-anchor="middle" font-size="8.5" fill="#55677d" filter="url(#rough2)">C 的值含 %B%</text>
+  <text x="222" y="232" text-anchor="middle" font-size="8.5" fill="#55677d" filter="url(#rough2)">A、B 无依赖（源点）</text>
+
+  <path d="M 334 143 L 356 143" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- right: memo table -->
+  <g filter="url(#rough2)">
+    <rect x="360" y="54" width="160" height="118" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/>
+    <text x="440" y="72" text-anchor="middle" font-size="10" font-weight="bold" fill="#2f5d24">memo（完全展开值）</text>
+    <path d="M 368 80 L 512 80" stroke="#4a7a3a" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+    <text x="374" y="100" font-size="10" fill="#333">A : bce</text>
+    <text x="374" y="120" font-size="10" fill="#333">B : ace</text>
+    <text x="374" y="144" font-size="10" font-weight="bold" fill="#b85450">C : abcace</text>
+    <text x="374" y="160" font-size="8" fill="#666">= "abc" + expand(B)</text>
+  </g>
+  <path d="M 430 174 C 430 204 404 216 384 236" stroke="#b85450" stroke-width="1.3" stroke-dasharray="3 2" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="472" y="204" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">查展开值</text>
+
+  <!-- bottom: substitute text -->
+  <text x="44" y="232" font-size="9" fill="#55677d" filter="url(#rough2)">一趟扫描替换</text>
+  <g filter="url(#rough2)">
+    <rect x="44" y="240" width="150" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="119" y="260" text-anchor="middle" font-size="11"><tspan fill="#446688" font-weight="bold">%A%</tspan><tspan fill="#333">_</tspan><tspan fill="#446688" font-weight="bold">%B%</tspan><tspan fill="#333">_</tspan><tspan fill="#b85450" font-weight="bold">%C%</tspan></text>
+  </g>
+  <path d="M 198 255 L 250 255" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <text x="225" y="248" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">subst</text>
+  <g filter="url(#rough2)">
+    <rect x="256" y="240" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="341" y="260" text-anchor="middle" font-size="11"><tspan fill="#446688" font-weight="bold">bce</tspan><tspan fill="#333">_</tspan><tspan fill="#446688" font-weight="bold">ace</tspan><tspan fill="#333">_</tspan><tspan fill="#b85450" font-weight="bold">abcace</tspan></text>
+  </g>
+
+  <!-- warnings -->
+  <text x="280" y="300" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">不记忆化的代价：A 引用 B、C，B 与 C 又都引用 D——深度 d 的菱形依赖</text>
+  <text x="280" y="316" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">会把底层键重复展开 2^d 次；memo 一存，每个键恰好展开一次</text>
+  <text x="280" y="340" text-anchor="middle" font-size="9.5" fill="#55677d" filter="url(#rough2)">DAG ⇒ 展开值唯一：任何合法拓扑序（A,B,C 或 B,A,C）结果相同</text>
+</svg>

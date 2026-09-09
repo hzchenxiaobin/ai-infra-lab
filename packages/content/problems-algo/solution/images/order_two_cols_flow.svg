@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：拆两组 ROW_NUMBER → JOIN on rn</text>
+
+  <!-- ===== Start: FROM Data ===== -->
+  <rect x="195" y="40" width="150" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">FROM Data</text>
+
+  <!-- Split arrows down-left and down-right -->
+  <path d="M 230 76 Q 200 96 150 120" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 310 76 Q 340 96 390 120" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="178" y="96" font-size="9" fill="#4a7a3a">取 first_col</text>
+  <text x="328" y="96" font-size="9" fill="#d6a040">取 second_col</text>
+
+  <!-- ===== CTE a: ROW_NUMBER ASC ===== -->
+  <rect x="40" y="124" width="220" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="144" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">CTE a：ROW_NUMBER() OVER</text>
+  <text x="150" y="160" text-anchor="middle" font-size="9" fill="#555">(ORDER BY first_col ASC) AS rn</text>
+  <text x="150" y="176" text-anchor="middle" font-size="9" fill="#888">→ (rn, first_col)</text>
+
+  <!-- ===== CTE b: ROW_NUMBER DESC ===== -->
+  <rect x="280" y="124" width="220" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="144" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">CTE b：ROW_NUMBER() OVER</text>
+  <text x="390" y="160" text-anchor="middle" font-size="9" fill="#555">(ORDER BY second_col DESC) AS rn</text>
+  <text x="390" y="176" text-anchor="middle" font-size="9" fill="#888">→ (rn, second_col)</text>
+
+  <!-- Converging arrows to JOIN -->
+  <path d="M 150 188 Q 150 210 230 226" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 390 188 Q 390 210 310 226" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== JOIN on rn ===== -->
+  <rect x="160" y="228" width="220" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="248" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">a JOIN b ON a.rn = b.rn</text>
+  <text x="270" y="264" text-anchor="middle" font-size="9" fill="#888">第 i 小 first ↔ 第 i 大 second</text>
+
+  <!-- Arrow down -->
+  <path d="M 270 276 L 270 290" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== SELECT + ORDER BY ===== -->
+  <rect x="120" y="294" width="300" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="314" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">SELECT first_col, second_col</text>
+  <text x="270" y="330" text-anchor="middle" font-size="9" fill="#555">ORDER BY rn（输出 first_col 升序呈现）</text>
+
+  <!-- Arrow down -->
+  <path d="M 270 342 L 270 356" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Output ===== -->
+  <rect x="170" y="360" width="200" height="30" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="379" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">first_col, second_col（已分别排序）</text>
+
+  <!-- ===== Side note: why not single ORDER BY ===== -->
+  <rect x="20" y="228" width="120" height="110" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="246" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">❌ 单 ORDER BY</text>
+  <text x="28" y="262" font-size="8" fill="#666">ORDER BY first,</text>
+  <text x="28" y="276" font-size="8" fill="#666">second DESC</text>
+  <text x="28" y="294" font-size="8" fill="#b85450">→ 整行换序</text>
+  <text x="28" y="308" font-size="8" fill="#b85450">两列仍耦合</text>
+  <text x="28" y="324" font-size="8" fill="#888">第二列非独立降序</text>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="20" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：值域筛 → 倒序容斥 → 前缀和 → 二分应答</text>
+  <text x="260" y="38" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">全程不生成任何一个数对，只维护值域上的三张表</text>
+
+  <!-- ① 值域计数 -->
+  <rect x="36" y="50" width="280" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="176" y="68" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 值域计数（O(n)）</text>
+  <text x="176" y="86" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">cnt[v] = 值 v 在 nums 中的出现次数</text>
+  <path d="M 176 96 L 176 106" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ② 枚举倍数 -->
+  <rect x="36" y="106" width="280" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="176" y="124" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">② 枚举倍数（调和级数 O(V log V)）</text>
+  <text x="176" y="140" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">g = 1…V：m(g) = Σ cnt[kg]（g 的倍数元素个数）</text>
+  <text x="176" y="155" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">P(g) = C(m(g), 2)（gcd 为 g 的倍数的对数）</text>
+  <path d="M 176 160 L 176 170" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ③ 倒序容斥 -->
+  <rect x="36" y="170" width="280" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="176" y="188" text-anchor="middle" font-size="10.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">③ 倒序容斥（g = V … 1）</text>
+  <text x="176" y="204" text-anchor="middle" font-size="9.5" fill="#7a5a20" filter="url(#rough2)">E[g] = P(g) − Σ (k≥2) E[k·g]</text>
+  <text x="176" y="219" text-anchor="middle" font-size="9.5" fill="#7a5a20" filter="url(#rough2)">依赖的 E[kg] 全都已算好（拓扑序 = 倒序）</text>
+  <path d="M 32 212 C 18 212, 18 184, 30 184" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="22" y="176" font-size="8.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">g−−</text>
+  <path d="M 176 224 L 176 234" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ④ 前缀和 -->
+  <rect x="36" y="234" width="280" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="176" y="252" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">④ 前缀和（O(V)）</text>
+  <text x="176" y="270" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">cum[g] = Σ (g'≤g) E[g']，即「gcd ≤ g」的对数</text>
+  <path d="M 176 280 L 176 290" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 应答查询 -->
+  <rect x="36" y="290" width="280" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="176" y="308" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">⑤ 应答查询（每个 O(log V)）</text>
+  <text x="176" y="324" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">每个 q：二分找最小 g 使 cum[g] ≥ q+1</text>
+  <text x="176" y="339" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">（cum 单调不减，lower_bound 直接用）</text>
+
+  <!-- 右侧注记 -->
+  <rect x="336" y="50" width="158" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="68" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">复杂度账单</text>
+  <text x="415" y="84" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">筛倍数 ΣV/g ≈ 5.5×10⁵</text>
+  <text x="415" y="98" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">倒序容斥同阶</text>
+  <text x="415" y="112" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">查询 q log V ≈ 1.6×10⁶</text>
+
+  <rect x="336" y="128" width="158" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="146" text-anchor="middle" font-size="10" fill="#8a3833" font-weight="bold" filter="url(#rough2)">溢出警报</text>
+  <text x="415" y="162" text-anchor="middle" font-size="8.5" fill="#7a3030" filter="url(#rough2)">对数 ≈5×10⁹ &gt; int32</text>
+  <text x="415" y="176" text-anchor="middle" font-size="8.5" fill="#7a3030" filter="url(#rough2)">P / E / cum 一律 long long</text>
+  <text x="415" y="186" text-anchor="middle" font-size="8" fill="#a07070" filter="url(#rough2)">queries 本身就是 long long</text>
+
+  <rect x="336" y="200" width="158" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="218" text-anchor="middle" font-size="10" fill="#a07830" font-weight="bold" filter="url(#rough2)">为什么不超时？</text>
+  <text x="415" y="234" text-anchor="middle" font-size="8.5" fill="#7a5a20" filter="url(#rough2)">关键：V ≪ n(n−1)/2</text>
+  <text x="415" y="248" text-anchor="middle" font-size="8.5" fill="#7a5a20" filter="url(#rough2)">n、q = 10⁵，V = 5×10⁴</text>
+  <text x="415" y="263" text-anchor="middle" font-size="8.5" fill="#7a5a20" filter="url(#rough2)">总步数 ≈ 2×10⁶，稳过</text>
+
+  <rect x="336" y="282" width="158" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="300" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">单调性依据</text>
+  <text x="415" y="316" text-anchor="middle" font-size="8.5" fill="#33506b" filter="url(#rough2)">E[g] ≥ 0 ⇒ cum 不减</text>
+  <text x="415" y="331" text-anchor="middle" font-size="8.5" fill="#33506b" filter="url(#rough2)">等值段（E=0 的 g）被</text>
+  <text x="415" y="344" text-anchor="middle" font-size="8.5" fill="#33506b" filter="url(#rough2)">lower_bound 自然跳过</text>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：三条件自连接 → 分组计数 → 排序输出</text>
+
+  <rect x="40" y="46" width="260" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="68" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 自连接：同员工配对</text>
+  <text x="170" y="86" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">t1 ⋈ t2 ON employee_id 相同</text>
+
+  <rect x="320" y="46" width="212" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="426" y="66" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 4 的两条班次 s1(08–10)、s2(09–11)</text>
+  <text x="426" y="80" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">生成 (s1,s2) 和 (s2,s1) 两个方向</text>
+  <text x="426" y="94" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">⚠ 不定向会数两遍！</text>
+
+  <path d="M 170 102 L 170 122" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="124" width="260" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="146" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 定向：t1 取先开始者</text>
+  <text x="170" y="164" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">AND t1.start_time &lt; t2.start_time</text>
+
+  <rect x="320" y="124" width="212" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="426" y="146" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">主键保证同员工 start_time 唯一</text>
+  <text x="426" y="162" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">每个无序对只剩一行：</text>
+  <text x="426" y="176" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">t1 = 08:00 行，t2 = 09:00 行</text>
+
+  <path d="M 170 180 L 170 200" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="202" width="260" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="224" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">③ 重叠过滤：单侧判定</text>
+  <text x="170" y="242" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">AND t1.end_time &gt; t2.start_time</text>
+
+  <rect x="320" y="202" width="212" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="426" y="224" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 4：10:00 &gt; 09:00 ✓ 保留</text>
+  <text x="426" y="240" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 3：12:00 &gt; 13:00 ✗ 丢弃</text>
+  <text x="426" y="256" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">（相接 = 也不行，严格大于）</text>
+
+  <path d="M 170 258 L 170 278" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="280" width="260" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="302" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">④ 分组计数</text>
+  <text x="170" y="320" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">GROUP BY employee_id + COUNT(*)</text>
+  <text x="170" y="334" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">INNER JOIN：0 对员工不成组，自动出局</text>
+
+  <rect x="320" y="280" width="212" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="426" y="302" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 1 → 2 对（配对行有 2 行）</text>
+  <text x="426" y="318" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 2 → 1 对 · 员工 4 → 1 对</text>
+  <text x="426" y="334" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">员工 3 无配对行 → 无分组 → 消失</text>
+
+  <path d="M 170 342 L 170 362" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="364" width="260" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="386" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">⑤ 排序输出</text>
+  <text x="170" y="404" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">ORDER BY employee_id ASC</text>
+
+  <rect x="320" y="364" width="212" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="426" y="386" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">(1, 2) · (2, 1) · (4, 1)</text>
+  <text x="426" y="404" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">employee_id 升序，零重叠者缺席</text>
+
+  <rect x="40" y="432" width="492" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="286" y="450" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">三个 ON 条件各司其职：同人 → 定向 → 重叠；主键 (employee_id, start_time) 让 t2 侧可走索引范围扫描</text>
+</svg>

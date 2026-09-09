@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：UNION ALL → SUM → JOIN → ROW_NUMBER → 取 rn=1</text>
+
+  <!-- Step 1: UNION ALL -->
+  <rect x="120" y="48" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① UNION ALL — 展开双列</text>
+  <text x="280" y="82" text-anchor="middle" font-size="9.5" fill="#555">SELECT first_player, first_score FROM Matches</text>
+  <text x="280" y="92" text-anchor="middle" font-size="9" fill="#999">UNION ALL SELECT second_player, second_score</text>
+
+  <path d="M280 96 L280 110" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY + SUM -->
+  <rect x="120" y="114" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② GROUP BY player_id, SUM(score)</text>
+  <text x="280" y="146" text-anchor="middle" font-size="9.5" fill="#555">每人的总分 = 所有参赛得分之和 → 子查询 scores</text>
+
+  <path d="M280 158 L280 172" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: LEFT JOIN Players -->
+  <rect x="120" y="176" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="194" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">③ LEFT JOIN Players ON player_id</text>
+  <text x="280" y="208" text-anchor="middle" font-size="9.5" fill="#555">获取 group_id；COALESCE(total, 0) 处理未参赛选手</text>
+
+  <path d="M280 220 L280 234" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ROW_NUMBER -->
+  <rect x="80" y="238" width="400" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="256" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ ROW_NUMBER() OVER (</text>
+  <text x="280" y="270" text-anchor="middle" font-size="10" fill="#555">PARTITION BY group_id</text>
+  <text x="280" y="284" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">ORDER BY total DESC, player_id ASC) AS rn</text>
+
+  <path d="M280 298 L280 312" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: WHERE rn=1 + ORDER BY -->
+  <rect x="120" y="316" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="334" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ WHERE rn = 1 + ORDER BY group_id</text>
+  <text x="280" y="348" text-anchor="middle" font-size="9.5" fill="#555">每组取总分最高者；并列取 player_id 最小</text>
+
+  <!-- callout left -->
+  <rect x="10" y="48" width="90" height="44" fill="#fafafa" stroke="#446688" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="66" text-anchor="middle" font-size="8.5" fill="#446688">5 行 Matches</text>
+  <text x="55" y="80" text-anchor="middle" font-size="8.5" fill="#446688">→ 10 行</text>
+
+  <rect x="10" y="114" width="90" height="40" fill="#fafafa" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="132" text-anchor="middle" font-size="8.5" fill="#d6a040">10 行 → 8 人</text>
+  <text x="55" y="146" text-anchor="middle" font-size="8.5" fill="#d6a040">每人总分</text>
+
+  <rect x="10" y="176" width="90" height="40" fill="#fafafa" stroke="#446688" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="194" text-anchor="middle" font-size="8.5" fill="#446688">8 人 + 1 未参赛</text>
+  <text x="55" y="208" text-anchor="middle" font-size="8.5" fill="#446688">= 9 行</text>
+
+  <rect x="10" y="250" width="60" height="40" fill="#fafafa" stroke="#b85450" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="268" text-anchor="middle" font-size="8.5" fill="#b85450">每组</text>
+  <text x="40" y="282" text-anchor="middle" font-size="8.5" fill="#b85450">排名 1-N</text>
+
+  <!-- callout right -->
+  <rect x="460" y="114" width="90" height="40" fill="#fafafa" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="505" y="132" text-anchor="middle" font-size="8" fill="#d6a040">SUM(score)</text>
+  <text x="505" y="146" text-anchor="middle" font-size="8" fill="#d6a040">聚合</text>
+
+  <rect x="460" y="176" width="90" height="40" fill="#fafafa" stroke="#446688" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="505" y="194" text-anchor="middle" font-size="8" fill="#446688">LEFT JOIN</text>
+  <text x="505" y="208" text-anchor="middle" font-size="8" fill="#446688">含未参赛</text>
+
+  <rect x="460" y="250" width="90" height="40" fill="#fafafa" stroke="#b85450" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="505" y="268" text-anchor="middle" font-size="8" fill="#b85450">DESC：高分优先</text>
+  <text x="505" y="282" text-anchor="middle" font-size="8" fill="#b85450">ASC：并列取小</text>
+
+  <!-- bottom callout -->
+  <rect x="80" y="372" width="400" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="390" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">输出：每组 1 行 = group_id, player_id</text>
+  <text x="280" y="404" text-anchor="middle" font-size="9" fill="#555">3 个组 → 3 行结果，按 group_id 升序</text>
+</svg>

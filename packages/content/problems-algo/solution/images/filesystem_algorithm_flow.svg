@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">FileSystem：createPath / get 流程</text>
+
+  <!-- ===== createPath column ===== -->
+  <rect x="28" y="48" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="138" y="73" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">createPath(path, value)</text>
+
+  <path d="M 138 90 L 138 110" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- step1: split -->
+  <rect x="48" y="114" width="180" height="44" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="138" y="132" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">① 切分 path</text>
+  <text x="138" y="148" text-anchor="middle" font-size="9.5" fill="#888">"/a/b".split("/") = ["",a,b]</text>
+
+  <path d="M 138 160 L 138 178" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- step2: walk parent -->
+  <rect x="48" y="182" width="180" height="50" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="138" y="200" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">② 走父路径 [1:-1]</text>
+  <text x="138" y="216" text-anchor="middle" font-size="9.5" fill="#888">逐级 children 查找</text>
+
+  <path d="M 138 234 L 138 252" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decision: parent exists? -->
+  <g filter="url(#rough2)">
+    <path d="M 138 290 L 88 320 L 138 350 L 188 320 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="138" y="318" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">父路径</text>
+  <text x="138" y="332" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">存在?</text>
+
+  <!-- no branch -->
+  <path d="M 88 320 L 48 320" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="22" y="308" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="36" y="325" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">F</text>
+  <text x="36" y="346" text-anchor="middle" font-size="9" fill="#b85450">false</text>
+
+  <!-- yes branch -->
+  <path d="M 138 350 L 138 368" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decision: last exists? -->
+  <g filter="url(#rough2)">
+    <path d="M 138 406 L 88 376 L 138 376" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" opacity="0"/>
+  </g>
+  <rect x="48" y="372" width="180" height="44" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="138" y="390" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">③ 末级已存在?</text>
+  <text x="138" y="406" text-anchor="middle" font-size="9.5" fill="#888">last in children?</text>
+
+  <path d="M 48 394 L 24 394" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="24" y="418" text-anchor="middle" font-size="9" fill="#b85450">存在→false</text>
+
+  <path d="M 138 418 L 138 432" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="78" y="434" width="120" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="138" y="449" text-anchor="middle" font-size="10.5" fill="#2e6e2e" font-weight="bold">新建节点, true</text>
+
+  <!-- ===== get column ===== -->
+  <rect x="312" y="48" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="422" y="73" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">get(path)</text>
+
+  <path d="M 422 90 L 422 110" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="332" y="114" width="180" height="44" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="132" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">① 切分 path</text>
+  <text x="422" y="148" text-anchor="middle" font-size="9.5" fill="#888">split("/") 取 [1:]</text>
+
+  <path d="M 422 160 L 422 178" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="332" y="182" width="180" height="50" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="200" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">② 走全部组件 [1:]</text>
+  <text x="422" y="216" text-anchor="middle" font-size="9.5" fill="#888">逐级 children 查找</text>
+
+  <path d="M 422 234 L 422 258" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decision: walk ok? -->
+  <g filter="url(#rough2)">
+    <path d="M 422 296 L 372 266 L 422 266" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" opacity="0"/>
+  </g>
+  <rect x="332" y="262" width="180" height="44" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="280" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">③ 能走完?</text>
+  <text x="422" y="296" text-anchor="middle" font-size="9.5" fill="#888">全部组件命中</text>
+
+  <!-- no -->
+  <path d="M 332 284 L 308 284" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="300" y="306" text-anchor="end" font-size="9" fill="#b85450">否→ -1</text>
+
+  <!-- yes -->
+  <path d="M 422 308 L 422 326" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="342" y="330" width="160" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="350" text-anchor="middle" font-size="11.5" fill="#2e6e2e" font-weight="bold">返回 node.v</text>
+  <text x="422" y="366" text-anchor="middle" font-size="9.5" fill="#888">末节点存的 value</text>
+
+  <!-- bottom note -->
+  <g filter="url(#rough2)">
+    <rect x="200" y="410" width="320" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1"/>
+  </g>
+  <text x="360" y="428" text-anchor="middle" font-size="10" fill="#2b6e9e" font-weight="bold">💡 split("/") 首元素为空串 ""，遍历跳过</text>
+  <text x="360" y="442" text-anchor="middle" font-size="9" fill="#888">"/a/b" → ["", "a", "b"]，从下标 1 开始</text>
+</svg>

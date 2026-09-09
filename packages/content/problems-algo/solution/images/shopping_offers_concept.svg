@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：needs 向量即状态，决策树分支 = 原价兜底 / 套用大礼包</text>
+
+  <text x="40" y="56" font-size="12" fill="#888" font-weight="bold">状态：needs 元组，如 [3,2] 表示还需买 3 个 A、2 个 B</text>
+
+  <!-- Root state -->
+  <rect x="230" y="72" width="100" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">needs=[3,2]</text>
+
+  <!-- Three branches -->
+  <path d="M 240 110 L 90 150" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="132" font-size="10" fill="#4a7a3a" font-weight="bold">原价</text>
+  <rect x="40" y="152" width="100" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="172" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">直接买</text>
+  <text x="90" y="192" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">= 16（叶）</text>
+
+  <path d="M 280 110 L 200 150" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="216" y="132" font-size="10" fill="#d6a040" font-weight="bold">礼包①</text>
+  <rect x="150" y="152" width="100" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="172" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">needs=[0,2]</text>
+  <text x="200" y="192" text-anchor="middle" font-size="11" fill="#333">5 + dfs</text>
+
+  <path d="M 320 110 L 400 150" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="356" y="132" font-size="10" fill="#b85450" font-weight="bold">礼包②</text>
+  <rect x="350" y="152" width="100" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="400" y="172" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">needs=[2,0]</text>
+  <text x="400" y="192" text-anchor="middle" font-size="11" fill="#333">10 + dfs</text>
+
+  <!-- Leaves -->
+  <path d="M 200 204 L 200 224" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="226" width="100" height="38" fill="#f6f6f6" stroke="#888" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="250" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">= 10（叶）</text>
+
+  <path d="M 400 204 L 400 224" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="350" y="226" width="100" height="38" fill="#f6f6f6" stroke="#888" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="400" y="250" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">= 4（叶）</text>
+
+  <!-- Min -->
+  <text x="280" y="288" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">min(16, 5+10, 10+4) = 14</text>
+
+  <!-- Memo box -->
+  <rect x="40" y="306" width="480" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="328" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">记忆化：memo[needs] = 该状态最低价</text>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#444">子状态可被多条路径重复访问（不同礼包组合到达同一 needs）</text>
+  <text x="280" y="368" text-anchor="middle" font-size="11" fill="#d6a040">memo 缓存避免指数级重复递归，把搜索降到多项式级</text>
+</svg>

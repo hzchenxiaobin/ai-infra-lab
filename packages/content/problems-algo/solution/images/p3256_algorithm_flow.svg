@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="16" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：top-3 候选池 + 行组合枚举 + 上界剪枝</text>
+
+  <!-- 步骤1 -->
+  <rect x="110" y="38" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 每行取值最大的 3 个格子 (值, 列)，记 rowmax</text>
+
+  <path d="M 260 72 L 260 84" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤2 -->
+  <rect x="110" y="86" width="300" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="107" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">② 枚举行三元组 i &lt; j &lt; k（共 C(m,3) 组）</text>
+
+  <path d="M 260 118 L 260 130" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 剪枝菱形 -->
+  <polygon points="110,158 260,132 410,158 260,184" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="152" text-anchor="middle" font-size="10.5" fill="#8a6a20" filter="url(#rough2)">rowmax[i]+rowmax[j]+rowmax[k]</text>
+  <text x="260" y="170" text-anchor="middle" font-size="11.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">≤ ans ?</text>
+
+  <!-- 是 → 跳过 -->
+  <path d="M 410 158 L 422 158" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="416" y="150" text-anchor="middle" font-size="10" fill="#8a6a20" filter="url(#rough2)">是</text>
+  <rect x="426" y="143" width="86" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="469" y="163" text-anchor="middle" font-size="11" fill="#8a6a20" filter="url(#rough2)">跳过此组合</text>
+  <path d="M 469 143 L 469 102 L 414 102" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="476" y="126" font-size="9.5" fill="#888" filter="url(#rough2)">下一组</text>
+
+  <!-- 否 ↓ -->
+  <path d="M 260 184 L 260 196" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="268" y="194" font-size="10" fill="#4a7a3a" filter="url(#rough2)">否</text>
+
+  <!-- 步骤3 -->
+  <rect x="110" y="198" width="300" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="219" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">③ 枚举 27 种搭配 (va,ca)×(vb,cb)×(vc,cc)</text>
+
+  <path d="M 260 230 L 260 242" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 列互异菱形 -->
+  <polygon points="120,272 260,246 400,272 260,298" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="270" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">三列两两互异？</text>
+  <text x="260" y="288" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">（ca ≠ cb ≠ cc）</text>
+
+  <!-- 否 → 回到③ -->
+  <path d="M 120 272 L 88 272 L 88 214 L 106 214" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="76" y="248" font-size="9.5" fill="#888" filter="url(#rough2)">否·下一搭配</text>
+
+  <!-- 27 种用完 → 回到② -->
+  <path d="M 410 214 L 452 214 L 452 102 L 414 102" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="458" y="164" font-size="9.5" fill="#888" filter="url(#rough2)">27 种用完</text>
+  <text x="458" y="178" font-size="9.5" fill="#888" filter="url(#rough2)">下一行三元组</text>
+
+  <!-- 是 ↓ -->
+  <path d="M 260 298 L 260 312" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="268" y="310" font-size="10" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <!-- 步骤4/5 -->
+  <rect x="100" y="314" width="320" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="335" text-anchor="middle" font-size="12" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">④ ans ← max(ans, va+vb+vc) → ⑤ 扫完返回 ans</text>
+
+  <text x="260" y="360" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">总量 C(m,3) × 27 ≈ 4.4×10⁶（m=100），上界剪枝再砍一到两个数量级</text>
+</svg>

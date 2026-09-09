@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="560" viewBox="0 0 920 560" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="560" fill="#fafafa"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">合并的陷阱：相等时必须比较后缀（示例 2）</text>
+  <path d="M 240 44 Q 460 52 680 44" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- 两个子序列 A / B -->
+  <text x="80" y="86" font-size="13" font-weight="bold" fill="#446688">A =</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="70" width="44" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <rect x="174" y="70" width="44" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="152" y="91" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+  <text x="196" y="91" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">7</text>
+
+  <text x="80" y="124" font-size="13" font-weight="bold" fill="#4a7a3a">B =</text>
+  <g filter="url(#sk)">
+    <rect x="130" y="108" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="174" y="108" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <rect x="218" y="108" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="152" y="129" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+  <text x="196" y="129" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">0</text>
+  <text x="240" y="129" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">4</text>
+
+  <!-- 第一步：首位相等 -->
+  <text x="320" y="100" font-size="13" font-weight="bold" fill="#b85450">首位都 = 6，取谁？</text>
+  <path d="M 174 86 L 300 86" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arR)" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <path d="M 174 124 L 300 124" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arR)" stroke-dasharray="4 3" filter="url(#sk)"/>
+
+  <!-- 错误做法 -->
+  <g filter="url(#sk)">
+    <rect x="430" y="62" width="280" height="74" rx="8" fill="#fce4ec" stroke="#b85450"/>
+  </g>
+  <text x="570" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">✗ 错误：随便取一个</text>
+  <text x="570" y="104" text-anchor="middle" font-size="12" fill="#b85450">若取 B 的 6：后续 B=[0,4]</text>
+  <text x="570" y="122" text-anchor="middle" font-size="12" fill="#b85450">下一位置只能选 0 或 7 → 选 7，得 [6,7,0,4]</text>
+
+  <!-- 正确做法 -->
+  <g filter="url(#sk)">
+    <rect x="430" y="146" width="280" height="74" rx="8" fill="#f7fff7" stroke="#4a7a3a"/>
+  </g>
+  <text x="570" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a">✓ 正确：比较后缀字典序</text>
+  <text x="570" y="188" text-anchor="middle" font-size="12" fill="#4a7a3a">A[0:]=[6,7]  vs  B[0:]=[6,0,4]</text>
+  <text x="570" y="206" text-anchor="middle" font-size="12" fill="#4a7a3a">首位 6==6，再看下一位 7 &gt; 0 ⟹ A 更大 ⟹ 取 A</text>
+
+  <path d="M 300 110 L 426 110" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+
+  <!-- 逐步合并 -->
+  <text x="80" y="252" font-size="13" font-weight="bold" fill="#2b2b2b">逐步合并（每步取后缀较大者的首位）：</text>
+
+  <!-- step 1 -->
+  <g filter="url(#sk)">
+    <rect x="80" y="266" width="44" height="30" rx="4" fill="#fff8e1" stroke="#d6a040"/>
+  </g>
+  <text x="102" y="286" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">1</text>
+  <text x="140" y="286" font-size="12" fill="#555">i=0,j=0：6==6，比后缀 [6,7] &gt; [6,0,4] ⟹ 取 A 的 6</text>
+
+  <!-- step 2 -->
+  <g filter="url(#sk)">
+    <rect x="80" y="302" width="44" height="30" rx="4" fill="#fff8e1" stroke="#d6a040"/>
+  </g>
+  <text x="102" y="322" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">2</text>
+  <text x="140" y="322" font-size="12" fill="#555">i=1,j=0：7 &gt; 6 ⟹ 取 A 的 7</text>
+
+  <!-- step 3 -->
+  <g filter="url(#sk)">
+    <rect x="80" y="338" width="44" height="30" rx="4" fill="#fff8e1" stroke="#d6a040"/>
+  </g>
+  <text x="102" y="358" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">3</text>
+  <text x="140" y="358" font-size="12" fill="#555">A 用尽，剩余 B 依次接入：6, 0, 4</text>
+
+  <!-- 结果 -->
+  <text x="80" y="404" font-size="13" font-weight="bold" fill="#4a7a3a">结果：</text>
+  <g filter="url(#sk)">
+    <rect x="140" y="388" width="44" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="184" y="388" width="44" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="228" y="388" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="272" y="388" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="316" y="388" width="44" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+  </g>
+  <text x="162" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+  <text x="206" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">7</text>
+  <text x="250" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+  <text x="294" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">0</text>
+  <text x="338" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">4</text>
+  <text x="372" y="409" font-size="12" fill="#888">[6,7,6,0,4]</text>
+
+  <!-- 关键提示 -->
+  <g filter="url(#sk)">
+    <rect x="430" y="388" width="430" height="92" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="645" y="412" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">为什么不能在相等时任取？</text>
+  <text x="645" y="432" text-anchor="middle" font-size="12" fill="#7a5415">当前位相同 ⟹ 这一位对结果无差别；</text>
+  <text x="645" y="450" text-anchor="middle" font-size="12" fill="#7a5415">但「取谁」会决定后续可选的剩余序列，</text>
+  <text x="645" y="468" text-anchor="middle" font-size="12" fill="#7a5415">因此要用整个后缀的字典序来打破平局。</text>
+
+  <text x="460" y="540" text-anchor="middle" font-size="12" fill="#888">greater(A,i,B,j) = A[i:] 字典序是否 &gt; B[j:]：逐位比较，先出现更大者胜；一方耗尽则另一方更大。</text>
+</svg>

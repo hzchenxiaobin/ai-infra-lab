@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心思想：k 指针各管一路乘积，每步取最小</text>
+  <text x="320" y="44" text-anchor="middle" font-size="11" fill="#888">快照（i=6）：nums = [1, 2, 4, 7, 8, 13]，primes = [2, 7, 13, 19]，计算 nums[6]</text>
+
+  <!-- ===== nums array ===== -->
+  <text x="42" y="68" font-size="10" fill="#888">nums[]</text>
+
+  <!-- box 0: 1 (seed) -->
+  <rect x="56" y="72" width="52" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="82" y="92" text-anchor="middle" font-size="14" fill="#666" font-weight="bold">1</text>
+  <text x="82" y="66" text-anchor="middle" font-size="8" fill="#aaa">[0]</text>
+
+  <!-- box 1: 2 -->
+  <rect x="120" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">2</text>
+  <text x="146" y="66" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+  <!-- box 2: 4 -->
+  <rect x="184" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">4</text>
+  <text x="210" y="66" text-anchor="middle" font-size="8" fill="#888">[2]</text>
+
+  <!-- box 3: 7 -->
+  <rect x="248" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="274" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">7</text>
+  <text x="274" y="66" text-anchor="middle" font-size="8" fill="#888">[3]</text>
+
+  <!-- box 4: 8 -->
+  <rect x="312" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">8</text>
+  <text x="338" y="66" text-anchor="middle" font-size="8" fill="#888">[4]</text>
+
+  <!-- box 5: 13 -->
+  <rect x="376" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="402" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">13</text>
+  <text x="402" y="66" text-anchor="middle" font-size="8" fill="#888">[5]</text>
+
+  <!-- box 6: ? (target) -->
+  <rect x="440" y="72" width="52" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="466" y="92" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">?</text>
+  <text x="466" y="66" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">[6]</text>
+
+  <!-- ===== pointer triangles ===== -->
+  <!-- p[0] (blue) under box 3 -->
+  <polygon points="274,108 268,118 280,118" fill="#446688" filter="url(#rough2)"/>
+  <text x="274" y="131" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">p[0]</text>
+
+  <!-- p[1] (green) under box 1, left -->
+  <polygon points="140,108 134,118 146,118" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="134" y="131" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">p[1]</text>
+
+  <!-- p[2] (orange) under box 1, right -->
+  <polygon points="152,108 146,118 158,118" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="162" y="131" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">p[2]</text>
+
+  <!-- p[3] (red) under box 0 -->
+  <polygon points="82,108 76,118 88,118" fill="#b85450" filter="url(#rough2)"/>
+  <text x="82" y="131" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">p[3]</text>
+
+  <!-- note: p[1] & p[2] same box -->
+  <text x="146" y="144" text-anchor="middle" font-size="8" fill="#888">p[1], p[2] 同指 [1]</text>
+
+  <!-- ===== multiplier boxes ===== -->
+  <!-- arrows from pointers to multiplier boxes -->
+  <path d="M 274 138 L 110 172" stroke="#446688" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 134 138 L 250 172" stroke="#4a7a3a" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 162 138 L 390 172" stroke="#d6a040" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M 82 138 L 530 172" stroke="#b85450" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ×2 box -->
+  <rect x="40" y="176" width="140" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="194" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">nums[p[0]]×2</text>
+  <text x="110" y="210" text-anchor="middle" font-size="11" fill="#446688">= 7 × 2 = 14</text>
+
+  <!-- ×7 box -->
+  <rect x="190" y="176" width="140" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="194" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">nums[p[1]]×7</text>
+  <text x="260" y="210" text-anchor="middle" font-size="11" fill="#4a7a3a">= 2 × 7 = 14</text>
+
+  <!-- ×13 box -->
+  <rect x="340" y="176" width="140" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="410" y="194" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">nums[p[2]]×13</text>
+  <text x="410" y="210" text-anchor="middle" font-size="11" fill="#d6a040">= 2 × 13 = 26</text>
+
+  <!-- ×19 box -->
+  <rect x="490" y="176" width="120" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="550" y="194" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">nums[p[3]]×19</text>
+  <text x="550" y="210" text-anchor="middle" font-size="11" fill="#b85450">= 1 × 19 = 19</text>
+
+  <!-- ===== min gate ===== -->
+  <path d="M 110 220 L 260 252" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 260 220 L 280 252" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 410 220 L 300 252" stroke="#d6a040" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 550 220 L 320 252" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="180" y="258" width="240" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="280" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">min(14, 14, 26, 19) = 14</text>
+
+  <!-- ===== result ===== -->
+  <path d="M 300 296 L 300 318" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="322" width="420" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="340" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">nums[6] = 14 → p[0]++, p[1]++（两路同时命中！）</text>
+
+  <text x="300" y="380" text-anchor="middle" font-size="10" fill="#888">关键：用 if 而非 elif —— 14 = 7×2 = 2×7，所有匹配的指针都要前进</text>
+  <text x="300" y="396" text-anchor="middle" font-size="10" fill="#888">k 个指针推广自 264 三指针；k 大时用最小堆把「找最小」从 O(k) 降到 O(log k)</text>
+</svg>

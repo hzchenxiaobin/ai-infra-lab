@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="16" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：AND 只会清掉 1 位 —— 全局 AND 是分数和的地板</text>
+  <text x="280" y="48" text-anchor="middle" font-size="12" fill="#555" filter="url(#rough2)">以 nums = [5, 7, 1, 3] 为例（二进制 101, 111, 001, 011）</text>
+
+  <!-- element row -->
+  <text x="138" y="92" text-anchor="end" font-size="13" fill="#666" filter="url(#rough2)">元素</text>
+  <g filter="url(#rough2)">
+    <rect x="150" y="66" width="56" height="44" fill="#f5f5f5" stroke="#999" stroke-width="1.5" rx="4"/>
+    <text x="178" y="87" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">5</text>
+    <text x="178" y="103" text-anchor="middle" font-size="10" fill="#999">101</text>
+    <rect x="218" y="66" width="56" height="44" fill="#f5f5f5" stroke="#999" stroke-width="1.5" rx="4"/>
+    <text x="246" y="87" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">7</text>
+    <text x="246" y="103" text-anchor="middle" font-size="10" fill="#999">111</text>
+    <rect x="286" y="66" width="56" height="44" fill="#f5f5f5" stroke="#999" stroke-width="1.5" rx="4"/>
+    <text x="314" y="87" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">1</text>
+    <text x="314" y="103" text-anchor="middle" font-size="10" fill="#999">001</text>
+    <rect x="354" y="66" width="56" height="44" fill="#f5f5f5" stroke="#999" stroke-width="1.5" rx="4"/>
+    <text x="382" y="87" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">3</text>
+    <text x="382" y="103" text-anchor="middle" font-size="10" fill="#999">011</text>
+  </g>
+
+  <!-- arrows down -->
+  <g filter="url(#rough2)" stroke="#999" stroke-width="1.4">
+    <path d="M 178 114 L 178 146" fill="none" marker-end="url(#arrb)"/>
+    <path d="M 246 114 L 246 146" fill="none" marker-end="url(#arrb)"/>
+    <path d="M 314 114 L 314 146" fill="none" marker-end="url(#arrb)"/>
+    <path d="M 382 114 L 382 146" fill="none" marker-end="url(#arrb)"/>
+  </g>
+
+  <!-- prefix AND row -->
+  <text x="138" y="174" text-anchor="end" font-size="13" fill="#666" filter="url(#rough2)">前缀 AND</text>
+  <g filter="url(#rough2)">
+    <rect x="150" y="152" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="178" y="175" text-anchor="middle" font-size="11" fill="#446688">5 (101)</text>
+    <rect x="218" y="152" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="246" y="175" text-anchor="middle" font-size="11" fill="#446688">5 (101)</text>
+    <rect x="286" y="152" width="56" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4"/>
+    <text x="314" y="175" text-anchor="middle" font-size="11" fill="#b07818" font-weight="bold">1 (001)</text>
+    <rect x="354" y="152" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="382" y="175" text-anchor="middle" font-size="11" fill="#446688">1 (001)</text>
+  </g>
+
+  <text x="280" y="212" text-anchor="middle" font-size="12" fill="#b07818" filter="url(#rough2)">前缀 AND：5 → 5 → 1 → 1，元素 1 进来时 bit₂ 被清掉——位只减不增</text>
+
+  <!-- floor bar -->
+  <rect x="70" y="228" width="420" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">地板：total = 5 ∧ 7 ∧ 1 ∧ 3 = 1</text>
+  <text x="280" y="265" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">任何子数组的分数都包含 total 的全部 1 位（数值 ≥ total）</text>
+
+  <text x="280" y="298" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">分数和 ≥ k · total ≥ total，整段不切即取得 total ⇒ 最小分数和 = total</text>
+
+  <!-- two cases -->
+  <rect x="45" y="318" width="235" height="72" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="162" y="340" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">total &gt; 0 ⇒ 整体抱团</text>
+  <text x="162" y="358" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">切成 k ≥ 2 段 ⇒ 和 ≥ 2·total &gt; total</text>
+  <text x="162" y="376" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">唯一最优：整段不切，答案 1</text>
+
+  <rect x="280" y="318" width="235" height="72" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="397" y="340" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">total = 0 ⇒ 尽早切割</text>
+  <text x="397" y="358" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">最小和 0 ⇔ 每段分数都为 0</text>
+  <text x="397" y="376" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">贪心：cur 一归零就切，段数最大化</text>
+</svg>

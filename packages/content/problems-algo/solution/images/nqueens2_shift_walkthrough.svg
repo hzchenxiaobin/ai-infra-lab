@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">掩码移位演算：n = 4，追踪方案 [1,3,0,2]</text>
+  <text x="310" y="42" text-anchor="middle" font-size="11" fill="#888">每行进入时的掩码（低 4 位）→ 算 avail → 选 bit → 递归下传时 d1 左移、d2 右移</text>
+
+  <!-- 列头 -->
+  <text x="40" y="72" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">row</text>
+  <text x="150" y="72" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">cols</text>
+  <text x="270" y="72" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">d1 ↘</text>
+  <text x="390" y="72" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">d2 ↙</text>
+  <text x="510" y="72" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">avail / 选 bit</text>
+
+  <!-- 位标 c3 c2 c1 c0（每组4格） -->
+  <g font-size="9" fill="#aaa" text-anchor="middle">
+    <text x="114" y="88">c3</text><text x="138" y="88">c2</text><text x="162" y="88">c1</text><text x="186" y="88">c0</text>
+    <text x="234" y="88">c3</text><text x="258" y="88">c2</text><text x="282" y="88">c1</text><text x="306" y="88">c0</text>
+    <text x="354" y="88">c3</text><text x="378" y="88">c2</text><text x="402" y="88">c1</text><text x="426" y="88">c0</text>
+    <text x="474" y="88">c3</text><text x="498" y="88">c2</text><text x="522" y="88">c1</text><text x="546" y="88">c0</text>
+  </g>
+  <line x1="20" y1="94" x2="600" y2="94" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ====== row 0 ====== -->
+  <text x="40" y="120" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">0</text>
+  <!-- cols 0000 -->
+  <g filter="url(#rough2)">
+    <rect x="104" y="104" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="128" y="104" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="152" y="104" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="176" y="104" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <!-- d1 0000 -->
+  <g filter="url(#rough2)">
+    <rect x="224" y="104" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="248" y="104" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="272" y="104" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="296" y="104" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+  </g>
+  <!-- d2 0000 -->
+  <g filter="url(#rough2)">
+    <rect x="344" y="104" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="368" y="104" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="392" y="104" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="416" y="104" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <!-- avail 1111 -->
+  <g filter="url(#rough2)">
+    <rect x="464" y="104" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="488" y="104" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="512" y="104" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="536" y="104" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+  </g>
+  <text x="578" y="120" font-size="11" fill="#b85450" font-weight="bold">选 c1</text>
+
+  <!-- 下传箭头 row0->row1，标注移位 -->
+  <path d="M 284 130 L 284 142" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="312" y="140" font-size="10" fill="#4a7a3a">下传: cols=0010, d1=(0010)&lt;&lt;1=0100, d2=(0010)&gt;&gt;1=0001</text>
+
+  <!-- ====== row 1 ====== -->
+  <text x="40" y="170" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <!-- cols 0010: c1 填充 -->
+  <g filter="url(#rough2)">
+    <rect x="104" y="154" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="128" y="154" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="152" y="154" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+    <rect x="176" y="154" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <!-- d1 0100: c2 填充 -->
+  <g filter="url(#rough2)">
+    <rect x="224" y="154" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="248" y="154" width="20" height="22" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="272" y="154" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="296" y="154" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+  </g>
+  <!-- d2 0001: c0 填充 -->
+  <g filter="url(#rough2)">
+    <rect x="344" y="154" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="368" y="154" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="392" y="154" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="416" y="154" width="20" height="22" fill="#d6a040" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <!-- avail 1000: c3 填充 -->
+  <g filter="url(#rough2)">
+    <rect x="464" y="154" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="488" y="154" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="512" y="154" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="536" y="154" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+  </g>
+  <text x="578" y="170" font-size="11" fill="#b85450" font-weight="bold">选 c3</text>
+
+  <path d="M 284 180 L 284 192" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="312" y="190" font-size="10" fill="#4a7a3a">下传: d1=(0100|1000)&lt;&lt;1=11000, d2=(0001|1000)&gt;&gt;1=0100</text>
+
+  <!-- ====== row 2 ====== -->
+  <text x="40" y="220" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <!-- cols 1010: c3,c1 -->
+  <g filter="url(#rough2)">
+    <rect x="104" y="204" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+    <rect x="128" y="204" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="152" y="204" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+    <rect x="176" y="204" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <!-- d1 low4 1000: c3 （实际 11000，高位被 mask 截断） -->
+  <g filter="url(#rough2)">
+    <rect x="224" y="204" width="20" height="22" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="248" y="204" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="272" y="204" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="296" y="204" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+  </g>
+  <!-- d2 0100: c2 -->
+  <g filter="url(#rough2)">
+    <rect x="344" y="204" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="368" y="204" width="20" height="22" fill="#d6a040" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="392" y="204" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="416" y="204" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <!-- avail 0001: c0 -->
+  <g filter="url(#rough2)">
+    <rect x="464" y="204" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="488" y="204" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="512" y="204" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="536" y="204" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+  </g>
+  <text x="578" y="220" font-size="11" fill="#b85450" font-weight="bold">选 c0</text>
+
+  <path d="M 284 230 L 284 242" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="312" y="240" font-size="10" fill="#4a7a3a">下传: d1=(1000|0001)&lt;&lt;1=10010, d2=(0100|0001)&gt;&gt;1=0010</text>
+
+  <!-- ====== row 3 ====== -->
+  <text x="40" y="270" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <!-- cols 1011: c3,c1,c0 -->
+  <g filter="url(#rough2)">
+    <rect x="104" y="254" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+    <rect x="128" y="254" width="20" height="22" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <rect x="152" y="254" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+    <rect x="176" y="254" width="20" height="22" fill="#446688" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <!-- d1 low4 0010: c1 -->
+  <g filter="url(#rough2)">
+    <rect x="224" y="254" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="248" y="254" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="272" y="254" width="20" height="22" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.2"/>
+    <rect x="296" y="254" width="20" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/>
+  </g>
+  <!-- d2 0010: c1 -->
+  <g filter="url(#rough2)">
+    <rect x="344" y="254" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="368" y="254" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="392" y="254" width="20" height="22" fill="#d6a040" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="416" y="254" width="20" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <!-- avail 0100: c2 -->
+  <g filter="url(#rough2)">
+    <rect x="464" y="254" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="488" y="254" width="20" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="512" y="254" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+    <rect x="536" y="254" width="20" height="22" fill="#fff" stroke="#b85450" stroke-width="1.2"/>
+  </g>
+  <text x="578" y="270" font-size="11" fill="#b85450" font-weight="bold">选 c2</text>
+
+  <!-- 命中 -->
+  <rect x="60" y="296" width="540" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="330" y="316" text-anchor="middle" font-size="13" fill="#2d5a1f" font-weight="bold">row == n → 找到方案 [1, 3, 0, 2]，ans += 1</text>
+  <text x="330" y="334" text-anchor="middle" font-size="11" fill="#555">每行皇后列号 = 选中的 bit 位 → c1, c3, c0, c2</text>
+
+  <!-- 图例 -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="356" width="16" height="16" fill="#446688" stroke="#446688" stroke-width="1.2" rx="2"/>
+    <rect x="180" y="356" width="16" height="16" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.2" rx="2"/>
+    <rect x="300" y="356" width="16" height="16" fill="#d6a040" stroke="#d6a040" stroke-width="1.2" rx="2"/>
+    <rect x="420" y="356" width="16" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="2"/>
+  </g>
+  <text x="82" y="368" font-size="11" fill="#555">cols 占用</text>
+  <text x="202" y="368" font-size="11" fill="#555">d1 ↘ 攻击</text>
+  <text x="322" y="368" font-size="11" fill="#555">d2 ↙ 攻击</text>
+  <text x="442" y="368" font-size="11" fill="#555">avail 可放</text>
+
+  <!-- 脚注 -->
+  <rect x="60" y="386" width="540" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="406" text-anchor="middle" font-size="11" fill="#444">⚠️ d1 左移会产生高于 c(n-1) 的位（如 row2 的 11000），</text>
+  <text x="330" y="424" text-anchor="middle" font-size="11" fill="#444">但 avail 末尾 &amp; mask 截断，越界位自动失效——无需显式边界检查。</text>
+  <text x="330" y="442" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">观察：d1 每个 1 逐行左滑、d2 逐行右滑，即对角线「影子」平移</text>
+</svg>

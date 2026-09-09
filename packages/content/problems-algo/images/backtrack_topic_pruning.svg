@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+
+  <text x="320" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">剪枝：在「下潜之前」就砍掉必然无解的子树</text>
+
+  <!-- ===== Left: no pruning ===== -->
+  <text x="150" y="60" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">不剪枝：傻搜整棵树</text>
+
+  <ellipse cx="150" cy="86" rx="30" ry="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="90" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">rem=7</text>
+
+  <!-- 4 children -->
+  <path d="M 135 99 L 70 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 142 100 L 120 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 158 100 L 180 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 165 99 L 230 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="44" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+2→5</text>
+  <rect x="100" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="126" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+3→4</text>
+  <rect x="160" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="186" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+6→1</text>
+  <rect x="216" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="242" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+7→0</text>
+
+  <!-- continue deep on +2 and +3 (wasted branches) -->
+  <path d="M 70 152 L 55 180" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 126 152 L 110 180" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="30" y="182" width="48" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="54" y="196" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">+2→3</text>
+  <rect x="86" y="182" width="48" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="196" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">+2→1</text>
+
+  <!-- more wasted -->
+  <path d="M 54 202 L 44 228" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="22" y="230" width="44" height="18" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="44" y="243" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">+2→1</text>
+  <text x="70" y="252" font-size="9" fill="#b85450" filter="url(#rough2)">✗ 越搜越废</text>
+
+  <text x="150" y="288" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">访问节点数多，很多 rem&lt;0 才停</text>
+  <rect x="40" y="306" width="220" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="324" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">浪费：rem 减到负数才 return</text>
+  <text x="150" y="340" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（组合总和，候选 [2,3,6,7], target=7）</text>
+
+  <!-- ===== Right: with pruning ===== -->
+  <text x="490" y="60" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">剪枝：排序 + 提前 break</text>
+
+  <ellipse cx="490" cy="86" rx="30" ry="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="490" y="90" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">rem=7</text>
+
+  <!-- 4 children but break after +6 (since +6→1, next +7 is bigger -> break) -->
+  <path d="M 475 99 L 410 128" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 482 100 L 460 128" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 498 100 L 520 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- +7 branch cut -->
+  <path d="M 505 99 L 570 128" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="384" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+2→5</text>
+  <rect x="440" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="466" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+3→4</text>
+  <rect x="500" y="130" width="52" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="526" y="145" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">+6→1</text>
+  <!-- cut node -->
+  <rect x="556" y="130" width="52" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="582" y="145" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">✗+7</text>
+  <text x="582" y="166" text-anchor="middle" font-size="8" fill="#b85450" filter="url(#rough2)">7&gt;1 break</text>
+
+  <!-- continue only on +2,+3,+6 productively -->
+  <path d="M 410 152 L 395 180" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 466 152 L 450 180" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="370" y="182" width="48" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="394" y="196" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">+2→3</text>
+  <rect x="426" y="182" width="48" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="196" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">+3→1</text>
+
+  <!-- leaf solution -->
+  <path d="M 394 202 L 394 226" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="362" y="228" width="64" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="394" y="242" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">+2→1 ✓</text>
+  <text x="430" y="242" font-size="9" fill="#4a7a3a" filter="url(#rough2)">→[2,2,3]</text>
+
+  <text x="490" y="288" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">候选有序后：c[i]&gt;rem 直接 break</text>
+  <rect x="380" y="306" width="220" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="324" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">收益：砍掉整棵右子树</text>
+  <text x="490" y="340" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（break 而非 continue 是关键）</text>
+
+  <!-- bottom rule -->
+  <rect x="60" y="362" width="520" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="320" y="384" text-anchor="middle" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">剪枝总原则</text>
+  <text x="80" y="402" font-size="10" fill="#555" filter="url(#rough2)">• 可行性剪枝：当前状态已不合法 → return（如括号数超额、remain&lt;0）</text>
+  <text x="80" y="418" font-size="10" fill="#555" filter="url(#rough2)">• 最优性剪枝：当前已劣于已知最优 → return；• 顺序剪枝：候选有序时 c[i]&gt;bound → break 整段</text>
+</svg>

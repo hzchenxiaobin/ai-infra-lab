@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：排序后「成功药水」是一段后缀 → 二分找分界</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">咒语 s 需要药水 p ≥ ⌈success / s⌉；升序后 ≥ 阈值的药水必连续出现在右端</text>
+
+  <!-- ===== line 1: spell s, threshold ===== -->
+  <text x="30" y="78" font-size="12" fill="#446688" font-weight="bold">① 对咒语 s，算阈值 t = ⌈success / s⌉ = (success + s − 1) / s</text>
+
+  <rect x="60" y="92" width="120" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="110" text-anchor="middle" font-size="11" fill="#333">咒语 s = 5</text>
+  <text x="120" y="126" text-anchor="middle" font-size="10" fill="#888">success = 7</text>
+
+  <path d="M 184 112 L 222 112" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="203" y="104" text-anchor="middle" font-size="9.5" fill="#888">除法取上</text>
+
+  <rect x="226" y="92" width="160" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="306" y="110" text-anchor="middle" font-size="11" fill="#333">阈值 t = ⌈7 / 5⌉ = 2</text>
+  <text x="306" y="126" text-anchor="middle" font-size="10" fill="#888">需要药水 ≥ 2</text>
+
+  <path d="M 388 112 L 426 112" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="407" y="104" text-anchor="middle" font-size="9.5" fill="#888">lower_bound</text>
+
+  <rect x="430" y="92" width="110" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="485" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">分界 idx</text>
+  <text x="485" y="126" text-anchor="middle" font-size="10" fill="#888">首个 ≥ t 的下标</text>
+
+  <!-- ===== line 2: sorted potions with suffix highlighted ===== -->
+  <text x="30" y="166" font-size="12" fill="#4a7a3a" font-weight="bold">② 升序排序药水 [1,2,3,4,5]，阈值 t=2 → 右端 [idx..m) 全部成功</text>
+
+  <!-- prefix (fail) -->
+  <rect x="60" y="182" width="60" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="90" y="208" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">1</text>
+  <text x="90" y="240" text-anchor="middle" font-size="9" fill="#b85450">&lt; 2 失败</text>
+
+  <!-- suffix (success) 4 cells -->
+  <rect x="124" y="182" width="60" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="154" y="208" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">2</text>
+
+  <rect x="188" y="182" width="60" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="218" y="208" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">3</text>
+
+  <rect x="252" y="182" width="60" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="282" y="208" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">4</text>
+
+  <rect x="316" y="182" width="60" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="346" y="208" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">5</text>
+  <text x="316" y="240" text-anchor="start" font-size="9" fill="#4a7a3a">≥ 2 全部成功 → 后缀</text>
+
+  <!-- bracket below showing idx -->
+  <path d="M 60 250 L 60 258 L 346 258 L 346 250" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M 124 250 L 124 266" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="124" y="280" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">idx = 1（lower_bound(t)）</text>
+
+  <!-- count formula -->
+  <rect x="400" y="182" width="140" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="200" text-anchor="middle" font-size="11" fill="#333">pairs = m − idx</text>
+  <text x="470" y="218" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">= 5 − 1 = 4</text>
+
+  <!-- ===== line 3: why suffix ===== -->
+  <text x="30" y="308" font-size="12" fill="#446688" font-weight="bold">③ 为何是后缀？升序 ⇒ 一旦 p ≥ t，右侧药水只大不小，必然全部成功</text>
+
+  <rect x="40" y="324" width="480" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="344" text-anchor="middle" font-size="10.5" fill="#333">单调性：排序把「大小关系」变成长度上的「前后关系」 ⇒ 阈值划分点 = 二分下界</text>
+
+  <!-- footer -->
+  <rect x="30" y="370" width="500" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="388" text-anchor="middle" font-size="10.5" fill="#333">避开溢出：不直接算 s × p（可达 10¹⁰），改用除法 t = ⌈success / s⌉ 比较 p 与 t</text>
+  <text x="280" y="402" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">一次排序 O(m log m) + n 次 lower_bound O(n log m) = O((n+m) log m)</text>
+</svg>

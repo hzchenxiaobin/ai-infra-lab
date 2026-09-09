@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <text x="300" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：按分数降序累计求和 → 容量过滤 → 取最优截止线</text>
+
+  <!-- Exam table -->
+  <rect x="30" y="55" width="160" height="150" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="75" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">Exam 表</text>
+  <line x1="40" y1="84" x2="180" y2="84" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="60" y="100" font-size="10" fill="#888">score</text>
+  <text x="150" y="100" font-size="10" fill="#888">student_count</text>
+  <text x="70" y="122" font-size="12" fill="#333" font-weight="bold">100</text>
+  <text x="155" y="122" font-size="12" fill="#333">3</text>
+  <text x="70" y="146" font-size="12" fill="#333" font-weight="bold">90</text>
+  <text x="155" y="146" font-size="12" fill="#333">5</text>
+  <text x="70" y="170" font-size="12" fill="#333" font-weight="bold">80</text>
+  <text x="155" y="170" font-size="12" fill="#333">7</text>
+  <text x="62" y="192" font-size="9" fill="#888">↑ 按 score 降序</text>
+
+  <!-- Arrow: SUM OVER -->
+  <path d="M 195 130 L 245 130" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="220" y="122" text-anchor="middle" font-size="9" fill="#666" font-weight="bold">SUM OVER</text>
+  <text x="220" y="148" text-anchor="middle" font-size="8.5" fill="#888">(ORDER BY</text>
+  <text x="220" y="160" text-anchor="middle" font-size="8.5" fill="#888">score DESC)</text>
+
+  <!-- Cumulative table -->
+  <rect x="250" y="55" width="180" height="150" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="340" y="75" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">累计表（Cumulative）</text>
+  <line x1="260" y1="84" x2="420" y2="84" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="278" y="100" font-size="10" fill="#888">score</text>
+  <text x="355" y="100" font-size="10" fill="#888">count</text>
+  <text x="403" y="100" font-size="10" fill="#888">cum</text>
+  <text x="285" y="122" font-size="12" fill="#333">100</text>
+  <text x="360" y="122" font-size="12" fill="#333">3</text>
+  <text x="405" y="122" font-size="12" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="285" y="146" font-size="12" fill="#333">90</text>
+  <text x="360" y="146" font-size="12" fill="#333">5</text>
+  <text x="405" y="146" font-size="12" fill="#4a7a3a" font-weight="bold">8</text>
+  <text x="285" y="170" font-size="12" fill="#333">80</text>
+  <text x="360" y="170" font-size="12" fill="#333">7</text>
+  <text x="405" y="170" font-size="12" fill="#4a7a3a" font-weight="bold">15</text>
+  <text x="272" y="192" font-size="9" fill="#888">cum = ≥该分数的学生总数</text>
+
+  <!-- Arrow down -->
+  <path d="M 300 208 L 300 228" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- School capacity filter -->
+  <rect x="30" y="232" width="540" height="90" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="254" font-size="12" fill="#d6a040" font-weight="bold">💡 截止线选取规则：cum ≤ capacity 中取 cum 最大者；并列取 score 最高者</text>
+
+  <text x="50" y="278" font-size="11" fill="#555">School(cap=10)：cum∈{3,8,15} → 合法 {3,8} → max=8 → cutoff = 90 ✓</text>
+  <text x="50" y="296" font-size="11" fill="#555">School(cap=5)：cum∈{3,8,15} → 合法 {3} → max=3 → cutoff = 100 ✓</text>
+  <text x="50" y="314" font-size="11" fill="#b85450" font-weight="bold">School(cap=2)：cum∈{3,8,15} → 合法 {} → 无解 → cutoff = -1</text>
+
+  <!-- Arrow down -->
+  <path d="M 300 324 L 300 344" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Key insight box -->
+  <rect x="30" y="348" width="540" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="370" font-size="12" fill="#b85450" font-weight="bold">⚠️ 关键转换：把「逐分数算累计人数」变成窗口函数一趟扫描</text>
+  <text x="50" y="390" font-size="10.5" fill="#666">SUM(student_count) OVER (ORDER BY score DESC) 即「score ≥ 当前行的人数」</text>
+  <text x="50" y="408" font-size="10.5" fill="#666">每个 school 只需在累计表上做一次过滤 + Top-1 选取，O(1) 子查询</text>
+</svg>

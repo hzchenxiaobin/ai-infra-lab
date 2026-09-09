@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：维度骨架 → LEFT JOIN → GROUP BY + COUNT</text>
+
+  <!-- ===== Row 1: build P and build E (side by side) ===== -->
+  <!-- P: platforms -->
+  <rect x="60" y="52" width="150" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="135" y="70" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① 平台骨架 P</text>
+  <text x="135" y="86" text-anchor="middle" font-size="9" fill="#333">SELECT 'Android'</text>
+  <text x="135" y="98" text-anchor="middle" font-size="9" fill="#333">UNION 'IOS' UNION 'Web'</text>
+  <text x="135" y="110" text-anchor="middle" font-size="8" fill="#888">→ 3 行</text>
+
+  <!-- E: experiment names -->
+  <rect x="350" y="52" width="150" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="70" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">② 实验名骨架 Exp</text>
+  <text x="425" y="86" text-anchor="middle" font-size="9" fill="#333">SELECT 'Reading'</text>
+  <text x="425" y="98" text-anchor="middle" font-size="9" fill="#333">UNION 'Sports' UNION 'Programming'</text>
+  <text x="425" y="110" text-anchor="middle" font-size="8" fill="#888">→ 3 行</text>
+
+  <!-- arrows down to CROSS JOIN -->
+  <path d="M 135 118 L 135 148 L 280 148" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 425 118 L 425 148 L 280 148" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Row 2: CROSS JOIN ===== -->
+  <rect x="140" y="158" width="280" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="178" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ T = P CROSS JOIN Exp</text>
+  <text x="280" y="194" text-anchor="middle" font-size="9" fill="#333">笛卡尔积：3 × 3 = 9 行完整组合骨架</text>
+  <text x="280" y="207" text-anchor="middle" font-size="8" fill="#888">骨架独立于数据，永远覆盖全 9 格</text>
+
+  <!-- mini 3x3 grid icon inside row2 right -->
+  <g filter="url(#rough2)">
+    <rect x="395" y="170" width="12" height="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8"/>
+    <rect x="407" y="170" width="12" height="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8"/>
+    <rect x="395" y="180" width="12" height="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8"/>
+    <rect x="407" y="180" width="12" height="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8"/>
+  </g>
+
+  <!-- arrow down -->
+  <path d="M 280 218 L 280 244" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 3: LEFT JOIN ===== -->
+  <rect x="100" y="250" width="360" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="270" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">④ LEFT JOIN Experiments</text>
+  <text x="280" y="286" text-anchor="middle" font-size="9" fill="#333">ON t.platform = e.platform AND t.experiment_name = e.experiment_name</text>
+  <text x="280" y="299" text-anchor="middle" font-size="8" fill="#888">无匹配格保留空行（e.experiment_id = NULL）</text>
+
+  <!-- arrow down -->
+  <path d="M 280 312 L 280 338" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 4: GROUP BY + COUNT ===== -->
+  <rect x="100" y="344" width="360" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="364" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑤⑥ GROUP BY platform, experiment_name</text>
+  <text x="280" y="380" text-anchor="middle" font-size="9" fill="#333">COUNT(e.experiment_id) AS num_experiments</text>
+  <text x="280" y="393" text-anchor="middle" font-size="8" fill="#888">列计数：NULL 不计 → 空格得 0（绝不用 COUNT(*)）</text>
+
+  <!-- side annotations -->
+  <text x="20" y="180" font-size="8" fill="#888" transform="rotate(-90 20 180)">UNION 硬编码枚举全集</text>
+  <text x="545" y="278" font-size="8" fill="#888" transform="rotate(90 545 278)">骨架驱动 LEFT JOIN</text>
+</svg>

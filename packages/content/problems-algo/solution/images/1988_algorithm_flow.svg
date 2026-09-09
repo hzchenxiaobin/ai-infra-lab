@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 累计 → 关联子查询取 Top-1 → COALESCE 兜底 -1</text>
+
+  <!-- Step 1: CTE Cumulative -->
+  <rect x="60" y="50" width="480" height="72" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="72" font-size="12" fill="#446688" font-weight="bold">① CTE：按分数降序累计求和</text>
+  <text x="80" y="92" font-size="10.5" fill="#555" font-family="'Courier New', monospace">WITH Cumulative AS (</text>
+  <text x="100" y="108" font-size="10" fill="#333" font-family="'Courier New', monospace">SELECT score, SUM(student_count) OVER (ORDER BY score DESC) AS cum</text>
+  <text x="100" y="120" font-size="10" fill="#333" font-family="'Courier New', monospace">FROM Exam )</text>
+
+  <!-- Arrow -->
+  <path d="M 300 124 L 300 142" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: For each school -->
+  <rect x="60" y="146" width="480" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="168" font-size="12" fill="#4a7a3a" font-weight="bold">② 逐 School 关联子查询：过滤 cum ≤ capacity</text>
+  <text x="80" y="186" font-size="10.5" fill="#555">SELECT s.school_id, COALESCE((子查询), -1) AS score FROM Schools s</text>
+
+  <!-- Arrow -->
+  <path d="M 300 204 L 300 222" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Subquery detail -->
+  <rect x="60" y="226" width="480" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="248" font-size="12" fill="#d6a040" font-weight="bold">③ 子查询：取 cum 最大且 score 最高的行</text>
+  <text x="80" y="268" font-size="10" fill="#333" font-family="'Courier New', monospace">SELECT c.score FROM Cumulative c</text>
+  <text x="80" y="282" font-size="10" fill="#333" font-family="'Courier New', monospace">WHERE c.cum ≤ s.capacity</text>
+  <text x="80" y="296" font-size="10" fill="#333" font-family="'Courier New', monospace">ORDER BY c.cum DESC, c.score DESC LIMIT 1</text>
+
+  <!-- Arrow -->
+  <path d="M 300 300 L 300 318" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: COALESCE fallback -->
+  <rect x="60" y="322" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="344" font-size="12" fill="#b85450" font-weight="bold">④ COALESCE 兜底：无合法截止线 → 返回 -1</text>
+  <text x="80" y="362" font-size="10.5" fill="#666">子查询返回 NULL（空集）时，COALESCE(NULL, -1) = -1</text>
+
+  <!-- Arrow -->
+  <path d="M 300 380 L 300 398" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="120" y="402" width="360" height="48" fill="#fafafa" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="424" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">输出：(school_id, score)，按 school_id 排序</text>
+  <text x="300" y="440" text-anchor="middle" font-size="10" fill="#888">每校一行，score 为截止线或 -1</text>
+</svg>

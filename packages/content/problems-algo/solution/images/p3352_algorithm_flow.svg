@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：两张小表 + 一趟按位累加，全程 O(L²)</text>
+
+  <!-- 步骤 1 -->
+  <rect x="20" y="42" width="196" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="118" y="62" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 预处理约简表 f[1..L]</text>
+  <text x="118" y="80" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">f(1)=0；f(c)=1+f[popcount(c)]</text>
+
+  <!-- 步骤 2 -->
+  <rect x="304" y="42" width="196" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="402" y="62" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">② 帕斯卡三角 C[i][j]</text>
+  <text x="402" y="80" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">加法递推 mod 1e9+7，无需逆元</text>
+
+  <path d="M 118 94 Q 118 110 136 118" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 402 94 Q 402 118 348 132" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 步骤 3：枚举 c + 菱形判定 -->
+  <rect x="136" y="112" width="212" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="242" y="130" text-anchor="middle" font-size="11.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">③ 枚举 c = 1 … L（x 的置位数）</text>
+  <text x="242" y="147" text-anchor="middle" font-size="10" fill="#a07830" filter="url(#rough2)">只统计「好 c」：1 + f[c] ≤ k</text>
+
+  <path d="M 242 156 L 242 176" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 菱形判定 -->
+  <polygon points="242,178 322,208 242,238 162,208" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="242" y="205" text-anchor="middle" font-size="11" fill="#8f3b37" font-weight="bold" filter="url(#rough2)">popcount = c 的 x</text>
+  <text x="242" y="221" text-anchor="middle" font-size="11" fill="#8f3b37" font-weight="bold" filter="url(#rough2)">能 ≤ k 步约简？</text>
+
+  <!-- 否分支 -->
+  <path d="M 322 208 L 400 208" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="404" y="192" width="96" height="34" fill="#f4f4f4" stroke="#999" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="452" y="214" text-anchor="middle" font-size="10.5" fill="#777" filter="url(#rough2)">跳过（c ✗）</text>
+
+  <!-- 是分支 -->
+  <path d="M 242 238 L 242 258" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="252" y="252" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">c ✓</text>
+
+  <!-- 步骤 4：扫描 s -->
+  <rect x="20" y="260" width="360" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="200" y="279" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">④ 一趟扫 s：遇 s[i]='1' 则 count += C[L−1−i][c−ones]</text>
+  <text x="200" y="297" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">m=L−1−i 个自由位里补 need=c−ones 个 1；ones 随扫随更</text>
+
+  <path d="M 200 308 Q 200 322 186 328" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 步骤 5 -->
+  <rect x="20" y="322" width="360" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="200" y="342" text-anchor="middle" font-size="11.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">⑤ ans = Σ good(c) · count(c) mod 1e9+7，返回</text>
+
+  <!-- 侧注 -->
+  <text x="452" y="278" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">两表均 O(L²)，L≤800</text>
+  <text x="452" y="294" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">主循环 O(L) 个 c × O(L) 扫描</text>
+  <text x="452" y="310" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">总计约 6.4×10⁵ 次加乘</text>
+</svg>

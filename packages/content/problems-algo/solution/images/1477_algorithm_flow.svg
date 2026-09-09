@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：滑动窗口 + 前缀 DP 一次遍历</text>
+
+  <!-- Step 1: init -->
+  <rect x="160" y="46" width="200" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="69" text-anchor="middle" font-size="12" fill="#333">初始化 left=0, sum=0, dp[]=∞, ans=∞</text>
+  <line x1="260" y1="82" x2="260" y2="98" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: for loop -->
+  <rect x="160" y="100" width="200" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="123" text-anchor="middle" font-size="12" fill="#333">for right in 0..n−1</text>
+  <line x1="260" y1="136" x2="260" y2="152" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: expand -->
+  <rect x="140" y="154" width="240" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="177" text-anchor="middle" font-size="12" fill="#333">sum += arr[right]   （右端扩张）</text>
+  <line x1="260" y1="190" x2="260" y2="206" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 4: while shrink — diamond -->
+  <polygon points="260,208 380,248 260,288 140,248" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="244" text-anchor="middle" font-size="11" fill="#444">sum &gt; target ?</text>
+  <text x="260" y="260" text-anchor="middle" font-size="10" fill="#a87020">且 left ≤ right</text>
+
+  <!-- Yes branch: shrink -->
+  <line x1="380" y1="248" x2="430" y2="248" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="395" y="242" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="430" y="230" width="70" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="247" text-anchor="middle" font-size="10" fill="#b85450">sum −= arr[left]</text>
+  <text x="465" y="260" text-anchor="middle" font-size="10" fill="#b85450">left++</text>
+  <path d="M 465 230 L 465 215 L 260 215 L 260 208" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- No branch -->
+  <line x1="260" y1="288" x2="260" y2="304" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="270" y="298" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Step 5: if sum == target — diamond -->
+  <polygon points="260,306 380,344 260,382 140,344" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="340" text-anchor="middle" font-size="11" fill="#444">sum == target ?</text>
+
+  <!-- Yes branch: combine + update dp -->
+  <line x1="380" y1="344" x2="395" y2="344" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="383" y="338" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="395" y="318" width="115" height="54" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="452" y="335" text-anchor="middle" font-size="9.5" fill="#333">len = right−left+1</text>
+  <text x="452" y="348" text-anchor="middle" font-size="9.5" fill="#333">ans = min(ans,</text>
+  <text x="452" y="360" text-anchor="middle" font-size="9.5" fill="#333">  dp[left−1]+len)</text>
+
+  <!-- No branch: just carry dp -->
+  <line x1="140" y1="344" x2="100" y2="344" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="120" y="338" font-size="10" fill="#999" font-weight="bold">否</text>
+  <rect x="10" y="324" width="90" height="40" fill="#f5f5f5" stroke="#ccc" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="342" text-anchor="middle" font-size="10" fill="#999">dp[right] =</text>
+  <text x="55" y="355" text-anchor="middle" font-size="10" fill="#999">dp[right−1]</text>
+
+  <!-- merge to update dp[right] -->
+  <line x1="260" y1="382" x2="260" y2="398" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="130" y="400" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="423" text-anchor="middle" font-size="12" fill="#333">dp[right] = min(dp[right−1], len)</text>
+
+  <!-- loop back arrow -->
+  <path d="M 390 418 L 480 418 L 480 118 L 360 118" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="490" y="270" font-size="10" fill="#aaa" transform="rotate(90 490 270)">下一轮 right++</text>
+
+  <!-- return -->
+  <line x1="260" y1="436" x2="260" y2="452" stroke="#888" stroke-width="1.5" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="170" y="454" width="180" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="470" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return ans == ∞ ? −1 : ans</text>
+</svg>

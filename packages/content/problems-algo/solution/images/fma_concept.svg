@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">山脉数组中查找目标值：峰顶切成两段有序 → 三步二分</text>
+
+  <!-- ===== Mountain array cells: [1,2,3,4,5,3,1] ===== -->
+  <text x="56" y="58" text-anchor="middle" font-size="10" fill="#888">下标</text>
+  <text x="110" y="58" text-anchor="middle" font-size="10" fill="#888">0</text>
+  <text x="164" y="58" text-anchor="middle" font-size="10" fill="#888">1</text>
+  <text x="218" y="58" text-anchor="middle" font-size="10" fill="#888">2</text>
+  <text x="272" y="58" text-anchor="middle" font-size="10" fill="#888">3</text>
+  <text x="326" y="58" text-anchor="middle" font-size="10" fill="#888">4</text>
+  <text x="380" y="58" text-anchor="middle" font-size="10" fill="#888">5</text>
+  <text x="434" y="58" text-anchor="middle" font-size="10" fill="#888">6</text>
+
+  <!-- values with proportional heights: 1,2,3,4,5,3,1 -->
+  <rect x="87" y="142" width="46" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="166" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="141" y="120" width="46" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="164" y="156" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="195" y="98" width="46" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="218" y="146" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <rect x="249" y="82" width="46" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="272" y="138" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">4</text>
+  <rect x="303" y="66" width="46" height="112" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="326" y="130" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">5</text>
+  <rect x="357" y="98" width="46" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="146" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">3</text>
+  <rect x="411" y="142" width="46" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="434" y="166" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">1</text>
+
+  <!-- baseline -->
+  <line x1="80" y1="178" x2="470" y2="178" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <!-- peak marker -->
+  <text x="326" y="58" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">峰顶 peak=4</text>
+
+  <!-- ascending / descending brackets -->
+  <path d="M 110 192 L 110 198 L 326 198 L 326 192" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="218" y="212" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">升序段 [0, peak] ↑</text>
+  <path d="M 326 192 L 326 198 L 434 198 L 434 192" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="380" y="212" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">降序段 [peak+1, n−1] ↓</text>
+
+  <!-- ===== Three step boxes ===== -->
+  <!-- Step 1: find peak -->
+  <rect x="20" y="234" width="160" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="256" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">第一步：找峰顶</text>
+  <text x="100" y="274" text-anchor="middle" font-size="11" fill="#333">斜率二分</text>
+  <text x="100" y="290" text-anchor="middle" font-size="10" fill="#666">get(mid) vs get(mid+1)</text>
+  <text x="100" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a">≈ 2·log₂n 次调用</text>
+
+  <!-- arrow step1 -> step2 -->
+  <path d="M 180 274 L 196 274" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: ascending binary search -->
+  <rect x="200" y="234" width="160" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="256" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">第二步：查升序段</text>
+  <text x="280" y="274" text-anchor="middle" font-size="11" fill="#333">二分 [0, peak]</text>
+  <text x="280" y="290" text-anchor="middle" font-size="10" fill="#666">命中 → 直接返回</text>
+  <text x="280" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a">最小下标保证</text>
+
+  <!-- arrow step2 -> step3 -->
+  <path d="M 360 274 L 376 274" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="368" y="268" text-anchor="middle" font-size="9" fill="#888">未命中</text>
+
+  <!-- Step 3: descending binary search -->
+  <rect x="380" y="234" width="160" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="256" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">第三步：查降序段</text>
+  <text x="460" y="274" text-anchor="middle" font-size="11" fill="#333">二分 [peak+1, n−1]</text>
+  <text x="460" y="290" text-anchor="middle" font-size="10" fill="#666">方向翻转!</text>
+  <text x="460" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a">未命中 → 返回 −1</text>
+
+  <!-- summary note -->
+  <rect x="60" y="338" width="440" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="360" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">三次二分叠加：O(log n) 时间 / O(1) 空间</text>
+  <text x="280" y="378" text-anchor="middle" font-size="11" fill="#4a7a3a">get 调用次数 ≈ 42 ≪ 100 上限</text>
+  <text x="280" y="394" text-anchor="middle" font-size="10" fill="#888">升序段下标全小于降序段 → 先查升序即保证最小下标</text>
+</svg>

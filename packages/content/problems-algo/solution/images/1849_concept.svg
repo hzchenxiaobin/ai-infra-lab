@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：首段定值 → 后续逐减 1 的确定性链</text>
+
+  <!-- ===== String "050043" with split marks ===== -->
+  <text x="40" y="56" font-size="12" fill="#888">s = "050043" 的一种可行拆分：</text>
+
+  <!-- Piece 1: "05" -->
+  <rect x="100" y="72" width="56" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="98" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">"05"</text>
+
+  <!-- Split line -->
+  <line x1="156" y1="66" x2="156" y2="118" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- Piece 2: "004" -->
+  <rect x="166" y="72" width="64" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="198" y="98" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">"004"</text>
+
+  <!-- Split line -->
+  <line x1="230" y1="66" x2="230" y2="118" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- Piece 3: "3" -->
+  <rect x="240" y="72" width="44" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="262" y="98" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">"3"</text>
+
+  <!-- Value labels -->
+  <text x="128" y="132" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">值 = 5</text>
+  <text x="198" y="132" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">值 = 4</text>
+  <text x="262" y="132" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">值 = 3</text>
+
+  <!-- Descending chain arrows -->
+  <path d="M 148 148 Q 163 165 178 148" fill="none" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="163" y="162" text-anchor="middle" font-size="9" fill="#999">−1</text>
+
+  <path d="M 215 148 Q 238 165 255 148" fill="none" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="235" y="162" text-anchor="middle" font-size="9" fill="#999">−1</text>
+
+  <!-- ===== Insight box 1: First piece determines chain ===== -->
+  <rect x="40" y="180" width="230" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="202" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">首段值 v 确定整条链</text>
+  <text x="155" y="222" text-anchor="middle" font-size="11" fill="#555">v → v−1 → v−2 → v−3 → …</text>
+  <text x="155" y="240" text-anchor="middle" font-size="10" fill="#888">后续每段值已被锁定，只需匹配</text>
+  <text x="155" y="254" text-anchor="middle" font-size="10" fill="#888">无需枚举所有切分 → 大幅剪枝</text>
+
+  <!-- ===== Insight box 2: Leading zeros ===== -->
+  <rect x="290" y="180" width="230" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="202" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">前导零不影响数值</text>
+  <text x="405" y="222" text-anchor="middle" font-size="11" fill="#555">"05" = 5，"004" = 4</text>
+  <text x="405" y="240" text-anchor="middle" font-size="10" fill="#888">比较数值而非字符串</text>
+  <text x="405" y="254" text-anchor="middle" font-size="10" fill="#888">int() / stoull 自动去前导零</text>
+
+  <!-- ===== Pruning box ===== -->
+  <rect x="40" y="280" width="480" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="12" fill="#5a4a1a" font-weight="bold">剪枝：子串值 val &gt; 期望值 expect 时立即停止扩展</text>
+  <text x="280" y="320" text-anchor="middle" font-size="11" fill="#555">向右扩展只会让数值更大（val·10 + digit ≥ val）</text>
+  <text x="280" y="336" text-anchor="middle" font-size="10" fill="#888">val &lt; expect → 继续扩展 ｜ val == expect → 匹配并递归 ｜ val &gt; expect → break</text>
+</svg>

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：枚举首段 + 回溯匹配递减链</text>
+
+  <!-- Step 1: Enumerate first piece -->
+  <rect x="120" y="38" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="56" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">枚举首段 s[0:i]，i = 1, 2, …, n−1</text>
+  <text x="270" y="72" text-anchor="middle" font-size="10" fill="#888">至少留 1 字符给后续段</text>
+
+  <!-- Arrow -->
+  <path d="M 270 80 L 270 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Compute value and expect -->
+  <rect x="120" y="98" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="116" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">v = 值(s[0:i])；expect = v − 1</text>
+  <text x="270" y="132" text-anchor="middle" font-size="10" fill="#888">首段值确定后续整条递减链</text>
+
+  <!-- Arrow -->
+  <path d="M 270 140 L 270 154" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: dfs loop -->
+  <rect x="80" y="158" width="380" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="178" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">dfs(pos, expect)：for j = pos+1 … n</text>
+  <text x="270" y="196" text-anchor="middle" font-size="11" fill="#555">val = 值(s[pos:j])</text>
+
+  <!-- Arrow to diamond -->
+  <path d="M 270 208 L 270 222" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: val == expect? -->
+  <polygon points="270,226 330,258 270,290 210,258" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="262" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">val == expect?</text>
+
+  <!-- Yes branch (left) -->
+  <path d="M 210 258 L 150 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="252" text-anchor="middle" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- No branch (right) -->
+  <path d="M 330 258 L 390 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="360" y="252" text-anchor="middle" font-size="10" fill="#b85450">否</text>
+
+  <!-- ===== Left branch: j == n? ===== -->
+  <polygon points="150,276 200,306 150,336 100,306" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="310" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">j == n?</text>
+
+  <!-- j==n Yes → return True -->
+  <path d="M 100 306 L 56 306" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="78" y="300" text-anchor="middle" font-size="9" fill="#4a7a3a">是</text>
+  <ellipse cx="36" cy="306" rx="28" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="36" y="310" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">True</text>
+
+  <!-- j==n No → dfs(j, expect-1) -->
+  <path d="M 150 336 L 150 350" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="165" y="346" font-size="9" fill="#b85450">否</text>
+  <rect x="70" y="352" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="374" text-anchor="middle" font-size="11" fill="#333">递归 dfs(j, expect−1)</text>
+
+  <!-- ===== Right branch: val > expect? ===== -->
+  <polygon points="390,276 450,306 390,336 330,306" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="390" y="302" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">val &gt;</text>
+  <text x="390" y="314" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">expect?</text>
+
+  <!-- val > expect Yes → break -->
+  <path d="M 450 306 L 494 306" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="472" y="300" text-anchor="middle" font-size="9" fill="#b85450">是</text>
+  <rect x="476" y="290" width="56" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="504" y="310" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">break</text>
+
+  <!-- val > expect No → j++ continue -->
+  <path d="M 390 336 L 390 350" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="405" y="346" font-size="9" fill="#4a7a3a">否</text>
+  <rect x="310" y="352" width="160" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="374" text-anchor="middle" font-size="11" fill="#333">j++，继续扩展子串</text>
+
+  <!-- Loop back arrow from j++ to dfs -->
+  <path d="M 390 386 L 390 410 L 270 410 L 270 182" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="424" text-anchor="middle" font-size="9" fill="#999">回到 dfs 循环</text>
+
+  <!-- Loop back arrow from dfs(j, expect-1) to dfs -->
+  <path d="M 150 386 L 150 410 L 270 410" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+
+  <!-- Return False box -->
+  <rect x="210" y="430" width="120" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="446" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">return False（无匹配）</text>
+</svg>

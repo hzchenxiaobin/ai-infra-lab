@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心思想：三指针各管一路乘积，每步取最小</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">快照（i=5）：nums = [1, 2, 3, 4, 5]，计算下一个 nums[5]</text>
+
+  <!-- ===== nums array ===== -->
+  <text x="50" y="68" font-size="10" fill="#888">nums[]</text>
+
+  <!-- box 0: 1 (seed) -->
+  <rect x="62" y="72" width="52" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="88" y="92" text-anchor="middle" font-size="14" fill="#666" font-weight="bold">1</text>
+  <text x="88" y="66" text-anchor="middle" font-size="8" fill="#aaa">[0]</text>
+
+  <!-- box 1: 2 -->
+  <rect x="126" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="152" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">2</text>
+  <text x="152" y="66" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+  <!-- box 2: 3 -->
+  <rect x="190" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="216" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">3</text>
+  <text x="216" y="66" text-anchor="middle" font-size="8" fill="#888">[2]</text>
+
+  <!-- box 3: 4 -->
+  <rect x="254" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">4</text>
+  <text x="280" y="66" text-anchor="middle" font-size="8" fill="#888">[3]</text>
+
+  <!-- box 4: 5 -->
+  <rect x="318" y="72" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="344" y="92" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">5</text>
+  <text x="344" y="66" text-anchor="middle" font-size="8" fill="#888">[4]</text>
+
+  <!-- box 5: ? (target) -->
+  <rect x="382" y="72" width="52" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="408" y="92" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">?</text>
+  <text x="408" y="66" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">[5]</text>
+
+  <!-- ===== pointer triangles ===== -->
+  <!-- p2 (blue) under box 2 -->
+  <polygon points="216,108 210,118 222,118" fill="#446688" filter="url(#rough2)"/>
+  <text x="216" y="131" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">p2</text>
+
+  <!-- p3 (green) under box 1, left -->
+  <polygon points="146,108 140,118 152,118" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="140" y="131" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">p3</text>
+
+  <!-- p5 (orange) under box 1, right -->
+  <polygon points="160,108 154,118 166,118" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="168" y="131" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">p5</text>
+
+  <!-- note: p3 & p5 same box -->
+  <text x="152" y="144" text-anchor="middle" font-size="8" fill="#888">p3, p5 同指 [1]</text>
+
+  <!-- ===== multiplier boxes ===== -->
+  <!-- arrows from pointers to multiplier boxes -->
+  <path d="M 216 138 L 130 168" stroke="#446688" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 140 138 L 250 168" stroke="#4a7a3a" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 168 138 L 370 168" stroke="#d6a040" stroke-width="1.3" fill="none" stroke-dasharray="3,2" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ×2 box -->
+  <rect x="64" y="172" width="132" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="190" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">nums[p2]×2</text>
+  <text x="130" y="204" text-anchor="middle" font-size="11" fill="#446688">= 3 × 2 = 6</text>
+
+  <!-- ×3 box -->
+  <rect x="214" y="172" width="132" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="190" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">nums[p3]×3</text>
+  <text x="280" y="204" text-anchor="middle" font-size="11" fill="#4a7a3a">= 2 × 3 = 6</text>
+
+  <!-- ×5 box -->
+  <rect x="364" y="172" width="132" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="190" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">nums[p5]×5</text>
+  <text x="430" y="204" text-anchor="middle" font-size="11" fill="#d6a040">= 2 × 5 = 10</text>
+
+  <!-- ===== min gate ===== -->
+  <path d="M 130 214 L 210 246" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 280 214 L 230 246" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 430 214 L 250 246" stroke="#d6a040" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="170" y="252" width="160" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="250" y="274" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">min(6, 6, 10) = 6</text>
+
+  <!-- ===== result ===== -->
+  <path d="M 250 292 L 250 314" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="110" y="318" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="250" y="336" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">nums[5] = 6 → p2++, p3++（两路同时命中！）</text>
+
+  <text x="250" y="370" text-anchor="middle" font-size="10" fill="#888">关键：用 if 而非 elif —— 6 = 3×2 = 2×3，所有匹配的指针都要前进，否则产生重复</text>
+</svg>

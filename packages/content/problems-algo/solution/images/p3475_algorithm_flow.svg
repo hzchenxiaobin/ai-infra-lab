@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">一条 SELECT 打标不丢行：FROM → SELECT 投影 4 个谓词 → ORDER BY</text>
+
+  <!-- Step 1 -->
+  <rect x="110" y="36" width="300" height="28" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="54" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">① FROM Samples —— 7 行全部读入（无 WHERE，不丢行）</text>
+  <path d="M260,64 L260,76" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: predicate projection -->
+  <rect x="44" y="80" width="432" height="102" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="100" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">② SELECT 原列 + 4 个布尔谓词（逐行求值，布尔即 0/1）</text>
+  <g filter="url(#rough2)" font-size="10.5">
+    <rect x="66" y="110" width="12" height="12" rx="2" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+    <text x="88" y="121" fill="#33506e">dna_sequence LIKE 'ATG%'  →  has_start</text>
+    <rect x="66" y="130" width="12" height="12" rx="2" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+    <text x="88" y="141" fill="#7a4a2b">RIGHT(dna_sequence, 3) IN ('TAA','TAG','TGA')  →  has_stop</text>
+    <rect x="66" y="150" width="12" height="12" rx="2" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2"/>
+    <text x="88" y="161" fill="#2d5523">dna_sequence LIKE '%ATAT%'  →  has_atat</text>
+    <rect x="66" y="170" width="12" height="12" rx="2" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/>
+    <text x="88" y="181" fill="#7a2f2b">dna_sequence LIKE '%GGG%'  →  has_ggg（GGGG ⊇ GGG）</text>
+  </g>
+  <path d="M260,182 L260,194" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: boolean to 0/1 -->
+  <rect x="44" y="198" width="432" height="28" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="216" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">③ 布尔 → 0/1 列：MySQL 直接产出（PG 需 ::int，pandas 需 astype(int)）</text>
+  <path d="M260,226 L260,238" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: order by -->
+  <rect x="110" y="242" width="300" height="28" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="260" text-anchor="middle" font-size="11.5" fill="#2d5523" filter="url(#rough2)">④ ORDER BY sample_id —— 升序输出全部 7 行</text>
+
+  <!-- left note: projection vs filter -->
+  <rect x="28" y="286" width="104" height="86" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="80" y="304" text-anchor="middle" font-size="9.5" fill="#2d5523" filter="url(#rough2)">「投影型」打标</text>
+  <text x="80" y="320" text-anchor="middle" font-size="9" fill="#2d5523" filter="url(#rough2)">所有行都保留，</text>
+  <text x="80" y="334" text-anchor="middle" font-size="9" fill="#2d5523" filter="url(#rough2)">谓词活在 SELECT 里</text>
+  <text x="80" y="350" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">（3465 是 WHERE</text>
+  <text x="80" y="364" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">过滤型，会丢行）</text>
+
+  <!-- output table -->
+  <text x="300" y="284" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">输出节选（全 7 行按 sample_id 升序）</text>
+  <g filter="url(#rough2)" font-size="10">
+    <rect x="150" y="290" width="300" height="20" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+    <text x="170" y="304" text-anchor="middle" fill="#33506e">sample_id</text>
+    <text x="240" y="304" text-anchor="middle" fill="#33506e">start</text>
+    <text x="310" y="304" text-anchor="middle" fill="#33506e">stop</text>
+    <text x="380" y="304" text-anchor="middle" fill="#33506e">atat</text>
+    <text x="440" y="304" text-anchor="middle" fill="#33506e">ggg</text>
+
+    <rect x="150" y="312" width="300" height="18" fill="#fafafa" stroke="#999" stroke-width="1"/>
+    <text x="170" y="325" text-anchor="middle" fill="#333">1</text>
+    <text x="240" y="325" text-anchor="middle" fill="#446688">1</text>
+    <text x="310" y="325" text-anchor="middle" fill="#7a4a2b">1</text>
+    <text x="380" y="325" text-anchor="middle" fill="#999">0</text>
+    <text x="440" y="325" text-anchor="middle" fill="#999">0</text>
+
+    <rect x="150" y="332" width="300" height="18" fill="#fafafa" stroke="#999" stroke-width="1"/>
+    <text x="170" y="345" text-anchor="middle" fill="#333">4</text>
+    <text x="240" y="345" text-anchor="middle" fill="#446688">1</text>
+    <text x="310" y="345" text-anchor="middle" fill="#7a4a2b">1</text>
+    <text x="380" y="345" text-anchor="middle" fill="#999">0</text>
+    <text x="440" y="345" text-anchor="middle" fill="#b85450">1</text>
+
+    <rect x="150" y="352" width="300" height="18" fill="#fafafa" stroke="#999" stroke-width="1"/>
+    <text x="170" y="365" text-anchor="middle" fill="#333">7</text>
+    <text x="240" y="365" text-anchor="middle" fill="#999">0</text>
+    <text x="310" y="365" text-anchor="middle" fill="#999">0</text>
+    <text x="380" y="365" text-anchor="middle" fill="#999">0</text>
+    <text x="440" y="365" text-anchor="middle" fill="#999">0</text>
+    <text x="460" y="365" text-anchor="middle" fill="#888">…</text>
+  </g>
+  <text x="300" y="388" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">样本 7 中间含 ATG 但不是前缀 → has_start = 0（「包含」≠「前缀」）</text>
+</svg>

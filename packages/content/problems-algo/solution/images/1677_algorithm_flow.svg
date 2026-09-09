@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="440" fill="#fafafa"/>
+
+  <text x="340" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM Product → LEFT JOIN Invoice → GROUP BY → SUM → ORDER BY name</text>
+
+  <!-- Step 1: FROM Product -->
+  <rect x="20" y="50" width="140" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="70" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① FROM Product p</text>
+  <text x="90" y="86" text-anchor="middle" font-size="9" fill="#333">读取全部产品</text>
+  <text x="90" y="100" text-anchor="middle" font-size="8.5" fill="#888">product_id | name</text>
+
+  <path d="M162 81 L198 81" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: LEFT JOIN Invoice -->
+  <rect x="200" y="50" width="190" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="295" y="70" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">② LEFT JOIN Invoice i</text>
+  <text x="295" y="86" text-anchor="middle" font-size="9" fill="#333">ON p.product_id = i.product_id</text>
+  <text x="295" y="100" text-anchor="middle" font-size="8.5" fill="#888">无发票产品保留，i.* 填 NULL</text>
+
+  <path d="M392 81 L428 81" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="430" y="50" width="160" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="510" y="70" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">③ GROUP BY</text>
+  <text x="510" y="86" text-anchor="middle" font-size="9" fill="#333">p.product_id, p.name</text>
+  <text x="510" y="100" text-anchor="middle" font-size="8.5" fill="#888">每个产品一个分组</text>
+
+  <path d="M510 114 L510 138" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SUM + IFNULL -->
+  <rect x="200" y="142" width="390" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="162" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">④ SELECT name, IFNULL(SUM(col), 0) ×4</text>
+  <text x="395" y="178" text-anchor="middle" font-size="9" fill="#333">SUM(rest) / SUM(paid) / SUM(canceled) / SUM(refunded)</text>
+  <text x="395" y="192" text-anchor="middle" font-size="8.5" fill="#888">IFNULL 把无发票组的 NULL 求和结果兜底为 0</text>
+
+  <path d="M395 206 L395 230" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 5: ORDER BY name -->
+  <rect x="200" y="234" width="390" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="252" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">⑤ ORDER BY name</text>
+  <text x="395" y="268" text-anchor="middle" font-size="9" fill="#666">按产品名升序：bacon &lt; ham</text>
+
+  <path d="M395 284 L395 308" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Result table -->
+  <rect x="160" y="312" width="470" height="78" fill="#fff" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="395" y="330" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">结果</text>
+  <text x="180" y="350" font-size="9.5" fill="#888" font-weight="bold">name     rest  paid  canc  ref</text>
+  <text x="180" y="368" font-size="10" fill="#d6a040" font-weight="bold">bacon     3     3     3     3</text>
+  <text x="180" y="384" font-size="10" fill="#4a7a3a" font-weight="bold">ham       2     4     5     3</text>
+
+  <!-- SQL execution order note -->
+  <rect x="20" y="142" width="160" height="140" fill="#fafafa" stroke="#999" stroke-width="1.2" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="162" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">SQL 执行顺序</text>
+  <text x="32" y="180" font-size="9" fill="#555">FROM（含 JOIN/ON）</text>
+  <text x="32" y="196" font-size="9" fill="#555">→ WHERE（本题无）</text>
+  <text x="32" y="212" font-size="9" fill="#555">→ GROUP BY</text>
+  <text x="32" y="228" font-size="9" fill="#555">→ HAVING（本题无）</text>
+  <text x="32" y="244" font-size="9" fill="#555">→ SELECT（SUM/IFNULL）</text>
+  <text x="32" y="260" font-size="9" fill="#555">→ ORDER BY</text>
+  <text x="32" y="276" font-size="8.5" fill="#888">SUM 在 GROUP BY 后</text>
+
+  <!-- Bottom note -->
+  <rect x="20" y="400" width="640" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="420" text-anchor="middle" font-size="10" fill="#d6a040">⚠ 「所有产品」→ 用 LEFT JOIN 保留无发票产品；IFNULL(SUM(...),0) 把空组兜底为 0</text>
+</svg>

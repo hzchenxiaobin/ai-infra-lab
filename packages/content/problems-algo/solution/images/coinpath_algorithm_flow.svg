@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：反向 DP 填表 → 沿 nxt 指针贪心重建路径</text>
+
+  <!-- Step 1: boundary check -->
+  <rect x="170" y="48" width="220" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">① 边界检查</text>
+  <text x="280" y="74" text-anchor="middle" font-size="9.5" fill="#b85450">A[N]==−1 或 A 为空 → 返回 []</text>
+  <path d="M280 82 L280 96" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init -->
+  <rect x="170" y="100" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">② 初始化</text>
+  <text x="280" y="126" text-anchor="middle" font-size="9.5" fill="#446688">dp[N]=A[N]，nxt[N]=−1，其余 dp=∞</text>
+  <path d="M280 134 L280 148" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop header (decision diamond) -->
+  <polygon points="280,150 400,190 280,230 160,190" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="184" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">③ i 从 N−1 递减到 1</text>
+  <text x="280" y="198" text-anchor="middle" font-size="9.5" fill="#d6a040">还有未处理格？</text>
+
+  <!-- No branch -> go to reconstruct -->
+  <path d="M400 190 L460 190 L460 300" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="408" y="184" font-size="9.5" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Yes branch -> down to inner logic -->
+  <path d="M280 230 L280 246" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="288" y="244" font-size="9.5" fill="#446688" font-weight="bold">是</text>
+
+  <!-- Step 4: blocked check -->
+  <rect x="150" y="250" width="260" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="262" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">A[i]==−1 ?</text>
+  <text x="280" y="276" text-anchor="middle" font-size="9" fill="#b85450">是 → dp[i]=∞，跳过此格（回 ③）</text>
+
+  <!-- Step 5: inner j loop -->
+  <rect x="110" y="300" width="340" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="314" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">④ 枚举 j ∈ [i+1, min(i+B, N)]</text>
+  <text x="280" y="328" text-anchor="middle" font-size="9.5" fill="#4a7a3a">跳过 dp[j]==∞（含 −1 格）</text>
+  <text x="280" y="340" text-anchor="middle" font-size="9.5" fill="#4a7a3a">cost=A[i]+dp[j] &lt; dp[i] ? → dp[i]=cost, nxt[i]=j</text>
+
+  <!-- loop back from step5 to step3 (left side) -->
+  <path d="M110 322 L60 322 L60 190 L160 190" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="48" y="258" font-size="9" fill="#4a7a3a" font-weight="bold">j 用尽</text>
+  <text x="48" y="270" font-size="9" fill="#4a7a3a">回 ③</text>
+
+  <!-- Step 6: reachability check + reconstruct -->
+  <rect x="380" y="300" width="160" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="314" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">⑤ dp[1]==∞ ?</text>
+  <text x="460" y="328" text-anchor="middle" font-size="9" fill="#d6a040">是 → 返回 []</text>
+  <text x="460" y="340" text-anchor="middle" font-size="9" fill="#d6a040">否 → 进入 ⑥</text>
+  <path d="M460 344 L460 360" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 7: reconstruct -->
+  <rect x="170" y="362" width="380" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="376" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">⑥ 从 i=1 沿 nxt 指针走，依次收集 1-indexed 下标</text>
+  <text x="360" y="390" text-anchor="middle" font-size="9.5" fill="#446688">path = [1, nxt[1], nxt[nxt[1]], …, N]（同代价已取最小 j → 字典序最小）</text>
+
+  <!-- connect 5 to 6 (the No from step5 also flows to step6 via the right) -->
+  <path d="M450 322 L380 322" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- bottom note -->
+  <rect x="30" y="412" width="500" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="427" font-size="9.5" fill="#333">两张表 dp[] 与 nxt[]：前者记「到终点最小代价」，后者记「后继下标」用于 O(N) 重建路径</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="360" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">三步流水线：拍平 → 收集排序 → 构建矩阵</text>
+
+  <!-- ===== Step 1: Flatten ===== -->
+  <rect x="20" y="50" width="180" height="240" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="74" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 拍平每个对象</text>
+
+  <rect x="36" y="90" width="148" height="28" fill="#fff" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="108" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">obj₀ → {a.b:1, a.c:2}</text>
+
+  <rect x="36" y="126" width="148" height="28" fill="#fff" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="144" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">obj₁ → {a.b:3, a.d:4}</text>
+
+  <rect x="36" y="168" width="148" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="186" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">getKeys(obj)</text>
+  <text x="110" y="200" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">递归：键 + "." + 子键</text>
+
+  <text x="110" y="226" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">原始类型 → 返回 ['']</text>
+  <text x="110" y="240" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">（哨兵：到此为止）</text>
+  <text x="110" y="262" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">对象/数组 → Object.keys</text>
+  <text x="110" y="276" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">逐键递归，前缀拼接</text>
+
+  <!-- arrow 1→2 -->
+  <path d="M 200 170 L 234 170" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Collect + Sort ===== -->
+  <rect x="236" y="50" width="180" height="240" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="326" y="74" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② 收集 + 排序路径</text>
+
+  <rect x="252" y="90" width="148" height="40" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="326" y="106" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">Set 去重</text>
+  <text x="326" y="120" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">{a.b, a.c, a.d}</text>
+
+  <rect x="252" y="140" width="148" height="40" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="326" y="156" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">.sort() 字典序</text>
+  <text x="326" y="170" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">[a.b, a.c, a.d]</text>
+
+  <rect x="252" y="192" width="148" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="326" y="210" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">= 列头（sortedKeys）</text>
+
+  <text x="326" y="246" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">所有对象路径的并集</text>
+  <text x="326" y="260" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">决定矩阵列数</text>
+
+  <!-- arrow 2→3 -->
+  <path d="M 416 170 L 450 170" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrg)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Build matrix ===== -->
+  <rect x="452" y="50" width="168" height="240" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="536" y="74" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ 构建矩阵</text>
+
+  <!-- header row -->
+  <rect x="468" y="88" width="136" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="536" y="105" text-anchor="middle" font-size="10" fill="#333" font-weight="bold" filter="url(#rough2)">[a.b, a.c, a.d]</text>
+  <text x="536" y="124" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">← 第一行 = 列头</text>
+
+  <!-- data row 0 -->
+  <rect x="468" y="134" width="136" height="26" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="536" y="151" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[1, 2, ""]</text>
+
+  <!-- data row 1 -->
+  <rect x="468" y="166" width="136" height="26" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="536" y="183" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[3, "", 4]</text>
+
+  <rect x="468" y="202" width="136" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="536" y="220" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">getValue(obj, path)</text>
+
+  <text x="536" y="246" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">沿 path 逐段下钻</text>
+  <text x="536" y="260" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">找不到 / 非叶子 → ""</text>
+  <text x="536" y="274" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">找到叶子 → 返回值</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="306" width="600" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="327" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">关键解耦：getKeys 只收集路径（不存值），getValue 按路径反查——两次遍历，各司其职</text>
+</svg>

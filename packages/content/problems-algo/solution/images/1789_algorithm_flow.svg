@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="360" y="26" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">UNION 执行流程：两条互斥分支纵向拼接</text>
+  <path d="M 180 34 Q 360 42 540 34" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="360" y="52" text-anchor="middle" font-size="10" fill="#888">分支 A 取多部门 flag='Y' 的行；分支 B 取单部门员工的唯一行；UNION 去重合并</text>
+
+  <!-- ===== Source table ===== -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="66" width="220" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="140" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">FROM Employee</text>
+  <text x="140" y="100" text-anchor="middle" font-size="9" fill="#888">employee_id | department_id | primary_flag</text>
+
+  <!-- split arrows -->
+  <path d="M 140 108 Q 140 130 100 140" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 140 108 Q 140 130 500 140" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Branch A: WHERE primary_flag = 'Y' ===== -->
+  <g filter="url(#rough2)">
+    <rect x="20" y="144" width="200" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+  </g>
+  <text x="120" y="164" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">分支 A</text>
+  <text x="120" y="182" text-anchor="middle" font-size="10" fill="#333">WHERE primary_flag='Y'</text>
+  <text x="120" y="198" text-anchor="middle" font-size="9" fill="#888">筛出所有标记 Y 的行</text>
+
+  <!-- arrow down A -->
+  <path d="M 120 210 L 120 250" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- A result -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="254" width="160" height="68" rx="6" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="120" y="272" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">A 结果集</text>
+  <g filter="url(#rough2)"><rect x="52" y="278" width="136" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3"/></g>
+  <text x="120" y="291" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">emp 2 · dept 1</text>
+  <g filter="url(#rough2)"><rect x="52" y="298" width="136" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3"/></g>
+  <text x="120" y="311" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">emp 4 · dept 3</text>
+
+  <!-- ===== Branch B: GROUP BY HAVING COUNT=1 ===== -->
+  <g filter="url(#rough2)">
+    <rect x="400" y="144" width="260" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+  </g>
+  <text x="530" y="164" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">分支 B</text>
+  <text x="530" y="182" text-anchor="middle" font-size="10" fill="#333">GROUP BY employee_id</text>
+  <text x="530" y="198" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">HAVING COUNT(*) = 1</text>
+
+  <!-- arrow down B -->
+  <path d="M 530 210 L 530 250" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B result -->
+  <g filter="url(#rough2)">
+    <rect x="450" y="254" width="160" height="68" rx="6" fill="#fff" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="530" y="272" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">B 结果集</text>
+  <g filter="url(#rough2)"><rect x="462" y="278" width="136" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3"/></g>
+  <text x="530" y="291" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">emp 1 · dept 1</text>
+  <g filter="url(#rough2)"><rect x="462" y="298" width="136" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3"/></g>
+  <text x="530" y="311" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">emp 3 · dept 3</text>
+
+  <!-- ===== UNION merge ===== -->
+  <path d="M 120 324 Q 120 348 240 356" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 530 324 Q 530 348 410 356" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="200" y="344" text-anchor="middle" font-size="9" fill="#888">UNION</text>
+  <text x="460" y="344" text-anchor="middle" font-size="9" fill="#888">UNION</text>
+
+  <!-- union box -->
+  <g filter="url(#rough2)">
+    <rect x="200" y="352" width="320" height="56" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="360" y="372" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">UNION 去重合并</text>
+  <text x="360" y="390" text-anchor="middle" font-size="10" fill="#555">emp1·dept1  emp2·dept1  emp3·dept3  emp4·dept3</text>
+  <text x="360" y="404" text-anchor="middle" font-size="9" fill="#888">两分支无交集 → 去重无副作用</text>
+</svg>

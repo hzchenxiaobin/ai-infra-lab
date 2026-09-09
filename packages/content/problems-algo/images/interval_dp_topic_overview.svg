@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="28" text-anchor="middle" font-size="16" fill="#444" font-weight="bold">区间 DP：按长度递增填二维表，大区间由更短子区间合并而来</text>
+
+  <!-- ===== Left: the dp table with diagonal fill order ===== -->
+  <text x="40" y="62" font-size="12" fill="#888">dp[i][j] 表（只填上三角，按对角线推进）:</text>
+
+  <!-- column headers -->
+  <text x="120" y="84" text-anchor="middle" font-size="10" fill="#888">j=0</text>
+  <text x="160" y="84" text-anchor="middle" font-size="10" fill="#888">1</text>
+  <text x="200" y="84" text-anchor="middle" font-size="10" fill="#888">2</text>
+  <text x="240" y="84" text-anchor="middle" font-size="10" fill="#888">3</text>
+  <text x="280" y="84" text-anchor="middle" font-size="10" fill="#888">4</text>
+  <text x="80" y="84" text-anchor="middle" font-size="10" fill="#888">i</text>
+
+  <!-- len=1 diagonal (green) -->
+  <rect x="104" y="90" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="108" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">①</text>
+  <rect x="144" y="130" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="160" y="148" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">①</text>
+  <rect x="184" y="170" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="200" y="188" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">①</text>
+  <rect x="224" y="210" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="228" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">①</text>
+  <rect x="264" y="250" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="268" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">①</text>
+
+  <!-- row labels -->
+  <text x="92" y="108" text-anchor="end" font-size="10" fill="#888" filter="url(#rough2)">0</text>
+  <text x="92" y="148" text-anchor="end" font-size="10" fill="#888" filter="url(#rough2)">1</text>
+  <text x="92" y="188" text-anchor="end" font-size="10" fill="#888" filter="url(#rough2)">2</text>
+  <text x="92" y="228" text-anchor="end" font-size="10" fill="#888" filter="url(#rough2)">3</text>
+  <text x="92" y="268" text-anchor="end" font-size="10" fill="#888" filter="url(#rough2)">4</text>
+
+  <!-- len=2 cells (yellow) -->
+  <rect x="144" y="90" width="32" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="160" y="108" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">②</text>
+  <rect x="184" y="130" width="32" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="200" y="148" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">②</text>
+  <rect x="224" y="170" width="32" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="188" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">②</text>
+  <rect x="264" y="210" width="32" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">②</text>
+
+  <!-- len=3 cells (blue) -->
+  <rect x="184" y="90" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="200" y="108" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">③</text>
+  <rect x="224" y="130" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="148" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">③</text>
+  <rect x="264" y="170" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="188" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">③</text>
+
+  <!-- len=4 cells (orange-ish) -->
+  <rect x="224" y="90" width="32" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="108" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">④</text>
+  <rect x="264" y="130" width="32" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="148" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">④</text>
+
+  <!-- len=5 answer cell (red, star) -->
+  <rect x="264" y="90" width="32" height="28" fill="#b85450" stroke="#b85450" stroke-width="2.5" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="108" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" filter="url(#rough2)">⑤★</text>
+
+  <!-- arrow showing fill direction (diagonal) -->
+  <path d="M 150 135 Q 220 180 270 110" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="220" y="310" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">↑ 按对角线推进：①长度1 → ②长度2 → ... → ⑤长度n（答案）</text>
+
+  <!-- ===== Right: the three layers of loop ===== -->
+  <text x="380" y="62" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">三层循环骨架:</text>
+
+  <rect x="380" y="78" width="240" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="96" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 外层：length = 2 → n</text>
+  <text x="500" y="112" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">枚举区间长度（命脉：放最外层）</text>
+
+  <path d="M 500 120 L 500 132" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="380" y="134" width="240" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="152" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② 中层：i = 0 → n−length</text>
+  <text x="500" y="168" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">枚举左端点，j = i + length − 1</text>
+
+  <path d="M 500 176 L 500 188" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="380" y="190" width="240" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="208" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ 内层：k = i → j−1</text>
+  <text x="500" y="224" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">枚举切点，拆 [i,k] + [k+1,j]</text>
+
+  <!-- merge box -->
+  <rect x="380" y="250" width="240" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="270" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">转移方程：</text>
+  <text x="500" y="288" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">dp[i][j] = min over k</text>
+  <text x="500" y="304" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">dp[i][k] ⊕ dp[k+1][j] ⊕ cost</text>
+
+  <!-- summary -->
+  <rect x="380" y="330" width="240" height="110" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="500" y="352" text-anchor="middle" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">一句话直觉</text>
+  <text x="390" y="372" font-size="11" fill="#555" filter="url(#rough2)">• 状态 = 子区间 [i,j] 的属性</text>
+  <text x="390" y="390" font-size="11" fill="#555" filter="url(#rough2)">• 转移 = 枚举切点两段合并</text>
+  <text x="390" y="408" font-size="11" fill="#555" filter="url(#rough2)">• 顺序 = 长度递增保依赖</text>
+  <text x="390" y="426" font-size="11" fill="#888" filter="url(#rough2)">• 回文型无切点 → O(n²)，合并型 → O(n³)</text>
+
+  <!-- bottom note -->
+  <text x="180" y="440" font-size="10" fill="#888" filter="url(#rough2)">绿色=长度1(base) 黄=长度2 蓝=长度3 红=长度4 深红=长度5(答案)</text>
+</svg>

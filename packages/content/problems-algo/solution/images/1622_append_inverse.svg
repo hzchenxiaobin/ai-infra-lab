@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#6a9acc"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">append(val)：用模逆把 val 还原成基值 b</text>
+
+  <!-- 时间轴 -->
+  <text x="40" y="62" font-size="11" fill="#888">append 时刻</text>
+  <text x="40" y="80" font-size="11" fill="#888">的变换 (mult, add)</text>
+
+  <rect x="40" y="92" width="120" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="116" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">mult, add</text>
+  <text x="100" y="134" text-anchor="middle" font-size="10.5" fill="#888">（加入时的全局变换）</text>
+
+  <!-- 公式推导区 -->
+  <rect x="190" y="60" width="340" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="210" y="84" font-size="12" fill="#a87020" font-weight="bold">目标：存基值 b，使此刻套变换恰好还原 val</text>
+
+  <text x="210" y="110" font-size="13" fill="#333">此刻：</text>
+  <text x="266" y="110" font-size="13" fill="#333">v = b · mult + add ≡ val (mod p)</text>
+
+  <text x="210" y="134" font-size="13" fill="#333">解 b：</text>
+  <text x="266" y="134" font-size="13" fill="#b85450" font-weight="bold">b = (val − add) · mult⁻¹ (mod p)</text>
+
+  <text x="210" y="158" font-size="11" fill="#4a7a3a">mult⁻¹ 由费马小定理：mult^(p−2) mod p，O(log p)</text>
+
+  <!-- 时间线: 加入前变换 | 加入后变换 -->
+  <text x="60" y="216" font-size="11" fill="#888">时间轴</text>
+  <line x1="120" y1="220" x2="500" y2="220" stroke="#bbb" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- 加入前（不影响 val） -->
+  <rect x="120" y="232" width="140" height="34" fill="#f0f0f0" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="254" text-anchor="middle" font-size="11" fill="#888">加入前的变换</text>
+  <text x="190" y="278" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">不影响 val ✓</text>
+
+  <!-- 加入点 -->
+  <circle cx="270" cy="220" r="6" fill="#b85450" filter="url(#rough2)"/>
+  <text x="270" y="208" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">append(val)</text>
+  <text x="270" y="290" text-anchor="middle" font-size="10" fill="#888">b 已含"撤销此前变换"</text>
+
+  <!-- 加入后（自动作用） -->
+  <rect x="290" y="232" width="210" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="395" y="254" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">加入后的变换（自动叠加到 mult, add）</text>
+  <text x="395" y="278" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">b·mult+add 自动正确 ✓</text>
+
+  <!-- 箭头 -->
+  <path d="M 160 148 L 160 200 L 270 200 L 270 214" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="180" y="196" font-size="10" fill="#b85450">存入 seq</text>
+
+  <!-- 底部提示框 -->
+  <rect x="40" y="312" width="480" height="72" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="336" font-size="12" fill="#b85450" font-weight="bold">为什么这样存就对了？</text>
+  <text x="60" y="356" font-size="11" fill="#333">b 相当于"假装从恒等变换时就已加入"。此后任何 multAll/addAll 只更新 (mult, add)，</text>
+  <text x="60" y="374" font-size="11" fill="#333">而 b·mult+add 永远等于 val 经后续操作后的真实值（仿射变换复合可结合）。</text>
+</svg>

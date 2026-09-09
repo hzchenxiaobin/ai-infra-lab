@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">一趟扫描贪心：按 i 奇偶判定是否交换</text>
+
+  <!-- Start ellipse -->
+  <rect x="250" y="40" width="100" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="13" filter="url(#rough2)"/>
+  <text x="300" y="58" text-anchor="middle" font-size="11" fill="#333">开始  i ← 1</text>
+
+  <!-- arrow down to loop -->
+  <path d="M 300 68 L 300 84" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Loop diamond: i <= n-1 ? -->
+  <path d="M 300 88 L 372 118 L 300 148 L 228 118 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="122" text-anchor="middle" font-size="11" fill="#333">i ≤ n−1 ?</text>
+
+  <!-- No -> End (right) -->
+  <path d="M 372 118 L 470 118" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="395" y="112" font-size="10" fill="#b85450">否</text>
+  <rect x="470" y="105" width="86" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="13" filter="url(#rough2)"/>
+  <text x="513" y="123" text-anchor="middle" font-size="11" fill="#333">返回 nums</text>
+
+  <!-- Yes down -->
+  <path d="M 300 148 L 300 168" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="310" y="164" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- Parity diamond -->
+  <path d="M 300 172 L 388 210 L 300 248 L 212 210 Z" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="214" text-anchor="middle" font-size="11" fill="#333">i 为奇数 ?</text>
+
+  <!-- Yes -> left branch -->
+  <path d="M 212 210 L 150 210 L 150 250" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="180" y="204" font-size="10" fill="#4a7a3a">是（峰位）</text>
+
+  <!-- No -> right branch -->
+  <path d="M 388 210 L 450 210 L 450 250" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="406" y="204" font-size="10" fill="#4a7a3a">否（谷位）</text>
+
+  <!-- Left condition diamond: nums[i] < nums[i-1]? -->
+  <path d="M 150 254 L 220 290 L 150 326 L 80 290 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="286" text-anchor="middle" font-size="10" fill="#333">nums[i] &lt;</text>
+  <text x="150" y="300" text-anchor="middle" font-size="10" fill="#333">nums[i−1] ?</text>
+
+  <!-- Right condition diamond: nums[i] > nums[i-1]? -->
+  <path d="M 450 254 L 520 290 L 450 326 L 380 290 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="450" y="286" text-anchor="middle" font-size="10" fill="#333">nums[i] &gt;</text>
+  <text x="450" y="300" text-anchor="middle" font-size="10" fill="#333">nums[i−1] ?</text>
+
+  <!-- Left Yes -> swap -->
+  <path d="M 150 326 L 150 362" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="160" y="350" font-size="10" fill="#b85450">是</text>
+  <rect x="96" y="366" width="108" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="385" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">swap(i, i−1)</text>
+
+  <!-- Left No -> skip (curve down to merge) -->
+  <path d="M 80 290 Q 40 330 40 396 L 232 396" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="50" y="345" font-size="10" fill="#4a7a3a">否·不动</text>
+
+  <!-- Right Yes -> swap -->
+  <path d="M 450 326 L 450 362" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="460" y="350" font-size="10" fill="#b85450">是</text>
+  <rect x="396" y="366" width="108" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="385" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">swap(i, i−1)</text>
+
+  <!-- Right No -> skip -->
+  <path d="M 520 290 Q 560 330 560 396 L 368 396" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="540" y="345" font-size="10" fill="#4a7a3a">否·不动</text>
+
+  <!-- Merge: i++ -->
+  <path d="M 150 394 L 260 420" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 450 394 L 340 420" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="252" y="410" width="96" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="429" text-anchor="middle" font-size="11" fill="#333">i ← i + 1</text>
+
+  <!-- loop back to top -->
+  <path d="M 300 410 Q 300 410 300 410" fill="none" filter="url(#rough2)"/>
+  <path d="M 252 424 Q 60 424 60 118 L 228 118" stroke="#446688" stroke-width="1.2" fill="none" stroke-dasharray="3,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="78" y="270" font-size="10" fill="#999" transform="rotate(-90 78 270)">回到循环判断</text>
+</svg>

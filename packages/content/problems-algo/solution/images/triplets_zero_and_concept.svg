@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：Meet in the Middle — 拆三为二</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">三元组 AND 拆成「两元 AND」+「一元 AND」，频次表承接中间结果</text>
+
+  <!-- Row 1: triple AND -->
+  <g font-size="11" fill="#333">
+    <text x="40" y="76" font-size="11" fill="#888">① 暴力：三重循环枚举 (i, j, k)，判 A[i] &amp; A[j] &amp; A[k] == 0</text>
+
+    <rect x="70" y="86" width="60" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="100" y="107" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">A[i]</text>
+
+    <text x="140" y="106" font-size="14" fill="#888">&amp;</text>
+
+    <rect x="158" y="86" width="60" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="188" y="107" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">A[j]</text>
+
+    <text x="228" y="106" font-size="14" fill="#888">&amp;</text>
+
+    <rect x="246" y="86" width="60" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="276" y="107" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">A[k]</text>
+
+    <text x="318" y="106" font-size="12" fill="#888">== 0</text>
+    <text x="372" y="106" font-size="11" fill="#b85450">O(n³) 超时</text>
+  </g>
+
+  <!-- split arrow -->
+  <path d="M 280 128 L 280 142" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="140" font-size="10" fill="#888">拆三为二</text>
+
+  <!-- Row 2: pair AND + single -->
+  <g font-size="11" fill="#333">
+    <rect x="60" y="150" width="170" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+    <text x="76" y="172" font-size="11" fill="#4a7a3a" font-weight="bold">A[i] &amp; A[j]</text>
+    <text x="170" y="172" font-size="10" fill="#888">→ 记作 x</text>
+
+    <text x="240" y="172" font-size="14" fill="#888">&amp;</text>
+
+    <rect x="258" y="150" width="60" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="288" y="172" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">A[k]</text>
+
+    <text x="330" y="172" font-size="12" fill="#888">== 0</text>
+    <text x="372" y="172" font-size="11" fill="#4a7a3a">x &amp; A[k] == 0</text>
+  </g>
+
+  <!-- Step boxes -->
+  <g font-size="11" fill="#333">
+    <!-- Step 1: freq table -->
+    <rect x="40" y="206" width="232" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="226" font-size="12" fill="#4a7a3a" font-weight="bold">② 预处理频次表 freq[x]</text>
+    <text x="54" y="244" font-family="monospace" font-size="10" fill="#555">freq[x] = #{(i,j) : A[i]&amp;A[j]==x}</text>
+    <text x="54" y="260" font-size="10" fill="#888">两重循环 O(n²)，把所有两两 AND</text>
+    <text x="54" y="274" font-size="10" fill="#888">结果存进大小 2¹⁶ 的数组</text>
+    <text x="54" y="288" font-size="10" fill="#4a7a3a">x ∈ [0, 2¹⁶)，因为 A[i] &lt; 2¹⁶</text>
+
+    <!-- Step 2: count per k -->
+    <rect x="288" y="206" width="232" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="302" y="226" font-size="12" fill="#d6a040" font-weight="bold">③ 对每个 A[k] 查表累加</text>
+    <text x="302" y="244" font-family="monospace" font-size="10" fill="#555">ans = Σk Σ(x &amp; A[k]==0) freq[x]</text>
+    <text x="302" y="260" font-size="10" fill="#888">对每个 k，把所有与 A[k] 按位与</text>
+    <text x="302" y="274" font-size="10" fill="#888">为 0 的 x 的频次累加</text>
+    <text x="302" y="288" font-size="10" fill="#d6a040">直接枚举 O(n·2¹⁶)，可优化</text>
+  </g>
+
+  <!-- Step 3: SOS optimization hint -->
+  <path d="M 280 300 L 280 314" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="322" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="54" y="342" font-size="12" fill="#b85450" font-weight="bold">④ 优化：x &amp; A[k] == 0 ⟺ x ⊆ ~A[k]（x 是 A[k] 补集的子集）</text>
+  <text x="54" y="360" font-family="monospace" font-size="10" fill="#555">g[s] = Σ(x⊆s) freq[x]   →   SOS DP（子集求和）O(2¹⁶·16) 预处理，每次查询 O(1)</text>
+  <text x="54" y="372" font-size="10" fill="#888">ans = Σk g[FULL ^ A[k]]，其中 FULL = 2¹⁶−1</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="392" width="480" height="52" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="54" y="412" font-size="11" fill="#444" font-weight="bold">关键前提：A[i] &lt; 2¹⁶ → 值域仅 65536 种 → 频次数组 / SOS DP 可行</text>
+  <text x="54" y="428" font-size="10" fill="#888">三元组 (i,j,k) 有序、可重复下标 → freq 直接计数即可，无需组合数去重</text>
+  <text x="54" y="440" font-size="10" fill="#888">总复杂度 O(n² + 2¹⁶·16)，远优于暴力 O(n³)</text>
+</svg>

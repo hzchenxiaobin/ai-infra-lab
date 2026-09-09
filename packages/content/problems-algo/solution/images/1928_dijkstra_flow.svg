@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrGy" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">状态 Dijkstra 算法流程</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">在 (城市, 时间) 二维状态图上跑 Dijkstra，按费用贪心弹出</text>
+
+  <!-- Step 1: Init -->
+  <rect x="40" y="64" width="160" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="84" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 初始化</text>
+  <text x="120" y="100" text-anchor="middle" font-size="10" fill="#555">建邻接表，minCost[0][0]=fee[0]</text>
+
+  <!-- Arrow 1->2 -->
+  <path d="M 120 114 L 120 130" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrGy)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Push start -->
+  <rect x="40" y="134" width="160" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="154" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 压入起点</text>
+  <text x="120" y="170" text-anchor="middle" font-size="10" fill="#555">pq.push(fee[0], 0, 0)</text>
+
+  <!-- Arrow 2->3 -->
+  <path d="M 120 184 L 120 200" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrGy)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Pop min (loop start) -->
+  <rect x="40" y="204" width="160" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="224" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ 弹出堆顶</text>
+  <text x="120" y="240" text-anchor="middle" font-size="10" fill="#555">(cost, u, t) = pq.pop()</text>
+
+  <!-- Loop back arrow (from step 6 back to step 3) -->
+  <path d="M 480 330 Q 500 270 500 228 Q 500 210 200 210" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrGy)" filter="url(#rough2)"/>
+  <text x="510" y="272" font-size="9" fill="#888">继续</text>
+  <text x="510" y="284" font-size="9" fill="#888">循环</text>
+
+  <!-- Arrow 3->4: decision -->
+  <path d="M 120 254 L 120 268" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrGy)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Decision diamond - cost > minCost? -->
+  <polygon points="120,270 200,310 120,350 40,310" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="120" y="306" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">cost &gt;</text>
+  <text x="120" y="320" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">minCost[u][t]?</text>
+
+  <!-- Yes branch (skip) -->
+  <path d="M 200 310 L 250 310" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="225" y="302" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="254" y="294" width="76" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="292" y="314" text-anchor="middle" font-size="10" fill="#b85450">跳过（剪枝）</text>
+
+  <!-- No branch -->
+  <path d="M 120 352 L 120 366" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="135" y="362" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Step 5: Decision - u == n-1? -->
+  <polygon points="120,368 200,400 120,432 40,400" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="120" y="396" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">u == n-1?</text>
+  <text x="120" y="410" text-anchor="middle" font-size="9" fill="#888">到达终点？</text>
+
+  <!-- Yes -> return -->
+  <path d="M 200 400 L 260 400" stroke="#4a7a3a" stroke-width="2.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="230" y="392" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="264" y="384" width="100" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="314" y="406" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 cost ✓</text>
+
+  <!-- No -> expand neighbors -->
+  <path d="M 120 434 L 120 444" stroke="#446688" stroke-width="1.8" fill="none"/>
+  <text x="135" y="442" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- Step 6: Expand -->
+  <rect x="350" y="210" width="170" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="230" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">④ 扩展邻居</text>
+  <line x1="362" y1="238" x2="508" y2="238" stroke="#446688" stroke-width="1" stroke-dasharray="2,2" filter="url(#rough2)"/>
+  <text x="360" y="254" font-size="10" fill="#555">对每条边 (u, v, w)：</text>
+  <text x="360" y="270" font-size="10" fill="#555">  nt = t + w</text>
+  <text x="360" y="284" font-size="10" fill="#b85450" font-weight="bold">  if nt &gt; maxTime: 跳过</text>
+  <text x="360" y="300" font-size="10" fill="#555">  ncost = cost + fee[v]</text>
+  <text x="360" y="316" font-size="10" fill="#4a7a3a" font-weight="bold">  if &lt; minCost[v][nt]:</text>
+  <text x="360" y="328" font-size="10" fill="#4a7a3a">    更新 + 压入堆</text>
+
+  <!-- Arrow from step 5 No to step 6 (right side) -->
+  <path d="M 120 444 Q 200 448 300 400 Q 380 370 435 340" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Heap empty check -->
+  <rect x="350" y="360" width="170" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="435" y="376" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">堆空仍未到终点？</text>
+  <text x="435" y="390" text-anchor="middle" font-size="10" fill="#b85450">→ 返回 -1</text>
+
+  <path d="M 435 356 L 435 332" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arrGy)" filter="url(#rough2)"/>
+  <text x="448" y="348" font-size="9" fill="#888">否</text>
+
+  <!-- footer -->
+  <text x="280" y="450" text-anchor="middle" font-size="10" fill="#888">Dijkstra 贪心：费用最小的状态先弹出 → 第一次到终点即最优解</text>
+</svg>

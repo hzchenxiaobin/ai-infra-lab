@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">转移流程：枚举最后一天起点 k，倒序维护段内 max</text>
+
+  <!-- ===== split visualization ===== -->
+  <text x="280" y="52" text-anchor="middle" font-size="11" fill="#888">前 i 个工作 = 前 j−1 天的子问题  ‖  第 j 天</text>
+
+  <!-- left segment (first j-1 days) -->
+  <rect x="64" y="64" width="180" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="154" y="89" text-anchor="middle" font-size="11" fill="#446688">jobs[0 .. k−1]  → dp[k][j−1]</text>
+
+  <!-- right segment (last day) -->
+  <rect x="316" y="64" width="180" height="40" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="406" y="89" text-anchor="middle" font-size="11" fill="#d6a040">jobs[k .. i−1]  → max</text>
+
+  <!-- divider -->
+  <line x1="280" y1="60" x2="280" y2="108" stroke="#b85450" stroke-width="1.8" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="280" y="120" text-anchor="middle" font-size="10" fill="#b85450">切分点 k</text>
+
+  <!-- transition formula -->
+  <rect x="64" y="136" width="432" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="158" text-anchor="middle" font-size="11" fill="#444" font-family="monospace">dp[i][j] = min { dp[k][j−1] + max(jobs[k..i−1]) },  k ∈ [j−1, i−1]</text>
+
+  <path d="M 280 170 L 280 186" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== flow boxes ===== -->
+  <rect x="150" y="190" width="260" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="210" text-anchor="middle" font-size="11" fill="#333">① 外层 j = 1 → d（天数）</text>
+
+  <path d="M 280 220 L 280 234" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="150" y="238" width="260" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="11" fill="#333">② 内层 i = j → n（前 i 个工作分 j 天）</text>
+
+  <path d="M 280 268 L 280 282" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="150" y="286" width="260" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="11" fill="#333">③ mx = 0；k 从 i−1 倒序到 j−1</text>
+
+  <path d="M 280 316 L 280 330" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="110" y="334" width="340" height="44" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="353" text-anchor="middle" font-size="11" fill="#444">④ mx = max(mx, jobs[k])</text>
+  <text x="280" y="370" text-anchor="middle" font-size="11" fill="#444" font-family="monospace">dp[i][j] = min(dp[i][j], dp[k][j−1] + mx)</text>
+
+  <!-- loop back arrow from ④ to ③ -->
+  <path d="M 110 356 L 86 356 L 86 301 L 150 301" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="60" y="332" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 60 332)">k−−</text>
+
+  <path d="M 280 378 L 280 394" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="292" y="390" font-size="10" fill="#4a7a3a">k 遍历完</text>
+
+  <!-- end -->
+  <rect x="130" y="398" width="300" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="420" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ 返回 dp[n][d]（≥ INF 则 −1）</text>
+
+  <!-- bottom note -->
+  <text x="280" y="454" text-anchor="middle" font-size="10" fill="#888">倒序枚举 k 可在 O(1) 增量维护 mx，省掉每段重算 max 的 O(n)</text>
+  <text x="280" y="470" text-anchor="middle" font-size="10" fill="#888">三层循环 O(n²·d)，n≤300、d≤10 约 9×10⁵ 次运算</text>
+</svg>

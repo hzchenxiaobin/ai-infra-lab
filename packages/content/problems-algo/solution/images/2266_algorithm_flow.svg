@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：分段 → 查表 → 累乘取模</text>
+  <text x="270" y="44" text-anchor="middle" font-size="10.5" fill="#888">dp3/dp4 预处理到 n，每个段 O(1) 查表，整体 O(n)</text>
+
+  <!-- step 1: preprocess -->
+  <rect x="120" y="60" width="300" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="82" text-anchor="middle" font-size="12" fill="#333">① 预处理 dp3[0..n]、dp4[0..n]（递推取模）</text>
+  <path d="M 270 96 L 270 114" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- step 2: split runs -->
+  <rect x="120" y="116" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="138" text-anchor="middle" font-size="12" fill="#333">② 双指针扫描：连续相同数字成一段</text>
+  <path d="M 270 152 L 270 170" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision: which key type? -->
+  <polygon points="270,172 390,214 270,256 150,214" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="210" text-anchor="middle" font-size="11" fill="#333">段内数字 d 是？</text>
+  <text x="270" y="226" text-anchor="middle" font-size="11" fill="#333">查对应表</text>
+
+  <!-- branch A: 3-letter -->
+  <text x="150" y="204" font-size="11" fill="#446688" font-weight="bold">3字母键</text>
+  <path d="M 150 214 L 96 214 L 96 262" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="20" y="264" width="160" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="284" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">d ∈ {2,3,4,5,6,8}</text>
+  <text x="100" y="302" text-anchor="middle" font-size="11" fill="#333">ways = dp3[L]</text>
+  <text x="100" y="316" text-anchor="middle" font-size="9.5" fill="#888">步长 {1,2,3}</text>
+
+  <!-- branch B: 4-letter -->
+  <text x="390" y="204" font-size="11" fill="#d6a040" font-weight="bold">4字母键</text>
+  <path d="M 390 214 L 444 214 L 444 262" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="360" y="264" width="160" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="284" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">d ∈ {7,9}</text>
+  <text x="440" y="302" text-anchor="middle" font-size="11" fill="#333">ways = dp4[L]</text>
+  <text x="440" y="316" text-anchor="middle" font-size="9.5" fill="#888">步长 {1,2,3,4}</text>
+
+  <!-- merge -->
+  <path d="M 100 326 L 100 348 L 270 348" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 440 326 L 440 348 L 270 348" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 348 L 270 366" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- multiply -->
+  <rect x="110" y="368" width="320" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="390" text-anchor="middle" font-size="11.5" fill="#333">③ ans = ans × ways mod 10⁹+7</text>
+
+  <!-- loop back -->
+  <path d="M 430 385 L 488 385 L 488 134 L 420 134" stroke="#666" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="494" y="262" font-size="9" fill="#888">下一段</text>
+
+  <path d="M 270 404 L 270 422" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="150" y="424" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="270" y="446" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ return ans</text>
+</svg>

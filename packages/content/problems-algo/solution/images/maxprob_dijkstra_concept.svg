@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">最大堆 Dijkstra：从起点向外逐层确定最大概率</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">每次取 prob 最大的节点松弛出边；乘积 ≤ 1 → 贪心正确</text>
+
+  <!-- ===== Graph ===== -->
+  <text x="40" y="78" font-size="11" fill="#446688" font-weight="bold">示例图：n=3, start=0, end=2</text>
+
+  <!-- losing path 0—2 (direct, 0.2): dashed gray -->
+  <path d="M 120 226 Q 250 290 386 256" stroke="#bbb" stroke-width="1.6" stroke-dasharray="6 4" fill="none" filter="url(#rough2)"/>
+  <text x="250" y="288" text-anchor="middle" font-size="11" fill="#aaa" font-weight="bold">0.2</text>
+  <text x="250" y="302" text-anchor="middle" font-size="8" fill="#aaa">直达（输）</text>
+
+  <!-- winning path 0—1 (0.5) then 1—2 (0.5): green bold -->
+  <path d="M 120 210 Q 200 140 282 132" stroke="#4a7a3a" stroke-width="2.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="175" y="120" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">0.5</text>
+
+  <path d="M 318 148 Q 380 180 398 238" stroke="#4a7a3a" stroke-width="2.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="378" y="180" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">0.5</text>
+
+  <!-- node 0 (start) -->
+  <ellipse cx="92" cy="218" rx="30" ry="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="92" y="216" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">0</text>
+  <text x="92" y="230" text-anchor="middle" font-size="8" fill="#d6a040">起点</text>
+
+  <!-- node 1 -->
+  <ellipse cx="300" cy="132" rx="28" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="137" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+
+  <!-- node 2 (end) -->
+  <ellipse cx="410" cy="256" rx="30" ry="24" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="410" y="254" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">2</text>
+  <text x="410" y="268" text-anchor="middle" font-size="8" fill="#b85450">终点</text>
+
+  <!-- path comparison labels -->
+  <text x="300" y="100" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">0→1→2: 0.5×0.5=0.25 ✓ 最大</text>
+
+  <!-- ===== prob array ===== -->
+  <text x="40" y="332" font-size="11" fill="#446688" font-weight="bold">最终 prob[]（0-indexed）</text>
+  <g font-size="11">
+    <rect x="60" y="342" width="60" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="90" y="361" text-anchor="middle" fill="#d6a040" font-weight="bold">1.0</text>
+    <text x="90" y="334" text-anchor="middle" font-size="8" fill="#888">[0]</text>
+
+    <rect x="124" y="342" width="60" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="154" y="361" text-anchor="middle" fill="#446688" font-weight="bold">0.5</text>
+    <text x="154" y="334" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+    <rect x="188" y="342" width="60" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="218" y="361" text-anchor="middle" fill="#b85450" font-weight="bold">0.25</text>
+    <text x="218" y="334" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">[2]</text>
+  </g>
+
+  <!-- answer box -->
+  <rect x="280" y="338" width="250" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="356" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">答案 = prob[end] = 0.25</text>
+  <text x="405" y="372" text-anchor="middle" font-size="9" fill="#666">弹出 end 即返回（提前终止）</text>
+
+  <!-- ===== comparison table ===== -->
+  <text x="40" y="402" font-size="11" fill="#446688" font-weight="bold">对比标准 Dijkstra（743）：</text>
+  <text x="40" y="420" font-size="10" fill="#555">最小堆+d+w+取小 ←→ 最大堆+p×w+取大；边权≤1 保证贪心正确</text>
+  <text x="40" y="434" font-size="10" fill="#888">延伸路径乘以 ≤1 → 概率只减不增 → 弹出即确定</text>
+</svg>

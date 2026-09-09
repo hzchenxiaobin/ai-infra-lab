@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="420" fill="#fafafa"/>
+
+  <text x="320" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">贪心核心：从高位到低位扫描，按 change[d] 与 d 的大小分三类</text>
+  <text x="320" y="48" text-anchor="middle" font-size="11" fill="#888">突变是一段连续子串 → 找首个能变大的位置开突，遇变小即停</text>
+
+  <!-- sample digit row -->
+  <text x="60" y="86" font-size="12" fill="#446688" font-weight="bold">示例 num = "132"，change = [9,8,5,0,3,6,4,2,6,8]</text>
+  <g font-size="14">
+    <rect x="80" y="96" width="46" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="103" y="122" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="140" y="96" width="46" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="163" y="122" text-anchor="middle" fill="#333" font-weight="bold">3</text>
+    <rect x="200" y="96" width="46" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="223" y="122" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+  </g>
+  <g font-size="11" fill="#888">
+    <text x="103" y="152" text-anchor="middle">change[1]=8</text>
+    <text x="163" y="152" text-anchor="middle">change[3]=0</text>
+    <text x="223" y="152" text-anchor="middle">change[2]=6</text>
+  </g>
+
+  <!-- arrows down to three cases -->
+  <path d="M 103 160 L 103 178" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 163 160 L 360 178" stroke="#d6a040" stroke-width="1.5" marker-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 223 160 L 560 178" stroke="#b85450" stroke-width="1.5" marker-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- case 1: > -->
+  <rect x="40" y="184" width="180" height="118" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="208" font-size="13" fill="#4a7a3a" font-weight="bold">case 1：change[d] &gt; d</text>
+  <text x="60" y="232" font-size="12" fill="#555">突变后这位变大</text>
+  <text x="60" y="252" font-size="11" fill="#555">→ 必须在此开突/续突</text>
+  <g font-size="11" font-family="monospace">
+    <text x="60" y="278" fill="#4a7a3a">res[i] = change[d]</text>
+    <text x="60" y="294" fill="#888">mutating = true</text>
+  </g>
+
+  <!-- case 2: == -->
+  <rect x="230" y="184" width="180" height="118" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="208" font-size="13" fill="#d6a040" font-weight="bold">case 2：change[d] == d</text>
+  <text x="250" y="232" font-size="12" fill="#555">突变后这位不变</text>
+  <text x="250" y="252" font-size="11" fill="#555">→ 已在突变则顺延</text>
+  <text x="250" y="270" font-size="11" fill="#555">  未开突则先跳过</text>
+  <g font-size="11" font-family="monospace">
+    <text x="250" y="292" fill="#d6a040">mutating ? 写 : 留</text>
+  </g>
+
+  <!-- case 3: < -->
+  <rect x="420" y="184" width="180" height="118" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="440" y="208" font-size="13" fill="#b85450" font-weight="bold">case 3：change[d] &lt; d</text>
+  <text x="440" y="232" font-size="12" fill="#555">突变后这位变小</text>
+  <text x="440" y="252" font-size="11" fill="#555">→ 已在突变立即停</text>
+  <text x="440" y="270" font-size="11" fill="#555">  未开突则继续扫</text>
+  <g font-size="11" font-family="monospace">
+    <text x="440" y="292" fill="#b85450">mutating ? break : next</text>
+  </g>
+
+  <!-- summary bar -->
+  <rect x="40" y="324" width="560" height="76" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="60" y="346" font-size="12" fill="#446688" font-weight="bold">结论（字典序视角）</text>
+  <text x="60" y="366" font-size="11" fill="#555">高位优先：找到首个 change[d] &gt; d 的位置开突 = 最显著位能变大；</text>
+  <text x="60" y="382" font-size="11" fill="#555">随后只要 change[d] ≥ d 就续突（== 不亏、&gt; 赚），遇首个 &lt; 立刻停（再突就亏）。</text>
+  <text x="60" y="396" font-size="10" fill="#888">例 "132"：1→8(变大开突) | 3→0(变小停) ⇒ "832"</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：开销数组上的滑动窗口</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="86" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: left=0, sum=0, max=0</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: right < n? -->
+  <polygon points="270,104 360,150 270,196 180,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333">right &lt; n ?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">(遍历每个位置)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 360 150 L 450 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="402" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="488" cy="150" rx="44" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="488" y="154" text-anchor="middle" font-size="12" fill="#333">返回 max</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 196 L 270 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- Add cost[right] to sum -->
+  <rect x="150" y="218" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="244" text-anchor="middle" font-size="12" fill="#333">sum += |s[right] − t[right]|</text>
+
+  <!-- arrow down -->
+  <path d="M 270 258 L 270 276" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: sum > maxCost? -->
+  <polygon points="270,280 370,326 270,372 170,326" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="322" text-anchor="middle" font-size="12" fill="#333">sum &gt; maxCost ?</text>
+  <text x="270" y="338" text-anchor="middle" font-size="11" fill="#666">(超预算则收缩)</text>
+
+  <!-- Yes (over budget) -> shrink left -->
+  <path d="M 170 326 L 110 326" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="140" y="318" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="14" y="306" width="94" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="61" y="324" text-anchor="middle" font-size="11" fill="#333">sum −= cost[left]</text>
+  <text x="61" y="340" text-anchor="middle" font-size="11" fill="#333">left++</text>
+
+  <!-- loop back from shrink to decision (while loop) -->
+  <path d="M 61 306 L 61 286 L 170 326" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="86" y="280" font-size="10" fill="#888">while 循环</text>
+
+  <!-- No (within budget) down -->
+  <path d="M 270 372 L 270 390" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="386" font-size="11" fill="#82b366">否</text>
+
+  <!-- Update max -->
+  <rect x="150" y="394" width="240" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="418" text-anchor="middle" font-size="12" fill="#333">max = max(max, right − left + 1)</text>
+
+  <!-- loop back arrow to top decision -->
+  <path d="M 390 413 L 510 413 L 510 150 L 360 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="510" y="284" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 510 284)">right++ 继续循环</text>
+
+  <!-- summary note -->
+  <text x="110" y="420" text-anchor="middle" font-size="11" fill="#888">left/right 只增不减 → O(n)</text>
+</svg>

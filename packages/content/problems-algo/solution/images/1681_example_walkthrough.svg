@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="360" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">示例 1 演算：nums=[1,2,1,4], k=2, m=2</text>
+
+  <text x="270" y="48" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">合法组：{0,1}→inc=1, {0,3}→inc=3, {1,2}→inc=1, {1,3}→inc=2, {2,3}→inc=3</text>
+
+  <!-- State 0000 -->
+  <rect x="210" y="62" width="120" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="82" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">mask=0000</text>
+  <text x="270" y="100" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">dp=0</text>
+
+  <!-- left branch: pick {0,1} -->
+  <path d="M240,108 C160,140 120,150 120,168" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="120" y="140" font-size="10" fill="#446688" filter="url(#rough2)">+{0,1} inc=1</text>
+
+  <!-- right branch: pick {0,3} -->
+  <path d="M300,108 C380,140 420,150 420,168" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="370" y="140" font-size="10" fill="#d6a040" filter="url(#rough2)">+{0,3} inc=3</text>
+
+  <!-- State 0011 (left) -->
+  <rect x="50" y="172" width="140" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="192" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">mask=0011</text>
+  <text x="120" y="210" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">dp=0+1=1</text>
+
+  <!-- State 1001 (right) -->
+  <rect x="350" y="172" width="140" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="192" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" filter="url(#rough2)">mask=1001</text>
+  <text x="420" y="210" text-anchor="middle" font-size="11" fill="#d6a040" filter="url(#rough2)">dp=0+3=3</text>
+
+  <!-- from 0011: pick {2,3} -->
+  <path d="M120,218 L180,258" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="120" y="248" font-size="10" fill="#446688" filter="url(#rough2)">+{2,3} inc=3</text>
+
+  <!-- from 1001: pick {1,2} -->
+  <path d="M420,218 L360,258" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="376" y="248" font-size="10" fill="#d6a040" filter="url(#rough2)">+{1,2} inc=1</text>
+
+  <!-- State 1111 (merged) -->
+  <rect x="170" y="262" width="200" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="284" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">mask=1111</text>
+  <text x="270" y="304" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">dp=min(1+3, 3+1) = 4</text>
+
+  <!-- annotation: from 1001, {1,3} overlaps -->
+  <text x="440" y="246" font-size="9" fill="#b85450" filter="url(#rough2)">{1,3}∩mask</text>
+  <text x="440" y="258" font-size="9" fill="#b85450" filter="url(#rough2)">≠0 跳过</text>
+
+  <!-- answer box -->
+  <rect x="120" y="324" width="300" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="343" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">答案 = dp[1111] = 4 ✓</text>
+</svg>

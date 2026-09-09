@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">算法流程：布尔掩码过滤，缺失整行删</text>
+  <text x="280" y="50" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">dropna(subset=['name']) 即此流程的一行封装</text>
+
+  <!-- Start -->
+  <rect x="200" y="64" width="160" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="87" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">输入 students</text>
+
+  <path d="M 280 100 L 280 120" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Mask -->
+  <rect x="150" y="122" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="145" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">students['name'].notna() → 布尔掩码</text>
+
+  <path d="M 280 158 L 280 180" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="280,182 382,224 280,266 178,224" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="229" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">name 缺失？</text>
+
+  <!-- Left branch: drop -->
+  <path d="M 178 224 L 140 224" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="158" y="212" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">isna</text>
+  <rect x="38" y="205" width="100" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="88" y="229" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">丢弃整行</text>
+  <text x="88" y="262" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">✗ 不进入输出</text>
+
+  <!-- Right branch: keep -->
+  <path d="M 382 224 L 420 224" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="402" y="212" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">notna</text>
+  <rect x="422" y="205" width="105" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="474" y="229" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">保留整行</text>
+
+  <path d="M 474 243 L 474 296" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Final -->
+  <rect x="380" y="298" width="188" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="474" y="318" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">返回结果 DataFrame</text>
+  <text x="474" y="337" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">索引 0,2,3 保留</text>
+
+  <!-- Params memo -->
+  <rect x="38" y="298" width="240" height="82" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="158" y="318" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">dropna 默认参数备忘</text>
+  <text x="158" y="336" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">axis=0：按行删</text>
+  <text x="158" y="352" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">how='any'：任一缺失即删</text>
+  <text x="158" y="368" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">inplace=False：返回新表</text>
+</svg>

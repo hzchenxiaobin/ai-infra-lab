@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#333" filter="url(#rough2)">
+    示例演算：nums=[1,3,5,2], cost=[2,3,1,14]
+  </text>
+
+  <!-- 表格参数 -->
+  <text x="40" y="56" font-size="12" fill="#446688" filter="url(#rough2)">① 按 nums 升序配对：</text>
+
+  <!-- 表头 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="64" width="480" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+    <text x="100" y="81" text-anchor="middle" font-size="12" fill="#333">下标 i</text>
+    <text x="200" y="81" text-anchor="middle" font-size="12" fill="#333">nums[i]</text>
+    <text x="300" y="81" text-anchor="middle" font-size="12" fill="#333">cost[i]</text>
+    <text x="430" y="81" text-anchor="middle" font-size="12" fill="#333">pw[i]（累计权重）</text>
+  </g>
+  <!-- 表身 -->
+  <g font-size="12" filter="url(#rough2)">
+    <rect x="40" y="90" width="480" height="24" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <text x="100" y="106" text-anchor="middle" fill="#333">0</text>
+    <text x="200" y="106" text-anchor="middle" fill="#333">1</text>
+    <text x="300" y="106" text-anchor="middle" fill="#333">2</text>
+    <text x="430" y="106" text-anchor="middle" fill="#333">2</text>
+
+    <rect x="40" y="114" width="480" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="100" y="130" text-anchor="middle" fill="#7a2a26" font-weight="bold">1 ← k</text>
+    <text x="200" y="130" text-anchor="middle" fill="#7a2a26" font-weight="bold">2</text>
+    <text x="300" y="130" text-anchor="middle" fill="#333">14</text>
+    <text x="430" y="130" text-anchor="middle" fill="#7a2a26" font-weight="bold">16 ≥ 10</text>
+
+    <rect x="40" y="138" width="480" height="24" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <text x="100" y="154" text-anchor="middle" fill="#333">2</text>
+    <text x="200" y="154" text-anchor="middle" fill="#333">3</text>
+    <text x="300" y="154" text-anchor="middle" fill="#333">3</text>
+    <text x="430" y="154" text-anchor="middle" fill="#333">19</text>
+
+    <rect x="40" y="162" width="480" height="24" fill="#fff" stroke="#446688" stroke-width="1.2"/>
+    <text x="100" y="178" text-anchor="middle" fill="#333">3</text>
+    <text x="200" y="178" text-anchor="middle" fill="#333">5</text>
+    <text x="300" y="178" text-anchor="middle" fill="#333">1</text>
+    <text x="430" y="178" text-anchor="middle" fill="#333">20 = total</text>
+  </g>
+
+  <text x="40" y="206" font-size="12" fill="#4a7a3a" filter="url(#rough2)">② total=20，⌈total/2⌉=10；首个 pw[i+1]≥10 在 i=1 → k=1，t=nums[1]=2</text>
+
+  <text x="40" y="232" font-size="12" fill="#446688" filter="url(#rough2)">③ 用前缀和 O(1) 算开销（pv 为加权值前缀，此处省略列）：</text>
+
+  <!-- 计算框 -->
+  <rect x="40" y="242" width="480" height="120" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333">
+    <text x="56" y="264" filter="url(#rough2)">pv[k]=pv[1]=1·2=2；  pw[k]=pw[1]=2</text>
+    <text x="56" y="284" filter="url(#rough2)">left = t·pw[k] − pv[k] = 2·2 − 2 = 2</text>
+    <text x="56" y="304" filter="url(#rough2)">pv[n]−pv[k+1] = 44 − 30 = 14；  pw[n]−pw[k+1] = 20 − 16 = 4</text>
+    <text x="56" y="324" filter="url(#rough2)">right = 14 − 2·4 = 6</text>
+    <text x="56" y="350" font-weight="bold" fill="#7a2a26" filter="url(#rough2)">总开销 = left + right = 2 + 6 = 8  ✓</text>
+  </g>
+
+  <!-- 验证条 -->
+  <rect x="40" y="372" width="480" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="390" text-anchor="middle" font-size="12" fill="#3a5a2a" filter="url(#rough2)">把所有元素变 2：1→2(+2)  3→2(+3)  5→2(+3)</text>
+  <text x="280" y="406" text-anchor="middle" font-size="12" font-weight="bold" fill="#3a5a2a" filter="url(#rough2)">开销 = 2 + 3 + 3 = 8  与公式结果一致</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：聚合 → 开窗 → 转置 → 填缺 → 排序</text>
+
+  <!-- ① FROM -->
+  <rect x="24" y="38" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="174" y="56" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① FROM Wineries</text>
+  <text x="174" y="74" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">9 行评分明细（同一酒庄可多行）</text>
+
+  <path d="M 174 84 L 174 96" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ② GROUP BY -->
+  <rect x="24" y="100" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="174" y="118" text-anchor="middle" font-size="12.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② GROUP BY country, winery</text>
+  <text x="174" y="136" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">SUM(points)：一酒庄一行总分（9 行 → 8 组）</text>
+
+  <path d="M 174 146 L 174 158" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ③ ROW_NUMBER -->
+  <rect x="24" y="162" width="300" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="174" y="180" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">③ ROW_NUMBER() OVER (…)</text>
+  <text x="174" y="198" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">PARTITION BY country（国家内排名）</text>
+  <text x="174" y="212" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">ORDER BY 总分 DESC, winery（平局字典序）</text>
+
+  <path d="M 174 216 L 174 228" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ④ 转置 -->
+  <rect x="24" y="232" width="300" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="174" y="250" text-anchor="middle" font-size="12.5" fill="#7a5a10" font-weight="bold" filter="url(#rough2)">④ 转置 + 格式化</text>
+  <text x="174" y="268" text-anchor="middle" font-size="10.5" fill="#7a5a10" filter="url(#rough2)">MAX(CASE WHEN rn = k THEN</text>
+  <text x="174" y="282" text-anchor="middle" font-size="10.5" fill="#7a5a10" filter="url(#rough2)">CONCAT(winery, ' (', 总分, ')') END)</text>
+
+  <path d="M 174 286 L 174 298" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ⑤ COALESCE + ORDER BY -->
+  <rect x="24" y="302" width="300" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="174" y="320" text-anchor="middle" font-size="12" fill="#8f3a36" font-weight="bold" filter="url(#rough2)">⑤ COALESCE 填缺位 + ORDER BY country</text>
+  <text x="174" y="338" text-anchor="middle" font-size="10.5" fill="#8f3a36" filter="url(#rough2)">缺位填 'No second/third winery'，按国家升序</text>
+
+  <!-- 右侧注解 -->
+  <rect x="338" y="100" width="172" height="44" fill="#fafafa" stroke="#999" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="424" y="118" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold" filter="url(#rough2)">多行 → 一行</text>
+  <text x="424" y="134" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">排名对象 = 酒庄，不是行</text>
+
+  <rect x="338" y="162" width="172" height="52" fill="#fafafa" stroke="#999" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="424" y="180" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold" filter="url(#rough2)">组内名次 1, 2, 3 …</text>
+  <text x="424" y="198" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">排序键唯一 → 三大</text>
+  <text x="424" y="210" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">排名函数输出等价</text>
+
+  <rect x="338" y="232" width="172" height="52" fill="#fafafa" stroke="#999" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="424" y="250" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold" filter="url(#rough2)">纵表 → 宽表</text>
+  <text x="424" y="268" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">每国三行压成一行</text>
+  <text x="424" y="280" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">注意名字与括号间空格</text>
+
+  <rect x="338" y="302" width="172" height="44" fill="#fafafa" stroke="#999" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="424" y="320" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold" filter="url(#rough2)">rn = 1 必存在</text>
+  <text x="424" y="336" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">top_winery 无需兜底</text>
+
+  <path d="M 324 122 L 336 122" stroke="#999" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <path d="M 324 188 L 336 188" stroke="#999" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <path d="M 324 258 L 336 258" stroke="#999" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <path d="M 324 324 L 336 324" stroke="#999" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#rough2)"/>
+
+  <text x="260" y="358" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">逻辑顺序：FROM → GROUP BY → 窗口函数 → SELECT 转置聚合 → ORDER BY</text>
+</svg>

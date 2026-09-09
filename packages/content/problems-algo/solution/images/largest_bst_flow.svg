@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="480" height="540" fill="#fafafa"/>
+  <text x="240" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">后序 DFS 流程：合成三元组 O(n)</text>
+
+  <!-- start: dfs(node) -->
+  <rect x="150" y="44" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="68" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">dfs(node)</text>
+
+  <path d="M 240 84 L 240 100" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- diamond: node == null? -->
+  <polygon points="240,104 360,148 240,192 120,148" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="240" y="144" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">node == null ?</text>
+  <text x="240" y="162" text-anchor="middle" font-size="10.5" fill="#777">空子树？</text>
+
+  <!-- Yes -> return (+inf, -inf, 0) -->
+  <path d="M 360 148 L 420 148 L 420 220" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="376" y="140" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+  <rect x="336" y="224" width="130" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="401" y="244" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">return (+∞, -∞, 0)</text>
+  <text x="401" y="260" text-anchor="middle" font-size="9.5" fill="#888">空集边界，size=0</text>
+
+  <!-- No -> recurse -->
+  <path d="M 240 192 L 240 212" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="258" y="206" font-size="11" fill="#b85450" font-weight="bold">No</text>
+
+  <rect x="90" y="216" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="234" text-anchor="middle" font-size="10.5" fill="#333">后序递归：</text>
+  <text x="240" y="250" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">(lmin,lmax,lsize)=dfs(left), (rmin,rmax,rsize)=dfs(right)</text>
+
+  <path d="M 240 260 L 240 278" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- diamond: BST condition -->
+  <polygon points="240,282 380,332 240,382 100,332" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="240" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">lsize≥0 且 rsize≥0</text>
+  <text x="240" y="340" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">且 lmax &lt; val &lt; rmin ?</text>
+  <text x="240" y="358" text-anchor="middle" font-size="10" fill="#777">两子是 BST 且值域不越界？</text>
+
+  <!-- Yes -> compute and return tuple -->
+  <path d="M 380 332 L 420 332 L 420 396" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="396" y="324" font-size="11" fill="#4a7a3a" font-weight="bold">Yes</text>
+
+  <rect x="300" y="400" width="160" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="380" y="420" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">s = lsize + rsize + 1</text>
+  <text x="380" y="436" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">maxSize = max(maxSize, s)</text>
+  <text x="380" y="454" text-anchor="middle" font-size="10" fill="#555">return (min(lmin,val),</text>
+  <text x="380" y="468" text-anchor="middle" font-size="10" fill="#555">max(rmax,val), s)</text>
+
+  <!-- No -> return (0,0,-1) sentinel -->
+  <path d="M 240 382 L 240 404" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="258" y="398" font-size="11" fill="#b85450" font-weight="bold">No</text>
+
+  <rect x="100" y="408" width="150" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="175" y="428" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return (0, 0, -1)</text>
+  <text x="175" y="444" text-anchor="middle" font-size="9.5" fill="#888">非 BST 哨兵，向上传播</text>
+
+  <!-- note bottom -->
+  <rect x="60" y="500" width="360" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="520" text-anchor="middle" font-size="10.5" fill="#555">空子树的 (+∞,-∞) 使叶子节点自动走 Yes 分支，无需特判</text>
+</svg>

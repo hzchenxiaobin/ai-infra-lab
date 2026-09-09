@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">合并规则：拼接缝两侧的 c 与 d 不能同时为 1</text>
+  <text x="260" y="42" text-anchor="middle" font-size="11" fill="#888">父节点 = merge(左孩子 L, 右孩子 R)：L 的右端状态 c、R 的左端状态 d，枚举 4 种拼接方式</text>
+
+  <!-- left segment -->
+  <rect x="56" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="78" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <rect x="100" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="122" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <rect x="144" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="166" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <rect x="188" y="64" width="44" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="85" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">m</text>
+  <text x="134" y="118" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">左区间 [l, m]，右端状态 = c</text>
+
+  <!-- seam -->
+  <text x="260" y="90" text-anchor="middle" font-size="22" fill="#b85450" font-weight="bold">✗</text>
+  <text x="260" y="112" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">相邻！不能同选</text>
+
+  <!-- right segment -->
+  <rect x="288" y="64" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="85" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">m+1</text>
+  <rect x="332" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="354" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <rect x="376" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="398" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <rect x="420" y="64" width="44" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="442" y="85" text-anchor="middle" font-size="10" fill="#888">·</text>
+  <text x="376" y="118" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">右区间 [m+1, r]，左端状态 = d</text>
+
+  <!-- formula -->
+  <rect x="80" y="134" width="360" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="156" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">f[a][b] = max( L.f[a][c] + R.f[d][b] )</text>
+  <text x="260" y="176" text-anchor="middle" font-size="10" fill="#888">(c, d) ∈ {(0,0), (0,1), (1,0)}，跳过 c = d = 1</text>
+
+  <!-- four chips -->
+  <rect x="40" y="206" width="104" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="92" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">(c=0, d=0) ✓</text>
+  <text x="92" y="244" text-anchor="middle" font-size="9" fill="#4a7a3a">缝两边都不选</text>
+  <rect x="156" y="206" width="104" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="208" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">(c=0, d=1) ✓</text>
+  <text x="208" y="244" text-anchor="middle" font-size="9" fill="#4a7a3a">只选 R 的左端</text>
+  <rect x="272" y="206" width="104" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="324" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">(c=1, d=0) ✓</text>
+  <text x="324" y="244" text-anchor="middle" font-size="9" fill="#4a7a3a">只选 L 的右端</text>
+  <rect x="388" y="206" width="104" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="226" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">(c=1, d=1) ✗</text>
+  <text x="440" y="244" text-anchor="middle" font-size="9" fill="#b85450">nums[m] 与 nums[m+1] 相邻</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="274" width="452" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="266" y="294" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">查询答案 = 根节点四个值取 max：f[0][0] ≥ 0 恒成立（空子序列兜底），负元素天然被滤掉</text>
+  <text x="266" y="313" text-anchor="middle" font-size="10.5" fill="#555">区间长度为 2 时 f[1][1] = −∞ 由合并规则自然涌现（两端相邻），不是特判</text>
+  <text x="266" y="332" text-anchor="middle" font-size="10.5" fill="#555">单点修改只改一个叶子再向上 O(log n) 次 merge——用不上懒标记，pushup 版线段树足矣</text>
+</svg>

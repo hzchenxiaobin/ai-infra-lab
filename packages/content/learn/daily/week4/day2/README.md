@@ -1,0 +1,580 @@
+## Day 2：手写 Softmax 与 LayerNorm Kernel
+
+### 🎯 目标
+
+通过今天的学习，你将：
+
+1. 理解 **朴素 Softmax 的数值溢出问题**，掌握 safe softmax（减 max）的数学等价性与数值稳定性
+2. 学会用 **三遍扫描**实现 row-wise Softmax，复用 Week 2 的 `warpReduceSum` / `warpReduceMax` 搭出 `blockReduceSum` / `blockReduceMax`
+3. 理解 **LayerNorm 的两次 reduce**（先 mean 后 variance），能解释为什么方差依赖均值而无法合并
+4. 实现并运行 Softmax + LayerNorm Kernel，与 CPU 参考结果误差 < 1e-5
+5. 能用 arithmetic intensity 判定这两个算子是 **memory-bound**，并说出至少 3 个优化方向
+
+> 💡 **为什么重要**：Softmax 和 LayerNorm 是 Transformer 里最典型的 memory-bound 算子，也是面试"手撕 reduce"的标配。今天把 Week 2 学的 Warp Shuffle 原语组装成完整的 block 级 kernel，是从"懂原语"到"会写算子"的关键一跃。Day 4 的 Triton 重写、Week 5 的 FlashAttention 都建立在今天的三遍扫描 + 两级 reduce 之上。
+
+---
+
+### 学前导读：为什么 Softmax/LayerNorm 是 Transformer 里最该手写的算子
+
+Day 1 我们用 `torch.profiler` 看到 Transformer 单层里有 6 类算子：3 类 GEMM（4 个 Linear + QKᵀ + PV，compute-bound）+ Softmax + LayerNorm + GELU（memory-bound）。其中 GEMM 由 cuBLAS/CUTLASS 包办，普通开发者几乎不会去手写；而 **Softmax 和 LayerNorm 才是手写 kernel 的"练手圣地"**：
+
+- 它们的核心是 **reduce（归约）**——正是 Week 2 Day 1 学的 Warp Shuffle 的直接应用场景
+- 它们是 **memory-bound**，AI ≈ 0.4 ~ 0.6 FLOP/Byte，优化空间不在算力而在访存
+- 它们的并行结构清晰（一行一个 block），代码量适中（~50 行 kernel），适合教学
+- 它们是 FlashAttention 的前置知识——FlashAttention 的 online softmax 就是把今天的三遍扫描压成两遍
+
+| 算子 | reduce 次数 | AI (FLOP/Byte) | 瓶颈 | 今日实现 |
+|------|------------|----------------|------|---------|
+| Softmax | 2（max + sum） | ~0.375 | memory-bound | 三遍扫描 safe softmax |
+| LayerNorm | 2（mean + variance） | ~0.6 | memory-bound | 两次 reduce + affine |
+
+> 💡 **一句话总结**：Softmax/LayerNorm 不难，但它们是"reduce 工程化"的最小完整案例——掌握了今天这两段代码，你就拥有了写任何 row-wise reduce 算子的模板。
+
+---
+
+### 理论学习
+
+#### 2.1 Softmax 数值稳定性与 safe softmax
+
+![Safe Softmax 三遍扫描 vs 朴素 Softmax 溢出](../images/safe_softmax_three_pass.svg)
+
+**朴素 Softmax 的问题**：
+
+```
+朴素 Softmax（会溢出）：
+ yi = exp(xi) / Σ exp(xj)
+ 问题：当 xi = 1000 时，exp(1000) = Inf，结果全 NaN
+```
+
+FP16 的最大值只有 ~65504，而 $\exp(11) \approx 60000$ 已经接近溢出边界。在混合精度训练中，logits 一旦未归一化，朴素 softmax 立刻爆 NaN。
+
+**Safe Softmax（减去 max）**：
+
+```
+m = max(xj)
+yi = exp(xi - m) / Σ exp(xj - m)
+原理：exp(xi - m) ≤ exp(0) = 1，不会溢出
+```
+
+**数学等价性证明**：
+
+```
+exp(xi - m) / Σ exp(xj - m)
+ = exp(xi)·exp(-m) / (Σ exp(xj))·exp(-m)
+ = exp(xi) / Σ exp(xj) ← 分子分母同时乘 exp(-m)，结果不变
+```
+
+减 max 不改变结果，但把所有 exp 的输入压到 `(-∞, 0]`，数值上彻底安全。
+
+##### 三遍扫描 vs 两遍扫描 vs FlashAttention
+
+| 方法 | 扫描次数 | 操作 | 适用场景 |
+|------|---------|------|---------|
+| 三遍扫描 | 3 | ① 求 max ② 求 sum(exp(x-m)) ③ 归一化 | 教学版，清晰易读 ← **今日实现** |
+| 两遍扫描（online） | 2 | ① 同时求 max 和 sum ② 归一化 | 生产版，减少一次全局读 |
+| FlashAttention 版 | 1.x | 分块 online，边算边更新 | 极致优化，Week 5 主题 |
+
+本日实现**三遍扫描版**（教学清晰），两遍 online 版留作扩展实验，分块版留到 Week 5 FlashAttention。
+
+#### 2.2 Row-wise 并行与两级 Block Reduce
+
+![Block 级 Reduce 两级结构](../images/block_reduce_two_level.svg)
+
+**并行映射策略**：
+
+![Row-wise 并行映射：一个 Block 处理一行](../images/softmax_row_parallel_mapping.svg)
+
+**为什么一个 block 处理一行？** 因为 softmax 的归一化分母 $\sum \exp(x_j - m)$ 需要**本行所有元素**参与 reduce，跨行无依赖。把一行放在一个 block 内，可以用 shared memory + `__syncthreads` 高效协作，无需跨 block 通信。
+
+##### 两级 Block Reduce 的结构（复用 Week 2 Day 1）
+
+一个 block 可能有 256 / 512 / 1024 个线程（8/16/32 个 warp），而单次 `__shfl_down_sync` 只能归约一个 warp（32 lane）。因此需要两级：
+
+```
+第一级（Warp 级）：每个 warp 用 __shfl_down_sync 折半累加/取 max，结果存在 lane 0
+中转（Shared Memory）：lane 0 把 32 个 warp 的部分和写入 smem[32]
+第二级（Warp 0）：warp 0 的 lane 0~31 读取 smem，再做一次 warpReduce
+```
+
+关键工程细节：
+
+- `smem[32]` 正好放下 32 个 warp 的部分和——这就是 block 最多 32 个 warp（1024 线程）设计的来源
+- 两处 `__syncthreads()`：① 写 smem 后保证可见 ② 广播归约结果前保证 warp0 读到完整结果
+- 返回值只有 lane0 正确，必须经 `__shared__` 变量 + `__syncthreads` 广播给全 block
+- `blockReduceMax` 与 `blockReduceSum` 同构，仅把 `+=` 换成 `fmaxf`、初值换 `-INFINITY`
+
+```cuda
+// 复用 Week 2 Day 1 的 warp 原语
+__inline__ __device__ float warpReduceSum(float val) {
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1)
+        val += __shfl_down_sync(0xFFFFFFFF, val, offset);
+    return val;
+}
+
+__inline__ __device__ float blockReduceSum(float val, float* smem) {
+    int lane = threadIdx.x % 32;
+    int wid = threadIdx.x / 32;
+    val = warpReduceSum(val);
+    if (lane == 0)
+        smem[wid] = val; // 第一级结果写 smem
+    __syncthreads();
+    int numWarps = (blockDim.x + 31) / 32;
+    val = (lane < numWarps) ? smem[lane] : 0.0f;
+    if (wid == 0)
+        val = warpReduceSum(val); // 第二级 warp0 收尾
+    return val;
+}
+```
+
+##### 为什么 Softmax 是 memory-bound？
+
+Safe softmax $y_i = \exp(x_i - m) / \sum \exp(x_j - m)$ 对每个元素只做约 3 次浮点运算，但要读写完整的 4-byte 数据。以 FP32、单行 D 个元素为例：
+
+![Softmax Arithmetic Intensity：理论 vs 三遍扫描实际](../images/softmax_ai_analysis.svg)
+
+这就是表格中 $\text{AI} \approx 0.375$ 的来源——它代表 softmax **算法本身的理论下界**（假设无冗余读）。而三遍扫描版每元素从 HBM 读 3 次（Pass 1 求 max、Pass 2 求 sum、Pass 3 归一化），实际 AI ≈ 0.31 更低。两个口径都远低于 Ridge Point 58.45，结论一致：**Softmax 是纯 memory-bound**。三遍扫描的冗余读（3× vs 1×）是 online softmax（两遍）和 FlashAttention（分块）要消除的浪费。
+
+#### 2.3 LayerNorm 公式与两次 reduce
+
+![LayerNorm 两次 Reduce 流程](../images/layernorm_two_reduce.svg)
+
+**LayerNorm 公式**：
+
+```
+输入: x ∈ R^N（一行 N 个元素）
+参数: γ (gamma), β (beta) ∈ R^N
+
+计算:
+ μ = (1/N) Σ xi （均值）
+ σ² = (1/N) Σ (xi - μ)² （方差）
+ yi = γi · (xi - μ) / sqrt(σ² + ε) + βi （归一化 + affine）
+```
+
+##### LayerNorm 的 reduce 需求
+
+LayerNorm 需要**两次 reduce**：
+
+1. 第一次：求 $\mu = \text{mean}(x)$ → reduce sum，然后除以 N
+2. 第二次：求 $\sigma^2 = \text{mean}((x - \mu)^2)$ → reduce sum of squares，然后除以 N
+
+```
+Step 1: 所有线程协作求 sum(x) → μ = sum / N
+Step 2: 所有线程协作求 sum((x - μ)²) → σ² = sumSq / N
+Step 3: 所有线程协作做归一化: y = (x - μ) / sqrt(σ² + ε) * γ + β
+```
+
+> ⚠️ **注意：两次 reduce 不能合并**。第二次 reduce 依赖第一次的结果（μ），必须先算完均值才能算方差。这使得 LayerNorm 无法像 Softmax 那样用简单的 online 公式把两遍 reduce 压成一遍——Softmax 的 running max/sum 重整只需一次 $\exp(m_{\text{old}} - m_{\text{new}})$ 修正，而 LayerNorm 的 mean/variance 合并需要更复杂的 Welford 在线算法（Day 3 源码分析会讲 FasterTransformer 怎么压成一次）。
+>
+> 💡 **关于读次数的澄清**：本文档的默认实现里，Softmax（三遍扫描）和 LayerNorm（两次 reduce + 输出）都是从 HBM 读 3 次，二者相等。"多一次"只在拿 online Softmax（2 次读）去比 naive LayerNorm（3 次读）时才成立，那是**不同优化层级之间的错位比较**。各自做合并优化后——Softmax 用 online、LayerNorm 用 Welford——都降到 2 次读，依然对齐。数据依赖影响的是**合并的难度与算法选择**，而非**读次数的下界**。
+
+##### LayerNorm vs BatchNorm
+
+| 特性 | LayerNorm | BatchNorm |
+|------|-----------|-----------|
+| 归一化维度 | 沿 feature 维（一行） | 沿 batch 维（一列） |
+| 依赖 batch | 否（每样本独立） | 是（需 batch 统计） |
+| 推理行为 | 训练/推理一致 | 推理用 running mean/var |
+| 适用场景 | Transformer、RNN | CNN |
+
+Transformer 用 LayerNorm 而非 BatchNorm：因为序列长度可变、batch 可能只有 1（推理），BatchNorm 的 batch 统计不稳定。
+
+##### 为什么 LayerNorm 是 memory-bound？
+
+每个元素读 1 次（x）、写 1 次（y），$\gamma/\beta$ 另读，但只做 ~5 次浮点运算（减、平方、rsqrt、乘、加）：
+
+```
+Arithmetic Intensity ≈ 5 / 8 ≈ 0.6 FLOP/Byte
+远低于 Ridge Point（~58.45）→ 纯 memory-bound
+```
+
+---
+
+### Coding 任务：手写 Softmax + LayerNorm Kernel
+
+#### 任务 1：创建 `kernels/softmax_layernorm.cu`
+
+下面是完整可编译的 kernel 实现。代码分三部分：① 复用 Week 2 的 warp 原语 ② 搭出 blockReduceSum / blockReduceMax ③ Softmax kernel（三遍扫描）+ LayerNorm kernel（两次 reduce）。完整文件见 [kernels/softmax_layernorm.cu](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/week4/day2/kernels/softmax_layernorm.cu)。
+
+```cuda
+// kernels/softmax_layernorm.cu —— Softmax + LayerNorm 完整实现
+// 编译命令: nvcc -o softmax_layernorm kernels/softmax_layernorm.cu -O3 -arch=sm_120
+// 运行命令: ./softmax_layernorm
+
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+
+// ============================================================
+// 复用 Week 2 Day 1 的 Warp Shuffle 原语
+// ============================================================
+__inline__ __device__ float warpReduceSum(float val) {
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1)
+        val += __shfl_down_sync(0xFFFFFFFF, val, offset);
+    return val;
+}
+
+__inline__ __device__ float warpReduceMax(float val) {
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1)
+        val = fmaxf(val, __shfl_down_sync(0xFFFFFFFF, val, offset));
+    return val;
+}
+
+// ============================================================
+// Block 级 reduce：warp 级 → shared memory → warp 0 最终 reduce
+// ============================================================
+__inline__ __device__ float blockReduceSum(float val, float* smem) {
+    int lane = threadIdx.x % 32;
+    int wid = threadIdx.x / 32;
+    val = warpReduceSum(val);
+    if (lane == 0)
+        smem[wid] = val;
+    __syncthreads();
+    int numWarps = (blockDim.x + 31) / 32;
+    val = (lane < numWarps) ? smem[lane] : 0.0f;
+    if (wid == 0)
+        val = warpReduceSum(val);
+    return val;
+}
+
+__inline__ __device__ float blockReduceMax(float val, float* smem) {
+    int lane = threadIdx.x % 32;
+    int wid = threadIdx.x / 32;
+    val = warpReduceMax(val);
+    if (lane == 0)
+        smem[wid] = val;
+    __syncthreads();
+    int numWarps = (blockDim.x + 31) / 32;
+    val = (lane < numWarps) ? smem[lane] : -INFINITY;
+    if (wid == 0)
+        val = warpReduceMax(val);
+    return val;
+}
+
+// ============================================================
+// Softmax Kernel：一行一个 block，三遍扫描 safe softmax
+// 输入: input[M][D]，输出: output[M][D]
+// ============================================================
+__global__ void softmax_kernel(const float* __restrict__ input, float* __restrict__ output, int M, int D) {
+    int row = blockIdx.x;
+    if (row >= M)
+        return;
+    const float* in_row = input + row * D;
+    float* out_row = output + row * D;
+
+    __shared__ float smem[32]; // warp 间 reduce 缓冲区
+    __shared__ float row_max;
+    __shared__ float row_sum;
+
+    int tid = threadIdx.x;
+
+    // Step 1: 求 max（数值稳定性）
+    float local_max = -INFINITY;
+    for (int i = tid; i < D; i += blockDim.x) {
+        local_max = fmaxf(local_max, in_row[i]);
+    }
+    local_max = blockReduceMax(local_max, smem);
+    if (tid == 0)
+        row_max = local_max;
+    __syncthreads();
+
+    // Step 2: 求 sum(exp(x - max))
+    float local_sum = 0.0f;
+    for (int i = tid; i < D; i += blockDim.x) {
+        local_sum += expf(in_row[i] - row_max);
+    }
+    local_sum = blockReduceSum(local_sum, smem);
+    if (tid == 0)
+        row_sum = local_sum;
+    __syncthreads();
+
+    // Step 3: 归一化写出
+    float inv_sum = 1.0f / row_sum;
+    for (int i = tid; i < D; i += blockDim.x) {
+        out_row[i] = expf(in_row[i] - row_max) * inv_sum;
+    }
+}
+
+// ============================================================
+// LayerNorm Kernel：一行一个 block，两次 reduce
+// 输入: input[M][N]，参数: gamma[N], beta[N]，输出: output[M][N]
+// ============================================================
+__global__ void layernorm_kernel(const float* __restrict__ input, const float* __restrict__ gamma,
+                                 const float* __restrict__ beta, float* __restrict__ output, int M, int N, float eps) {
+    int row = blockIdx.x;
+    if (row >= M)
+        return;
+    const float* in_row = input + row * N;
+    float* out_row = output + row * N;
+
+    __shared__ float smem[32];
+    __shared__ float row_mean;
+    __shared__ float row_rstd;
+
+    int tid = threadIdx.x;
+
+    // Step 1: 求 mean = sum(x) / N
+    float local_sum = 0.0f;
+    for (int i = tid; i < N; i += blockDim.x) {
+        local_sum += in_row[i];
+    }
+    local_sum = blockReduceSum(local_sum, smem);
+    if (tid == 0)
+        row_mean = local_sum / N;
+    __syncthreads();
+
+    // Step 2: 求 variance = sum((x - mean)^2) / N，rstd = 1/sqrt(var + eps)
+    float local_sq = 0.0f;
+    for (int i = tid; i < N; i += blockDim.x) {
+        float diff = in_row[i] - row_mean;
+        local_sq += diff * diff;
+    }
+    local_sq = blockReduceSum(local_sq, smem);
+    if (tid == 0)
+        row_rstd = rsqrtf(local_sq / N + eps);
+    __syncthreads();
+
+    // Step 3: 归一化 + affine: y = (x - mean) * rstd * gamma + beta
+    for (int i = tid; i < N; i += blockDim.x) {
+        out_row[i] = (in_row[i] - row_mean) * row_rstd * gamma[i] + beta[i];
+    }
+}
+```
+
+Host 端的验证逻辑（`cpuSoftmax` / `cpuLayerNorm` / `checkResult` / `main`）见 [kernels/softmax_layernorm.cu](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/week4/day2/kernels/softmax_layernorm.cu) 文件后半部分，核心是：随机初始化 `M=128, D=1024` 的矩阵，分别跑 GPU kernel 和 CPU 参考，用 `maxDiff < 1e-5` 判定 PASS。
+
+#### 为什么 Softmax 要读三遍 HBM？
+
+这是三遍扫描的核心代价。看 Softmax kernel 的三个 `for` 循环：
+
+```cuda
+// Pass 1: 读 in_row[i] 求 max
+for (int i = tid; i < D; i += blockDim.x)
+    local_max = fmaxf(local_max, in_row[i]);
+// Pass 2: 再读 in_row[i] 求 sum
+for (int i = tid; i < D; i += blockDim.x)
+    local_sum += expf(in_row[i] - row_max);
+// Pass 3: 第三次读 in_row[i] 写出
+for (int i = tid; i < D; i += blockDim.x)
+    out_row[i] = expf(in_row[i] - row_max) * inv_sum;
+```
+
+每个元素从 HBM 读 3 次（如果 L2 cache 没命中）、写 1 次。这正是 memory-bound 的来源，也是 online softmax（两遍）和 FlashAttention（分块）要消除的冗余。今天先理解三遍的清晰性，优化留到扩展实验。
+
+#### 任务 2：编译与运行
+
+```bash
+# 编译（根据 GPU 架构选择 arch 参数）
+# Blackwell (RTX 5090): sm_120
+nvcc -o softmax_layernorm kernels/softmax_layernorm.cu -O3 -arch=sm_120
+
+# 运行
+./softmax_layernorm
+```
+
+**预期输出**：
+
+```text
+=== Softmax + LayerNorm Kernel Test ===
+Config: M=128, D=1024, threads=256
+
+[Softmax]
+  Softmax vs CPU: maxDiff = 4.19e-09 (PASS)
+  Time: 0.063 ms
+[LayerNorm]
+  LayerNorm vs CPU: maxDiff = 1.07e-06 (PASS)
+  Time: 0.015 ms
+```
+
+两个 `PASS` 且 `maxDiff < 1e-5` 即正确。Softmax 误差通常更小（~1e-7，因为只有 exp/add/div），LayerNorm 略大（~1e-6，因为多了平方和 rsqrt）。
+
+#### 任务 3：用 ncu 验证 memory-bound
+
+```bash
+# 编译带 lineinfo 的版本（ncu Source View 需要）
+nvcc -o softmax_layernorm_nl kernels/softmax_layernorm.cu -O3 -arch=sm_120 -lineinfo
+
+# profile 两个 kernel 的 SM / DRAM Throughput
+ncu --metrics \
+ dram__throughput.avg.pct_of_peak_sustained_elapsed,\
+ sm__throughput.avg.pct_of_peak_sustained_elapsed,\
+ gpu__time_duration.sum \
+ --kernel-name regex:"softmax_kernel|layernorm_kernel" \
+ ./softmax_layernorm_nl
+```
+
+**观察重点**：
+
+| Kernel | 预期 DRAM Throughput | 预期 SM Throughput | 判定 |
+|--------|---------------------|-------------------|------|
+| `softmax_kernel` | 50-70% | 15-25% | **Memory-bound**（DRAM >> SM） |
+| `layernorm_kernel` | 50-70% | 15-25% | **Memory-bound**（DRAM >> SM） |
+
+如果 DRAM Throughput 未达 80%+，说明带宽还没喂饱——这正是 Week 2 学过的 float4 向量化加载的提升空间。也可以加 `smsp__average_warps_issue_stalled_long_scoreboard.pct` 看 stall 原因，预期 Long Scoreboard（等内存）占比最高。
+
+#### 任务 4：LeetGPU 在线题目 —— Layer Normalization
+
+**题目链接**：<https://leetgpu.com/challenges/layernorm>
+
+**与今日知识的关联**：
+
+本题就是今天 `layernorm_kernel` 的直接实战——在 WebGPU 上实现 LayerNorm：一遍求 `mean`，一遍求 `var`（依赖 `mean`，不能合并），最后做归一化 + affine。核心结构与今天 CUDA 版的两遍 scan + shared memory reduction 完全同构，只是把 `blockReduceSum` / `__shfl_down_sync` 换成 WebGPU 的 workgroup reduce（`workgroupUniformLoad` + 循环折半，或手写 shared buffer + `barrier`）。把今天的两遍 scan 思路平移过去即可。
+
+> 💡 提交后在 [LeetGPU Layer Normalization 题目](https://leetgpu.com/challenges/layernorm)上记录通过耗时，用浏览器开发者工具对比不同 `workgroup_size` / `tile` 的性能差异。进阶可尝试 Welford 单遍 scan 优化（把 mean/var 合并成一次遍历），思路同今日扩展实验 3。
+
+#### 任务 5：LeetCode 面试题（10 周计划 · 第 4 周 Day 2）
+
+> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 4 周「栈、队列与单调栈」Day 2（表达式与计算器），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+
+| 题目 | 难度 | 核心套路 | 题解 |
+|------|------|---------|------|
+| [394. 字符串解码](https://leetcode.cn/problems/decode-string/) | 中等 | 栈 / 递归解码 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/394_字符串解码.html) |
+| [224. 基本计算器](https://leetcode.cn/problems/basic-calculator/) | 困难 | 栈处理括号与一元符号 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/224_基本计算器.html) |
+| [227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/) | 中等 | 栈处理乘除优先级 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/227_基本计算器II.html) |
+| [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) | 中等 | 单调栈删大留小 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/402_移掉K位数字.html) |
+| [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/) | 中等 | 单调栈 + 贪心 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/316_去除重复字母.html) |
+
+---
+
+### 扩展实验
+
+#### 实验 1：修改 D 观察 memory-bound 的性能尺度律
+
+把 `D` 分别改为 768、1024、4096，重新运行，记录时间并解释：
+
+```cuda
+const int D = 4096; // 从 1024 改成 4096
+```
+
+**思考问题**：D 翻倍时，kernel 时间应该接近翻倍还是 4 倍？为什么？
+> 提示：D 决定了每行的 HBM 读写量（$2D \times 4B$），三遍扫描使总读量约 `3D`。时间是线性的，因为 memory-bound kernel 的耗时≈ `Bytes / Bandwidth`，与 D 成正比。reduce 次数不变（仍是 warp shuffle 的固定 5 步）。
+
+#### 实验 2：实现 Online Softmax（两遍扫描）
+
+把三遍扫描压缩为两遍——第一遍同时求 max 和 sum，第二遍归一化。核心是 online 更新公式：
+
+```cuda
+// online softmax：一次遍历同时维护 running max 和 running sum
+float m_old = m_val;
+m_val = fmaxf(m_val, x);
+s_val = s_val * expf(m_old - m_val) + expf(x - m_val);
+```
+
+对比三遍扫描的 HBM 读次数（3D → 2D）和实测时间。
+
+**思考问题**：online 版本为什么能减少一次 HBM 读？它的代价是什么？
+> 提示：online 版本在遍历中实时"重整"已累积的 sum（乘 $\exp(m_{\text{old}} - m_{\text{new}})$），代价是每个元素多一次 exp 和乘法——用少量额外计算换一次全局访存，对 memory-bound 算子是划算的。这正是 FlashAttention 的基石。
+
+#### 实验 3：LayerNorm 用 Welford 合并成一次 reduce
+
+参考 Welford 在线均值/方差算法，把 mean 和 variance 在**一次遍历**内同时求出：
+
+![Welford 在线均值/方差算法](../images/welford_online_variance.svg)
+
+对比两次 reduce 版本与 Welford 一次 reduce 版本的 HBM 读次数（2N → N）和数值精度差异。
+
+**思考问题**：Welford 并行化（多线程合并各自的 mean/M2/count）比串行复杂在哪？
+> 提示：需要合并两个"统计块"的 (mean, M2, count)，合并公式涉及按 count 加权。这就是 Day 3 要读的 FasterTransformer `generalLayerNorm` 的核心优化点。
+
+### 验证 Checklist
+
+- [ ] 能解释 safe softmax 为什么要减 max（数值稳定性 + 数学等价性证明）
+- [ ] 能画出 Softmax 三遍扫描的流程（求 max → 求 sum → 归一化）及每遍的 HBM 读写量
+- [ ] 能复用 Week 2 的 `warpReduceSum`/`warpReduceMax` 实现 `blockReduceSum`/`blockReduceMax`，并说出两处 `__syncthreads` 的作用
+- [ ] Softmax Kernel 编译运行正确，与 CPU 对比误差 < 1e-5
+- [ ] LayerNorm Kernel 编译运行正确，与 CPU 对比误差 < 1e-5
+- [ ] 能解释 LayerNorm 为什么需要两次 reduce（方差依赖均值，不能合并）
+- [ ] 能用 ncu 验证 Softmax 是 memory-bound（DRAM Throughput >> SM Throughput）
+
+---
+
+### 今日总结
+
+Day 2 我们把 Week 2 的 Warp Shuffle 原语组装成了两个完整的 Transformer 算子：
+
+1. **Safe Softmax**：减 max 保证数值稳定，三遍扫描（max → sum → normalize），数学上与朴素 softmax 完全等价
+2. **两级 Block Reduce**：warp shuffle → shared memory → warp0 收尾，是 256/512/1024 线程协作 reduce 的标准模板
+3. **LayerNorm 两次 reduce**：先 mean 后 variance，第二次依赖第一次结果——这是无法合并的根本原因
+4. **Memory-bound 判定**：Softmax AI≈0.375、LayerNorm AI≈0.6，远低于 Ridge Point 58.45，优化重点在减少 HBM 读写
+5. **工程细节**：`__shared__` 变量广播 + `__syncthreads` 是 block reduce 后把结果分发给全 block 的关键
+
+掌握这两段代码后，你就拥有了写任何 row-wise reduce 算子的模板。Day 3 会读 PyTorch / FasterTransformer 的官方实现，看工业版比今天的版本多了哪些优化（向量化、Welford、register 缓存）。
+
+---
+
+### 面试要点
+
+1. **Softmax 为什么要减去 max？不减会怎样？**
+
+<details>
+<summary>点击查看答案</summary>
+
+ - **数值稳定性**：$\exp(1000) = \text{Inf}$，直接算 $\exp(x_i)/\sum\exp(x_j)$ 会溢出。减去 max 后 $\exp(x_i - m) \le 1$，不会溢出
+ - **数学等价性**：$\exp(x_i - m) / \sum \exp(x_j - m) = \exp(x_i) \cdot \exp(-m) / (\sum \exp(x_j)) \cdot \exp(-m) = \exp(x_i) / \sum \exp(x_j)$，结果完全一致
+ - **不减的后果**：当输入有较大值（如未归一化的 logits），exp 立即溢出为 Inf/NaN
+ - **实际场景**：FP16 下更易溢出（max ≈ 65504，$\exp(11) \approx 60000$），所以混合精度训练中 softmax 必须用 FP32 做 reduce
+
+</details>
+
+
+2. **LayerNorm 需要几次 reduce？每次 reduce 什么？为什么不能合并？**
+
+<details>
+<summary>点击查看答案</summary>
+
+ - **两次 reduce**：① $\mu = \text{mean}(x)$ → reduce sum 后除 D ② $\sigma^2 = \text{mean}((x - \mu)^2)$ → reduce sum of squares 后除 D
+ - **不能合并的原因**：第二次 reduce 依赖第一次的结果（μ），必须先算完均值才能算 $(x - \mu)^2$，存在强数据依赖
+ - **并行策略**：一行一个 block，block 内用 warp shuffle + shared memory 做两级 reduce
+ - **Welford 例外**：用在线算法可把两次合并成一次遍历（Day 3 的 FasterTransformer 做法），但合并多个线程的 Welford 统计量较复杂
+
+</details>
+
+
+3. **为什么 Softmax/LayerNorm 是 memory-bound？如何优化？**
+
+<details>
+<summary>点击查看答案</summary>
+
+ - **Arithmetic intensity 低**：Softmax 每元素读 1 次写 1 次（8 bytes），做 ~3 次运算，AI ≈ 0.375 FLOP/Byte；LayerNorm AI ≈ 0.6，都远低于 Ridge Point（~58.45）
+ - **三遍扫描放大了读量**：Softmax 每元素从 HBM 读 3 次（三遍扫描），这是 memory-bound 的直接来源
+ - **优化方向**：
+ 1. **Kernel Fusion**：把 Softmax/LayerNorm 与相邻算子融合，避免中间结果写回 HBM（最重要）
+ 2. **向量化加载**：用 `float4` 做 128-bit 加载，减少 4x 加载指令（Week 2）
+ 3. **减少 reduce 次数**：online softmax 三遍→两遍；Welford 把 LayerNorm 两次→一次
+ 4. **FP16/BF16 存储**：减少 HBM 读写量（但 reduce 用 FP32 保精度）
+
+</details>
+
+
+4. `blockReduceSum` **的两级结构是怎样的？为什么需要两级？**
+
+<details>
+<summary>点击查看答案</summary>
+
+ - **为什么两级**：单次 `__shfl_down_sync` 只能归约一个 warp（32 lane），但一个 block 可达 1024 线程（32 个 warp），跨 warp 通信必须借助 shared memory
+ - **第一级（Warp 级）**：每个 warp 用 5 步 `__shfl_down_sync`（offset=16→8→4→2→1）归约，结果存在各自 lane 0
+ - **中转（Shared Memory）**：lane 0 把 32 个 warp 的部分和写入 `smem[32]`，`__syncthreads`
+ - **第二级（Warp 0）**：warp 0 的 lane 0~31 读 smem，再做一次 warpReduce，lane 0 持有 block 级总和
+ - **广播**：`if (tid==0) shared_var = val; __syncthreads();` 把结果分发给全 block
+ - `smem[32]` **的由来**：正好放下最多 32 个 warp 的部分和，这也是 block 最多 32 warp 设计的来源
+
+</details>
+
+
+5. **FP16 训练时 Softmax/LayerNorm 的 reduce 为什么要用 FP32？**
+
+<details>
+<summary>点击查看答案</summary>
+
+ - **FP16 溢出风险**：FP16 max ≈ 65504，$\exp(x)$ 在 x > 11 时就接近溢出（$\exp(11) \approx 60000$）
+ - **累加精度**：FP16 尾数只有 10 位（约 3 位有效十进制），多次累加 exp 值会丢失精度
+ - **标准做法**：输入 FP16 → cast 到 FP32 做 reduce（max/sum/mean/variance）→ cast 回 FP16 输出
+ - **本日代码**：全程 FP32（教学清晰），Day 3 会看到 PyTorch/FT 的 FP16→FP32→FP16 混合精度路径
+
+---
+
+</details>
+

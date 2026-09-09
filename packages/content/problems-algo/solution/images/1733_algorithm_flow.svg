@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#999"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：过滤 + 枚举语言贪心
+  </text>
+
+  <!-- Step 1: build language sets -->
+  <rect x="140" y="48" width="280" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">构建语言集合 langSet[i] = set(languages[i])</text>
+  <path d="M280,82 L280,94" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: filter friendships -->
+  <rect x="120" y="96" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="118" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">过滤好友：保留 langSet[u] ∩ langSet[v] = ∅ 的对</text>
+  <path d="M280,130 L280,142" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: collect needy users -->
+  <rect x="120" y="144" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="166" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">收集需教用户集合 S（未满足好友对中的去重用户）</text>
+  <path d="M280,178 L280,190" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: init -->
+  <rect x="160" y="192" width="240" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="214" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">minTeach = ∞，L = 1</text>
+  <path d="M280,226 L280,238" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: L <= n? -->
+  <polygon points="280,240 360,270 280,300 200,270" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="268" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">L ≤ n ?</text>
+  <text x="280" y="284" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">(枚举下一门语言)</text>
+
+  <!-- No → return -->
+  <path d="M360,270 L422,270" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="382" y="264" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">否</text>
+  <rect x="426" y="254" width="110" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="481" y="276" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold" filter="url(#rough2)">return minTeach</text>
+
+  <!-- Yes → count -->
+  <path d="M280,300 L280,312" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="310" font-size="10" fill="#446688" filter="url(#rough2)">是</text>
+
+  <!-- Step 6: count users in S not knowing L -->
+  <rect x="100" y="314" width="360" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="336" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">count = S 中不掌握语言 L 的人数</text>
+  <path d="M280,348 L280,360" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 7: update min + L++ -->
+  <rect x="120" y="362" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">minTeach = min(minTeach, count)，L++</text>
+
+  <!-- Loop back: from step 7 left side up to diamond left side -->
+  <path d="M120,379 L60,379 L60,270 L200,270" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="44" y="320" font-size="9" fill="#888" filter="url(#rough2)">继续</text>
+  <text x="44" y="334" font-size="9" fill="#888" filter="url(#rough2)">下一语言</text>
+
+  <!-- Note box -->
+  <rect x="350" y="314" width="190" height="70" fill="#fffdf3" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="445" y="334" text-anchor="middle" font-size="10" font-weight="bold" fill="#5a4a1a" filter="url(#rough2)">为何贪心成立？</text>
+  <g font-size="9" fill="#555" filter="url(#rough2)">
+    <text x="358" y="350">选定 L 后，S 中不掌握</text>
+    <text x="358" y="362">L 的人必须被教，</text>
+    <text x="358" y="374">无选择余地 → 唯一解</text>
+  </g>
+
+  <!-- ===== Complexity note ===== -->
+  <rect x="30" y="420" width="510" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="285" y="442" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">
+    时间 O(n·m + f·n) · 空间 O(m·n)
+  </text>
+  <text x="285" y="460" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">
+    n 语言数 · m 用户数 · f 好友对数，约束 n,m,f ≤ 500
+  </text>
+</svg>

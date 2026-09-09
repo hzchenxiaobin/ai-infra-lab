@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：建首末表 + 26 次区间去重</text>
+
+  <!-- Step 1: scan s to build first/last -->
+  <rect x="40" y="56" width="540" height="120" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="82" font-size="13" fill="#446688" font-weight="bold">步骤 1 · 一趟扫描 s，记录每个字符的最左/最右出现</text>
+
+  <g font-size="11" font-family="monospace">
+    <text x="60" y="108" fill="#444">for i in 0..n-1:</text>
+    <text x="80" y="126" fill="#446688">c = s[i]</text>
+    <text x="80" y="144" fill="#d6a040">if first[c] 未设: first[c] = i</text>
+    <text x="80" y="162" fill="#b85450">last[c] = i   // 始终更新</text>
+  </g>
+
+  <!-- arrow down -->
+  <path d="M 310 180 L 310 208" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: per char count distinct in between -->
+  <rect x="40" y="214" width="540" height="168" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="240" font-size="13" fill="#d6a040" font-weight="bold">步骤 2 · 对每个字符 x ∈ {a..z}，统计区间内不同字符</text>
+
+  <!-- decision diamond -->
+  <polygon points="200,258 280,288 200,318 120,288" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="294" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">first[x] &lt; last[x]?</text>
+
+  <text x="300" y="280" font-size="11" fill="#888">否</text>
+  <text x="160" y="338" font-size="11" fill="#888">是</text>
+
+  <!-- no branch -->
+  <rect x="320" y="272" width="120" height="40" rx="6" fill="#fafafa" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="380" y="297" text-anchor="middle" font-size="11" fill="#666">跳过，贡献 0</text>
+
+  <!-- yes branch: scan interval -->
+  <rect x="60" y="328" width="240" height="44" rx="6" fill="#fafafa" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="72" y="348" font-size="11" fill="#446688">遍历 s[first[x]+1 .. last[x]-1]</text>
+  <text x="72" y="365" font-size="11" fill="#d6a040">用 seen[26] 收集出现过的字符</text>
+
+  <path d="M 300 350 L 330 350" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="330" y="328" width="180" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="346" y="348" font-size="11" fill="#4a7a3a">ans += 区间内不同字符数</text>
+  <text x="346" y="365" font-size="10" fill="#888">(seen 中 true 的个数)</text>
+
+  <!-- arrow down -->
+  <path d="M 310 386 L 310 414" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- output -->
+  <rect x="180" y="420" width="260" height="30" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="440" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">返回 ans</text>
+</svg>

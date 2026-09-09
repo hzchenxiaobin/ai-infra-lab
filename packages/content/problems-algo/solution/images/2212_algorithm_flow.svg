@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：枚举 2^12 个 mask，记录最大得分方案</text>
+
+  <!-- Step 1: init -->
+  <rect x="200" y="44" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">best = -1, bestMask = 0</text>
+  <path d="M 280 80 L 280 96" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: for mask -->
+  <rect x="170" y="100" width="220" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">for mask in 0 .. 2^12 - 1</text>
+  <path d="M 280 136 L 280 152" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: compute cost & score -->
+  <rect x="150" y="156" width="260" height="48" fill="#fff" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="176" text-anchor="middle" font-size="11" fill="#333">cost = Σ(alice[k]+1), score = Σ k</text>
+  <text x="280" y="194" text-anchor="middle" font-size="11" fill="#555">（k 遍历 mask 中置位的区域 0..11）</text>
+  <path d="M 280 206 L 280 222" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: cost <= numArrows ? -->
+  <polygon points="280,226 360,256 280,286 200,256" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="252" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">cost ≤ numArrows</text>
+  <text x="280" y="268" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">且 score &gt; best ?</text>
+
+  <!-- Yes branch -->
+  <path d="M 200 256 L 110 256 L 110 300" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="150" y="250" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="50" y="304" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">best = score</text>
+  <text x="110" y="338" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">bestMask = mask</text>
+
+  <!-- No branch -->
+  <path d="M 360 256 L 450 256 L 450 300" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="410" y="250" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="390" y="304" width="120" height="40" fill="#fff" stroke="#888" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="322" text-anchor="middle" font-size="11" fill="#888">跳过该 mask</text>
+  <text x="450" y="338" text-anchor="middle" font-size="11" fill="#888">（箭不够或非更优）</text>
+
+  <!-- loop back -->
+  <path d="M 110 344 L 110 366 L 280 366" stroke="#446688" stroke-width="1.6" stroke-dasharray="5,3" fill="none" filter="url(#rough2)"/>
+  <path d="M 450 344 L 450 366 L 280 366" stroke="#446688" stroke-width="1.6" stroke-dasharray="5,3" fill="none" filter="url(#rough2)"/>
+  <path d="M 280 366 L 280 116" stroke="#446688" stroke-width="1.6" stroke-dasharray="5,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="360" font-size="10" fill="#888">下一个 mask</text>
+
+  <!-- final step -->
+  <rect x="170" y="380" width="220" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="400" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">剩余箭塞入 0 号区，返回 bobArrows</text>
+</svg>

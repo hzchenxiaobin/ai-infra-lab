@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">必胜策略：拿 n%4 颗，之后每轮「补到 4」</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">把 4 的倍数永远留在对手手里——剩余石头每轮稳定减少 4</text>
+
+  <!-- ===== Decision diamond ===== -->
+  <text x="30" y="82" font-size="11" fill="#446688" font-weight="bold">第 1 步：判定 n</text>
+  <polygon points="280,70 360,110 280,150 200,110" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="108" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">n % 4 == 0 ?</text>
+  <text x="280" y="122" text-anchor="middle" font-size="9" fill="#888">（n 是 4 的倍数吗）</text>
+
+  <!-- Yes branch -> lose -->
+  <path d="M 200 110 L 70 110 L 70 200" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="118" y="102" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="14" y="200" width="112" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="222" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return false</text>
+  <text x="70" y="236" text-anchor="middle" font-size="9" fill="#555">对手有完美应对</text>
+
+  <!-- No branch -> take n%4 -->
+  <path d="M 360 110 L 470 110 L 470 200" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="408" y="102" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="414" y="200" width="112" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="222" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return true</text>
+  <text x="470" y="236" text-anchor="middle" font-size="9" fill="#555">先拿 n % 4 颗</text>
+
+  <!-- ===== Round loop: each round sum = 4 ===== -->
+  <text x="30" y="270" font-size="11" fill="#446688" font-weight="bold">第 2 步起：每轮「你拿 a，对手拿 4−a」，合计 4</text>
+
+  <g font-size="10">
+    <!-- round boxes -->
+    <rect x="40" y="286" width="120" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="100" y="304" text-anchor="middle" fill="#4a7a3a" font-weight="bold">你拿 a 颗</text>
+    <text x="100" y="320" text-anchor="middle" font-size="9" fill="#555">a ∈ {1,2,3}</text>
+    <text x="100" y="334" text-anchor="middle" font-size="9" fill="#555">（对手先拿多少都行）</text>
+
+    <path d="M 160 316 L 210 316" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+    <rect x="210" y="286" width="120" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="270" y="304" text-anchor="middle" fill="#b85450" font-weight="bold">你补 4−a 颗</text>
+    <text x="270" y="320" text-anchor="middle" font-size="9" fill="#555">让本轮合计 = 4</text>
+    <text x="270" y="334" text-anchor="middle" font-size="9" fill="#555">剩余仍为 4 的倍数</text>
+
+    <path d="M 330 316 L 380 316" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <rect x="380" y="286" width="150" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+    <text x="455" y="304" text-anchor="middle" fill="#d6a040" font-weight="bold">剩余 n −= 4</text>
+    <text x="455" y="320" text-anchor="middle" font-size="9" fill="#555">对手始终面对 4 的倍数</text>
+    <text x="455" y="334" text-anchor="middle" font-size="9" fill="#555">直到 n=4 → 你收尾全拿</text>
+  </g>
+
+  <!-- loop arrow back -->
+  <path d="M 455 346 Q 455 362 270 362 Q 100 362 100 346" stroke="#888" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="374" text-anchor="middle" font-size="9" fill="#888">重复直到剩 ≤4（轮到对手，你全拿收尾）</text>
+</svg>

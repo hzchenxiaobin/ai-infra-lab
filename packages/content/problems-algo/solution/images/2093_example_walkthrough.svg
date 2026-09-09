@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="480" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例 1 演算：n=5, discounts=1</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">最优路径 0 → 1 → 4，对边 1-4(w=11) 用券，费用 4 + ⌊11/2⌋ = 9</text>
+
+  <!-- ===== graph ===== -->
+  <!-- 1-4 arc (discounted, red dashed) -->
+  <path d="M 178 92 Q 330 38 482 92" stroke="#b85450" stroke-width="2.4" fill="none" stroke-dasharray="6 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="330" y="48" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">w=11 → 用券 5</text>
+
+  <!-- 0-1 (optimal segment, red) -->
+  <path d="M 77 124 L 145 102" stroke="#b85450" stroke-width="2.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="100" y="110" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">w=4</text>
+
+  <!-- 1-2 -->
+  <path d="M 185 108 L 255 152" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="232" y="122" text-anchor="middle" font-size="10" fill="#446688">3</text>
+
+  <!-- 2-3 -->
+  <path d="M 297 162 L 363 162" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="330" y="156" text-anchor="middle" font-size="10" fill="#446688">3</text>
+
+  <!-- 3-4 -->
+  <path d="M 397 152 L 473 110" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="450" y="126" text-anchor="middle" font-size="10" fill="#446688">2</text>
+
+  <!-- nodes -->
+  <ellipse cx="60" cy="130" rx="20" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="60" y="135" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">0</text>
+
+  <ellipse cx="165" cy="100" rx="19" ry="17" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="165" y="105" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">1</text>
+
+  <ellipse cx="275" cy="162" rx="19" ry="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="275" y="167" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">2</text>
+
+  <ellipse cx="385" cy="162" rx="19" ry="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="385" y="167" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">3</text>
+
+  <ellipse cx="495" cy="100" rx="22" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="495" y="105" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">4</text>
+  <text x="495" y="86" text-anchor="middle" font-size="9" fill="#b85450">终点</text>
+
+  <line x1="30" y1="200" x2="550" y2="200" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ===== steps ===== -->
+  <text x="40" y="218" font-size="12" fill="#444" font-weight="bold">Dijkstra 状态扩展（弹出 → 压入新状态）</text>
+  <text x="350" y="218" font-size="10" fill="#888">k = 已用券数；标 ✓ 为关键状态</text>
+
+  <!-- column headers -->
+  <text x="34" y="244" font-size="10" fill="#888" font-weight="bold">步</text>
+  <text x="92" y="244" font-size="10" fill="#888" font-weight="bold" text-anchor="middle">弹出 (cost,城,k)</text>
+  <text x="370" y="244" font-size="10" fill="#888" font-weight="bold" text-anchor="middle">压入的新状态</text>
+
+  <!-- step rows helper: y centers 268, 304, 340, 376, 412, 448 -->
+
+  <!-- step 1 -->
+  <circle cx="34" cy="268" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="34" y="272" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">1</text>
+  <rect x="60" y="256" width="120" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="272" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">(0, 0, 0)</text>
+  <text x="196" y="272" font-size="12" fill="#888">→</text>
+  <rect x="214" y="256" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="262" y="272" text-anchor="middle" font-size="10" fill="#446688">(4,1,0) 全价</text>
+  <rect x="318" y="256" width="96" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="366" y="272" text-anchor="middle" font-size="10" fill="#d6a040">(2,1,1) 打折</text>
+  <text x="430" y="272" font-size="9" fill="#888">边 0-1 两种转移</text>
+
+  <!-- step 2 -->
+  <circle cx="34" cy="304" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="34" y="308" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">2</text>
+  <rect x="60" y="292" width="120" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="308" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">(2, 1, 1)</text>
+  <text x="196" y="308" font-size="12" fill="#888">→</text>
+  <rect x="214" y="292" width="96" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="262" y="308" text-anchor="middle" font-size="10" fill="#d6a040">(5,2,1)</text>
+  <rect x="318" y="292" width="96" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="366" y="308" text-anchor="middle" font-size="10" fill="#d6a040">(13,4,1)</text>
+  <text x="430" y="308" font-size="9" fill="#888">券已用完，仅全价</text>
+
+  <!-- step 3 KEY -->
+  <circle cx="34" cy="340" r="11" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="34" y="344" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">3</text>
+  <rect x="60" y="328" width="120" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="344" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">(4, 1, 0)</text>
+  <text x="196" y="344" font-size="12" fill="#888">→</text>
+  <rect x="214" y="328" width="80" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="254" y="344" text-anchor="middle" font-size="9" fill="#446688">(7,2,0)</text>
+  <rect x="300" y="328" width="80" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="340" y="344" text-anchor="middle" font-size="9" fill="#446688">(15,4,0)</text>
+  <rect x="386" y="326" width="104" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="438" y="344" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">(9,4,1) ✓ 打折</text>
+  <text x="500" y="344" font-size="9" fill="#b85450" font-weight="bold">关键！</text>
+
+  <!-- step 4 -->
+  <circle cx="34" cy="376" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="34" y="380" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">4</text>
+  <rect x="60" y="364" width="120" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="380" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">(5, 2, 1)</text>
+  <text x="196" y="380" font-size="12" fill="#888">→</text>
+  <rect x="214" y="364" width="96" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="262" y="380" text-anchor="middle" font-size="10" fill="#d6a040">(8,3,1)</text>
+  <text x="430" y="380" font-size="9" fill="#888">沿 2→3 全价</text>
+
+  <!-- step 5 -->
+  <circle cx="34" cy="412" r="11" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="34" y="416" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">5</text>
+  <rect x="60" y="400" width="120" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="416" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">(7, 2, 0)</text>
+  <text x="196" y="416" font-size="12" fill="#888">→</text>
+  <rect x="214" y="400" width="96" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="262" y="416" text-anchor="middle" font-size="10" fill="#446688">(10,3,0)</text>
+  <text x="430" y="416" font-size="9" fill="#888">(8,3,1) 已更优</text>
+
+  <!-- step 6 final -->
+  <circle cx="34" cy="448" r="11" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="34" y="452" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">6</text>
+  <rect x="60" y="436" width="120" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="452" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">(9, 4, 1)</text>
+  <text x="196" y="452" font-size="12" fill="#888">→</text>
+  <rect x="214" y="436" width="200" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="314" y="452" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">u=4=n-1，返回 9 ✓</text>
+</svg>

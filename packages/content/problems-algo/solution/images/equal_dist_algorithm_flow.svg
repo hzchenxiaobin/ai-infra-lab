@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：哈希分组 → 前缀和 → 公式填答案</text>
+
+  <!-- Step 1: group -->
+  <rect x="150" y="44" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 按值分组（哈希表）</text>
+  <text x="280" y="76" text-anchor="middle" font-size="9" fill="#666">遍历 nums，pos[nums[i]].append(i)</text>
+  <line x1="280" y1="84" x2="280" y2="104" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: for each group -->
+  <rect x="160" y="104" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="120" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 对每个值 v 的下标组 g</text>
+  <text x="280" y="136" text-anchor="middle" font-size="9" fill="#666">g = [p₀, p₁, …, p_{m−1}]（天然升序）</text>
+  <line x1="280" y1="144" x2="280" y2="164" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: compute total & prefix -->
+  <rect x="130" y="164" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="182" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 求 total 与滚动变量 prefix</text>
+  <text x="280" y="198" text-anchor="middle" font-size="9" fill="#666">total = Σp ; prefix 初值 0（= prefix[i]）</text>
+  <line x1="280" y1="208" x2="280" y2="228" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: decision diamond -->
+  <polygon points="280,228 360,268 280,308 200,268" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="264" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">遍历组内每个 i</text>
+  <text x="280" y="280" text-anchor="middle" font-size="9" fill="#666">0 ≤ i &lt; m</text>
+
+  <!-- Yes branch: down -->
+  <text x="296" y="324" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="280" y1="308" x2="280" y2="332" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: apply formula -->
+  <rect x="110" y="332" width="340" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ 套公式填答案，再 prefix += pᵢ</text>
+  <text x="280" y="370" text-anchor="middle" font-size="10" fill="#b85450">ans[pᵢ] = pᵢ·(2i−m) + total − 2·prefix</text>
+
+  <!-- loop back arrow from step5 to diamond -->
+  <path d="M 450 356 L 488 356 L 488 268 L 360 268" fill="none" stroke="#666" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="496" y="312" font-size="9" fill="#888">下一个 i</text>
+
+  <!-- No branch: right -->
+  <text x="372" y="264" font-size="10" fill="#b85450" font-weight="bold">否(组遍历完)</text>
+  <line x1="360" y1="268" x2="436" y2="268" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: next group / return -->
+  <rect x="436" y="248" width="104" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="266" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">下一个组</text>
+  <text x="488" y="280" text-anchor="middle" font-size="9" fill="#666">或返回 ans</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="404" width="500" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="424" text-anchor="middle" font-size="10" fill="#333">每个元素只在其组内被处理 1 次 → 总时间 O(n)，空间 O(n)</text>
+  <text x="290" y="440" text-anchor="middle" font-size="9" fill="#888">关键：nums[i]≤10⁹ 须哈希分组；组内下标按下标顺序收集天然升序</text>
+</svg>

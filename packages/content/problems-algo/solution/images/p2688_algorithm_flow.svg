@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">SQL 执行流程：FROM → GROUP BY → HAVING → SELECT → ORDER BY</text>
+
+  <!-- Step 1: FROM -->
+  <rect x="30" y="50" width="100" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="68" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Users</text>
+  <text x="80" y="82" text-anchor="middle" font-size="9" fill="#666">读取全部 6 行</text>
+
+  <path d="M 132 70 L 168 70" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY -->
+  <rect x="172" y="50" width="106" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="225" y="68" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">② GROUP BY</text>
+  <text x="225" y="82" text-anchor="middle" font-size="9" fill="#666">user_id → 4 组</text>
+
+  <path d="M 280 70 L 316 70" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: HAVING (key) -->
+  <rect x="320" y="50" width="118" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="379" y="68" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">③ HAVING COUNT(*)≥2</text>
+  <text x="379" y="82" text-anchor="middle" font-size="9" fill="#666">只留活跃组（4、6）</text>
+
+  <path d="M 440 70 L 476 70" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SELECT -->
+  <rect x="448" y="108" width="90" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="493" y="126" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">④ SELECT</text>
+  <text x="493" y="140" text-anchor="middle" font-size="9" fill="#666">user_id</text>
+
+  <!-- arrow from step3 down to step4 -->
+  <path d="M 379 92 L 379 128 L 444 128" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- arrow from step4 left to step5 -->
+  <path d="M 446 128 L 410 128" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 5: ORDER BY -->
+  <rect x="300" y="108" width="106" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="353" y="126" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑤ ORDER BY</text>
+  <text x="353" y="140" text-anchor="middle" font-size="9" fill="#666">user_id ASC</text>
+
+  <!-- Result box -->
+  <path d="M 298 128 L 250 128" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="60" y="108" width="186" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="153" y="128" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">结果：user_id = [4, 6]</text>
+  <text x="153" y="146" text-anchor="middle" font-size="9" fill="#666">购买 ≥ 2 次的用户，升序输出</text>
+
+  <!-- ===== Lower: 各阶段数据快照 ===== -->
+  <text x="280" y="184" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">各阶段数据快照</text>
+
+  <!-- snapshot 1: FROM (6 rows) -->
+  <text x="80" y="206" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">① FROM（6 行）</text>
+  <rect x="35" y="212" width="90" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="80" y="226" text-anchor="middle" font-size="9" fill="#446688">5,6,6,8,4,4</text>
+  <text x="80" y="246" text-anchor="middle" font-size="9" fill="#999">（每个 user_id 各自行）</text>
+
+  <path d="M 128 222 L 162 222" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- snapshot 2: GROUP BY (4 groups) -->
+  <text x="225" y="206" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">② GROUP BY（4 组）</text>
+  <rect x="170" y="212" width="110" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="225" y="226" text-anchor="middle" font-size="9" fill="#d6a040">4→2, 5→1, 6→2, 8→1</text>
+  <text x="225" y="246" text-anchor="middle" font-size="9" fill="#999">（键→计数）</text>
+
+  <path d="M 283 222 L 317 222" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- snapshot 3: HAVING (2 rows left) -->
+  <text x="379" y="206" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">③ HAVING（剩 2 组）</text>
+  <rect x="325" y="212" width="108" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="379" y="226" text-anchor="middle" font-size="9" fill="#b85450">4→2, 6→2 ✓</text>
+  <text x="379" y="246" text-anchor="middle" font-size="9" fill="#999">5、8 被 COUNT&lt;2 淘汰</text>
+
+  <path d="M 435 222 L 469 222" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- snapshot 4: output -->
+  <text x="493" y="206" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">⑤ 输出</text>
+  <rect x="455" y="212" width="76" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="493" y="226" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">[4, 6]</text>
+  <text x="493" y="246" text-anchor="middle" font-size="9" fill="#999">升序</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="280" width="500" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">关键：HAVING 在 GROUP BY 之后对「组」过滤，区别于 WHERE 在分组前对「行」过滤</text>
+  <text x="280" y="318" text-anchor="middle" font-size="10" fill="#666">执行序：FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</text>
+  <text x="280" y="334" text-anchor="middle" font-size="10" fill="#666">「活跃=组内行数≥2」是组级条件，必须用 HAVING；WHERE 看不到聚合后的 COUNT</text>
+</svg>

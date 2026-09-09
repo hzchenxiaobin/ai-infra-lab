@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="820" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="410" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">算法流程：动态 Pivot 的五步管道</text>
+  <path d="M 240 36 Q 410 44 580 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Step 1: FROM Products ===== -->
+  <g filter="url(#rough2)"><rect x="60" y="56" width="200" height="48" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6"/></g>
+  <text x="160" y="76" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Products</text>
+  <text x="160" y="94" text-anchor="middle" font-size="9" fill="#888">读取长表（product_id, store, price）</text>
+
+  <!-- arrow down -->
+  <path d="M 160 108 L 160 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: SELECT DISTINCT store ===== -->
+  <g filter="url(#rough2)"><rect x="60" y="130" width="200" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6"/></g>
+  <text x="160" y="150" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② SELECT DISTINCT store</text>
+  <text x="160" y="168" text-anchor="middle" font-size="9" fill="#888">提取所有商店名（列名候选集）</text>
+  <text x="160" y="182" text-anchor="middle" font-size="8" fill="#b85450">→ {LC_Store, Nozama, Shop, Souq}</text>
+
+  <!-- arrow down -->
+  <path d="M 160 190 L 160 210" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: GROUP_CONCAT ===== -->
+  <g filter="url(#rough2)"><rect x="40" y="212" width="240" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/></g>
+  <text x="160" y="232" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">③ GROUP_CONCAT 拼字符串</text>
+  <text x="160" y="250" text-anchor="middle" font-size="8" fill="#888">每个 store → MAX(IF(store='X',price,NULL)) AS `X`</text>
+  <text x="160" y="264" text-anchor="middle" font-size="8" fill="#888">逗号拼接 → INTO @cols</text>
+  <text x="160" y="278" text-anchor="middle" font-size="8" fill="#b85450">ORDER BY store 保证列顺序确定</text>
+
+  <!-- arrow down -->
+  <path d="M 160 290 L 160 310" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: CONCAT + PREPARE ===== -->
+  <g filter="url(#rough2)"><rect x="40" y="312" width="240" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/></g>
+  <text x="160" y="332" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ 组装 + PREPARE</text>
+  <text x="160" y="350" text-anchor="middle" font-size="8" fill="#888">SET @sql = CONCAT('SELECT product_id,',</text>
+  <text x="160" y="362" text-anchor="middle" font-size="8" fill="#888">  @cols, ' FROM Products GROUP BY product_id')</text>
+  <text x="160" y="376" text-anchor="middle" font-size="8" fill="#b85450">PREPARE stmt FROM @sql</text>
+
+  <!-- arrow down -->
+  <path d="M 160 390 L 160 410" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: EXECUTE + DEALLOCATE ===== -->
+  <g filter="url(#rough2)"><rect x="40" y="412" width="240" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/></g>
+  <text x="160" y="432" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ EXECUTE stmt</text>
+  <text x="160" y="450" text-anchor="middle" font-size="9" fill="#888">执行动态 SQL → 输出宽表结果集</text>
+  <text x="160" y="466" text-anchor="middle" font-size="8" fill="#888">DEALLOCATE PREPARE stmt（清理）</text>
+
+  <!-- ===== Right side: data flow illustration ===== -->
+  <!-- Phase A: store list -->
+  <text x="340" y="76" font-size="10" fill="#888" font-weight="bold">数据流：列名提取</text>
+  <g filter="url(#rough2)"><rect x="340" y="84" width="60" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="370" y="99" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">LC_Store</text>
+  <g filter="url(#rough2)"><rect x="408" y="84" width="56" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="436" y="99" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Nozama</text>
+  <g filter="url(#rough2)"><rect x="472" y="84" width="44" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="494" y="99" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Shop</text>
+  <g filter="url(#rough2)"><rect x="524" y="84" width="44" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="546" y="99" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Souq</text>
+  <text x="370" y="120" text-anchor="middle" font-size="8" fill="#888">DISTINCT + ORDER BY store</text>
+
+  <!-- arrow right -->
+  <path d="M 580 95 L 620 95" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Phase B: assembled SQL string -->
+  <text x="340" y="156" font-size="10" fill="#888" font-weight="bold">数据流：拼出的 SQL 字符串 @sql</text>
+  <g filter="url(#rough2)"><rect x="340" y="164" width="460" height="120" fill="#fff" stroke="#4a8edb" stroke-width="1.2" rx="6"/></g>
+  <text x="352" y="182" font-size="8" fill="#4a8edb">SELECT product_id,</text>
+  <text x="352" y="196" font-size="8" fill="#d6a040">  MAX(IF(store='LC_Store',price,NULL)) AS `LC_Store`,</text>
+  <text x="352" y="210" font-size="8" fill="#d6a040">  MAX(IF(store='Nozama',price,NULL)) AS `Nozama`,</text>
+  <text x="352" y="224" font-size="8" fill="#d6a040">  MAX(IF(store='Shop',price,NULL)) AS `Shop`,</text>
+  <text x="352" y="238" font-size="8" fill="#d6a040">  MAX(IF(store='Souq',price,NULL)) AS `Souq`</text>
+  <text x="352" y="252" font-size="8" fill="#4a8edb">FROM Products</text>
+  <text x="352" y="266" font-size="8" fill="#4a8edb">GROUP BY product_id ORDER BY product_id</text>
+  <text x="352" y="280" font-size="7" fill="#888">↑ 这是一条完整 SQL，由 @cols 拼接而成，PREPARE 后执行</text>
+
+  <!-- Phase C: result -->
+  <text x="340" y="312" font-size="10" fill="#888" font-weight="bold">数据流：EXECUTE 输出的宽表</text>
+  <g filter="url(#rough2)"><rect x="340" y="320" width="460" height="130" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6"/></g>
+  <text x="354" y="338" text-anchor="start" font-size="8" fill="#888" font-weight="bold">product_id</text>
+  <text x="430" y="338" font-size="8" fill="#888" font-weight="bold">LC_Store</text>
+  <text x="498" y="338" font-size="8" fill="#888" font-weight="bold">Nozama</text>
+  <text x="560" y="338" font-size="8" fill="#888" font-weight="bold">Shop</text>
+  <text x="624" y="338" font-size="8" fill="#888" font-weight="bold">Souq</text>
+  <line x1="340" y1="344" x2="800" y2="344" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="356" y="362" font-size="9" fill="#4a8edb" font-weight="bold">1</text>
+  <text x="436" y="362" font-size="9" fill="#4a8edb">100</text>
+  <text x="504" y="362" font-size="9" fill="#b85450" font-weight="bold">null</text>
+  <text x="566" y="362" font-size="9" fill="#4a8edb">110</text>
+  <text x="630" y="362" font-size="9" fill="#b85450" font-weight="bold">null</text>
+
+  <text x="356" y="384" font-size="9" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="436" y="384" font-size="9" fill="#b85450" font-weight="bold">null</text>
+  <text x="504" y="384" font-size="9" fill="#4a7a3a">200</text>
+  <text x="566" y="384" font-size="9" fill="#b85450" font-weight="bold">null</text>
+  <text x="630" y="384" font-size="9" fill="#4a7a3a">190</text>
+
+  <text x="356" y="406" font-size="9" fill="#d6a040" font-weight="bold">3</text>
+  <text x="436" y="406" font-size="9" fill="#b85450" font-weight="bold">null</text>
+  <text x="504" y="406" font-size="9" fill="#b85450" font-weight="bold">null</text>
+  <text x="566" y="406" font-size="9" fill="#d6a040">1000</text>
+  <text x="630" y="406" font-size="9" fill="#d6a040">1900</text>
+
+  <text x="570" y="436" text-anchor="middle" font-size="9" fill="#999">列名 = 运行时从数据提取的 store 值</text>
+
+  <!-- arrow from step3 to assembled sql -->
+  <path d="M 284 248 Q 312 200 338 200" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- arrow from step5 to result -->
+  <path d="M 284 442 Q 312 390 338 380" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom note ===== -->
+  <g filter="url(#rough2)"><rect x="40" y="488" width="740" height="42" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1"/></g>
+  <text x="56" y="508" font-size="10" fill="#446688" font-weight="bold">关键：列名不是写死的，而是 SELECT DISTINCT 从数据中取 → GROUP_CONCAT 拼成 SQL 文本 → PREPARE/EXECUTE 执行</text>
+  <text x="56" y="522" font-size="9" fill="#888">这是「动态 SQL」范式：SQL 语句本身由另一条 SQL 生成。静态 Pivot 只做步骤 ①+条件聚合，无需 ②③④ 的元数据查询与拼接。</text>
+</svg>

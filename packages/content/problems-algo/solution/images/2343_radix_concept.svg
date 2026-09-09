@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：LSD 基数排序——按 trim 递增逐位稳定分桶，结果层层复用</text>
+  <text x="280" y="40" text-anchor="middle" font-size="10.5" fill="#888">排序右 t 位 = t 次 LSD 稳定分桶；排 t+1 位只需在 t 位结果上再加一次分桶</text>
+
+  <!-- nums row -->
+  <text x="44" y="78" font-size="11" fill="#666" font-weight="bold" filter="url(#rough2)">nums</text>
+
+  <g filter="url(#rough2)">
+    <rect x="88" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="102" y="78" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <rect x="116" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="130" y="78" text-anchor="middle" font-size="13" fill="#333">0</text>
+    <rect x="144" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="158" y="78" text-anchor="middle" font-size="13" fill="#333">2</text>
+    <text x="130" y="104" text-anchor="middle" font-size="10" fill="#888">idx 0</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="188" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="202" y="78" text-anchor="middle" font-size="13" fill="#333">4</text>
+    <rect x="216" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="230" y="78" text-anchor="middle" font-size="13" fill="#333">7</text>
+    <rect x="244" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="258" y="78" text-anchor="middle" font-size="13" fill="#333">3</text>
+    <text x="230" y="104" text-anchor="middle" font-size="10" fill="#888">idx 1</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="288" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="302" y="78" text-anchor="middle" font-size="13" fill="#333">2</text>
+    <rect x="316" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="330" y="78" text-anchor="middle" font-size="13" fill="#333">5</text>
+    <rect x="344" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="358" y="78" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <text x="330" y="104" text-anchor="middle" font-size="10" fill="#888">idx 2</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="388" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="402" y="78" text-anchor="middle" font-size="13" fill="#333">8</text>
+    <rect x="416" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="430" y="78" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <rect x="444" y="56" width="28" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="458" y="78" text-anchor="middle" font-size="13" fill="#333">4</text>
+    <text x="430" y="104" text-anchor="middle" font-size="10" fill="#888">idx 3</text>
+  </g>
+
+  <!-- arrow nums -> passes -->
+  <path d="M 280 112 L 280 126" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Panel 1 trim=1 -->
+  <g filter="url(#rough2)">
+    <rect x="56" y="130" width="448" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="72" y="152" font-size="11.5" fill="#333" font-weight="bold">trim = 1</text>
+    <text x="72" y="170" font-size="10" fill="#666">看末位 pos=2 · 稳定分桶 0–9</text>
+    <path d="M 224 157 L 268 157" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="286" y="146" font-size="9.5" fill="#888">order₁ (下标序)</text>
+    <rect x="286" y="150" width="30" height="26" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="301" y="168" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <rect x="322" y="150" width="30" height="26" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="337" y="168" text-anchor="middle" font-size="12" fill="#333">0</text>
+    <rect x="358" y="150" width="30" height="26" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="373" y="168" text-anchor="middle" font-size="12" fill="#333">1</text>
+    <rect x="394" y="150" width="30" height="26" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="409" y="168" text-anchor="middle" font-size="12" fill="#333">3</text>
+  </g>
+
+  <!-- reuse arrow 1->2 -->
+  <path d="M 280 186 L 280 200" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="292" y="197" font-size="10" fill="#4a7a3a" font-weight="bold">复用 order₁</text>
+
+  <!-- Panel 2 trim=2 -->
+  <g filter="url(#rough2)">
+    <rect x="56" y="204" width="448" height="54" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/>
+    <text x="72" y="226" font-size="11.5" fill="#333" font-weight="bold">trim = 2</text>
+    <text x="72" y="244" font-size="10" fill="#666">看倒数第2位 pos=1 · 稳定分桶</text>
+    <path d="M 224 231 L 268 231" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="286" y="220" font-size="9.5" fill="#888">order₂</text>
+    <rect x="286" y="224" width="30" height="26" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="301" y="242" text-anchor="middle" font-size="12" fill="#333">0</text>
+    <rect x="322" y="224" width="30" height="26" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="337" y="242" text-anchor="middle" font-size="12" fill="#333">3</text>
+    <rect x="358" y="224" width="30" height="26" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="373" y="242" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <rect x="394" y="224" width="30" height="26" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="409" y="242" text-anchor="middle" font-size="12" fill="#333">1</text>
+  </g>
+
+  <!-- reuse arrow 2->3 -->
+  <path d="M 280 260 L 280 274" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="292" y="271" font-size="10" fill="#4a7a3a" font-weight="bold">复用 order₂</text>
+
+  <!-- Panel 3 trim=3 -->
+  <g filter="url(#rough2)">
+    <rect x="56" y="278" width="448" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8"/>
+    <text x="72" y="300" font-size="11.5" fill="#333" font-weight="bold">trim = 3</text>
+    <text x="72" y="318" font-size="10" fill="#666">看首位 pos=0 · 稳定分桶</text>
+    <path d="M 224 305 L 268 305" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+    <text x="286" y="294" font-size="9.5" fill="#888">order₃</text>
+    <rect x="286" y="298" width="30" height="26" fill="#fafafa" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="301" y="316" text-anchor="middle" font-size="12" fill="#333">0</text>
+    <rect x="322" y="298" width="30" height="26" fill="#fafafa" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="337" y="316" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <rect x="358" y="298" width="30" height="26" fill="#fafafa" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="373" y="316" text-anchor="middle" font-size="12" fill="#333">1</text>
+    <rect x="394" y="298" width="30" height="26" fill="#fafafa" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="409" y="316" text-anchor="middle" font-size="12" fill="#333">3</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="56" y="348" width="448" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="365" text-anchor="middle" font-size="10.5" fill="#333">查询 (k, trim) → answer = order<tspan font-size="8" dy="2">trim</tspan><tspan dy="-2">[k−1]，一步查表</tspan></text>
+  <text x="280" y="380" text-anchor="middle" font-size="10" fill="#b85450">对比暴力：每查询独立排序 O(Q·N·L)；基数 O((L+Q)·N)，全部查询共享 L 次分桶</text>
+</svg>

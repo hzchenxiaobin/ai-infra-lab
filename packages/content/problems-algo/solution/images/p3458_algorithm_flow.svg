@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 760" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="760" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：扩展最短区间 + 区间调度贪心</text>
+
+  <!-- 开始 -->
+  <g filter="url(#rough2)">
+    <rect x="225" y="30" width="70" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="14"/>
+    <text x="260" y="49" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">开始</text>
+  </g>
+
+  <!-- 菱形1：k == 0 ? -->
+  <g filter="url(#rough2)">
+    <polygon points="260,68 345,94 260,120 175,94" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="260" y="99" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">k == 0 ?</text>
+  </g>
+  <path d="M 260 58 L 260 66" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <text x="272" y="86" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 345 94 L 413 94" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="415" y="80" width="80" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="455" y="99" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">true</text>
+  </g>
+
+  <!-- 统计 first/last -->
+  <path d="M 260 120 L 260 140" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <text x="272" y="136" font-size="10" fill="#8f3a35" font-weight="bold" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="170" y="142" width="180" height="32" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="163" text-anchor="middle" font-size="11.5" fill="#333">统计每个字母 first / last</text>
+  </g>
+
+  <!-- 对每个字母 -->
+  <path d="M 260 174 L 260 192" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="115" y="194" width="290" height="32" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="215" text-anchor="middle" font-size="11.5" fill="#333">对每个出现过的字母 c：l = first[c]，r = last[c]</text>
+  </g>
+
+  <!-- 扫描扩展 -->
+  <path d="M 260 226 L 260 244" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="130" y="246" width="260" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="267" text-anchor="middle" font-size="11.5" fill="#333">i 从 l 扫到 r：r = max(r, last[s[i]])</text>
+  </g>
+
+  <!-- 菱形2：first[s[i]] < l ? -->
+  <path d="M 260 278 L 260 300" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <polygon points="260,302 360,332 260,362 160,332" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="260" y="329" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">first[s[i]] &lt; l ?</text>
+    <text x="260" y="346" text-anchor="middle" font-size="10" fill="#888">（区间外左侧出现）</text>
+  </g>
+  <text x="272" y="324" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 360 332 L 393 332" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="395" y="318" width="115" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="452" y="337" text-anchor="middle" font-size="11" fill="#8f3a35" font-weight="bold">作废，换下个 c</text>
+  </g>
+
+  <!-- 菱形3：整串? -->
+  <path d="M 260 362 L 260 384" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <text x="272" y="380" font-size="10" fill="#8f3a35" font-weight="bold" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <polygon points="260,386 365,416 260,446 155,416" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="260" y="413" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">l == 0 且 r == n-1 ?</text>
+    <text x="260" y="430" text-anchor="middle" font-size="10" fill="#888">（覆盖整个 s）</text>
+  </g>
+  <text x="272" y="408" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 365 416 L 398 416" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="400" y="402" width="110" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="455" y="421" text-anchor="middle" font-size="11" fill="#8f3a35" font-weight="bold">丢弃（= 整串）</text>
+  </g>
+
+  <!-- 收集候选 -->
+  <path d="M 260 446 L 260 468" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <text x="272" y="464" font-size="10" fill="#8f3a35" font-weight="bold" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="160" y="470" width="200" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="260" y="491" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold">收集候选区间 (l, r)</text>
+  </g>
+
+  <!-- 排序 -->
+  <path d="M 260 502 L 260 520" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="155" y="522" width="210" height="32" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="543" text-anchor="middle" font-size="11.5" fill="#333">候选按右端点 r 升序排序</text>
+  </g>
+
+  <!-- 贪心 -->
+  <path d="M 260 554 L 260 572" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <rect x="120" y="574" width="280" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="260" y="595" text-anchor="middle" font-size="11.5" fill="#333">贪心：若 l &gt; pre，则 cnt++，pre = r</text>
+  </g>
+
+  <!-- 菱形4：cnt >= k ? -->
+  <path d="M 260 606 L 260 628" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <g filter="url(#rough2)">
+    <polygon points="260,630 335,660 260,690 185,660" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="260" y="665" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">cnt ≥ k ?</text>
+  </g>
+
+  <!-- true / false -->
+  <path d="M 185 660 L 135 660 L 135 706" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+  <text x="150" y="652" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="95" y="708" width="80" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="135" y="728" text-anchor="middle" font-size="12.5" fill="#2f5d24" font-weight="bold">true</text>
+  </g>
+  <path d="M 335 660 L 385 660 L 385 706" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none"/>
+  <text x="352" y="652" font-size="10" fill="#8f3a35" font-weight="bold" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="345" y="708" width="80" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="385" y="728" text-anchor="middle" font-size="12.5" fill="#8f3a35" font-weight="bold">false</text>
+  </g>
+
+  <!-- 右侧注释 -->
+  <g filter="url(#rough2)">
+    <rect x="28" y="500" width="92" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="10"/>
+    <text x="74" y="522" text-anchor="middle" font-size="9.5" fill="#8a6d1f">候选 ≤ 26 个：</text>
+    <text x="74" y="538" text-anchor="middle" font-size="9.5" fill="#8a6d1f">每个字母的</text>
+    <text x="74" y="554" text-anchor="middle" font-size="9.5" fill="#8a6d1f">first 互不相同</text>
+    <text x="74" y="570" text-anchor="middle" font-size="9.5" fill="#8a6d1f">（贪心即经典</text>
+    <text x="74" y="586" text-anchor="middle" font-size="9.5" fill="#8a6d1f">区间调度）</text>
+  </g>
+</svg>

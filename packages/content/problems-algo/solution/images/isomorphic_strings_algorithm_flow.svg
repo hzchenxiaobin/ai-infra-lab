@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">双向哈希同步核对流程</text>
+
+  <!-- 开始 -->
+  <rect x="220" y="50" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="16" filter="url(#rough2)"/>
+  <text x="280" y="72" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">i = 0, s2t={} , t2s={}</text>
+  <line x1="280" y1="84" x2="280" y2="104" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 取字符 -->
+  <rect x="210" y="106" width="140" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">a=s[i] , b=t[i]</text>
+  <line x1="280" y1="140" x2="280" y2="158" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判1: s2t 含 a? -->
+  <polygon points="280,160 360,200 280,240 200,200" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="198" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">s2t 含 a ?</text>
+  <text x="280" y="214" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">且 s2t[a]==b ?</text>
+
+  <!-- 是 → 核对一致? 这里直接合并：含且相等放行，含但不等 return false -->
+  <line x1="360" y1="200" x2="430" y2="200" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="194" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="430" y="180" width="110" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="198" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">不等？</text>
+  <text x="485" y="214" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">return false</text>
+
+  <!-- 否（不含或相等）→ 判2 -->
+  <line x1="280" y1="240" x2="280" y2="260" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="254" font-size="11" fill="#4a7a3a" filter="url(#rough2)">放行</text>
+
+  <!-- 判2: t2s 含 b? -->
+  <polygon points="280,262 360,302 280,342 200,302" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">t2s 含 b ?</text>
+  <text x="280" y="316" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">且 t2s[b]==a ?</text>
+  <line x1="360" y1="302" x2="430" y2="302" stroke="#446688" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="392" y="296" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="430" y="282" width="110" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="300" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">不等？</text>
+  <text x="485" y="316" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">return false</text>
+
+  <line x1="280" y1="342" x2="280" y2="362" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="356" font-size="11" fill="#4a7a3a" filter="url(#rough2)">放行</text>
+
+  <!-- 登记 -->
+  <rect x="190" y="364" width="180" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="386" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">登记 s2t[a]=b , t2s[b]=a</text>
+  <line x1="280" y1="398" x2="280" y2="416" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- i++ / 循环 -->
+  <rect x="200" y="418" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="16" filter="url(#rough2)"/>
+  <text x="280" y="440" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">i++ ; i&lt;n ? 回顶部</text>
+  <!-- 循环回边 -->
+  <path d="M 200 435 Q 60 435 60 250 Q 60 67 220 67" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- 全程无冲突 -->
+  <text x="280" y="455" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">（全程无冲突 → return true）</text>
+</svg>

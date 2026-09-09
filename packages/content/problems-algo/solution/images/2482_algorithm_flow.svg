@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="13.5" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：一趟累计行/列一数 → 逐格套公式填 diff</text>
+
+  <!-- Step 1: accumulate row/col ones -->
+  <rect x="120" y="40" width="300" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">① 一趟遍历 grid，累计 r[i] 与 c[j]</text>
+  <line x1="270" y1="76" x2="270" y2="98" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond: more cells? -->
+  <polygon points="270,100 372,140 270,180 168,140" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="136" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">还有格子 (i,j)?</text>
+  <text x="270" y="152" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">（逐格填充）</text>
+
+  <!-- No branch left -> return -->
+  <line x1="168" y1="140" x2="128" y2="140" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="148" y="134" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="14" y="118" width="116" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="72" y="136" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">③ return</text>
+  <text x="72" y="152" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">diff</text>
+
+  <!-- Yes branch down -->
+  <line x1="270" y1="180" x2="270" y2="204" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="284" y="198" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- Step 2: fill formula -->
+  <rect x="90" y="208" width="360" height="44" fill="#f4f7fb" stroke="#888" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="226" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">② diff[i][j] = 2·r[i] − n + 2·c[j] − m</text>
+  <text x="270" y="242" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">行/列一计数已就绪，每格 O(1)</text>
+  <line x1="270" y1="252" x2="270" y2="272" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- next cell -->
+  <rect x="200" y="276" width="140" height="32" fill="#f4f7fb" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="296" text-anchor="middle" font-size="12" fill="#666" font-weight="bold" filter="url(#rough2)">取下一格 (i,j)</text>
+
+  <!-- loop back -->
+  <path d="M 340 292 L 460 292 L 460 140 L 376 140" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="486" y="220" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">下一格</text>
+
+  <!-- footer -->
+  <rect x="30" y="332" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="351" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">关键化简：zerosR = n − onesR，zerosC = m − onesC → 四项缩为两项。</text>
+  <text x="270" y="367" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">n=列数，m=行数；r[i]、c[j] 只需一遍遍历即可同时累计。</text>
+
+  <text x="30" y="400" font-size="10" fill="#888" filter="url(#rough2)">• 两趟遍历：第一趟累计 r/c，第二趟填 diff；也可边累计边就地改写 grid 复用。</text>
+  <text x="30" y="414" font-size="10" fill="#888" filter="url(#rough2)">• 空间 O(m+n) 存 r、c 两数组；总时间 O(m·n)，已是最优（须读全部格子）。</text>
+</svg>

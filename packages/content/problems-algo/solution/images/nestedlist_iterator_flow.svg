@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="18" fill="#333" filter="url(#rough2)">
+    hasNext() 惰性展开流程
+  </text>
+
+  <!-- Entry -->
+  <rect x="210" y="55" width="140" height="34" fill="#e8f0fe" stroke="#446688"
+        stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="77" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">
+    调用 hasNext()
+  </text>
+  <line x1="280" y1="89" x2="280" y2="118" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond 1: stack empty? -->
+  <polygon points="280,120 380,155 280,190 180,155" fill="#e6f4ea" stroke="#4a7a3a"
+           stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="152" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    栈空?
+  </text>
+  <text x="280" y="168" text-anchor="middle" font-size="11" fill="#777" filter="url(#rough2)">
+    是 / 否
+  </text>
+
+  <!-- Yes (empty) -> left -> return false -->
+  <line x1="180" y1="155" x2="135" y2="155" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="158" y="148" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="20" y="140" width="110" height="32" fill="#fce4ec" stroke="#b85450"
+        stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="75" y="161" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    return false
+  </text>
+
+  <!-- No -> down -> peek -->
+  <line x1="280" y1="190" x2="280" y2="218" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="208" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否</text>
+  <rect x="200" y="220" width="160" height="30" fill="#fff8e1" stroke="#d6a040"
+        stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="240" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    peek 栈顶 top
+  </text>
+  <line x1="280" y1="250" x2="280" y2="278" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond 2: top.isInteger()? -->
+  <polygon points="280,280 380,315 280,350 180,315" fill="#e6f4ea" stroke="#4a7a3a"
+           stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="312" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    top.isInteger()?
+  </text>
+  <text x="280" y="328" text-anchor="middle" font-size="11" fill="#777" filter="url(#rough2)">
+    是 / 否
+  </text>
+
+  <!-- Yes -> left -> return true -->
+  <line x1="180" y1="315" x2="135" y2="315" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="158" y="308" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="20" y="300" width="110" height="32" fill="#e6f4ea" stroke="#4a7a3a"
+        stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="75" y="321" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    return true
+  </text>
+
+  <!-- No -> right -> pop+push -->
+  <line x1="380" y1="315" x2="408" y2="315" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="394" y="308" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="410" y="288" width="135" height="56" fill="#fce4ec" stroke="#b85450"
+        stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="477" y="308" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    pop 列表 top
+  </text>
+  <text x="477" y="326" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">
+    push 逆序子元素
+  </text>
+  <text x="477" y="340" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">
+    (保持左→右序)
+  </text>
+
+  <!-- Loop back: from pop+push box up the right side to diamond1 right point -->
+  <path d="M 477 288 L 477 155 L 382 155" fill="none" stroke="#446688"
+        stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="490" y="225" font-size="11" fill="#446688" filter="url(#rough2)">循环</text>
+
+  <!-- next() note at bottom -->
+  <rect x="150" y="395" width="260" height="56" fill="#e8f0fe" stroke="#446688"
+        stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="416" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">
+    next() = hasNext() 后 pop 栈顶
+  </text>
+  <text x="280" y="435" text-anchor="middle" font-size="11" fill="#777" filter="url(#rough2)">
+    栈顶已保证为整数 → return getInteger()
+  </text>
+</svg>

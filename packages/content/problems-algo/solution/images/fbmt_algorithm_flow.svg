@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：互斥锁 + 条件变量（以 number 线程为例）</text>
+
+  <!-- Start -->
+  <ellipse cx="260" cy="56" rx="60" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="61" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">number() 入口</text>
+
+  <line x1="260" y1="76" x2="260" y2="92" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop -->
+  <polygon points="260,96 376,130 260,164 144,130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="126" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">还有未打印的数？</text>
+  <text x="260" y="142" text-anchor="middle" font-size="9.5" fill="#888">current ≤ n</text>
+
+  <!-- No branch -->
+  <text x="394" y="126" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M 376 130 Q 440 130 440 170" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="382" y="174" width="116" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="195" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return</text>
+
+  <!-- Yes branch -->
+  <text x="126" y="126" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <line x1="144" y1="130" x2="100" y2="130" stroke="#888" stroke-width="1.6" filter="url(#rough2)"/>
+  <line x1="100" y1="130" x2="100" y2="186" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- lock -->
+  <rect x="44" y="190" width="112" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="210" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">unique_lock(mtx)</text>
+
+  <line x1="100" y1="220" x2="100" y2="236" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- wait with predicate -->
+  <polygon points="100,240 200,274 100,308 0,274" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="100" y="268" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">谓词满足？</text>
+  <text x="100" y="282" text-anchor="middle" font-size="8.5" fill="#888">current%3≠0</text>
+  <text x="100" y="294" text-anchor="middle" font-size="8.5" fill="#888">&amp;&amp; current%5≠0</text>
+
+  <!-- No: wait -->
+  <text x="210" y="270" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 200 274 Q 260 274 260 244" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="232" y="214" width="116" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="234" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">cv.wait(阻塞)</text>
+
+  <!-- Yes: proceed -->
+  <text x="68" y="316" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="100" y1="308" x2="100" y2="324" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- print -->
+  <rect x="36" y="328" width="128" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="348" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">printNumber(current)</text>
+
+  <line x1="100" y1="358" x2="100" y2="374" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- increment -->
+  <rect x="44" y="378" width="112" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="398" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">current++</text>
+
+  <line x1="100" y1="408" x2="100" y2="424" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- notify + unlock -->
+  <rect x="28" y="428" width="144" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="448" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">notify_all + 解锁</text>
+
+  <!-- loop back arrow -->
+  <path d="M 28 443 Q 8 443 8 300 Q 8 130 144 130" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="3,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="14" y="300" font-size="9" fill="#888">回循环</text>
+
+  <!-- note box -->
+  <rect x="226" y="328" width="270" height="130" fill="#e8f0fe" fill-opacity="0.35" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="240" y="348" font-size="10.5" fill="#446688" font-weight="bold">四个线程结构相同，仅谓词不同：</text>
+  <text x="240" y="366" font-size="10" fill="#333">number : %3≠0 &amp;&amp; %5≠0</text>
+  <text x="240" y="382" font-size="10" fill="#333">fizz    : %3==0 &amp;&amp; %5≠0</text>
+  <text x="240" y="398" font-size="10" fill="#333">buzz    : %5==0 &amp;&amp; %3≠0</text>
+  <text x="240" y="414" font-size="10" fill="#333">fizzbuzz: %15==0</text>
+  <text x="240" y="436" font-size="10" fill="#d6a040" font-weight="bold">wait 用谓词形式，自动抵御虚假唤醒</text>
+  <text x="240" y="450" font-size="10" fill="#d6a040" font-weight="bold">notify_all 唤醒全部，让各自重判谓词</text>
+</svg>

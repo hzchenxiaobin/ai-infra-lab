@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">
+    算法流程：树形 DP + 阶乘逆元
+  </text>
+
+  <!-- Step 1: build tree -->
+  <rect x="120" y="46" width="280" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="64" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 由 prevRoom 建邻接表 children</text>
+  <text x="260" y="78" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">根为 0，prevRoom[i] → i 为父子边</text>
+  <line x1="260" y1="86" x2="260" y2="104" stroke="#446688" stroke-width="1.5" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 2: precompute factorials -->
+  <rect x="90" y="106" width="340" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="124" text-anchor="middle" font-size="12" fill="#3a5a2a" filter="url(#rough2)">② 预处理 f[i]=i! 与 g[i]=(i!)⁻¹</text>
+  <text x="260" y="140" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">g[n]=f[n]^(p−2) 再倒推 g[i−1]=g[i]·i</text>
+  <line x1="260" y1="154" x2="260" y2="172" stroke="#446688" stroke-width="1.5" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 3: iterative DFS order -->
+  <rect x="90" y="174" width="340" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="192" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ 栈模拟得到先序 order</text>
+  <text x="260" y="208" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">逆序处理即后序：先算子再算父</text>
+  <line x1="260" y1="222" x2="260" y2="240" stroke="#446688" stroke-width="1.5" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 4: decision combine -->
+  <polygon points="260,242 380,290 260,338 140,290" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="284" text-anchor="middle" font-size="12" fill="#7a5a20" filter="url(#rough2)">遍历 u 的每个子</text>
+  <text x="260" y="300" text-anchor="middle" font-size="12" fill="#7a5a20" filter="url(#rough2)">节点 v ?</text>
+  <line x1="260" y1="338" x2="260" y2="356" stroke="#446688" stroke-width="1.5" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="272" y="352" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- combine box -->
+  <rect x="70" y="358" width="380" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="376" text-anchor="middle" font-size="11" fill="#3a5a2a" filter="url(#rough2)">ways *= dp[v] · g[sz[v]]；total += sz[v]</text>
+  <text x="260" y="392" text-anchor="middle" font-size="11" fill="#3a5a2a" filter="url(#rough2)">dp[u] = f[total]·ways；sz[u] = total+1</text>
+
+  <!-- loop back -->
+  <path d="M 70 382 Q 30 382 30 290 Q 30 290 140 290" stroke="#446688" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="22" y="335" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">下个</text>
+  <text x="22" y="347" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">子节点</text>
+
+  <!-- No branch -->
+  <line x1="380" y1="290" x2="440" y2="290" stroke="#446688" stroke-width="1.5" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="408" y="282" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="440" y="272" width="70" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="295" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">回溯</text>
+
+  <!-- final -->
+  <rect x="120" y="420" width="280" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="445" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 dp[0] ⭐</text>
+</svg>

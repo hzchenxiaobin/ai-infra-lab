@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：step 只增不减，可选池单调膨胀</text>
+  <text x="280" y="44" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">nums = [1,10,4,2,1,6]，threshold = [5,1,5,5,2,2]</text>
+
+  <!-- step 时间轴 -->
+  <path d="M 60 78 L 500 78" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="510" y="82" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">step</text>
+
+  <circle cx="90" cy="78" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="90" y="82" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">1</text>
+  <circle cx="210" cy="78" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="210" y="82" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">2</text>
+  <circle cx="330" cy="78" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="330" y="82" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">3</text>
+  <circle cx="450" cy="78" r="14" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="450" y="82" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">4</text>
+
+  <!-- step=1：释放 idx1(10)，取走 10 -->
+  <rect x="62" y="104" width="52" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="88" y="124" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">idx1:10</text>
+  <text x="88" y="152" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">阈值1 ≤ 1 释放</text>
+  <path d="M 92 132 Q 118 158 142 132" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="118" y="158" width="50" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="143" y="178" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">+10</text>
+
+  <!-- step=2：释放 idx4(1), idx5(6)，取走 6 -->
+  <rect x="170" y="104" width="52" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="196" y="124" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">idx4:1</text>
+  <rect x="230" y="104" width="52" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="256" y="124" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">idx5:6</text>
+  <text x="226" y="152" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">阈值2 ≤ 2 释放×2</text>
+  <path d="M 256 134 Q 278 158 300 134" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="272" y="158" width="50" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="297" y="178" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">+6</text>
+  <text x="297" y="206" text-anchor="middle" font-size="10.5" fill="#d6a040" filter="url(#rough2)">池里剩 idx4:1</text>
+
+  <!-- step=3：无新释放，把存货 1 取走 -->
+  <text x="330" y="124" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">无新释放</text>
+  <path d="M 330 132 Q 352 158 372 134" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="348" y="158" width="50" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="373" y="178" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">+1</text>
+  <text x="373" y="206" text-anchor="middle" font-size="10.5" fill="#d6a040" filter="url(#rough2)">池子清空</text>
+
+  <!-- step=4：停止 -->
+  <path d="M 450 96 L 450 128" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="404" y="132" width="94" height="34" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="451" y="154" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">池空 → 停!</text>
+
+  <!-- 永远等不到的三个下标 -->
+  <rect x="60" y="236" width="230" height="58" rx="10" fill="#fafafa" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="175" y="254" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">阈值 5 &gt; 4，流程到不了 step 5</text>
+  <rect x="72" y="260" width="52" height="26" rx="4" fill="#eee" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="98" y="278" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">idx0:1</text>
+  <rect x="132" y="260" width="52" height="26" rx="4" fill="#eee" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="158" y="278" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">idx2:4</text>
+  <rect x="192" y="260" width="52" height="26" rx="4" fill="#eee" stroke="#999" stroke-width="1" filter="url(#rough2)"/>
+  <text x="218" y="278" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">idx3:2</text>
+  <text x="175" y="312" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">（阈值在 step=5 才放行，可惜流程已死）</text>
+
+  <!-- 右侧要点框 -->
+  <rect x="310" y="236" width="226" height="76" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="423" y="256" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">可用 ⟺ threshold[i] ≤ step</text>
+  <text x="423" y="274" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">step 只增 ⇒ 已释放的永远可选</text>
+  <text x="423" y="294" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">何时停、取几个都与选法无关</text>
+  <text x="423" y="308" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">（前 T−1 步恰好用光全部低阈值下标）</text>
+
+  <!-- 底部结论条 -->
+  <rect x="60" y="336" width="440" height="46" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="354" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">每步先放行再取最大（贪心只是其中一种取法）</text>
+  <text x="280" y="372" text-anchor="middle" font-size="12.5" fill="#b85450" filter="url(#rough2)">ans = 10 + 6 + 1 = 17</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">算法流程：判可用 → 判上一秒 → 定方向 → 出队</text>
+
+  <!-- A: decision 是否空窗 -->
+  <rect x="170" y="46" width="220" height="46" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="74" text-anchor="middle" font-size="13" fill="#7a5520" filter="url(#rough2)">两队首都未到 cur？</text>
+  <!-- branch 是 -->
+  <path d="M 390 69 L 432 69" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="62" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="434" y="46" width="110" height="46" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="489" y="68" text-anchor="middle" font-size="11" fill="#7a2230" filter="url(#rough2)">cur=min(到达)</text>
+  <text x="489" y="82" text-anchor="middle" font-size="11" fill="#7a2230" filter="url(#rough2)">标记闲置</text>
+  <!-- loop back from branch to A -->
+  <path d="M 489 92 L 489 120 L 70 120 L 70 69 L 168 69" fill="none" stroke="#555" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- 否 ↓ -->
+  <path d="M 280 92 L 280 120" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否</text>
+
+  <!-- B: 上一秒用过门？ -->
+  <rect x="170" y="122" width="220" height="46" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="150" text-anchor="middle" font-size="13" fill="#7a5520" filter="url(#rough2)">上一秒用过门？ lastUsed==cur-1</text>
+  <!-- 否 → D -->
+  <path d="M 390 145 L 432 145" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="138" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="434" y="122" width="110" height="46" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="489" y="150" text-anchor="middle" font-size="12" fill="#2c4a22" filter="url(#rough2)">退出优先</text>
+  <!-- 是 ↓ to C -->
+  <path d="M 280 168 L 280 196" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="186" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- C: 同向优先，无人则切换 -->
+  <rect x="150" y="198" width="260" height="46" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="226" text-anchor="middle" font-size="13" fill="#2c3e50" filter="url(#rough2)">同向优先；该方向无人则切换另一向</text>
+
+  <!-- D 与 C 汇合 → E -->
+  <path d="M 489 168 L 489 246 L 412 246" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 280 244 L 280 276" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- E: 出队 -->
+  <rect x="120" y="278" width="320" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="13" fill="#2c4a22" filter="url(#rough2)">出队队首 p；ans[p]=cur</text>
+  <text x="280" y="318" text-anchor="middle" font-size="12" fill="#2c4a22" filter="url(#rough2)">lastDir=dir；lastUsed=cur；cur+=1</text>
+
+  <!-- loop back to A -->
+  <path d="M 120 304 L 40 304 L 40 69 L 168 69" fill="none" stroke="#555" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="52" y="190" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">回到</text>
+  <text x="52" y="204" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">判可用</text>
+</svg>

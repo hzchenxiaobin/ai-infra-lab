@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">数位 DP × KMP 自动机：逐位填字符，追踪 evil 匹配进度</text>
+
+  <!-- ====== Top: the bound string ====== -->
+  <text x="300" y="54" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">上界 s2 = "leetc"（逐位填 a..z，tight 控制上界）</text>
+  <!-- 5 boxes w=44, start x=190 -->
+  <rect x="190" y="64" width="44" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="212" y="88" text-anchor="middle" font-size="15" fill="#335" font-weight="bold">l</text>
+  <rect x="234" y="64" width="44" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="256" y="88" text-anchor="middle" font-size="15" fill="#a87020" font-weight="bold">e</text>
+  <rect x="278" y="64" width="44" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="88" text-anchor="middle" font-size="15" fill="#a87020" font-weight="bold">e</text>
+  <rect x="322" y="64" width="44" height="38" fill="#fff" stroke="#999" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="344" y="88" text-anchor="middle" font-size="15" fill="#888" font-weight="bold">?</text>
+  <rect x="366" y="64" width="44" height="38" fill="#fff" stroke="#999" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="388" y="88" text-anchor="middle" font-size="15" fill="#888" font-weight="bold">?</text>
+  <text x="212" y="116" text-anchor="middle" font-size="9.5" fill="#aaa">0</text>
+  <text x="256" y="116" text-anchor="middle" font-size="9.5" fill="#aaa">1</text>
+  <text x="300" y="116" text-anchor="middle" font-size="9.5" fill="#aaa">2</text>
+  <text x="344" y="116" text-anchor="middle" font-size="9.5" fill="#aaa">3</text>
+  <text x="388" y="116" text-anchor="middle" font-size="9.5" fill="#aaa">4</text>
+
+  <!-- tight indicator -->
+  <rect x="190" y="64" width="132" height="38" fill="none" stroke="#b85450" stroke-width="2.2" stroke-dasharray="5,3" rx="6" filter="url(#rough2)"/>
+  <text x="175" y="88" text-anchor="end" font-size="10.5" fill="#b85450" font-weight="bold">tight=1</text>
+  <text x="175" y="102" text-anchor="end" font-size="9" fill="#b85450">前缀=l"ee"</text>
+
+  <!-- arrow down -->
+  <path d="M 300 128 L 300 148" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ====== Middle: KMP automaton for evil ====== -->
+  <text x="300" y="144" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">evil = "lee"（m = 3）→ KMP π 数组 → 自动机 nxt[j][c]</text>
+
+  <!-- evil boxes -->
+  <rect x="222" y="156" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="244" y="178" text-anchor="middle" font-size="15" fill="#3a5a2a" font-weight="bold">l</text>
+  <rect x="266" y="156" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="288" y="178" text-anchor="middle" font-size="15" fill="#3a5a2a" font-weight="bold">e</text>
+  <rect x="310" y="156" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="332" y="178" text-anchor="middle" font-size="15" fill="#3a5a2a" font-weight="bold">e</text>
+  <text x="244" y="204" text-anchor="middle" font-size="9.5" fill="#aaa">0</text>
+  <text x="288" y="204" text-anchor="middle" font-size="9.5" fill="#aaa">1</text>
+  <text x="332" y="204" text-anchor="middle" font-size="9.5" fill="#aaa">2</text>
+
+  <!-- pi array -->
+  <text x="195" y="200" text-anchor="end" font-size="10" fill="#888">π =</text>
+  <text x="244" y="222" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">0</text>
+  <text x="288" y="222" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">0</text>
+  <text x="332" y="222" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">1</text>
+
+  <!-- divider -->
+  <path d="M 60 238 L 540 238" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ====== Bottom: KMP automaton states ====== -->
+  <text x="300" y="258" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">自动机状态 j = 已匹配 evil 前缀长度（0,1,2,3）</text>
+
+  <!-- state 0 -->
+  <circle cx="100" cy="300" r="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="100" y="296" text-anchor="middle" font-size="14" fill="#335" font-weight="bold">0</text>
+  <text x="100" y="312" text-anchor="middle" font-size="8.5" fill="#666">未匹配</text>
+
+  <!-- state 1 -->
+  <circle cx="220" cy="300" r="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="220" y="296" text-anchor="middle" font-size="14" fill="#3a5a2a" font-weight="bold">1</text>
+  <text x="220" y="312" text-anchor="middle" font-size="8.5" fill="#666">匹配 "l"</text>
+
+  <!-- state 2 -->
+  <circle cx="340" cy="300" r="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="340" y="296" text-anchor="middle" font-size="14" fill="#3a5a2a" font-weight="bold">2</text>
+  <text x="340" y="312" text-anchor="middle" font-size="8.5" fill="#666">匹配 "le"</text>
+
+  <!-- state 3 (bad) -->
+  <circle cx="480" cy="300" r="26" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="480" y="296" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">3</text>
+  <text x="480" y="312" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">含 evil!</text>
+
+  <!-- transitions -->
+  <!-- 0 --l--> 1 -->
+  <path d="M 126 290 Q 160 275 196 290" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="161" y="272" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">l</text>
+  <!-- 1 --e--> 2 -->
+  <path d="M 246 290 Q 280 275 316 290" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="281" y="272" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">e</text>
+  <!-- 2 --e--> 3 -->
+  <path d="M 366 290 Q 410 275 456 290" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="411" y="272" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">e</text>
+
+  <!-- fallback transitions (curved below) -->
+  <!-- 2 --x(not e)--> 0  shown as self-loop-ish -->
+  <path d="M 340 326 Q 300 350 230 326" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="285" y="352" text-anchor="middle" font-size="9.5" fill="#a87020">非 e → 回退 π</text>
+  <!-- 1 --x(not e)--> 0 -->
+  <path d="M 220 326 Q 185 342 126 326" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="173" y="344" text-anchor="middle" font-size="9.5" fill="#a87020">非 l,e →0</text>
+
+  <!-- bad state X marker -->
+  <text x="480" y="338" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">→ 返回 0</text>
+
+  <!-- ====== Key insight box ====== -->
+  <rect x="50" y="378" width="500" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="397" text-anchor="middle" font-size="11" fill="#666">dp(i, j, tight) = 从第 i 位起、evil 已匹配 j 位、上界状态 tight 时的合法串数</text>
+  <text x="300" y="415" text-anchor="middle" font-size="11" fill="#a87020" font-weight="bold">j == m → 已含 evil → 返回 0；i == n → 合法 → 返回 1</text>
+</svg>

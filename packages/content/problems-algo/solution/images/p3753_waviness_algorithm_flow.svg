@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 716"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="716" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">数位 DP 流程：成对返回 (cnt, sum)，转移边上结算峰/谷</text>
+
+  <!-- 开始 -->
+  <rect x="100" y="34" width="320" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="55" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">ans = f(num2) − f(num1 − 1)</text>
+
+  <path d="M 260 68 L 260 82" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="95" y="86" width="330" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="108" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">dfs(pos, tight, prev, prev2)：prev/prev2 = −1 表未开始</text>
+
+  <path d="M 260 122 L 260 136" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定 1：填完 -->
+  <polygon points="185,170 260,142 335,170 260,198" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="164" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">pos == L ?</text>
+  <text x="260" y="182" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">（全部数位填完）</text>
+
+  <text x="348" y="162" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M 335 170 L 378 170" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="382" y="154" width="100" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="432" y="174" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">返回 (1, 0)</text>
+
+  <text x="271" y="212" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 260 198 L 260 216" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="95" y="220" width="330" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="242" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">枚举 d ∈ 0..up（tight 时 up = s[pos]，否则 up = 9）</text>
+
+  <path d="M 260 256 L 260 270" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="95" y="274" width="330" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="294" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">np = d，np2 = prev；前导零（prev=−1 且 d=0）保持 −1</text>
+  <text x="260" y="312" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">tight' = tight 且 d == up</text>
+
+  <path d="M 260 322 L 260 336" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 判定 2：峰/谷 -->
+  <polygon points="185,372 260,344 335,372 260,400" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="366" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">prev 是峰/谷 ?</text>
+  <text x="260" y="384" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">（两侧邻居都在手）</text>
+
+  <text x="348" y="364" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+  <path d="M 335 372 L 368 372" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="372" y="356" width="76" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="376" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">c = 1</text>
+  <path d="M 410 388 L 410 424" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <text x="170" y="364" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">否</text>
+  <path d="M 185 372 L 152 372" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="76" y="356" width="72" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="112" y="376" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">c = 0</text>
+  <path d="M 112 388 L 112 424" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="95" y="428" width="330" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="450" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">(sc, ss) = dfs(pos + 1, tight', np, np2)</text>
+
+  <path d="M 260 464 L 260 478" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <rect x="95" y="482" width="330" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="502" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">cnt += sc；sm += c·sc + ss</text>
+  <text x="260" y="520" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">峰/谷贡献 = c × 后继方案数</text>
+
+  <path d="M 260 530 L 260 544" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定 3：循环 -->
+  <polygon points="185,580 260,552 335,580 260,608" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="574" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">还有下一个 d ?</text>
+
+  <text x="168" y="572" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">是</text>
+  <path d="M 185 580 L 66 580 L 66 238 L 93 238" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text transform="rotate(-90 54 410)" x="54" y="410" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">取下一个 d</text>
+
+  <text x="271" y="622" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 260 608 L 260 624" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="95" y="628" width="330" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="650" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">非 tight 状态写 memo；返回 (cnt, sm)</text>
+
+  <path d="M 260 664 L 260 676" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="160" y="680" width="200" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="699" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">f(N) = sm（[0,N] 波动值总和）</text>
+</svg>

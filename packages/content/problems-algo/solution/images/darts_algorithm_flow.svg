@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：枚举点对 → 求两圆心 → 计数取最大</text>
+
+  <!-- 1. Start -->
+  <rect x="160" y="38" width="180" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="16" filter="url(#rough2)"/>
+  <text x="250" y="58" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">ans = 1（至少覆盖 1 枚）</text>
+  <path d="M 250 70 L 250 88" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 2. Enumerate pairs -->
+  <rect x="140" y="88" width="220" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="108" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">枚举所有点对 (i, j)，i &lt; j</text>
+  <path d="M 250 120 L 250 140" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 3. Diamond: d > 2r? -->
+  <polygon points="250,140 312,172 250,204 188,172" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="176" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">d &gt; 2r ?</text>
+
+  <!-- Yes branch: skip -->
+  <path d="M 312 172 L 410 172" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="360" y="166" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+  <rect x="410" y="158" width="120" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="176" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">跳过该点对</text>
+  <!-- loop back up to enumerate box -->
+  <path d="M 470 158 L 470 104 L 360 104" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="478" y="134" font-size="10" fill="#b85450">下一对</text>
+
+  <!-- No branch -->
+  <path d="M 250 204 L 250 228" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="262" y="220" font-size="10.5" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- 4. Compute M, h -->
+  <rect x="120" y="228" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="246" text-anchor="middle" font-size="11.5" fill="#333">M = (A + B) / 2</text>
+  <text x="250" y="262" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">h = √( r² − (d/2)² )</text>
+  <path d="M 250 268 L 250 286" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 5. Two centers -->
+  <rect x="100" y="286" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="307" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">C₁,₂ = M ± h · ( −Δy, Δx ) / d</text>
+  <path d="M 250 320 L 250 338" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 6. Count darts -->
+  <rect x="110" y="338" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="359" text-anchor="middle" font-size="11.5" fill="#333">对每个圆心数半径 r 内飞镖数 cnt</text>
+  <path d="M 250 372 L 250 390" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 7. Update ans -->
+  <rect x="140" y="390" width="220" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="410" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">ans = max(ans, cnt)</text>
+
+  <!-- return ans (right) -->
+  <path d="M 360 406 L 430 406" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="430" y="392" width="100" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="480" y="410" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">return ans</text>
+
+  <!-- Note box -->
+  <rect x="40" y="436" width="480" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="453" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">为何只需枚举点对？最优圆可平移 + 旋转至 ≥ 2 枚飞镖落在边界</text>
+</svg>

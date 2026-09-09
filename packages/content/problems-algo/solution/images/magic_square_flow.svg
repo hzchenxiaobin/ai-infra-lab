@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：从大到小试 k，命中即返回</text>
+
+  <!-- Step 1: prefix -->
+  <rect x="170" y="40" width="220" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">预处理 rowPrefix / colPrefix (O(mn))</text>
+  <path d="M 280 78 L 280 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop k -->
+  <rect x="170" y="98" width="220" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="12" fill="#333">k = min(m,n) 递减到 2</text>
+  <path d="M 280 136 L 280 152" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop (r,c) -->
+  <rect x="170" y="156" width="220" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="180" text-anchor="middle" font-size="12" fill="#333">枚举左上角 (r, c)，需 r+k≤m, c+k≤n</text>
+  <path d="M 280 194 L 280 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: S -->
+  <rect x="150" y="214" width="260" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="238" text-anchor="middle" font-size="12" fill="#333">S = rowPrefix[r][c+k] − rowPrefix[r][c]</text>
+  <path d="M 280 252 L 280 268" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: all rows == S -->
+  <polygon points="280,272 380,306 280,340 180,306" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="11" fill="#333">所有行和 == S ?</text>
+  <text x="280" y="318" text-anchor="middle" font-size="10" fill="#888">(k 行各 O(1))</text>
+  <path d="M 280 340 L 280 356" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- No branch -->
+  <path d="M 380 306 L 430 306 L 430 176 L 392 176" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="396" y="296" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <text x="396" y="240" font-size="10" fill="#b85450">下一个 (r,c)</text>
+
+  <!-- Diamond: all cols == S -->
+  <polygon points="280,360 380,394 280,428 180,394" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="390" text-anchor="middle" font-size="11" fill="#333">所有列和 == S ?</text>
+  <text x="280" y="406" text-anchor="middle" font-size="10" fill="#888">(k 列各 O(1))</text>
+  <path d="M 280 428 L 280 444" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 380 394 L 430 394 L 430 176" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="396" y="384" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Diamond: diagonals == S -->
+  <polygon points="280,448 380,478 280,508 180,478" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="476" text-anchor="middle" font-size="11" fill="#333">两条对角线 == S ?</text>
+  <text x="280" y="492" text-anchor="middle" font-size="10" fill="#888">(O(k) 累加)</text>
+  <path d="M 380 478 L 430 478 L 430 176" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="396" y="470" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Yes -> return k -->
+  <path d="M 280 508 L 280 520" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="522" font-size="11" fill="#4a7a3a" font-weight="bold">是 → return k</text>
+
+  <!-- right side: loops exhausted -->
+  <rect x="40" y="490" width="120" height="40" fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4 3" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="508" text-anchor="middle" font-size="11" fill="#888">所有 k 都试完</text>
+  <text x="100" y="522" text-anchor="middle" font-size="11" fill="#888">→ return 1</text>
+  <path d="M 160 110 L 100 110 L 100 488" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

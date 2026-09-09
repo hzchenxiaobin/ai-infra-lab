@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="410" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：收参 → 合并 → 比长度 → 够则触发 / 不够则递归返回同型函数</text>
+
+  <!-- Step 1: receive args -->
+  <rect x="30" y="56" width="170" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="78" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">1. 收参 curried(...args)</text>
+  <text x="115" y="96" text-anchor="middle" font-size="11" fill="#888">rest 参数一股脑收进数组</text>
+
+  <path d="M 200 81 L 232 81" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: merge -->
+  <rect x="232" y="56" width="170" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="317" y="78" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">2. 合并</text>
+  <text x="317" y="96" text-anchor="middle" font-size="11" fill="#333">collected = 旧累积 + args</text>
+
+  <path d="M 402 81 L 434 81" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: compare -->
+  <rect x="434" y="56" width="156" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="512" y="78" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">3. 比长度</text>
+  <text x="512" y="96" text-anchor="middle" font-size="11" fill="#333">length vs fn.length</text>
+
+  <!-- decision diamond -->
+  <polygon points="512,128 592,168 512,208 432,168" fill="#fff" stroke="#666" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="512" y="164" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">够？</text>
+  <text x="512" y="182" text-anchor="middle" font-size="10" fill="#888">≥ fn.length</text>
+
+  <!-- arrow from step3 to decision -->
+  <path d="M 512 106 L 512 126" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- yes branch: trigger -->
+  <text x="528" y="232" font-size="11" fill="#b85450" font-weight="bold">够</text>
+  <path d="M 512 208 L 512 244" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <rect x="400" y="248" width="224" height="54" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="512" y="272" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">触发 fn.apply(this, collected)</text>
+  <text x="512" y="290" text-anchor="middle" font-size="11" fill="#888">链条终止，返回原函数结果</text>
+
+  <!-- no branch: return same-type function -->
+  <text x="396" y="160" font-size="11" fill="#4a7a3a" font-weight="bold">不够</text>
+  <path d="M 432 168 L 370 168" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <rect x="190" y="144" width="180" height="54" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="166" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">返回 function(...more)</text>
+  <text x="280" y="184" text-anchor="middle" font-size="11" fill="#333">curried.apply(this, [...collected, ...more])</text>
+
+  <!-- loop back arrow from return-same to step1 (receive args) -->
+  <path d="M 190 171 L 160 171 L 160 130 L 115 130 L 115 106" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="5,4" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="135" y="120" font-size="10" fill="#4a7a3a">续接：等下一批参数</text>
+
+  <!-- summary -->
+  <rect x="30" y="320" width="560" height="44" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="340" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">每层只花 O(k) 做数组拼接（k = 本批参数数），凑够即停，链条长度 = 调用批次数</text>
+  <text x="310" y="358" text-anchor="middle" font-size="11" fill="#888">判定逻辑只写一遍，每一层都走同一段「累积 → 判长 → 触发 / 续接」</text>
+
+  <text x="310" y="388" text-anchor="middle" font-size="11" fill="#888">⚠️ 用 >= 而非 ===：多传参数也能立即触发，多余参数原样交给 fn</text>
+</svg>

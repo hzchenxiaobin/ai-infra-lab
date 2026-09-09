@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心思路：保底 $1 + 每 $7 点亮一个「8」</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">先给每个孩子 1 美元（满足「每人≥1」），再用 extra = money − children 去点亮 8</text>
+
+  <!-- ① base 1 each -->
+  <text x="40" y="76" font-size="11" fill="#888" font-weight="bold">① 每人先发 1 美元保底</text>
+  <g filter="url(#rough2)">
+    <rect x="70" y="86" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="120" y="86" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="170" y="86" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="220" y="86" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="200" y="104" text-anchor="middle" font-size="9" fill="#888">… 共 children 个 …</text>
+    <rect x="270" y="86" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+  </g>
+  <g font-size="11">
+    <text x="92" y="104" text-anchor="middle" fill="#333">$1</text>
+    <text x="142" y="104" text-anchor="middle" fill="#333">$1</text>
+    <text x="192" y="104" text-anchor="middle" fill="#333">$1</text>
+    <text x="242" y="104" text-anchor="middle" fill="#333">$1</text>
+    <text x="292" y="104" text-anchor="middle" fill="#333">$1</text>
+  </g>
+
+  <!-- arrow down + extra -->
+  <line x1="280" y1="118" x2="280" y2="140" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="134" font-size="10" fill="#666">剩 extra = money − children</text>
+
+  <!-- ② light up k = extra // 7 -->
+  <text x="40" y="162" font-size="11" fill="#888" font-weight="bold">② 每 7 美元把一个孩子点亮成 8（共点亮 k = extra ÷ 7 个）</text>
+  <g filter="url(#rough2)">
+    <rect x="70" y="172" width="44" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="120" y="172" width="44" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="170" y="172" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.1"/>
+    <rect x="220" y="172" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.1"/>
+    <rect x="270" y="172" width="44" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.1"/>
+  </g>
+  <g font-size="11">
+    <text x="92" y="190" text-anchor="middle" fill="#3a5a2a" font-weight="bold">$8</text>
+    <text x="142" y="190" text-anchor="middle" fill="#3a5a2a" font-weight="bold">$8</text>
+    <text x="192" y="190" text-anchor="middle" fill="#999">$1</text>
+    <text x="242" y="190" text-anchor="middle" fill="#999">$1</text>
+    <text x="292" y="190" text-anchor="middle" fill="#999">$1</text>
+  </g>
+  <text x="92" y="214" text-anchor="middle" font-size="9" fill="#4a7a3a">+7</text>
+  <text x="142" y="214" text-anchor="middle" font-size="9" fill="#4a7a3a">+7</text>
+  <text x="200" y="214" text-anchor="middle" font-size="9" fill="#888">r = children − k 个未点亮</text>
+
+  <!-- arrow down + leftover -->
+  <line x1="280" y1="220" x2="280" y2="240" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="236" font-size="10" fill="#666">零头 leftover = extra mod 7（0..6）</text>
+
+  <!-- ③ leftover absorbed by the r non-lit children -->
+  <text x="40" y="262" font-size="11" fill="#888" font-weight="bold">③ 零头塞给未点亮的 r 个孩子（每人 ≠ 4 且 ≠ 8）</text>
+  <g filter="url(#rough2)">
+    <rect x="170" y="272" width="44" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+    <rect x="220" y="272" width="44" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+    <rect x="270" y="272" width="44" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+  </g>
+  <g font-size="11">
+    <text x="192" y="290" text-anchor="middle" fill="#7a5a20">$1+?</text>
+    <text x="242" y="290" text-anchor="middle" fill="#7a5a20">$1+?</text>
+    <text x="292" y="290" text-anchor="middle" fill="#7a5a20">$1+?</text>
+  </g>
+  <text x="200" y="312" text-anchor="middle" font-size="9.5" fill="#d6a040">零头可任意拆给这 r 人，避免凑成 4 或 8</text>
+
+  <!-- conflict note -->
+  <rect x="70" y="328" width="420" height="38" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="11.5" fill="#b03a3a" font-weight="bold">⚠ 唯一冲突：r = 1 且 leftover = 3 ⟹ 那 1 人被迫拿 1+3 = 4（违规）</text>
+  <text x="280" y="362" text-anchor="middle" font-size="10.5" fill="#b85450">→ 少点亮一个 8（k−1），把多出的 7 与零头 3 合为 10 分给 2 人即可化解</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a07830"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：派生列 → 分区开窗 → 排序输出</text>
+
+  <!-- 主流程 -->
+  <rect x="24" y="48" width="306" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="68" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① FROM SeasonStats</text>
+  <text x="36" y="84" font-size="10" fill="#555" filter="url(#rough2)">每赛季每队一行（PK: season_id + team_id）</text>
+  <text x="36" y="97" font-size="9.5" fill="#555" filter="url(#rough2)">原始列：wins / draws / goals_for / goals_against …</text>
+
+  <path d="M 177 106 L 177 116" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="24" y="118" width="306" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="138" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 算派生列</text>
+  <text x="36" y="154" font-size="10" fill="#555" filter="url(#rough2)">points = wins × 3 + draws</text>
+  <text x="36" y="168" font-size="10" fill="#555" filter="url(#rough2)">goal_difference = goals_for − goals_against</text>
+
+  <path d="M 177 176 L 177 186" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="24" y="188" width="306" height="84" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="208" font-size="11.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">③ 开窗发号：RANK() OVER ( … )</text>
+  <text x="36" y="224" font-size="10" fill="#555" filter="url(#rough2)">PARTITION BY season_id —— 分赛季，各排各的</text>
+  <text x="36" y="238" font-size="10" fill="#555" filter="url(#rough2)">ORDER BY points DESC, GD DESC, team_name</text>
+  <text x="36" y="252" font-size="10" fill="#555" filter="url(#rough2)">三级键逐级消解平局</text>
+  <text x="36" y="266" font-size="10" fill="#555" filter="url(#rough2)">三键全同 → 并列同号</text>
+
+  <path d="M 177 274 L 177 284" fill="none" stroke="#a07830" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="24" y="286" width="306" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="306" font-size="11.5" fill="#8a3833" font-weight="bold" filter="url(#rough2)">④ 排序输出</text>
+  <text x="36" y="322" font-size="10" fill="#555" filter="url(#rough2)">ORDER BY season_id, position, team_name</text>
+  <text x="36" y="338" font-size="10" fill="#555" filter="url(#rough2)">名次并列时队名兜底 → 输出顺序确定</text>
+
+  <!-- 右侧备注 -->
+  <rect x="348" y="48" width="152" height="118" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="360" y="68" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠️ 别名陷阱</text>
+  <text x="360" y="86" font-size="9" fill="#555" filter="url(#rough2)">OVER(ORDER BY points)</text>
+  <text x="360" y="99" font-size="9.5" fill="#555" filter="url(#rough2)">→ 语法错误 ✗</text>
+  <text x="360" y="117" font-size="9.5" fill="#555" filter="url(#rough2)">窗口里看不到</text>
+  <text x="360" y="130" font-size="9.5" fill="#555" filter="url(#rough2)">SELECT 的别名</text>
+  <text x="360" y="148" font-size="9.5" fill="#555" filter="url(#rough2)">办法① 重复表达式</text>
+  <text x="360" y="160" font-size="9.5" fill="#555" filter="url(#rough2)">办法② CTE 先物化</text>
+
+  <rect x="348" y="178" width="152" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="360" y="198" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">💡 为何 RANK()？</text>
+  <text x="360" y="216" font-size="9.5" fill="#555" filter="url(#rough2)">三键含队名兜底，</text>
+  <text x="360" y="229" font-size="9.5" fill="#555" filter="url(#rough2)">组内实际无并列</text>
+  <text x="360" y="247" font-size="9.5" fill="#555" filter="url(#rough2)">RANK 延续系列 I 的</text>
+  <text x="360" y="260" font-size="9.5" fill="#555" filter="url(#rough2)">「同键同号」语义</text>
+
+  <rect x="348" y="282" width="152" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="360" y="302" font-size="10.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">✓ 输出层 ORDER BY</text>
+  <text x="360" y="318" font-size="9.5" fill="#555" filter="url(#rough2)">可以用别名 position</text>
+  <text x="360" y="336" font-size="9.5" fill="#555" filter="url(#rough2)">（最外层排序的别名</text>
+  <text x="360" y="349" font-size="9.5" fill="#555" filter="url(#rough2)">解析规则不同）</text>
+</svg>

@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#778899"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="180" y="18" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：枚举窗口 + 双 BIT 顺序统计 + 凹性二分</text>
+
+  <!-- A 预处理 -->
+  <rect x="56" y="32" width="248" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="46" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">预处理：值离散化，全部元素装入 global BIT</text>
+  <text x="180" y="60" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">前缀和 pre[0..n]</text>
+  <path d="M 180 68 L 180 78" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+
+  <!-- B 枚举 l -->
+  <rect x="56" y="80" width="248" height="32" rx="8" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="100" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">枚举左端点 l（清空 inside BIT）</text>
+  <path d="M 180 112 L 180 122" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+
+  <!-- C r 右移 -->
+  <rect x="56" y="124" width="248" height="52" rx="8" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="140" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">r = l..n−1 右移：nums[r] 加入 inside BIT</text>
+  <text x="180" y="154" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">base = pre[r+1] − pre[l]</text>
+  <text x="180" y="168" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">m = min(k, 内部个数, 外部个数)</text>
+  <path d="M 180 176 L 180 184" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+
+  <!-- D 菱形判定 -->
+  <polygon points="180,188 266,220 180,252 94,220" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="216" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">外部最大 &gt; 内部最小？</text>
+  <text x="180" y="230" text-anchor="middle" font-size="10" fill="#8a6d1f" filter="url(#rough2)">（d&#8321; &gt; 0 ?）</text>
+  <path d="M 266 220 L 344 220" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+  <text x="296" y="214" text-anchor="middle" font-size="9.5" fill="#8c3a34" filter="url(#rough2)">否</text>
+  <path d="M 180 252 L 180 260" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+  <text x="188" y="260" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">是</text>
+
+  <!-- E 分支：t*=0 -->
+  <rect x="346" y="204" width="158" height="32" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="425" y="224" text-anchor="middle" font-size="10" fill="#8c3a34" filter="url(#rough2)">t* = 0：候选 = base</text>
+
+  <!-- F 二分 -->
+  <rect x="56" y="262" width="248" height="36" rx="8" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="276" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">二分最大 t*：d&#8348; 非增（kth 查询 O(log)），</text>
+  <text x="180" y="290" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">找最后一个 d&#8348; &gt; 0</text>
+  <path d="M 180 298 L 180 306" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+
+  <!-- G 汇合 -->
+  <rect x="56" y="308" width="248" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="324" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">候选 = base + (外部最大 t* 之和 − 内部最小 t* 之和)</text>
+  <text x="180" y="340" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">ans = max(ans, 候选)</text>
+  <path d="M 425 236 C 425 280, 320 300, 306 316" fill="none" stroke="#778899" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#arrK)" filter="url(#rough2)"/>
+
+  <!-- 右回路：r 循环 -->
+  <path d="M 304 330 C 336 330, 336 150, 306 150" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+  <text x="342" y="292" font-size="9" fill="#778899" filter="url(#rough2)">r+1 ≤ n−1：</text>
+  <text x="342" y="304" font-size="9" fill="#778899" filter="url(#rough2)">继续 r 循环</text>
+
+  <!-- 左回路：l 循环 -->
+  <path d="M 56 330 C 14 330, 14 96, 54 96" fill="none" stroke="#778899" stroke-width="1.5" marker-end="url(#arrK)" filter="url(#rough2)"/>
+  <text x="18" y="212" font-size="9" fill="#778899" transform="rotate(-90 18 212)" filter="url(#rough2)">r 走完 → l+1 ≤ n−1</text>
+  <text x="260" y="358" text-anchor="middle" font-size="9" fill="#778899" filter="url(#rough2)">l 也走完 → 返回 ans</text>
+
+  <!-- 侧注：BIT 工具箱 -->
+  <rect x="346" y="32" width="158" height="150" rx="10" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="425" y="50" text-anchor="middle" font-size="10.5" fill="#33507a" font-weight="bold" filter="url(#rough2)">双 BIT 工具箱</text>
+  <text x="356" y="68" font-size="9" fill="#555" filter="url(#rough2)">· 第 k 小 / 大：O(log)</text>
+  <text x="356" y="84" font-size="9" fill="#555" filter="url(#rough2)">· 最小 t 个之和：O(log)</text>
+  <text x="356" y="100" font-size="9" fill="#555" filter="url(#rough2)">· 外部 = global − inside，</text>
+  <text x="356" y="112" font-size="9" fill="#555" filter="url(#rough2)">　 两 BIT 同步下降查询，</text>
+  <text x="356" y="124" font-size="9" fill="#555" filter="url(#rough2)">　 无需真正删除元素</text>
+  <text x="356" y="142" font-size="9" fill="#8a6d1f" filter="url(#rough2)">· 剪枝：base + 外部正数和</text>
+  <text x="356" y="154" font-size="9" fill="#8a6d1f" filter="url(#rough2)">　 + 内部负数绝对值和</text>
+  <text x="356" y="166" font-size="9" fill="#8a6d1f" filter="url(#rough2)">　 ≤ ans → 直接跳过</text>
+</svg>

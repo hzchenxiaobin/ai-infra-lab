@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">三维 DP：dp[i][j][s] 的定义与松弛流程</text>
+
+  <!-- ① 前缀和 与 ② 基例 -->
+  <rect x="24" y="42" width="224" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="136" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">① 前缀和 P[i] = Σ time[0..i]</text>
+  <text x="136" y="76" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">任意缺口和 O(1) 化</text>
+
+  <rect x="292" y="42" width="244" height="44" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="414" y="60" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#446688" filter="url(#rough2)">② 基例 dp[i][i−1][i−1] = pos[i]·time[0]</text>
+  <text x="414" y="76" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">0 之后第一个保留 i，i ≤ k+1</text>
+
+  <path d="M 136 86 L 210 106" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 414 86 L 350 106" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 状态 -->
+  <rect x="110" y="108" width="340" height="64" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a6d3a" filter="url(#rough2)">③ 状态 dp[i][j][s]（s ≤ min(j, i−1)）</text>
+  <text x="280" y="146" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">保留 i ｜ 已删 j 个 ｜ i 左侧紧邻删 s 个</text>
+  <text x="280" y="162" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">值 = 0 → pos[i] 的最小旅行时间</text>
+
+  <path d="M 280 172 L 280 190" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 速度 -->
+  <rect x="130" y="194" width="300" height="36" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="217" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#446688" filter="url(#rough2)">④ speed = time[i] + P[i−1] − P[i−s−1]</text>
+
+  <path d="M 280 230 L 280 248" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 枚举 m 判断 -->
+  <polygon points="280,252 450,290 280,328 110,290" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="284" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#8a6d3a" filter="url(#rough2)">枚举下一个保留 m ∈ (i, n−1]</text>
+  <text x="280" y="302" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#8a6d3a" filter="url(#rough2)">nj = j + m − i − 1 ≤ k ？</text>
+
+  <!-- 否 → break -->
+  <path d="M 450 290 L 486 290" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="466" y="281" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="490" y="272" width="58" height="36" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="519" y="288" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">nj 随 m</text>
+  <text x="519" y="301" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">单调增,break</text>
+
+  <!-- 是 → 松弛 -->
+  <path d="M 280 328 L 280 348" fill="none" stroke="#4a7a3a" stroke-width="2.2" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="293" y="343" font-size="11" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">是</text>
+
+  <rect x="70" y="352" width="420" height="46" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="371" text-anchor="middle" font-size="11" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">⑥ dp[m][nj][m−i−1] ← min( · , dp[i][j][s] + (pos[m]−pos[i]) × speed)</text>
+  <text x="280" y="390" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">新 s′ = m−i−1（紧邻删除数），新 j′ = nj（总删除数）</text>
+
+  <!-- 回边：换下一个状态 -->
+  <path d="M 70 375 L 34 375 L 34 140 L 106 140" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="44" y="262" font-size="10" fill="#888" transform="rotate(-90 44 262)" text-anchor="middle" filter="url(#rough2)">枚举下一个 (i, j, s, m)</text>
+
+  <path d="M 280 398 L 280 410" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑦ 答案 -->
+  <rect x="120" y="414" width="320" height="44" rx="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="432" text-anchor="middle" font-size="12" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">⑦ ans = min(dp[n−1][k][0..k])</text>
+  <text x="280" y="450" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">尾路标必保留，总删除数恰好为 k</text>
+</svg>

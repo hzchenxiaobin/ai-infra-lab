@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold">算法流程：切分路径 → 逐段下沉 → 按操作收尾</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">四操作共享「下沉」骨架，只末尾收尾不同</text>
+
+  <!-- Step 1: split -->
+  <rect x="40" y="56" width="480" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="82" r="13" fill="#446688" filter="url(#rough2)"/>
+  <text x="62" y="87" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">1</text>
+  <text x="86" y="77" font-size="12" fill="#446688" font-weight="bold">split(path)：按 '/' 切段</text>
+  <text x="86" y="95" font-size="10.5" fill="#555">"/a/b/c/d" → ["a","b","c","d"]；"/" → []（根为空数组）</text>
+
+  <path d="M 280 112 L 280 128" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: cur = root -->
+  <rect x="40" y="132" width="480" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="152" r="13" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="62" y="157" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">2</text>
+  <text x="86" y="157" font-size="12" fill="#4a7a3a" font-weight="bold">cur = root（从根出发）</text>
+
+  <path d="M 280 176 L 280 194" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop diamond -->
+  <polygon points="280,200 388,248 280,296 172,248" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="244" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">还有下一段 part？</text>
+  <text x="280" y="261" text-anchor="middle" font-size="10" fill="#888">for (p : parts)</text>
+
+  <!-- Yes branch: left -->
+  <text x="158" y="244" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 172 248 L 120 248" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="222" width="80" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="240" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">cur=children[p]</text>
+  <text x="80" y="254" text-anchor="middle" font-size="8.5" fill="#888">traverse:nullptr</text>
+  <text x="80" y="266" text-anchor="middle" font-size="8.5" fill="#888">touch:new</text>
+
+  <!-- loop back arrow -->
+  <path d="M 80 222 Q 80 200 130 200 Q 200 200 200 224" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="208" font-size="9" fill="#666" font-style="italic">回 ③</text>
+
+  <!-- No branch: down -->
+  <text x="290" y="316" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 280 296 L 280 322" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="180" y="324" width="200" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="343" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">到达末节点 cur → 按操作收尾</text>
+
+  <!-- fan-out arrows to 4 operation boxes -->
+  <path d="M 280 354 L 280 366" stroke="#666" stroke-width="1.5" fill="none"/>
+  <path d="M 80 366 L 480 366" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 80 366 L 80 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 213 366 L 213 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 347 366 L 347 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 480 366 L 480 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4 operation boxes -->
+  <rect x="20" y="380" width="120" height="74" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="397" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ls</text>
+  <text x="26" y="414" font-size="9" fill="#555">isFile? [name]</text>
+  <text x="26" y="428" font-size="9" fill="#555">: children 键</text>
+  <text x="26" y="442" font-size="9" fill="#888">(map 已有序)</text>
+
+  <rect x="153" y="380" width="120" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="213" y="397" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">mkdir</text>
+  <text x="159" y="416" font-size="9.5" fill="#555">touch 已建好</text>
+  <text x="159" y="430" font-size="9.5" fill="#555">直接返回</text>
+  <text x="159" y="444" font-size="9" fill="#888">(无收尾)</text>
+
+  <rect x="287" y="380" width="120" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="347" y="397" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">addContentToFile</text>
+  <text x="293" y="416" font-size="9.5" fill="#555">isFile = true</text>
+  <text x="293" y="430" font-size="9.5" fill="#555">content += c</text>
+  <text x="293" y="444" font-size="9" fill="#888">(幂等追加)</text>
+
+  <rect x="420" y="380" width="120" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="397" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">readContent</text>
+  <text x="426" y="416" font-size="9.5" fill="#555">return</text>
+  <text x="426" y="430" font-size="9.5" fill="#555">cur.content</text>
+  <text x="426" y="444" font-size="9" fill="#888">(只读)</text>
+</svg>

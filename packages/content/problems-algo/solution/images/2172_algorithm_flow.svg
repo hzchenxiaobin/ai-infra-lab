@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#666"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：预处理 3 的幂 → 逐状态递推 → 取终态最大值</text>
+
+  <!-- Step 1: precompute -->
+  <rect x="160" y="42" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">① 预处理 pow3[i] = 3ⁱ（i=0..numSlots−1）</text>
+  <text x="280" y="75" text-anchor="middle" font-size="10" fill="#555">total = 3^numSlots；dp[0]=0，其余 = −∞</text>
+
+  <path d="M 280 84 L 280 98" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop over states -->
+  <rect x="120" y="102" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="120" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">② 枚举状态 s = 0 … total−1（升序）</text>
+  <text x="280" y="135" text-anchor="middle" font-size="10" fill="#555">跳过 dp[s] = −∞（不可达）</text>
+
+  <path d="M 280 144 L 280 158" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: count items -->
+  <rect x="120" y="162" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="180" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">③ 计算 cnt = s 各三进制位之和（已放数个数）</text>
+  <text x="280" y="195" text-anchor="middle" font-size="10" fill="#555">下一个待放的数 x = nums[cnt]</text>
+
+  <path d="M 280 204 L 280 218" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: decision diamond -->
+  <polygon points="280,222 400,262 280,302 160,262" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="256" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">cnt == n ?</text>
+  <text x="280" y="272" text-anchor="middle" font-size="9.5" fill="#888">所有数已放完？</text>
+
+  <!-- Yes branch (left): record answer -->
+  <path d="M 160 262 L 90 262 L 90 286" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="110" y="256" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="20" y="290" width="140" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="310" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">终态</text>
+  <text x="90" y="326" text-anchor="middle" font-size="10" fill="#555">ans = max(ans, dp[s])</text>
+  <text x="90" y="338" text-anchor="middle" font-size="9.5" fill="#888">不再扩展</text>
+
+  <!-- No branch (right): extend -->
+  <path d="M 400 262 L 470 262 L 470 286" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="430" y="256" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <rect x="380" y="290" width="160" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="308" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">枚举篮子 i = 0..numSlots−1</text>
+  <text x="460" y="324" text-anchor="middle" font-size="10" fill="#555">dᵢ = (s ÷ 3ⁱ) mod 3</text>
+  <text x="460" y="336" text-anchor="middle" font-size="9.5" fill="#888">逐一考察每个篮子</text>
+
+  <!-- inner decision: digit < 2 ? -->
+  <path d="M 460 342 L 460 356" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="460,358 540,388 460,418 380,388" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="460" y="384" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">dᵢ &lt; 2 ?</text>
+  <text x="460" y="400" text-anchor="middle" font-size="9" fill="#888">篮子 i 还有空位</text>
+
+  <!-- yes: relax -->
+  <path d="M 380 388 L 320 388 L 320 412" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="345" y="382" font-size="9.5" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="210" y="416" width="220" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="434" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">松弛：dp[s+3ⁱ] =</text>
+  <text x="320" y="448" text-anchor="middle" font-size="10" fill="#555">max(dp[s+3ⁱ], dp[s] + (x &amp; (i+1)))</text>
+  <text x="320" y="460" text-anchor="middle" font-size="9" fill="#888">s+3ⁱ &gt; s，升序枚举保证先算好前驱</text>
+
+  <!-- no: skip -->
+  <path d="M 540 388 L 552 388" stroke="#888" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="548" y="382" font-size="9.5" fill="#888" font-weight="bold">否，跳过</text>
+
+  <!-- converge to answer -->
+  <path d="M 90 342 L 90 432 L 210 432" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- final answer -->
+  <rect x="20" y="448" width="170" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="464" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">④ 返回 ans</text>
+</svg>

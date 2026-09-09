@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="400" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">核心观察：OR 只增不减 + 按位计数实现「可撤销 OR」</text>
+
+  <!-- Section A: monotonicity -->
+  <text x="46" y="54" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 单调性：窗口越扩，OR 只会「点亮新位」，不会熄灭旧位</text>
+
+  <rect x="56" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="73" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">2</text>
+
+  <path d="M 96 81 L 132 81" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="114" y="72" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">入 1</text>
+
+  <rect x="138" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="155" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="174" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="191" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">1</text>
+
+  <path d="M 214 81 L 250 81" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="232" y="72" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">入 8</text>
+
+  <rect x="256" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="273" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="292" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="309" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="328" y="66" width="34" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="345" y="86" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">8</text>
+
+  <text x="73" y="114" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">OR=0010=2</text>
+  <text x="173" y="114" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">OR=0011=3</text>
+  <text x="309" y="114" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">OR=1011=11</text>
+
+  <rect x="396" y="58" width="184" height="66" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="78" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">子窗口 OR ≤ 大窗口 OR</text>
+  <text x="488" y="94" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">→「OR ≥ k」随窗口扩张单调保持</text>
+  <text x="488" y="112" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">→ 可套滑动窗口模板</text>
+
+  <!-- Section B: bit counts -->
+  <text x="46" y="152" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">② 可撤销性：不存「OR 值」，存每个比特位的「计数」cnt[b]</text>
+
+  <!-- bit table: window [2,1,8] -->
+  <text x="56" y="176" font-size="10" fill="#999" filter="url(#rough2)">窗口 [2,1,8]：</text>
+
+  <text x="128" y="176" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">8</text>
+  <text x="160" y="176" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">4</text>
+  <text x="192" y="176" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">2</text>
+  <text x="224" y="176" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">1</text>
+
+  <text x="72" y="200" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="112" y="184" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="200" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="144" y="184" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="160" y="200" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="176" y="184" width="32" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="192" y="200" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="208" y="184" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="200" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+
+  <text x="72" y="226" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="112" y="210" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="226" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="144" y="210" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="160" y="226" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="176" y="210" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="192" y="226" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="208" y="210" width="32" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="226" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <text x="72" y="252" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">8</text>
+  <rect x="112" y="236" width="32" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="252" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="144" y="236" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="160" y="252" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="176" y="236" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="192" y="252" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="208" y="236" width="32" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="252" text-anchor="middle" font-size="10.5" fill="#bbb" filter="url(#rough2)">0</text>
+
+  <rect x="100" y="266" width="160" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="72" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">cnt</text>
+  <text x="128" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="160" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">0</text>
+  <text x="192" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="224" y="284" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <text x="276" y="284" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">→ OR = 1011₂ = 11</text>
+
+  <!-- removal demo -->
+  <rect x="330" y="176" width="252" height="116" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="196" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">移出 2：它的每一位 cnt −1</text>
+
+  <text x="372" y="224" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">8</text>
+  <text x="404" y="224" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">4</text>
+  <text x="436" y="224" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">2</text>
+  <text x="468" y="224" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">1</text>
+
+  <rect x="356" y="230" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="372" y="247" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="388" y="230" width="32" height="24" fill="#fafafa" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="404" y="247" text-anchor="middle" font-size="11" fill="#bbb" filter="url(#rough2)">0</text>
+  <rect x="420" y="230" width="32" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="436" y="247" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">0</text>
+  <rect x="452" y="230" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="468" y="247" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <text x="500" y="246" font-size="10" fill="#333" filter="url(#rough2)">→ OR</text>
+  <text x="500" y="262" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">= 1001₂</text>
+
+  <text x="456" y="284" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">cnt₂ 归零 → 位熄灭；cnt₀ 仍为 1 → 位保持</text>
+
+  <!-- bottom summary -->
+  <rect x="40" y="312" width="540" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="334" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">OR 运算没有逆（无法把一个数「减掉」）→ 用 cnt[b] 记录窗口内第 b 位为 1 的元素个数</text>
+  <text x="310" y="354" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">cnt[b] &gt; 0 ⇔ 窗口 OR 的第 b 位为 1：入窗 +1、出窗 −1，计数归零该位才熄灭</text>
+  <text x="310" y="374" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">本题值域 &lt; 64 → 6 个计数器就够；3097 值域到 10⁹ → 30 个</text>
+</svg>

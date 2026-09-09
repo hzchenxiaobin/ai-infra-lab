@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrb" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arro" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">DP 状态与两分支转移</text>
+  <text x="260" y="42" text-anchor="middle" font-size="10.5" fill="#888">dp[i][j] = 子串 floor[i..n−1] 至多用 j 条地毯时剩余白色砖块的最少数目</text>
+
+  <!-- ===== Floor strip ===== -->
+  <text x="40" y="78" font-size="11" fill="#444" font-weight="bold">地板 floor</text>
+  <!-- 8 tiles: indices 0..7 ; highlight tile i (idx 3) -->
+  <!-- tile 0 white -->
+  <rect x="80" y="86" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="99" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <!-- tile 1 black -->
+  <rect x="118" y="86" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="137" y="106" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">0</text>
+  <!-- tile 2 white -->
+  <rect x="156" y="86" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <!-- tile 3 white (current i, emphasized) -->
+  <rect x="194" y="86" width="38" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="213" y="106" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">1</text>
+  <!-- tile 4 white -->
+  <rect x="232" y="86" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="251" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <!-- tile 5 white -->
+  <rect x="270" y="86" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="289" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <!-- tile 6 black -->
+  <rect x="308" y="86" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="327" y="106" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">0</text>
+  <!-- tile 7 white -->
+  <rect x="346" y="86" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="365" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+
+  <!-- index labels -->
+  <text x="99" y="128" text-anchor="middle" font-size="9" fill="#888">0</text>
+  <text x="137" y="128" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="175" y="128" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="213" y="128" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">i</text>
+  <text x="251" y="128" text-anchor="middle" font-size="9" fill="#888">…</text>
+  <text x="289" y="128" text-anchor="middle" font-size="9" fill="#888">i+L−1</text>
+  <text x="327" y="128" text-anchor="middle" font-size="9" fill="#888">…</text>
+  <text x="365" y="128" text-anchor="middle" font-size="9" fill="#888">n−1</text>
+
+  <!-- i pointer -->
+  <path d="M213,70 L213,82" stroke="#d6a040" stroke-width="2" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="213" y="66" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">i</text>
+
+  <!-- ===== Two branches ===== -->
+  <!-- Branch 1: skip (blue) -->
+  <rect x="40" y="158" width="210" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="180" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 不铺地毯（暴露砖 i）</text>
+  <text x="56" y="202" font-size="10.5" fill="#333">代价 = [floor[i]='1'] ? 1 : 0</text>
+  <text x="56" y="219" font-size="10.5" fill="#333">推进到 → dp[i+1][j]</text>
+  <text x="56" y="237" font-size="10" fill="#666">下标 +1，地毯数不变</text>
+  <!-- arrow from tile i down-left to branch 1 -->
+  <path d="M200,132 L150,156" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+
+  <!-- Branch 2: place carpet (orange) -->
+  <rect x="270" y="158" width="210" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="375" y="180" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 铺一条地毯（需 j&gt;0）</text>
+  <text x="286" y="202" font-size="10.5" fill="#333">盖住 [i, i+L−1] 整段</text>
+  <text x="286" y="219" font-size="10.5" fill="#333">跳到 → dp[min(i+L,n)][j−1]</text>
+  <text x="286" y="237" font-size="10" fill="#666">下标 +L，地毯数 −1</text>
+  <!-- arrow from tile i down-right to branch 2 -->
+  <path d="M226,132 L370,156" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arro)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+
+  <!-- carpet bracket above tiles [i .. i+L-1] (tiles 3..5) -->
+  <path d="M194,80 L194,76 L308,76 L308,80" stroke="#d6a040" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="251" y="72" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">carpetLen = L</text>
+
+  <!-- ===== Merge: take min ===== -->
+  <path d="M145,250 L200,272" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M375,250 L320,272" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="274" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="292" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">dp[i][j] = min( ① , ② )</text>
+  <text x="260" y="308" text-anchor="middle" font-size="10" fill="#4a7a3a">取两分支较小者</text>
+
+  <!-- base / answer -->
+  <rect x="60" y="332" width="180" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="353" text-anchor="middle" font-size="10.5" fill="#555">边界 dp[n][j] = 0</text>
+  <rect x="280" y="332" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="370" y="353" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">答案 dp[0][numCarpets]</text>
+
+  <!-- legend -->
+  <rect x="40" y="338" width="14" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="44" y="372" font-size="9" fill="#666">白砖</text>
+  <rect x="466" y="338" width="14" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="470" y="372" font-size="9" fill="#666">黑砖</text>
+</svg>

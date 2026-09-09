@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：BFS 距离 d[i] 决定整个回复时间线</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">边权全 1 → BFS 层数 = 最短距离；回复往返 = 2×d[i]</text>
+
+  <!-- ===== Network graph (left) ===== -->
+  <text x="40" y="74" font-size="11" fill="#446688" font-weight="bold">示例图：0=主服务器，1/2=数据服务器</text>
+
+  <!-- edges -->
+  <path d="M 96 138 L 188 172" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 188 178 L 188 264" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- node 0 (master) -->
+  <ellipse cx="78" cy="128" rx="26" ry="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="78" y="126" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">0</text>
+  <text x="78" y="140" text-anchor="middle" font-size="8" fill="#4a7a3a">主</text>
+  <text x="78" y="166" text-anchor="middle" font-size="10" fill="#4a7a3a">d=0</text>
+
+  <!-- node 1 -->
+  <ellipse cx="204" cy="168" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="204" y="166" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+  <text x="204" y="180" text-anchor="middle" font-size="8" fill="#446688">p=2</text>
+  <text x="238" y="172" font-size="10" fill="#446688">d=1</text>
+
+  <!-- node 2 -->
+  <ellipse cx="204" cy="278" rx="26" ry="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="204" y="276" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">2</text>
+  <text x="204" y="290" text-anchor="middle" font-size="8" fill="#d6a040">p=1</text>
+  <text x="238" y="282" font-size="10" fill="#d6a040">d=2</text>
+
+  <!-- edge labels -->
+  <text x="128" y="146" text-anchor="middle" font-size="9" fill="#888">1s</text>
+  <text x="222" y="222" font-size="9" fill="#888">1s</text>
+
+  <!-- ===== Timeline (right) ===== -->
+  <text x="330" y="74" font-size="11" fill="#b85450" font-weight="bold">服务器 i 的回复时间线</text>
+
+  <!-- timeline axis -->
+  <path d="M 330 110 L 530 110" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="328" y="114" font-size="9" fill="#888" text-anchor="end">t=0</text>
+
+  <!-- tick marks -->
+  <path d="M 330 106 L 330 114" stroke="#888" stroke-width="1"/>
+  <path d="M 380 106 L 380 114" stroke="#888" stroke-width="1"/>
+  <path d="M 430 106 L 430 114" stroke="#888" stroke-width="1"/>
+  <path d="M 480 106 L 480 114" stroke="#888" stroke-width="1"/>
+  <path d="M 530 106 L 530 114" stroke="#888" stroke-width="1"/>
+  <text x="380" y="100" text-anchor="middle" font-size="8" fill="#aaa">p</text>
+  <text x="430" y="100" text-anchor="middle" font-size="8" fill="#aaa">2p</text>
+  <text x="480" y="100" text-anchor="middle" font-size="8" fill="#aaa">3p</text>
+
+  <!-- send at t=0 -->
+  <circle cx="330" cy="110" r="4" fill="#446688" filter="url(#rough2)"/>
+  <text x="335" y="128" font-size="9" fill="#446688">发</text>
+
+  <!-- resends at p, 2p, 3p -->
+  <circle cx="380" cy="110" r="3.5" fill="#d6a040" filter="url(#rough2)"/>
+  <circle cx="430" cy="110" r="3.5" fill="#d6a040" filter="url(#rough2)"/>
+  <circle cx="480" cy="110" r="3.5" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="380" y="128" text-anchor="middle" font-size="8" fill="#d6a040">重发</text>
+  <text x="480" y="128" text-anchor="middle" font-size="8" fill="#d6a040">重发</text>
+
+  <!-- 2d[i] = reply arrives, no resend here -->
+  <path d="M 510 104 L 510 116" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="510" y="98" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">2d[i]</text>
+  <text x="510" y="128" text-anchor="middle" font-size="8" fill="#b85450">回复到达</text>
+
+  <!-- bracket: lastResend = largest multiple of p < 2d[i] -->
+  <path d="M 480 138 Q 480 144 485 146 L 505 146 Q 510 148 510 142" stroke="#d6a040" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="495" y="160" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">lastResend</text>
+  <text x="495" y="172" text-anchor="middle" font-size="8" fill="#d6a040">= ⌊(2d-1)/p⌋·p</text>
+
+  <!-- last reply arrives -->
+  <rect x="340" y="188" width="200" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="208" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">最后回复归位时刻</text>
+  <text x="440" y="224" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">= lastResend + 2d[i]</text>
+
+  <!-- answer box -->
+  <rect x="340" y="248" width="200" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="268" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">网络空闲 = max + 1</text>
+  <text x="440" y="284" text-anchor="middle" font-size="9" fill="#555">所有服务器最后回复的最大值 +1</text>
+
+  <!-- ===== Formula summary (bottom) ===== -->
+  <rect x="40" y="320" width="480" height="100" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="342" font-size="11" fill="#444" font-weight="bold">三个公式一步到位：</text>
+  <text x="60" y="362" font-size="11" fill="#446688">① BFS 求 d[i]（边权 1 → 层数即距离）</text>
+  <text x="60" y="380" font-size="11" fill="#d6a040">② lastResend = ⌊(2d[i] - 1) / patience[i]⌋ × patience[i]</text>
+  <text x="60" y="398" font-size="11" fill="#b85450">③ ans = max(lastResend + 2d[i]) + 1</text>
+  <text x="60" y="414" font-size="9" fill="#888">每个服务器独立计算，取全局最大值；O(n+E) 一次 BFS + O(n) 扫描</text>
+</svg>

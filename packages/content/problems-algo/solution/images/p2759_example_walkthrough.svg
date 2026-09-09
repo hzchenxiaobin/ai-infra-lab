@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    示例演算：解析 '{"a":1,"b":[2,"x"]}'
+  </text>
+
+  <!-- Step 1: input string with cursor -->
+  <rect x="40" y="44" width="520" height="32" rx="4" fill="#e8f0fe"
+        stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="64" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)"
+        font-family="'Courier New', monospace">
+    {"a":1,"b":[2,"x"]}
+  </text>
+
+  <!-- Step 2: parseObject -->
+  <rect x="40" y="92" width="520" height="36" rx="4" fill="#fce4ec"
+        stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="114" font-size="11" fill="#b85450" filter="url(#rough2)">
+    ①
+  </text>
+  <text x="70" y="114" font-size="11" fill="#333" filter="url(#rough2)">
+    看到 '{' → 进入 parseObject，pos++ → 跳到 'a' 前的 '"'
+  </text>
+
+  <!-- Step 3: parse key "a" -->
+  <rect x="40" y="138" width="520" height="36" rx="4" fill="#e6f4ea"
+        stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="160" font-size="11" fill="#4a7a3a" filter="url(#rough2)">
+    ②
+  </text>
+  <text x="70" y="160" font-size="11" fill="#333" filter="url(#rough2)">
+    parseString() → key = "a"，吃 ':' → 看到 '1'
+  </text>
+
+  <!-- Step 4: parseValue 1 -->
+  <rect x="40" y="184" width="520" height="36" rx="4" fill="#e8f0fe"
+        stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="206" font-size="11" fill="#446688" filter="url(#rough2)">
+    ③
+  </text>
+  <text x="70" y="206" font-size="11" fill="#333" filter="url(#rough2)">
+    parseValue() → 看到 '1' → parseNumber() → 返回 1，obj["a"] = 1，吃 ','
+  </text>
+
+  <!-- Step 5: parse key "b" -->
+  <rect x="40" y="230" width="520" height="36" rx="4" fill="#e6f4ea"
+        stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="252" font-size="11" fill="#4a7a3a" filter="url(#rough2)">
+    ④
+  </text>
+  <text x="70" y="252" font-size="11" fill="#333" filter="url(#rough2)">
+    parseString() → key = "b"，吃 ':' → 看到 '['
+  </text>
+
+  <!-- Step 6: parseArray -->
+  <rect x="40" y="276" width="520" height="36" rx="4" fill="#fce4ec"
+        stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="50" y="298" font-size="11" fill="#b85450" filter="url(#rough2)">
+    ⑤
+  </text>
+  <text x="70" y="298" font-size="11" fill="#333" filter="url(#rough2)">
+    看到 '[' → 进入 parseArray，pos++ → 看到 '2' → parseNumber() → push(2)，吃 ','
+  </text>
+
+  <!-- Step 7: nested string -->
+  <rect x="40" y="322" width="520" height="36" rx="4" fill="#e6f4ea"
+        stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="344" font-size="11" fill="#4a7a3a" filter="url(#rough2)">
+    ⑥
+  </text>
+  <text x="70" y="344" font-size="11" fill="#333" filter="url(#rough2)">
+    看到 '"' → parseString() → 返回 "x" → push("x")，吃 ']' → 数组结束 [2, "x"]
+  </text>
+
+  <!-- Step 8: object end -->
+  <rect x="40" y="368" width="520" height="36" rx="4" fill="#fce4ec"
+        stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="390" font-size="11" fill="#b85450" filter="url(#rough2)">
+    ⑦
+  </text>
+  <text x="70" y="390" font-size="11" fill="#333" filter="url(#rough2)">
+    回到 parseObject：吃 '}' → 对象结束 → 返回 {"a":1, "b":[2, "x"]}
+  </text>
+
+  <!-- Recursion depth indicator on left -->
+  <text x="20" y="112" font-size="9" fill="#b85450" filter="url(#rough2)" transform="rotate(-90, 20, 112)">
+    depth=1
+  </text>
+  <text x="20" y="206" font-size="9" fill="#446688" filter="url(#rough2)" transform="rotate(-90, 20, 206)">
+    depth=2
+  </text>
+  <text x="20" y="296" font-size="9" fill="#b85450" filter="url(#rough2)" transform="rotate(-90, 20, 296)">
+    depth=2
+  </text>
+  <text x="20" y="344" font-size="9" fill="#4a7a3a" filter="url(#rough2)" transform="rotate(-90, 20, 344)">
+    depth=3
+  </text>
+</svg>

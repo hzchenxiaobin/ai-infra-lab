@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 执行流程：UNION ALL → GROUP BY → LEFT JOIN → ORDER BY</text>
+
+  <!-- Step 1: Matches -->
+  <rect x="60" y="46" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="64" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Matches 表</text>
+  <text x="150" y="80" text-anchor="middle" font-size="9" fill="#555">host_team / guest_team / 进球数</text>
+
+  <!-- Step 1b: Teams (right) -->
+  <rect x="320" y="46" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="64" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">Teams 表</text>
+  <text x="410" y="80" text-anchor="middle" font-size="9" fill="#555">team_id / team_name（全队清单）</text>
+
+  <!-- arrow down from Matches -->
+  <path d="M150 86 L150 110" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: UNION ALL two branches -->
+  <text x="150" y="124" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">② UNION ALL：每场拆 2 行</text>
+
+  <rect x="30" y="130" width="240" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="50" y="145" font-size="9.5" fill="#446688" font-weight="bold">SELECT host_team, CASE(...主胜3/平1/负0)</text>
+
+  <rect x="30" y="154" width="240" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="50" y="169" font-size="9.5" fill="#b85450" font-weight="bold">SELECT guest_team, CASE(...客胜3/平1/负0)</text>
+
+  <!-- merge arrow down -->
+  <path d="M150 176 L150 196" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: (team_id, points) rows -->
+  <rect x="40" y="196" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="214" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">③ 扁平化 (team_id, points)</text>
+  <text x="150" y="230" text-anchor="middle" font-size="9.5" fill="#555">每支球队每场比赛一行，含 3/1/0</text>
+
+  <path d="M150 240 L150 260" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 4: GROUP BY + SUM -->
+  <rect x="40" y="260" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="278" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ GROUP BY team_id</text>
+  <text x="150" y="294" text-anchor="middle" font-size="9.5" fill="#555">SUM(points) AS num_points</text>
+
+  <!-- arrow: only matched teams -->
+  <path d="M150 304 C 150 326, 150 338, 150 354" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 5: LEFT JOIN Teams (from right) -->
+  <rect x="280" y="270" width="250" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="288" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Teams t LEFT JOIN 点分子查询 p</text>
+  <text x="405" y="304" text-anchor="middle" font-size="9" fill="#555">ON t.team_id = p.team_id</text>
+
+  <!-- dashed arrow from Teams(left join) into the merge -->
+  <path d="M280 290 C 240 290, 200 320, 180 348" stroke="#446688" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="232" y="332" font-size="9.5" fill="#446688" font-weight="bold">补 0 分队伍</text>
+
+  <!-- merge box: all teams with points -->
+  <rect x="60" y="354" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="372" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑤ 全队 + 积分</text>
+  <text x="170" y="388" text-anchor="middle" font-size="9.5" fill="#555">COALESCE(num_points, 0)</text>
+
+  <path d="M170 398 L170 418" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 6: ORDER BY -->
+  <rect x="60" y="418" width="220" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="436" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑥ ORDER BY num_points DESC</text>
+  <text x="170" y="452" text-anchor="middle" font-size="9.5" fill="#555">同分按 team_id ASC</text>
+
+  <!-- right side: note panel -->
+  <rect x="320" y="354" width="210" height="104" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="335" y="374" font-size="10.5" fill="#4a7a3a" font-weight="bold">关键设计点</text>
+  <text x="335" y="392" font-size="9.5" fill="#333">• 拆主/客 → UNION ALL</text>
+  <text x="335" y="408" font-size="9.5" fill="#333">• 集合式求和，无 CASE 累加歧义</text>
+  <text x="335" y="424" font-size="9.5" fill="#333">• LEFT JOIN 保「无比赛=0 分」</text>
+  <text x="335" y="440" font-size="9.5" fill="#333">• 避免 OR 连接（走不了索引）</text>
+</svg>

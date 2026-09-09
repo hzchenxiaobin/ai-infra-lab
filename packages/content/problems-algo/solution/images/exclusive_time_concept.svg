@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="470" viewBox="0 0 820 470" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <marker id="arr636" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="820" height="470" fill="#fafafa"/>
+  <text x="410" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">函数独占时间：栈顶即"正在执行"</text>
+  <path d="M 250 42 Q 410 50 570 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="410" y="66" text-anchor="middle" font-size="12" fill="#666">单核 CPU：调用压栈、返回弹栈，任意时刻栈顶函数独占 CPU</text>
+
+  <!-- 时间轴 -->
+  <text x="50" y="100" font-size="13" font-weight="bold" fill="#2b2b2b">时间轴（示例 1：0:start:0 … 0:end:6）</text>
+  <g filter="url(#sk)">
+    <g stroke="#446688" stroke-width="1.2">
+      <rect x="50" y="112" width="70" height="36" rx="3" fill="#e8f0fe"/>
+      <rect x="122" y="112" width="70" height="36" rx="3" fill="#e8f0fe"/>
+      <rect x="194" y="112" width="70" height="36" rx="3" fill="#e6f4ea"/>
+      <rect x="266" y="112" width="70" height="36" rx="3" fill="#e6f4ea"/>
+      <rect x="338" y="112" width="70" height="36" rx="3" fill="#e6f4ea"/>
+      <rect x="410" y="112" width="70" height="36" rx="3" fill="#e6f4ea"/>
+      <rect x="482" y="112" width="70" height="36" rx="3" fill="#e8f0fe"/>
+    </g>
+  </g>
+  <g font-size="14" font-weight="bold" text-anchor="middle">
+    <text x="85" y="135" fill="#2b4a77">0</text>
+    <text x="157" y="135" fill="#2b4a77">0</text>
+    <text x="229" y="135" fill="#3a6a3a">1</text>
+    <text x="301" y="135" fill="#3a6a3a">1</text>
+    <text x="373" y="135" fill="#3a6a3a">1</text>
+    <text x="445" y="135" fill="#3a6a3a">1</text>
+    <text x="517" y="135" fill="#2b4a77">0</text>
+  </g>
+  <g font-size="10" fill="#888" text-anchor="middle">
+    <text x="85" y="162">t=0</text>
+    <text x="157" y="162">t=1</text>
+    <text x="229" y="162">t=2</text>
+    <text x="301" y="162">t=3</text>
+    <text x="373" y="162">t=4</text>
+    <text x="445" y="162">t=5</text>
+    <text x="517" y="162">t=6</text>
+  </g>
+
+  <!-- 事件标记 -->
+  <g font-size="11" fill="#b85450" font-weight="bold" text-anchor="middle">
+    <text x="50" y="186">0:start:0</text>
+    <text x="194" y="186">1:start:2</text>
+    <text x="480" y="186">1:end:5</text>
+    <text x="552" y="186">0:end:6</text>
+  </g>
+  <path d="M 50 192 L 50 178" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr636)" filter="url(#sk)"/>
+  <path d="M 194 192 L 194 178" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr636)" filter="url(#sk)"/>
+  <path d="M 480 192 L 480 178" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr636)" filter="url(#sk)"/>
+  <path d="M 552 192 L 552 178" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr636)" filter="url(#sk)"/>
+
+  <!-- start 规则 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="220" width="360" height="120" rx="8" fill="#e8f0fe" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="244" font-size="13" font-weight="bold" fill="#2b6e9e">start:id:t（开始于单位 t 开头）</text>
+  <text x="60" y="268" font-size="12" fill="#333">栈顶函数（被调用方抢占）独占到 t−1</text>
+  <text x="60" y="290" font-size="12" fill="#b03a3a" font-weight="bold" font-family="monospace">res[栈顶] += t − prev_time</text>
+  <text x="60" y="312" font-size="12" fill="#333">压入新 id；prev_time = t</text>
+  <text x="60" y="330" font-size="11" fill="#666">→ 旧函数在 t 这一刻已被抢占，t 归新函数</text>
+
+  <!-- end 规则 -->
+  <g filter="url(#sk)">
+    <rect x="420" y="220" width="360" height="120" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4"/>
+  </g>
+  <text x="440" y="244" font-size="13" font-weight="bold" fill="#3a6a3a">end:id:t（结束于单位 t 末尾）</text>
+  <text x="440" y="268" font-size="12" fill="#333">栈顶函数独占到 t（含 t 这一单位）</text>
+  <text x="440" y="290" font-size="12" fill="#b03a3a" font-weight="bold" font-family="monospace">res[栈顶] += t − prev_time + 1</text>
+  <text x="440" y="312" font-size="12" fill="#333">弹栈；prev_time = t + 1</text>
+  <text x="440" y="330" font-size="11" fill="#666">→ 恢复函数从 t+1 开始重新计时</text>
+
+  <!-- 关键洞察 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="360" width="740" height="90" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="386" font-size="13" font-weight="bold" fill="#7a5415">关键洞察：start / end 的时间戳语义不对称</text>
+  <text x="60" y="410" font-size="12" fill="#444">start:t 表示"t 这单位开始执行"——旧函数结算到 t−1（减 1 关系，不含 t）</text>
+  <text x="60" y="430" font-size="12" fill="#444">end:t 表示"t 这单位执行完毕"——本函数结算到 t（含 t，故 +1；恢复方从 t+1 起）</text>
+  <text x="60" y="448" font-size="12" fill="#b03a3a" font-weight="bold">栈 + prev_time 游标即可线性模拟，无需逐单位推演时间线</text>
+</svg>

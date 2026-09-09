@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">虚点技巧：删掉独有字母 → 共享子集 → 自动连边</text>
+
+  <!-- observation -->
+  <rect x="30" y="44" width="500" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="11.5" fill="#444">替换对 m1={a,b} 与 m2={a,c}：各自删掉独有字母后</text>
+  <text x="280" y="80" text-anchor="middle" font-size="11.5" fill="#444">m1∖{b} = m2∖{c} = {a} = S（同一子集）</text>
+
+  <!-- m1 node -->
+  <rect x="40" y="124" width="120" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="100" y="148" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">m1 = {a,b}</text>
+  <text x="100" y="166" text-anchor="middle" font-size="10.5" fill="#555">掩码 0b...011</text>
+
+  <!-- m2 node -->
+  <rect x="400" y="124" width="120" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="460" y="148" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">m2 = {a,c}</text>
+  <text x="460" y="166" text-anchor="middle" font-size="10.5" fill="#555">掩码 0b...101</text>
+
+  <!-- delete b from m1 -->
+  <text x="100" y="200" text-anchor="middle" font-size="10.5" fill="#b85450">删 b（bit1）</text>
+  <path d="M100 188 Q 100 210 180 232" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- delete c from m2 -->
+  <text x="460" y="200" text-anchor="middle" font-size="10.5" fill="#b85450">删 c（bit2）</text>
+  <path d="M460 188 Q 460 210 380 232" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- shared virtual node S -->
+  <rect x="200" y="236" width="160" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="12" filter="url(#rough2)"/>
+  <text x="280" y="260" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">虚点 S = {a}</text>
+  <text x="280" y="278" text-anchor="middle" font-size="10.5" fill="#555">mask = m ^ (1&lt;&lt;bit1) = m ^ (1&lt;&lt;bit2)</text>
+
+  <!-- result: unioned -->
+  <rect x="60" y="316" width="440" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="338" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">m1 与 m2 都连到同一虚点 S → 并入同一集合</text>
+  <text x="280" y="356" text-anchor="middle" font-size="11" fill="#4a7a3a">虚点不计数，只作「替换关系」的中介枢纽</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：四个数组拆两组，A 组预存和，B 组查补数</text>
+
+  <!-- Group A label -->
+  <rect x="30" y="50" width="180" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A 组：nums1 + nums2</text>
+
+  <!-- nums1 row -->
+  <text x="40" y="92" font-size="11" fill="#888">nums1</text>
+  <rect x="82" y="78" width="36" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="94" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <rect x="120" y="78" width="36" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="138" y="94" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+
+  <!-- nums2 row -->
+  <text x="40" y="124" font-size="11" fill="#888">nums2</text>
+  <rect x="82" y="110" width="36" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="126" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">-2</text>
+  <rect x="120" y="110" width="36" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="138" y="126" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">-1</text>
+
+  <!-- A group sum arrow -->
+  <text x="120" y="156" text-anchor="middle" font-size="10" fill="#4a7a3a">i × j 枚举 n² 个和</text>
+  <path d="M 120 160 L 120 178" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Hash map box -->
+  <rect x="210" y="178" width="160" height="100" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="198" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">哈希表 count</text>
+  <line x1="290" y1="204" x2="290" y2="272" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="240" y="220" font-size="10" fill="#888">和</text>
+  <text x="335" y="220" font-size="10" fill="#888">次数</text>
+
+  <text x="240" y="238" font-size="10" fill="#333">-1</text>
+  <text x="335" y="238" font-size="10" fill="#333">1</text>
+  <text x="240" y="254" font-size="10" fill="#d6a040" font-weight="bold">0</text>
+  <text x="335" y="254" font-size="10" fill="#d6a040" font-weight="bold">2</text>
+  <text x="240" y="270" font-size="10" fill="#333">1</text>
+  <text x="335" y="270" font-size="10" fill="#333">1</text>
+
+  <!-- A group to hash arrow -->
+  <path d="M 170 168 L 210 210" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="178" y="186" font-size="9" fill="#4a7a3a">建表</text>
+
+  <!-- Group B label -->
+  <rect x="390" y="50" width="180" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="66" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">B 组：nums3 + nums4</text>
+
+  <!-- nums3 row -->
+  <text x="400" y="92" font-size="11" fill="#888">nums3</text>
+  <rect x="442" y="78" width="36" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="460" y="94" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">-1</text>
+  <rect x="480" y="78" width="36" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="498" y="94" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+
+  <!-- nums4 row -->
+  <text x="400" y="124" font-size="11" fill="#888">nums4</text>
+  <rect x="442" y="110" width="36" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="460" y="126" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <rect x="480" y="110" width="36" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="498" y="126" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+
+  <!-- B group query arrow -->
+  <text x="480" y="156" text-anchor="middle" font-size="10" fill="#b85450">k × l 枚举 n² 次查</text>
+  <path d="M 480 160 L 480 178" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- B group to hash arrow -->
+  <path d="M 430 168 L 370 210" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="395" y="186" font-size="9" fill="#b85450">查 −(和)</text>
+
+  <!-- equation -->
+  <rect x="150" y="300" width="300" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="322" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">A 组和 + B 组和 = 0</text>
+  <text x="300" y="336" text-anchor="middle" font-size="11" fill="#b85450">⇔ 查表 key = −(B 组和)</text>
+
+  <!-- complexity -->
+  <rect x="150" y="354" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="376" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">O(n²) 建表 + O(n²) 查表 = O(n²)</text>
+</svg>

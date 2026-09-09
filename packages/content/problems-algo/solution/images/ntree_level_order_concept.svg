@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：102 的 BFS 骨架不变，子节点入队改成遍历 children</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">N 叉树一个节点的孩子数量任意，用 for 循环全部入队即可</text>
+
+  <!-- ===== N-ary Tree ===== -->
+  <g font-size="12">
+    <!-- root L0 -->
+    <circle cx="210" cy="92" r="20" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+    <text x="210" y="98" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <!-- L1: three children -->
+    <circle cx="110" cy="168" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="110" y="173" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+    <circle cx="210" cy="168" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="210" y="173" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <circle cx="310" cy="168" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="310" y="173" text-anchor="middle" fill="#446688" font-weight="bold">4</text>
+    <!-- edges L0-L1 (three lines from root) -->
+    <line x1="196" y1="106" x2="122" y2="154" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <line x1="210" y1="112" x2="210" y2="150" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <line x1="224" y1="106" x2="298" y2="154" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <!-- L2: two children under node 3 -->
+    <circle cx="78" cy="246" r="17" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="78" y="251" text-anchor="middle" fill="#d6a040" font-weight="bold">5</text>
+    <circle cx="142" cy="246" r="17" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="142" y="251" text-anchor="middle" fill="#d6a040" font-weight="bold">6</text>
+    <line x1="98" y1="182" x2="74" y2="232" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <line x1="122" y1="182" x2="138" y2="232" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  </g>
+
+  <!-- layer labels -->
+  <text x="34" y="98" font-size="10" fill="#b85450" font-weight="bold">L0</text>
+  <text x="34" y="173" font-size="10" fill="#446688" font-weight="bold">L1</text>
+  <text x="34" y="251" font-size="10" fill="#d6a040" font-weight="bold">L2</text>
+
+  <!-- ===== Per-level result ===== -->
+  <line x1="20" y1="286" x2="520" y2="286" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="30" y="306" font-size="11" fill="#444" font-weight="bold">逐层收集（每层从左到右，组成本层子列表）</text>
+
+  <g font-size="11">
+    <!-- L0 -->
+    <rect x="30" y="318" width="30" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="45" y="334" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <text x="70" y="334" font-size="9" fill="#888">L0 → [1]</text>
+
+    <!-- L1 -->
+    <rect x="30" y="350" width="30" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="45" y="366" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+    <rect x="62" y="350" width="30" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="77" y="366" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="94" y="350" width="30" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="109" y="366" text-anchor="middle" fill="#446688" font-weight="bold">4</text>
+    <text x="134" y="366" font-size="9" fill="#888">L1 → [3, 2, 4]（孩子个数 = 3）</text>
+
+    <!-- L2 -->
+    <rect x="30" y="382" width="30" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="45" y="398" text-anchor="middle" fill="#d6a040" font-weight="bold">5</text>
+    <rect x="62" y="382" width="30" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="77" y="398" text-anchor="middle" fill="#d6a040" font-weight="bold">6</text>
+    <text x="102" y="398" font-size="9" fill="#888">L2 → [5, 6]</text>
+  </g>
+
+  <!-- ===== Key change box ===== -->
+  <rect x="350" y="86" width="172" height="170" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="436" y="108" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">与 102 的唯一差异</text>
+  <line x1="362" y1="116" x2="510" y2="116" stroke="#4a7a3a" stroke-width="0.8" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="362" y="134" font-size="9" fill="#888">102 二叉树：</text>
+  <text x="362" y="150" font-family="monospace" font-size="9" fill="#555">if (l) q.push(l);</text>
+  <text x="362" y="164" font-family="monospace" font-size="9" fill="#555">if (r) q.push(r);</text>
+  <text x="362" y="186" font-size="9" fill="#888">429 N 叉树：</text>
+  <text x="362" y="202" font-family="monospace" font-size="9" fill="#b85450" font-weight="bold">for (auto c :</text>
+  <text x="378" y="216" font-family="monospace" font-size="9" fill="#b85450" font-weight="bold">node-&gt;children)</text>
+  <text x="378" y="230" font-family="monospace" font-size="9" fill="#b85450" font-weight="bold">q.push(c);</text>
+  <text x="436" y="248" text-anchor="middle" font-size="9" fill="#4a7a3a">children 个数任意，循环搞定</text>
+</svg>

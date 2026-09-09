@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：只取 max → 过滤越界三元组，对剩余取逐维最大值</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">triplets = [[2,5,3],[1,8,4],[1,7,5]],　target = [2, 7, 5]</text>
+
+  <!-- Target triplet box -->
+  <text x="40" y="74" font-size="11" fill="#666" font-weight="bold">目标</text>
+  <rect x="80" y="56" width="120" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="76" text-anchor="middle" font-size="13" fill="#a87020" font-weight="bold">[2, 7, 5]</text>
+
+  <!-- Rule annotation -->
+  <rect x="230" y="54" width="300" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="72" text-anchor="middle" font-size="10.5" fill="#555">规则：选两个三元组，逐维取 max 合并</text>
+  <text x="380" y="84" text-anchor="middle" font-size="9.5" fill="#888">max 只增不减 → 任一维超过 target 即永久无法回退</text>
+
+  <!-- Section: triplets -->
+  <text x="40" y="116" font-size="11" fill="#666" font-weight="bold">三元组</text>
+
+  <!-- Triplet 1: [2,5,3] - usable -->
+  <rect x="80" y="102" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="140" y="121" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">[2, 5, 3]</text>
+  <text x="214" y="120" font-size="10" fill="#4a7a3a" font-weight="bold">✓ 可用</text>
+  <text x="214" y="132" font-size="9" fill="#4a7a3a">2≤2, 5≤7, 3≤5</text>
+
+  <!-- Triplet 2: [1,8,4] - overshoots dim2 (8 > 7) -->
+  <rect x="80" y="138" width="120" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="140" y="157" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">[1, 8, 4]</text>
+  <text x="214" y="156" font-size="10" fill="#b85450" font-weight="bold">✗ 丢弃</text>
+  <text x="214" y="168" font-size="9" fill="#b85450">8 &gt; 7（第2维越界）</text>
+  <!-- strike-through line on the 8 -->
+  <path d="M 168 152 L 176 162" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+
+  <!-- Triplet 3: [1,7,5] - usable -->
+  <rect x="80" y="174" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="140" y="193" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">[1, 7, 5]</text>
+  <text x="214" y="192" font-size="10" fill="#4a7a3a" font-weight="bold">✓ 可用</text>
+  <text x="214" y="204" font-size="9" fill="#4a7a3a">1≤2, 7≤7, 5≤5</text>
+
+  <!-- Arrow down: take max -->
+  <path d="M 140 208 L 140 224" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="156" y="220" font-size="10" fill="#666">逐维取 max</text>
+
+  <!-- Result: running max -->
+  <text x="40" y="244" font-size="11" fill="#666" font-weight="bold">累积 max</text>
+
+  <!-- step: after [2,5,3] -->
+  <rect x="80" y="230" width="120" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="140" y="248" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">[2, 5, 3]</text>
+  <text x="214" y="248" font-size="9.5" fill="#888">并入 [2,5,3]</text>
+
+  <!-- arrow down -->
+  <path d="M 140 256 L 140 268" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step: after [1,7,5] -->
+  <rect x="80" y="268" width="120" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="140" y="286" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">[2, 7, 5]</text>
+  <text x="214" y="286" font-size="9.5" fill="#888">max(2,1)=2, max(5,7)=7, max(3,5)=5</text>
+
+  <!-- Arrow down to compare -->
+  <path d="M 140 294 L 140 306" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Compare with target -->
+  <rect x="80" y="306" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="325" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">[2, 7, 5]</text>
+  <text x="214" y="324" font-size="11" fill="#4a7a3a" font-weight="bold">== target ✓</text>
+
+  <!-- Result box -->
+  <rect x="60" y="346" width="340" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="368" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">累积 max == target → return true</text>
+
+  <!-- Right side: key insight note -->
+  <rect x="420" y="102" width="128" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="484" y="122" text-anchor="middle" font-size="10.5" fill="#a87020" font-weight="bold">两个关键性质</text>
+  <text x="430" y="140" font-size="9.5" fill="#555">① max 只增不减</text>
+  <text x="430" y="154" font-size="9.5" fill="#555">　→ 越界 = 永久越界</text>
+  <text x="430" y="170" font-size="9.5" fill="#555">② 合并顺序无关</text>
+  <text x="430" y="184" font-size="9.5" fill="#555">　→ 直接取全局 max</text>
+
+  <!-- Right side: false case -->
+  <rect x="420" y="200" width="128" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="484" y="220" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">何时返回 false？</text>
+  <text x="430" y="238" font-size="9.5" fill="#555">某维的可用最大值</text>
+  <text x="430" y="252" font-size="9.5" fill="#555">　&lt; target 对应维</text>
+  <text x="430" y="268" font-size="9.5" fill="#b85450">例：max₁=2 &lt; x=5</text>
+</svg>

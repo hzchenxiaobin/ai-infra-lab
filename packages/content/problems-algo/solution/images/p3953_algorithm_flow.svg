@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">总流程：一趟预处理，再逐个 x 容斥计分</text>
+
+  <!-- 开始 -->
+  <ellipse cx="200" cy="48" rx="38" ry="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="53" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">开始</text>
+
+  <path d="M 200 62 L 200 74" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 预处理 -->
+  <rect x="75" y="76" width="250" height="38" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="92" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">freq 频次表 · SPF 最小素因子筛</text>
+  <text x="200" y="107" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">cnt[d] = Σ freq[d 的倍数]</text>
+
+  <path d="M 200 114 L 200 126" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形1：x <= maxVal ? -->
+  <polygon points="200,128 270,154 200,180 130,154" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="159" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">x ≤ maxVal ?</text>
+
+  <!-- 否 → 补扫 → 返回 -->
+  <path d="M 270 154 L 300 154" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="280" y="146" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <rect x="304" y="138" width="196" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="402" y="153" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">补扫原值 v &gt; maxVal：</text>
+  <text x="402" y="166" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">ans ← max(ans, v − bad(v) + 1)</text>
+
+  <path d="M 402 172 L 402 186" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <ellipse cx="402" cy="202" rx="46" ry="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="402" y="207" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">返回 ans</text>
+
+  <!-- 是 ↓ -->
+  <path d="M 200 180 L 200 192" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="207" y="189" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- 容斥 -->
+  <rect x="75" y="194" width="250" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="210" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">SPF 分解 x 的素因子 p₁ … p_k</text>
+  <text x="200" y="228" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">bad(x) = Σ (−1)^|S|+1 · cnt[∏S]</text>
+
+  <path d="M 200 238 L 200 250" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 计分 -->
+  <rect x="55" y="252" width="290" height="54" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="269" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">freq[x] &gt; 0 : score = x − bad(x) + [x&gt;1]</text>
+  <text x="200" y="284" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">freq[x] = 0 : score = x − max(bad(x), 1)</text>
+  <text x="200" y="300" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">ans ← max(ans, score)</text>
+
+  <path d="M 200 306 L 200 316" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- x++ -->
+  <rect x="145" y="318" width="110" height="24" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="335" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">x ← x + 1</text>
+
+  <!-- 回到菱形1 -->
+  <path d="M 145 330 L 40 330 L 40 154 L 124 154" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="322" font-size="10.5" fill="#666" filter="url(#rough2)">继续枚举</text>
+
+  <text x="372" y="330" font-size="10.5" fill="#666" filter="url(#rough2)">cnt 预处理：调和级数 ≈ 1.2×10⁶ 步</text>
+  <text x="372" y="346" font-size="10.5" fill="#666" filter="url(#rough2)">容斥子集 ≤ 2^ω(x) ≤ 63 个</text>
+</svg>

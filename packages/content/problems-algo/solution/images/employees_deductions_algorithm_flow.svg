@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：LEFT JOIN → 逐行时差 → GROUP BY → SUM → HAVING</text>
+
+  <!-- Step 1 -->
+  <rect x="130" y="48" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① Employees LEFT JOIN Logs ON employee_id</text>
+  <text x="280" y="82" text-anchor="middle" font-size="10" fill="#888">保全所有员工；无打卡者得 NULL 行</text>
+  <path d="M 280 92 L 280 108" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="130" y="108" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="126" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② TIMESTAMPDIFF(HOUR, in_time, out_time)</text>
+  <text x="280" y="142" text-anchor="middle" font-size="10" fill="#888">每条打卡算出整点小时数（跨日自动正确）</text>
+  <path d="M 280 152 L 280 168" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="130" y="168" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="186" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ GROUP BY employee_id</text>
+  <text x="280" y="202" text-anchor="middle" font-size="10" fill="#888">把同一员工的多条打卡折叠成一组</text>
+  <path d="M 280 212 L 280 228" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="130" y="228" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="246" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">④ COALESCE(SUM(时差), 0) AS worked</text>
+  <text x="280" y="262" text-anchor="middle" font-size="10" fill="#888">每组求和；全 NULL 组归 0</text>
+  <path d="M 280 272 L 280 288" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="130" y="288" width="300" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">⑤ HAVING worked &lt; needed_hours</text>
+  <text x="280" y="322" text-anchor="middle" font-size="10" fill="#888">筛出工时不足、须开除的员工</text>
+  <path d="M 280 332 L 280 348" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6 -->
+  <rect x="130" y="348" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="366" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">⑥ SELECT employee_id, ORDER BY employee_id</text>
+  <text x="280" y="382" text-anchor="middle" font-size="10" fill="#888">按工号升序输出被开除名单</text>
+
+  <!-- side note -->
+  <rect x="446" y="108" width="104" height="132" fill="#fafafa" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="498" y="128" text-anchor="middle" font-size="10" fill="#888">SQL 子句顺序</text>
+  <text x="454" y="146" font-size="9" fill="#888">FROM/JOIN</text>
+  <text x="454" y="160" font-size="9" fill="#888">WHERE</text>
+  <text x="454" y="174" font-size="9" fill="#888">GROUP BY</text>
+  <text x="454" y="188" font-size="9" fill="#b85450" font-weight="bold">HAVING</text>
+  <text x="454" y="202" font-size="9" fill="#888">SELECT/SUM</text>
+  <text x="454" y="216" font-size="9" fill="#888">ORDER BY</text>
+  <text x="454" y="232" font-size="8" fill="#b85450">过滤聚合结果须用 HAVING</text>
+
+  <!-- result strip -->
+  <rect x="100" y="402" width="360" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="421" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">结果：employee_id（工时未达标者，升序）</text>
+  <path d="M 280 392 L 280 402" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：阶乘预处理 + 费马小定理 + 快速幂</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">目标：ans = C(n−1, k) · m · (m−1)^(n−1−k) mod (10⁹+7)</text>
+
+  <!-- 主流程（左列） -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="54" width="280" height="30" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="180" y="73" text-anchor="middle" font-size="11.5" fill="#333">读入 n, m, k（已保证 0 ≤ k ≤ n−1）</text>
+    <path d="M 180 84 L 180 96" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="100" width="280" height="34" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="180" y="121" text-anchor="middle" font-size="11.5" fill="#333">预处理阶乘表 fact[0..n−1]（O(n)）</text>
+    <path d="M 180 134 L 180 146" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="150" width="280" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" rx="8"/>
+    <text x="180" y="171" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold">费马小定理：invFact[n−1] = fact[n−1]^(p−2)</text>
+    <text x="180" y="192" text-anchor="middle" font-size="11" fill="#33506b">（快速幂一次）再倒推 invFact[i−1] = invFact[i]·i</text>
+    <path d="M 180 204 L 180 216" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="220" width="280" height="34" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="180" y="241" text-anchor="middle" font-size="11" fill="#333">C(n−1, k) = fact[n−1]·invFact[k]·invFact[n−1−k]</text>
+    <path d="M 180 254 L 180 266" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="270" width="280" height="34" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="180" y="291" text-anchor="middle" font-size="11" fill="#333">乘上 m；快速幂求 (m−1)^(n−1−k) 再乘入</text>
+    <path d="M 180 304 L 180 316" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="320" width="280" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8"/>
+    <text x="180" y="340" text-anchor="middle" font-size="12" font-weight="bold" fill="#2f5d24">返回 ans（已取模 10⁹+7）</text>
+  </g>
+
+  <!-- 右列要点 -->
+  <g filter="url(#rough2)">
+    <rect x="344" y="54" width="160" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8"/>
+    <text x="424" y="74" text-anchor="middle" font-size="10" font-weight="bold" fill="#8a6d1f">阶乘表只需到 n−1</text>
+    <text x="424" y="90" text-anchor="middle" font-size="9.5" fill="#8a6d1f">组合数上标是 n−1，</text>
+    <text x="424" y="104" text-anchor="middle" font-size="9.5" fill="#8a6d1f">不必按值域建满</text>
+
+    <rect x="344" y="130" width="160" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="424" y="150" text-anchor="middle" font-size="10" font-weight="bold" fill="#33506b">为什么能「除」？</text>
+    <text x="424" y="166" text-anchor="middle" font-size="9.5" fill="#33506b">p = 10⁹+7 是质数，</text>
+    <text x="424" y="180" text-anchor="middle" font-size="9.5" fill="#33506b">阶乘因子均与 p 互质</text>
+
+    <rect x="344" y="206" width="160" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8"/>
+    <text x="424" y="226" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450">边界自动正确</text>
+    <text x="424" y="242" text-anchor="middle" font-size="9.5" fill="#b85450">k=n−1 → 指数 0 → 0⁰=1</text>
+    <text x="424" y="256" text-anchor="middle" font-size="9.5" fill="#b85450">m=1 且 k&lt;n−1 → 0</text>
+
+    <rect x="344" y="282" width="160" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/>
+    <text x="424" y="302" text-anchor="middle" font-size="10" font-weight="bold" fill="#2f5d24">复杂度</text>
+    <text x="424" y="318" text-anchor="middle" font-size="9.5" fill="#2f5d24">时间 O(n + log p)</text>
+    <text x="424" y="332" text-anchor="middle" font-size="9.5" fill="#2f5d24">空间 O(n)</text>
+  </g>
+</svg>

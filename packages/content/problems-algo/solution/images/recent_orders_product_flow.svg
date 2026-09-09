@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN → RANK 分组排序 → 过滤 rk=1 → 排序</text>
+
+  <!-- Step 1: JOIN Products -->
+  <rect x="170" y="48" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① JOIN Products</text>
+  <text x="280" y="84" text-anchor="middle" font-size="10" fill="#666">Orders ⨝ Products ON product_id → 取 product_name</text>
+
+  <path d="M 280 92 L 280 108" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: RANK window -->
+  <rect x="100" y="110" width="360" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="130" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② RANK() 窗口函数</text>
+  <text x="280" y="146" text-anchor="middle" font-size="9" fill="#666">PARTITION BY product_id</text>
+  <text x="280" y="158" text-anchor="middle" font-size="9" fill="#666">ORDER BY order_date DESC  → rk（并列同号）</text>
+
+  <path d="M 280 166 L 280 182" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: WHERE rk = 1 (decision diamond) -->
+  <polygon points="280,184 420,224 280,264 140,224" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="214" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ WHERE rk = 1 ?</text>
+  <text x="280" y="230" text-anchor="middle" font-size="10" fill="#333">order_date 是否等于</text>
+  <text x="280" y="246" text-anchor="middle" font-size="10" fill="#333">该商品 MAX(order_date)</text>
+
+  <!-- Yes branch -->
+  <path d="M 420 224 L 480 224" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="450" y="218" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">YES</text>
+  <rect x="436" y="236" width="110" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="491" y="258" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">保留该行</text>
+
+  <!-- No branch -->
+  <path d="M 140 224 L 80 224" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="110" y="218" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">NO</text>
+  <rect x="26" y="236" width="110" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="81" y="258" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">丢弃</text>
+
+  <path d="M 491 272 L 491 290 L 280 290 L 280 300" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="120" y="302" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">④ ORDER BY 输出排序</text>
+  <text x="280" y="338" text-anchor="middle" font-size="9" fill="#666">product_name ASC, order_date DESC</text>
+
+  <path d="M 280 346 L 280 362" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Output table -->
+  <rect x="150" y="364" width="260" height="22" fill="#446688" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="206" y="379" text-anchor="middle" font-size="9" fill="white" font-weight="bold">product_name</text>
+  <text x="282" y="379" text-anchor="middle" font-size="9" fill="white" font-weight="bold">order_id</text>
+  <text x="360" y="379" text-anchor="middle" font-size="9" fill="white" font-weight="bold">order_date</text>
+
+  <rect x="150" y="386" width="260" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="206" y="400" text-anchor="middle" font-size="9" fill="#333">keyboard</text>
+  <text x="282" y="400" text-anchor="middle" font-size="9" fill="#333">6</text>
+  <text x="360" y="400" text-anchor="middle" font-size="9" fill="#333">2020-08-01</text>
+
+  <rect x="150" y="406" width="260" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="206" y="420" text-anchor="middle" font-size="9" fill="#333">screen</text>
+  <text x="282" y="420" text-anchor="middle" font-size="9" fill="#333">3</text>
+  <text x="360" y="420" text-anchor="middle" font-size="9" fill="#333">2020-08-29</text>
+</svg>

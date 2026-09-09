@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：反转一半数字，左右两半相等即回文</text>
+
+  <!-- original number x = 12321 -->
+  <text x="44" y="78" font-size="12" fill="#888">原数 x</text>
+  <rect x="80" y="58" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="102" y="79" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <rect x="124" y="58" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="79" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">2</text>
+  <rect x="168" y="58" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="79" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">3</text>
+  <rect x="212" y="58" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="234" y="79" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">2</text>
+  <rect x="256" y="58" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="278" y="79" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+
+  <!-- separator line -->
+  <line x1="190" y1="50" x2="190" y2="98" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="190" y="44" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">中点</text>
+
+  <!-- left half label -->
+  <text x="146" y="110" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">左半（剩余 x）</text>
+  <!-- right half label -->
+  <text x="234" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">右半 → 反转到 reverted</text>
+
+  <!-- arrow: digits move from right of x into reverted -->
+  <path d="M 278 100 Q 320 130 360 168" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="335" y="128" font-size="11" fill="#b85450" font-weight="bold">弹出末位</text>
+
+  <!-- reverted number row -->
+  <text x="44" y="190" font-size="12" fill="#888">反转 reverted</text>
+  <rect x="340" y="170" width="44" height="32" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="362" y="191" text-anchor="middle" font-size="13" fill="#bbb">?</text>
+  <rect x="384" y="170" width="44" height="32" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="406" y="191" text-anchor="middle" font-size="13" fill="#bbb">?</text>
+  <rect x="428" y="170" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="191" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+
+  <text x="450" y="222" text-anchor="middle" font-size="11" fill="#4a7a3a">逐位压入（×10 + 末位）</text>
+
+  <!-- loop until x <= reverted -->
+  <rect x="60" y="250" width="440" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="272" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">循环条件：x &gt; reverted（原数位数过半即停）</text>
+  <text x="280" y="286" text-anchor="middle" font-size="10" fill="#888">奇数位：x == reverted / 10（去掉中点）；偶数位：x == reverted</text>
+
+  <!-- final compare box -->
+  <rect x="60" y="302" width="440" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="320" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">最终判定：x == reverted 或 x == reverted / 10</text>
+  <text x="280" y="338" text-anchor="middle" font-size="10" fill="#666">两半相等 ⇒ 回文；无需处理溢出（只翻一半）</text>
+</svg>

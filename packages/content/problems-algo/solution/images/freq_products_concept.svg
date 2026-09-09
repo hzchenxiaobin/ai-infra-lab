@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：先聚合计数，再按顾客 RANK 取最高频商品（并列全保留）</text>
+
+  <!-- ===== Column 1: Orders ===== -->
+  <text x="95" y="50" text-anchor="middle" font-size="10" fill="#888">Orders（原始订单行）</text>
+  <rect x="20" y="56" width="160" height="172" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="32" y="72" font-size="9" fill="#446688" font-weight="bold">oid  cust  prod</text>
+  <line x1="20" y1="78" x2="180" y2="78" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="32" y="92" font-size="9" fill="#666">1    1     1</text>
+  <text x="32" y="106" font-size="9" fill="#666">2    2     2</text>
+  <text x="32" y="120" font-size="9" fill="#666">3    3     3</text>
+  <text x="32" y="134" font-size="9" fill="#666">4    4     1</text>
+  <text x="32" y="148" font-size="9" fill="#666">5    1     2</text>
+  <text x="32" y="162" font-size="9" fill="#666">6    2     1</text>
+  <text x="32" y="176" font-size="9" fill="#666">7    3     3</text>
+  <text x="32" y="190" font-size="9" fill="#666">8    1     2</text>
+  <text x="32" y="208" font-size="9" fill="#999">… 10 行</text>
+  <text x="32" y="222" font-size="8" fill="#888">逐行无法直接排名</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 184 130 L 224 130" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="204" y="120" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">GROUP BY</text>
+  <text x="204" y="146" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">+COUNT</text>
+
+  <!-- ===== Column 2: Counts (aggregated) ===== -->
+  <text x="315" y="50" text-anchor="middle" font-size="10" fill="#888">频率表（顾客×商品 → 次数）</text>
+  <rect x="228" y="56" width="174" height="172" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="72" font-size="9" fill="#446688" font-weight="bold">cust  prod  cnt</text>
+  <line x1="228" y1="78" x2="402" y2="78" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="240" y="92" font-size="9" fill="#446688" font-weight="bold">1     2     3</text>
+  <text x="240" y="106" font-size="9" fill="#999">1     1     1</text>
+  <text x="240" y="120" font-size="9" fill="#446688" font-weight="bold">2     1     1</text>
+  <text x="240" y="134" font-size="9" fill="#446688" font-weight="bold">2     2     1</text>
+  <text x="240" y="148" font-size="9" fill="#446688" font-weight="bold">2     3     1</text>
+  <text x="240" y="162" font-size="9" fill="#446688" font-weight="bold">3     3     2</text>
+  <text x="240" y="176" font-size="9" fill="#446688" font-weight="bold">4     1     1</text>
+  <text x="240" y="194" font-size="8" fill="#888">7 行（每个 pair 一行）</text>
+  <text x="240" y="208" font-size="8" fill="#d6a040" font-weight="bold">Bob 三商品 cnt 全=1</text>
+  <text x="240" y="222" font-size="8" fill="#d6a040" font-weight="bold">→ 并列！</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 406 130 L 446 130" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="426" y="120" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">RANK()</text>
+  <text x="426" y="146" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">rk=1</text>
+
+  <!-- ===== Column 3: Ranked result ===== -->
+  <text x="535" y="50" text-anchor="middle" font-size="10" fill="#888">排名后取 rk = 1</text>
+  <rect x="450" y="56" width="150" height="172" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="462" y="72" font-size="9" fill="#4a7a3a" font-weight="bold">cust  prod cnt rk</text>
+  <line x1="450" y1="78" x2="600" y2="78" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <rect x="452" y="80" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="92" font-size="9" fill="#4a7a3a" font-weight="bold">1     2    3   1</text>
+
+  <text x="462" y="106" font-size="9" fill="#999">1     1    1   2</text>
+
+  <rect x="452" y="108" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="120" font-size="9" fill="#4a7a3a" font-weight="bold">2     1    1   1</text>
+
+  <rect x="452" y="122" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="134" font-size="9" fill="#4a7a3a" font-weight="bold">2     2    1   1</text>
+
+  <rect x="452" y="136" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="148" font-size="9" fill="#4a7a3a" font-weight="bold">2     3    1   1</text>
+
+  <rect x="452" y="150" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="162" font-size="9" fill="#4a7a3a" font-weight="bold">3     3    2   1</text>
+
+  <rect x="452" y="164" width="146" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="2" filter="url(#rough2)" opacity="0.7"/>
+  <text x="462" y="176" font-size="9" fill="#4a7a3a" font-weight="bold">4     1    1   1</text>
+
+  <text x="462" y="194" font-size="8" fill="#4a7a3a">绿 = rk=1 保留（5 行）</text>
+  <text x="462" y="208" font-size="8" fill="#b85450">灰 = rk&gt;1 丢弃（2 行）</text>
+  <text x="462" y="222" font-size="8" fill="#d6a040" font-weight="bold">Bob 三行并列全留</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="30" y="244" width="540" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="264" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">两阶段：① GROUP BY(cust, prod)+COUNT 算频率 ② RANK() OVER(PARTITION BY cust ORDER BY cnt DESC)</text>
+  <text x="300" y="282" text-anchor="middle" font-size="10" fill="#666">排名指标是聚合 COUNT（非逐行列）→ 必须先聚合再排名；同最大频次多商品 → RANK 并列同号全保留</text>
+
+  <!-- ===== Legend ===== -->
+  <rect x="30" y="312" width="540" height="44" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="44" y="328" font-size="9" fill="#4a7a3a" font-weight="bold">绿行</text>
+  <text x="74" y="328" font-size="9" fill="#666">rk=1，每位顾客最高频商品，全部保留（含并列）</text>
+  <text x="44" y="346" font-size="9" fill="#999" font-weight="bold">灰行</text>
+  <text x="74" y="346" font-size="9" fill="#666">rk&gt;1，非最高频，丢弃</text>
+  <text x="380" y="328" font-size="9" fill="#d6a040" font-weight="bold">关键</text>
+  <text x="410" y="328" font-size="9" fill="#666">排名对象是"频率"而非"行"</text>
+  <text x="380" y="346" font-size="9" fill="#d6a040" font-weight="bold">注意</text>
+  <text x="410" y="346" font-size="9" fill="#666">禁用 ROW_NUMBER（丢并列）</text>
+
+  <!-- ===== Tail note: no orders customer ===== -->
+  <rect x="30" y="368" width="540" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="388" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">无订单顾客（如 John）→ GROUP BY 不产出 → 天然排除</text>
+  <text x="300" y="406" text-anchor="middle" font-size="10" fill="#666">输出列：customer_id, product_id, product_name（需 JOIN Products 取商品名）</text>
+</svg>

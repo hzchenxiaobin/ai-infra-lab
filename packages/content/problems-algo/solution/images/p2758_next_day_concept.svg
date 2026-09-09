@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：日期进位级联 — 日溢出则月进，月溢出则年进</text>
+
+  <!-- Date string decomposition -->
+  <text x="30" y="58" font-size="11" fill="#666" font-weight="bold">输入 "YYYY-MM-DD"</text>
+  <g font-size="14" fill="#333" font-weight="bold">
+    <rect x="140" y="44" width="60" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="170" y="64" text-anchor="middle">YYYY</text>
+    <rect x="210" y="44" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="232" y="64" text-anchor="middle">MM</text>
+    <rect x="264" y="44" width="44" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="286" y="64" text-anchor="middle">DD</text>
+  </g>
+  <text x="320" y="64" font-size="10.5" fill="#888">拆出 year / month / day</text>
+
+  <!-- Cascade: three cases -->
+  <text x="30" y="100" font-size="11" fill="#666" font-weight="bold">三种进位情形</text>
+
+  <!-- Case 1: simple day+1 (green) -->
+  <rect x="30" y="112" width="160" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="132" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">① 日未满</text>
+  <text x="110" y="150" text-anchor="middle" font-size="11" fill="#333">day &lt; 月末</text>
+  <text x="110" y="166" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">day + 1 即可</text>
+  <text x="110" y="178" text-anchor="middle" font-size="10" fill="#888">6/20 → 6/21</text>
+
+  <!-- Case 2: month rollover (orange) -->
+  <rect x="200" y="112" width="160" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 日满月溢</text>
+  <text x="280" y="150" text-anchor="middle" font-size="11" fill="#333">day = 月末</text>
+  <text x="280" y="166" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">day=1, month+1</text>
+  <text x="280" y="178" text-anchor="middle" font-size="10" fill="#888">10/31 → 11/01</text>
+
+  <!-- Case 3: year rollover (red) -->
+  <rect x="370" y="112" width="160" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="132" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">③ 月满年溢</text>
+  <text x="450" y="150" text-anchor="middle" font-size="11" fill="#333">month=12 且 日满</text>
+  <text x="450" y="166" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">day=1,month=1,year+1</text>
+  <text x="450" y="178" text-anchor="middle" font-size="10" fill="#888">12/31 → 01/01(次年)</text>
+
+  <!-- cascade arrows -->
+  <path d="M190 147 L200 147" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M360 147 L370 147" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Leap year special -->
+  <text x="30" y="212" font-size="11" fill="#666" font-weight="bold">关键：二月天数随闰年变化</text>
+  <rect x="30" y="222" width="500" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="42" y="242" font-size="11.5" fill="#333" font-weight="bold">闰年判定：</text>
+  <text x="120" y="242" font-size="11.5" fill="#333">(year % 4 == 0 且 year % 100 ≠ 0) 或 year % 400 == 0</text>
+  <text x="42" y="262" font-size="11" fill="#555">闰年二月 29 天 → 2/28 下一日是 2/29；平年二月 28 天 → 2/28 下一日是 3/1</text>
+  <text x="42" y="278" font-size="10.5" fill="#888">例：2020(闰) 2/28→2/29；2021(平) 2/28→3/01；2000(闰) 2/29→3/01</text>
+
+  <!-- month days table -->
+  <text x="30" y="306" font-size="11" fill="#666" font-weight="bold">各月天数（查表）</text>
+  <g font-size="11" fill="#333">
+    <rect x="30" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="52" y="329" text-anchor="middle">1 31</text>
+    <rect x="78" y="314" width="44" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="100" y="329" text-anchor="middle">2 28/29</text>
+    <rect x="126" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="148" y="329" text-anchor="middle">3 31</text>
+    <rect x="174" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="196" y="329" text-anchor="middle">4 30</text>
+    <rect x="222" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="244" y="329" text-anchor="middle">5 31</text>
+    <rect x="270" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="292" y="329" text-anchor="middle">6 30</text>
+    <rect x="318" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="340" y="329" text-anchor="middle">7 31</text>
+    <rect x="366" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="388" y="329" text-anchor="middle">8 31</text>
+    <rect x="414" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="436" y="329" text-anchor="middle">9 30</text>
+    <rect x="462" y="314" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="484" y="329" text-anchor="middle">10 31</text>
+    <rect x="510" y="314" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+    <text x="530" y="329" text-anchor="middle">11 30</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="30" y="346" width="500" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="363" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Python 可直接 datetime + timedelta；C++ 需手写进位 + 闰年表</text>
+</svg>

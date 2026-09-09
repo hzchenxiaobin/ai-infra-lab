@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：水龙头灌溉区间 → 跳跃游戏 reach[]</text>
+  <text x="300" y="46" text-anchor="middle" font-size="11" fill="#888">每个水龙头 i 灌溉 [i−r, i+r]，转换为 reach[max(0, i−r)] = min(n, i+r)</text>
+
+  <!-- Section 1: original problem -->
+  <text x="40" y="74" font-size="11" fill="#446688" font-weight="bold">① 原问题：花园 [0, 5] 上的水龙头与灌溉区间（示例 1）</text>
+
+  <!-- Interval bands (garden: x 110..490, unit=76px; 0→110,1→186,2→262,3→338,4→414,5→490) -->
+  <!-- tap1 (r=4): [0,5] green -->
+  <rect x="110" y="86" width="380" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="78" y="98" font-size="9" fill="#4a7a3a">tap1 r=4</text>
+  <!-- tap0 (r=3): [0,3] blue -->
+  <rect x="110" y="106" width="228" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="78" y="118" font-size="9" fill="#446688">tap0 r=3</text>
+  <!-- tap4 (r=1): [3,5] orange -->
+  <rect x="338" y="106" width="152" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="496" y="118" font-size="9" fill="#d6a040">tap4 r=1</text>
+
+  <!-- Garden axis -->
+  <line x1="110" y1="142" x2="490" y2="142" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <!-- Tick marks + labels -->
+  <g font-size="10" fill="#555">
+    <line x1="110" y1="138" x2="110" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="110" y="162" text-anchor="middle">0</text>
+    <line x1="186" y1="138" x2="186" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="186" y="162" text-anchor="middle">1</text>
+    <line x1="262" y1="138" x2="262" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="262" y="162" text-anchor="middle">2</text>
+    <line x1="338" y1="138" x2="338" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="338" y="162" text-anchor="middle">3</text>
+    <line x1="414" y1="138" x2="414" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="414" y="162" text-anchor="middle">4</text>
+    <line x1="490" y1="138" x2="490" y2="148" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="490" y="162" text-anchor="middle">5=n</text>
+  </g>
+
+  <!-- Section 2: transformation rule -->
+  <text x="40" y="190" font-size="11" fill="#d6a040" font-weight="bold">② 转换规则：区间 [left, right] → reach[left] = max(reach[left], right)</text>
+
+  <rect x="60" y="200" width="480" height="34" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="80" y="222" font-size="11" fill="#555" font-family="monospace">tap i: left = max(0, i − ranges[i]),  right = min(n, i + ranges[i])  →  reach[left] = max(reach[left], right)</text>
+
+  <!-- Section 3: reach[] array as jump game -->
+  <text x="40" y="256" font-size="11" fill="#4a7a3a" font-weight="bold">③ 跳跃游戏 reach[]：从位置 j 可跳到 reach[j]，求覆盖 [0, n] 的最少跳数</text>
+
+  <!-- reach boxes: reach=[5,3,4,5,0,5] -->
+  <!-- positions: 0→110, 1→186, 2→262, 3→338, 4→414, 5→490 -->
+  <g font-size="12" font-weight="bold">
+    <!-- reach[0]=5 green (winner) -->
+    <rect x="86" y="272" width="48" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+    <text x="110" y="292" text-anchor="middle" fill="#4a7a3a">5</text>
+    <!-- reach[1]=3 -->
+    <rect x="162" y="272" width="48" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="186" y="292" text-anchor="middle" fill="#446688">3</text>
+    <!-- reach[2]=4 -->
+    <rect x="238" y="272" width="48" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="262" y="292" text-anchor="middle" fill="#446688">4</text>
+    <!-- reach[3]=5 -->
+    <rect x="314" y="272" width="48" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="338" y="292" text-anchor="middle" fill="#446688">5</text>
+    <!-- reach[4]=0 red (dead end) -->
+    <rect x="390" y="272" width="48" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="414" y="292" text-anchor="middle" fill="#b85450">0</text>
+    <!-- reach[5]=5 (endpoint) -->
+    <rect x="466" y="272" width="48" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="490" y="292" text-anchor="middle" fill="#446688">5</text>
+  </g>
+  <!-- index labels -->
+  <g font-size="9" fill="#888">
+    <text x="110" y="316" text-anchor="middle">j=0</text>
+    <text x="186" y="316" text-anchor="middle">1</text>
+    <text x="262" y="316" text-anchor="middle">2</text>
+    <text x="338" y="316" text-anchor="middle">3</text>
+    <text x="414" y="316" text-anchor="middle">4</text>
+    <text x="490" y="316" text-anchor="middle">5=n</text>
+  </g>
+
+  <!-- greedy jump arrow: from reach[0]=5 jump to end -->
+  <path d="M 110 270 Q 300 226 490 270" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="300" y="232" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">贪心：reach[0]=5 ≥ n → 1 个水龙头搞定！</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="336" width="520" height="108" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="60" y="362" font-size="12" fill="#444" font-weight="bold">一句话：本题 = 区间覆盖 = 跳跃游戏 II（45 题）换皮</text>
+  <text x="60" y="384" font-size="11" fill="#555">· 水龙头 i 的灌溉范围 [i−r, i+r] 天然是「从左端点可一步跳到右端点」的跳跃</text>
+  <text x="60" y="402" font-size="11" fill="#555">· reach[left] = max(reach[left], right)：同一左端点只留跳得最远的那个水龙头</text>
+  <text x="60" y="420" font-size="11" fill="#555">· 套 45 题贪心模板：维护 end / maxPos / steps，到 end 就 +1 跳，O(n) 一趟</text>
+</svg>

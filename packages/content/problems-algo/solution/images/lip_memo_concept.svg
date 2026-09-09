@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrC" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">记忆化搜索：每格的最长路径 = 1 + max(更大邻居的最长路径)</text>
+
+  <!-- 3x3 grid: cells 60x60, step 64 -->
+  <!-- row 0 -->
+  <rect x="60" y="60" width="60" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="92" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">9</text>
+  <text x="90" y="110" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">memo=1</text>
+
+  <rect x="124" y="60" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="92" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">9</text>
+  <text x="154" y="110" text-anchor="middle" font-size="10" fill="#446688">memo=1</text>
+
+  <rect x="188" y="60" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="218" y="92" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">4</text>
+  <text x="218" y="110" text-anchor="middle" font-size="10" fill="#446688">memo=2</text>
+
+  <!-- row 1 -->
+  <rect x="60" y="124" width="60" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="156" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">6</text>
+  <text x="90" y="174" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">memo=2</text>
+
+  <rect x="124" y="124" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="156" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">6</text>
+  <text x="154" y="174" text-anchor="middle" font-size="10" fill="#446688">memo=2</text>
+
+  <rect x="188" y="124" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="218" y="156" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">8</text>
+  <text x="218" y="174" text-anchor="middle" font-size="10" fill="#446688">memo=1</text>
+
+  <!-- row 2 -->
+  <rect x="60" y="188" width="60" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="220" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">2</text>
+  <text x="90" y="238" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">memo=3</text>
+
+  <rect x="124" y="188" width="60" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="220" text-anchor="middle" font-size="18" fill="#b85450" font-weight="bold">1</text>
+  <text x="154" y="238" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">memo=4 ★</text>
+
+  <rect x="188" y="188" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="218" y="220" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">1</text>
+  <text x="218" y="238" text-anchor="middle" font-size="10" fill="#446688">memo=2</text>
+
+  <!-- path arrows 1 -> 2 -> 6 -> 9 (green) -->
+  <path d="M 138 218 L 124 218" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrC)" filter="url(#rough2)"/>
+  <path d="M 90 188 L 90 184" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrC)" filter="url(#rough2)"/>
+  <path d="M 90 124 L 90 120" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrC)" filter="url(#rough2)"/>
+
+  <!-- legend / recurrence box on right -->
+  <rect x="290" y="60" width="240" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="82" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">状态定义与转移</text>
+  <text x="410" y="104" text-anchor="middle" font-size="11" fill="#555">dfs(i,j) = 以 (i,j) 为起点的</text>
+  <text x="410" y="120" text-anchor="middle" font-size="11" fill="#555">最长严格递增路径长度</text>
+  <text x="410" y="140" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">= 1 + max{ dfs(ni,nj) }</text>
+
+  <rect x="290" y="168" width="240" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="190" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">关键剪枝：memo 去重</text>
+  <text x="410" y="210" text-anchor="middle" font-size="11" fill="#666">ni,nj 仅取值更大的邻居</text>
+  <text x="410" y="226" text-anchor="middle" font-size="11" fill="#666">无环 → 每格只算一次</text>
+  <text x="410" y="242" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">答案 = max dfs(i,j)</text>
+
+  <text x="154" y="276" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">绿色 = 最长路径 1→2→6→9 (长度 4)</text>
+
+  <rect x="60" y="292" width="470" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="295" y="314" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">为什么能记忆化？「严格递增」保证图中无环</text>
+  <text x="295" y="334" text-anchor="middle" font-size="11" fill="#666">每条边都从较小值指向较大值，不可能回到已访问的格子</text>
+  <text x="295" y="352" text-anchor="middle" font-size="11" fill="#666">于是 dfs(i,j) 的结果只依赖「更大的邻居」，与到达 (i,j) 的路径无关</text>
+  <text x="295" y="370" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">→ 满足无后效性，可缓存每格结果，把指数级 DFS 压成 O(mn)</text>
+</svg>

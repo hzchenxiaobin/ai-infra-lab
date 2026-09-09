@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建差分 → 排序事件点 → 扫描输出/合并</text>
+
+  <!-- Step 1: build diff -->
+  <rect x="50" y="50" width="240" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 建差分表</text>
+  <text x="170" y="90" text-anchor="middle" font-size="10" fill="#666">cnt[start]++, cnt[end]--, d[start]+=h, d[end]-=h</text>
+
+  <path d="M 170 104 L 170 124" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: sort -->
+  <rect x="70" y="128" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="150" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 排序事件点</text>
+  <text x="170" y="166" text-anchor="middle" font-size="10" fill="#666">遍历 sorted(d.keys())</text>
+
+  <path d="M 170 176 L 170 196" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: output segment -->
+  <rect x="30" y="200" width="280" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="222" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 先输出段 [last, k)</text>
+  <text x="170" y="240" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">if m &gt; 0: avg = s // m</text>
+  <text x="170" y="256" text-anchor="middle" font-size="10" fill="#888">（用旧状态，尚未应用 k 处增量）</text>
+
+  <path d="M 170 266 L 170 286" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: merge decision -->
+  <rect x="30" y="290" width="280" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="312" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ 合并 or 新增？</text>
+  <text x="170" y="330" text-anchor="middle" font-size="10" fill="#b85450">avg 同 且 ans[-1][1]==last →</text>
+  <text x="170" y="346" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">合并: ans[-1][1]=k  /  否则新增 [last,k,avg]</text>
+
+  <path d="M 170 356 L 170 376" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: apply delta -->
+  <rect x="60" y="380" width="220" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="402" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑤ 应用 k 处增量</text>
+  <text x="170" y="420" text-anchor="middle" font-size="10" fill="#666">s += v; m += cnt[k]; last = k</text>
+
+  <!-- loop back arrow -->
+  <path d="M 60 405 Q 25 405 25 290 Q 25 170 70 170" stroke="#666" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="14" y="290" font-size="10" fill="#888" transform="rotate(-90 14 290)">下一个事件点</text>
+
+  <!-- side notes: merge condition -->
+  <rect x="340" y="200" width="240" height="160" fill="#fafafa" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="224" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">合并条件为何两个都要？</text>
+  <text x="350" y="246" font-size="10" fill="#555">① avg 相同：合并后整段</text>
+  <text x="350" y="260" font-size="10" fill="#555">　 平均高度一致</text>
+  <text x="350" y="282" font-size="10" fill="#555">② ans[-1][1]==last：</text>
+  <text x="350" y="296" font-size="10" fill="#555">　 两段连续无空白</text>
+  <text x="350" y="318" font-size="10" fill="#b85450" font-weight="bold">缺②会把示例3的</text>
+  <text x="350" y="332" font-size="10" fill="#b85450" font-weight="bold">[1,2)与[5,6)错误合并</text>
+  <text x="350" y="352" font-size="10" fill="#888">（中间[2,5)无建筑）</text>
+
+  <!-- return -->
+  <path d="M 170 434 L 170 452" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)" opacity="0"/>
+  <rect x="340" y="380" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="406" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">事件点扫完 → return ans</text>
+</svg>

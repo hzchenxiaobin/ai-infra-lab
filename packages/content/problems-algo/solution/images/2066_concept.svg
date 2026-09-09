@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <text x="310" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：PARTITION 分窗 + ORDER 定向 + 滚动累加</text>
+
+  <!-- Three dimensions header -->
+  <rect x="30" y="50" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="76" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① PARTITION BY account_id</text>
+
+  <rect x="220" y="50" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="76" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② ORDER BY day</text>
+
+  <rect x="410" y="50" width="180" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="76" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ SUM(带符号金额)</text>
+
+  <!-- Arrows down from each header -->
+  <path d="M 120 94 L 120 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 310 94 L 310 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 500 94 L 500 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Dim 1 description -->
+  <rect x="30" y="116" width="180" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="134" font-size="10" fill="#555">每个账户一个</text>
+  <text x="40" y="148" font-size="10" fill="#555">独立窗口</text>
+  <text x="40" y="162" font-size="9.5" fill="#b85450" font-weight="bold">账户边界累加器清零</text>
+
+  <!-- Dim 2 description -->
+  <rect x="220" y="116" width="180" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="134" font-size="10" fill="#555">窗口内按日期排序</text>
+  <text x="230" y="148" font-size="10" fill="#555">默认 frame 变为</text>
+  <text x="230" y="162" font-size="9.5" fill="#4a7a3a" font-weight="bold">起点 → 当前行（含）</text>
+
+  <!-- Dim 3 description -->
+  <rect x="410" y="116" width="180" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="134" font-size="10" fill="#555">Deposit → +amount</text>
+  <text x="420" y="148" font-size="10" fill="#555">Withdraw → −amount</text>
+  <text x="420" y="162" font-size="9.5" fill="#d6a040" font-weight="bold">存取统一成净流入</text>
+
+  <!-- Merge arrow -->
+  <path d="M 120 178 L 300 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 310 178 L 310 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 500 178 L 320 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Transactions table with windows -->
+  <rect x="40" y="206" width="540" height="148" fill="#fafafa" stroke="#666" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="224" font-size="10.5" fill="#888">Transactions（按账户分窗，窗内按 day 排序）</text>
+
+  <!-- Account 1 window shading -->
+  <rect x="50" y="232" width="260" height="110" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="180" y="248" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">窗口：account_id = 1</text>
+  <text x="60" y="266" font-size="9.5" fill="#888">day</text><text x="150" y="266" font-size="9.5" fill="#888">type</text><text x="240" y="266" font-size="9.5" fill="#888">带符号</text>
+  <text x="60" y="282" font-size="9.5" fill="#333">11-07</text><text x="150" y="282" font-size="9.5" fill="#4a7a3a">Deposit</text><text x="240" y="282" font-size="9.5" fill="#333">+2000</text>
+  <text x="60" y="298" font-size="9.5" fill="#333">11-09</text><text x="150" y="298" font-size="9.5" fill="#b85450">Withdraw</text><text x="240" y="298" font-size="9.5" fill="#333">−1000</text>
+  <text x="60" y="314" font-size="9.5" fill="#333">11-11</text><text x="150" y="314" font-size="9.5" fill="#4a7a3a">Deposit</text><text x="240" y="314" font-size="9.5" fill="#333">+3000</text>
+  <text x="60" y="330" font-size="9.5" fill="#333">11-13</text><text x="150" y="330" font-size="9.5" fill="#b85450">Withdraw</text><text x="240" y="330" font-size="9.5" fill="#333">−5000</text>
+
+  <!-- Account 2 window shading -->
+  <rect x="320" y="232" width="250" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="445" y="248" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">窗口：account_id = 2</text>
+  <text x="330" y="266" font-size="9.5" fill="#888">day</text><text x="410" y="266" font-size="9.5" fill="#888">type</text><text x="500" y="266" font-size="9.5" fill="#888">带符号</text>
+  <text x="330" y="282" font-size="9.5" fill="#333">12-07</text><text x="410" y="282" font-size="9.5" fill="#4a7a3a">Deposit</text><text x="500" y="282" font-size="9.5" fill="#333">+7000</text>
+  <text x="330" y="298" font-size="9.5" fill="#333">12-12</text><text x="410" y="298" font-size="9.5" fill="#b85450">Withdraw</text><text x="500" y="298" font-size="9.5" fill="#333">−7000</text>
+
+  <!-- Arrow down to formula -->
+  <path d="M 310 358 L 310 378" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Formula box -->
+  <rect x="30" y="382" width="560" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="402" font-size="11" fill="#d6a040" font-weight="bold">💡 balance = SUM(CASE WHEN type='Deposit' THEN amount ELSE -amount END)</text>
+  <text x="50" y="420" font-size="11" fill="#555">            OVER (PARTITION BY account_id ORDER BY day)</text>
+</svg>

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="820" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="410" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">核心概念：长表 GROUP BY + 条件聚合 → 宽表（行转列 Pivot）</text>
+  <path d="M 230 36 Q 410 44 590 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Left: Products table (long format) ===== -->
+  <text x="40" y="66" font-size="11" fill="#888">① 长表：一行一店</text>
+  <g filter="url(#rough2)"><rect x="30" y="72" width="230" height="178" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6"/></g>
+  <text x="145" y="92" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Products 表（长表）</text>
+  <line x1="30" y1="100" x2="260" y2="100" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- header -->
+  <text x="56" y="116" font-size="10" fill="#888" font-weight="bold">product_id</text>
+  <text x="148" y="116" font-size="10" fill="#888" font-weight="bold">store</text>
+  <text x="214" y="116" font-size="10" fill="#888" font-weight="bold">price</text>
+  <line x1="112" y1="102" x2="112" y2="250" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="188" y1="102" x2="188" y2="250" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- product 0 rows (blue) -->
+  <text x="64" y="136" font-size="11" fill="#4a8edb" font-weight="bold">0</text>
+  <text x="142" y="136" font-size="10" fill="#4a8edb">store1</text>
+  <text x="218" y="136" font-size="11" fill="#4a8edb">95</text>
+
+  <text x="64" y="156" font-size="11" fill="#4a8edb" font-weight="bold">0</text>
+  <text x="142" y="156" font-size="10" fill="#4a8edb">store2</text>
+  <text x="218" y="156" font-size="11" fill="#4a8edb">100</text>
+
+  <text x="64" y="176" font-size="11" fill="#4a8edb" font-weight="bold">0</text>
+  <text x="142" y="176" font-size="10" fill="#4a8edb">store3</text>
+  <text x="218" y="176" font-size="11" fill="#4a8edb">105</text>
+
+  <!-- product 1 rows (orange) -->
+  <text x="64" y="196" font-size="11" fill="#d6a040" font-weight="bold">1</text>
+  <text x="142" y="196" font-size="10" fill="#d6a040">store1</text>
+  <text x="218" y="196" font-size="11" fill="#d6a040">70</text>
+
+  <text x="64" y="216" font-size="11" fill="#d6a040" font-weight="bold">1</text>
+  <text x="142" y="216" font-size="10" fill="#d6a040">store3</text>
+  <text x="218" y="216" font-size="11" fill="#d6a040">80</text>
+
+  <text x="145" y="240" text-anchor="middle" font-size="9" fill="#999">共 5 行，store 有 3 种取值</text>
+
+  <!-- Arrow 1: long -> pivot -->
+  <path d="M 266 161 L 318 161" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="154" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Pivot</text>
+  <text x="292" y="178" text-anchor="middle" font-size="8" fill="#888">行转列</text>
+
+  <!-- ===== Middle: GROUP BY + conditional aggregation ===== -->
+  <text x="330" y="66" font-size="11" fill="#888">② GROUP BY product_id + 条件聚合</text>
+  <g filter="url(#rough2)"><rect x="324" y="78" width="230" height="190" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8"/></g>
+  <text x="439" y="98" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">每个 product 折叠成 1 组</text>
+
+  <!-- product 0 group -->
+  <g filter="url(#rough2)"><rect x="336" y="108" width="206" height="62" fill="#dbeafe" stroke="#4a8edb" stroke-width="1.4" rx="4"/></g>
+  <text x="348" y="124" font-size="10" fill="#4a8edb" font-weight="bold">product 0（3 行→1 行）</text>
+  <text x="348" y="140" font-size="9" fill="#4a8edb">MAX(IF(store='store1',price))→95</text>
+  <text x="348" y="154" font-size="9" fill="#4a8edb">store2→100, store3→105</text>
+
+  <!-- product 1 group -->
+  <g filter="url(#rough2)"><rect x="336" y="178" width="206" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/></g>
+  <text x="348" y="194" font-size="10" fill="#d6a040" font-weight="bold">product 1（2 行→1 行）</text>
+  <text x="348" y="210" font-size="9" fill="#d6a040">store1→70, store3→80</text>
+  <text x="348" y="226" font-size="9" fill="#b85450" font-weight="bold">store2 无行 → MAX(NULL)=NULL</text>
+  <text x="348" y="242" font-size="8" fill="#888">缺失组合自动落 NULL</text>
+
+  <!-- Arrow 2: pivot -> wide -->
+  <path d="M 560 161 L 612 161" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="586" y="154" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">输出</text>
+
+  <!-- ===== Right: wide result table ===== -->
+  <text x="624" y="66" font-size="11" fill="#888">③ 宽表：一产品一行</text>
+  <g filter="url(#rough2)"><rect x="618" y="78" width="190" height="190" fill="#fff" stroke="#4a7a3a" stroke-width="1.8" rx="6"/></g>
+  <text x="713" y="98" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">结果表（宽表）</text>
+  <line x1="618" y1="106" x2="808" y2="106" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="640" y="120" font-size="9" fill="#888" font-weight="bold">product_id</text>
+  <text x="710" y="120" font-size="9" fill="#888" font-weight="bold">store1</text>
+  <text x="756" y="120" font-size="9" fill="#888" font-weight="bold">store2</text>
+  <text x="796" y="120" font-size="9" fill="#888" font-weight="bold">store3</text>
+  <line x1="684" y1="108" x2="684" y2="268" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="732" y1="108" x2="732" y2="268" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="776" y1="108" x2="776" y2="268" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="644" y="142" font-size="11" fill="#4a8edb" font-weight="bold">0</text>
+  <text x="716" y="142" font-size="11" fill="#4a8edb">95</text>
+  <text x="756" y="142" font-size="11" fill="#4a8edb">100</text>
+  <text x="796" y="142" font-size="11" fill="#4a8edb">105</text>
+
+  <text x="644" y="166" font-size="11" fill="#d6a040" font-weight="bold">1</text>
+  <text x="716" y="166" font-size="11" fill="#d6a040">70</text>
+  <text x="756" y="166" font-size="11" fill="#b85450" font-weight="bold">null</text>
+  <text x="796" y="166" font-size="11" fill="#d6a040">80</text>
+
+  <text x="713" y="200" text-anchor="middle" font-size="9" fill="#999">store 列的取值</text>
+  <text x="713" y="216" text-anchor="middle" font-size="9" fill="#999">→ 拆成三个独立列</text>
+
+  <!-- ===== Bottom note ===== -->
+  <g filter="url(#rough2)"><rect x="40" y="290" width="740" height="130" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/></g>
+  <text x="60" y="314" font-size="13" fill="#a06a10" font-weight="bold">⭐ Pivot 本质 = 「分组折叠行」 + 「条件分裂列」</text>
+  <text x="60" y="338" font-size="11" fill="#a06a10">• GROUP BY product_id 把同一产品的多行并成一组（折叠行）</text>
+  <text x="60" y="360" font-size="11" fill="#a06a10">• MAX(IF(store='storeX', price, NULL)) 把 store 的不同取值分流到不同列（分裂列）</text>
+  <text x="60" y="382" font-size="11" fill="#a06a10">• MAX 语义是「挑选」而非「累加」——主键保证每组合至多一行，MAX 取那唯一值或 NULL</text>
+  <text x="60" y="404" font-size="11" fill="#b85450" font-weight="bold">• 缺失的「产品-商店」组合：IF 全返回 NULL → MAX(NULL)=NULL，自动填 NULL，无需 COALESCE</text>
+</svg>

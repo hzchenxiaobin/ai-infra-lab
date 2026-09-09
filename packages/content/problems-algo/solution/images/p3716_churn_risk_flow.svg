@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333"
+        filter="url(#rough2)">算法流程：开窗 → 取末行 → 四条件 → 双键排序</text>
+
+  <!-- ① FROM -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="34" width="260" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="55" text-anchor="middle" font-size="11" fill="#446688">① FROM subscription_events（n 行，cancel 行保留！）</text>
+    <path d="M 280 66 L 280 78" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ② 开窗 -->
+  <g filter="url(#rough2)">
+    <rect x="86" y="82" width="388" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="280" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② PARTITION BY user_id 开窗（一趟算齐）</text>
+    <text x="280" y="116" text-anchor="middle" font-size="9.5" fill="#446688">rn = ROW_NUMBER(日期↓, id↓) · MAX(amount)</text>
+    <text x="280" y="130" text-anchor="middle" font-size="9.5" fill="#446688">MIN/MAX(date) · SUM(type='downgrade')</text>
+    <path d="M 280 138 L 280 150" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ③ 取末行 -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="154" width="260" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="175" text-anchor="middle" font-size="11" fill="#446688">③ WHERE rn = 1 —— 每用户留下末行</text>
+    <path d="M 280 186 L 280 198" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 判定菱形 -->
+  <g filter="url(#rough2)">
+    <path d="M 280 202 L 352 234 L 280 266 L 208 234 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="230" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">四个条件</text>
+    <text x="280" y="246" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">同时成立？</text>
+  </g>
+
+  <!-- 否 → 出局 -->
+  <g filter="url(#rough2)">
+    <path d="M 208 234 L 164 234" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="36" y="202" width="124" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="98" y="220" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否 → 出局</text>
+    <text x="98" y="236" text-anchor="middle" font-size="9.5" fill="#b85450">504 已取消</text>
+    <text x="98" y="250" text-anchor="middle" font-size="9.5" fill="#b85450">503 / 505 无降级</text>
+    <text x="98" y="264" text-anchor="middle" font-size="9.5" fill="#b85450">506 仅 50 天</text>
+  </g>
+
+  <!-- 条件明细 -->
+  <g filter="url(#rough2)">
+    <path d="M 352 234 L 388 234" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="392" y="202" width="96" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="440" y="218" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">条件明细</text>
+    <text x="440" y="232" text-anchor="middle" font-size="9" fill="#446688">① ≠cancel ② 降级≥1</text>
+    <text x="440" y="245" text-anchor="middle" font-size="9" fill="#446688">③ cur &lt; 50%×max</text>
+    <text x="440" y="258" text-anchor="middle" font-size="9" fill="#446688">④ days ≥ 60</text>
+  </g>
+
+  <!-- 是 → 排序输出 -->
+  <g filter="url(#rough2)">
+    <path d="M 280 266 L 280 278" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="291" y="277" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="140" y="282" width="280" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="280" y="301" text-anchor="middle" font-size="10.5" fill="#4a7a3a">④ ORDER BY days_as_subscriber DESC, user_id ASC</text>
+    <path d="M 280 312 L 280 322" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="110" y="324" width="340" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="280" y="342" text-anchor="middle" font-size="10.5" fill="#4a7a3a">输出五列：user_id · current_plan · amount · max · days</text>
+  </g>
+</svg>

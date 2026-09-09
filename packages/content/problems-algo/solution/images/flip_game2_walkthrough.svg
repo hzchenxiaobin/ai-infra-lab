@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：&quot;++++&quot;（必胜） vs &quot;++-++&quot;（必败）</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">有无必败后继决定胜负——后者两步后继都让对手获胜</text>
+
+  <!-- ===== Left: "++++" -> true ===== -->
+  <rect x="20" y="60" width="255" height="320" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)" opacity="0.35"/>
+  <text x="148" y="80" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">s = &quot;++++&quot;  →  canWin = true ✓</text>
+
+  <g font-size="10">
+    <!-- move A: flip[0,1] -> "--++" (W) -->
+    <rect x="34" y="96" width="227" height="44" fill="#fff" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="44" y="114" fill="#333">翻 [0,1] → &quot;--++&quot;</text>
+    <text x="44" y="130" fill="#555">对手翻 [2,3]→&quot;----&quot;，你无路 → 对手胜</text>
+    <text x="244" y="120" fill="#b85450" font-weight="bold">W</text>
+
+    <!-- move B: flip[1,2] -> "+--+" (L) highlighted -->
+    <rect x="34" y="148" width="227" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="44" y="166" fill="#333" font-weight="bold">翻 [1,2] → &quot;+--+&quot;</text>
+    <text x="44" y="182" fill="#555">无 &quot;++&quot; 可翻 → 对手无路 → 对手败</text>
+    <text x="244" y="172" fill="#b85450" font-weight="bold">L</text>
+
+    <!-- verdict -->
+    <path d="M 148 196 L 148 208" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+    <rect x="34" y="212" width="227" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="148" y="230" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">存在 L 后继 → 必胜</text>
+    <text x="148" y="244" text-anchor="middle" font-size="9" fill="#555">memo[&quot;++++&quot;] = true</text>
+
+    <!-- concrete play -->
+    <rect x="34" y="262" width="227" height="66" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="44" y="280" fill="#333" font-weight="bold">实战（你先手）：</text>
+    <text x="44" y="296" fill="#555">你翻 [1,2]→&quot;+--+&quot;</text>
+    <text x="44" y="310" fill="#555">对手：无 ++ 可翻，认输</text>
+    <text x="44" y="324" fill="#4a7a3a" font-weight="bold">1 步即胜 ✓</text>
+
+    <rect x="34" y="338" width="227" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+    <text x="148" y="358" text-anchor="middle" font-size="9" fill="#4a7a3a">关键：把对手送进「无 ++ 可翻」的死局</text>
+  </g>
+
+  <!-- ===== Right: "++-++" -> false ===== -->
+  <rect x="285" y="60" width="255" height="320" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)" opacity="0.35"/>
+  <text x="412" y="80" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">s = &quot;++-++&quot;  →  canWin = false ✗</text>
+
+  <g font-size="10">
+    <!-- move A: flip[0,1] -> "--+-++" (W for opponent) -->
+    <rect x="299" y="96" width="227" height="44" fill="#fff" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="309" y="114" fill="#333">翻 [0,1] → &quot;--+-++&quot;</text>
+    <text x="309" y="130" fill="#555">对手翻 [4,5]→&quot;--+---&quot;，你无路</text>
+    <text x="509" y="120" fill="#4a7a3a" font-weight="bold">W</text>
+
+    <!-- move B: flip[3,4] -> "++---" (W for opponent) -->
+    <rect x="299" y="148" width="227" height="44" fill="#fff" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="309" y="166" fill="#333">翻 [3,4] → &quot;++---&quot;</text>
+    <text x="309" y="182" fill="#555">对手翻 [0,1]→&quot;-----&quot;，你无路</text>
+    <text x="509" y="172" fill="#4a7a3a" font-weight="bold">W</text>
+
+    <!-- verdict -->
+    <path d="M 412 196 L 412 208" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+    <rect x="299" y="212" width="227" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="412" y="230" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">两后继皆 W → 必败</text>
+    <text x="412" y="244" text-anchor="middle" font-size="9" fill="#555">memo[&quot;++-++&quot;] = false</text>
+
+    <!-- concrete play -->
+    <rect x="299" y="262" width="227" height="66" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="309" y="280" fill="#333" font-weight="bold">实战（你先手）：</text>
+    <text x="309" y="296" fill="#555">你怎么翻，都留一处 &quot;++&quot;</text>
+    <text x="309" y="310" fill="#555">对手翻掉它 → 你无 ++ 可翻</text>
+    <text x="309" y="324" fill="#b85450" font-weight="bold">2 步后必输 ✗</text>
+
+    <rect x="299" y="338" width="227" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+    <text x="412" y="358" text-anchor="middle" font-size="9" fill="#b85450">两段 ++ 等长 → 对称镜像，先手必败（见 SG）</text>
+  </g>
+</svg>

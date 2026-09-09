@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：求总余数 → 哈希扫描 → 取最短</text>
+
+  <!-- ===== Step 1: compute r ===== -->
+  <rect x="150" y="40" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">r = sum(nums) mod p</text>
+  <text x="260" y="72" text-anchor="middle" font-size="9" fill="#888">累加取模，避免溢出</text>
+
+  <path d="M 260 82 L 260 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: r == 0? ===== -->
+  <polygon points="260,100 360,134 260,168 160,134" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="138" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">r == 0?</text>
+
+  <!-- yes -> return 0 -->
+  <path d="M 160 134 L 100 134" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="130" y="128" text-anchor="middle" font-size="9" fill="#4a7a3a">是</text>
+  <rect x="20" y="118" width="78" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="59" y="138" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">返回 0</text>
+
+  <!-- no -> init -->
+  <path d="M 260 168 L 260 182" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="178" font-size="9" fill="#b85450">否</text>
+
+  <!-- ===== Step 2: init ===== -->
+  <rect x="120" y="186" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="204" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">last = {0: -1}, prefix = 0, ans = n</text>
+  <text x="260" y="220" text-anchor="middle" font-size="9" fill="#888">哨兵 0:-1 处理"移除前缀"方案</text>
+
+  <path d="M 260 232 L 260 246" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: loop ===== -->
+  <rect x="100" y="250" width="320" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="272" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">for i, num in enumerate(nums):</text>
+
+  <path d="M 260 288 L 260 300" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: prefix + target ===== -->
+  <rect x="80" y="304" width="360" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="320" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">prefix = (prefix + num) mod p</text>
+  <text x="260" y="336" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">target = (prefix − r + p) mod p</text>
+
+  <path d="M 260 346 L 260 358" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: lookup + update ===== -->
+  <rect x="60" y="362" width="400" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="378" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">若 target in last: ans = min(ans, i − last[target])</text>
+  <text x="260" y="394" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">last[prefix] = i   （覆盖旧值，只留最近下标）</text>
+
+  <!-- loop back arrow -->
+  <path d="M 460 322 L 490 322 L 490 268 L 420 268" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)" opacity="0.6"/>
+  <text x="496" y="296" font-size="8" fill="#888" transform="rotate(90 496 296)">下一轮</text>
+
+  <!-- final return note -->
+  <rect x="370" y="404" width="140" height="14" fill="none" stroke="none"/>
+  <text x="440" y="414" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">return ans if ans &lt; n else -1</text>
+</svg>

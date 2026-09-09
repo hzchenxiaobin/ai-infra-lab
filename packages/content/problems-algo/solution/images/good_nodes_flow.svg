@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">前序 DFS 流程：dfs(node, pathMax) 向下传最值，命中即计数</text>
+
+  <!-- 入口 -->
+  <rect x="200" y="44" width="160" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333">调用 dfs(node, pathMax)</text>
+
+  <!-- 判空 菱形 -->
+  <path d="M 280 80 L 360 112 L 280 144 L 200 112 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="116" text-anchor="middle" font-size="11" fill="#333">node == null?</text>
+  <path d="M 280 72 L 280 80" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 是 → return 0 -->
+  <path d="M 360 112 L 440 112" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="104" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="440" y="98" width="90" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="116" text-anchor="middle" font-size="11" fill="#333">return 0</text>
+
+  <!-- 否 → 比较 -->
+  <path d="M 200 112 L 130 112" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="104" font-size="10" fill="#b85450">否</text>
+
+  <path d="M 130 112 L 130 150 L 280 150 L 280 168" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- val >= pathMax? 菱形 -->
+  <path d="M 280 168 L 380 208 L 280 248 L 180 208 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="205" text-anchor="middle" font-size="11" fill="#333">node.val ≥ pathMax?</text>
+  <text x="280" y="221" text-anchor="middle" font-size="9" fill="#888">(路径上无更大值)</text>
+
+  <!-- 是 → good=1, 更新 pathMax -->
+  <path d="M 280 248 L 280 270" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="263" font-size="10" fill="#4a7a3a">是</text>
+
+  <rect x="190" y="270" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="288" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">good = 1</text>
+  <text x="280" y="304" text-anchor="middle" font-size="10" fill="#555">pathMax = node.val  (刷新最值)</text>
+
+  <!-- 否 → good=0 (从菱形左侧出去) -->
+  <path d="M 180 208 L 110 208 L 110 290 L 190 290" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="200" font-size="10" fill="#b85450">否</text>
+  <rect x="40" y="276" width="70" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="75" y="294" text-anchor="middle" font-size="11" fill="#333">good=0</text>
+
+  <!-- 汇合 → 递归左右 -->
+  <path d="M 280 310 L 280 332" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="160" y="332" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="354" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">return good + dfs(left, pathMax) + dfs(right, pathMax)</text>
+
+  <!-- 底部说明 -->
+  <rect x="40" y="384" width="480" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="404" text-anchor="middle" font-size="11" fill="#555">前序：先处理当前节点（判好 + 刷 pathMax），再把 pathMax 传给孩子</text>
+  <text x="280" y="420" text-anchor="middle" font-size="10" fill="#888">每节点访问一次 · 不回溯（参数传递天然隔离各子树路径）</text>
+</svg>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：前缀 = 从首字符开始的连续子串</text>
+  <text x="260" y="42" text-anchor="middle" font-size="10.5" fill="#888">长度守卫 + 逐字符比较，首处不等即拒绝</text>
+
+  <!-- ===== Match example: attend / at ===== -->
+  <text x="260" y="68" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓ 匹配：attend 的前 2 位恰好等于 at</text>
+
+  <!-- pref boxes (orange) -->
+  <rect x="110" y="80" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="100" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">a</text>
+  <rect x="150" y="80" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="100" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">t</text>
+  <text x="200" y="100" font-size="10" fill="#888">pref = "at"（长度 m=2）</text>
+
+  <!-- alignment arrows pref -> word -->
+  <path d="M 130 112 L 130 132" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 170 112 L 170 132" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- word boxes: a t t e n d (first 2 green = match prefix, rest blue) -->
+  <rect x="110" y="134" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="154" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">a</text>
+  <rect x="150" y="134" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="154" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">t</text>
+  <rect x="190" y="134" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="154" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">t</text>
+  <rect x="230" y="134" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="154" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">e</text>
+  <rect x="270" y="134" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="290" y="154" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">n</text>
+  <rect x="310" y="134" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="330" y="154" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">d</text>
+
+  <text x="260" y="180" text-anchor="middle" font-size="10.5" fill="#555">↑ 绿色 = 与 pref 逐位相等的前缀 · 蓝色 = 剩余部分（无需关心）</text>
+
+  <!-- length guard annotation -->
+  <rect x="40" y="192" width="440" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="210" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">长度守卫：len(attend)=6 ≥ len(at)=2 ✓ → 才进入逐字符比较</text>
+
+  <!-- ===== Mismatch example: pay / at ===== -->
+  <text x="260" y="240" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">✗ 不匹配：pay 首位 p ≠ a，立即 break</text>
+
+  <!-- pref boxes -->
+  <rect x="110" y="252" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="272" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">a</text>
+  <rect x="150" y="252" width="40" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="272" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">t</text>
+
+  <!-- mismatch X between pref and word -->
+  <text x="130" y="290" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">✗</text>
+
+  <!-- word boxes: p a y (first red = mismatch, rest gray = skipped) -->
+  <rect x="110" y="294" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="314" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">p</text>
+  <rect x="150" y="294" width="40" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="314" text-anchor="middle" font-size="13" fill="#aaa" font-weight="bold">a</text>
+  <rect x="190" y="294" width="40" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="314" text-anchor="middle" font-size="13" fill="#aaa" font-weight="bold">y</text>
+
+  <!-- Footer -->
+  <text x="260" y="342" text-anchor="middle" font-size="10.5" fill="#888">第 1 位不等 → 拒绝，后续位无需比较（提前终止）· 灰色 = 未比较</text>
+</svg>

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 600" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="600" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">基本计算器 II：一遍扫描算法流程</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="62" rx="110" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#333">开始: num=0, preOp='+', stack=[]</text>
+
+  <path d="M 280 82 L 280 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: i &lt; n ? -->
+  <polygon points="280,104 372,150 280,196 188,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="280" y="162" text-anchor="middle" font-size="10" fill="#888">(逐字符扫描)</text>
+
+  <!-- No -> sum & return -->
+  <path d="M 372 150 L 444 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="448" y="128" width="100" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="498" y="147" text-anchor="middle" font-size="11" fill="#333">求和 sum(stack)</text>
+  <text x="498" y="162" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回</text>
+
+  <!-- Yes -> down -->
+  <path d="M 280 196 L 280 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- Diamond: c 是数字? -->
+  <polygon points="280,218 372,264 280,310 188,264" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="260" text-anchor="middle" font-size="12" fill="#333">c 是数字?</text>
+  <text x="280" y="276" text-anchor="middle" font-size="10" fill="#888">(含末位触发)</text>
+
+  <!-- Yes -> accumulate -->
+  <path d="M 188 264 L 116 264" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="152" y="256" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="14" y="242" width="100" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="64" y="260" text-anchor="middle" font-size="11" fill="#333">num = num*10</text>
+  <text x="64" y="276" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">+ int(c)</text>
+
+  <!-- inner loop back up to diamond i&lt;n -->
+  <path d="M 64 242 L 64 150 L 188 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="64" y="196" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 64 196)">i++ 继续</text>
+
+  <!-- No -> trigger flush by preOp -->
+  <path d="M 280 310 L 280 328" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="324" font-size="11" fill="#b85450">否(运算符)</text>
+
+  <!-- switch on preOp (4 boxes) -->
+  <text x="280" y="344" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">按 preOp 处理已读完的 num：</text>
+
+  <rect x="40" y="356" width="110" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="375" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">preOp = '+'</text>
+  <text x="95" y="391" text-anchor="middle" font-size="11" fill="#333">push num</text>
+
+  <rect x="160" y="356" width="110" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="215" y="375" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">preOp = '−'</text>
+  <text x="215" y="391" text-anchor="middle" font-size="11" fill="#333">push −num</text>
+
+  <rect x="280" y="356" width="110" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="335" y="375" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">preOp = '×'</text>
+  <text x="335" y="391" text-anchor="middle" font-size="10" fill="#333">push pop×num</text>
+
+  <rect x="400" y="356" width="110" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="375" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">preOp = '÷'</text>
+  <text x="455" y="391" text-anchor="middle" font-size="10" fill="#333">push pop÷num</text>
+
+  <!-- converge -->
+  <path d="M 280 400 L 280 420" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="180" y="422" width="200" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="445" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">preOp = c；num = 0</text>
+
+  <!-- important note about last char -->
+  <path d="M 280 458 L 280 476" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="80" y="478" width="400" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="499" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">⚠️ 最后一个数字后没有运算符触发</text>
+  <text x="280" y="516" text-anchor="middle" font-size="11" fill="#666">循环结束后，再用末态 preOp 对 num 做一次同样的「入栈」</text>
+  <text x="280" y="530" text-anchor="middle" font-size="10" fill="#888">（或在表达式末尾补一个 '+'，让最后一轮自动触发）</text>
+
+  <!-- loop back -->
+  <path d="M 180 496 L 10 496 L 10 150 L 188 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="10" y="323" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 10 323)">i++ 进入下一字符</text>
+</svg>

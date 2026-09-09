@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：预处理 → 二分 P → 贪心 check（差分延迟撤销）</text>
+
+  <!-- ============ Step 1: preprocess ============ -->
+  <rect x="40" y="48" width="520" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="70" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 预处理 O(n)</text>
+  <text x="300" y="88" text-anchor="middle" font-size="11" fill="#444">前缀和 S；p[i]=S[min(i+r,n−1)+1]−S[max(0,i−r)]；lo=min(p)，hi=S[n]+k</text>
+
+  <!-- arrow down -->
+  <path d="M 300 100 L 300 116" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ============ Step 2: binary search ============ -->
+  <rect x="40" y="118" width="520" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="144" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 二分 P ∈ [lo, hi]：mid=(lo+hi)/2，调用 check(mid)</text>
+
+  <!-- arrow down -->
+  <path d="M 300 158 L 300 174" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ============ Step 3: check (big box) ============ -->
+  <rect x="40" y="176" width="520" height="190" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="196" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ check(P) — 贪心 O(n)，差分延迟撤销</text>
+
+  <!-- inner flow -->
+  <!-- init -->
+  <rect x="60" y="208" width="480" height="24" fill="#f7fdf9" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="224" text-anchor="middle" font-size="11" fill="#444">d=[0]*(n+1); cur=0; added=0</text>
+
+  <!-- loop line 1 -->
+  <text x="60" y="250" font-size="11" fill="#444" font-weight="bold">for i in 0..n−1:</text>
+  <text x="76" y="266" font-size="11" fill="#444">cur += d[i]                        # 吸收延迟，得城市 i 真实增量</text>
+  <text x="76" y="282" font-size="11" fill="#444">if p[i]+cur &lt; P:                  # 城市缺电</text>
+  <text x="92" y="298" font-size="11" fill="#b85450">need = P−(p[i]+cur); added += need</text>
+  <text x="92" y="314" font-size="11" fill="#b85450">if added &gt; k: return false          # 提前终止</text>
+  <text x="92" y="330" font-size="11" fill="#4a7a3a">j=min(i+r,n−1); cur += need          # 新站放最右，立即提升 i</text>
+  <text x="92" y="346" font-size="11" fill="#4a7a3a">d[min(j+r,n−1)+1] −= need           # 出覆盖区撤销（守卫越界）</text>
+  <text x="60" y="362" font-size="11" fill="#444" font-weight="bold">return added &lt;= k</text>
+
+  <!-- arrow down to decision -->
+  <path d="M 300 366 L 300 382" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ============ Step 4: decision ============ -->
+  <polygon points="300,384 410,410 300,436 190,410" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="408" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">check(mid)</text>
+  <text x="300" y="422" text-anchor="middle" font-size="11" fill="#333">可行?</text>
+
+  <!-- yes branch -->
+  <text x="440" y="406" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <text x="440" y="422" font-size="11" fill="#4a7a3a">ans=mid; lo=mid+1</text>
+
+  <!-- no branch -->
+  <text x="120" y="406" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <text x="120" y="422" font-size="11" fill="#b85450">hi=mid−1</text>
+
+  <!-- final note -->
+  <text x="300" y="452" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">lo&gt;hi 结束，返回 ans</text>
+</svg>

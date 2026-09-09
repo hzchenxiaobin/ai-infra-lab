@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：并查集预处理 + 每个分量一个在线有序集合</text>
+
+  <!-- ============ 预处理阶段 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="26" width="160" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="13"/>
+    <text x="210" y="43" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">开始：c 个电站全部在线</text>
+  </g>
+  <path d="M 210 52 L 210 58" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <g filter="url(#rough2)">
+    <rect x="105" y="60" width="210" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="210" y="75" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① 并查集合并 connections</text>
+    <text x="210" y="89" text-anchor="middle" font-size="8.5" fill="#666">离线不影响连接性 ⇒ 分量全程固定</text>
+  </g>
+  <path d="M 210 96 L 210 102" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <g filter="url(#rough2)">
+    <rect x="105" y="104" width="210" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="210" y="120" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">② v = 1..c：root = find(v)</text>
+    <text x="210" y="134" text-anchor="middle" font-size="8.5" fill="#666">根 → 分量编号 cid[v]，v 入该分量在线集合</text>
+  </g>
+  <path d="M 210 146 L 210 152" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <g filter="url(#rough2)">
+    <rect x="125" y="154" width="170" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6"/>
+    <text x="210" y="171" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">③ 取下一条查询 [t, x]</text>
+  </g>
+  <path d="M 210 180 L 210 186" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 右上：增量复杂度说明（虚线框） -->
+  <g filter="url(#rough2)">
+    <rect x="345" y="58" width="185" height="44" fill="#f7f7f7" stroke="#bbb" stroke-width="1.4" stroke-dasharray="6 4" rx="8"/>
+    <text x="437" y="74" text-anchor="middle" font-size="9.5" fill="#555" font-weight="bold">增量：每个查询 O(log c)</text>
+    <text x="437" y="90" text-anchor="middle" font-size="8" fill="#666">erase / count / *begin 都是 O(log c)</text>
+  </g>
+
+  <!-- ============ 菱形 D1：t == 2 ？ ============ -->
+  <g filter="url(#rough2)">
+    <polygon points="210,188 288,218 210,248 132,218" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="210" y="222" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">t == 2 ？</text>
+  </g>
+
+  <!-- 是 → O1 删除 -->
+  <path d="M 288 218 L 345 218" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="316" y="210" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="351" y="198" width="179" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6"/>
+    <text x="440" y="214" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">删除：在线集合.erase(x)</text>
+    <text x="440" y="230" text-anchor="middle" font-size="8.5" fill="#b85450">已离线再删一次也幂等</text>
+  </g>
+
+  <!-- 否 ↓ -->
+  <path d="M 210 248 L 210 258" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="218" y="256" font-size="9.5" fill="#999" filter="url(#rough2)">否（t == 1）</text>
+
+  <!-- ============ 菱形 D2：x 在线？ ============ -->
+  <g filter="url(#rough2)">
+    <polygon points="210,260 288,290 210,320 132,290" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="210" y="287" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">x 在其集合中？</text>
+    <text x="210" y="303" text-anchor="middle" font-size="8.5" fill="#8a6d1f">（x 在线？）</text>
+  </g>
+
+  <!-- 是 → O2 -->
+  <path d="M 288 290 L 345 290" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="316" y="282" text-anchor="middle" font-size="9.5" fill="#999" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="351" y="270" width="179" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="440" y="286" text-anchor="middle" font-size="10" fill="#2a5a2a" font-weight="bold">ans ← x</text>
+    <text x="440" y="302" text-anchor="middle" font-size="8.5" fill="#4a7a3a">在线 ⇒ 自己处理</text>
+  </g>
+
+  <!-- 否 ↓ -->
+  <path d="M 210 320 L 210 330" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="218" y="328" font-size="9.5" fill="#999" filter="url(#rough2)">否</text>
+
+  <!-- ============ 菱形 D3：集合非空？ ============ -->
+  <g filter="url(#rough2)">
+    <polygon points="210,332 288,362 210,392 132,362" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="210" y="359" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">该电网集合非空？</text>
+    <text x="210" y="375" text-anchor="middle" font-size="8.5" fill="#8a6d1f">（还有在线站吗？）</text>
+  </g>
+
+  <!-- 是 → O3 -->
+  <path d="M 288 362 L 345 362" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="316" y="354" text-anchor="middle" font-size="9.5" fill="#999" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="351" y="342" width="179" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="440" y="358" text-anchor="middle" font-size="10" fill="#2a5a2a" font-weight="bold">ans ← *begin()</text>
+    <text x="440" y="374" text-anchor="middle" font-size="8.5" fill="#4a7a3a">编号最小的在线站</text>
+  </g>
+
+  <!-- 否 ↓ O4 -->
+  <path d="M 210 392 L 210 402" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="218" y="400" font-size="9.5" fill="#999" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="125" y="404" width="170" height="30" fill="#f7f7f7" stroke="#bbb" stroke-width="1.6" rx="6"/>
+    <text x="210" y="423" text-anchor="middle" font-size="10" fill="#777" font-weight="bold">ans ← −1（电网全离线）</text>
+  </g>
+
+  <!-- ============ 回环总线：各结果回到「取下一条查询」 ============ -->
+  <path d="M 530 218 L 540 218" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" fill="none"/>
+  <path d="M 530 290 L 540 290" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" fill="none"/>
+  <path d="M 530 362 L 540 362" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" fill="none"/>
+  <path d="M 295 419 L 540 419" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" fill="none"/>
+  <path d="M 540 419 L 540 167 L 299 167" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="470" y="158" text-anchor="middle" font-size="8.5" fill="#999" filter="url(#rough2)">回环：处理下一条查询</text>
+
+  <!-- ============ 底部注解 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="95" y="442" width="360" height="22" fill="#f7f7f7" stroke="#bbb" stroke-width="1.2" rx="8"/>
+    <text x="275" y="456" text-anchor="middle" font-size="8.5" fill="#666">预处理 O((n+c)·α(c))；q 个查询各 O(log c)；总时间 O((n+c)·α(c) + q·log c)，空间 O(c)</text>
+  </g>
+</svg>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">KMP 单趟 DFS：建 next 表 → 带 j 下行 → 失配回退 → j==m 命中</text>
+
+  <!-- Step 1: build next -->
+  <rect x="40" y="42" width="480" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="64" font-size="12" fill="#446688" font-weight="bold">① 预处理：链表 → 数组 p，求 KMP next 表</text>
+  <text x="60" y="84" font-size="11" fill="#333" font-family="monospace">next[i] = p[0..i] 最长「真前缀 = 真后缀」长度</text>
+  <text x="60" y="100" font-size="10" fill="#888">失配时 j 跳到 next[j-1]，跳过已相等的前缀，O(m)</text>
+
+  <path d="M 280 106 L 280 122" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: DFS body -->
+  <rect x="40" y="124" width="480" height="216" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="146" font-size="12" fill="#d6a040" font-weight="bold">② dfs(node, j)：j = 进入此节点前已匹配的长度</text>
+
+  <text x="60" y="168" font-size="11" fill="#333" font-family="monospace">if !node: return false                  // 空节点无法继续</text>
+
+  <text x="60" y="192" font-size="11" fill="#333" font-family="monospace">val = node.val</text>
+  <text x="60" y="210" font-size="11" fill="#b85450" font-family="monospace" font-weight="bold">while j&gt;0 and val != p[j]: j = next[j-1]   // 失配回退</text>
+  <text x="60" y="228" font-size="11" fill="#4a7a3a" font-family="monospace" font-weight="bold">if val == p[j]: j += 1                   // 当前位匹配，推进</text>
+
+  <text x="60" y="252" font-size="11" fill="#b85450" font-family="monospace" font-weight="bold">if j == m: return true                   // 整段模式匹配成功</text>
+
+  <text x="60" y="276" font-size="11" fill="#333" font-family="monospace">return dfs(node.left,  j)               // ③ j 按值传给左子</text>
+  <text x="60" y="294" font-size="11" fill="#333" font-family="monospace">     or dfs(node.right, j)               //    同一入口 j 给右子</text>
+
+  <text x="60" y="316" font-size="10" fill="#888">兄弟分支用同一个入口 j（按值传递），互不污染；j 推进/回退只影响当前路径</text>
+
+  <path d="M 280 340 L 280 356" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: entry -->
+  <rect x="150" y="358" width="260" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="380" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">入口：return dfs(root, 0)</text>
+
+  <!-- pitfalls -->
+  <rect x="40" y="404" width="480" height="64" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="60" y="426" font-size="11" fill="#b85450" font-weight="bold">⚠️ 三个易错点</text>
+  <text x="60" y="444" font-size="10" fill="#555">1. j 必须「按值」递归传参，不能就地修改——兄弟分支各自从同一 j 出发</text>
+  <text x="60" y="460" font-size="10" fill="#555">2. 回退用 next[j-1]（前一位的最长前后缀），不是 next[j]；先回退再判定推进</text>
+</svg>

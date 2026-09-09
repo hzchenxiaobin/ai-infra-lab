@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrGrn" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程（解法 A）：三个 CTE 各判一关，JOIN 求交</text>
+
+  <!-- mandatory_ok -->
+  <rect x="16" y="40" width="240" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="136" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">mandatory_ok（关卡 ①）</text>
+  <text x="136" y="76" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">students ⋈ courses（同专业 · 必修）</text>
+  <text x="136" y="90" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">⟕ enrollments 展开「必修宇宙」</text>
+  <text x="136" y="106" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">GROUP BY student_id</text>
+  <text x="136" y="122" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold" filter="url(#rough2)">HAVING SUM(grade='A') = COUNT(*)</text>
+
+  <!-- elective_ok -->
+  <rect x="16" y="152" width="240" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="136" y="170" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">elective_ok（关卡 ②）</text>
+  <text x="136" y="188" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">students ⋈ enrollments</text>
+  <text x="136" y="202" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">⋈ courses（同专业 · 选修）</text>
+  <text x="136" y="218" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">GROUP BY student_id</text>
+  <text x="136" y="234" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">HAVING COUNT(DISTINCT cid) ≥ 2</text>
+  <text x="136" y="246" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">AND SUM(grade∈{A,B}) = COUNT(*)</text>
+
+  <!-- gpa_ok -->
+  <rect x="16" y="264" width="240" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="136" y="282" text-anchor="middle" font-size="11" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">gpa_ok（关卡 ③）</text>
+  <text x="136" y="300" text-anchor="middle" font-size="8.5" fill="#8a6d3b" filter="url(#rough2)">enrollments ⋈ courses（全部选课记录）</text>
+  <text x="136" y="314" text-anchor="middle" font-size="8.5" fill="#8a6d3b" filter="url(#rough2)">GROUP BY student_id</text>
+  <text x="136" y="332" text-anchor="middle" font-size="8.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">HAVING SUM(credits×GPA)</text>
+  <text x="136" y="345" text-anchor="middle" font-size="8.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">/ SUM(credits) ≥ 2.5</text>
+  <text x="136" y="356" text-anchor="middle" font-size="8" fill="#a08430" filter="url(#rough2)">学分加权，不是 AVG(GPA)</text>
+
+  <!-- converge arrows -->
+  <path d="M 256 88 L 330 190" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 256 200 L 330 200" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrGrn)" filter="url(#rough2)"/>
+  <path d="M 256 312 L 330 210" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- join box -->
+  <rect x="334" y="164" width="170" height="72" fill="#ffffff" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="419" y="186" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">三表 JOIN（student_id 交集）</text>
+  <text x="419" y="204" text-anchor="middle" font-size="8.5" fill="#555" filter="url(#rough2)">等效于 INTERSECT</text>
+  <text x="419" y="220" text-anchor="middle" font-size="8.5" fill="#555" filter="url(#rough2)">三关全过者才留在结果里</text>
+
+  <!-- join -> order by -->
+  <path d="M 419 236 L 419 254" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrGrn)" filter="url(#rough2)"/>
+
+  <rect x="334" y="258" width="170" height="34" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="419" y="279" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">ORDER BY student_id</text>
+
+  <path d="M 419 292 L 419 310" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrGrn)" filter="url(#rough2)"/>
+
+  <!-- output -->
+  <rect x="334" y="314" width="170" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="419" y="333" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">输出 student_id</text>
+  <text x="419" y="350" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">→ {1, 3}</text>
+
+  <!-- bottom note -->
+  <text x="16" y="386" font-size="8.5" fill="#a08430" filter="url(#rough2)">关卡①② 的宇宙都限定在「本专业」：外专业课程的 A 与选修都不算数；关卡③ 按「全部已修课程」算加权 GPA</text>
+</svg>

@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fdfcf7"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#2b2b2b" font-weight="bold">环绕串唯一子串 DP 演算</text>
+  <path d="M 180 38 Q 280 46 380 38" stroke="#2b2b2b" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== 例 A: p = "zab" ===== -->
+  <text x="40" y="70" font-size="12.5" fill="#4a7a3a" font-weight="bold">例 A：p = "zab"（答案 6）</text>
+
+  <!-- 表头 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="80" width="40" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="80" width="50" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="130" y="80" width="90" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="220" y="80" width="50" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="270" y="80" width="250" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+  </g>
+  <text x="60" y="95" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">i</text>
+  <text x="105" y="95" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">p[i]</text>
+  <text x="175" y="95" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">循环后继?</text>
+  <text x="245" y="95" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">len</text>
+  <text x="395" y="95" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">dp 更新</text>
+
+  <!-- 行 1: i=0, z -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="102" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="102" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="102" width="90" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2"/>
+    <rect x="220" y="102" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="270" y="102" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="118" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="105" y="118" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">z</text>
+  <text x="175" y="118" text-anchor="middle" font-size="10" fill="#bbb">—</text>
+  <text x="245" y="118" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="395" y="118" text-anchor="middle" font-size="10.5" fill="#333">dp['z'] = max(0, 1) = 1</text>
+
+  <!-- 行 2: i=1, a -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="126" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="126" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="126" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+    <rect x="220" y="126" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="270" y="126" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="142" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="105" y="142" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="175" y="142" text-anchor="middle" font-size="9.5" fill="#4a7a3a">z→a ✓</text>
+  <text x="245" y="142" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="395" y="142" text-anchor="middle" font-size="10.5" fill="#333">dp['a'] = max(0, 2) = 2</text>
+
+  <!-- 行 3: i=2, b -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="150" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="150" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="150" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+    <rect x="220" y="150" width="50" height="24" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.8"/>
+    <rect x="270" y="150" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="166" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="105" y="166" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">b</text>
+  <text x="175" y="166" text-anchor="middle" font-size="9.5" fill="#4a7a3a">a→b ✓</text>
+  <text x="245" y="166" text-anchor="middle" font-size="11" fill="#c98a2b" font-weight="bold">3</text>
+  <text x="395" y="166" text-anchor="middle" font-size="10.5" fill="#333">dp['b'] = max(0, 3) = 3</text>
+
+  <!-- 结论 A -->
+  <rect x="40" y="180" width="480" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">Σdp = 1 + 2 + 3 = 6 ✓　子串：z, a, b, za, ab, zab</text>
+
+  <!-- ===== 例 B: p = "abab" ===== -->
+  <text x="40" y="232" font-size="12.5" fill="#b85450" font-weight="bold">例 B：p = "abab"（去重演示，答案 3）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="242" width="40" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="242" width="50" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="130" y="242" width="90" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="220" y="242" width="50" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+    <rect x="270" y="242" width="250" height="22" fill="#eee" stroke="#bbb" stroke-width="1"/>
+  </g>
+  <text x="60" y="257" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">i</text>
+  <text x="105" y="257" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">p[i]</text>
+  <text x="175" y="257" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">循环后继?</text>
+  <text x="245" y="257" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">len</text>
+  <text x="395" y="257" text-anchor="middle" font-size="10.5" fill="#555" font-weight="bold">dp 更新</text>
+
+  <!-- 行 0: a -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="264" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="264" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="264" width="90" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2"/>
+    <rect x="220" y="264" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="270" y="264" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="280" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="105" y="280" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="175" y="280" text-anchor="middle" font-size="10" fill="#bbb">—</text>
+  <text x="245" y="280" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="395" y="280" text-anchor="middle" font-size="10.5" fill="#333">dp['a'] = 1</text>
+
+  <!-- 行 1: b -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="288" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="288" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="288" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+    <rect x="220" y="288" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="270" y="288" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="304" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="105" y="304" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">b</text>
+  <text x="175" y="304" text-anchor="middle" font-size="9.5" fill="#4a7a3a">a→b ✓</text>
+  <text x="245" y="304" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="395" y="304" text-anchor="middle" font-size="10.5" fill="#333">dp['b'] = 2</text>
+
+  <!-- 行 2: a (中断) -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="312" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="312" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="312" width="90" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3"/>
+    <rect x="220" y="312" width="50" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <rect x="270" y="312" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="328" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="105" y="328" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="175" y="328" text-anchor="middle" font-size="9" fill="#b85450">b→a ✗</text>
+  <text x="245" y="328" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="395" y="328" text-anchor="middle" font-size="10.5" fill="#333">dp['a'] = max(1, 1) = 1</text>
+
+  <!-- 行 3: b (重复) -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="336" width="40" height="24" fill="#fff" stroke="#bbb" stroke-width="1"/>
+    <rect x="80" y="336" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <rect x="130" y="336" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+    <rect x="220" y="336" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="270" y="336" width="250" height="24" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1"/>
+  </g>
+  <text x="60" y="352" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="105" y="352" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">b</text>
+  <text x="175" y="352" text-anchor="middle" font-size="9.5" fill="#4a7a3a">a→b ✓</text>
+  <text x="245" y="352" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="395" y="352" text-anchor="middle" font-size="10.5" fill="#333">dp['b'] = max(2, 2) = 2</text>
+
+  <!-- 结论 B -->
+  <rect x="40" y="366" width="480" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="382" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">Σdp = 1 + 2 = 3 ✓　"ab"、"a"、"b" 重复出现也只计一次</text>
+
+  <!-- 去重说明 -->
+  <rect x="40" y="402" width="480" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="60" y="422" font-size="11" fill="#444" font-weight="bold">💡 去重关键：</text>
+  <text x="60" y="440" font-size="10.5" fill="#555">i=3 处 len=2 与 i=1 处相同，dp['b'] 取 max 不变 → 同末字符的短子串必是长子串的后缀，已被覆盖</text>
+</svg>

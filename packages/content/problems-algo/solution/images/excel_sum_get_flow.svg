@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">懒求值 + 记忆化：get / set / sum 流程</text>
+
+  <!-- ===== Left column: get(r,c) flow ===== -->
+  <text x="130" y="50" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">get(r, c)</text>
+
+  <!-- Step 1: clear memo (top-level) -->
+  <rect x="60" y="56" width="140" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="74" text-anchor="middle" font-size="10" fill="#4a7a3a">memo.clear()（仅顶层）</text>
+
+  <path d="M130 84 L130 96" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 2: decision diamond - is_sum? -->
+  <polygon points="130,98 200,134 130,170 60,134" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="130" y="130" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">is_sum?</text>
+
+  <!-- No branch -> return val -->
+  <path d="M60 134 L40 134 L40 200" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="48" y="128" text-anchor="middle" font-size="9" fill="#446688">否</text>
+
+  <rect x="10" y="200" width="60" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="216" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">return val</text>
+
+  <!-- Yes branch -> check memo -->
+  <path d="M200 134 L220 134 L220 150" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="210" y="128" text-anchor="middle" font-size="9" fill="#b85450">是</text>
+
+  <!-- Step 3: check memo -->
+  <rect x="160" y="150" width="120" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="220" y="168" text-anchor="middle" font-size="10" fill="#b85450">key in memo?</text>
+
+  <!-- memo hit -> return memo[key] -->
+  <path d="M160 164 L130 164 L130 200" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="120" y="158" text-anchor="middle" font-size="9" fill="#4a7a3a">命中</text>
+
+  <rect x="80" y="200" width="100" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="216" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">return memo[key]</text>
+
+  <!-- memo miss -> recurse -->
+  <path d="M280 164 L300 164" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="296" y="158" text-anchor="middle" font-size="9" fill="#b85450">未命中</text>
+
+  <!-- Step 4: loop over refs, recursive get -->
+  <rect x="300" y="148" width="180" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">for (rr,cc) in refs:</text>
+  <text x="390" y="182" text-anchor="middle" font-size="10" fill="#b85450">total += get(rr, cc)  ↻递归</text>
+
+  <!-- Step 5: store memo, return -->
+  <path d="M390 192 L390 204" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="320" y="206" width="140" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="222" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">memo[key]=total; return</text>
+
+  <!-- recursion self-loop arrow -->
+  <path d="M300 170 C 280 138, 240 112, 200 128" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="252" y="112" text-anchor="middle" font-size="8" fill="#888">递归调 get</text>
+
+  <!-- ===== Right column: set / sum ===== -->
+  <text x="430" y="50" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">set / sum（O(1)，不传播）</text>
+
+  <!-- set -->
+  <rect x="340" y="56" width="180" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="74" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">set(r, c, val)</text>
+  <text x="430" y="90" text-anchor="middle" font-size="9" fill="#555">is_sum=false; val=stoi(val)</text>
+  <text x="430" y="104" text-anchor="middle" font-size="9" fill="#555">refs.clear()</text>
+
+  <!-- sum -->
+  <rect x="340" y="124" width="180" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="142" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">sum(r, c, strs)</text>
+  <text x="430" y="158" text-anchor="middle" font-size="9" fill="#555">is_sum=true; refs.clear()</text>
+  <text x="430" y="172" text-anchor="middle" font-size="9" fill="#555">展开 strs → 填入 refs</text>
+  <text x="430" y="186" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">return get(r, c)</text>
+
+  <!-- arrow from sum to get -->
+  <path d="M340 182 C 300 200, 260 170, 240 170" stroke="#d6a040" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="300" y="196" text-anchor="middle" font-size="8" fill="#d6a040">调 get 求当前和</text>
+
+  <!-- ===== Bottom: key insight ===== -->
+  <rect x="40" y="250" width="480" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="272" font-size="10" fill="#333" font-weight="bold">关键不变量</text>
+  <text x="60" y="288" font-size="10" fill="#333">① memo 只在顶层 get/sum 清空 → 同一次调用内共享子表达式复用，跨调用不脏读</text>
+  <text x="60" y="302" font-size="10" fill="#333">② set/sum 只改自己一格 → 被引用格变了，下次 get 自然读到新值（懒求值不传播）</text>
+
+  <!-- complexity -->
+  <rect x="40" y="320" width="480" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="342" font-size="10" fill="#4a7a3a" font-weight="bold">复杂度（V = 网格格数 ≤ 676）</text>
+  <text x="60" y="358" font-size="10" fill="#333">get：O(V) —— 记忆化保证每格至多算一次</text>
+  <text x="60" y="372" font-size="10" fill="#333">set：O(R) 清旧 refs（不传播）｜sum：O(R + V) 展开引用 + 一次 get</text>
+  <text x="60" y="384" font-size="10" fill="#b85450">不做记忆化最坏 O(2^V) —— 共享子表达式指数爆炸</text>
+</svg>

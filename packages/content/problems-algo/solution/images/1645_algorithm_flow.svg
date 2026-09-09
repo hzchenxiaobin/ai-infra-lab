@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 月骨架 → JOIN+AVG 月度均值 → LEFT JOIN+COALESCE+ROUND</text>
+
+  <!-- Step 1: CTE months -->
+  <rect x="170" y="44" width="260" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="62" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① CTE months：生成 1→12 月骨架</text>
+  <text x="300" y="78" text-anchor="middle" font-size="9" fill="#446688">WITH RECURSIVE months AS (1 UNION ALL month+1)</text>
+
+  <path d="M300 88 L300 104" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: accepted_monthly CTE -->
+  <rect x="80" y="106" width="440" height="86" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="126" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② accepted_monthly CTE（JOIN + AVG + 按月分组）</text>
+  <text x="92" y="144" font-size="9" fill="#b85450">SELECT MONTH(r.requested_at) AS month,</text>
+  <text x="92" y="158" font-size="9" fill="#b85450">       AVG(ar.ride_distance), AVG(ar.ride_duration)</text>
+  <text x="92" y="172" font-size="9" fill="#b85450">FROM AcceptedRides ar JOIN Rides r ON ar.ride_id=r.ride_id</text>
+  <text x="92" y="186" font-size="9" fill="#b85450">WHERE YEAR(r.requested_at)=2020 GROUP BY MONTH(...)</text>
+
+  <path d="M300 194 L300 212" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 3: LEFT JOIN + COALESCE + ROUND -->
+  <rect x="70" y="214" width="460" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="234" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ LEFT JOIN + COALESCE 补零 + ROUND 取整</text>
+  <text x="300" y="252" text-anchor="middle" font-size="9" fill="#d6a040">months m LEFT JOIN accepted_monthly am ON m.month=am.month</text>
+  <text x="300" y="268" text-anchor="middle" font-size="9" fill="#d6a040">ROUND(COALESCE(am.avg_dist, 0), 2)  /  ROUND(COALESCE(am.avg_dur, 0), 2)</text>
+  <text x="300" y="280" text-anchor="middle" font-size="8.5" fill="#888">无接单月 → COALESCE(NULL,0)=0 → ROUND(0,2)=0.00</text>
+
+  <path d="M300 286 L300 304" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="180" y="306" width="240" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ ORDER BY month ASC</text>
+  <text x="300" y="340" text-anchor="middle" font-size="9" fill="#4a7a3a">按月份升序输出 12 行结果</text>
+
+  <path d="M300 350 L300 366" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 输出 -->
+  <rect x="110" y="368" width="380" height="72" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="388" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">输出结果（12 行）</text>
+  <text x="130" y="406" font-size="9" fill="#333">month | average_ride_distance | average_ride_duration</text>
+  <text x="130" y="420" font-size="9" fill="#888">   3   |        63.00          |        38.00</text>
+  <text x="130" y="432" font-size="9" fill="#888">  11   |        81.50          |        96.50</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 600" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="71" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="700" height="600" fill="#fdfcf7"/>
+
+  <text x="350" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">单词替换算法流程</text>
+  <path d="M 200 40 Q 350 48 500 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- Start -->
+  <g filter="url(#sk)">
+    <rect x="250" y="60" width="200" height="34" rx="17" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/>
+  </g>
+  <text x="350" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">输入 dictionary + sentence</text>
+  <path d="M 350 96 L 350 112" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Build Trie -->
+  <g filter="url(#sk)">
+    <rect x="170" y="116" width="360" height="48" rx="6" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5"/>
+  </g>
+  <text x="350" y="136" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">建 Trie：逐个 insert(dictionary[i])</text>
+  <text x="350" y="154" text-anchor="middle" font-size="10" fill="#555">每个词根末字符节点标记 is_end = true</text>
+  <path d="M 350 166 L 350 182" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Split sentence -->
+  <g filter="url(#sk)">
+    <rect x="190" y="186" width="320" height="40" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+  </g>
+  <text x="350" y="204" text-anchor="middle" font-size="12" font-weight="bold" fill="#9a6a20">按空格切分 sentence → words[]</text>
+  <text x="350" y="220" text-anchor="middle" font-size="10" fill="#888">sentence.split() / istringstream</text>
+  <path d="M 350 228 L 350 244" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Loop header -->
+  <g filter="url(#sk)">
+    <path d="M 350 244 L 470 276 L 350 308 L 230 276 Z" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="350" y="274" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">遍历每个 word</text>
+  <text x="350" y="290" text-anchor="middle" font-size="10" fill="#2b6e9e">（words 中）</text>
+  <path d="M 350 308 L 350 324" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- Walk Trie box -->
+  <g filter="url(#sk)">
+    <rect x="100" y="328" width="500" height="108" rx="6" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2"/>
+  </g>
+  <text x="120" y="350" font-size="12" font-weight="bold" fill="#444">findRoot(word)：沿 Trie 逐字符深入</text>
+  <text x="120" y="370" font-size="10" fill="#555">node = root;  prefix = ""</text>
+  <text x="120" y="386" font-size="10" fill="#555">for ch in word:</text>
+  <text x="120" y="402" font-size="10" fill="#a03040">  if ch 不在 node.children → return word  （无词根匹配，原样保留）</text>
+  <text x="120" y="418" font-size="10" fill="#555">  prefix += ch;  node = node.children[ch]</text>
+  <text x="120" y="432" font-size="10" fill="#2e8b57" font-weight="bold">  if node.is_end → return prefix  （命中最短词根，短路返回）</text>
+  <path d="M 350 438 L 350 454" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- collect result -->
+  <g filter="url(#sk)">
+    <rect x="190" y="458" width="320" height="40" rx="6" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/>
+  </g>
+  <text x="350" y="476" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">收集 findRoot(word) 到 result</text>
+  <text x="350" y="492" text-anchor="middle" font-size="10" fill="#888">result.append(替换后的词)</text>
+
+  <!-- loop back arrow (right) -->
+  <path d="M 510 478 Q 660 478 660 276 Q 660 260 472 276" stroke="#5a5a5a" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="656" y="376" font-size="9" fill="#888" transform="rotate(90 656 376)">下一个 word</text>
+
+  <!-- exit down to join -->
+  <path d="M 350 498 L 350 518" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="360" y="514" font-size="9" fill="#888">遍历完</text>
+
+  <!-- Join & return -->
+  <g filter="url(#sk)">
+    <rect x="210" y="522" width="280" height="50" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/>
+  </g>
+  <text x="350" y="544" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">用空格连接 result</text>
+  <text x="350" y="562" text-anchor="middle" font-size="11" fill="#555">" ".join(result) → 返回</text>
+</svg>

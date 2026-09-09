@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#4a7a3a" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#b85450" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#446688" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="30" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">单调栈：支配淘汰 + 均摊 O(n)</text>
+
+  <!-- 支配规则 -->
+  <rect x="28" y="48" width="464" height="66" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="72" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">支配规则：j₁ &lt; j₂ 且 t[j₁] ≥ t[j₂] ⟹ j₁ 永久淘汰</text>
+  <text x="260" y="96" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">j₂ 更靠后、门槛还更低：凡 j₁ 能转移的地方 j₂ 都能，且段数 / 末段和两维都不差</text>
+
+  <!-- 左：栈 -->
+  <text x="148" y="138" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">入栈：弹出所有 t ≥ t[i] 的栈顶，再压入 i</text>
+
+  <!-- 新元素 -->
+  <rect x="78" y="152" width="140" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="174" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">新来 i=3  t=14</text>
+
+  <path d="M 148 190 L 148 216" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 栈顶（被弹出） -->
+  <rect x="78" y="222" width="140" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="244" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">j=2  t=14  ✗ 弹出</text>
+  <path d="M 96 228 L 200 250" fill="none" stroke="#b85450" stroke-width="2" stroke-linecap="round" filter="url(#rough2)"/>
+
+  <rect x="78" y="260" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="282" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">j=1  t=8</text>
+
+  <rect x="78" y="298" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="320" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">j=0  t=0（栈底哨兵）</text>
+
+  <text x="148" y="354" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">不变量：栈内 t 自底向上严格递增</text>
+
+  <!-- 右：查询 -->
+  <rect x="262" y="152" width="230" height="90" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="377" y="176" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">查询（每个 i 一次）：</text>
+  <text x="377" y="198" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">栈内二分找最右侧 t[j] ≤ P[i]</text>
+  <text x="377" y="222" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">合法者恰是栈底的一段前缀；</text>
+  <text x="377" y="236" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">栈底 t=0 永远合法，必定命中</text>
+
+  <!-- 均摊分析 -->
+  <rect x="262" y="262" width="230" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="377" y="286" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">每个下标至多入栈 / 出栈一次</text>
+  <text x="377" y="308" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">栈操作均摊 O(1)</text>
+  <text x="377" y="330" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">查询二分 O(log n)</text>
+  <text x="377" y="348" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">总计 O(n log n)</text>
+</svg>

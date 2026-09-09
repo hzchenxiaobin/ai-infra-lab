@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：相邻不等配对，相等删前者，末尾修正奇偶</text>
+
+  <!-- ===== Step 1: Initialize ===== -->
+  <rect x="170" y="40" width="180" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="61" text-anchor="middle" font-size="11.5" fill="#333">① i = 0，ans = 0</text>
+
+  <path d="M 260 76 L 260 92" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Diamond - i+1 < n? ===== -->
+  <polygon points="260,94 360,128 260,162 160,128" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="124" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② i + 1 &lt; n ?</text>
+  <text x="260" y="140" text-anchor="middle" font-size="10" fill="#555">还有相邻对?</text>
+
+  <!-- No branch: right then down to final section -->
+  <path d="M 360 128 L 450 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="405" y="122" text-anchor="middle" font-size="10" fill="#888">否</text>
+  <path d="M 450 128 L 450 330" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Yes branch: down to Diamond 2 -->
+  <path d="M 260 162 L 260 186" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="276" y="180" font-size="10" fill="#888">是</text>
+
+  <!-- ===== Step 3: Diamond - nums[i] == nums[i+1]? ===== -->
+  <polygon points="260,188 360,224 260,260 160,224" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="220" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ nums[i] ==</text>
+  <text x="260" y="236" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">nums[i+1] ?</text>
+
+  <!-- Yes (equal): left to action box -->
+  <path d="M 160 224 L 100 224" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="130" y="218" text-anchor="middle" font-size="10" fill="#b85450">是</text>
+  <rect x="30" y="208" width="70" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="65" y="224" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">ans++</text>
+  <text x="65" y="236" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">i += 1</text>
+
+  <!-- Loop back from equal-action to Diamond 1 (left side up) -->
+  <path d="M 55 208 L 55 128 L 160 128" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="42" y="170" font-size="9.5" fill="#b85450">回循环</text>
+
+  <!-- No (not equal): down to action box -->
+  <path d="M 260 260 L 260 284" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="276" y="278" font-size="10" fill="#4a7a3a">否</text>
+  <rect x="220" y="284" width="80" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="306" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">i += 2</text>
+
+  <!-- Loop back from not-equal-action to Diamond 1 (far left, up and over) -->
+  <path d="M 220 301 L 20 301 L 20 80 L 260 80 L 260 92" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="100" y="296" font-size="9.5" fill="#4a7a3a">回循环</text>
+
+  <!-- ===== Final section: odd check + return ===== -->
+  <rect x="350" y="330" width="200" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="351" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">④ (n−ans) % 2 ≠ 0 ? → ans++</text>
+
+  <path d="M 450 364 L 450 380" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="390" y="380" width="120" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="402" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">return ans</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="30" y="380" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="395" text-anchor="middle" font-size="10" fill="#555">不等→配对(i+=2)；相等→删前者(ans++,i+=1)</text>
+  <text x="180" y="408" text-anchor="middle" font-size="10" fill="#555">末尾存活长度为奇则补删一个</text>
+</svg>

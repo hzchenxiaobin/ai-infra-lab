@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：预处理系数 → 后缀可行性 DP → 逐位贪心 → 镜像拼接</text>
+
+  <!-- ① 预处理 -->
+  <rect x="25" y="45" width="225" height="92" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="137" y="63" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 预处理系数 w</text>
+  <text x="137" y="80" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">pw[0] = 1 % k，pw[e] = pw[e−1]·10 % k</text>
+  <text x="137" y="95" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">w[j] = (pw[j] + pw[n−1−j]) % k（镜像合并）</text>
+  <text x="137" y="110" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">中间位 j=(n−1)/2：w[j] = pw[j]，只算一次</text>
+
+  <!-- ② 后缀 DP -->
+  <rect x="270" y="45" width="225" height="92" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="382" y="63" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 逆序求后缀可行性 suf</text>
+  <text x="382" y="80" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">suf[h] = {0}：空后缀只贡献余数 0</text>
+  <text x="382" y="95" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">suf[i] = ∪d ( d·w[i] + suf[i+1] ) mod k</text>
+  <text x="382" y="110" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">i = 0 时 d ∈ 1..9（无前导零写进转移）</text>
+
+  <path d="M 137 137 L 137 157" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 382 137 L 382 157" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 贪心 -->
+  <rect x="25" y="157" width="470" height="98" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="175" text-anchor="middle" font-size="10.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">③ 逐位贪心：i 从 0 到 h−1（高位 → 低位），cur = 已选部分的余数</text>
+
+  <rect x="45" y="188" width="105" height="36" rx="4" fill="#fafafa" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="97" y="203" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">当前位 i</text>
+  <text x="97" y="217" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">d = 9, 8, 7 …</text>
+
+  <path d="M 150 206 L 178 206" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="180,206 243,180 306,206 243,232" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="243" y="210" text-anchor="middle" font-size="8.5" fill="#8c3a36" filter="url(#rough2)">suf[i+1] ∋ need ?</text>
+
+  <path d="M 180 206 C 160 200 120 178 97 188" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="132" y="181" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">否：d−−</text>
+
+  <path d="M 306 206 L 330 206" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="332" y="188" width="158" height="44" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="411" y="203" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">是：锁定 d</text>
+  <text x="411" y="216" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">cur = (cur + d·w[i]) % k</text>
+  <text x="411" y="229" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">继续下一位 i+1</text>
+
+  <text x="243" y="248" text-anchor="middle" font-size="9" fill="#a07830" filter="url(#rough2)">need = (−cur − d·w[i]) mod k —— 剩余自由位要凑出的余数</text>
+
+  <path d="M 260 255 L 260 272" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 镜像拼接 -->
+  <rect x="25" y="272" width="470" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="290" text-anchor="middle" font-size="10.5" fill="#8c3a36" font-weight="bold" filter="url(#rough2)">④ 镜像拼接出答案</text>
+  <text x="260" y="308" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">偶数 n：half + reverse(half)；奇数 n：half + reverse(half 去掉末位) —— 中间位不重复</text>
+
+  <text x="260" y="344" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">时间 O((10+k)·n) ≈ O(n)（k ≤ 9），空间 O(n)——suf[i] 是 k 位 bitmask，逐层转移常数极小</text>
+</svg>

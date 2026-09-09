@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：可上行的无向路径 + seen 值集合剪枝（示例 2）</text>
+
+  <!-- 普通边 1 — (-2) -->
+  <path d="M 170 90 L 90 170" fill="none" stroke="#8899aa" stroke-width="1.6" filter="url(#rough2)"/>
+
+  <!-- 绿色路径边 3 → 5 → 1（上行方向箭头） -->
+  <path d="M 190 250 L 250 170" fill="none" stroke="#4a7a3a" stroke-width="2.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 250 170 L 170 90" fill="none" stroke="#4a7a3a" stroke-width="2.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 冲突边 5 — 5（虚线红） -->
+  <path d="M 250 170 L 310 250" fill="none" stroke="#b85450" stroke-width="1.8" stroke-dasharray="6 4" filter="url(#rough2)"/>
+
+  <!-- 节点 -->
+  <circle cx="170" cy="90" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="170" y="95" text-anchor="middle" font-size="13" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <circle cx="90" cy="170" r="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="90" y="175" text-anchor="middle" font-size="12" fill="#33506b" filter="url(#rough2)">−2</text>
+
+  <circle cx="250" cy="170" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="250" y="175" text-anchor="middle" font-size="13" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">5</text>
+
+  <circle cx="190" cy="250" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="190" y="255" text-anchor="middle" font-size="13" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">3</text>
+
+  <circle cx="310" cy="250" r="17" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="310" y="255" text-anchor="middle" font-size="13" fill="#a0433f" font-weight="bold" filter="url(#rough2)">5</text>
+
+  <!-- 标注：上行 -->
+  <text x="228" y="122" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">上行 ↑</text>
+  <text x="146" y="140" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">↑ 经父节点</text>
+
+  <!-- 标注：剪枝 -->
+  <text x="330" y="286" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">值 5 已在 seen</text>
+  <text x="330" y="300" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">→ 整枝剪掉 ✗</text>
+
+  <!-- 结果框 -->
+  <rect x="40" y="316" width="270" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="175" y="330" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">最优路径 3 → 5 → 1，和 = 9</text>
+  <text x="175" y="346" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">两次「上行」——路径是树上的无向简单路径</text>
+
+  <!-- 右侧 seen 演化面板 -->
+  <rect x="352" y="48" width="152" height="196" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="428" y="68" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">从起点 3 出发 DFS</text>
+  <text x="428" y="90" text-anchor="middle" font-size="9.3" fill="#8a6d1f" filter="url(#rough2)">起点 3：seen={3} sum=3</text>
+  <text x="428" y="110" text-anchor="middle" font-size="9.3" fill="#8a6d1f" filter="url(#rough2)">↑ 到父 5：{3,5} sum=8</text>
+  <text x="428" y="130" text-anchor="middle" font-size="9.3" fill="#8a6d1f" filter="url(#rough2)">↑ 到父 1：{3,5,1} sum=9 ★</text>
+  <text x="428" y="150" text-anchor="middle" font-size="9.3" fill="#8a6d1f" filter="url(#rough2)">探左孩 −2：sum=7</text>
+  <text x="428" y="170" text-anchor="middle" font-size="9.3" fill="#a0433f" filter="url(#rough2)">探右孩 5：值∈seen ✗</text>
+  <text x="428" y="190" text-anchor="middle" font-size="9.3" fill="#8a6d1f" filter="url(#rough2)">回溯：离开时 erase 本层值</text>
+  <text x="428" y="212" text-anchor="middle" font-size="9" fill="#8a6d1f" font-style="italic" filter="url(#rough2)">路径值互异 ⇒ 集合可精确撤销</text>
+  <text x="428" y="232" text-anchor="middle" font-size="9" fill="#8a6d1f" font-style="italic" filter="url(#rough2)">每值恰占一层，回溯零残留</text>
+
+  <!-- 右下要点框 -->
+  <rect x="352" y="262" width="152" height="90" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="428" y="282" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">剪枝 = 正确性</text>
+  <text x="428" y="300" text-anchor="middle" font-size="9.2" fill="#33506b" filter="url(#rough2)">树中两点路径唯一：</text>
+  <text x="428" y="316" text-anchor="middle" font-size="9.2" fill="#33506b" filter="url(#rough2)">邻居值 ∈ seen ⇒ 它背后</text>
+  <text x="428" y="332" text-anchor="middle" font-size="9.2" fill="#33506b" filter="url(#rough2)">的整棵子树都到不了，</text>
+  <text x="428" y="348" text-anchor="middle" font-size="9.2" fill="#33506b" filter="url(#rough2)">剪掉的不是别的路线</text>
+</svg>

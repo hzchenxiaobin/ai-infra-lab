@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr3651c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arr3651d" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="460" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：先普通 DP 打底，再逐层「后缀最小值 + 行优先填表」</text>
+  <text x="260" y="38" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">排序做一次，每层重算 suf（O(mn)）并填表（每格一次 lower_bound）</text>
+
+  <!-- start -->
+  <g filter="url(#rough2)">
+    <rect x="170" y="48" width="180" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="15"/>
+    <text x="260" y="67" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">开始：读入 grid（m×n）、k</text>
+    <path d="M 260 78 V 92" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+  </g>
+
+  <!-- step 1: base dp -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="94" width="380" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="112" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① dp[0]：普通网格 DP（行优先）</text>
+    <text x="260" y="130" text-anchor="middle" font-size="9.5" fill="#555">dp[i][j] = min(dp[i−1][j], dp[i][j−1]) + g[i][j]，dp[0][0] = 0</text>
+    <path d="M 260 140 V 154" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+  </g>
+
+  <!-- step 2: t = 1 -->
+  <g filter="url(#rough2)">
+    <rect x="200" y="156" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="14"/>
+    <text x="260" y="174" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">② t ← 1（排序 vals 一次）</text>
+    <path d="M 260 184 V 198" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+  </g>
+
+  <!-- step 3: suffix min -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="200" width="380" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="260" y="217" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">③ suf：对 dp[t−1] 按值升序倒序一趟算后缀最小值</text>
+    <text x="260" y="235" text-anchor="middle" font-size="9.5" fill="#8a6d1f">suf[i] = min{ dp[t−1][cells[i..]] }，即「值 ≥ vals[i] 的最优传送源」</text>
+    <path d="M 260 244 V 258" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+  </g>
+
+  <!-- step 4: fill layer -->
+  <g filter="url(#rough2)">
+    <rect x="55" y="260" width="410" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="260" y="277" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">④ 行优先填 dp[t][i][j]（注意普通转移读本层 ndp）</text>
+    <text x="260" y="293" text-anchor="middle" font-size="9.5" fill="#555">= min( ndp[i−1][j] + g[i][j] , ndp[i][j−1] + g[i][j] ,</text>
+    <text x="260" y="308" text-anchor="middle" font-size="9.5" fill="#8a6d1f">suf[lower_bound(vals, g[i][j])] ← 传送免费进入 (i,j) )</text>
+    <path d="M 260 314 V 328" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+  </g>
+
+  <!-- decision diamond -->
+  <g filter="url(#rough2)">
+    <polygon points="260,330 330,360 260,390 190,360" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="260" y="365" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">t &lt; k ?</text>
+    <path d="M 190 360 H 100 V 222 H 66" stroke="#d6a040" stroke-width="2.2" fill="none" stroke-dasharray="6,4" marker-end="url(#arr3651d)"/>
+    <text x="96" y="352" font-size="10" fill="#8a6d1f" font-weight="bold">是：t ← t+1，回 ③</text>
+    <path d="M 260 390 V 404" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr3651c)"/>
+    <text x="270" y="402" font-size="10" fill="#446688" font-weight="bold">否</text>
+  </g>
+
+  <!-- final -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="406" width="260" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8"/>
+    <text x="260" y="429" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">⑤ 返回 dp[k][m−1][n−1] ✓</text>
+  </g>
+</svg>

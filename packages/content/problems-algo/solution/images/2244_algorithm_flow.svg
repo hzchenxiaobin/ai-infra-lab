@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#666"/>
+    </marker>
+    <marker id="arrb" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：哈希计数 → 逐难度判定 → 累加 ⌈c/3⌉</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">c = 1 直接返回 −1；c ≥ 2 时轮数 = (c + 2) / 3，累加求和</text>
+
+  <!-- ===== Step 1: count ===== -->
+  <rect x="60" y="68" width="180" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="90" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">① 哈希表统计频次</text>
+  <text x="150" y="106" text-anchor="middle" font-size="10" fill="#555">freq[t]++ 遍历 tasks</text>
+  <text x="150" y="118" text-anchor="middle" font-size="9.5" fill="#888">O(n)</text>
+
+  <path d="M 150 126 L 150 142" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- Step 2: iterate -->
+  <rect x="60" y="146" width="180" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="168" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">② 遍历每个难度</text>
+  <text x="150" y="184" text-anchor="middle" font-size="10" fill="#555">for c in freq.values():</text>
+  <text x="150" y="196" text-anchor="middle" font-size="9.5" fill="#888">ans 初始为 0</text>
+
+  <path d="M 150 204 L 150 220" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- Step 3: decision diamond -->
+  <polygon points="150,222 230,262 150,302 70,262" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="150" y="258" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">c == 1 ?</text>
+  <text x="150" y="274" text-anchor="middle" font-size="9.5" fill="#555">无法完成</text>
+
+  <!-- yes branch: return -1 -->
+  <path d="M 230 262 L 286 262" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="258" y="256" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="290" y="244" width="120" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="262" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">返回 −1</text>
+  <text x="350" y="276" text-anchor="middle" font-size="9.5" fill="#888">单个任务无法成轮</text>
+
+  <!-- no branch: accumulate -->
+  <path d="M 70 262 L 44 262 L 44 320" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="56" y="256" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <rect x="60" y="322" width="180" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="342" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ ans += (c + 2) / 3</text>
+  <text x="150" y="358" text-anchor="middle" font-size="9.5" fill="#555">⌈c/3⌉ = 尽量多用 3</text>
+  <text x="150" y="370" text-anchor="middle" font-size="9.5" fill="#888">继续下一难度 → 回到 ②</text>
+
+  <!-- loop back arrow -->
+  <path d="M 44 320 L 44 174 L 58 174" stroke="#d6a040" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="3 3"/>
+  <text x="36" y="250" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold" transform="rotate(-90 36 250)">遍历下一难度</text>
+
+  <!-- ===== Right: trace ===== -->
+  <line x1="430" y1="60" x2="430" y2="380" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 4" filter="url(#rough2)"/>
+
+  <text x="495" y="74" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">代入示例 1</text>
+
+  <rect x="450" y="84" width="100" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="104" text-anchor="middle" font-size="10" fill="#333">tasks 共 5 种难度</text>
+
+  <rect x="450" y="122" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="142" text-anchor="middle" font-size="10" fill="#333">freq = {2:3, 3:2, 4:5}</text>
+
+  <rect x="450" y="160" width="100" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="176" text-anchor="middle" font-size="9.5" fill="#555">c=3: 1+2 /3=1</text>
+  <text x="500" y="188" text-anchor="middle" font-size="9.5" fill="#555">c=2: 1+2 /3=1</text>
+
+  <rect x="450" y="200" width="100" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="216" text-anchor="middle" font-size="9.5" fill="#555">c=5: 5+2 /3=2</text>
+  <text x="500" y="228" text-anchor="middle" font-size="9.5" fill="#555">拆成 3+2</text>
+
+  <rect x="450" y="242" width="100" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="262" text-anchor="middle" font-size="10" fill="#333">均无 c=1 ✓</text>
+
+  <rect x="450" y="280" width="100" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="298" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">ans = 1+1+2</text>
+  <text x="500" y="312" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">= 4 ✓</text>
+
+  <!-- connecting arrows -->
+  <path d="M 240 96 L 446 99" stroke="#bbb" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="3 3"/>
+  <path d="M 240 174 L 446 137" stroke="#bbb" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="3 3"/>
+  <path d="M 240 347 L 446 299" stroke="#bbb" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="3 3"/>
+
+  <text x="495" y="338" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">无 c=1 即可完成</text>
+  <text x="495" y="352" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">每步 O(1)，总计 O(n)</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：自底向上迭代递推 f(n)</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="56" rx="120" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="12" fill="#333">开始: ans = 0（规模 1 的赢家下标）, i = 2</text>
+
+  <!-- Arrow down to D1 -->
+  <path d="M 280 76 L 280 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D1: i <= n ? -->
+  <polygon points="280,96 380,134 280,172 180,134" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="138" text-anchor="middle" font-size="12" fill="#333">i &lt;= n ?</text>
+
+  <!-- D1 No -> return ans+1 (right) -->
+  <path d="M 380 134 L 416 134" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="126" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="416" y="112" width="130" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="481" y="132" text-anchor="middle" font-size="10" fill="#333">规模已达 n</text>
+  <text x="481" y="148" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">返回 ans + 1</text>
+
+  <!-- D1 Yes -> update box (down) -->
+  <path d="M 280 172 L 280 192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="188" font-size="11" fill="#82b366">是</text>
+
+  <!-- Update box: ans = (ans + k) % i -->
+  <rect x="170" y="196" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="216" text-anchor="middle" font-size="11" fill="#555">子问题赢家回映原圈</text>
+  <text x="280" y="232" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">ans = (ans + k) mod i</text>
+
+  <!-- Arrow down to i++ -->
+  <path d="M 280 240 L 280 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- i++ box -->
+  <rect x="232" y="262" width="96" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="283" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">i++</text>
+
+  <!-- Loop back to D1 -->
+  <path d="M 328 278 L 470 278 L 470 134 L 380 134" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="470" y="206" text-anchor="middle" font-size="10" fill="#888">规模 +1，继续</text>
+
+  <!-- Notes -->
+  <rect x="40" y="316" width="480" height="104" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="340" font-size="11" fill="#555" font-weight="bold">要点</text>
+  <text x="60" y="360" font-size="11" fill="#666">• ans 始终是「当前规模 i 下的赢家」的 0 下标；初值 ans = 0 对应规模 1（只剩 1 人）</text>
+  <text x="60" y="378" font-size="11" fill="#666">• 每轮把子问题赢家偏移 k 再对 i 取模，回映到扩大的原圈</text>
+  <text x="60" y="396" font-size="11" fill="#666">• 共迭代 n−1 次；返回 ans + 1 把 0 下标转回 1 下标编号</text>
+  <text x="60" y="414" font-size="10" fill="#888">时间 O(n)，辅助空间 O(1)；k 很大时无需模拟删除，直接数学递推</text>
+</svg>

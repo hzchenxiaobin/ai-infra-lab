@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → WHERE → GROUP BY → COUNT(DISTINCT)</text>
+
+  <!-- Step 1: FROM Actions -->
+  <rect x="200" y="46" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">FROM Actions</text>
+  <text x="280" y="74" text-anchor="middle" font-size="8" fill="#888">读取全部行（含 view/like/response/report）</text>
+
+  <path d="M280 80 L280 96" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE filter (diamond) -->
+  <path d="M280 100 L370 128 L280 156 L190 128 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">WHERE</text>
+  <text x="280" y="138" text-anchor="middle" font-size="8.5" fill="#333">action='report'</text>
+  <text x="280" y="148" text-anchor="middle" font-size="8.5" fill="#333">AND action_date='2019-07-04'</text>
+
+  <path d="M280 156 L280 174" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY extra -->
+  <rect x="190" y="178" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">GROUP BY extra</text>
+  <text x="280" y="210" text-anchor="middle" font-size="8.5" fill="#333">按举报原因分组：spam 组 / racism 组</text>
+
+  <path d="M280 218 L280 236" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: COUNT(DISTINCT post_id) -->
+  <rect x="170" y="240" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">COUNT(DISTINCT post_id)</text>
+  <text x="280" y="272" text-anchor="middle" font-size="8.5" fill="#333">每组对 post_id 去重后计数（非 COUNT(*)！）</text>
+  <text x="280" y="282" text-anchor="middle" font-size="8.5" fill="#888">spam: {2,3}→2   racism: {3}→1</text>
+
+  <path d="M280 284 L280 300" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: SELECT output -->
+  <rect x="180" y="304" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">SELECT extra AS report_reason,</text>
+  <text x="280" y="336" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">       count AS report_count</text>
+
+  <path d="M280 344 L280 358" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Final output -->
+  <rect x="210" y="362" width="140" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="380" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">输出 (report_reason, report_count)</text>
+
+  <!-- left side notes -->
+  <rect x="20" y="110" width="150" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="128" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">易错：忘加 action='report'</text>
+  <text x="95" y="142" text-anchor="middle" font-size="8" fill="#888">extra 在非 report 行为 NULL</text>
+
+  <rect x="390" y="248" width="150" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="266" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">易错：用 COUNT(*)</text>
+  <text x="465" y="280" text-anchor="middle" font-size="8" fill="#888">同帖多用户举报会重复计数</text>
+</svg>

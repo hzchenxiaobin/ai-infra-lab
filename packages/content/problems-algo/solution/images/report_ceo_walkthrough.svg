@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold">示例演算：递归 CTE 逐层展开</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">数据：CEO=1(mgr=1), 2(mgr=1), 77(mgr=1), 4(mgr=2), 7(mgr=4), 3(mgr=3), 8(mgr=3), 9(mgr=8)</text>
+
+  <!-- ===== Table header ===== -->
+  <rect x="30" y="60" width="80" height="26" fill="#446688" filter="url(#rough2)"/>
+  <text x="70" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">迭代</text>
+  <rect x="110" y="60" width="130" height="26" fill="#446688" filter="url(#rough2)"/>
+  <text x="175" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">当前层 (frontier)</text>
+  <rect x="240" y="60" width="130" height="26" fill="#446688" filter="url(#rough2)"/>
+  <text x="305" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">新发现 (JOIN 匹配)</text>
+  <rect x="370" y="60" width="160" height="26" fill="#446688" filter="url(#rough2)"/>
+  <text x="450" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">累计结果 (UNION ALL)</text>
+
+  <!-- ===== Row 0: Anchor ===== -->
+  <rect x="30" y="86" width="80" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="70" y="108" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">锚点</text>
+  <text x="70" y="124" text-anchor="middle" font-size="9" fill="#888">Base Case</text>
+
+  <rect x="110" y="86" width="130" height="50" fill="#fafafa" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="175" y="116" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">CEO (id=1)</text>
+  <text x="175" y="130" text-anchor="middle" font-size="9" fill="#888">WHERE manager_id=1</text>
+
+  <rect x="240" y="86" width="130" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="305" y="110" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">{2, 77}</text>
+  <text x="305" y="126" text-anchor="middle" font-size="9" fill="#888">mgr=1 的员工</text>
+
+  <rect x="370" y="86" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="450" y="116" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{2, 77}</text>
+
+  <!-- arrow -->
+  <path d="M450 138 L450 148" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 1: First recursion ===== -->
+  <rect x="30" y="148" width="80" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="70" y="170" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">第 1 轮</text>
+  <text x="70" y="186" text-anchor="middle" font-size="9" fill="#888">递归体</text>
+
+  <rect x="110" y="148" width="130" height="50" fill="#fafafa" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="175" y="172" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{2, 77}</text>
+  <text x="175" y="188" text-anchor="middle" font-size="9" fill="#888">上轮新发现</text>
+
+  <rect x="240" y="148" width="130" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="305" y="172" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">{4}</text>
+  <text x="305" y="188" text-anchor="middle" font-size="9" fill="#888">e.mgr ∈ {2,77}</text>
+
+  <rect x="370" y="148" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="450" y="178" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{2, 77, 4}</text>
+
+  <!-- arrow -->
+  <path d="M450 200 L450 210" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 2: Second recursion ===== -->
+  <rect x="30" y="210" width="80" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="70" y="232" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">第 2 轮</text>
+  <text x="70" y="248" text-anchor="middle" font-size="9" fill="#888">递归体</text>
+
+  <rect x="110" y="210" width="130" height="50" fill="#fafafa" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="175" y="234" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{4}</text>
+  <text x="175" y="250" text-anchor="middle" font-size="9" fill="#888">上轮新发现</text>
+
+  <rect x="240" y="210" width="130" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="305" y="234" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">{7}</text>
+  <text x="305" y="250" text-anchor="middle" font-size="9" fill="#888">e.mgr = 4</text>
+
+  <rect x="370" y="210" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="450" y="240" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{2, 77, 4, 7}</text>
+
+  <!-- arrow -->
+  <path d="M450 262 L450 272" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 3: Third recursion (empty, stop) ===== -->
+  <rect x="30" y="272" width="80" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="70" y="294" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">第 3 轮</text>
+  <text x="70" y="310" text-anchor="middle" font-size="9" fill="#888">终止</text>
+
+  <rect x="110" y="272" width="130" height="50" fill="#fafafa" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="175" y="296" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{7}</text>
+  <text x="175" y="312" text-anchor="middle" font-size="9" fill="#888">上轮新发现</text>
+
+  <rect x="240" y="272" width="130" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="305" y="296" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">∅ (空)</text>
+  <text x="305" y="312" text-anchor="middle" font-size="9" fill="#888">无 e.mgr=7</text>
+
+  <rect x="370" y="272" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="450" y="302" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">{2, 77, 4, 7}</text>
+  <text x="450" y="316" text-anchor="middle" font-size="9" fill="#888">不变（无新行）</text>
+
+  <!-- ===== Bottom: explanation ===== -->
+  <rect x="30" y="338" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="45" y="356" font-size="10.5" fill="#446688" font-weight="bold">锚点：mgr=1 且 id≠1 → {2,77}</text>
+  <text x="45" y="370" font-size="10" fill="#555">每轮：JOIN ON e.mgr = 上轮 id → 向下展开一层</text>
+
+  <rect x="300" y="338" width="230" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="356" font-size="10.5" fill="#d6a040" font-weight="bold">UNION ALL 累积每轮结果</text>
+  <text x="315" y="370" font-size="10" fill="#555">无新行 → 递归终止 → 输出</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="384" width="500" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="402" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">3 轮递归完成：{2,77} ∪ {4} ∪ {7} = {2, 77, 4, 7}（员工 3/8/9 链断在自引用 3→3→... 不含 1）</text>
+</svg>

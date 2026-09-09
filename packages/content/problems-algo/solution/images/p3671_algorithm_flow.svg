@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="16" fill="#333"
+        filter="url(#rough2)">算法流程：缩放建表 → BIT 逐层计数 → 倒序容斥</text>
+
+  <!-- 预处理 -->
+  <rect x="90" y="40" width="380" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">埃氏筛建因子表 divs[]（O(M log M)）</text>
+  <path d="M 280 72 L 280 88" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="90" width="380" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="110" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">按原下标顺序建 scaled[g]：x 的每个因子 d 追加 x/d</text>
+  <path d="M 280 122 L 280 138" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 循环一 -->
+  <rect x="90" y="140" width="380" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="160" text-anchor="middle" font-size="12.5" fill="#b3541e" font-weight="bold" filter="url(#rough2)">枚举 g = 1 … M（scaled[g] 非空）</text>
+  <path d="M 280 172 L 280 188" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="190" width="380" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="210" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">离散化 scaled[g] 得名次；BIT 清零</text>
+  <path d="M 280 222 L 280 238" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="240" width="380" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="261" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">扫连续同值段（长 k，名次 r）：</text>
+  <text x="280" y="281" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">add = k×(query(r−1)+1)；update(r, add)；cnt[g] += add</text>
+
+  <!-- 循环一回边 -->
+  <path d="M 90 266 L 52 266 L 52 156 L 88 156" fill="none" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="46" y="216" text-anchor="middle" font-size="10.5" fill="#b3541e" transform="rotate(-90 46 216)" filter="url(#rough2)">下一个 g</text>
+
+  <path d="M 280 292 L 280 310" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 循环二 -->
+  <rect x="90" y="312" width="380" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">枚举 g = M … 1（倒序）</text>
+  <path d="M 280 344 L 280 360" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="362" width="380" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="381" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">F[g] = cnt[g] − Σ F[g 的倍数]（mod 减法取正）</text>
+  <text x="280" y="399" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">ans += g × F[g]</text>
+
+  <!-- 循环二回边 -->
+  <path d="M 470 384 L 508 384 L 508 328 L 472 328" fill="none" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="516" y="360" text-anchor="middle" font-size="10.5" fill="#4a7a3a" transform="rotate(90 516 360)" filter="url(#rough2)">g−−</text>
+
+  <path d="M 280 406 L 280 420" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 结束 -->
+  <rect x="150" y="422" width="260" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="442" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 ans（mod 1e9+7）</text>
+</svg>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">后序 DFS 返回 (L, R)：先拿孩子结论，再拼出自己的两个方向长度</text>
+
+  <!-- Entry -->
+  <rect x="195" y="42" width="170" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">longestZigZag(root)</text>
+
+  <path d="M 280 72 L 280 88" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== DFS body ===== -->
+  <rect x="40" y="90" width="480" height="210" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="114" font-size="12" fill="#d6a040" font-weight="bold">dfs(node) → (L, R)：后序，先递归左右孩子</text>
+
+  <text x="60" y="138" font-size="11" fill="#333" font-family="monospace">if !node: return (0, 0)            // 空节点：两个方向都是 0</text>
+
+  <text x="60" y="162" font-size="11" fill="#333" font-family="monospace">(lL, lR) = dfs(node.left)          // ① 先拿左孩子的 (L, R)</text>
+  <text x="60" y="180" font-size="11" fill="#333" font-family="monospace">(rL, rR) = dfs(node.right)         //    再拿右孩子的 (L, R)</text>
+
+  <text x="60" y="208" font-size="11" fill="#b85450" font-family="monospace" font-weight="bold">L = node.left  ? 1 + lR : 0       // 走左后接「右」：用左孩子的 R</text>
+  <text x="60" y="226" font-size="11" fill="#b85450" font-family="monospace" font-weight="bold">R = node.right ? 1 + rL : 0       // 走右后接「左」：用右孩子的 L</text>
+
+  <text x="60" y="254" font-size="11" fill="#4a7a3a" font-family="monospace" font-weight="bold">ans = max(ans, L, R)              // ② 路径可从任意节点起，逐点更新</text>
+
+  <text x="60" y="278" font-size="11" fill="#333" font-family="monospace">return (L, R)                      // ③ 把自己的两个方向交给父节点衔接</text>
+
+  <text x="60" y="296" font-size="10" fill="#888">关键：L 用左孩子的 R、R 用右孩子的 L —— 交叉取值体现「交替」</text>
+
+  <path d="M 280 300 L 280 316" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Exit ===== -->
+  <rect x="150" y="318" width="260" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="340" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return ans</text>
+
+  <!-- bottom notes -->
+  <rect x="40" y="364" width="480" height="92" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="60" y="386" font-size="11" fill="#b85450" font-weight="bold">⚠️ 三个易错点</text>
+  <text x="60" y="406" font-size="10" fill="#555">1. 答案是「边数」= 节点数−1：叶子 L=R=0，单条边 L 或 R=1</text>
+  <text x="60" y="424" font-size="10" fill="#555">2. 路径可从任意节点出发：不能只看根，必须 dfs 中逐节点更新 ans</text>
+  <text x="60" y="442" font-size="10" fill="#555">3. L/R 交叉取对方的方向：走左后接右（lR），走右后接左（rL），别取错</text>
+</svg>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arro" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="360" fill="#fafafa"/>
+
+  <text x="360" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：生成器是「双向通道」——cancellable 是它的驱动器，cancel 走 throw 通道</text>
+
+  <!-- 调用方 (left) -->
+  <rect x="30" y="120" width="130" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="142" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">调用方</text>
+  <text x="95" y="164" text-anchor="middle" font-size="11" fill="#333">const [cancel, p]</text>
+  <text x="95" y="180" text-anchor="middle" font-size="11" fill="#333">  = cancellable(gen)</text>
+  <text x="95" y="206" text-anchor="middle" font-size="10" fill="#888">cancel() 触发取消</text>
+  <text x="95" y="222" text-anchor="middle" font-size="10" fill="#888">p.then/catch 收结果</text>
+
+  <!-- 驱动器 (center) -->
+  <rect x="270" y="70" width="180" height="220" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="360" y="92" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">cancellable 驱动器</text>
+  <text x="360" y="118" text-anchor="middle" font-size="11" fill="#333">step(method, arg):</text>
+  <rect x="288" y="128" width="144" height="26" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="145" text-anchor="middle" font-size="10" fill="#333">res = gen[method](arg)</text>
+  <rect x="288" y="160" width="144" height="26" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="177" text-anchor="middle" font-size="10" fill="#333">done? → resolve(value)</text>
+  <rect x="288" y="192" width="144" height="26" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="209" text-anchor="middle" font-size="10" fill="#333">res.value.then(next, throw)</text>
+  <rect x="288" y="224" width="144" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="241" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">settled 守卫：防迟到回调</text>
+  <text x="360" y="276" text-anchor="middle" font-size="10" fill="#888">method ∈ { 'next', 'throw' }</text>
+
+  <!-- 生成器 (right) -->
+  <rect x="560" y="120" width="130" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="625" y="142" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">生成器 generator</text>
+  <text x="625" y="166" text-anchor="middle" font-size="10" fill="#333">yield Promise</text>
+  <text x="625" y="182" text-anchor="middle" font-size="10" fill="#888">(暂停在此处挂起)</text>
+  <text x="625" y="206" text-anchor="middle" font-size="10" fill="#333">return val / throw err</text>
+  <text x="625" y="222" text-anchor="middle" font-size="10" fill="#888">(收尾)</text>
+
+  <!-- driver -> gen : next(val)/throw(err) 推进 (top arrow) -->
+  <path d="M 450 138 C 500 138, 510 150, 560 150" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="505" y="132" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">next(val) / throw(err)</text>
+  <text x="505" y="146" text-anchor="middle" font-size="9" fill="#888">推进值 / 抛入错误</text>
+
+  <!-- gen -> driver : yield Promise 吐出 (bottom arrow) -->
+  <path d="M 560 210 C 510 210, 500 198, 450 198" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="505" y="214" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">yield Promise</text>
+  <text x="505" y="228" text-anchor="middle" font-size="9" fill="#888">吐出待 await 的 promise</text>
+
+  <!-- caller -> driver : cancel() -->
+  <path d="M 160 175 L 270 175" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="215" y="169" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">cancel()</text>
+
+  <!-- driver -> caller : resolve/reject (返回 promise) -->
+  <path d="M 270 250 C 220 250, 210 215, 160 215" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="215" y="262" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">resolve / reject</text>
+  <text x="215" y="276" text-anchor="middle" font-size="9" fill="#888">返回 Promise p</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="304" width="660" height="44" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="46" y="322" font-size="11" fill="#333">promise resolve → </text>
+  <text x="160" y="322" font-size="11" fill="#4a7a3a" font-weight="bold">step('next', val)</text>
+  <text x="262" y="322" font-size="11" fill="#333">；promise reject → </text>
+  <text x="362" y="322" font-size="11" fill="#b85450" font-weight="bold">step('throw', err)</text>
+  <text x="462" y="322" font-size="11" fill="#333">；cancel → </text>
+  <text x="516" y="322" font-size="11" fill="#b85450" font-weight="bold">step('throw', 'Cancelled')</text>
+  <text x="46" y="340" font-size="10" fill="#888">三个入口都汇入同一条 step() 递归，由 settled 守卫保证只终态一次；cancel 与迟到 resolve 互不干扰。</text>
+</svg>

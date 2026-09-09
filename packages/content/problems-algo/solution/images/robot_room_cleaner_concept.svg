@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">扫地机器人：螺旋回溯 DFS</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">机器人只感知「能否前进」，用相对坐标记已扫格子，DFS + 原路返回</text>
+
+  <!-- ===== room grid 5 cols x 4 rows, cell 42, origin (70, 84) ===== -->
+  <text x="180" y="74" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">房间（机器人视角未知，虚线边界）</text>
+
+  <!-- column index labels (relative col) -->
+  <g font-size="9.5" fill="#aaa" text-anchor="middle">
+    <text x="91" y="82">0</text><text x="133" y="82">1</text><text x="175" y="82">2</text>
+    <text x="217" y="82">3</text><text x="259" y="82">4</text>
+  </g>
+  <!-- row index labels (relative row) -->
+  <g font-size="9.5" fill="#aaa" text-anchor="end">
+    <text x="64" y="108">0</text><text x="64" y="150">1</text>
+    <text x="64" y="192">2</text><text x="64" y="234">3</text>
+  </g>
+
+  <!-- Row 0: . . . # .  (col3 obstacle) -->
+  <rect x="70" y="84" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="91" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">2</text>
+  <rect x="112" y="84" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="133" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">3</text>
+  <rect x="154" y="84" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="175" y="110" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">4</text>
+  <rect x="196" y="84" width="42" height="42" fill="#f4f4f4" stroke="#bbb" stroke-width="1.2" rx="3" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="217" y="111" text-anchor="middle" font-size="15" fill="#bbb" font-weight="bold">✗</text>
+  <rect x="238" y="84" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Row 1: . R . . .  (col1 = robot start) -->
+  <rect x="70" y="126" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="91" y="152" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+  <!-- robot start cell (orange emphasized) -->
+  <rect x="112" y="126" width="42" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" rx="3" filter="url(#rough2)"/>
+  <circle cx="133" cy="144" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 133 137 L 129 148 L 133 145 L 137 148 Z" fill="#7a5415" filter="url(#rough2)"/>
+  <text x="133" y="172" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">起点 (0,0) 朝↑</text>
+  <rect x="154" y="126" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="175" y="152" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">5</text>
+  <rect x="196" y="126" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="217" y="152" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">6</text>
+  <rect x="238" y="126" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Row 2: . . . . . -->
+  <rect x="70" y="168" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="91" y="194" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">9</text>
+  <rect x="112" y="168" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="133" y="194" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">8</text>
+  <rect x="154" y="168" width="42" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="175" y="194" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">7</text>
+  <rect x="196" y="168" width="42" height="42" fill="#f4f4f4" stroke="#bbb" stroke-width="1.2" rx="3" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="217" y="195" text-anchor="middle" font-size="15" fill="#bbb" font-weight="bold">✗</text>
+  <rect x="238" y="168" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Row 3: . # . . . -->
+  <rect x="70" y="210" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="112" y="210" width="42" height="42" fill="#f4f4f4" stroke="#bbb" stroke-width="1.2" rx="3" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="133" y="237" text-anchor="middle" font-size="15" fill="#bbb" font-weight="bold">✗</text>
+  <rect x="154" y="210" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="196" y="210" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="238" y="210" width="42" height="42" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- DFS path arrows (order 1->2->3->4->5->6->7->8->9) -->
+  <!-- 1 (133,147) -> 2 (91,105): up-left, draw up then left -->
+  <path d="M 125 140 L 100 140 L 100 116" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 2 (91,105) -> 3 (133,105): right -->
+  <path d="M 112 105 L 124 105" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 3 -> 4 right -->
+  <path d="M 154 105 L 166 105" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 4 -> 5 down (skip obstacle: go down to row1 col2? actually 4 at (0,2) -> 5 at (1,2) down) -->
+  <path d="M 175 126 L 175 138" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 5 (1,2)=175,147 -> 6 (1,3)=217,147 right -->
+  <path d="M 196 147 L 208 147" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 6 (1,3) -> 7 (2,3)? obstacle at (2,3), so 6 -> down blocked, 6 -> 7? 7 is (2,2)=175,189. Actually 6 down blocked by obstacle, backtrack. 7 at (2,2). path 6->7: left then down -->
+  <path d="M 217 168 L 200 168 L 200 180" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 7 (2,2) -> 8 (2,1) left -->
+  <path d="M 154 189 L 142 189" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 8 (2,1) -> 9 (2,0) left -->
+  <path d="M 112 189 L 100 189" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== right side: 4-direction clockwise wheel ===== -->
+  <text x="420" y="74" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">四方向顺时针探索</text>
+  <g filter="url(#rough2)">
+    <circle cx="420" cy="130" r="40" fill="#fffdf3" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="4,3"/>
+  </g>
+  <text x="420" y="100" text-anchor="middle" font-size="15" fill="#446688" font-weight="bold">↑</text>
+  <text x="450" y="135" text-anchor="middle" font-size="15" fill="#446688" font-weight="bold">→</text>
+  <text x="420" y="166" text-anchor="middle" font-size="15" fill="#446688" font-weight="bold">↓</text>
+  <text x="390" y="135" text-anchor="middle" font-size="15" fill="#446688" font-weight="bold">←</text>
+  <!-- circular arrow -->
+  <path d="M 448 112 A 36 36 0 0 1 448 158" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="420" y="186" text-anchor="middle" font-size="9.5" fill="#888">每步 turnRight 切下一向</text>
+
+  <!-- ===== right side: visited set ===== -->
+  <rect x="340" y="206" width="200" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="226" font-size="11" fill="#446688" font-weight="bold">visited 集合（相对坐标）</text>
+  <text x="350" y="244" font-size="10" fill="#555">{(0,0),(0,1),(0,2),…}</text>
+  <text x="350" y="258" font-size="9.5" fill="#888">以起点为原点，免绝对定位</text>
+
+  <!-- ===== bottom: key insight ===== -->
+  <rect x="40" y="278" width="260" height="84" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="298" font-size="12" fill="#b85450" font-weight="bold">关键：探索后必须「原路返回」</text>
+  <text x="56" y="316" font-size="10.5" fill="#555">递归返回时机器人还在下一格，</text>
+  <text x="56" y="332" font-size="10.5" fill="#555">需掉头→前进→掉头，回到本格</text>
+  <text x="56" y="348" font-size="10.5" fill="#b85450" font-weight="bold">且朝向也要复原，才能试下一向</text>
+
+  <rect x="312" y="278" width="228" height="84" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="328" y="298" font-size="12" fill="#4a7a3a" font-weight="bold">为何能扫遍？</text>
+  <text x="328" y="316" font-size="10.5" fill="#555">空格连通图上做 DFS，</text>
+  <text x="328" y="332" font-size="10.5" fill="#555">visited 防重复，回溯恢复位姿，</text>
+  <text x="328" y="348" font-size="10.5" fill="#4a7a3a" font-weight="bold">每条边走两遍（去 + 回）</text>
+</svg>

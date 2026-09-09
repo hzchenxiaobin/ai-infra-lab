@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="540" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：建频次 → 循环（上升 a→z / 下降 z→a）→ 耗尽结束</text>
+
+  <!-- Step 1: build freq -->
+  <rect x="160" y="48" width="200" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="74" text-anchor="middle" font-size="13" fill="#333">① 建频次表 freq[26]</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10" fill="#888">遍历 s：freq[c−'a']++</text>
+
+  <path d="M 260 96 L 260 116" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Decision: len(res) < len(s)? -->
+  <polygon points="260,120 360,168 260,216 160,168" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="162" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">len(res) &lt; len(s) ?</text>
+  <text x="260" y="180" text-anchor="middle" font-size="10" fill="#888">（否则结束）</text>
+
+  <!-- No branch -> return -->
+  <path d="M 360 168 L 420 168" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="380" y="160" text-anchor="middle" font-size="10" fill="#b85450">否</text>
+  <rect x="420" y="146" width="80" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="460" y="172" text-anchor="middle" font-size="12" fill="#333">返回 res</text>
+
+  <!-- Yes branch down -->
+  <path d="M 260 216 L 260 236" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="270" y="232" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- Step 2: upward scan -->
+  <rect x="140" y="238" width="240" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="260" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">② 上升段：for i = 0 → 25</text>
+  <text x="260" y="278" text-anchor="middle" font-size="11" fill="#666">if freq[i]&gt;0: res+=('a'+i), freq[i]−−</text>
+
+  <path d="M 260 288 L 260 308" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: downward scan -->
+  <rect x="140" y="310" width="240" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="332" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">③ 下降段：for i = 25 → 0</text>
+  <text x="260" y="350" text-anchor="middle" font-size="11" fill="#666">if freq[i]&gt;0: res+=('a'+i), freq[i]−−</text>
+
+  <!-- loop back arrow from step3 to decision -->
+  <path d="M 140 335 C 70 335 70 168 160 168" stroke="#666" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="250" font-size="10" fill="#666">回到判定</text>
+  <text x="50" y="264" font-size="10" fill="#666">（下一轮）</text>
+
+  <!-- bottom notes -->
+  <rect x="30" y="386" width="460" height="138" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="260" y="410" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">关键不变式与终止性</text>
+  <text x="50" y="432" font-size="11" fill="#555">• 每轮 = 上升段 + 下降段，各对「当时还有存量的字母」取一次</text>
+  <text x="50" y="450" font-size="11" fill="#555">• 每轮至少取走 1 个字母 ⇒ len(res) 单调递增，必然在某轮达到 len(s)</text>
+  <text x="50" y="468" font-size="11" fill="#555">• 最坏全同字母：上升段取 1、下降段空转，需 n 轮，O(|Σ|·n) 仍收敛</text>
+  <text x="50" y="486" font-size="11" fill="#555">• 终止条件等价于「freq 全 0」：len(res)=len(s) ⇔ 26 格频次全归零</text>
+  <text x="50" y="504" font-size="11" fill="#555">• 字母有序 ⇒ a→z 扫描天然满足「每步比上一个大一档」</text>
+  <text x="50" y="518" font-size="10" fill="#888">复杂度 O(|Σ|·n)，|Σ|=26 为常数 ⇒ 实际 O(n)</text>
+</svg>

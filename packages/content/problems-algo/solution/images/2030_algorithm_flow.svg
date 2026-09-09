@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：预处理后缀 → 扫描弹栈 → 受限压栈</text>
+
+  <!-- 1. precompute suffix -->
+  <rect x="150" y="42" width="260" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="61" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① 预处理后缀字母数</text>
+  <text x="280" y="77" text-anchor="middle" font-size="10.5" fill="#555">suf[i] = s[i..] 中 letter 的个数</text>
+
+  <path d="M 280 84 L 280 102" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. loop start -->
+  <rect x="170" y="102" width="220" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="125" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">② for i, c in enumerate(s)</text>
+
+  <path d="M 280 138 L 280 156" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3. while decision diamond -->
+  <polygon points="280,156 410,196 280,236 150,196" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="190" text-anchor="middle" font-size="11" fill="#333">栈非空且 top &gt; c ?</text>
+  <text x="280" y="206" text-anchor="middle" font-size="10" fill="#888">(想弹栈顶腾位)</text>
+
+  <!-- yes -> check guards -->
+  <path d="M 410 196 L 448 196" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="429" y="189" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="448" y="156" width="104" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="174" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">查双护栏</text>
+  <text x="500" y="190" text-anchor="middle" font-size="9" fill="#555">长度: len−1</text>
+  <text x="500" y="201" text-anchor="middle" font-size="9" fill="#555">+(n−i)≥k</text>
+  <text x="500" y="215" text-anchor="middle" font-size="9" fill="#555">字母: cnt−1</text>
+  <text x="500" y="226" text-anchor="middle" font-size="9" fill="#555">+suf[i]≥rep</text>
+
+  <path d="M 500 236 L 500 252 L 350 252 L 350 236" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="425" y="248" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">满足 → pop，letter 则 cnt−1</text>
+
+  <!-- no / break -> push -->
+  <path d="M 280 236 L 280 262" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="254" font-size="10" fill="#4a7a3a" font-weight="bold">否/护栏否</text>
+
+  <!-- 4. push decision -->
+  <polygon points="280,262 400,300 280,338 160,300" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="294" text-anchor="middle" font-size="11" fill="#333">len &lt; k ?</text>
+  <text x="280" y="310" text-anchor="middle" font-size="10" fill="#888">(栈未满才压)</text>
+
+  <!-- yes -> slot check -->
+  <path d="M 400 300 L 440 300" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="440" y="278" width="112" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="496" y="294" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">非letter 且</text>
+  <text x="496" y="307" text-anchor="middle" font-size="9.5" fill="#555">len+(rep−cnt)≥k ?</text>
+  <text x="496" y="319" text-anchor="middle" font-size="9" fill="#888">是→跳过留位</text>
+
+  <!-- push box -->
+  <path d="M 280 338 L 280 356" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="180" y="356" width="200" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="375" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 压入 c（letter 则 cnt+1）</text>
+  <text x="280" y="390" text-anchor="middle" font-size="10" fill="#555">回到 ② 处理下一字符</text>
+
+  <!-- loop back arrow -->
+  <path d="M 180 377 L 120 377 L 120 120 L 170 120" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="4 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="118" y="250" text-anchor="middle" font-size="9.5" fill="#888" transform="rotate(-90 118 250)">下一字符</text>
+
+  <!-- 5. return -->
+  <rect x="190" y="414" width="180" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="438" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">④ return "".join(stack)</text>
+
+  <text x="280" y="462" text-anchor="middle" font-size="10" fill="#aaa">每字符至多入栈/出栈一次 → O(n)</text>
+</svg>

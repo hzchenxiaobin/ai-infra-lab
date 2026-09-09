@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：逐产品求 MIN/MAX 并判定双边界</text>
+
+  <!-- Table header -->
+  <rect x="30" y="48" width="540" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">product_id</text>
+  <text x="170" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">product_name</text>
+  <text x="290" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">销售日期集合</text>
+  <text x="420" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">MIN / MAX</text>
+  <text x="530" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">判定</text>
+
+  <!-- Row 1: Product 1 -->
+  <rect x="30" y="82" width="540" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="106" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="170" y="106" text-anchor="middle" font-size="11" fill="#333">S8</text>
+  <text x="290" y="106" text-anchor="middle" font-size="10.5" fill="#4a7a3a">{2019-01-21}</text>
+  <text x="420" y="100" text-anchor="middle" font-size="10" fill="#333">MIN: 01-21</text>
+  <text x="420" y="114" text-anchor="middle" font-size="10" fill="#333">MAX: 01-21</text>
+  <text x="530" y="106" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">✓</text>
+
+  <!-- Row 2: Product 2 -->
+  <rect x="30" y="122" width="540" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="146" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="170" y="146" text-anchor="middle" font-size="11" fill="#333">G4</text>
+  <text x="290" y="146" text-anchor="middle" font-size="10.5" fill="#d6a040">{2019-02-17, 2019-06-02}</text>
+  <text x="420" y="140" text-anchor="middle" font-size="10" fill="#333">MIN: 02-17</text>
+  <text x="420" y="154" text-anchor="middle" font-size="10" fill="#b85450">MAX: 06-02 ✗</text>
+  <text x="530" y="146" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">✗</text>
+
+  <!-- Row 3: Product 3 -->
+  <rect x="30" y="162" width="540" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="186" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="170" y="186" text-anchor="middle" font-size="11" fill="#333">iPhone</text>
+  <text x="290" y="186" text-anchor="middle" font-size="10.5" fill="#b85450">{2019-05-13}</text>
+  <text x="420" y="180" text-anchor="middle" font-size="10" fill="#b85450">MIN: 05-13 ✗</text>
+  <text x="420" y="194" text-anchor="middle" font-size="10" fill="#333">MAX: 05-13</text>
+  <text x="530" y="186" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">✗</text>
+
+  <!-- Divider -->
+  <path d="M 300 204 L 300 224" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- HAVING evaluation -->
+  <rect x="30" y="230" width="540" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="252" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">HAVING MIN(sale_date) >= '2019-01-01' AND MAX(sale_date) <= '2019-03-31'</text>
+  <text x="80" y="272" text-anchor="middle" font-size="10" fill="#4a7a3a">S8: 01-21≥01-01 ✓ AND 01-21≤03-31 ✓</text>
+  <text x="330" y="272" text-anchor="middle" font-size="10" fill="#b85450">G4: MAX 06-02≤03-31 ✗</text>
+  <text x="490" y="272" text-anchor="middle" font-size="10" fill="#b85450">iPhone: MIN 05-13≥01-01 ✗</text>
+
+  <!-- Final result -->
+  <rect x="30" y="298" width="540" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="322" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">结果 → product_id=1, product_name=S8</text>
+
+  <!-- Key insight -->
+  <rect x="30" y="350" width="540" height="56" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="370" font-size="11" fill="#555" font-weight="bold">💡 为什么 MIN 和 MAX 两个条件缺一不可？</text>
+  <text x="50" y="386" font-size="10.5" fill="#888">MIN ≥ 起点确保「春季之前没有销售」；MAX ≤ 终点确保「春季之后没有销售」。</text>
+  <text x="50" y="398" font-size="10.5" fill="#888">只看 MIN 会漏掉春季后仍有销售的产品（如 G4）；只看 MAX 会漏掉春季前有销售的产品。</text>
+</svg>

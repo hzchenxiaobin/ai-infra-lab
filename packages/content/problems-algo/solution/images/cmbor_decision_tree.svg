@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrY" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">选/不选决策树：边走边累计 OR（nums=[3,1]，maxOR=3）</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">每个节点记录"当前累计 OR"；叶子判定 OR==maxOR 且非空即命中</text>
+
+  <!-- ===== Tree ===== -->
+  <g font-size="11" filter="url(#rough2)">
+    <!-- Layer labels -->
+    <text x="32" y="92" font-size="10" fill="#888" font-weight="bold">根</text>
+    <text x="32" y="182" font-size="10" fill="#888" font-weight="bold">决策3</text>
+    <text x="32" y="282" font-size="10" fill="#888" font-weight="bold">决策1</text>
+
+    <!-- Root: OR=0, path=[] -->
+    <rect x="225" y="72" width="90" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="270" y="90" text-anchor="middle" fill="#446688" font-weight="bold">OR = 0</text>
+    <text x="270" y="104" text-anchor="middle" fill="#888" font-size="9">path=[]</text>
+
+    <!-- Layer 1: decide on 3 -->
+    <!-- left (not pick 3): OR=0 -->
+    <rect x="105" y="162" width="90" height="40" fill="#f5f5f5" stroke="#888" stroke-width="1.3" rx="6"/>
+    <text x="150" y="180" text-anchor="middle" fill="#555" font-weight="bold">OR = 0</text>
+    <text x="150" y="194" text-anchor="middle" fill="#888" font-size="9">path=[]</text>
+    <!-- right (pick 3): OR=3 -->
+    <rect x="345" y="162" width="90" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="390" y="180" text-anchor="middle" fill="#4a7a3a" font-weight="bold">OR = 3</text>
+    <text x="390" y="194" text-anchor="middle" fill="#888" font-size="9">path=[3]</text>
+
+    <!-- Layer 2: decide on 1 (leaves) -->
+    <!-- left-left (not pick 1): OR=0, [] empty -->
+    <rect x="35" y="262" width="90" height="40" fill="#f5f5f5" stroke="#888" stroke-width="1.2" rx="6"/>
+    <text x="80" y="280" text-anchor="middle" fill="#888" font-weight="bold">OR = 0</text>
+    <text x="80" y="294" text-anchor="middle" fill="#aaa" font-size="9">path=[] (空)</text>
+    <!-- left-right (pick 1): OR=1, [1] -->
+    <rect x="145" y="262" width="90" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6"/>
+    <text x="190" y="280" text-anchor="middle" fill="#d6a040" font-weight="bold">OR = 1</text>
+    <text x="190" y="294" text-anchor="middle" fill="#888" font-size="9">path=[1]</text>
+    <!-- right-left (not pick 1): OR=3, [3] HIT -->
+    <rect x="305" y="262" width="90" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6"/>
+    <text x="350" y="280" text-anchor="middle" fill="#4a7a3a" font-weight="bold">OR = 3</text>
+    <text x="350" y="294" text-anchor="middle" fill="#4a7a3a" font-size="9">path=[3] ✓</text>
+    <!-- right-right (pick 1): OR=3, [3,1] HIT -->
+    <rect x="415" y="262" width="90" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6"/>
+    <text x="460" y="280" text-anchor="middle" fill="#4a7a3a" font-weight="bold">OR = 3</text>
+    <text x="460" y="294" text-anchor="middle" fill="#4a7a3a" font-size="9">path=[3,1] ✓</text>
+
+    <!-- edges: root → L1 -->
+    <path d="M 255 112 L 175 162" stroke="#888" stroke-width="1.2" fill="none" marker-end="url(#arrN)"/>
+    <path d="M 285 112 L 365 162" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrY)"/>
+    <text x="200" y="138" font-size="9" fill="#888" font-weight="bold">不选3</text>
+    <text x="335" y="138" font-size="9" fill="#4a7a3a" font-weight="bold">选3 → OR=0|3=3</text>
+
+    <!-- edges: L1 → L2 -->
+    <path d="M 130 202 L 90 262" stroke="#888" stroke-width="1.1" fill="none" marker-end="url(#arrN)"/>
+    <path d="M 165 202 L 195 262" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrY)"/>
+    <text x="92" y="238" font-size="9" fill="#888">不选1</text>
+    <text x="210" y="238" font-size="9" fill="#4a7a3a">选1 → 0|1=1</text>
+
+    <path d="M 370 202 L 330 262" stroke="#888" stroke-width="1.1" fill="none" marker-end="url(#arrN)"/>
+    <path d="M 405 202 L 460 262" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrY)"/>
+    <text x="335" y="238" font-size="9" fill="#888">不选1</text>
+    <text x="430" y="238" font-size="9" fill="#4a7a3a">选1 → 3|1=3</text>
+  </g>
+
+  <!-- ===== Legend ===== -->
+  <rect x="40" y="324" width="460" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <rect x="56" y="334" width="16" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3"/>
+  <text x="80" y="346" font-size="10" fill="#4a7a3a">命中：OR==maxOR 且非空</text>
+  <rect x="240" y="334" width="16" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="3"/>
+  <text x="264" y="346" font-size="10" fill="#d6a040">未达 maxOR</text>
+  <rect x="370" y="334" width="16" height="14" fill="#f5f5f5" stroke="#888" stroke-width="1.2" rx="3"/>
+  <text x="394" y="346" font-size="10" fill="#555">空集（不计）</text>
+
+  <!-- ===== Insight ===== -->
+  <rect x="30" y="362" width="480" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="382" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">关键：累计 OR 作为参数下传，无需回退——"不选"分支 OR 不变，"选"分支 OR=旧|nums[i]</text>
+</svg>

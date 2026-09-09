@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种解法对比：JOIN+IN / 窗口函数 RANK / LEFT JOIN 自连接</text>
+
+  <!-- ===== Approach A: JOIN + IN subquery ===== -->
+  <rect x="20" y="44" width="195" height="370" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="117" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A. JOIN + IN 子查询</text>
+  <text x="117" y="82" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 推荐：语义最直观</text>
+
+  <rect x="32" y="92" width="171" height="150" fill="#fff" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="108" font-size="9" fill="#333" font-family="monospace">SELECT d.name Dept,</text>
+  <text x="40" y="122" font-size="9" fill="#333" font-family="monospace">       e.name Emp,</text>
+  <text x="40" y="136" font-size="9" fill="#333" font-family="monospace">       e.salary</text>
+  <text x="40" y="150" font-size="9" fill="#333" font-family="monospace">FROM Employee e</text>
+  <text x="40" y="164" font-size="9" fill="#333" font-family="monospace">JOIN Department d</text>
+  <text x="40" y="178" font-size="9" fill="#333" font-family="monospace">  ON e.depId=d.id</text>
+  <text x="40" y="192" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold">WHERE (depId,salary)</text>
+  <text x="40" y="206" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold">  IN (SELECT depId,</text>
+  <text x="40" y="220" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold">      MAX(salary)</text>
+  <text x="40" y="234" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold">      FROM Employee</text>
+  <text x="40" y="238" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold"></text>
+
+  <text x="40" y="258" font-size="9" fill="#333">• 分组聚合 + 行筛选解耦</text>
+  <text x="40" y="274" font-size="9" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">元组 IN</tspan> 天然处理并列</text>
+  <text x="40" y="290" font-size="9" fill="#333">• 子查询只算一次 MAX</text>
+  <text x="40" y="306" font-size="9" fill="#333">• <tspan fill="#b85450">MySQL 老版本</tspan>不支持</text>
+  <text x="40" y="322" font-size="9" fill="#333">  元组 IN，改用 AND 拆分</text>
+  <text x="40" y="346" font-size="9" fill="#888">复杂度：O(n log n)</text>
+  <text x="40" y="362" font-size="9" fill="#888">排序分组 + 哈希 IN 查找</text>
+  <text x="40" y="390" font-size="9" fill="#4a7a3a" font-weight="bold">适用：通用，MySQL 8.0+</text>
+
+  <!-- ===== Approach B: Window function RANK ===== -->
+  <rect x="225" y="44" width="195" height="370" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="322" y="66" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">B. 窗口函数 RANK()</text>
+  <text x="322" y="82" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 现代：并列最自然</text>
+
+  <rect x="237" y="92" width="171" height="150" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="108" font-size="9" fill="#333" font-family="monospace">SELECT Dept, Emp, Salary</text>
+  <text x="245" y="122" font-size="9" fill="#333" font-family="monospace">FROM (</text>
+  <text x="245" y="136" font-size="9" fill="#333" font-family="monospace">  SELECT d.name Dept,</text>
+  <text x="245" y="150" font-size="9" fill="#333" font-family="monospace">         e.name Emp,</text>
+  <text x="245" y="164" font-size="9" fill="#333" font-family="monospace">         e.salary Salary,</text>
+  <text x="245" y="178" font-size="9" fill="#4a7a3a" font-family="monospace" font-weight="bold">    RANK() OVER (</text>
+  <text x="245" y="192" font-size="9" fill="#4a7a3a" font-family="monospace" font-weight="bold">      PARTITION BY depId</text>
+  <text x="245" y="206" font-size="9" fill="#4a7a3a" font-family="monospace" font-weight="bold">      ORDER BY salary DESC</text>
+  <text x="245" y="220" font-size="9" fill="#4a7a3a" font-family="monospace" font-weight="bold">    ) rk</text>
+  <text x="245" y="234" font-size="9" fill="#333" font-family="monospace">  FROM ... JOIN ...</text>
+
+  <text x="245" y="258" font-size="9" fill="#333">• 一次扫描完成排序</text>
+  <text x="245" y="274" font-size="9" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">RANK</tspan> 同薪同秩保留全部</text>
+  <text x="245" y="290" font-size="9" fill="#333">• <tspan fill="#b85450">DENSE_RANK</tspan> 也行</text>
+  <text x="245" y="306" font-size="9" fill="#333">  ROW_NUMBER 不行(只留1)</text>
+  <text x="245" y="322" font-size="9" fill="#333">• 需 MySQL 8.0+ / PG</text>
+  <text x="245" y="346" font-size="9" fill="#888">复杂度：O(n log n)</text>
+  <text x="245" y="362" font-size="9" fill="#888">分区排序 + 外层过滤</text>
+  <text x="245" y="390" font-size="9" fill="#4a7a3a" font-weight="bold">适用：支持窗口函数</text>
+
+  <!-- ===== Approach C: LEFT JOIN self-join ===== -->
+  <rect x="430" y="44" width="195" height="370" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="527" y="66" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">C. LEFT JOIN 自连接</text>
+  <text x="527" y="82" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">✓ 复古：MAX=没有更大</text>
+
+  <rect x="442" y="92" width="171" height="150" fill="#fff" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="108" font-size="9" fill="#333" font-family="monospace">SELECT d.name Dept,</text>
+  <text x="450" y="122" font-size="9" fill="#333" font-family="monospace">       e.name Emp,</text>
+  <text x="450" y="136" font-size="9" fill="#333" font-family="monospace">       e.salary</text>
+  <text x="450" y="150" font-size="9" fill="#333" font-family="monospace">FROM Employee e</text>
+  <text x="450" y="164" font-size="9" fill="#333" font-family="monospace">JOIN Department d</text>
+  <text x="450" y="178" font-size="9" fill="#333" font-family="monospace">  ON e.depId=d.id</text>
+  <text x="450" y="192" font-size="9" fill="#d6a040" font-family="monospace" font-weight="bold">LEFT JOIN Employee e2</text>
+  <text x="450" y="206" font-size="9" fill="#d6a040" font-family="monospace" font-weight="bold">  ON e.depId=e2.depId</text>
+  <text x="450" y="220" font-size="9" fill="#d6a040" font-family="monospace" font-weight="bold"> AND e.salary&lt;e2.salary</text>
+  <text x="450" y="234" font-size="9" fill="#b85450" font-family="monospace" font-weight="bold">WHERE e2.id IS NULL</text>
+
+  <text x="450" y="258" font-size="9" fill="#333">• "最大值 = 没有更大值"</text>
+  <text x="450" y="274" font-size="9" fill="#333">• 承接 183 的 LEFT JOIN</text>
+  <text x="450" y="290" font-size="9" fill="#333">  + IS NULL 反连接思想</text>
+  <text x="450" y="306" font-size="9" fill="#333">• <tspan fill="#4a7a3a">天然处理并列</tspan></text>
+  <text x="450" y="322" font-size="9" fill="#333">  （并列者都无更大）</text>
+  <text x="450" y="346" font-size="9" fill="#888">复杂度：O(n²)（无索引）</text>
+  <text x="450" y="362" font-size="9" fill="#888">自连接逐对比较</text>
+  <text x="450" y="390" font-size="9" fill="#d6a040" font-weight="bold">适用：禁用窗口函数时</text>
+
+  <!-- bottom comparison note -->
+  <path d="M117 414 Q322 422 527 414" stroke="#446688" stroke-width="1.2" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="322" y="432" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">三者语义等价，面试首选 A；支持窗口函数选 B；禁用窗口函数且数据小选 C</text>
+</svg>

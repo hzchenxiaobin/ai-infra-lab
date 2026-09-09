@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="28" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：右边界取「列内相邻对」，左边界交给线段树</text>
+  <text x="260" y="47" text-anchor="middle" font-size="11" fill="#777" filter="url(#rough2)">从左往右扫列，线段树维护 last[y] = 纵坐标 y 最近一次出现的列</text>
+
+  <!-- candidate rectangle -->
+  <rect x="100" y="130" width="300" height="60" fill="#e8f0fe" fill-opacity="0.5"
+        stroke="#446688" stroke-width="2" rx="2" filter="url(#rough2)"/>
+
+  <!-- left column x0 -->
+  <line x1="100" y1="75" x2="100" y2="265" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <circle cx="100" cy="130" r="6" fill="#4a7a3a" filter="url(#rough2)"/>
+  <circle cx="100" cy="190" r="6" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="100" y="285" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">列 x₀（左边界）</text>
+  <text x="70" y="128" text-anchor="end" font-size="11" fill="#4a7a3a" filter="url(#rough2)">y₂ ✓</text>
+  <text x="70" y="188" text-anchor="end" font-size="11" fill="#4a7a3a" filter="url(#rough2)">y₁ ✓</text>
+
+  <!-- middle column -->
+  <circle cx="245" cy="252" r="6" fill="#999" filter="url(#rough2)"/>
+  <text x="245" y="285" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">中间列</text>
+  <text x="245" y="242" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">点在 [y₁,y₂] 外，不干扰</text>
+
+  <!-- current column x -->
+  <line x1="400" y1="75" x2="400" y2="265" stroke="#446688" stroke-width="1.2" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <circle cx="400" cy="130" r="6" fill="#446688" filter="url(#rough2)"/>
+  <circle cx="400" cy="190" r="6" fill="#446688" filter="url(#rough2)"/>
+  <circle cx="400" cy="252" r="6" fill="#446688" filter="url(#rough2)"/>
+  <text x="400" y="285" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">列 x（当前列 = 右边界）</text>
+
+  <!-- adjacent pair bracket -->
+  <path d="M416,132 q12,14 12,29 q0,15 -12,29" fill="none" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="448" y="146" font-size="11" fill="#d6a040" filter="url(#rough2)">相邻对</text>
+  <text x="448" y="161" font-size="11" fill="#d6a040" filter="url(#rough2)">(y₁,y₂)</text>
+  <text x="448" y="178" font-size="10" fill="#d6a040" filter="url(#rough2)">列内相邻 ⇒</text>
+  <text x="448" y="191" font-size="10" fill="#d6a040" filter="url(#rough2)">右边界干净</text>
+
+  <!-- bottom panel: segment tree -->
+  <rect x="30" y="302" width="460" height="86" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="322" text-anchor="middle" font-size="12" fill="#2a4a1e" filter="url(#rough2)">查询 last[y] 在 [y₁,y₂] 上的最大值：</text>
+
+  <!-- mini array of last[] -->
+  <rect x="80" y="334" width="52" height="26" fill="#fff" stroke="#aaa" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="106" y="351" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">…</text>
+  <rect x="132" y="334" width="52" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="158" y="351" text-anchor="middle" font-size="11" fill="#8a6d1f" filter="url(#rough2)">x₀</text>
+  <rect x="184" y="334" width="52" height="26" fill="#fff" stroke="#aaa" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="210" y="351" text-anchor="middle" font-size="10" fill="#bbb" filter="url(#rough2)">无点</text>
+  <rect x="236" y="334" width="52" height="26" fill="#fff" stroke="#aaa" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="262" y="351" text-anchor="middle" font-size="10" fill="#bbb" filter="url(#rough2)">无点</text>
+  <rect x="288" y="334" width="52" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="314" y="351" text-anchor="middle" font-size="11" fill="#8a6d1f" filter="url(#rough2)">x₀</text>
+  <rect x="340" y="334" width="52" height="26" fill="#fff" stroke="#aaa" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="366" y="351" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">…</text>
+
+  <text x="132" y="328" text-anchor="middle" font-size="9" fill="#8a6d1f" filter="url(#rough2)">y₁</text>
+  <text x="314" y="328" text-anchor="middle" font-size="9" fill="#8a6d1f" filter="url(#rough2)">y₂</text>
+
+  <path d="M158,366 L158,374 L314,374 L314,366" fill="none" stroke="#b85450" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="236" y="390" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">max = x₀ → 左边界唯一候选，面积 = (x−x₀)×(y₂−y₁)</text>
+</svg>

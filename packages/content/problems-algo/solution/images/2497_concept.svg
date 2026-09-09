@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr_sel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：每个中心独立，贪心取前 k 个最大正值邻居</text>
+
+  <!-- ===== left: star graph centered at c ===== -->
+  <text x="150" y="56" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">以 c 为中心的星图（k = 2）</text>
+
+  <!-- selected edges (bold red) -->
+  <g stroke="#b85450" stroke-width="3" fill="none" filter="url(#rough2)">
+    <line x1="150" y1="120" x2="150" y2="193" marker-end="url(#arr_sel)"/>
+    <line x1="237" y1="215" x2="172" y2="215" marker-end="url(#arr_sel)"/>
+  </g>
+  <!-- skipped edges (dashed gray) -->
+  <g stroke="#bbb" stroke-width="1.5" fill="none" stroke-dasharray="5 4" filter="url(#rough2)">
+    <line x1="150" y1="310" x2="150" y2="237"/>
+    <line x1="63" y1="215" x2="128" y2="215"/>
+  </g>
+
+  <!-- center c -->
+  <g filter="url(#rough2)">
+    <circle cx="150" cy="215" r="22" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4"/>
+    <text x="150" y="212" text-anchor="middle" font-size="13" fill="#7a4a10" font-weight="bold">c</text>
+    <text x="150" y="226" text-anchor="middle" font-size="10" fill="#7a4a10">=4</text>
+  </g>
+
+  <!-- neighbor +10 (top, selected) -->
+  <g filter="url(#rough2)">
+    <circle cx="150" cy="108" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <text x="150" y="113" text-anchor="middle" font-size="13" fill="#2f5a22" font-weight="bold">10</text>
+    <text x="176" y="100" font-size="11" fill="#b85450">✓ 选</text>
+  </g>
+  <!-- neighbor +2 (right, selected) -->
+  <g filter="url(#rough2)">
+    <circle cx="255" cy="215" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <text x="255" y="220" text-anchor="middle" font-size="13" fill="#2f5a22" font-weight="bold">2</text>
+    <text x="278" y="200" font-size="11" fill="#b85450">✓ 选</text>
+  </g>
+  <!-- neighbor -10 (bottom, skip) -->
+  <g filter="url(#rough2)">
+    <circle cx="150" cy="322" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="150" y="327" text-anchor="middle" font-size="12" fill="#7a2a26">−10</text>
+    <text x="176" y="336" font-size="11" fill="#888">✗ 负值</text>
+  </g>
+  <!-- neighbor -20 (left, skip) -->
+  <g filter="url(#rough2)">
+    <circle cx="45" cy="215" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="45" y="220" text-anchor="middle" font-size="12" fill="#7a2a26">−20</text>
+    <text x="8" y="200" font-size="11" fill="#888">✗ 负值</text>
+  </g>
+
+  <text x="150" y="372" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">星和 = 4 + 10 + 2 = 16</text>
+
+  <!-- ===== right: formula panel ===== -->
+  <g filter="url(#rough2)" font-size="12" fill="#333">
+    <rect x="310" y="62" width="225" height="120" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="322" y="86" font-size="13" fill="#446688" font-weight="bold">星和公式</text>
+    <text x="322" y="110">星和 = vals[c]</text>
+    <text x="322" y="128">    + Σ（前 k 大正值邻居）</text>
+    <text x="322" y="152" font-size="11" fill="#666">每个中心 c 至多用 k 条边</text>
+    <text x="322" y="170" font-size="11" fill="#666">→ 选 ≤ k 个邻居，只挑正的</text>
+  </g>
+
+  <!-- ===== right: reasoning panel ===== -->
+  <g filter="url(#rough2)" font-size="12" fill="#333">
+    <rect x="310" y="198" width="225" height="160" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="322" y="222" font-size="13" fill="#4a7a3a" font-weight="bold">为什么对</text>
+    <text x="322" y="246">· 各中心互相独立</text>
+    <text x="322" y="262" font-size="11" fill="#555">  → 逐个算后取全局 max</text>
+    <text x="322" y="286">· 「至多 k 条」可少选</text>
+    <text x="322" y="302" font-size="11" fill="#555">  → 负值/零值邻居一概不要</text>
+    <text x="322" y="326">· 同中心内贪心取最大</text>
+    <text x="322" y="342" font-size="11" fill="#555">  → 取 min(k, 正值数) 个最大值</text>
+  </g>
+
+  <text x="280" y="390" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">三步即可：建图存邻居值 → 逐中心降序排序 → 贪心累加前 k 个正值</text>
+</svg>

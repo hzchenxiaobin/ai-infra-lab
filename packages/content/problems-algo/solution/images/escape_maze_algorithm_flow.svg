@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：双向受限 BFS</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">从 source 与 target 各做一次 BFS，探索上限 = B(B−1)/2</text>
+
+  <g filter="url(#rough2)" font-size="11">
+    <!-- 1. BFS from source -->
+    <rect x="170" y="58" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="76" text-anchor="middle" fill="#446688" font-weight="bold">① BFS 从 source 出发</text>
+    <text x="280" y="90" text-anchor="middle" fill="#555" font-size="10">limit = B(B−1)/2（如 200 → 19900）</text>
+
+    <path d="M 280 100 L 280 116" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 2. diamond: reached target? -->
+    <polygon points="280,118 400,158 280,198 160,158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="280" y="154" text-anchor="middle" fill="#d6a040" font-weight="bold">遇到 target ?</text>
+    <text x="280" y="170" text-anchor="middle" fill="#d6a040" font-size="10">（BFS 过程中）</text>
+
+    <!-- yes -> true -->
+    <path d="M 400 158 L 470 158" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)"/>
+    <text x="435" y="150" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="470" y="140" width="80" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="510" y="163" text-anchor="middle" fill="#4a7a3a" font-weight="bold">return true</text>
+
+    <!-- no -> down -->
+    <path d="M 280 198 L 280 214" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="294" y="210" font-size="10" fill="#666" font-weight="bold">否</text>
+
+    <!-- 3. diamond: exceeded limit? -->
+    <polygon points="280,216 400,256 280,296 160,256" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="280" y="252" text-anchor="middle" fill="#d6a040" font-weight="bold">探索格数 &gt; limit ?</text>
+    <text x="280" y="268" text-anchor="middle" fill="#d6a040" font-size="10">（vis.size 超上限）</text>
+
+    <!-- no (queue empty) -> enclosed -> false -->
+    <path d="M 160 256 L 90 256" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)"/>
+    <text x="125" y="248" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <rect x="10" y="238" width="80" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6"/>
+    <text x="50" y="255" text-anchor="middle" fill="#b85450" font-weight="bold">队列空</text>
+    <text x="50" y="268" text-anchor="middle" fill="#b85450" font-size="9">source 被围</text>
+    <path d="M 50 274 L 50 300" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrR)"/>
+    <rect x="10" y="302" width="80" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6"/>
+    <text x="50" y="322" text-anchor="middle" fill="#b85450" font-weight="bold">return false</text>
+
+    <!-- yes (open) -> down to second BFS -->
+    <path d="M 280 296 L 280 316" stroke="#d6a040" stroke-width="1.4" fill="none" marker-end="url(#arrO)"/>
+    <text x="296" y="310" font-size="10" fill="#d6a040" font-weight="bold">是（开放区）</text>
+
+    <!-- 4. BFS from target -->
+    <rect x="170" y="318" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="280" y="336" text-anchor="middle" fill="#446688" font-weight="bold">② BFS 从 target 出发</text>
+    <text x="280" y="350" text-anchor="middle" fill="#555" font-size="10">同样 limit = B(B−1)/2</text>
+
+    <path d="M 280 358 L 280 374" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 5. diamond: exceeded limit (target open)? -->
+    <polygon points="280,376 400,416 280,456 160,416" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="280" y="412" text-anchor="middle" fill="#d6a040" font-weight="bold">探索 &gt; limit ?</text>
+    <text x="280" y="428" text-anchor="middle" fill="#d6a040" font-size="10">或遇到 source</text>
+
+    <!-- no -> target enclosed -> false -->
+    <path d="M 160 416 L 90 416" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)"/>
+    <text x="125" y="408" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <rect x="10" y="398" width="80" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6"/>
+    <text x="50" y="415" text-anchor="middle" fill="#b85450" font-weight="bold">target 被围</text>
+    <text x="50" y="428" text-anchor="middle" fill="#b85450" font-size="9">return false</text>
+
+    <!-- yes -> both open -> true -->
+    <path d="M 400 416 L 470 416" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)"/>
+    <text x="435" y="408" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="470" y="398" width="80" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="510" y="415" text-anchor="middle" fill="#4a7a3a" font-weight="bold">两者皆开放</text>
+    <text x="510" y="428" text-anchor="middle" fill="#4a7a3a" font-size="9">return true</text>
+  </g>
+
+  <text x="280" y="448" text-anchor="middle" font-size="10" fill="#888">一侧被围且没遇见对方 ⇒ false；两侧都开放 ⇒ 封锁格不足以同时隔开两者 ⇒ true</text>
+</svg>

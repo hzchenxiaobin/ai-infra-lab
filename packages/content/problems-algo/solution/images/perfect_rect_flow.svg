@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="460" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：扫描矩形 → 维护面积与顶点集合</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">O(n) 一次遍历 + 顶点哈希集合 XOR 翻转</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: init -->
+    <rect x="40" y="62" width="440" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="82" font-size="12" fill="#446688" font-weight="bold">① 初始化</text>
+    <text x="170" y="82" font-family="monospace" font-size="10" fill="#555">area_sum = 0;  corners = set()</text>
+    <text x="54" y="100" font-family="monospace" font-size="10" fill="#446688">min_x=max_x=rect[0][0];  min_y=max_y=rect[0][1]</text>
+    <text x="54" y="114" font-size="9" fill="#888">顶点集合用「字符串键」或「(x,y) 元组」，便于 XOR 翻转</text>
+
+    <path d="M 260 120 L 260 134" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: scan -->
+    <rect x="40" y="138" width="440" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="158" font-size="12" fill="#4a7a3a" font-weight="bold">② 遍历每个矩形 [x1,y1,x2,y2]</text>
+    <text x="54" y="176" font-family="monospace" font-size="10" fill="#4a7a3a">area_sum += (x2-x1) * (y2-y1)</text>
+    <text x="54" y="192" font-family="monospace" font-size="10" fill="#555">min/max ← x1,y1,x2,y2  // 更新外框四边界</text>
+    <text x="54" y="208" font-family="monospace" font-size="10" fill="#b85450">for p in {(x1,y1),(x2,y1),(x1,y2),(x2,y2)}:</text>
+    <text x="54" y="222" font-family="monospace" font-size="10" fill="#b85450">    corners ^= {p}  // 在则删，不在则加</text>
+
+    <path d="M 260 236 L 260 250" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: check -->
+    <rect x="40" y="254" width="440" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="274" font-size="12" fill="#d6a040" font-weight="bold">③ 双条件校验</text>
+    <text x="54" y="292" font-family="monospace" font-size="10" fill="#d6a040">bbox_area = (max_x-min_x) * (max_y-min_y)</text>
+    <text x="54" y="308" font-family="monospace" font-size="10" fill="#555">expect = {(min_x,min_y),(max_x,min_y),(min_x,max_y),(max_x,max_y)}</text>
+    <text x="54" y="324" font-family="monospace" font-size="10" fill="#b85450">return area_sum == bbox_area  ∧  corners == expect</text>
+    <text x="54" y="336" font-size="9" fill="#888">面积查净覆盖，顶点查边界拼接——互补缺一不可</text>
+
+    <path d="M 260 342 L 260 356" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 4: result -->
+    <rect x="40" y="360" width="440" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="380" font-size="12" fill="#b85450" font-weight="bold">④ 两条件同时成立 → true，否则 false</text>
+    <text x="54" y="394" font-size="9" fill="#888">重叠→面积偏大或顶点残留；空隙→面积偏小或顶点缺失</text>
+
+    <!-- Complexity bar -->
+    <rect x="40" y="410" width="440" height="40" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+    <text x="260" y="430" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">时间 O(n) · 空间 O(n) · 一次遍历完成</text>
+    <text x="260" y="446" text-anchor="middle" font-size="9" fill="#888">每个矩形 4 次哈希翻转 + O(1) 边界更新</text>
+  </g>
+</svg>

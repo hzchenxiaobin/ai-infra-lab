@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="520" viewBox="0 0 740 520" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4"/>
+    </filter>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <rect width="740" height="520" fill="#fdfcf7"/>
+  <text x="370" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">滑动窗口找最长子数组（和 = target）</text>
+  <path d="M 240 42 Q 370 50 500 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="370" y="66" text-anchor="middle" font-size="12" fill="#666">nums 元素均为正 → 窗口和单调递增 → 可用变长滑窗</text>
+
+  <!-- ===== Step 1: expand right ===== -->
+  <text x="50" y="104" font-size="13" font-weight="bold" fill="#2b6e9e">① 扩展右端 right，window_sum += nums[right]</text>
+
+  <!-- array: [1,1,4,2,3], 5 cells width 80, start x=80, y=120 -->
+  <g font-size="9" fill="#999" text-anchor="middle">
+    <text x="120" y="134">0</text><text x="200" y="134">1</text><text x="280" y="134">2</text><text x="360" y="134">3</text><text x="440" y="134">4</text>
+  </g>
+
+  <!-- cell 0: 1 (in window) -->
+  <g filter="url(#sk2)"><rect x="80" y="142" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="120" y="172" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">1</text>
+  <!-- cell 1: 1 (in window) -->
+  <g filter="url(#sk2)"><rect x="160" y="142" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="200" y="172" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">1</text>
+  <!-- cell 2: 4 (in window) -->
+  <g filter="url(#sk2)"><rect x="240" y="142" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="280" y="172" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">4</text>
+  <!-- cell 3: 2 (gray) -->
+  <g filter="url(#sk2)"><rect x="320" y="142" width="80" height="44" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="360" y="172" text-anchor="middle" font-size="15" fill="#aaa">2</text>
+  <!-- cell 4: 3 (gray) -->
+  <g filter="url(#sk2)"><rect x="400" y="142" width="80" height="44" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="440" y="172" text-anchor="middle" font-size="15" fill="#aaa">3</text>
+
+  <!-- left/right pointers -->
+  <text x="120" y="200" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">left=0</text>
+  <text x="280" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">right=2</text>
+
+  <g filter="url(#sk2)"><rect x="500" y="150" width="150" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/></g>
+  <text x="575" y="170" text-anchor="middle" font-size="12" fill="#2b4a6a" font-weight="bold">window_sum = 6 = target</text>
+
+  <!-- arrow down -->
+  <path d="M 370 214 L 370 238" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="382" y="230" font-size="10" fill="#3a3a3a">命中 → 记录长度</text>
+
+  <!-- ===== Step 2: record and expand ===== -->
+  <text x="50" y="264" font-size="13" font-weight="bold" fill="#4a7a3a">② window_sum == target → 记录 max_len，继续扩展 right</text>
+
+  <g font-size="9" fill="#999" text-anchor="middle">
+    <text x="120" y="284">0</text><text x="200" y="284">1</text><text x="280" y="284">2</text><text x="360" y="284">3</text><text x="440" y="284">4</text>
+  </g>
+
+  <!-- cell 0: 1 (in window) -->
+  <g filter="url(#sk2)"><rect x="80" y="292" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="120" y="322" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">1</text>
+  <!-- cell 1: 1 (in window) -->
+  <g filter="url(#sk2)"><rect x="160" y="292" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="200" y="322" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">1</text>
+  <!-- cell 2: 4 (in window) -->
+  <g filter="url(#sk2)"><rect x="240" y="292" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="280" y="322" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">4</text>
+  <!-- cell 3: 2 (in window, just added) -->
+  <g filter="url(#sk2)"><rect x="320" y="292" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="360" y="322" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">2</text>
+  <!-- cell 4: 3 (gray) -->
+  <g filter="url(#sk2)"><rect x="400" y="292" width="80" height="44" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="440" y="322" text-anchor="middle" font-size="15" fill="#aaa">3</text>
+
+  <text x="120" y="350" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">left=0</text>
+  <text x="360" y="350" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">right=3</text>
+
+  <g filter="url(#sk2)"><rect x="500" y="300" width="160" height="30" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/></g>
+  <text x="580" y="320" text-anchor="middle" font-size="12" fill="#a03a3a" font-weight="bold">window_sum = 8 &gt; target=6</text>
+
+  <!-- arrow down -->
+  <path d="M 370 364 L 370 388" stroke="#3a3a3a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="382" y="380" font-size="10" fill="#3a3a3a">超了 → 收缩左端</text>
+
+  <!-- ===== Step 3: shrink left ===== -->
+  <text x="50" y="414" font-size="13" font-weight="bold" fill="#b03a3a">③ window_sum &gt; target → 收缩左端 left，window_sum −= nums[left]</text>
+
+  <g font-size="9" fill="#999" text-anchor="middle">
+    <text x="120" y="434">0</text><text x="200" y="434">1</text><text x="280" y="434">2</text><text x="360" y="434">3</text><text x="440" y="434">4</text>
+  </g>
+
+  <!-- cell 0: 1 (gray, removed from window) -->
+  <g filter="url(#sk2)"><rect x="80" y="442" width="80" height="44" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="120" y="472" text-anchor="middle" font-size="15" fill="#aaa">1</text>
+  <!-- cell 1: 1 (in window) -->
+  <g filter="url(#sk2)"><rect x="160" y="442" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="200" y="472" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">1</text>
+  <!-- cell 2: 4 (in window) -->
+  <g filter="url(#sk2)"><rect x="240" y="442" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="280" y="472" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">4</text>
+  <!-- cell 3: 2 (in window) -->
+  <g filter="url(#sk2)"><rect x="320" y="442" width="80" height="44" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="360" y="472" text-anchor="middle" font-size="15" fill="#2e5e2e" font-weight="bold">2</text>
+  <!-- cell 4: 3 (gray) -->
+  <g filter="url(#sk2)"><rect x="400" y="442" width="80" height="44" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="440" y="472" text-anchor="middle" font-size="15" fill="#aaa">3</text>
+
+  <text x="200" y="500" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">left=1</text>
+  <text x="360" y="500" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">right=3</text>
+
+  <g filter="url(#sk2)"><rect x="500" y="450" width="160" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/></g>
+  <text x="580" y="470" text-anchor="middle" font-size="12" fill="#2b4a6a" font-weight="bold">window_sum = 7 &gt; 6，再缩</text>
+
+  <text x="370" y="514" text-anchor="middle" font-size="10" fill="#999">循环往复：扩展→命中记录→超了收缩→直到 right 扫完整个数组</text>
+</svg>

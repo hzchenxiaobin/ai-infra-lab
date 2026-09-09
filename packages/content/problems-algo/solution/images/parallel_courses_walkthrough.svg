@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：n=5, 1→3, 2→3, 1→4, 3→5, 4→5</text>
+  <text x="300" y="42" text-anchor="middle" font-size="11" fill="#888">初始入度: 1:0  2:0  3:2  4:1  5:2  →  入队 {1,2}</text>
+
+  <!-- Header -->
+  <text x="40" y="72" font-size="12" fill="#444" font-weight="bold">学期</text>
+  <text x="110" y="72" font-size="12" fill="#444" font-weight="bold">本层修课</text>
+  <text x="230" y="72" font-size="12" fill="#444" font-weight="bold">删边</text>
+  <text x="340" y="72" font-size="12" fill="#444" font-weight="bold">入度变化</text>
+  <text x="490" y="72" font-size="12" fill="#444" font-weight="bold">下学期队列</text>
+  <line x1="30" y1="80" x2="580" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Row 1: semester 1 -->
+  <text x="40" y="104" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="110" y="104" font-size="11" fill="#4a7a3a" font-weight="bold">{1, 2}</text>
+  <text x="230" y="104" font-size="11" fill="#b85450">1→3, 2→3, 1→4</text>
+  <text x="340" y="104" font-size="11" fill="#333">3:0  4:0  (5:2)</text>
+  <text x="490" y="104" font-size="11" fill="#4a7a3a" font-weight="bold">[3, 4]</text>
+
+  <!-- Row 2: semester 2 -->
+  <text x="40" y="134" font-size="11" fill="#446688" font-weight="bold">2</text>
+  <text x="110" y="134" font-size="11" fill="#446688" font-weight="bold">{3, 4}</text>
+  <text x="230" y="134" font-size="11" fill="#b85450">3→5, 4→5</text>
+  <text x="340" y="134" font-size="11" fill="#333">5:0</text>
+  <text x="490" y="134" font-size="11" fill="#4a7a3a" font-weight="bold">[5]</text>
+
+  <!-- Row 3: semester 3 -->
+  <text x="40" y="164" font-size="11" fill="#d6a040" font-weight="bold">3</text>
+  <text x="110" y="164" font-size="11" fill="#d6a040" font-weight="bold">{5}</text>
+  <text x="230" y="164" font-size="11" fill="#999">— (无出边)</text>
+  <text x="340" y="164" font-size="11" fill="#999">—</text>
+  <text x="490" y="164" font-size="11" fill="#999">[]</text>
+
+  <!-- Result box -->
+  <rect x="60" y="190" width="480" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="212" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">studied = 5 = n → 全修完，semester = 3</text>
+  <text x="300" y="229" text-anchor="middle" font-size="11" fill="#888">最大依赖链 1→3→5（或 1→4→5）长度 3，恰为最长路径</text>
+
+  <!-- Cycle mini example -->
+  <rect x="60" y="254" width="480" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="274" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">环的例子: n=3, 1→2, 2→3, 3→1（互相依赖成环）</text>
+  <text x="300" y="292" text-anchor="middle" font-size="11" fill="#555">初始入度 1:1 2:1 3:1，没有任何入度 0 的节点 → 队列为空</text>
+  <text x="300" y="308" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">studied = 0 &lt; n = 3 → 有环，return -1</text>
+
+  <!-- parallel vs sequential note -->
+  <rect x="60" y="330" width="480" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="350" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">为什么「分一层」而非「逐个出队」？</text>
+  <text x="300" y="368" text-anchor="middle" font-size="10.5" fill="#555">同层节点入度同时为 0，互不依赖 → 可并行修读，算同一个学期</text>
+  <text x="300" y="384" text-anchor="middle" font-size="10.5" fill="#555">若逐个出队不记层，得到的是拓扑序而非学期数</text>
+  <text x="300" y="400" text-anchor="middle" font-size="10.5" fill="#888">对照 207 只判环不计数；本题多了「并行 = 同层」这一约束</text>
+</svg>

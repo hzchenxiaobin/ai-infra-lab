@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="8" orient="auto">
+      <path d="M0,0 L5,8 L10,0 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：四阶段管道
+  </text>
+
+  <!-- Stage 1: UNION bidirectional -->
+  <rect x="60" y="48" width="440" height="68" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">阶段 ①  UNION 双向好友</text>
+  <text x="280" y="86" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    SELECT user1_id AS user_id, user2_id AS friend_id FROM Friendship
+  </text>
+  <text x="280" y="102" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    UNION  SELECT user2_id AS user_id, user1_id AS friend_id FROM Friendship
+  </text>
+  <text x="430" y="68" font-size="10" fill="#b85450" filter="url(#rough2)">⚠ 缺则漏友!</text>
+
+  <!-- Arrow down -->
+  <path d="M280,116 L280,132" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="295" y="128" font-size="10" fill="#888" filter="url(#rough2)">Friends(uid, fid)</text>
+
+  <!-- Stage 2: JOIN Likes -->
+  <rect x="60" y="138" width="440" height="56" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="158" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">阶段 ②  JOIN Likes（好友的赞 → 候选）</text>
+  <text x="280" y="178" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    Friends JOIN Likes ON friend_id = Likes.user_id  →  候选 (user_id, page_id)
+  </text>
+
+  <!-- Arrow down -->
+  <path d="M280,194 L280,210" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="295" y="206" font-size="10" fill="#888" filter="url(#rough2)">候选对 (uid, page)</text>
+
+  <!-- Stage 3: Anti-join -->
+  <rect x="60" y="216" width="440" height="68" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="236" text-anchor="middle" font-size="12" fill="#8a6d20" font-weight="bold" filter="url(#rough2)">阶段 ③  反连接：排除自己已赞的页面</text>
+  <text x="280" y="254" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    WHERE NOT EXISTS (SELECT 1 FROM Likes l2
+  </text>
+  <text x="280" y="270" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    WHERE l2.user_id = f.user_id AND l2.page_id = candidate.page_id)
+  </text>
+
+  <!-- Arrow down -->
+  <path d="M280,284 L280,300" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="295" y="296" font-size="10" fill="#888" filter="url(#rough2)">去已赞后</text>
+
+  <!-- Stage 4: DISTINCT -->
+  <rect x="60" y="306" width="440" height="56" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="326" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">阶段 ④  DISTINCT 去重</text>
+  <text x="280" y="346" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)" font-family="'Courier New', monospace">
+    SELECT DISTINCT user_id, page_id  →  最终推荐结果
+  </text>
+
+  <!-- Arrow down -->
+  <path d="M280,362 L280,378" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="140" y="384" width="280" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="280" y="402" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">输出: (user_id, page_id)</text>
+  <text x="280" y="416" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">每个用户的推荐页面对</text>
+</svg>

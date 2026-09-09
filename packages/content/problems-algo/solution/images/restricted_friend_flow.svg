@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">处理好友请求流程（并查集 + 限制预检）</text>
+
+  <!-- init -->
+  <rect x="200" y="44" width="160" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">初始化并查集</text>
+  <text x="280" y="77" text-anchor="middle" font-size="10.5" fill="#666">parent[i]=i，n 个独立集合</text>
+  <line x1="280" y1="84" x2="280" y2="104" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop requests -->
+  <rect x="170" y="104" width="220" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="125" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">按顺序处理每个请求 [u, v]</text>
+  <line x1="280" y1="138" x2="280" y2="158" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- find -->
+  <rect x="170" y="158" width="220" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="176" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">fu = find(u), fv = find(v)</text>
+  <text x="280" y="190" text-anchor="middle" font-size="10" fill="#666">路径压缩找根</text>
+  <line x1="280" y1="196" x2="280" y2="214" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 1: same root? -->
+  <path d="M 280 214 L 410 258 L 280 302 L 150 258 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="254" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">fu == fv ?</text>
+  <text x="280" y="270" text-anchor="middle" font-size="10" fill="#888">已同块（已是朋友）</text>
+
+  <!-- yes branch: accept true -->
+  <text x="425" y="254" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <line x1="410" y1="258" x2="460" y2="258" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="460" y="240" width="92" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="506" y="257" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">result=true</text>
+  <text x="506" y="271" text-anchor="middle" font-size="10" fill="#888">无需合并，下一个</text>
+
+  <!-- no branch: check restrictions -->
+  <text x="110" y="254" font-size="11" fill="#d6a040" font-weight="bold">否</text>
+  <line x1="150" y1="258" x2="100" y2="258" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="14" y="232" width="86" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="57" y="252" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">遍历每条</text>
+  <text x="57" y="265" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">限制 [x,y]</text>
+  <text x="57" y="278" text-anchor="middle" font-size="10" fill="#888">逐条预检</text>
+
+  <!-- arrow down to cross-check decision -->
+  <line x1="57" y1="284" x2="57" y2="312" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 2: cross match? -->
+  <path d="M 57 312 L 200 352 L 57 392 L -86 352 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)" transform="translate(86,0)"/>
+  <text x="143" y="350" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">交叉匹配？</text>
+  <text x="143" y="366" text-anchor="middle" font-size="9.5" fill="#888">fu==fx&amp;&amp;fv==fy</text>
+  <text x="143" y="378" text-anchor="middle" font-size="9.5" fill="#888">或 fu==fy&amp;&amp;fv==fx</text>
+
+  <!-- yes: reject -->
+  <text x="232" y="346" font-size="11" fill="#b85450" font-weight="bold">任一命中</text>
+  <line x1="286" y1="352" x2="336" y2="352" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="336" y="334" width="96" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="384" y="351" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">result=false</text>
+  <text x="384" y="365" text-anchor="middle" font-size="10" fill="#888">拒绝，不合并</text>
+
+  <!-- no: union + accept -->
+  <text x="60" y="346" font-size="11" fill="#4a7a3a" font-weight="bold">全部不命中</text>
+  <line x1="57" y1="392" x2="57" y2="416" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="14" y="416" width="92" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="433" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">union(u,v)</text>
+  <text x="60" y="447" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">result=true</text>
+
+  <!-- loop back arrow from accept-true (right) up to requests loop -->
+  <path d="M 506 240 Q 506 124 390 122" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="516" y="180" font-size="10" fill="#888">下一请求</text>
+
+  <!-- note -->
+  <rect x="180" y="404" width="340" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="350" y="422" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">为何 fu==fv 直接放行？</text>
+  <text x="350" y="438" text-anchor="middle" font-size="10.5" fill="#666">合并是空操作，连通结构不变 → 不会新增违反限制</text>
+</svg>

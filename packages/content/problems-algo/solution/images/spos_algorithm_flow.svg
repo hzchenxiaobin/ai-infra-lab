@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="21" result="n2"/>
+      <feDisplacementMap in="SourceGraphic" in2="n2" scale="1.4"/>
+    </filter>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2e8b57"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#446688"/>
+    </marker>
+  </defs>
+  <rect width="880" height="440" fill="#fdfcf7"/>
+
+  <text x="440" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">两阶段：插入累加 cnt → 查询求和 cnt</text>
+  <path d="M 250 42 Q 440 50 630 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== Left: insert phase ===== -->
+  <text x="220" y="78" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e8b57">阶段一：插入（沿路径 cnt += 1）</text>
+
+  <g filter="url(#sk)">
+    <circle cx="60" cy="120" r="16" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="124" text-anchor="middle" font-size="9" fill="#2e6e2e">root</text>
+
+  <path d="M 76 120 L 116 120" stroke="#2e8b57" stroke-width="1.3" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <text x="96" y="113" font-size="9" fill="#2e8b57">a</text>
+  <g filter="url(#sk)">
+    <circle cx="132" cy="120" r="16" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/>
+  </g>
+  <text x="132" y="124" text-anchor="middle" font-size="9" fill="#2e6e2e">a</text>
+  <text x="132" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">cnt+1</text>
+
+  <path d="M 148 120 L 188 120" stroke="#2e8b57" stroke-width="1.3" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <text x="168" y="113" font-size="9" fill="#2e8b57">b</text>
+  <g filter="url(#sk)">
+    <circle cx="204" cy="120" r="16" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/>
+  </g>
+  <text x="204" y="124" text-anchor="middle" font-size="9" fill="#2e6e2e">b</text>
+  <text x="204" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">cnt+1</text>
+
+  <path d="M 220 120 L 260 120" stroke="#2e8b57" stroke-width="1.3" fill="none" marker-end="url(#arg)" filter="url(#sk)"/>
+  <text x="240" y="113" font-size="9" fill="#2e8b57">c</text>
+  <g filter="url(#sk)">
+    <circle cx="276" cy="120" r="16" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.4"/>
+  </g>
+  <text x="276" y="124" text-anchor="middle" font-size="9" fill="#2e6e2e">c</text>
+  <text x="276" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">cnt+1</text>
+
+  <text x="168" y="178" text-anchor="middle" font-size="9" fill="#888">插一个单词 → 其字符路径上每个节点 cnt+1</text>
+
+  <g filter="url(#sk)">
+    <rect x="30" y="200" width="380" height="130" rx="8" fill="#f6f6f6" stroke="#ccc" stroke-width="1"/>
+  </g>
+  <text x="50" y="222" font-size="11" font-weight="bold" fill="#2e8b57">insert(word):</text>
+  <g font-size="10" fill="#444" font-family="'Comic Sans MS','Segoe UI',monospace">
+    <text x="50" y="242">cur = root</text>
+    <text x="50" y="260">for c in word:</text>
+    <text x="66" y="278">cur = cur.children[c]   # 不存在则新建</text>
+    <text x="66" y="296" fill="#2e8b57" font-weight="bold">cur.cnt += 1            # ★ 记前缀分数</text>
+  </g>
+  <text x="50" y="320" font-size="10" fill="#888">对每个 word 各执行一次 → 节点 cnt = 以该前缀为前缀的单词数</text>
+
+  <!-- ===== Right: query phase ===== -->
+  <text x="660" y="78" text-anchor="middle" font-size="14" font-weight="bold" fill="#446688">阶段二：查询（沿路径累加 cnt）</text>
+
+  <g filter="url(#sk2)">
+    <circle cx="500" cy="120" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="500" y="124" text-anchor="middle" font-size="9" fill="#2b4a6e">root</text>
+
+  <path d="M 516 120 L 556 120" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arb)" filter="url(#sk2)"/>
+  <text x="536" y="113" font-size="9" fill="#446688">a</text>
+  <g filter="url(#sk2)">
+    <circle cx="572" cy="120" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="572" y="124" text-anchor="middle" font-size="9" fill="#2b4a6e">a</text>
+  <text x="572" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">sum+=2</text>
+
+  <path d="M 588 120 L 628 120" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arb)" filter="url(#sk2)"/>
+  <text x="608" y="113" font-size="9" fill="#446688">b</text>
+  <g filter="url(#sk2)">
+    <circle cx="644" cy="120" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="644" y="124" text-anchor="middle" font-size="9" fill="#2b4a6e">b</text>
+  <text x="644" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">sum+=2</text>
+
+  <path d="M 660 120 L 700 120" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arb)" filter="url(#sk2)"/>
+  <text x="680" y="113" font-size="9" fill="#446688">c</text>
+  <g filter="url(#sk2)">
+    <circle cx="716" cy="120" r="16" fill="#fff8e1" stroke="#c98a2b" stroke-width="1.8"/>
+  </g>
+  <text x="716" y="124" text-anchor="middle" font-size="9" fill="#8a6a1a">c</text>
+  <text x="716" y="150" text-anchor="middle" font-size="9" fill="#c04050" font-weight="bold">sum+=1</text>
+
+  <text x="608" y="178" text-anchor="middle" font-size="11" fill="#c04050" font-weight="bold">answer["abc"] = 2+2+1 = 5</text>
+
+  <g filter="url(#sk2)">
+    <rect x="470" y="200" width="380" height="130" rx="8" fill="#f6f6f6" stroke="#ccc" stroke-width="1"/>
+  </g>
+  <text x="490" y="222" font-size="11" font-weight="bold" fill="#446688">query(word):</text>
+  <g font-size="10" fill="#444" font-family="'Comic Sans MS','Segoe UI',monospace">
+    <text x="490" y="242">cur = root; sum = 0</text>
+    <text x="490" y="260">for c in word:</text>
+    <text x="506" y="278">cur = cur.children[c]</text>
+    <text x="506" y="296" fill="#446688" font-weight="bold">sum += cur.cnt          # ★ 累加各前缀分数</text>
+  </g>
+  <text x="490" y="320" font-size="10" fill="#888">对每个 word 各执行一次 → answer[i] = 所有非空前缀分数之和</text>
+
+  <!-- bottom note -->
+  <g filter="url(#sk)">
+    <rect x="30" y="360" width="820" height="60" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="0.8"/>
+  </g>
+  <text x="440" y="382" text-anchor="middle" font-size="11" fill="#2b6e9e">💡 两阶段共用同一棵 Trie：插入时「写」cnt，查询时「读」cnt。</text>
+  <text x="440" y="400" text-anchor="middle" font-size="11" fill="#2b6e9e">每个字符在插入与查询各处理一次，无需构造任何子串 → 总耗时 O(S)，S = Σ|words[i]|。</text>
+</svg>

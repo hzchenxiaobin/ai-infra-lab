@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 390"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="390" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="260" y="16" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：二分最大边长 k，check = 前缀和扫角点 + 四个极值标量</text>
+
+    <!-- main flow -->
+    <rect x="52" y="26" width="256" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="180" y="42" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① 建二维前缀和 S（O(mn)）</text>
+    <text x="180" y="57" text-anchor="middle" font-size="9" fill="#446688">此后判任意 k×k 是否全 1 → 每次 O(1)</text>
+
+    <path d="M 180 66 V 78" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+
+    <rect x="52" y="82" width="256" height="28" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="180" y="100" text-anchor="middle" font-size="10" fill="#446688">② lo ← 1，hi ← min(m,n)，ans ← 0</text>
+
+    <path d="M 180 110 V 122" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+
+    <rect x="52" y="126" width="256" height="60" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/>
+    <text x="180" y="144" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">③ 循环：mid ← (lo+hi)/2，调 check(mid)</text>
+    <text x="180" y="159" text-anchor="middle" font-size="9" fill="#8a6d1f">扫全部角点：容斥和 == mid² ⇒ 更新 4 个极值</text>
+    <text x="180" y="173" text-anchor="middle" font-size="9" fill="#8a6d1f">极值差一旦 ≥ mid 立即返回 true（早退）</text>
+
+    <path d="M 180 186 V 198" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+
+    <!-- decision diamond -->
+    <polygon points="180,202 298,230 180,258 62,230" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="180" y="227" text-anchor="middle" font-size="9.5" fill="#7a3a36" font-weight="bold">maxR−minR ≥ mid</text>
+    <text x="180" y="241" text-anchor="middle" font-size="9.5" fill="#7a3a36" font-weight="bold">或 maxC−minC ≥ mid ？</text>
+
+    <path d="M 180 258 C 158 268, 140 274, 126 280" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" fill="none"/>
+    <text x="142" y="268" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold">是</text>
+    <path d="M 180 258 C 202 268, 220 274, 234 280" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none"/>
+    <text x="218" y="268" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">否</text>
+
+    <rect x="52" y="282" width="120" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="112" y="300" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold">ans ← mid²</text>
+    <text x="112" y="315" text-anchor="middle" font-size="9.5" fill="#2f5d24">lo ← mid + 1</text>
+
+    <rect x="188" y="282" width="120" height="44" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="248" y="300" text-anchor="middle" font-size="9.5" fill="#7a3a36" font-weight="bold">hi ← mid − 1</text>
+    <text x="248" y="315" text-anchor="middle" font-size="9" fill="#7a3a36">（上界收缩）</text>
+
+    <!-- merge connector + exit -->
+    <path d="M 112 326 V 336 H 248" stroke="#446688" stroke-width="1.4" fill="none"/>
+    <path d="M 180 336 V 346" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none"/>
+
+    <!-- loop back -->
+    <path d="M 52 304 H 36 V 156 H 50" stroke="#4a7a3a" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#arrG)" fill="none"/>
+    <text transform="rotate(-90 25 230)" x="25" y="230" text-anchor="middle" font-size="8" fill="#4a7a3a">lo ≤ hi：继续二分</text>
+
+    <rect x="52" y="350" width="256" height="24" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <text x="180" y="366" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold">⑤ lo &gt; hi 结束：返回 ans（无解为 0）</text>
+
+    <!-- side note 1: monotonicity -->
+    <path d="M 308 130 L 334 150" stroke="#b85450" stroke-width="1.2" stroke-dasharray="3,2" fill="none"/>
+    <rect x="336" y="118" width="172" height="104" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="422" y="136" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">为什么能二分？（单调性）</text>
+    <text x="422" y="153" text-anchor="middle" font-size="8.5" fill="#7a3a36">k 可行 ⇒ k−1 可行</text>
+    <text x="422" y="167" text-anchor="middle" font-size="8.5" fill="#7a3a36">两个正方形同角点各收缩一行</text>
+    <text x="422" y="181" text-anchor="middle" font-size="8.5" fill="#7a3a36">一列：仍全 1、仍不相交</text>
+    <text x="422" y="195" text-anchor="middle" font-size="8.5" fill="#7a3a36">⇒ 合法 k 是前缀 [1..K]</text>
+    <text x="422" y="212" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">二分找右端点 K，答案 K²</text>
+
+    <!-- side note 2: complexity -->
+    <path d="M 298 230 L 334 262" stroke="#446688" stroke-width="1.2" stroke-dasharray="3,2" fill="none"/>
+    <rect x="336" y="240" width="172" height="112" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="422" y="258" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">复杂度账本</text>
+    <text x="422" y="275" text-anchor="middle" font-size="8.5" fill="#446688">check 单轮 O(mn) 扫角点</text>
+    <text x="422" y="289" text-anchor="middle" font-size="8.5" fill="#446688">二分 ⌈log₂500⌉ = 9 轮</text>
+    <text x="422" y="303" text-anchor="middle" font-size="8.5" fill="#446688">总 O(mn·log min(m,n))</text>
+    <text x="422" y="317" text-anchor="middle" font-size="8.5" fill="#446688">≈ 500×500×9 ≈ 2×10⁶</text>
+    <text x="422" y="331" text-anchor="middle" font-size="8.5" fill="#446688">空间 O(mn)：前缀和矩阵</text>
+    <text x="422" y="345" text-anchor="middle" font-size="8.5" fill="#446688">Python 实测 ≈ 0.2s（500×500）</text>
+
+    <text x="260" y="384" text-anchor="middle" font-size="8.5" fill="#999">时间 O(mn log min(m,n))｜空间 O(mn)｜答案 = 最大可行边长 k 的平方</text>
+  </g>
+</svg>

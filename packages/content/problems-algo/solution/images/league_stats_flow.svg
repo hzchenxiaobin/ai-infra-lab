@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrDown" markerWidth="10" markerHeight="10" refX="5" refY="8" orient="auto">
+      <path d="M0,0 L5,8 L10,0 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：UNION ALL → GROUP BY → JOIN → ORDER BY
+  </text>
+
+  <!-- ===== Step 1: Matches table ===== -->
+  <rect x="120" y="42" width="280" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">
+    Matches 表（宽表）
+  </text>
+  <text x="260" y="75" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    每行 = 一场比赛，含主客两队信息
+  </text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M 260,82 L 260,100" fill="none" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arrDown)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: UNION ALL ===== -->
+  <rect x="80" y="102" width="360" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="122" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">
+    ① UNION ALL 逆透视
+  </text>
+  <text x="260" y="138" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    主队 SELECT ∪ 客队 SELECT → 2n 行（team_id, goal_for, goal_against, points）
+  </text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M 260,154 L 260,172" fill="none" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arrDown)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: GROUP BY + aggregate ===== -->
+  <rect x="80" y="174" width="360" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="194" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">
+    ② GROUP BY team_id + 聚合
+  </text>
+  <text x="260" y="210" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    COUNT(team_id) = 场数
+  </text>
+  <text x="260" y="223" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    SUM(points) / SUM(goal_for) / SUM(goal_against)
+  </text>
+
+  <!-- Arrow 3→4 -->
+  <path d="M 260,232 L 260,250" fill="none" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arrDown)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: LEFT JOIN Teams ===== -->
+  <rect x="80" y="252" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="272" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">
+    ③ LEFT JOIN Teams + COALESCE
+  </text>
+  <text x="260" y="288" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    关联 team_name，未参赛球队 NULL → 0
+  </text>
+
+  <!-- Arrow 4→5 -->
+  <path d="M 260,304 L 260,322" fill="none" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arrDown)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: ORDER BY ===== -->
+  <rect x="80" y="324" width="360" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="344" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">
+    ④ ORDER BY 三级排序
+  </text>
+  <text x="260" y="360" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">
+    points DESC → goal_diff DESC → team_name ASC
+  </text>
+
+  <!-- Arrow 5→6 -->
+  <path d="M 260,376 L 260,394" fill="none" stroke="#446688" stroke-width="1.5"
+        marker-end="url(#arrDown)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 6: Result ===== -->
+  <rect x="120" y="396" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="418" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">
+    联赛积分榜
+  </text>
+
+  <!-- Side annotations -->
+  <text x="460" y="127" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">
+    宽→长
+  </text>
+  <text x="460" y="202" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">
+    聚合
+  </text>
+  <text x="460" y="277" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">
+    补名
+  </text>
+  <text x="460" y="349" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">
+    排序
+  </text>
+</svg>

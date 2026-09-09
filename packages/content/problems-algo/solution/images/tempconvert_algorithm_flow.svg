@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="360" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：输入 celsius → 两路并行套公式 → 拼数组返回</text>
+
+  <!-- ====== Input celsius ====== -->
+  <rect x="190" y="40" width="160" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="58" text-anchor="middle" font-size="12" fill="#333">输入摄氏度 celsius</text>
+  <text x="270" y="73" text-anchor="middle" font-size="10.5" fill="#888">double, 四舍五入到两位小数</text>
+
+  <!-- arrow down to split point -->
+  <path d="M 270 80 L 270 100" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- split horizontal -->
+  <path d="M 270 100 L 130 100 L 130 120" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 270 100 L 410 100 L 410 120" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ====== Left: Kelvin computation ====== -->
+  <rect x="50" y="122" width="160" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="142" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">开氏度（纯平移）</text>
+  <text x="130" y="160" text-anchor="middle" font-size="12" fill="#333">kelvin = celsius</text>
+  <text x="130" y="174" text-anchor="middle" font-size="12" fill="#333">        + 273.15</text>
+
+  <!-- ====== Right: Fahrenheit computation ====== -->
+  <rect x="330" y="122" width="160" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="142" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">华氏度（缩放+平移）</text>
+  <text x="410" y="160" text-anchor="middle" font-size="12" fill="#333">fahrenheit = celsius</text>
+  <text x="410" y="174" text-anchor="middle" font-size="12" fill="#333">           × 1.8 + 32</text>
+
+  <!-- arrows down to converge -->
+  <path d="M 130 178 L 130 210 L 250 210" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <path d="M 410 178 L 410 210 L 290 210" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <path d="M 270 210 L 270 228" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== Output array ====== -->
+  <rect x="150" y="230" width="240" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="255" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">return [kelvin, fahrenheit]</text>
+
+  <!-- ====== bottom precision note ====== -->
+  <rect x="40" y="282" width="460" height="64" fill="#fafafa" stroke="#bbb" stroke-width="1.2" rx="8" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="270" y="302" text-anchor="middle" font-size="11.5" fill="#555" font-weight="bold">精度：用 double（IEEE-754 双精度），误差 ≤ 10⁻⁵ 即判正确</text>
+  <text x="270" y="320" text-anchor="middle" font-size="10.5" fill="#888">两公式系数 273.15 / 1.8 / 32 均非整数 → 浮点；double 有 ~15 位有效数字，远超题目 5 位容差</text>
+  <text x="270" y="336" text-anchor="middle" font-size="10.5" fill="#888">两路计算无数据依赖，可并行；实际 O(1) 时间、O(1) 空间</text>
+</svg>

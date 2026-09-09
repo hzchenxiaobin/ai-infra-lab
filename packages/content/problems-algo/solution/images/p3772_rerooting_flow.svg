@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">两遍 DFS：先自底向上求 down，再自顶向下换根</text>
+
+  <!-- 主流程列（中心 x=180） -->
+  <rect x="60" y="42" width="240" height="30" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="61" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">建邻接表 · BFS 求 order 与 parent</text>
+
+  <line x1="180" y1="72" x2="180" y2="88" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="88" width="300" height="48" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="108" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 逆 order（自底向上）</text>
+  <text x="180" y="126" text-anchor="middle" font-size="11" fill="#33506b" filter="url(#rough2)">down[v] ← w(v) + Σ子 max(0, down[c])</text>
+
+  <line x1="180" y1="136" x2="180" y2="152" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="152" width="300" height="64" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="172" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 正 order（自顶向下）遍历到 v：</text>
+  <text x="180" y="190" text-anchor="middle" font-size="11" fill="#2f5d24" filter="url(#rough2)">total ← Σ子 max(0, down[c])</text>
+  <text x="180" y="208" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">up[c] ← w(v) + max(0, up[v]) + total − max(0, down[c])</text>
+
+  <line x1="180" y1="216" x2="180" y2="232" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="232" width="300" height="32" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="252" text-anchor="middle" font-size="11" fill="#2f5d24" filter="url(#rough2)">ans[v] ← down[v] + max(0, up[v])</text>
+
+  <line x1="180" y1="264" x2="180" y2="280" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="280" width="180" height="30" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="299" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">返回 ans · O(n)</text>
+
+  <!-- 右侧注释 -->
+  <rect x="352" y="90" width="158" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="431" y="109" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">w(v)：好节点 +1</text>
+  <text x="431" y="125" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">坏节点 −1</text>
+  <line x1="352" y1="112" x2="334" y2="112" stroke="#d6a040" stroke-width="1.6" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <rect x="352" y="148" width="158" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="431" y="168" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">max(0, ·)：</text>
+  <text x="431" y="184" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">负收益的孩子分支</text>
+  <text x="431" y="198" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">整棵剪掉，别拖后腿</text>
+  <line x1="352" y1="176" x2="334" y2="176" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <rect x="352" y="218" width="158" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="431" y="238" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">total − max(0, down[c])</text>
+  <text x="431" y="254" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">减法直接排除孩子 c，</text>
+  <text x="431" y="268" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">免前后缀数组</text>
+  <line x1="352" y1="246" x2="334" y2="210" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="352" y="290" width="158" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="431" y="309" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">BFS 序父先于子：</text>
+  <text x="431" y="325" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">逆序即自底向上</text>
+
+  <text x="260" y="340" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">每条边恰被 down / up 各扫一次 ⇒ 总时间 O(n)，n = 10⁵ 也不会爆栈（全程迭代）</text>
+</svg>

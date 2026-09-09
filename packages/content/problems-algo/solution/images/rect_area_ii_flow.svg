@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="410" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：坐标压缩 + 扫描线</text>
+
+  <!-- ===== Step 1: Preprocessing - two parallel boxes ===== -->
+  <!-- Left: y compression -->
+  <rect x="30" y="48" width="230" height="74" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="70" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 坐标压缩（y 轴）</text>
+  <text x="145" y="90" text-anchor="middle" font-size="10" fill="#444">收集所有 y1, y2 → 排序去重</text>
+  <text x="145" y="106" text-anchor="middle" font-size="10" fill="#444">得到 ys[] 与 m−1 个条带</text>
+  <text x="145" y="118" text-anchor="middle" font-size="9" fill="#888">每个条带 [ys[j], ys[j+1])</text>
+
+  <!-- Right: x events -->
+  <rect x="300" y="48" width="230" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="70" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 事件收集（x 轴）</text>
+  <text x="415" y="90" text-anchor="middle" font-size="10" fill="#444">每个矩形生成 2 个事件：</text>
+  <text x="415" y="106" text-anchor="middle" font-size="10" fill="#444">(x1, +1, y1_idx, y2_idx)</text>
+  <text x="415" y="118" text-anchor="middle" font-size="10" fill="#444">(x2, −1, y1_idx, y2_idx)</text>
+
+  <!-- Arrows down from both boxes -->
+  <path d="M 145 124 L 145 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 415 124 L 415 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Merge point -->
+  <text x="280" y="146" text-anchor="middle" font-size="10" fill="#888">事件按 x 排序</text>
+
+  <!-- ===== Step 2: Sweep loop ===== -->
+  <rect x="30" y="158" width="500" height="166" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="180" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">③ 扫描线从左到右 sweep</text>
+
+  <!-- Sub-step a: compute area -->
+  <rect x="50" y="192" width="460" height="44" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="64" y="210" font-size="11" fill="#333" font-weight="bold">a.</text>
+  <text x="80" y="210" font-size="10" fill="#444">计算覆盖 y 长度：</text>
+  <text x="80" y="226" font-size="10" fill="#446688" font-weight="bold">y_len = Σ (ys[j+1] − ys[j])</text>
+  <text x="250" y="226" font-size="10" fill="#888">where count[j] &gt; 0</text>
+  <text x="360" y="218" font-size="10" fill="#b85450" font-weight="bold">面积 += y_len × Δx</text>
+
+  <!-- Sub-step b: update counts -->
+  <rect x="50" y="244" width="460" height="68" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="64" y="262" font-size="11" fill="#333" font-weight="bold">b.</text>
+  <text x="80" y="262" font-size="10" fill="#444">处理当前 x 的所有事件，更新条带计数：</text>
+  <text x="80" y="280" font-size="10" fill="#4a7a3a" font-weight="bold">for j in [y1_idx, y2_idx):</text>
+  <text x="220" y="280" font-size="10" fill="#444">count[j] += type   (+1 添加 / −1 移除)</text>
+  <text x="80" y="298" font-size="9" fill="#888">同 x 多事件之间 Δx=0，不贡献面积，计数累加正确</text>
+
+  <!-- Arrow down to result -->
+  <path d="M 280 326 L 280 350" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Result ===== -->
+  <rect x="130" y="352" width="300" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="374" text-anchor="middle" font-size="12" fill="#444">返回总面积</text>
+  <text x="280" y="392" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">ans mod (10⁹ + 7)</text>
+</svg>

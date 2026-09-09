@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 530" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="530" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">区间 DP 演算（s = "abcxba"，k = 1，n=6）</text>
+
+  <!-- String reference -->
+  <text x="50" y="56" font-size="11" fill="#888">s:</text>
+  <rect x="82" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="98" y="61" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="118" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="134" y="61" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="154" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="61" text-anchor="middle" font-size="12" fill="#333">c</text>
+  <rect x="190" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="206" y="61" text-anchor="middle" font-size="12" fill="#333">x</text>
+  <rect x="226" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="242" y="61" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="262" y="42" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="278" y="61" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <text x="98" y="84" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="134" y="84" text-anchor="middle" font-size="9" fill="#aaa">1</text>
+  <text x="170" y="84" text-anchor="middle" font-size="9" fill="#aaa">2</text>
+  <text x="206" y="84" text-anchor="middle" font-size="9" fill="#aaa">3</text>
+  <text x="242" y="84" text-anchor="middle" font-size="9" fill="#aaa">4</text>
+  <text x="278" y="84" text-anchor="middle" font-size="9" fill="#aaa">5</text>
+
+  <!-- dp table label -->
+  <text x="50" y="114" font-size="11" fill="#555" font-weight="bold">dp[i][j] 表（最少删除次数，按长度递增填写）：</text>
+
+  <!-- column headers j -->
+  <text x="100" y="132" text-anchor="end" font-size="9" fill="#888">j:</text>
+  <text x="126" y="132" text-anchor="middle" font-size="9" fill="#888">0</text>
+  <text x="162" y="132" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="198" y="132" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="234" y="132" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="270" y="132" text-anchor="middle" font-size="9" fill="#888">4</text>
+  <text x="306" y="132" text-anchor="middle" font-size="9" fill="#888">5</text>
+  <text x="335" y="132" font-size="9" fill="#888">字符</text>
+
+  <!-- row i=0 -->
+  <text x="100" y="156" text-anchor="end" font-size="9" fill="#888">i=0</text>
+  <rect x="110" y="140" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="156" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="146" y="140" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="156" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="182" y="140" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="156" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="218" y="140" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="156" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <rect x="254" y="140" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="156" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="290" y="140" width="32" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="156" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="335" y="156" font-size="10" fill="#888">a</text>
+
+  <!-- row i=1 -->
+  <text x="100" y="186" text-anchor="end" font-size="9" fill="#888">i=1</text>
+  <rect x="110" y="170" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="186" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="146" y="170" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="186" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="182" y="170" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="186" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="218" y="170" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="186" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="254" y="170" width="32" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="186" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">1</text>
+  <rect x="290" y="170" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="186" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="335" y="186" font-size="10" fill="#888">b</text>
+
+  <!-- row i=2 -->
+  <text x="100" y="216" text-anchor="end" font-size="9" fill="#888">i=2</text>
+  <rect x="110" y="200" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="216" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="146" y="200" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="216" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="182" y="200" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="216" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="218" y="200" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="216" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="254" y="200" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="216" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="290" y="200" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="216" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="335" y="216" font-size="10" fill="#888">c</text>
+
+  <!-- row i=3 -->
+  <text x="100" y="246" text-anchor="end" font-size="9" fill="#888">i=3</text>
+  <rect x="110" y="230" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="246" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="146" y="230" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="246" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="182" y="230" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="246" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="218" y="230" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="246" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="254" y="230" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="246" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="290" y="230" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="246" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="335" y="246" font-size="10" fill="#888">x</text>
+
+  <!-- row i=4 -->
+  <text x="100" y="276" text-anchor="end" font-size="9" fill="#888">i=4</text>
+  <rect x="110" y="260" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="276" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="146" y="260" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="276" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="182" y="260" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="276" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="218" y="260" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="276" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="254" y="260" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="276" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="290" y="260" width="32" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="276" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="335" y="276" font-size="10" fill="#888">b</text>
+
+  <!-- row i=5 -->
+  <text x="100" y="306" text-anchor="end" font-size="9" fill="#888">i=5</text>
+  <rect x="110" y="290" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="126" y="306" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="146" y="290" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="162" y="306" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="182" y="290" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="198" y="306" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="218" y="290" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="234" y="306" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="254" y="290" width="32" height="24" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="270" y="306" text-anchor="middle" font-size="10" fill="#aaa">−</text>
+  <rect x="290" y="290" width="32" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="306" y="306" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="335" y="306" font-size="10" fill="#888">a</text>
+
+  <!-- Legend -->
+  <rect x="370" y="140" width="240" height="160" fill="#fff" stroke="#ddd" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="160" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">图例</text>
+  <rect x="382" y="170" width="20" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="182" font-size="9" fill="#555">对角线 len=1（单字符=0）</text>
+  <rect x="382" y="192" width="20" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="204" font-size="9" fill="#555">len≥2 且 s[i]==s[j]（配对无删除）</text>
+  <rect x="382" y="214" width="20" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="226" font-size="9" fill="#555">len≥2 且 s[i]≠s[j]（删一个 +1）</text>
+  <rect x="382" y="236" width="20" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="248" font-size="9" fill="#555">答案格 dp[0][5]</text>
+  <rect x="382" y="258" width="20" height="14" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="410" y="270" font-size="9" fill="#555">i &gt; j（空串，不计）</text>
+  <text x="490" y="292" text-anchor="middle" font-size="9" fill="#888">按长度 1→2→…→6 填</text>
+
+  <!-- Key step callouts -->
+  <rect x="40" y="326" width="540" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="346" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">关键填表步骤（沿答案路径追溯）</text>
+  <text x="55" y="364" font-size="10" fill="#333">• dp[2][3]: c≠x → min(dp[3][3], dp[2][2])+1 = min(0,0)+1 = <tspan font-weight="bold" fill="#d6a040">1</tspan>（失配删一个）</text>
+  <text x="55" y="380" font-size="10" fill="#446688">• dp[1][4]: b==b → dp[2][3] = <tspan font-weight="bold">1</tspan>（内层配对，无删除，继承内部）</text>
+  <text x="55" y="396" font-size="10" fill="#b85450">• dp[0][5]: a==a → dp[1][4] = <tspan font-weight="bold">1</tspan>（首尾配对，继承内部）✓</text>
+  <text x="55" y="412" font-size="10" fill="#333">• 结果: dp[0][5] = 1 ≤ k=1 → <tspan font-weight="bold" fill="#4a7a3a">true</tspan></text>
+
+  <!-- Result -->
+  <rect x="80" y="430" width="460" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="456" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">答案 = dp[0][5] = 1 ≤ k=1 → true（删 c 得 "abxba"）⭐</text>
+
+  <!-- construction note -->
+  <text x="310" y="490" text-anchor="middle" font-size="10" fill="#888">构造：a b [c] x b a → "abxba"（方括号字符为删除项）</text>
+  <text x="310" y="506" text-anchor="middle" font-size="10" fill="#888">删下标 2 的 c，两端 a 与内层 b…b 天然配对，x 居中成回文</text>
+
+  <!-- arrow from dp[1][4] to dp[0][5] -->
+  <path d="M 280 180 L 302 168" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="262" y="174" font-size="9" fill="#b85450">dp[1][4]=1</text>
+</svg>

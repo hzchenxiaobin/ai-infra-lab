@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#666"/>
+    </marker>
+    <marker id="arrb" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：线段树节点维护 6 个字段</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">单点更新后向上 merge，根节点 maxLen 即为答案</text>
+
+  <!-- ===== String row "aabaaa" ===== -->
+  <text x="40" y="76" font-size="10.5" fill="#888">某节点管辖区间 s = "aabaaa"</text>
+
+  <!-- 6 char boxes, width 50, gap 4, start x=120 -->
+  <rect x="120" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="145" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">a</text>
+  <rect x="174" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="199" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">a</text>
+  <rect x="228" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="253" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">b</text>
+  <rect x="282" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="307" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">a</text>
+  <rect x="336" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="361" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">a</text>
+  <rect x="390" y="84" width="50" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="415" y="112" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">a</text>
+
+  <!-- index labels -->
+  <text x="145" y="142" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="199" y="142" text-anchor="middle" font-size="9" fill="#aaa">1</text>
+  <text x="253" y="142" text-anchor="middle" font-size="9" fill="#aaa">2</text>
+  <text x="307" y="142" text-anchor="middle" font-size="9" fill="#aaa">3</text>
+  <text x="361" y="142" text-anchor="middle" font-size="9" fill="#aaa">4</text>
+  <text x="415" y="142" text-anchor="middle" font-size="9" fill="#aaa">5</text>
+
+  <!-- ===== 6 field cards in 2 rows x 3 cols ===== -->
+  <!-- Row 1 -->
+  <!-- len -->
+  <rect x="36" y="166" width="150" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="111" y="186" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">len = 6</text>
+  <text x="111" y="202" text-anchor="middle" font-size="9.5" fill="#555">区间长度</text>
+  <text x="111" y="214" text-anchor="middle" font-size="9" fill="#888">r - l + 1</text>
+
+  <!-- lc -->
+  <rect x="198" y="166" width="150" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="273" y="186" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">lc = 'a'</text>
+  <text x="273" y="202" text-anchor="middle" font-size="9.5" fill="#555">最左端字符</text>
+  <text x="273" y="214" text-anchor="middle" font-size="9" fill="#888">s[l]</text>
+
+  <!-- rc -->
+  <rect x="360" y="166" width="150" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="186" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">rc = 'a'</text>
+  <text x="435" y="202" text-anchor="middle" font-size="9.5" fill="#555">最右端字符</text>
+  <text x="435" y="214" text-anchor="middle" font-size="9" fill="#888">s[r]</text>
+
+  <!-- Row 2 -->
+  <!-- preLen -->
+  <rect x="36" y="234" width="150" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="111" y="254" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">preLen = 2</text>
+  <text x="111" y="270" text-anchor="middle" font-size="9.5" fill="#555">前缀同字符长度</text>
+  <text x="111" y="284" text-anchor="middle" font-size="9" fill="#888">s[0..1]="aa"</text>
+
+  <!-- sufLen -->
+  <rect x="198" y="234" width="150" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="273" y="254" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">sufLen = 3</text>
+  <text x="273" y="270" text-anchor="middle" font-size="9.5" fill="#555">后缀同字符长度</text>
+  <text x="273" y="284" text-anchor="middle" font-size="9" fill="#888">s[3..5]="aaa"</text>
+
+  <!-- maxLen -->
+  <rect x="360" y="234" width="150" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="254" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">maxLen = 3</text>
+  <text x="435" y="270" text-anchor="middle" font-size="9.5" fill="#555">最长单字符重复子串</text>
+  <text x="435" y="284" text-anchor="middle" font-size="9" fill="#888">即本题所求</text>
+
+  <!-- ===== highlight brackets on string ===== -->
+  <!-- preLen bracket over boxes 0-1 (x 120..224) -->
+  <path d="M 120 78 L 120 72 L 224 72 L 224 78" stroke="#d6a040" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="172" y="66" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">preLen</text>
+
+  <!-- sufLen bracket over boxes 3-5 (x 282..440) -->
+  <path d="M 282 78 L 282 72 L 440 72 L 440 78" stroke="#d6a040" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="361" y="66" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">sufLen</text>
+
+  <!-- maxLen bracket over boxes 3-5 (below) -->
+  <path d="M 282 150 L 282 156 L 440 156 L 440 150" stroke="#b85450" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="361" y="162" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">maxLen 区间</text>
+
+  <!-- lc / rc arrows -->
+  <path d="M 145 84 L 145 76" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="100" y="64" font-size="9" fill="#4a7a3a" font-weight="bold">lc</text>
+  <path d="M 415 84 L 415 76" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="64" font-size="9" fill="#4a7a3a" font-weight="bold">rc</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="36" y="316" width="488" height="104" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="338" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">为什么需要这 6 个字段？</text>
+  <text x="52" y="358" font-size="10" fill="#444">• 单点更新只改一个字符，但跨越该点的「重复段」会断裂或连通，需向上重算。</text>
+  <text x="52" y="374" font-size="10" fill="#444">• merge 两子节点时，最长重复段可能①全在左 ②全在右 ③横跨左右边界（L.sufLen + R.preLen）。</text>
+  <text x="52" y="390" font-size="10" fill="#444">• preLen / sufLen 记录端点同字符连续长度，判断「能否延伸到相邻子区间」。</text>
+  <text x="52" y="406" font-size="10" fill="#444">• lc / rc 判断左右端字符是否相同，是延伸的前提条件。</text>
+</svg>

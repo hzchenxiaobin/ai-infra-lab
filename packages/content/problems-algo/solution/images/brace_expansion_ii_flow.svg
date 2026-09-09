@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">花括号展开II：递归下降解析流程</text>
+
+  <!-- Start -->
+  <rect x="210" y="44" width="140" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">输入 expression, i=0</text>
+
+  <line x1="280" y1="74" x2="280" y2="92" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- parseExpr -->
+  <rect x="120" y="92" width="320" height="78" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="136" y="112" font-size="12" fill="#b85450" font-weight="bold">parseExpr</text>
+  <text x="200" y="112" font-size="10" fill="#888">expr = term (',' term)*</text>
+  <text x="136" y="130" font-size="11" fill="#333">res = parseTerm()   ← 先算第一个 term</text>
+  <text x="136" y="146" font-size="11" fill="#333">while s[i]==',': i++; res ∪= parseTerm()</text>
+  <text x="136" y="162" font-size="10" fill="#d6a040">逗号 → 并集（低优先级）</text>
+
+  <line x1="280" y1="170" x2="280" y2="186" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- parseTerm -->
+  <rect x="120" y="186" width="320" height="86" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="136" y="206" font-size="12" fill="#4a7a3a" font-weight="bold">parseTerm</text>
+  <text x="210" y="206" font-size="10" fill="#888">term = factor+</text>
+  <text x="136" y="224" font-size="11" fill="#333">res = parseFactor()  ← 先算第一个 factor</text>
+  <text x="136" y="240" font-size="11" fill="#333">while s[i]∉{',','}'}:</text>
+  <text x="148" y="256" font-size="11" fill="#333">f = parseFactor(); res = res × f</text>
+  <text x="136" y="268" font-size="10" fill="#d6a040">相邻 → 笛卡尔积（高优先级）</text>
+
+  <line x1="280" y1="272" x2="280" y2="288" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- parseFactor decision -->
+  <polygon points="280,288 392,328 280,368 168,328" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="11" fill="#444">s[i]</text>
+  <text x="280" y="338" text-anchor="middle" font-size="11" fill="#444">== '{' ?</text>
+
+  <!-- Yes branch: brace -->
+  <line x1="168" y1="328" x2="130" y2="328" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="136" y="322" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="36" y="310" width="94" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="83" y="328" text-anchor="middle" font-size="10" fill="#333">i++ 跳 '{'</text>
+  <text x="83" y="342" text-anchor="middle" font-size="10" fill="#333">递归 parseExpr</text>
+
+  <!-- recursive arrow back up to parseExpr -->
+  <path d="M 83 310 Q 40 200 120 130" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="30" y="220" font-size="9" fill="#b85450">递归</text>
+
+  <!-- brace close -->
+  <line x1="83" y1="350" x2="83" y2="372" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="372" width="86" height="26" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="83" y="389" text-anchor="middle" font-size="10" fill="#333">i++ 跳 '}'，返回</text>
+
+  <!-- No branch: letter -->
+  <line x1="392" y1="328" x2="430" y2="328" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="400" y="322" font-size="11" fill="#446688" font-weight="bold">否</text>
+
+  <rect x="430" y="310" width="100" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="480" y="328" text-anchor="middle" font-size="10" fill="#333">单字母</text>
+  <text x="480" y="342" text-anchor="middle" font-size="10" fill="#333">返回 {s[i++]}</text>
+
+  <line x1="480" y1="350" x2="480" y2="372" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="430" y="372" width="100" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="480" y="389" text-anchor="middle" font-size="10" fill="#333">单元素集合</text>
+
+  <!-- merge -->
+  <line x1="83" y1="398" x2="83" y2="416" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="480" y1="398" x2="480" y2="416" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="83" y1="416" x2="480" y2="416" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="280" y1="416" x2="280" y2="434" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop back arrows -->
+  <rect x="180" y="434" width="200" height="30" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="454" text-anchor="middle" font-size="11" fill="#333">factor 返回 → 上层 while 循环</text>
+
+  <line x1="280" y1="464" x2="280" y2="482" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End -->
+  <rect x="170" y="482" width="220" height="28" rx="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="500" text-anchor="middle" font-size="11" fill="#333">返回 set → sorted() 字典序输出</text>
+</svg>

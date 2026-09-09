@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">分组背包 DP：按数字 d = 0…9 逐种决策</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">dp[j][s] = 偶位已选 j 个、偶位和为 s 的 Σ Π 1/(k!·(cnt−k)!)</text>
+
+  <!-- 阶段框 -->
+  <rect x="30" y="58" width="215" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="137" y="78" text-anchor="middle" font-size="11" fill="#a07830" font-weight="bold" filter="url(#rough2)">阶段：数字 d（依次 0 → 9）</text>
+  <text x="137" y="96" text-anchor="middle" font-size="10" fill="#a07830" filter="url(#rough2)">手头共 cnt[d] 个，偶位还剩 m−j 个空</text>
+
+  <!-- 奇位和说明框 -->
+  <rect x="275" y="58" width="215" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="382" y="78" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">奇位和不用进状态（hints 点睛）</text>
+  <text x="382" y="96" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">总和守恒：奇位和 = S − s，s = S/2 即平衡</text>
+
+  <!-- 转移标签 -->
+  <rect x="196" y="128" width="190" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="291" y="147" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">枚举 k = 0 … min(cnt[d], m−j)</text>
+  <text x="291" y="164" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">权重 × 1/( k!·(cnt[d]−k)! )</text>
+
+  <!-- 状态椭圆 -->
+  <ellipse cx="120" cy="215" rx="90" ry="48" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="120" y="205" text-anchor="middle" font-size="13" fill="#33506b" font-weight="bold" filter="url(#rough2)">状态 (j, s)</text>
+  <text x="120" y="224" text-anchor="middle" font-size="10" fill="#6a86a3" filter="url(#rough2)">处理完数字 0…d−1</text>
+  <text x="120" y="239" text-anchor="middle" font-size="10" fill="#6a86a3" filter="url(#rough2)">偶位 j 个、和 s</text>
+
+  <!-- 转移箭头 -->
+  <path d="M 212 215 Q 260 215 300 215" stroke="#446688" stroke-width="2.2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="258" y="240" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">放 k 个 d</text>
+
+  <!-- 新状态椭圆 -->
+  <ellipse cx="402" cy="215" rx="92" ry="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="402" y="205" text-anchor="middle" font-size="13" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">状态 (j+k, s+k·d)</text>
+  <text x="402" y="224" text-anchor="middle" font-size="10" fill="#5c8a4e" filter="url(#rough2)">k 个 d 进偶位组</text>
+  <text x="402" y="239" text-anchor="middle" font-size="10" fill="#5c8a4e" filter="url(#rough2)">其余 cnt[d]−k 个留给奇位组</text>
+
+  <!-- 剪枝提示 -->
+  <rect x="30" y="128" width="150" height="46" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="105" y="147" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">剪枝：k·d 一旦使 s 超</text>
+  <text x="105" y="162" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">过 S/2 立即 break</text>
+
+  <!-- 初始化与答案 -->
+  <rect x="25" y="282" width="470" height="52" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">初始化：dp[0][0] = 1（一个数字都没放，权重 1）</text>
+  <text x="260" y="322" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">答案：dp[m][S/2] × m! × (n−m)!　(mod 10⁹ + 7)</text>
+  <text x="260" y="347" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">除法取模：预处理阶乘与逆元阶乘（费马小定理求 fact[n] 的逆，再线性倒推），DP 全程只有乘法</text>
+</svg>

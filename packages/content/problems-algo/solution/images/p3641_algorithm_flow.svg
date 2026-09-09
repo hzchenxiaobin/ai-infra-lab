@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">流程：频次表 + rep 计数，双指针滑窗</text>
+
+  <!-- start -->
+  <ellipse cx="330" cy="50" rx="32" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="330" y="54" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">开始</text>
+
+  <path d="M 330 66 L 330 80" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- box1: expand right -->
+  <rect x="210" y="82" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="98" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">r 右移，x = nums[r] 入窗</text>
+  <text x="330" y="114" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">freq[x]++；若恰变为 2 → rep++</text>
+
+  <path d="M 330 122 L 330 136" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond1: rep > k ? -->
+  <polygon points="330,138 420,168 330,198 240,168" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="330" y="172" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">rep &gt; k ?</text>
+
+  <!-- yes branch: shrink left -->
+  <path d="M 240 168 L 164 168" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="200" y="161" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <rect x="20" y="140" width="144" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="92" y="157" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">移出左端 l：</text>
+  <text x="92" y="172" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">freq[nums[l]]−−，</text>
+  <text x="92" y="187" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">减到 1 → rep−−，l++</text>
+
+  <path d="M 20 152 C 2 152 2 184 20 184" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="92" y="212" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">（直到 rep ≤ k）</text>
+
+  <!-- rejoin to box2 -->
+  <path d="M 140 196 L 140 241 L 208 241" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- no branch -->
+  <path d="M 330 198 L 330 222" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="342" y="214" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- box2: record -->
+  <rect x="210" y="224" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="245" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">ans = max(ans, r − l + 1)</text>
+
+  <path d="M 330 258 L 330 270" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond2: r == n-1 ? -->
+  <polygon points="330,272 415,300 330,328 245,300" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="330" y="304" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">r == n−1 ?</text>
+
+  <!-- no loop back to box1 -->
+  <path d="M 415 300 L 500 300 L 500 102 L 452 102" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="432" y="291" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- yes to end -->
+  <path d="M 330 328 L 330 350" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="342" y="344" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <ellipse cx="330" cy="368" rx="46" ry="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="330" y="372" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">返回 ans</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="398" width="520" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="417" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">l、r 各单向前进：每个元素至多入窗 / 出窗一次 → 滑窗均摊 O(n)</text>
+</svg>

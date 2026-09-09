@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="460" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：两遍线性扫描 —— 计数 + 枚举插入点</text>
+
+  <!-- Start -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="40" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="13"/>
+    <text x="200" y="57" text-anchor="middle" font-size="11" fill="#2a5a2a">输入 s</text>
+  </g>
+  <path d="M 200 66 L 200 84" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 1: first scan -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="88" width="320" height="100" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="200" y="108" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">第一遍扫描：一遍养出全部计数</text>
+    <text x="56" y="127" font-size="10" fill="#333">遇 'L' → cntL++</text>
+    <text x="56" y="144" font-size="10" fill="#333">遇 'C' → cntLC += cntL，cntC++</text>
+    <text x="56" y="161" font-size="10" fill="#333">遇 'T' → base += cntLC，cntCT += cntC</text>
+    <text x="56" y="181" font-size="10" fill="#2a5a2a" font-weight="bold">⇒ 得 base、gainL = cntCT、gainT = cntLC</text>
+  </g>
+  <path d="M 200 188 L 200 210" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 2: second scan init -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="214" width="320" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="200" y="233" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">第二遍扫描：枚举插 C 的插入点 i（0..n）</text>
+    <text x="200" y="252" text-anchor="middle" font-size="10" fill="#333">初始：preL = 0，sufT = T 的总数，gainC = 0</text>
+  </g>
+  <path d="M 200 268 L 200 286" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: loop condition -->
+  <g filter="url(#rough2)">
+    <polygon points="200,290 272,322 200,354 128,322" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <text x="200" y="326" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold">i ≤ n ?</text>
+  </g>
+  <text x="284" y="314" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <path d="M 274 322 L 306 322" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Yes branch: loop body -->
+  <text x="210" y="366" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 200 354 L 200 368" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="60" y="372" width="230" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="175" y="390" text-anchor="middle" font-size="10" fill="#333">gainC = max(gainC, preL × sufT)</text>
+    <text x="175" y="407" text-anchor="middle" font-size="10" fill="#333">越过 s[i]：'L'→preL++，'T'→sufT−−</text>
+    <text x="175" y="424" text-anchor="middle" font-size="10" fill="#333">i++，回到判定</text>
+  </g>
+  <path d="M 60 402 L 30 402 L 30 322 L 122 322" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Final combine box -->
+  <g filter="url(#rough2)">
+    <rect x="312" y="298" width="190" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="407" y="318" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">answer = base +</text>
+    <text x="407" y="336" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">max(gainL, gainC, gainT)</text>
+  </g>
+  <path d="M 407 348 L 407 364" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End box -->
+  <g filter="url(#rough2)">
+    <rect x="312" y="368" width="190" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="13"/>
+    <text x="407" y="386" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">返回 answer</text>
+    <text x="407" y="403" text-anchor="middle" font-size="9" fill="#4a7a3a">（long long 防溢出）</text>
+  </g>
+
+  <text x="260" y="448" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">两遍都是 O(n)，只用常数个计数器 ⇒ O(1) 额外空间</text>
+</svg>

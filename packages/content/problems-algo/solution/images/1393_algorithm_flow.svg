@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：符号化 + 分组求和 O(n)</text>
+
+  <!-- Step 1: Sign transformation -->
+  <rect x="80" y="48" width="360" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="68" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 符号变换</text>
+  <text x="260" y="84" text-anchor="middle" font-size="11" fill="#555">IF(operation = 'Sell', price, −price) AS signed</text>
+  <text x="260" y="98" text-anchor="middle" font-size="10" fill="#888">Sell → +price（收入），Buy → −price（成本）</text>
+
+  <!-- arrow down -->
+  <path d="M 260 110 L 260 128" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY -->
+  <rect x="80" y="130" width="360" height="58" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="150" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 按股票分组</text>
+  <text x="260" y="166" text-anchor="middle" font-size="11" fill="#555">GROUP BY stock_name</text>
+  <text x="260" y="180" text-anchor="middle" font-size="10" fill="#888">每只股票的所有买卖行归入一组</text>
+
+  <!-- arrow down -->
+  <path d="M 260 192 L 260 210" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: SUM -->
+  <rect x="80" y="212" width="360" height="58" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="232" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">③ 求和</text>
+  <text x="260" y="248" text-anchor="middle" font-size="11" fill="#555">SUM(signed) AS capital_gain_loss</text>
+  <text x="260" y="262" text-anchor="middle" font-size="10" fill="#888">组内所有带符号价格求和 = 净损益</text>
+
+  <!-- arrow down -->
+  <path d="M 260 274 L 260 292" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: Output -->
+  <rect x="130" y="294" width="260" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="312" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">④ 输出 (stock_name, capital_gain_loss)</text>
+  <text x="260" y="328" text-anchor="middle" font-size="10" fill="#888">每只股票一行，任意顺序</text>
+
+  <!-- complexity note -->
+  <rect x="40" y="356" width="440" height="68" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="260" y="376" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">复杂度分析</text>
+  <text x="260" y="394" text-anchor="middle" font-size="11" fill="#666">单次全表扫描 + 分组聚合，O(n) 时间 / O(n) 空间</text>
+  <text x="260" y="410" text-anchor="middle" font-size="11" fill="#666">无需窗口函数、无需自连接配对</text>
+  <text x="260" y="424" text-anchor="middle" font-size="10" fill="#888">n = Stocks 表行数</text>
+</svg>

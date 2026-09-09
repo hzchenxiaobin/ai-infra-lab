@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 执行流程：FROM → JOIN → GROUP BY → SELECT → ORDER BY</text>
+
+  <!-- ===== Step 1: FROM ===== -->
+  <text x="60" y="52" font-size="10" fill="#888">① FROM</text>
+  <g filter="url(#rough2)"><rect x="50" y="58" width="240" height="44" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8"/></g>
+  <text x="170" y="78" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">FROM Employees e</text>
+  <text x="170" y="94" text-anchor="middle" font-size="9" fill="#888">e 扮演「经理」角色</text>
+
+  <!-- Arrow 1 -->
+  <path d="M 170 104 L 170 118" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: JOIN (self-join) ===== -->
+  <text x="60" y="128" font-size="10" fill="#888">② JOIN（自连接）</text>
+  <g filter="url(#rough2)"><rect x="50" y="134" width="240" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8"/></g>
+  <text x="170" y="154" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">JOIN Employees s</text>
+  <text x="170" y="170" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">ON e.employee_id = s.reports_to</text>
+  <text x="170" y="184" text-anchor="middle" font-size="9" fill="#888">下属的上级指针指向经理（null 自动剔除）</text>
+
+  <!-- Arrow 2 -->
+  <path d="M 170 194 L 170 208" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: GROUP BY ===== -->
+  <text x="60" y="218" font-size="10" fill="#888">③ GROUP BY</text>
+  <g filter="url(#rough2)"><rect x="50" y="224" width="240" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8"/></g>
+  <text x="170" y="246" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">GROUP BY e.employee_id, e.name</text>
+  <text x="170" y="262" text-anchor="middle" font-size="9" fill="#888">同一经理的多个下属行折叠成一组</text>
+
+  <!-- Arrow 3 -->
+  <path d="M 170 276 L 170 290" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: SELECT + COUNT/AVG ===== -->
+  <text x="60" y="300" font-size="10" fill="#888">④ SELECT</text>
+  <g filter="url(#rough2)"><rect x="50" y="306" width="240" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8"/></g>
+  <text x="170" y="326" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">SELECT e.employee_id, e.name,</text>
+  <text x="170" y="342" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">COUNT(s.employee_id) AS reports_count,</text>
+  <text x="170" y="358" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">ROUND(AVG(s.age)) AS average_age</text>
+  <text x="170" y="374" text-anchor="middle" font-size="9" fill="#888">聚合只统计下属 s 的列</text>
+
+  <!-- ===== Right side: ORDER BY note ===== -->
+  <g filter="url(#rough2)"><rect x="330" y="134" width="200" height="98" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/></g>
+  <text x="430" y="156" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑤ ORDER BY</text>
+  <text x="430" y="174" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">employee_id</text>
+  <text x="430" y="194" text-anchor="middle" font-size="9" fill="#888">题目要求按 employee_id 排序</text>
+  <text x="430" y="210" text-anchor="middle" font-size="9" fill="#888">升序输出（ASC 可省略）</text>
+  <path d="M 294 320 L 326 184" stroke="#b85450" stroke-width="1.2" fill="none" marker-end="url(#arr)" stroke-dasharray="3 3" filter="url(#rough2)"/>
+
+  <!-- ===== Right side: aggregation note ===== -->
+  <g filter="url(#rough2)"><rect x="330" y="248" width="200" height="112" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.2"/></g>
+  <text x="430" y="270" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">💡 聚合函数辨析</text>
+  <text x="346" y="290" font-size="10" fill="#2e6e2e">COUNT(s.emp_id) 数下属个数</text>
+  <text x="346" y="308" font-size="10" fill="#2e6e2e">AVG(s.age) 求下属平均年龄</text>
+  <text x="346" y="326" font-size="10" fill="#2e6e2e">ROUND(...) 四舍五入到整数</text>
+  <text x="346" y="346" font-size="9" fill="#888">聚合对象是 s 的列，非 e 的列</text>
+</svg>

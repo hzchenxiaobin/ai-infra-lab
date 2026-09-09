@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+
+  <text x="20" y="28" font-size="13" fill="#333" filter="url(#rough2)">核心观察：行去重压位掩码，交集 = AND + popcount</text>
+
+  <!-- Section A: dedup trap -->
+  <text x="20" y="60" font-size="12" fill="#333" filter="url(#rough2)">① intersect 只数「不同整数」——先去重：</text>
+
+  <rect x="40" y="72" width="118" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="99" y="90" text-anchor="middle" font-size="12" fill="#224466" filter="url(#rough2)">[1, 1]</text>
+  <path d="M166,85 L196,85" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="202" y="72" width="66" height="26" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="235" y="90" text-anchor="middle" font-size="12" fill="#2a4a1a" filter="url(#rough2)">{1}</text>
+  <text x="282" y="90" font-size="11" fill="#b85450" filter="url(#rough2)">重复即刻消失，交集不是 2 是 1！</text>
+
+  <!-- Section B: bit rows over value axis -->
+  <text x="20" y="132" font-size="12" fill="#333" filter="url(#rough2)">② 值域只有 1..100，每行集合压成一个位掩码（k = 2 示例）：</text>
+
+  <!-- value axis header: cells 1..7, x from 60, width 52 -->
+  <text x="24" y="163" font-size="11" fill="#666" filter="url(#rough2)">值域 →</text>
+  <rect x="62" y="148" width="52" height="22" rx="4" fill="#fff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="88" y="163" text-anchor="middle" font-size="11.5" fill="#555" filter="url(#rough2)">1</text>
+  <rect x="114" y="148" width="52" height="22" rx="4" fill="#fff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="140" y="163" text-anchor="middle" font-size="11.5" fill="#555" filter="url(#rough2)">2</text>
+  <rect x="166" y="148" width="52" height="22" rx="4" fill="#fff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="192" y="163" text-anchor="middle" font-size="11.5" fill="#555" filter="url(#rough2)">3</text>
+  <rect x="218" y="148" width="52" height="22" rx="4" fill="#fff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="244" y="163" text-anchor="middle" font-size="11.5" fill="#555" filter="url(#rough2)">4</text>
+  <rect x="270" y="148" width="52" height="22" rx="4" fill="#fff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="296" y="163" text-anchor="middle" font-size="11.5" fill="#888" filter="url(#rough2)">5…100</text>
+
+  <!-- row 0 mask -->
+  <text x="24" y="198" font-size="11.5" fill="#224466" filter="url(#rough2)">行0 {1,2,3}</text>
+  <rect x="62" y="182" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="88" y="199" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="114" y="182" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="199" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="166" y="182" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="192" y="199" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="218" y="182" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="244" y="199" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+  <rect x="270" y="182" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="296" y="199" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+
+  <!-- row 1 mask -->
+  <text x="24" y="232" font-size="11.5" fill="#224466" filter="url(#rough2)">行1 {2,3,4}</text>
+  <rect x="62" y="216" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="88" y="233" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+  <rect x="114" y="216" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="233" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="166" y="216" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="192" y="233" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="218" y="216" width="52" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="244" y="233" text-anchor="middle" font-size="11.5" fill="#224466" filter="url(#rough2)">1</text>
+  <rect x="270" y="216" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="296" y="233" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+
+  <!-- AND row -->
+  <text x="24" y="266" font-size="11.5" fill="#2a4a1a" filter="url(#rough2)">AND 结果</text>
+  <rect x="62" y="250" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="88" y="267" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+  <rect x="114" y="250" width="52" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="140" y="267" text-anchor="middle" font-size="11.5" fill="#2a4a1a" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="166" y="250" width="52" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="192" y="267" text-anchor="middle" font-size="11.5" fill="#2a4a1a" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="218" y="250" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="244" y="267" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+  <rect x="270" y="250" width="52" height="24" rx="4" fill="#fff" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="296" y="267" text-anchor="middle" font-size="11.5" fill="#ccc" filter="url(#rough2)">0</text>
+
+  <!-- popcount verdict -->
+  <path d="M336,262 L366,262" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="372" y="244" width="132" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="438" y="261" text-anchor="middle" font-size="11.5" fill="#2a4a1a" filter="url(#rough2)">popcount = 2 ≥ k</text>
+  <text x="438" y="275" text-anchor="middle" font-size="11.5" fill="#2a4a1a" filter="url(#rough2)">→ union(0, 1)</text>
+
+  <path d="M20,296 L500,296" fill="none" stroke="#ddd" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <!-- Section C: DSU -->
+  <text x="20" y="322" font-size="12" fill="#333" filter="url(#rough2)">③ 边判边并，不必显式建图——分量数初始 n，有效合并减一：</text>
+
+  <ellipse cx="60" cy="358" rx="24" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="362" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">0</text>
+  <ellipse cx="128" cy="358" rx="24" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="128" y="362" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">1</text>
+  <path d="M84,358 L104,358" fill="none" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="94" y="346" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">并</text>
+
+  <ellipse cx="210" cy="358" rx="24" ry="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="210" y="362" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">2</text>
+  <ellipse cx="278" cy="358" rx="24" ry="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="278" y="362" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">3</text>
+  <path d="M234,358 L254,358" fill="none" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="244" y="346" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">断</text>
+
+  <text x="340" y="362" font-size="11.5" fill="#333" filter="url(#rough2)">ans: 4 → 3 → 3</text>
+
+  <rect x="20" y="392" width="480" height="30" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="411" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">值域 M=100 → 101 位掩码仅 2 个机器字：一次 &amp; + 一次 popcount 完成一对判定</text>
+</svg>

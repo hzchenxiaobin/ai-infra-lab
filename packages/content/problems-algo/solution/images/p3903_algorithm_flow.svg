@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：一趟建后缀最小 + 一趟正扫找首个达标</text>
+
+  <!-- ① 预处理 -->
+  <rect x="24" y="34" width="276" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="162" y="52" text-anchor="middle" font-size="10.5" fill="#33507a" font-weight="bold" filter="url(#rough2)">① 预处理 sufMin[]（从右往左一趟）</text>
+  <text x="162" y="67" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">sufMin[n−1] = nums[n−1]</text>
+  <text x="162" y="80" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">sufMin[i] = min(sufMin[i+1], nums[i])</text>
+
+  <path d="M 162 84 L 162 100" fill="none" stroke="#888" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 正扫 -->
+  <rect x="24" y="106" width="276" height="46" rx="8" fill="#f0f0f0" stroke="#777" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="162" y="124" text-anchor="middle" font-size="10.5" fill="#444" font-weight="bold" filter="url(#rough2)">② i = 0 … n−1 从左往右扫（滚动前缀最大）</text>
+  <text x="162" y="140" text-anchor="middle" font-size="9.3" fill="#666" filter="url(#rough2)">preMax = max(preMax, nums[i]) —— 先更新，再判定</text>
+
+  <path d="M 162 152 L 162 160" fill="none" stroke="#888" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <path d="M 162 164 L 242 198 L 162 232 L 82 198 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="162" y="194" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">preMax − sufMin[i]</text>
+  <text x="162" y="208" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">≤ k ?</text>
+
+  <!-- 是 → ③ -->
+  <path d="M 242 198 L 282 198 L 282 160 L 314 160" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="262" y="191" text-anchor="middle" font-size="9.5" fill="#2f5c24" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <rect x="318" y="140" width="182" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="409" y="156" text-anchor="middle" font-size="10.5" fill="#2f5c24" font-weight="bold" filter="url(#rough2)">③ 命中 → 返回 i</text>
+  <text x="409" y="171" text-anchor="middle" font-size="9.3" fill="#3a5c30" filter="url(#rough2)">首个 ≤ k，天然就是最小下标</text>
+
+  <!-- 否 → i+1 -->
+  <path d="M 162 232 L 162 246" fill="none" stroke="#888" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="172" y="244" font-size="9.5" fill="#666" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <rect x="112" y="250" width="100" height="24" rx="8" fill="#f0f0f0" stroke="#777" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="162" y="266" text-anchor="middle" font-size="10" fill="#444" font-weight="bold" filter="url(#rough2)">i = i + 1</text>
+
+  <!-- 循环回 ② -->
+  <path d="M 162 274 L 162 288 L 36 288 L 36 129 L 20 129" fill="none" stroke="#888" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="99" y="281" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">i &lt; n · 继续扫</text>
+
+  <!-- i = n → ④ -->
+  <path d="M 212 262 L 262 262 L 262 231 L 314 231" fill="none" stroke="#888" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="240" y="279" text-anchor="middle" font-size="8.8" fill="#666" filter="url(#rough2)">i = n · 扫完</text>
+
+  <rect x="318" y="204" width="182" height="54" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="409" y="222" text-anchor="middle" font-size="10.5" fill="#a0433f" font-weight="bold" filter="url(#rough2)">④ 扫完未命中 → 返回 −1</text>
+  <text x="409" y="238" text-anchor="middle" font-size="9.3" fill="#a0433f" filter="url(#rough2)">例 [3,2,1], k=1：diff 全为 2</text>
+  <text x="409" y="252" text-anchor="middle" font-size="9.3" fill="#a0433f" filter="url(#rough2)">无任何下标达标</text>
+
+  <!-- 右上便签 -->
+  <rect x="318" y="34" width="182" height="88" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="409" y="52" text-anchor="middle" font-size="10" fill="#33507a" font-weight="bold" filter="url(#rough2)">为什么先存 sufMin？</text>
+  <text x="409" y="68" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">找最小下标 ⇒ 必须正扫；</text>
+  <text x="409" y="82" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">sufMin 在「未来」，只能先</text>
+  <text x="409" y="96" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">从右往左预存成数组；</text>
+  <text x="409" y="110" text-anchor="middle" font-size="9.3" fill="#3d5a80" filter="url(#rough2)">preMax 同向 ⇒ 滚动 O(1)</text>
+
+  <!-- 右下便签 -->
+  <rect x="318" y="272" width="182" height="64" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="409" y="290" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">顺序坑：先更新再判定</text>
+  <text x="409" y="306" text-anchor="middle" font-size="9.3" fill="#7a5c1a" filter="url(#rough2)">判定要用含 nums[i] 的 preMax</text>
+  <text x="409" y="320" text-anchor="middle" font-size="9.3" fill="#7a5c1a" filter="url(#rough2)">[10,3,12,8], k=2 正确 −1</text>
+  <text x="409" y="334" text-anchor="middle" font-size="9.3" fill="#7a5c1a" filter="url(#rough2)">漏掉更新会错答 2</text>
+
+  <text x="260" y="350" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">时间 O(n) · 空间 O(n)：两趟线性扫描，每个元素常数次比较</text>
+</svg>

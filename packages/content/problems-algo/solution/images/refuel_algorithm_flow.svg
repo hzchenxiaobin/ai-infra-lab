@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心 + 大顶堆算法流程（沿途扫加油站 + 终点）</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="58" rx="110" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333">开始: cur = startFuel, prev = 0, stops = 0</text>
+
+  <!-- arrow down -->
+  <path d="M 280 78 L 280 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: more points? -->
+  <polygon points="280,100 388,148 280,196 172,148" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="144" text-anchor="middle" font-size="12" fill="#333">还有站点 / 终点?</text>
+  <text x="280" y="162" text-anchor="middle" font-size="11" fill="#666">(stations + [target,0])</text>
+
+  <!-- No branch -> end -->
+  <path d="M 388 148 L 466 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="426" y="140" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="504" cy="148" rx="44" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="504" y="152" text-anchor="middle" font-size="12" fill="#333">返回 stops</text>
+
+  <!-- Yes branch down -->
+  <path d="M 280 196 L 280 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- take next point (p, f) -->
+  <rect x="160" y="218" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="240" text-anchor="middle" font-size="12" fill="#333">取下一点 (p, f);  need = p − prev</text>
+
+  <!-- arrow down -->
+  <path d="M 280 252 L 280 270" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: cur >= need? -->
+  <polygon points="280,274 388,322 280,370 172,322" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="318" text-anchor="middle" font-size="12" fill="#333">cur &gt;= need ?</text>
+  <text x="280" y="336" text-anchor="middle" font-size="11" fill="#666">(能开到 p 吗)</text>
+
+  <!-- Yes branch -> right: consume + push + advance -->
+  <path d="M 388 322 L 446 322" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="416" y="314" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="448" y="298" width="104" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="316" text-anchor="middle" font-size="11" fill="#333">cur −= need</text>
+  <text x="500" y="332" text-anchor="middle" font-size="11" fill="#333">堆.push(f)</text>
+  <text x="500" y="348" text-anchor="middle" font-size="11" fill="#555">prev = p</text>
+
+  <!-- No branch -> left: refuel or fail -->
+  <path d="M 172 322 L 114 322" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="142" y="314" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+
+  <!-- Decision: heap empty? -->
+  <polygon points="62,296 114,322 62,348 10,322" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="62" y="326" text-anchor="middle" font-size="10" fill="#b85450">堆空?</text>
+
+  <!-- empty -> return -1 -->
+  <path d="M 10 322 L 10 408" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="18" y="372" font-size="10" fill="#b85450">是</text>
+  <ellipse cx="62" cy="424" rx="56" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="62" y="428" text-anchor="middle" font-size="12" fill="#b85450">返回 −1</text>
+
+  <!-- not empty -> pop max, stops++, recheck -->
+  <path d="M 62 348 L 62 380" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="74" y="370" font-size="10" fill="#82b366">否</text>
+  <rect x="10" y="384" width="104" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="62" y="402" text-anchor="middle" font-size="11" fill="#333">cur += 堆.pop()</text>
+  <text x="62" y="418" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">stops += 1</text>
+
+  <!-- recheck arrow up to cur>=need decision -->
+  <path d="M 62 384 C 62 360 62 358 62 348" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <path d="M 62 384 L 62 296 L 172 322" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="92" y="362" font-size="9" fill="#888" transform="rotate(-90 92 362)">再判 cur≥need</text>
+
+  <!-- loop back arrow from right box to top decision -->
+  <path d="M 500 298 L 500 100 L 388 148" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="508" y="200" font-size="10" fill="#888" transform="rotate(-90 508 200)">取下一点</text>
+
+  <!-- summary note -->
+  <text x="280" y="460" text-anchor="middle" font-size="11" fill="#888">每个点先「记账」入堆；缺油时取堆顶最大补油，并用 stops 计数；终点视为 0 油站点</text>
+</svg>

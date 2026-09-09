@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto">
+      <path d="M0,0 L7,4.5 L0,9 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="430" fill="#fafafa"/>
+
+  <text x="300" y="30" text-anchor="middle" font-size="18" fill="#333" filter="url(#rough2)">算法流程：LCP 预处理 + 后缀 DP</text>
+
+  <!-- Box1: preprocess LCP -->
+  <rect x="70" y="52" width="460" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="80" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">① 预处理 LCP：滚动维护 nxt[j] = lcp(l+1, j)，O(n) 空间</text>
+  <path d="M300 100 L300 118" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box2: reverse DP loop -->
+  <rect x="120" y="120" width="360" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="147" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">② 反向遍历 l = n−1 … 0，对每个后缀 s[l:]</text>
+  <path d="M300 166 L300 184" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box3: loop body -->
+  <rect x="40" y="186" width="520" height="112" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="210" font-size="13" fill="#333" filter="url(#rough2)">对后缀 s[l:] 取两种操作的最大：</text>
+  <text x="70" y="234" font-size="12" fill="#446688" filter="url(#rough2)">• 选项 A：删整个后缀 → 贡献固定 1 步 → best = 1</text>
+  <text x="70" y="256" font-size="12" fill="#4a7a3a" filter="url(#rough2)">• 选项 B：枚举 i = 1 … ⌊(n−l)/2⌋，若 lcp(l, l+i) ≥ i</text>
+  <text x="92" y="278" font-size="12" fill="#4a7a3a" filter="url(#rough2)">（即 s[l:l+i] == s[l+i:2i]）则 best = max(best, 1 + f[l+i]）</text>
+  <path d="M300 300 L300 318" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box4: assign + loopback -->
+  <rect x="120" y="320" width="360" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="347" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">f[l] = best；若 l &gt; 0 则 l ← l−1 回 ②</text>
+
+  <!-- loopback arrow on the right -->
+  <path d="M480 342 L560 342 L560 142 L484 142" fill="none" stroke="#446688" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="566" y="244" font-size="11" fill="#446688" filter="url(#rough2)">l</text>
+  <text x="566" y="258" font-size="11" fill="#446688" filter="url(#rough2)">减</text>
+  <text x="566" y="272" font-size="11" fill="#446688" filter="url(#rough2)">1</text>
+
+  <!-- Box5: return -->
+  <path d="M300 364 L300 382" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="180" y="384" width="240" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="408" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">③ 循环结束（l &lt; 0）：return f[0]</text>
+</svg>

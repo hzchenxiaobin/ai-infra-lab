@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：值域小（0..100）→ 频次表 + 组合数枚举</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">按下标计数（i&lt;j&lt;k）→ 同值不同下标分别计数 → 乘频次即可，不去重</text>
+
+  <!-- Step A: frequency buckets -->
+  <g font-size="11" fill="#333">
+    <text x="40" y="80" font-size="11" fill="#888">① 统计频次 cnt[0..100]：</text>
+
+    <rect x="60" y="88" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="83" y="100" text-anchor="middle" font-size="10" fill="#888">值</text>
+    <text x="83" y="113" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">1</text>
+
+    <rect x="106" y="88" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="129" y="100" text-anchor="middle" font-size="10" fill="#888">值</text>
+    <text x="129" y="113" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">2</text>
+
+    <rect x="152" y="88" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="175" y="100" text-anchor="middle" font-size="10" fill="#888">值</text>
+    <text x="175" y="113" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">3</text>
+
+    <text x="208" y="100" font-size="13" fill="#888">…</text>
+
+    <rect x="228" y="88" width="46" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="251" y="100" text-anchor="middle" font-size="10" fill="#888">值</text>
+    <text x="251" y="113" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">x</text>
+
+    <rect x="274" y="88" width="46" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="297" y="100" text-anchor="middle" font-size="10" fill="#888">值</text>
+    <text x="297" y="113" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">y</text>
+
+    <text x="330" y="100" font-size="13" fill="#888">…</text>
+    <text x="352" y="100" font-size="10" fill="#888">每个桶存该值出现次数</text>
+  </g>
+
+  <!-- Step B: enumerate x<=y, z=target-x-y -->
+  <g font-size="11" fill="#333">
+    <rect x="40" y="140" width="480" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="160" font-size="12" fill="#4a7a3a" font-weight="bold">② 枚举 x ≤ y，令 z = target − x − y</text>
+    <text x="54" y="178" font-family="monospace" font-size="10" fill="#555">要求 z ≥ y（保证 x≤y≤z，每个值三元组只数一次）且 z ≤ 100 且 cnt[z] &gt; 0</text>
+    <text x="54" y="192" font-size="10" fill="#888">值域只有 101 种 → 双重循环仅 ~5×10³ 次，O(n + U²)</text>
+  </g>
+
+  <path d="M 280 200 L 280 214" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step C: 4 cases -->
+  <text x="40" y="232" font-size="12" fill="#b85450" font-weight="bold">③ 按 x、y、z 是否相等分四种情况，用组合数一次性算清：</text>
+
+  <g font-size="10" fill="#333">
+    <!-- case 1: all distinct -->
+    <rect x="40" y="244" width="232" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="264" font-size="11" fill="#446688" font-weight="bold">情况 ① x &lt; y &lt; z（互异）</text>
+    <text x="54" y="282" font-family="monospace" font-size="11" fill="#555">ans += cnt[x]·cnt[y]·cnt[z]</text>
+    <text x="54" y="295" font-size="9" fill="#888">三个值各任选一个下标</text>
+
+    <!-- case 2: x==y<z -->
+    <rect x="288" y="244" width="232" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="302" y="264" font-size="11" fill="#d6a040" font-weight="bold">情况 ② x == y &lt; z</text>
+    <text x="302" y="282" font-family="monospace" font-size="11" fill="#555">ans += C(cnt[x],2)·cnt[z]</text>
+    <text x="302" y="295" font-size="9" fill="#888">前两数从同值桶选 2 个</text>
+
+    <!-- case 3: x<y==z -->
+    <rect x="40" y="308" width="232" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="328" font-size="11" fill="#4a7a3a" font-weight="bold">情况 ③ x &lt; y == z</text>
+    <text x="54" y="346" font-family="monospace" font-size="11" fill="#555">ans += cnt[x]·C(cnt[y],2)</text>
+    <text x="54" y="359" font-size="9" fill="#888">后两数从同值桶选 2 个</text>
+
+    <!-- case 4: all equal -->
+    <rect x="288" y="308" width="232" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="302" y="328" font-size="11" fill="#b85450" font-weight="bold">情况 ④ x == y == z</text>
+    <text x="302" y="346" font-family="monospace" font-size="11" fill="#555">ans += C(cnt[x],3)</text>
+    <text x="302" y="359" font-size="9" fill="#888">三个都从同值桶选 3 个</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="40" y="376" width="480" height="52" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="54" y="396" font-size="11" fill="#444" font-weight="bold">C(n,2)=n(n−1)/2，C(n,3)=n(n−1)(n−2)/6</text>
+  <text x="54" y="412" font-size="10" fill="#888">与 15 题相反：15 按值去重（同值只留一组）；923 按下标计数（同值多组都要数）→ 乘组合数</text>
+  <text x="54" y="424" font-size="10" fill="#888">结果对 10⁹+7 取模</text>
+</svg>

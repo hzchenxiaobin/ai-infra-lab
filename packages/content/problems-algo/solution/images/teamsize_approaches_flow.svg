@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种解法对比：窗口函数 / 自连接 / 相关子查询</text>
+
+  <!-- Column A: Window function -->
+  <rect x="20" y="46" width="160" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="68" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">A. 窗口函数（推荐）</text>
+
+  <rect x="20" y="92" width="160" height="64" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="30" y="108" font-size="9" fill="#333">SELECT emp_id,</text>
+  <text x="30" y="120" font-size="9" fill="#333">  COUNT(*) OVER</text>
+  <text x="30" y="132" font-size="9" fill="#333">   (PARTITION BY</text>
+  <text x="30" y="144" font-size="9" fill="#333">    team_id) AS sz</text>
+  <text x="30" y="152" font-size="9" fill="#333">FROM Employee</text>
+
+  <text x="100" y="174" text-anchor="middle" font-size="9.5" fill="#4a7a3a">扫一遍 → 分区计数广播</text>
+  <rect x="20" y="182" width="160" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="100" y="196" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">时间 O(n)  空间 O(n)</text>
+
+  <rect x="20" y="212" width="160" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="30" y="228" font-size="9.5" fill="#333">✓ 一次扫描，不收缩行</text>
+  <text x="30" y="244" font-size="9.5" fill="#333">✓ 同组同值广播</text>
+
+  <!-- Column B: Self-join -->
+  <rect x="200" y="46" width="160" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">B. 自连接</text>
+
+  <rect x="200" y="92" width="160" height="64" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="108" font-size="9" fill="#333">SELECT e1.emp_id,</text>
+  <text x="210" y="120" font-size="9" fill="#333">  COUNT(*) AS sz</text>
+  <text x="210" y="132" font-size="9" fill="#333">FROM Emp e1 JOIN</text>
+  <text x="210" y="144" font-size="9" fill="#333">  Emp e2 ON e1.team_id</text>
+  <text x="210" y="152" font-size="9" fill="#333">   = e2.team_id</text>
+
+  <text x="280" y="174" text-anchor="middle" font-size="9.5" fill="#446688">自连接膨胀 → GROUP BY 计数</text>
+  <rect x="200" y="182" width="160" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">时间 O(n²)  空间 O(n²)</text>
+
+  <rect x="200" y="212" width="160" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="228" font-size="9.5" fill="#333">△ 同组两两配对膨胀</text>
+  <text x="210" y="244" font-size="9.5" fill="#333">△ 大团队时行数激增</text>
+
+  <!-- Column C: Correlated subquery -->
+  <rect x="380" y="46" width="160" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="68" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">C. 相关子查询</text>
+
+  <rect x="380" y="92" width="160" height="64" fill="#fafafa" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="108" font-size="9" fill="#333">SELECT emp_id, (</text>
+  <text x="390" y="120" font-size="9" fill="#333">  SELECT COUNT(*)</text>
+  <text x="390" y="132" font-size="9" fill="#333">  FROM Emp e2</text>
+  <text x="390" y="144" font-size="9" fill="#333">  WHERE e2.team_id</text>
+  <text x="390" y="152" font-size="9" fill="#333">   = e1.team_id) AS sz</text>
+
+  <text x="460" y="174" text-anchor="middle" font-size="9.5" fill="#b85450">每行触发一次子查询</text>
+  <rect x="380" y="182" width="160" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="460" y="196" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">时间 O(n²)  空间 O(1)</text>
+
+  <rect x="380" y="212" width="160" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="228" font-size="9.5" fill="#333">△ 每行重新扫全表</text>
+  <text x="390" y="244" font-size="9.5" fill="#333">△ 空间小但最慢</text>
+
+  <!-- Common final step -->
+  <text x="280" y="278" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">三者共同收尾</text>
+  <rect x="120" y="288" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="304" text-anchor="middle" font-size="10" fill="#333">外层包一层 ORDER BY emp_id</text>
+  <text x="280" y="320" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">→ 按 emp_id 升序输出</text>
+
+  <!-- arrows down from each column to final step -->
+  <path d="M100 252 C 100 264, 200 276, 220 288" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M280 252 C 280 266, 280 272, 280 288" stroke="#446688" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M460 252 C 460 264, 360 276, 340 288" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- complexity comparison table -->
+  <text x="280" y="346" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">复杂度对比（n = Employee 行数，t = 不同 team 数）</text>
+  <rect x="40" y="356" width="480" height="50" fill="#fafafa" stroke="#888" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <line x1="200" y1="356" x2="200" y2="406" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="340" y1="356" x2="340" y2="406" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="190" y1="376" x2="380" y2="376" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <text x="120" y="372" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">解法</text>
+  <text x="270" y="372" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">时间</text>
+  <text x="440" y="372" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">行数变化</text>
+
+  <text x="120" y="392" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">A 窗口</text>
+  <text x="270" y="392" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">O(n)</text>
+  <text x="440" y="392" text-anchor="middle" font-size="10" fill="#4a7a3a">N → N（不变）</text>
+
+  <text x="120" y="402" text-anchor="middle" font-size="9" fill="#446688">B 自连接 / C 子查询</text>
+  <text x="270" y="402" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">O(n²)</text>
+  <text x="440" y="402" text-anchor="middle" font-size="9" fill="#b85450">膨胀 / 逐行重扫</text>
+</svg>

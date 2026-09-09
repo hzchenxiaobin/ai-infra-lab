@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 370" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="370" fill="#fafafa"/>
+
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">编码最短字符串：区间 DP 的两种转移</text>
+
+  <!-- ============ Left box: whole-substring encode ============ -->
+  <rect x="20" y="44" width="260" height="246" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="150" y="66" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 整段编码：找周期</text>
+
+  <!-- period bracket over first 2 cells -->
+  <path d="M 40 84 L 40 80 L 88 80 L 88 84" stroke="#d6a040" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="64" y="78" text-anchor="middle" font-size="10" fill="#d6a040">周期 p=2</text>
+
+  <!-- string "abababab" : 8 cells, 24x24, start x=40, y=88 -->
+  <rect x="40" y="88" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="52" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="64" y="88" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="76" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="88" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="100" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="112" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="124" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="136" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="148" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="160" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="172" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="184" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="196" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="208" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="220" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+
+  <!-- full-length bracket -->
+  <path d="M 40 122 L 40 118 L 232 118 L 232 122" stroke="#4a7a3a" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="136" y="136" text-anchor="middle" font-size="11" fill="#4a7a3a">重复 k = len / p = 8 / 2 = 4</text>
+
+  <!-- arrow down -->
+  <path d="M 150 148 L 150 178" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="165" y="168" font-size="10" fill="#888">k[pattern]</text>
+
+  <!-- result -->
+  <rect x="80" y="184" width="140" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="207" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">4[ab]</text>
+
+  <text x="150" y="244" text-anchor="middle" font-size="10" fill="#888">整段 = pattern 重复 k 次</text>
+  <text x="150" y="260" text-anchor="middle" font-size="10" fill="#888">→ k + "[" + dp[pattern] + "]"</text>
+
+  <!-- ============ Right box: split ============ -->
+  <rect x="300" y="44" width="260" height="246" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="430" y="66" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 分段拼接：枚举切点</text>
+
+  <!-- string "aabcaabcd" : 9 cells, 24x24, start x=312, y=88 -->
+  <!-- left part aabcaabc (indices 0-7) blue, right d (index 8) orange -->
+  <rect x="312" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="324" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="336" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="348" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="360" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="372" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="384" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="396" y="105" text-anchor="middle" font-size="12" fill="#333">c</text>
+  <rect x="408" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="420" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="432" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="444" y="105" text-anchor="middle" font-size="12" fill="#333">a</text>
+  <rect x="456" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="468" y="105" text-anchor="middle" font-size="12" fill="#333">b</text>
+  <rect x="480" y="88" width="24" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="492" y="105" text-anchor="middle" font-size="12" fill="#333">c</text>
+  <rect x="504" y="88" width="24" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="516" y="105" text-anchor="middle" font-size="12" fill="#333">d</text>
+
+  <!-- split scissors between cell 7 (ends x=504) and cell 8 (starts x=504) -->
+  <path d="M 504 82 L 504 130" stroke="#b85450" stroke-width="1.6" stroke-dasharray="3 3" fill="none" filter="url(#rough2)"/>
+  <text x="514" y="80" font-size="11" fill="#b85450">✂ k=7</text>
+
+  <!-- left part bracket -->
+  <path d="M 312 122 L 312 118 L 504 118 L 504 122" stroke="#446688" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="408" y="136" text-anchor="middle" font-size="10" fill="#446688">dp[i][k] = dp[aabcaabc]</text>
+  <text x="516" y="136" text-anchor="middle" font-size="10" fill="#d6a040">dp[k+1][j]</text>
+
+  <!-- arrows down -->
+  <path d="M 380 148 L 380 178" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 516 148 L 516 178" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="320" y="184" width="120" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="207" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2[aabc]</text>
+  <rect x="492" y="184" width="48" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="516" y="207" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">d</text>
+
+  <text x="430" y="244" text-anchor="middle" font-size="10" fill="#888">拼接 = dp[i][k] + dp[k+1][j]</text>
+  <text x="430" y="260" text-anchor="middle" font-size="10" fill="#888">→ 2[aabc] + d = 2[aabc]d</text>
+
+  <!-- ============ Bottom formula bar ============ -->
+  <rect x="20" y="304" width="540" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="326" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">dp[i][j] = min { 原串 s[i..j],  k[ dp[i][i+p−1] ] ,  min_k { dp[i][k] + dp[k+1][j] } }</text>
+  <text x="290" y="346" text-anchor="middle" font-size="10" fill="#888">按子串长度递增填表，保证查 dp[pattern] 与 dp[左/右段] 时已算好</text>
+</svg>

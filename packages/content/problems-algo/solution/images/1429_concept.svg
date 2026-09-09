@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：队列存「候选唯一值」+ 频率表判活性 + 惰性删除</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">数据流：2,1,3,5,5,2 —— 2 和 5 重复，1 和 3 唯一</text>
+
+  <!-- ===== Section 1: Data stream / full queue ===== -->
+  <text x="40" y="78" font-size="11" fill="#446688" font-weight="bold">① 数据流（按插入顺序，含重复）:</text>
+  <g font-size="12">
+    <rect x="40" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="60" y="106" text-anchor="middle" fill="#333">2</text>
+    <rect x="82" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="102" y="106" text-anchor="middle" fill="#333">1</text>
+    <rect x="124" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="144" y="106" text-anchor="middle" fill="#333">3</text>
+    <rect x="166" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="186" y="106" text-anchor="middle" fill="#333">5</text>
+    <rect x="208" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="228" y="106" text-anchor="middle" fill="#333">5</text>
+    <rect x="250" y="86" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="270" y="106" text-anchor="middle" fill="#333">2</text>
+  </g>
+
+  <!-- ===== Section 2: Frequency map ===== -->
+  <text x="360" y="78" font-size="11" fill="#4a7a3a" font-weight="bold">② 频率表 count (判定唯一性):</text>
+  <g font-size="11">
+    <rect x="360" y="86" width="80" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="400" y="104" text-anchor="middle" fill="#333">2 → 2</text>
+    <rect x="444" y="86" width="80" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="484" y="104" text-anchor="middle" fill="#333">1 → 1</text>
+    <rect x="360" y="116" width="80" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="400" y="134" text-anchor="middle" fill="#333">3 → 1</text>
+    <rect x="444" y="116" width="80" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="484" y="134" text-anchor="middle" fill="#333">5 → 2</text>
+  </g>
+  <text x="530" y="104" font-size="10" fill="#888">count==1 即唯一</text>
+  <text x="530" y="118" font-size="10" fill="#888">count&gt;1 已重复</text>
+
+  <!-- ===== Section 3: Candidate queue ===== -->
+  <text x="40" y="172" font-size="11" fill="#d6a040" font-weight="bold">③ 候选队列 queue（只存「首次出现」的值，按插入序）:</text>
+  <g font-size="12">
+    <!-- stale entries: 2, 5 (count>1, will be lazily popped) -->
+    <rect x="40" y="180" width="40" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="60" y="200" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+    <rect x="82" y="180" width="40" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="102" y="200" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="124" y="180" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+    <text x="144" y="200" text-anchor="middle" fill="#333">3</text>
+    <rect x="166" y="180" width="40" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="186" y="200" text-anchor="middle" fill="#b85450" font-weight="bold">5</text>
+  </g>
+  <text x="60" y="224" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">count=2</text>
+  <text x="102" y="224" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">count=1 ★</text>
+  <text x="144" y="224" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">count=1</text>
+  <text x="186" y="224" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">count=2</text>
+
+  <!-- queue head/tail labels -->
+  <text x="40" y="160" font-size="10" fill="#666">队首 ←——peek</text>
+  <text x="190" y="160" font-size="10" fill="#666">→ 队尾</text>
+
+  <!-- ===== Section 4: Lazy deletion ===== -->
+  <rect x="40" y="240" width="540" height="76" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="310" y="262" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">showFirstUnique()：惰性删除——弹出队首所有「已重复」的候选</text>
+  <text x="56" y="282" font-size="11" fill="#555">① peek 队首 = 2，查 count[2]=2 &gt; 1 ⇒ 已重复，pop 丢弃</text>
+  <text x="56" y="298" font-size="11" fill="#555">② peek 队首 = 1，查 count[1]=1 == 1 ⇒ 仍唯一，停止弹出，返回 1 ✓</text>
+
+  <!-- arrow from stale 2 to pop -->
+  <path d="M 60 212 Q 60 232 70 248" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 186 212 Q 200 232 250 248" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Section 5: After lazy deletion ===== -->
+  <text x="40" y="338" font-size="11" fill="#4a7a3a" font-weight="bold">④ 弹出陈旧候选后的队列（首唯一值在队首）:</text>
+  <g font-size="12">
+    <rect x="40" y="346" width="40" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="60" y="366" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="82" y="346" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="102" y="366" text-anchor="middle" fill="#333">3</text>
+    <rect x="124" y="346" width="40" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="144" y="366" text-anchor="middle" fill="#b85450" font-weight="bold">5</text>
+  </g>
+  <text x="60" y="388" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">↑ 返回此值</text>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="40" y="400" width="540" height="64" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="310" y="422" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">关键：add 只管「计数 + 首次入队」，showFirstUnique 才「按需清理」</text>
+  <text x="56" y="440" font-size="11" fill="#555">• 重复值不主动出队，留到查询时统一弹出——每个元素至多入队/出队一次，均摊 O(1)</text>
+  <text x="56" y="456" font-size="11" fill="#555">• 队列天然保持插入序，弹出陈旧后队首即「最早插入且仍唯一」的值</text>
+</svg>

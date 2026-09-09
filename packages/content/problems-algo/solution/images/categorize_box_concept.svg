@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：两个独立布尔标志 → 2×2 真值表 → 四种类别</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">先分别判定 isBulky / isHeavy，再按 (bulky, heavy) 组合查表</text>
+
+  <!-- Column headers: isHeavy -->
+  <text x="255" y="92" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">isHeavy = 否</text>
+  <text x="255" y="106" text-anchor="middle" font-size="10" fill="#888">(mass &lt; 100)</text>
+  <text x="405" y="92" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">isHeavy = 是</text>
+  <text x="405" y="106" text-anchor="middle" font-size="10" fill="#888">(mass ≥ 100)</text>
+
+  <!-- Row labels: isBulky -->
+  <text x="172" y="154" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">isBulky = 否</text>
+  <text x="172" y="168" text-anchor="end" font-size="10" fill="#888">(维度&lt;1e4 且 体积&lt;1e9)</text>
+  <text x="172" y="234" text-anchor="end" font-size="12" fill="#d6a040" font-weight="bold">isBulky = 是</text>
+  <text x="172" y="248" text-anchor="end" font-size="10" fill="#888">(维度≥1e4 或 体积≥1e9)</text>
+
+  <!-- Cell: Neither (bulky=否, heavy=否) -->
+  <rect x="180" y="110" width="150" height="80" fill="#ffffff" stroke="#bbb" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="148" text-anchor="middle" font-size="15" fill="#666" font-weight="bold">Neither</text>
+  <text x="255" y="168" text-anchor="middle" font-size="10.5" fill="#999">两条件都不满足</text>
+
+  <!-- Cell: Heavy (bulky=否, heavy=是) -->
+  <rect x="330" y="110" width="150" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="405" y="148" text-anchor="middle" font-size="15" fill="#7a5510" font-weight="bold">Heavy</text>
+  <text x="405" y="168" text-anchor="middle" font-size="10.5" fill="#9a7a30">只重不 bulky</text>
+
+  <!-- Cell: Bulky (bulky=是, heavy=否) -->
+  <rect x="180" y="190" width="150" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="228" text-anchor="middle" font-size="15" fill="#2a4466" font-weight="bold">Bulky</text>
+  <text x="255" y="248" text-anchor="middle" font-size="10.5" fill="#5577a0">只大不重</text>
+
+  <!-- Cell: Both (bulky=是, heavy=是) -->
+  <rect x="330" y="190" width="150" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" rx="6" filter="url(#rough2)"/>
+  <text x="405" y="228" text-anchor="middle" font-size="15" fill="#8a3030" font-weight="bold">Both</text>
+  <text x="405" y="248" text-anchor="middle" font-size="10.5" fill="#b06060">又大又重</text>
+
+  <!-- pointer to Both -->
+  <path d="M 480 230 L 520 230" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="490" y="246" font-size="10" fill="#b85450">重点</text>
+
+  <!-- Bottom notes -->
+  <path d="M 40 290 L 520 290" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="50" y="310" font-size="11" fill="#555">• 两个标志独立计算：isBulky 看「维度 / 体积」，isHeavy 看「质量」，互不依赖。</text>
+  <text x="50" y="328" font-size="11" fill="#555">• 判定与分类解耦：先把两标志算出来，分类只是查 2×2 表，逻辑清晰不易写错。</text>
+  <text x="50" y="346" font-size="11" fill="#b85450">• ⚠️ 体积 = L·W·H 可达 (10^5)^3 = 10^15，超出 32 位 int 范围 → C++ 须用 long long。</text>
+  <text x="50" y="364" font-size="11" fill="#4a7a3a">• 短路巧解：任一维度 ≥ 10^4 即 isBulky，可跳过乘法，从源头回避溢出。</text>
+</svg>

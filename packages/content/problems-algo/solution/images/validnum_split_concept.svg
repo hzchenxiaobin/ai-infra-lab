@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">分治视角：按 e/E 切成「尾数 + 指数」两段</text>
+
+  <!-- 原始串 -->
+  <rect x="40" y="50" width="520" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="60" y="74" font-size="13" fill="#333">原始字符串 s = "−123.456e+78"</text>
+  <text x="490" y="74" font-size="11" fill="#888">（含正负号/小数点/指数）</text>
+
+  <!-- 切分箭头 -->
+  <path d="M 300 92 L 300 110" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+  <text x="312" y="106" font-size="11" fill="#b85450">以首个 e/E 切</text>
+
+  <!-- 两段 -->
+  <rect x="40" y="112" width="280" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="132" font-size="12" fill="#4a7a3a" font-weight="bold">尾数 mantissa</text>
+  <text x="56" y="148" font-size="12" fill="#333">"−123.456"  →  小数校验</text>
+
+  <rect x="340" y="112" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="356" y="132" font-size="12" fill="#d6a040" font-weight="bold">指数 exponent</text>
+  <text x="356" y="148" font-size="12" fill="#333">"+78"  →  整数校验</text>
+
+  <!-- 尾数规则框 -->
+  <rect x="40" y="180" width="280" height="156" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="200" font-size="12" fill="#4a7a3a" font-weight="bold">小数校验 isValidDecimal：</text>
+  <text x="56" y="220" font-size="11" fill="#333">• 可选符号 [+/−]</text>
+  <text x="56" y="238" font-size="11" fill="#333">• 至少含一个数字</text>
+  <text x="56" y="256" font-size="11" fill="#333">• 至多一个小数点</text>
+  <text x="56" y="276" font-size="11" fill="#333">  合法形态：</text>
+  <text x="70" y="294" font-size="11" fill="#666">digits.  /  digits.digits  /  .digits</text>
+  <text x="56" y="316" font-size="11" fill="#b85450">✗ "."  无数字  ✗ "1..2"  双点</text>
+
+  <!-- 指数规则框 -->
+  <rect x="340" y="180" width="220" height="156" fill="#ffffff" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="356" y="200" font-size="12" fill="#d6a040" font-weight="bold">整数校验 isValidInteger：</text>
+  <text x="356" y="220" font-size="11" fill="#333">• 可选符号 [+/−]</text>
+  <text x="356" y="238" font-size="11" fill="#333">• 至少一个数字</text>
+  <text x="356" y="256" font-size="11" fill="#333">• 不含小数点</text>
+  <text x="356" y="276" font-size="11" fill="#333">• 不含 e/E</text>
+  <text x="356" y="300" font-size="11" fill="#b85450">✗ "" 空  ✗ "+a" 非数字</text>
+  <text x="356" y="318" font-size="11" fill="#b85450">✗ "1.5" 含点</text>
+
+  <!-- 汇合 -->
+  <path d="M 180 336 L 180 354" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+  <path d="M 450 336 L 450 354" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+  <path d="M 180 354 L 450 354" stroke="#666" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 300 354 L 300 372" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <ellipse cx="300" cy="392" rx="86" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="396" text-anchor="middle" font-size="12" fill="#333">两段同时合法 → s 合法</text>
+</svg>

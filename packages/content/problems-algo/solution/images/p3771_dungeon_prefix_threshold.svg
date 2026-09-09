@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：得分条件解耦 + 前缀和天然有序</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">hp = 11，damage = [3, 6, 7]，requirement = [4, 2, 5]（示例 1）</text>
+
+  <!-- 条件推导链 -->
+  <rect x="14" y="56" width="164" height="36" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="96" y="78" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">hp − (S[j] − S[i−1]) ≥ req[j]</text>
+  <text x="196" y="81" text-anchor="middle" font-size="14" fill="#4a7a3a" filter="url(#rough2)">⟺</text>
+  <rect x="214" y="56" width="150" height="36" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="289" y="78" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">S[i−1] ≥ req[j]−hp+S[j]</text>
+  <text x="388" y="81" text-anchor="middle" font-size="14" fill="#4a7a3a" filter="url(#rough2)">⟺</text>
+  <rect x="412" y="56" width="134" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="479" y="73" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">S[i−1] ≥ T[j]</text>
+  <text x="479" y="87" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">T[j] 只依赖 j！</text>
+
+  <text x="280" y="110" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">S[k] = damage[1..k] 的前缀和，k = i−1 即起点 i 左侧的累计伤害</text>
+
+  <!-- 前缀和阶梯图 -->
+  <path d="M 44 322 L 336 322" fill="none" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <rect x="60" y="317" width="44" height="5" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="82" y="313" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="122" y="289" width="44" height="33" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="144" y="284" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">3</text>
+  <rect x="184" y="223" width="44" height="99" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="206" y="218" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">9</text>
+  <rect x="246" y="146" width="44" height="176" rx="3" fill="#eee" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="268" y="141" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">16</text>
+
+  <text x="82" y="338" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">S[0]</text>
+  <text x="144" y="338" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">S[1]</text>
+  <text x="206" y="338" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">S[2]</text>
+  <text x="268" y="338" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">S[3]</text>
+  <text x="82" y="352" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k=0</text>
+  <text x="144" y="352" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k=1</text>
+  <text x="206" y="352" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k=2</text>
+  <text x="268" y="352" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k=3</text>
+
+  <!-- 阈值线 -->
+  <path d="M 44 318 L 336 318" fill="none" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="346" y="321" text-anchor="start" font-size="10" fill="#4a7a3a" filter="url(#rough2)">T[2]=0</text>
+  <path d="M 44 212 L 336 212" fill="none" stroke="#b85450" stroke-width="1.5" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="346" y="215" text-anchor="start" font-size="10" fill="#b85450" filter="url(#rough2)">T[3]=10</text>
+
+  <text x="268" y="366" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k = j 越界（起点须 ≤ j）✗</text>
+
+  <!-- 右侧按终点计数汇总 -->
+  <rect x="404" y="126" width="146" height="26" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="477" y="143" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">按终点 j 计数</text>
+  <rect x="404" y="160" width="146" height="30" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="477" y="179" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">j=1: T[1]=−4 → 计 1</text>
+  <rect x="404" y="196" width="146" height="30" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="477" y="215" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">j=2: T[2]=0 → 计 2</text>
+  <rect x="404" y="232" width="146" height="30" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="477" y="251" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">j=3: T[3]=10 → 计 0</text>
+  <rect x="404" y="270" width="146" height="32" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="477" y="291" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">ans = 1+2+0 = 3 ✓</text>
+  <text x="477" y="318" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">按起点聚合：score = 2, 1, 0</text>
+
+  <!-- 底部结论条 -->
+  <rect x="40" y="384" width="480" height="44" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="402" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">damage[i] ≥ 1 ⇒ S 严格递增 ⇒ 天然有序，免排序直接二分</text>
+  <text x="280" y="420" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">ans = Σ ( j − lower_bound(S[0..j−1], T[j]) )</text>
+</svg>

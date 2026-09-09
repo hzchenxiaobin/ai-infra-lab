@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">状压 DP：mask = 已击杀集合，gain = popcount(mask)</text>
+
+  <!-- gain mapping mini-table (top-left) -->
+  <rect x="28" y="44" width="150" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="103" y="62" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">击杀序号 k → gain</text>
+  <text x="48" y="80" font-size="11" fill="#333">k=1 → gain 1</text>
+  <text x="48" y="96" font-size="11" fill="#333">k=2 → gain 2</text>
+  <text x="48" y="112" font-size="11" fill="#333">k=3 → gain 3</text>
+  <text x="48" y="126" font-size="11" fill="#888">… 与杀谁无关</text>
+
+  <!-- Central node: mask = 1011 -->
+  <rect x="218" y="60" width="124" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">mask = 1011₂</text>
+  <text x="280" y="98" text-anchor="middle" font-size="11" fill="#333">k = popcount = 3</text>
+  <text x="280" y="116" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">第 3 次击杀，gain = 3</text>
+
+  <!-- right note: set bits -->
+  <rect x="382" y="60" width="150" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="457" y="80" text-anchor="middle" font-size="11" fill="#7a5410" font-weight="bold">已击杀集合 = {0,1,3}</text>
+  <text x="457" y="98" text-anchor="middle" font-size="11" fill="#666">枚举「最后杀谁」</text>
+  <text x="457" y="116" text-anchor="middle" font-size="11" fill="#666">即枚举 mask 中的 1 位</text>
+
+  <!-- Predecessor nodes (bottom row) -->
+  <rect x="40" y="186" width="120" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="206" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">mask ⊕ 2⁰ = 1010</text>
+  <text x="100" y="224" text-anchor="middle" font-size="11" fill="#333">最后杀怪 0</text>
+  <text x="100" y="242" text-anchor="middle" font-size="11" fill="#888">f[mask ⊕ 2⁰]</text>
+
+  <rect x="220" y="186" width="120" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="206" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">mask ⊕ 2¹ = 1001</text>
+  <text x="280" y="224" text-anchor="middle" font-size="11" fill="#333">最后杀怪 1</text>
+  <text x="280" y="242" text-anchor="middle" font-size="11" fill="#888">f[mask ⊕ 2¹]</text>
+
+  <rect x="400" y="186" width="120" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="206" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">mask ⊕ 2³ = 0011</text>
+  <text x="460" y="224" text-anchor="middle" font-size="11" fill="#333">最后杀怪 3</text>
+  <text x="460" y="242" text-anchor="middle" font-size="11" fill="#888">f[mask ⊕ 2³]</text>
+
+  <!-- edges central -> predecessors, labeled with cost -->
+  <path d="M 244 124 L 116 184" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="150" font-size="11" fill="#4a7a3a">+ ⌈power[0]/3⌉</text>
+
+  <path d="M 280 124 L 280 184" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="160" font-size="11" fill="#4a7a3a">+ ⌈power[1]/3⌉</text>
+
+  <path d="M 316 124 L 444 184" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="360" y="150" font-size="11" fill="#4a7a3a">+ ⌈power[3]/3⌉</text>
+
+  <!-- min bracket -->
+  <text x="280" y="280" text-anchor="middle" font-size="13" fill="#888">↑ 取三者最小</text>
+
+  <!-- Formula box -->
+  <rect x="28" y="292" width="504" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="314" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">f[mask] = min_{i ∈ mask} ( f[mask ⊕ 2ⁱ] + ⌈ power[i] / popcount(mask) ⌉ )</text>
+  <text x="280" y="334" text-anchor="middle" font-size="11" fill="#666">初始 f[0] = 0；答案 f[2ⁿ − 1]</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">路径代价 = 路径上格子的最大高度</text>
+  <text x="270" y="46" text-anchor="middle" font-size="11" fill="#888">水位 t 淹没整条路径 ⟺ t ≥ max(grid[路径])；求最小 t 即求「最小化最大高度」的路径</text>
+
+  <!-- ===== 2x2 grid: [[0,2],[1,3]] ===== -->
+  <text x="60" y="92" font-size="11" fill="#446688" font-weight="bold">示例 1：grid = [[0,2],[1,3]]</text>
+
+  <!-- cell (0,0)=0  起点 -->
+  <rect x="150" y="106" width="64" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="182" y="142" text-anchor="middle" font-size="20" fill="#d6a040" font-weight="bold">0</text>
+  <text x="182" y="186" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">起点 (0,0)</text>
+
+  <!-- cell (0,1)=2 -->
+  <rect x="218" y="106" width="64" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="142" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">2</text>
+
+  <!-- cell (1,0)=1 -->
+  <rect x="150" y="174" width="64" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="182" y="210" text-anchor="middle" font-size="20" fill="#446688" font-weight="bold">1</text>
+
+  <!-- cell (1,1)=3 终点 -->
+  <rect x="218" y="174" width="64" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="210" text-anchor="middle" font-size="20" fill="#b85450" font-weight="bold">3</text>
+  <text x="250" y="254" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">终点 (1,1)</text>
+
+  <!-- path 1: right -> down  (0,0)->(0,1)->(1,1) -->
+  <path d="M 214 138 L 220 138 L 220 206 L 214 206" stroke="#4a7a3a" stroke-width="2.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="330" y="118" font-size="10" fill="#4a7a3a" font-weight="bold">路径① 右→下</text>
+  <text x="330" y="134" font-size="10" fill="#4a7a3a">0 → 2 → 3</text>
+  <text x="330" y="150" font-size="10" fill="#4a7a3a">代价 = max(0,2,3) = 3</text>
+
+  <!-- path 2: down -> right  (0,0)->(1,0)->(1,1) -->
+  <path d="M 186 170 L 186 176 L 248 176 L 248 170" stroke="#446688" stroke-width="2.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="200" font-size="10" fill="#446688" font-weight="bold">路径② 下→右</text>
+  <text x="330" y="216" font-size="10" fill="#446688">0 → 1 → 3</text>
+  <text x="330" y="232" font-size="10" fill="#446688">代价 = max(0,1,3) = 3</text>
+
+  <!-- answer box -->
+  <rect x="300" y="268" width="220" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="288" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">答案 = min(3, 3) = 3</text>
+  <text x="410" y="304" text-anchor="middle" font-size="9" fill="#666">水位升至 3，所有格子被淹，可自由游动</text>
+
+  <!-- footer note -->
+  <text x="40" y="350" font-size="10" fill="#888">转化：求 (0,0)→(n−1,n−1) 的「最小化最大格值」路径 → Dijkstra 变体（堆按 max 高度排序）</text>
+  <text x="40" y="366" font-size="10" fill="#888">grid 值互不相同且 ∈ [0, n²) ⟹ 答案上界 n²−1</text>
+</svg>

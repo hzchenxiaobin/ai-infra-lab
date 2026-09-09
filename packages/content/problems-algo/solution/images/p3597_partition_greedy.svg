@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：贪心取「最短未见前缀」+ 哈希查重</text>
+  <text x="260" y="38" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">示例 1 · s = "abbccccd" → ["a","b","bc","c","cc","d"]</text>
+
+  <!-- ============ Panel 1: 字符格子 + 分段条 ============ -->
+  <text x="30" y="72" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 逐字符扩展</text>
+
+  <g filter="url(#rough2)">
+    <rect x="110" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="148" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="186" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="224" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="262" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="300" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="338" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="376" y="58" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+
+    <text x="127" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+    <text x="165" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b</text>
+    <text x="203" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b</text>
+    <text x="241" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+    <text x="279" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+    <text x="317" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+    <text x="355" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+    <text x="393" y="76" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">d</text>
+
+    <text x="127" y="98" text-anchor="middle" font-size="8" fill="#999">0</text>
+    <text x="165" y="98" text-anchor="middle" font-size="8" fill="#999">1</text>
+    <text x="203" y="98" text-anchor="middle" font-size="8" fill="#999">2</text>
+    <text x="241" y="98" text-anchor="middle" font-size="8" fill="#999">3</text>
+    <text x="279" y="98" text-anchor="middle" font-size="8" fill="#999">4</text>
+    <text x="317" y="98" text-anchor="middle" font-size="8" fill="#999">5</text>
+    <text x="355" y="98" text-anchor="middle" font-size="8" fill="#999">6</text>
+    <text x="393" y="98" text-anchor="middle" font-size="8" fill="#999">7</text>
+  </g>
+
+  <!-- 分段条 -->
+  <g filter="url(#rough2)">
+    <rect x="110" y="108" width="34" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <text x="127" y="121" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">a</text>
+    <rect x="148" y="108" width="34" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <text x="165" y="121" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">b</text>
+    <rect x="186" y="108" width="72" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4"/>
+    <text x="222" y="121" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">bc</text>
+    <rect x="262" y="108" width="34" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4"/>
+    <text x="279" y="121" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">c</text>
+    <rect x="300" y="108" width="72" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <text x="336" y="121" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">cc</text>
+    <rect x="376" y="108" width="34" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4"/>
+    <text x="393" y="121" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">d</text>
+  </g>
+  <text x="422" y="121" font-size="8.5" fill="#666" filter="url(#rough2)">← 每条 = 提交的新段</text>
+
+  <!-- 扩展标注 -->
+  <g filter="url(#rough2)">
+    <path d="M 200 137 L 196 128" stroke="#b85450" stroke-width="1.4" marker-end="url(#arr)" fill="none"/>
+    <text x="210" y="142" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">「b」已见过 → 扩成「bc」</text>
+    <path d="M 333 137 L 329 128" stroke="#b85450" stroke-width="1.4" marker-end="url(#arr)" fill="none"/>
+    <text x="344" y="142" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">「c」已见过 → 扩成「cc」</text>
+  </g>
+
+  <text x="260" y="160" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">每个新段 = 从当前位置开始的「最短未见前缀」，提交后从下一位重新开始</text>
+
+  <!-- ============ Panel 2: seen 集合 ============ -->
+  <text x="30" y="182" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② seen 集合（已提交段的哈希集合）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="70" y="190" width="380" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="260" y="207" text-anchor="middle" font-size="10.5" fill="#2a5a2a" font-weight="bold">seen = { a, b, bc, c, cc, d }，总长 1+1+2+1+2+1 = 8 ≤ n</text>
+  </g>
+  <text x="260" y="230" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">已提交段互不相同、互不重叠 → 存储总长 ≤ n（空间 O(n)）；查重均摊 O(段长)</text>
+
+  <!-- ============ Panel 3: 两个关键结论 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="242" width="228" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="144" y="260" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">段长上界：L = O(√n)</text>
+    <text x="40" y="278" font-size="9" fill="#333">长 L 的段提交时，L−1 个前缀</text>
+    <text x="40" y="292" font-size="9" fill="#333">都是已提交段（恰长 1,2,…,L−1）</text>
+    <text x="40" y="306" font-size="9" fill="#333">⇒ 1+2+…+(L−1) = L(L−1)/2 ≤ n</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="272" y="242" width="218" height="72" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="381" y="260" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">边界：尾部未完成段丢弃</text>
+    <text x="282" y="278" font-size="9" fill="#333">s = "aaaa" → ["a","aa"]</text>
+    <text x="282" y="292" font-size="9" fill="#333">最后的 "a" 已见过又无字符可扩</text>
+    <text x="282" y="306" font-size="9" fill="#333">→ 从未「唯一」，不提交</text>
+  </g>
+
+  <!-- ============ 底部注解 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="332" width="400" height="28" fill="#f7f7f7" stroke="#bbb" stroke-width="1.2" rx="8"/>
+    <text x="260" y="350" text-anchor="middle" font-size="8.5" fill="#666">哈希版：O(n) 次查询 × O(√n) 子串哈希 = O(n√n)；Trie 版沿树下走可达 O(n)（见题解第 5 节）</text>
+  </g>
+</svg>

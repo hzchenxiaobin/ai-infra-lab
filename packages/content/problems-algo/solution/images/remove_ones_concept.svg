@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心：每行要么等于 row0，要么等于 row0 的逐位取反</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">翻转后 cell(i,j) = grid[i][j] ⊕ r[i] ⊕ c[j]，目标全 0 ⟹ r[i] ⊕ c[j] = grid[i][j]</text>
+
+  <!-- Derivation box -->
+  <rect x="30" y="60" width="500" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="80" font-size="11.5" fill="#333" font-weight="bold">推导：任取两行 i₁, i₂，对任意列 j：</text>
+  <text x="48" y="98" font-size="11" fill="#555">grid[i₁][j] ⊕ grid[i₂][j] = (r[i₁]⊕c[j]) ⊕ (r[i₂]⊕c[j]) = r[i₁] ⊕ r[i₂]  ← 与 j 无关，是常数</text>
+  <text x="48" y="113" font-size="11" fill="#d6a040" font-weight="bold">→ 两行要么完全相同（常数=0），要么逐位相反（常数=1）</text>
+
+  <!-- ===== Row 0 reference ===== -->
+  <text x="185" y="151" text-anchor="end" font-size="11" fill="#446688" font-weight="bold">row0 基准</text>
+  <rect x="200" y="135" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="221" y="156" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <rect x="242" y="135" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="263" y="156" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="284" y="135" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="305" y="156" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <text x="345" y="151" font-size="11" fill="#888">以这一行为基准</text>
+
+  <!-- ===== Row A: identical ===== -->
+  <text x="185" y="206" text-anchor="end" font-size="11" fill="#4a7a3a">行 A</text>
+  <rect x="200" y="190" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="221" y="211" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <rect x="242" y="190" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="263" y="211" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="284" y="190" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="305" y="211" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <text x="345" y="206" font-size="11" fill="#4a7a3a" font-weight="bold">= row0 ✓ 可消</text>
+
+  <!-- ===== Row B: complement ===== -->
+  <text x="185" y="261" text-anchor="end" font-size="11" fill="#d6a040">行 B</text>
+  <rect x="200" y="245" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="221" y="266" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="242" y="245" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="263" y="266" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <rect x="284" y="245" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="305" y="266" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="345" y="261" font-size="11" fill="#d6a040" font-weight="bold">= ~row0 ✓ 可消</text>
+
+  <!-- ===== Row C: neither ===== -->
+  <text x="185" y="316" text-anchor="end" font-size="11" fill="#b85450">行 C</text>
+  <rect x="200" y="300" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="221" y="321" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="242" y="300" width="42" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="263" y="321" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="284" y="300" width="42" height="32" fill="#f6f6f6" stroke="#bbb" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="305" y="321" text-anchor="middle" font-size="14" fill="#bbb">0</text>
+  <text x="345" y="316" font-size="11" fill="#b85450" font-weight="bold">≠ row0 且 ≠ ~row0 ✗ 不可消</text>
+
+  <!-- ===== Summary box ===== -->
+  <rect x="30" y="355" width="500" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="378" font-size="12" fill="#333" font-weight="bold">判定法则</text>
+  <text x="50" y="397" font-size="11" fill="#555">① 以第 0 行为基准 pattern；</text>
+  <text x="50" y="413" font-size="11" fill="#555">② 其余每行要么与基准逐位相同，要么逐位相反（取反）；</text>
+  <text x="50" y="429" font-size="11" fill="#555">③ 出现任何「第三种形态」的行 → 立即返回 false，否则 true。</text>
+  <text x="50" y="443" font-size="10.5" fill="#446688" font-weight="bold">本质：行翻转 r[i] 与列翻转 c[j] 的组合，只能产生「相同/相反」两类行。</text>
+</svg>

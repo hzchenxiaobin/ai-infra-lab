@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">合并阶段：右半元素比左半一段都小 → 批量计数</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">左半 [..lo..mid] 有序，右半 [..mid+1..hi] 有序，合并时 i 指左、j 指右</text>
+
+  <!-- ===== Left half (sorted) ===== -->
+  <text x="60" y="80" font-size="11" fill="#446688" font-weight="bold">左半（已排序）</text>
+  <rect x="60" y="86" width="44" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="82" y="105" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <rect x="108" y="86" width="44" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="105" text-anchor="middle" font-size="11" fill="#333">7</text>
+
+  <!-- pointer i -->
+  <path d="M 82 70 L 82 84" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="82" y="64" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">i</text>
+
+  <!-- ===== Right half (sorted) ===== -->
+  <text x="340" y="80" font-size="11" fill="#b85450" font-weight="bold">右半（已排序）</text>
+  <rect x="340" y="86" width="44" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="362" y="105" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <rect x="388" y="86" width="44" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="105" text-anchor="middle" font-size="11" fill="#333">6</text>
+
+  <!-- pointer j -->
+  <path d="M 362 70 L 362 84" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="362" y="64" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">j</text>
+
+  <!-- ===== Comparison arrow ===== -->
+  <text x="220" y="100" font-size="12" fill="#888" font-weight="bold">5 &gt; 4 ?</text>
+  <path d="M 200 100 L 145 100" stroke="#888" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 245 100 L 335 100" stroke="#888" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Key insight box ===== -->
+  <text x="30" y="150" font-size="12" fill="#b85450" font-weight="bold">⚡ 核心洞察：nums[j]=4 &lt; nums[i]=5 → 左半从 i 到 mid 全部 &gt; nums[j]</text>
+
+  <!-- Highlight all elements from i to mid -->
+  <rect x="56" y="82" width="100" height="36" fill="none" stroke="#b85450" stroke-width="2.5" stroke-dasharray="5,3" rx="6" filter="url(#rough2)"/>
+  <text x="106" y="138" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">这些元素都 &gt; 4</text>
+
+  <!-- ===== Count formula ===== -->
+  <rect x="100" y="160" width="360" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="184" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">逆序对增量 = mid - i + 1</text>
+  <text x="280" y="204" text-anchor="middle" font-size="11" fill="#888">本例：mid=1, i=0 → 1 - 0 + 1 = 2 个逆序对 (5,4) 和 (7,4)</text>
+
+  <!-- ===== Merge output row ===== -->
+  <text x="30" y="248" font-size="11" fill="#4a7a3a" font-weight="bold">合并输出 tmp：</text>
+  <rect x="130" y="254" width="44" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="152" y="273" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">4</text>
+  <rect x="178" y="254" width="44" height="28" fill="#f6f6f6" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="273" text-anchor="middle" font-size="10" fill="#aaa">?</text>
+  <rect x="226" y="254" width="44" height="28" fill="#f6f6f6" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="248" y="273" text-anchor="middle" font-size="10" fill="#aaa">?</text>
+  <rect x="274" y="254" width="44" height="28" fill="#f6f6f6" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="296" y="273" text-anchor="middle" font-size="10" fill="#aaa">?</text>
+
+  <!-- arrow from j to tmp -->
+  <path d="M 362 116 L 200 250" stroke="#b85450" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="300" y="190" font-size="10" fill="#b85450">取右半 4，j++</text>
+
+  <!-- ===== Three cases ===== -->
+  <text x="30" y="316" font-size="12" fill="#444" font-weight="bold">三种情况：</text>
+
+  <rect x="30" y="326" width="160" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="348" text-anchor="middle" font-size="10" fill="#446688">nums[i] ≤ nums[j]：取左，无逆序</text>
+
+  <rect x="200" y="326" width="160" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="10" fill="#b85450">nums[j] &lt; nums[i]：取右，+计数</text>
+
+  <rect x="370" y="326" width="160" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="348" text-anchor="middle" font-size="10" fill="#4a7a3a">某半耗尽：复制剩余，无逆序</text>
+
+  <!-- ===== Bottom note ===== -->
+  <text x="30" y="384" font-size="10" fill="#888">💡 利用左半有序性，一次比较即可批量统计 mid−i+1 个逆序对，无需逐个比较 → O(n log n)</text>
+  <text x="30" y="402" font-size="10" fill="#888">⚠️ 取 ≤ 而非 &lt; 保证相等元素不计数（「严格大于」才算逆序），同时保持归并稳定性</text>
+</svg>

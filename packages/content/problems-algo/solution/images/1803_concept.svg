@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    核心观察：前缀差分 + Trie 子树计数
+  </text>
+
+  <!-- ===== Top: diff formula ===== -->
+  <rect x="60" y="42" width="440" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    #[low ≤ x⊕y ≤ high] = countLE(high) − countLE(low−1)
+  </text>
+  <text x="280" y="80" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">
+    区间计数 → 两次「≤ 阈值」计数做差
+  </text>
+
+  <!-- ===== Section labels ===== -->
+  <text x="150" y="112" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">limit 该位 l_b = 1</text>
+  <text x="410" y="112" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">limit 该位 l_b = 0</text>
+
+  <!-- separator -->
+  <line x1="280" y1="100" x2="280" y2="320" stroke="#dddddd" stroke-width="1" stroke-dasharray="3 4" filter="url(#rough2)"/>
+
+  <!-- ===== LEFT: l_b = 1 ===== -->
+  <!-- root -->
+  <ellipse cx="150" cy="138" rx="20" ry="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="142" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">node</text>
+  <text x="150" y="158" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">cnt=3</text>
+
+  <!-- two branches -->
+  <line x1="135" y1="148" x2="95" y2="178" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+  <line x1="165" y1="148" x2="205" y2="178" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="100" y="170" font-size="9" fill="#888" filter="url(#rough2)">y位=x_b</text>
+  <text x="178" y="170" font-size="9" fill="#888" filter="url(#rough2)">y位=1−x_b</text>
+
+  <!-- left child: counted fully (green) -->
+  <ellipse cx="90" cy="190" rx="22" ry="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="90" y="194" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">cnt=2</text>
+  <text x="90" y="212" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">XOR位=0</text>
+
+  <!-- right child: descend (yellow) -->
+  <ellipse cx="210" cy="190" rx="22" ry="14" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="210" y="194" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">cnt=1</text>
+  <text x="210" y="212" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">XOR位=1</text>
+
+  <!-- annotations -->
+  <rect x="40" y="228" width="105" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="92" y="244" text-anchor="middle" font-size="10" fill="#2a4a1a" filter="url(#rough2)">0 &lt; 1 = l_b</text>
+  <text x="92" y="258" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">整棵计入 ✓</text>
+
+  <rect x="158" y="228" width="105" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="210" y="244" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">1 = 1 = l_b</text>
+  <text x="210" y="258" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">下钻继续 ↘</text>
+
+  <text x="150" y="288" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">
+    ans += child[x_b].cnt
+  </text>
+  <text x="150" y="304" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    cur = child[1−x_b]
+  </text>
+
+  <!-- ===== RIGHT: l_b = 0 ===== -->
+  <!-- root -->
+  <ellipse cx="410" cy="138" rx="20" ry="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="410" y="142" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">node</text>
+  <text x="410" y="158" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">cnt=3</text>
+
+  <!-- two branches -->
+  <line x1="395" y1="148" x2="355" y2="178" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+  <line x1="425" y1="148" x2="465" y2="178" stroke="#b85450" stroke-width="1.3" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="356" y="170" font-size="9" fill="#888" filter="url(#rough2)">y位=x_b</text>
+  <text x="436" y="170" font-size="9" fill="#888" filter="url(#rough2)">y位=1−x_b</text>
+
+  <!-- left child: descend (yellow) -->
+  <ellipse cx="350" cy="190" rx="22" ry="14" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="350" y="194" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">cnt=2</text>
+  <text x="350" y="212" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">XOR位=0</text>
+
+  <!-- right child: discard (red) -->
+  <ellipse cx="470" cy="190" rx="22" ry="14" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="470" y="194" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">cnt=1</text>
+  <text x="470" y="212" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">XOR位=1</text>
+
+  <!-- annotations -->
+  <rect x="300" y="228" width="105" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="352" y="244" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">0 = 0 = l_b</text>
+  <text x="352" y="258" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">下钻继续 ↘</text>
+
+  <rect x="418" y="228" width="105" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="244" text-anchor="middle" font-size="10" fill="#5a1a1a" filter="url(#rough2)">1 &gt; 0 = l_b</text>
+  <text x="470" y="258" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">越界丢弃 ✗</text>
+
+  <text x="410" y="288" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    ans += 0
+  </text>
+  <text x="410" y="304" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    cur = child[x_b]
+  </text>
+
+  <!-- ===== Bottom: insight ===== -->
+  <rect x="40" y="328" width="480" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">
+    节点存 cnt = 子树元素数；limit 该位为 1 时「同位子树一刀切」计入
+  </text>
+  <text x="280" y="366" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">
+    把内层 O(n) 枚举降为 O(log max) 位遍历
+  </text>
+  <text x="280" y="380" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    绿=计入；橙=下钻；红=丢弃
+  </text>
+</svg>

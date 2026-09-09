@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">两条子链拆分 + 顺序拼接：保持相对次序</text>
+  <text x="300" y="44" text-anchor="middle" font-size="11" fill="#888">遍历原链表，按 val 与 x 比较分别尾插到 small / large 两条子链</text>
+
+  <!-- ===== 原链表：1 → 4 → 3 → 2 → 5 → 2，x = 3 ===== -->
+  <text x="20" y="82" font-size="11" fill="#555" font-weight="bold">原链表 (x = 3)：</text>
+  <g font-size="13">
+    <rect x="100" y="68" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="122" y="88" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="152" y="68" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="174" y="88" text-anchor="middle" fill="#333" font-weight="bold">4</text>
+    <rect x="204" y="68" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="226" y="88" text-anchor="middle" fill="#333" font-weight="bold">3</text>
+    <rect x="256" y="68" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="278" y="88" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+    <rect x="308" y="68" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="88" text-anchor="middle" fill="#333" font-weight="bold">5</text>
+    <rect x="360" y="68" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="382" y="88" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+  </g>
+  <g stroke="#446688" stroke-width="1.2" fill="none">
+    <line x1="144" y1="84" x2="152" y2="84" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="196" y1="84" x2="204" y2="84" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="248" y1="84" x2="256" y2="84" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="300" y1="84" x2="308" y2="84" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="352" y1="84" x2="360" y2="84" marker-end="url(#arr)" filter="url(#rough2)"/>
+  </g>
+
+  <!-- curr 指针指向第一个节点 -->
+  <text x="122" y="62" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">curr</text>
+  <path d="M 122 64 L 122 68" stroke="#b85450" stroke-width="1" fill="none" stroke-dasharray="2,2" filter="url(#rough2)"/>
+
+  <!-- 图例 -->
+  <rect x="440" y="68" width="14" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="460" y="80" font-size="10" fill="#555">val &lt; x → small</text>
+  <rect x="440" y="88" width="14" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="460" y="100" font-size="10" fill="#555">val ≥ x → large</text>
+
+  <!-- ===== 两条子链 ===== -->
+  <!-- small 子链 -->
+  <text x="20" y="160" font-size="11" fill="#4a7a3a" font-weight="bold">small 子链 (val &lt; 3)：</text>
+  <g font-size="12">
+    <rect x="40" y="172" width="56" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="68" y="192" text-anchor="middle" fill="#8a6a20" font-size="10" font-weight="bold">sDummy</text>
+    <rect x="108" y="172" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="130" y="192" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="160" y="172" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="182" y="192" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+    <rect x="212" y="172" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="234" y="192" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+  </g>
+  <g stroke="#4a7a3a" stroke-width="1.2" fill="none">
+    <line x1="96" y1="187" x2="108" y2="187" marker-end="url(#arrG)" filter="url(#rough2)"/>
+    <line x1="152" y1="187" x2="160" y2="187" marker-end="url(#arrG)" filter="url(#rough2)"/>
+    <line x1="204" y1="187" x2="212" y2="187" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  </g>
+  <text x="130" y="162" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">sTail</text>
+  <path d="M 130 164 L 130 172" stroke="#4a7a3a" stroke-width="1" fill="none" stroke-dasharray="2,2" filter="url(#rough2)"/>
+  <text x="280" y="192" font-size="10" fill="#888">保持原序：1, 2, 2</text>
+
+  <!-- large 子链 -->
+  <text x="20" y="244" font-size="11" fill="#d6a040" font-weight="bold">large 子链 (val ≥ 3)：</text>
+  <g font-size="12">
+    <rect x="40" y="256" width="56" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="68" y="276" text-anchor="middle" fill="#8a6a20" font-size="10" font-weight="bold">lDummy</text>
+    <rect x="108" y="256" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="130" y="276" text-anchor="middle" fill="#333" font-weight="bold">4</text>
+    <rect x="160" y="256" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="182" y="276" text-anchor="middle" fill="#333" font-weight="bold">3</text>
+    <rect x="212" y="256" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="234" y="276" text-anchor="middle" fill="#333" font-weight="bold">5</text>
+  </g>
+  <g stroke="#d6a040" stroke-width="1.2" fill="none">
+    <line x1="96" y1="271" x2="108" y2="271" marker-end="url(#arrO)" filter="url(#rough2)"/>
+    <line x1="152" y1="271" x2="160" y2="271" marker-end="url(#arrO)" filter="url(#rough2)"/>
+    <line x1="204" y1="271" x2="212" y2="271" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  </g>
+  <text x="130" y="246" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">lTail</text>
+  <path d="M 130 248 L 130 256" stroke="#d6a040" stroke-width="1" fill="none" stroke-dasharray="2,2" filter="url(#rough2)"/>
+  <text x="280" y="276" font-size="10" fill="#888">保持原序：4, 3, 5</text>
+
+  <!-- ===== 拼接箭头 ===== -->
+  <text x="300" y="332" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">拼接：sTail.next = lDummy.next，再断开 lTail.next = null</text>
+  <path d="M 234 200 Q 300 230 130 256" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 结果链表 ===== -->
+  <text x="20" y="362" font-size="11" fill="#444" font-weight="bold">结果：</text>
+  <g font-size="13">
+    <rect x="70" y="350" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="92" y="370" text-anchor="middle" fill="#333" font-weight="bold">1</text>
+    <rect x="122" y="350" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="144" y="370" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+    <rect x="174" y="350" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="196" y="370" text-anchor="middle" fill="#333" font-weight="bold">2</text>
+    <rect x="226" y="350" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="248" y="370" text-anchor="middle" fill="#333" font-weight="bold">4</text>
+    <rect x="278" y="350" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="300" y="370" text-anchor="middle" fill="#333" font-weight="bold">3</text>
+    <rect x="330" y="350" width="44" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="352" y="370" text-anchor="middle" fill="#333" font-weight="bold">5</text>
+  </g>
+  <g stroke="#446688" stroke-width="1.2" fill="none">
+    <line x1="114" y1="365" x2="122" y2="365" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="166" y1="365" x2="174" y2="365" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="218" y1="365" x2="226" y2="365" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="270" y1="365" x2="278" y2="365" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <line x1="322" y1="365" x2="330" y2="365" marker-end="url(#arr)" filter="url(#rough2)"/>
+  </g>
+  <text x="400" y="370" font-size="11" fill="#888">小段在前、大段在后，各自原序不变</text>
+
+  <!-- 底部要点 -->
+  <rect x="20" y="392" width="560" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="408" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">关键：尾插天然保序；哑节点统一空链初始态；最后必须断开 lTail.next 防环</text>
+</svg>

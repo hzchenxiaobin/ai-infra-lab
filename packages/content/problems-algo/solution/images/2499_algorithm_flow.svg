@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arr_r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：找坏位置 → 频次/主导值 → 判溢出 → 收集合法好位置 → 求和</text>
+
+  <!-- Step 1 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="46" width="380" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="56" y="70" font-size="13" fill="#446688" font-weight="bold">① 找坏位置 B = { i | nums1[i] == nums2[i] }</text>
+    <text x="56" y="90" font-size="12" fill="#333">m = |B|；sum_B = Σi；若 m=0 直接返回 0</text>
+  </g>
+  <path d="M230,102 L230,120" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="120" width="380" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="56" y="144" font-size="13" fill="#d6a040" font-weight="bold">② 统计取值频次 freq[v]，maxFreq，主导值 d</text>
+    <text x="56" y="164" font-size="12" fill="#333">d = argmax freq（坏位置里出现最多的那个值）</text>
+  </g>
+  <path d="M230,176 L230,200" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 : decision diamond -->
+  <g filter="url(#rough2)">
+    <path d="M230,204 L300,236 L230,268 L160,236 z" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="230" y="234" text-anchor="middle" font-size="12" fill="#2f5a22" font-weight="bold">2·maxFreq</text>
+    <text x="230" y="250" text-anchor="middle" font-size="12" fill="#2f5a22" font-weight="bold">&gt; m ?</text>
+  </g>
+
+  <!-- "否" branch -> right box -->
+  <path d="M300,236 L360,236" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="322" y="228" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="362" y="210" width="178" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="376" y="232" font-size="12" fill="#2f5a22" font-weight="bold">无主导：答案 = sum_B</text>
+    <text x="376" y="252" font-size="11" fill="#555">奇数个时下标 0 免费救场</text>
+  </g>
+
+  <!-- "是" branch -> down -->
+  <path d="M230,268 L230,290" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arr_r)" filter="url(#rough2)"/>
+  <text x="244" y="284" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <!-- Step 4 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="290" width="380" height="62" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="56" y="314" font-size="13" fill="#b85450" font-weight="bold">④ overflow = 2·maxFreq − m；收集合法好位置</text>
+    <text x="56" y="334" font-size="12" fill="#333">好位置 j：nums1[j]≠nums2[j] 且 nums1[j]≠d 且 nums2[j]≠d</text>
+    <text x="56" y="350" font-size="11" fill="#666">按下标升序取（正序扫描天然有序），取前 overflow 个</text>
+  </g>
+  <path d="M230,352 L230,372" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="372" width="380" height="56" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="56" y="396" font-size="13" fill="#446688" font-weight="bold">⑤ 判可行性并求和</text>
+    <text x="56" y="416" font-size="12" fill="#333">cnt &lt; overflow → 返回 −1；否则返回 sum_B + 前overflow个下标和</text>
+  </g>
+
+  <!-- note -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="438" width="500" height="24" rx="6" fill="#fafafa" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="56" y="454" font-size="11" fill="#888">关键：坏位置取值 d 占多数才需外借；sum_B 与配对方式无关（每个坏下标恰好计一次）。</text>
+  </g>
+</svg>

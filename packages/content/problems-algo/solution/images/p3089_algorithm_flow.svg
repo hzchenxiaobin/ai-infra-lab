@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="470" fill="#fafafa"/>
+
+  <text x="290" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：锚点窗计数 P ∥ 周均频率 T → JOIN → MAX → HAVING</text>
+  <text x="290" y="38" text-anchor="middle" font-size="9" fill="#888">两个 CTE 并行统计，最后按 user_id 汇总过滤；⚠️ 全程先限定 02-01 ~ 02-28</text>
+
+  <!-- Step 1 -->
+  <rect x="170" y="48" width="240" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="62" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Posts（CTE F）</text>
+  <text x="290" y="76" text-anchor="middle" font-size="8" fill="#888">WHERE post_date BETWEEN '02-01' AND '02-28'</text>
+
+  <!-- split arrows -->
+  <path d="M 290 84 L 290 94 L 155 94 L 155 102" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 290 84 L 290 94 L 425 94 L 425 102" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: P -->
+  <rect x="40" y="104" width="230" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="119" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">② CTE P：F p1 ⋈ F p2</text>
+  <text x="155" y="132" text-anchor="middle" font-size="8" fill="#446688">ON 同 user 且 p2 ∈ [p1.d, p1.d+6]</text>
+  <text x="155" y="144" text-anchor="middle" font-size="8" fill="#888">GROUP BY (user_id, p1.post_id) → cnt</text>
+
+  <!-- Step 3: T -->
+  <rect x="310" y="104" width="230" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="425" y="119" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">③ CTE T：GROUP BY user_id</text>
+  <text x="425" y="132" text-anchor="middle" font-size="8" fill="#4a7a3a">COUNT(1) / 4 AS avg_weekly_posts</text>
+  <text x="425" y="144" text-anchor="middle" font-size="8" fill="#888">分母固定 4：2 月只统计 28 天</text>
+
+  <!-- converge arrows -->
+  <path d="M 155 150 L 155 164 L 250 164 L 250 172" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 425 150 L 425 164 L 330 164 L 330 172" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: JOIN -->
+  <rect x="160" y="174" width="260" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="193" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">④ P JOIN T USING (user_id)</text>
+
+  <path d="M 290 204 L 290 216" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: GROUP BY MAX -->
+  <rect x="130" y="218" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="232" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">⑤ GROUP BY user_id → MAX(cnt) AS max_7day_posts</text>
+  <text x="290" y="246" text-anchor="middle" font-size="8" fill="#888">avg_weekly_posts 随组带出（T 中每用户唯一）</text>
+
+  <path d="M 290 252 L 290 264" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: HAVING diamond -->
+  <polygon points="290,266 392,296 290,326 188,296" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="290" y="292" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">HAVING</text>
+  <text x="290" y="306" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">max_7day ≥ avg × 2 ？</text>
+
+  <path d="M 392 296 L 434 296" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="290" text-anchor="middle" font-size="8" fill="#b85450">否</text>
+  <rect x="436" y="282" width="122" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="497" y="294" text-anchor="middle" font-size="9" fill="#b85450">丢弃（如用户 3）</text>
+  <text x="497" y="306" text-anchor="middle" font-size="8" fill="#b85450">帖多但均匀</text>
+
+  <path d="M 290 326 L 290 338" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="336" font-size="8" fill="#4a7a3a">是</text>
+
+  <!-- Step 7 -->
+  <rect x="130" y="340" width="320" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="354" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑦ ORDER BY user_id</text>
+  <text x="290" y="368" text-anchor="middle" font-size="8" fill="#888">输出 (user_id, max_7day_posts, avg_weekly_posts)</text>
+
+  <!-- Note box -->
+  <rect x="40" y="392" width="500" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="410" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ MySQL 允许 HAVING 引用 SELECT 别名 max_7day_posts；标准 SQL 更稳妥写 MAX(cnt) ≥ avg × 2</text>
+  <text x="290" y="428" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ 窗口 [d, d+6] 是闭区间，恰好 7 天：BETWEEN p1.d AND DATE_ADD(p1.d, INTERVAL 6 DAY)</text>
+  <text x="290" y="446" text-anchor="middle" font-size="9" fill="#d6a040">⚠️ COUNT(1)/4 是小数除法（0.2500 四位小数），整除要用 DIV——本题要的正是小数</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：dummy 哨兵 + prev 中序尾插</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">时间 O(n)，空间 O(h)；中序遍历原地重连</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: init -->
+    <rect x="40" y="64" width="480" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="84" font-size="12" fill="#446688" font-weight="bold">① 建哑节点</text>
+    <text x="160" y="84" font-family="monospace" font-size="10" fill="#555">dummy = new TreeNode(0);  prev = dummy;</text>
+    <text x="54" y="102" font-size="9" fill="#888">prev = 链表尾部游标；dummy.right 最终指向新根</text>
+
+    <path d="M 280 114 L 280 128" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: inorder left -->
+    <rect x="40" y="132" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="152" font-size="12" fill="#4a7a3a" font-weight="bold">② 先递归左子树</text>
+    <text x="200" y="152" font-family="monospace" font-size="10" fill="#555">inorder(root-&gt;left);</text>
+    <text x="54" y="168" font-size="9" fill="#888">左子树先被重连成右链，prev 走到左子树最后一个节点</text>
+
+    <path d="M 280 178 L 280 192" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: rewire -->
+    <rect x="40" y="196" width="480" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="216" font-size="12" fill="#d6a040" font-weight="bold">③ 访问根：尾插重连</text>
+    <text x="54" y="234" font-family="monospace" font-size="10" fill="#555">root-&gt;left = nullptr;     // 清左指针</text>
+    <text x="54" y="250" font-family="monospace" font-size="10" fill="#555">prev-&gt;right = root;        // 接到链表尾部</text>
+    <text x="54" y="266" font-family="monospace" font-size="10" fill="#555">prev = root;               // 游标前进</text>
+
+    <path d="M 280 272 L 280 286" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 4: inorder right -->
+    <rect x="40" y="290" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="310" font-size="12" fill="#4a7a3a" font-weight="bold">④ 再递归右子树</text>
+    <text x="200" y="310" font-family="monospace" font-size="10" fill="#555">inorder(root-&gt;right);</text>
+    <text x="54" y="326" font-size="9" fill="#888">右子树续接在链表尾部；指针按值传递，重连不影响递归</text>
+
+    <path d="M 280 336 L 280 350" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 5: done -->
+    <rect x="40" y="354" width="480" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="374" font-size="12" fill="#b85450" font-weight="bold">⑤ 收尾</text>
+    <text x="130" y="374" font-family="monospace" font-size="10" fill="#555">prev-&gt;left = prev-&gt;right = nullptr;</text>
+    <text x="130" y="388" font-size="9" fill="#888">return dummy-&gt;right;  // 断尾 + 返回新根</text>
+  </g>
+
+  <!-- recursion order side note -->
+  <rect x="40" y="404" width="480" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="422" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">访问顺序 = 中序（左→根→右）：1 → 2 → 3 → … → 9</text>
+</svg>

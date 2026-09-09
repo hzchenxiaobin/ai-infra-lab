@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流程：四步得到「每学生 × 每科目」考试次数</text>
+
+  <!-- Step 1: CROSS JOIN -->
+  <rect x="80" y="50" width="400" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="68" font-size="11" fill="#446688" font-weight="bold">① CROSS JOIN Students × Subjects</text>
+  <text x="100" y="84" font-size="10" fill="#555">FROM Students s CROSS JOIN Subjects sub — 生成 4×3=12 个「学生 × 科目」全组合</text>
+  <circle cx="50" cy="73" r="14" fill="#446688" filter="url(#rough2)"/>
+  <text x="50" y="77" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">1</text>
+
+  <path d="M 280 96 L 280 106" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 2: LEFT JOIN -->
+  <rect x="80" y="110" width="400" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="128" font-size="11" fill="#4a7a3a" font-weight="bold">② LEFT JOIN Examinations e</text>
+  <text x="100" y="144" font-size="10" fill="#555">ON e.student_id = s.student_id AND e.subject_name = sub.subject_name — 未参加的组合保留 NULL</text>
+  <circle cx="50" cy="133" r="14" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="50" y="137" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">2</text>
+
+  <path d="M 280 156 L 280 166" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY + COUNT -->
+  <rect x="80" y="170" width="400" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="188" font-size="11" fill="#d6a040" font-weight="bold">③ GROUP BY + COUNT(e.student_id)</text>
+  <text x="100" y="204" font-size="10" fill="#555">GROUP BY student_id, student_name, subject_name — COUNT(列) 忽略 NULL，未参加得 0</text>
+  <circle cx="50" cy="193" r="14" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="50" y="197" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">3</text>
+
+  <path d="M 280 216 L 280 226" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="80" y="230" width="400" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="248" font-size="11" fill="#b85450" font-weight="bold">④ ORDER BY student_id, subject_name</text>
+  <text x="100" y="264" font-size="10" fill="#555">按学生编号、科目名升序排列，输出 student_id/name + subject_name + attended_exams</text>
+  <circle cx="50" cy="253" r="14" fill="#b85450" filter="url(#rough2)"/>
+  <text x="50" y="257" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">4</text>
+
+  <!-- Summary -->
+  <rect x="80" y="290" width="400" height="60" fill="none" stroke="none"/>
+  <text x="280" y="310" text-anchor="middle" font-size="10.5" fill="#888">①②③ 是核心：先造全组合、再左连保 NULL、最后 COUNT(列) 自动计 0</text>
+  <text x="280" y="326" text-anchor="middle" font-size="10" fill="#b85450">⚠️ COUNT(*) 会把 NULL 行算 1，必须 COUNT(e.student_id)</text>
+  <text x="280" y="342" text-anchor="middle" font-size="10" fill="#888">SQL 子句顺序：FROM(含 JOIN) → GROUP BY → SELECT(含 COUNT) → ORDER BY</text>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#e6f4ea"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#4a7a3a" stroke-width="1.4"/>
+    </pattern>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">核心：左端对齐砖块起点 + 右端截断 + 前缀和</text>
+
+  <!-- carpet placed at position 1, length 10 -> covers [1,10] -->
+  <rect x="50" y="46" width="130" height="20" fill="url(#hatch)" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="115" y="40" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">毯子 [1, 10] (长 10)</text>
+
+  <!-- tiles on the line: [1,5] [10,18] [22,30] -->
+  <rect x="50" y="80" width="65" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="82" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">[1,5]</text>
+  <rect x="167" y="80" width="117" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">[10,18]</text>
+  <rect x="323" y="80" width="117" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="381" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">[22,30]</text>
+
+  <!-- number line -->
+  <line x1="40" y1="120" x2="460" y2="120" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="50" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">1</text>
+  <text x="115" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">5</text>
+  <text x="167" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">10</text>
+  <text x="284" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">18</text>
+  <text x="323" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">22</text>
+  <text x="440" y="134" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">30</text>
+
+  <!-- bracket: full tile [1,5] -->
+  <path d="M 50 148 Q 50 156 56 156 L 109 156 Q 115 156 115 148" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="82" y="172" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">整块盖 → 5 (前缀和 O(1))</text>
+
+  <!-- bracket: clipped tile [10,18] at 10 -->
+  <path d="M 167 148 Q 167 156 173 156 L 174 156 Q 180 156 180 148" stroke="#b85450" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="225" y="172" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">右端截断 → min(18,10)−10+1 = 1</text>
+
+  <!-- cover sum -->
+  <rect x="120" y="190" width="320" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="210" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">cover = (pref[1]−pref[0]) + 截断 = 5 + 1 = 6</text>
+
+  <!-- greedy principle box -->
+  <rect x="40" y="240" width="480" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="260" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">贪心不变量：</text>
+  <text x="60" y="278" font-size="10.8" fill="#4a7a3a" filter="url(#rough2)">最优放置时，毯子左端必与某砖块左端对齐 —— 否则右移到对齐，左侧丢失的只是</text>
+  <text x="60" y="291" font-size="10.8" fill="#4a7a3a" filter="url(#rough2)">空隙（无白砖），右侧可能多盖，结果不劣化。故只需枚举每块砖的左端作起点。</text>
+
+  <!-- prefix formula box -->
+  <rect x="40" y="300" width="480" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="320" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">pref[i] = Σ(tiles[k].r − tiles[k].l + 1), k &lt; i</text>
+  <text x="280" y="336" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">任意区间整块和 = pref[j] − pref[l]，O(1) 取出</text>
+</svg>

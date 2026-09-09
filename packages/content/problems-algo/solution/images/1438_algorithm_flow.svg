@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：维护 maxq/minq → 超标收缩 → 更新答案</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">时间 O(n) 均摊；两个队列各存下标，弹尾保单调，弹头去过期</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: init -->
+    <rect x="40" y="62" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="82" font-size="12" fill="#446688" font-weight="bold">① 初始化</text>
+    <text x="130" y="82" font-family="monospace" font-size="10" fill="#555">deque maxq, minq;  int left = 0, ans = 0;</text>
+    <text x="130" y="98" font-size="9" fill="#888">maxq 递减取最大，minq 递增取最小，都存下标</text>
+
+    <path d="M 270 108 L 270 122" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: for loop -->
+    <rect x="40" y="126" width="460" height="220" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="146" font-size="12" fill="#4a7a3a" font-weight="bold">② 遍历 right = 0..n-1</text>
+
+    <text x="70" y="164" font-family="monospace" font-size="10" fill="#b85450">// 维护 maxq（递减）：弹掉尾部 ≤ nums[right] 的</text>
+    <text x="70" y="178" font-family="monospace" font-size="10" fill="#b85450">while maxq &amp;&amp; nums[maxq.back()] &lt;= nums[right]: maxq.pop_back();</text>
+    <text x="70" y="192" font-family="monospace" font-size="10" fill="#555">maxq.push_back(right);</text>
+
+    <text x="70" y="212" font-family="monospace" font-size="10" fill="#4a7a3a">// 维护 minq（递增）：弹掉尾部 ≥ nums[right] 的</text>
+    <text x="70" y="226" font-family="monospace" font-size="10" fill="#4a7a3a">while minq &amp;&amp; nums[minq.back()] &gt;= nums[right]: minq.pop_back();</text>
+    <text x="70" y="240" font-family="monospace" font-size="10" fill="#555">minq.push_back(right);</text>
+
+    <text x="70" y="260" font-family="monospace" font-size="10" fill="#d6a040">// 超标收缩：max − min &gt; limit 时左端推进</text>
+    <text x="70" y="274" font-family="monospace" font-size="10" fill="#d6a040">while nums[maxq.front()] - nums[minq.front()] &gt; limit:</text>
+    <text x="86" y="288" font-family="monospace" font-size="10" fill="#d6a040">left++;</text>
+    <text x="86" y="302" font-family="monospace" font-size="10" fill="#d6a040">while maxq[0] &lt; left: maxq.pop_front();</text>
+    <text x="86" y="316" font-family="monospace" font-size="10" fill="#d6a040">while minq[0] &lt; left: minq.pop_front();</text>
+
+    <text x="70" y="336" font-family="monospace" font-size="10" fill="#555">ans = max(ans, right - left + 1);</text>
+
+    <path d="M 270 348 L 270 362" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: return -->
+    <rect x="40" y="366" width="460" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="270" y="382" text-anchor="middle" font-family="monospace" font-size="10" fill="#b85450" font-weight="bold">return ans;  // 每元素入队出队各 ≤ 2 次 → O(n)</text>
+  </g>
+
+  <text x="270" y="410" text-anchor="middle" font-size="9" fill="#888">顺序：先维护两队列（右端弹尾），再超标收缩（左端弹头），最后更新答案</text>
+  <text x="270" y="424" text-anchor="middle" font-size="9" fill="#888">「任意两元素绝对差 ≤ limit」等价于「max − min ≤ limit」</text>
+</svg>

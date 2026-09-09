@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：翻转传播性 + 贪心左扫</text>
+
+  <!-- ===== Section 1: flip propagation ===== -->
+  <text x="280" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 翻转位置 i → 切换 i 到 n−1 所有灯泡</text>
+
+  <!-- target bulbs row -->
+  <g font-size="13" fill="#333" text-anchor="middle">
+    <rect x="80" y="66" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="100" y="88">1</text>
+    <rect x="124" y="66" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="144" y="88">0</text>
+    <rect x="168" y="66" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="188" y="88">1</text>
+    <rect x="212" y="66" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="232" y="88">1</text>
+    <rect x="256" y="66" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="276" y="88">1</text>
+  </g>
+  <text x="60" y="88" font-size="10" fill="#888">target:</text>
+
+  <!-- bracket showing flip(2) affects positions 2,3,4 -->
+  <path d="M 188 104 L 188 116 L 276 116 L 276 104" stroke="#b85450" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <path d="M 232 116 L 232 128" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="232" y="142" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">flip(2)：切换 2,3,4</text>
+
+  <!-- ===== Section 2: effective state ===== -->
+  <text x="280" y="170" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 灯泡 i 的有效状态 = 累计翻转次数 mod 2</text>
+
+  <rect x="60" y="182" width="440" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="202" text-anchor="middle" font-size="11.5" fill="#333">每次翻转 j ≤ i 都会影响灯泡 i → 有效状态 = 翻转奇偶</text>
+  <text x="280" y="218" text-anchor="middle" font-size="11" fill="#4a7a3a">有效状态 = 0 ⊕ (flip_count mod 2) = flip_parity</text>
+
+  <path d="M 280 230 L 280 246" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Section 3: greedy rule ===== -->
+  <text x="280" y="264" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 贪心：有效状态 ≠ target[i] → 必须翻 i</text>
+
+  <rect x="60" y="276" width="440" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="11.5" fill="#333">灯泡 0..i−1 已确定 → 唯一能改 i 而不破坏前序的就是翻 i</text>
+  <text x="280" y="312" text-anchor="middle" font-size="11" fill="#d6a040">匹配则跳过；不匹配则翻转，parity 翻转</text>
+
+  <!-- ===== Conclusion ===== -->
+  <rect x="60" y="338" width="440" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="358" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">结论：答案 = target 中「变化点」个数</text>
+  <text x="280" y="376" text-anchor="middle" font-size="10.5" fill="#888">即 target[i] ≠ target[i−1] 的次数（target[−1] 视为 0）</text>
+</svg>

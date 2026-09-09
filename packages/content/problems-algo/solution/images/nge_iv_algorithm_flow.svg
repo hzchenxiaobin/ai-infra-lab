@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="470" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：双单调栈一趟扫描</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">时间 O(n) 均摊，空间 O(n)；每元素入 s1/s2 各 1 次、各出 1 次</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: init -->
+    <rect x="40" y="64" width="440" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="84" font-size="12" fill="#446688" font-weight="bold">① 初始化</text>
+    <text x="130" y="84" font-family="monospace" font-size="10" fill="#555">answer = [-1] * n;  s1 = [];  s2 = []</text>
+    <text x="130" y="100" font-size="9" fill="#888">answer 全填 -1（找不到第 2 大的默认值），两栈皆空</text>
+
+    <path d="M 260 110 L 260 124" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: for loop -->
+    <rect x="40" y="128" width="440" height="178" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="148" font-size="12" fill="#4a7a3a" font-weight="bold">② 遍历 i = 0 .. n-1</text>
+    <text x="54" y="166" font-family="monospace" font-size="10" fill="#d6a040">// 1) 结算 s2：nums[i] 作为第 2 个更大</text>
+    <text x="70" y="182" font-family="monospace" font-size="10" fill="#b85450">while s2 and nums[s2[-1]] &lt; nums[i]:</text>
+    <text x="86" y="198" font-family="monospace" font-size="10" fill="#b85450">answer[s2.pop()] = nums[i]</text>
+    <text x="54" y="216" font-family="monospace" font-size="10" fill="#d6a040">// 2) 迁移 s1 → s2：nums[i] 作为第 1 个更大</text>
+    <text x="70" y="232" font-family="monospace" font-size="10" fill="#4a7a3a">tmp = []</text>
+    <text x="70" y="248" font-family="monospace" font-size="10" fill="#4a7a3a">while s1 and nums[s1[-1]] &lt; nums[i]: tmp.append(s1.pop())</text>
+    <text x="70" y="264" font-family="monospace" font-size="10" fill="#4a7a3a">for j in reversed(tmp): s2.append(j)   // 逆序保 s2 递减</text>
+    <text x="54" y="282" font-family="monospace" font-size="10" fill="#d6a040">// 3) 当前下标入 s1，等后续更大来结算</text>
+    <text x="70" y="298" font-family="monospace" font-size="10" fill="#446688">s1.append(i)</text>
+
+    <path d="M 260 308 L 260 322" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: return -->
+    <rect x="40" y="326" width="440" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="346" font-size="12" fill="#d6a040" font-weight="bold">③ 结束</text>
+    <text x="130" y="346" font-family="monospace" font-size="10" fill="#555">return answer</text>
+    <text x="130" y="362" font-size="9" fill="#888">两栈中剩余元素从未找到第 2 大，answer 保持 -1</text>
+
+    <!-- invariant note -->
+    <rect x="40" y="388" width="440" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+    <text x="54" y="408" font-size="11" fill="#b85450" font-weight="bold">不变量</text>
+    <text x="54" y="424" font-size="9.5" fill="#555">s1、s2 各自严格递减（栈顶最小）；比较一律 nums[栈顶] &lt; nums[i]（严格小于）。</text>
+    <text x="54" y="440" font-size="9.5" fill="#555">迁移逆序：s1 弹出序列值递增，逆序后递减压入 s2，s2 仍严格递减。</text>
+  </g>
+</svg>

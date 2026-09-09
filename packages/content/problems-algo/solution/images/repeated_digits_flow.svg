@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="520" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">数位 DP 流程：dfs(pos, tight, lead, mask)</text>
+
+  <!-- ===== 状态说明 ===== -->
+  <rect x="20" y="40" width="540" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="58" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">四个状态参数</text>
+  <text x="100" y="76" text-anchor="middle" font-size="10" fill="#333">pos：当前位（0→k−1）</text>
+  <text x="250" y="76" text-anchor="middle" font-size="10" fill="#333">tight：前缀=n？</text>
+  <text x="390" y="76" text-anchor="middle" font-size="10" fill="#333">lead：仍前导零？</text>
+  <text x="510" y="76" text-anchor="middle" font-size="10" fill="#333">mask：已用数字位图</text>
+  <text x="290" y="94" text-anchor="middle" font-size="10" fill="#888">lead=true 时放 0 不标记 mask（数字还没「开始」）</text>
+
+  <!-- ===== 终止条件 ===== -->
+  <rect x="180" y="114" width="220" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="134" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">终止：pos == k</text>
+  <text x="290" y="152" text-anchor="middle" font-size="10" fill="#333">return lead ? 0 : 1　（全零不算正整数）</text>
+
+  <path d="M 290 162 L 290 176" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 计算上限 ===== -->
+  <rect x="160" y="178" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="204" text-anchor="middle" font-size="11" fill="#446688">up = tight ? s[pos] : 9　　遍历 d = 0..up</text>
+
+  <path d="M 290 218 L 290 232" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 两个分支 ===== -->
+  <!-- 分支A: lead && d==0 -->
+  <rect x="30" y="236" width="250" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="258" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">分支 A：lead &amp;&amp; d == 0</text>
+  <text x="155" y="276" text-anchor="middle" font-size="10" fill="#333">仍是前导零，数字未「开始」</text>
+  <text x="155" y="294" text-anchor="middle" font-size="10" fill="#333">→ mask 不变（不标记 0）</text>
+  <text x="155" y="312" text-anchor="middle" font-size="10" fill="#333">→ dfs(pos+1, tight&amp;&amp;d==up, true, mask)</text>
+  <text x="155" y="326" text-anchor="middle" font-size="10" fill="#4a7a3a">处理位数 &lt; k 的数（自动补齐）</text>
+
+  <!-- 分支B: 正常放数字 -->
+  <rect x="300" y="236" width="250" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="425" y="258" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">分支 B：放非零数字 d</text>
+  <text x="425" y="276" text-anchor="middle" font-size="10" fill="#333">mask &amp; (1&lt;&lt;d) ? 跳过 : 放入</text>
+  <text x="425" y="294" text-anchor="middle" font-size="10" fill="#333">→ mask |= (1&lt;&lt;d)</text>
+  <text x="425" y="312" text-anchor="middle" font-size="10" fill="#333">→ dfs(pos+1, tight&amp;&amp;d==up, false, mask|1&lt;&lt;d)</text>
+  <text x="425" y="326" text-anchor="middle" font-size="10" fill="#446688">保证各位互异（核心约束）</text>
+
+  <!-- 汇合 -->
+  <path d="M 155 334 L 155 346 L 425 346 L 425 334" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <path d="M 290 346 L 290 360" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 记忆化 ===== -->
+  <rect x="80" y="362" width="420" height="50" fill="#f6f8fb" stroke="#888" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="382" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">记忆化：仅缓存 tight == false 的状态</text>
+  <text x="290" y="400" text-anchor="middle" font-size="10" fill="#888">memo[pos][lead][mask]，状态空间 k×2×1024 ≈ 2 万，极小</text>
+
+  <path d="M 290 412 L 290 426" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 最终答案 ===== -->
+  <rect x="100" y="428" width="380" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="448" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f(n) = dfs(0, true, true, 0)</text>
+  <text x="290" y="466" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">答案 = n − f(n)</text>
+
+  <!-- ===== 底部洞察 ===== -->
+  <rect x="40" y="482" width="500" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)" opacity="0.7"/>
+  <text x="290" y="502" text-anchor="middle" font-size="10" fill="#d6a040">💡 lead 处理前导零（位数&lt;k 自动归入分支 A）；mask 保证互异；tight 限制上界</text>
+</svg>

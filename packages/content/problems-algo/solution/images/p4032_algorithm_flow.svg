@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="520" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="310" y="22" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：SPF 筛预处理 + 滑动窗口计数</text>
+
+    <!-- step 1 -->
+    <rect x="50" y="38" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="58" text-anchor="middle" font-size="9.5" fill="#333">① SPF 筛：spf[v] = v 的最小质因数（v ≤ 10⁵）</text>
+    <text x="220" y="76" text-anchor="middle" font-size="9" fill="#6b7f99">埃氏式筛 O(V log log V)，一次预处理全程复用</text>
+
+    <path d="M 220 88 L 220 100" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="50" y="104" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="124" text-anchor="middle" font-size="9.5" fill="#333">② 分解 nums[right]：不断除尽 spf 得不同质因数</text>
+    <text x="220" y="142" text-anchor="middle" font-size="9" fill="#6b7f99">每个数至多 6 个（2·3·5·7·11·13 = 30030 &lt; 10⁵）</text>
+
+    <path d="M 220 154 L 220 166" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 3: add -->
+    <rect x="50" y="170" width="340" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="220" y="190" text-anchor="middle" font-size="9.5" fill="#333">③ 入账：对每个质因数 p，cnt[p]++（0→1 则 distinct++）</text>
+    <text x="220" y="208" text-anchor="middle" font-size="9" fill="#6b7f99">cnt 记「窗口内含 p 的元素个数」，元素对每个 p 恰好 ±1</text>
+
+    <path d="M 220 220 L 220 232" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- decision diamond -->
+    <polygon points="220,236 320,272 220,308 120,272" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <text x="220" y="268" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">distinct &gt; k ?</text>
+
+    <!-- yes: shrink -->
+    <path d="M 320 272 L 386 272" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" fill="none"/>
+    <text x="352" y="264" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+    <rect x="390" y="244" width="180" height="66" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="480" y="264" text-anchor="middle" font-size="9.5" fill="#8a3a35">④ 出账：对 nums[left] 每个 p，</text>
+    <text x="480" y="280" text-anchor="middle" font-size="9.5" fill="#8a3a35">cnt[p]−−（1→0 则 distinct−−）</text>
+    <text x="480" y="298" text-anchor="middle" font-size="9.5" fill="#8a3a35">left++ 后回到判断</text>
+    <path d="M 480 310 L 480 330 L 220 330 L 220 306" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none"/>
+
+    <!-- no: update -->
+    <path d="M 220 308 L 220 322" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="234" y="318" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+    <rect x="50" y="326" width="340" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="220" y="352" text-anchor="middle" font-size="10" fill="#2f5527" font-weight="bold">⑤ ans = max(ans, right − left + 1)，right++</text>
+
+    <!-- loop back -->
+    <path d="M 50 348 H 26 V 195 H 46" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="18" y="272" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 18 272)">下一个 right</text>
+
+    <path d="M 220 370 L 220 382" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- final -->
+    <rect x="50" y="386" width="340" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <text x="220" y="411" text-anchor="middle" font-size="11" fill="#2f5527" font-weight="bold">⑥ 遍历结束，返回 ans</text>
+
+    <!-- right: complexity -->
+    <rect x="410" y="38" width="164" height="100" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="492" y="58" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">复杂度</text>
+    <text x="492" y="78" text-anchor="middle" font-size="9" fill="#7a5c1a">筛：O(V log log V)</text>
+    <text x="492" y="96" text-anchor="middle" font-size="9" fill="#7a5c1a">窗口：O(n·ω)，ω ≤ 6</text>
+    <text x="492" y="114" text-anchor="middle" font-size="9" fill="#7a5c1a">空间：spf 数组 O(V)</text>
+
+    <!-- right: pitfalls -->
+    <rect x="410" y="150" width="164" height="160" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="492" y="170" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">易踩的坑</text>
+    <text x="422" y="192" font-size="8.5" fill="#8a3a35">① cnt 计「元素个数」而非</text>
+    <text x="422" y="206" font-size="8.5" fill="#8a3a35">质因数总次数，12 只给 2、3</text>
+    <text x="422" y="220" font-size="8.5" fill="#8a3a35">各 +1，不含 2² 的幂次</text>
+    <text x="422" y="240" font-size="8.5" fill="#8a3a35">② 别用试除法逐个 √v 分解</text>
+    <text x="422" y="254" font-size="8.5" fill="#8a3a35">（O(n√V)≈3×10⁷ 勉强过），</text>
+    <text x="422" y="268" font-size="8.5" fill="#8a3a35">SPF 筛更快更稳</text>
+    <text x="422" y="288" font-size="8.5" fill="#8a3a35">③ 窗口收缩判据是</text>
+    <text x="422" y="302" font-size="8.5" fill="#8a3a35">distinct &gt; k（不是 ≥）</text>
+
+    <!-- bottom note -->
+    <rect x="50" y="440" width="524" height="60" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="312" y="462" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">为什么每个数至多 6 个不同质因数？</text>
+    <text x="312" y="482" text-anchor="middle" font-size="9.5" fill="#446688">最小的 7 个质数之积 2·3·5·7·11·13·17 = 510510 &gt; 10⁵ ≥ nums[i]，故 ω(nums[i]) ≤ 6，更新代价常数级</text>
+  </g>
+</svg>

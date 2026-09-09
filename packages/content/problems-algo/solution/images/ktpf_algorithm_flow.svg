@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">二分答案算法流程（在分数值 mid ∈ [0,1] 上二分）</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="160" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: lo=0.0, hi=1.0, p=0, q=1 （迭代 50 次）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: iterations left? -->
+  <polygon points="270,104 370,150 270,196 170,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333">还有迭代?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">(精度未达 2⁻⁵⁰)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 370 150 L 452 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="486" cy="150" rx="46" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="154" text-anchor="middle" font-size="12" fill="#333">返回 [p,q]</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 196 L 270 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- mid computation -->
+  <rect x="140" y="218" width="260" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="240" text-anchor="middle" font-size="12" fill="#333">mid = (lo + hi) / 2  （候选分数值阈值）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 252 L 270 270" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- two-pointer count -->
+  <rect x="88" y="274" width="364" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="294" text-anchor="middle" font-size="12" fill="#333">双指针计数：枚举分母 j，分子指针 i 只增不减</text>
+  <text x="270" y="312" text-anchor="middle" font-size="11" fill="#555">cnt += i；并用交叉乘法记录 ≤ mid 的最大分数 p/q</text>
+  <text x="270" y="330" text-anchor="middle" font-size="10" fill="#888">判定 arr[i] ≤ mid·arr[j]（等价 arr[i]/arr[j] ≤ mid，免除法）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 340 L 270 358" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: cnt >= k? -->
+  <polygon points="270,362 380,408 270,454 160,408" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="404" text-anchor="middle" font-size="12" fill="#333">cnt &gt;= k ?</text>
+  <text x="270" y="420" text-anchor="middle" font-size="11" fill="#666">(够 k 个吗)</text>
+
+  <!-- Yes (feasible) -> try smaller -->
+  <path d="M 160 408 L 100 408" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="130" y="400" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="14" y="384" width="86" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="57" y="402" text-anchor="middle" font-size="11" fill="#333">p,q = best</text>
+  <text x="57" y="418" text-anchor="middle" font-size="11" fill="#555">hi = mid</text>
+
+  <!-- No (not enough) -> try bigger -->
+  <path d="M 380 408 L 440 408" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="400" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="442" y="388" width="86" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="485" y="414" text-anchor="middle" font-size="11" fill="#333">lo = mid</text>
+
+  <!-- loop back arrow from left box up to decision -->
+  <path d="M 57 384 L 57 150 L 170 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="270" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 48 270)">继续二分</text>
+
+  <!-- loop back arrow from right box up to decision -->
+  <path d="M 485 388 L 485 150 L 370 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- summary note -->
+  <text x="270" y="472" text-anchor="middle" font-size="11" fill="#888">关键：count(mid) 单调递增 → 满足二段性；浮点二分 50 轮精度达 2⁻⁵⁰，远小于最小分数间距</text>
+</svg>

@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arD" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#446688"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="420" fill="#fafafa"/>
+  <text x="460" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">Trie + 节点 freq 缓存：共享前缀 + 热度表</text>
+  <path d="M 280 40 Q 460 48 640 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="460" y="60" text-anchor="middle" font-size="11" fill="#666">每个节点缓存经过它的所有句子及热度 → 查询 O(1) 取表 + O(K log K) 排序</text>
+
+  <!-- ===== Trie tree (left) ===== -->
+  <!-- root -->
+  <g filter="url(#sk)">
+    <circle cx="270" cy="95" r="20" fill="#f6f6f6" stroke="#999" stroke-width="1.3"/>
+  </g>
+  <text x="270" y="99" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">root</text>
+
+  <!-- root → i -->
+  <path d="M 270 115 L 270 138" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="282" y="130" font-size="9" fill="#888">i</text>
+
+  <!-- i node (highlighted blue) -->
+  <g filter="url(#sk2)">
+    <circle cx="270" cy="158" r="22" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+  </g>
+  <text x="270" y="162" text-anchor="middle" font-size="12" fill="#2b6e9e" font-weight="bold">i</text>
+
+  <!-- i → ' ' (space) -->
+  <path d="M 252 174 Q 210 188 178 205" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="206" y="184" font-size="9" fill="#888">' '</text>
+  <!-- i → s -->
+  <path d="M 270 180 L 270 205" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="282" y="196" font-size="9" fill="#888">s</text>
+  <!-- i → r -->
+  <path d="M 288 174 Q 330 188 362 205" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="332" y="184" font-size="9" fill="#888">r</text>
+
+  <!-- ' ' node (highlighted green) -->
+  <g filter="url(#sk2)">
+    <circle cx="178" cy="222" r="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+  </g>
+  <text x="178" y="226" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">' '</text>
+
+  <!-- s node -->
+  <g filter="url(#sk)">
+    <circle cx="270" cy="222" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <text x="270" y="226" text-anchor="middle" font-size="10" fill="#2b6e9e">s</text>
+
+  <!-- r node -->
+  <g filter="url(#sk)">
+    <circle cx="362" cy="222" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <text x="362" y="226" text-anchor="middle" font-size="10" fill="#2b6e9e">r</text>
+
+  <!-- ' ' → love (abbreviated) → splits -->
+  <path d="M 178 244 L 178 262" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="190" y="256" font-size="8" fill="#888">l</text>
+
+  <g filter="url(#sk)">
+    <rect x="140" y="264" width="76" height="20" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <text x="178" y="278" text-anchor="middle" font-size="9" fill="#7a5415">→ o v e ' '</text>
+
+  <!-- split from "love " to "you" and "leetcode" -->
+  <path d="M 158 284 Q 132 294 116 306" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="120" y="298" font-size="8" fill="#888">y..u</text>
+  <g filter="url(#sk2)">
+    <rect x="78" y="308" width="76" height="24" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="116" y="324" text-anchor="middle" font-size="10" fill="#2e6e2e" font-weight="bold">you (5)</text>
+
+  <path d="M 198 284 Q 224 294 240 306" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="222" y="298" font-size="8" fill="#888">l..e</text>
+  <g filter="url(#sk2)">
+    <rect x="202" y="308" width="92" height="24" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="248" y="324" text-anchor="middle" font-size="10" fill="#2e6e2e" font-weight="bold">leetcode (2)</text>
+
+  <!-- s → island (abbreviated) -->
+  <path d="M 270 238 L 310 308" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)" stroke-dasharray="4 2"/>
+  <text x="296" y="276" font-size="8" fill="#888">→land</text>
+  <g filter="url(#sk)">
+    <rect x="312" y="308" width="82" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+  </g>
+  <text x="353" y="324" text-anchor="middle" font-size="10" fill="#2b6e9e" font-weight="bold">island (3)</text>
+
+  <!-- r → iroman (abbreviated) -->
+  <path d="M 362 238 L 406 308" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)" stroke-dasharray="4 2"/>
+  <text x="388" y="276" font-size="8" fill="#888">→oman</text>
+  <g filter="url(#sk)">
+    <rect x="410" y="308" width="82" height="24" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+  </g>
+  <text x="451" y="324" text-anchor="middle" font-size="10" fill="#2b6e9e" font-weight="bold">iroman (2)</text>
+
+  <!-- ===== Freq cards (right) ===== -->
+  <!-- Card 1: i node freq -->
+  <g filter="url(#sk2)">
+    <rect x="540" y="90" width="340" height="100" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="556" y="112" font-size="12" font-weight="bold" fill="#2b6e9e">① "i" 节点 freq 表</text>
+  <g font-size="10" fill="#444">
+    <text x="556" y="132">"i love you"       → 5</text>
+    <text x="556" y="148">"island"           → 3</text>
+    <text x="556" y="164">"iroman"           → 2</text>
+    <text x="556" y="180">"i love leetcode"  → 2</text>
+  </g>
+
+  <!-- dashed arrow from i node to card 1 -->
+  <path d="M 292 158 L 540 130" stroke="#446688" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arD)" filter="url(#sk)"/>
+
+  <!-- Card 2: 'i ' node freq -->
+  <g filter="url(#sk2)">
+    <rect x="540" y="218" width="340" height="76" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4"/>
+  </g>
+  <text x="556" y="240" font-size="12" font-weight="bold" fill="#2e6e2e">② "i " 节点 freq 表</text>
+  <g font-size="10" fill="#444">
+    <text x="556" y="260">"i love you"       → 5</text>
+    <text x="556" y="278">"i love leetcode"  → 2</text>
+  </g>
+
+  <!-- dashed arrow from ' ' node to card 2 -->
+  <path d="M 200 222 L 540 250" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arG)" filter="url(#sk)"/>
+
+  <!-- bottom note -->
+  <g filter="url(#sk)">
+    <rect x="40" y="362" width="840" height="40" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/>
+  </g>
+  <text x="460" y="380" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b2b2b">💡 insert 沿路径每个节点更新 freq；input 直接读当前节点的 freq 表</text>
+  <text x="460" y="396" text-anchor="middle" font-size="10" fill="#666">节点越深 → freq 表越小（前缀越长，匹配的句子越少）</text>
+</svg>

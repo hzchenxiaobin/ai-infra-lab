@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="13.5" fill="#555" font-weight="bold">示例演算：排序后逐区间决策</text>
+  <text x="260" y="42" text-anchor="middle" font-size="11" fill="#888">原始 [[1,4],[3,6],[2,8]] → 排序后 [[1,4],[2,8],[3,6]]</text>
+
+  <!-- bars: origin x=70, unit=40, value v -> x = 70 + v*40 (v: 0..8 -> 70..390) -->
+  <!-- Step 0: [1,4] keep -->
+  <text x="62" y="76" text-anchor="end" font-size="11" fill="#4a7a3a" font-weight="bold">①[1,4]</text>
+  <rect x="110" y="60" width="120" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="79" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">保留</text>
+  <text x="300" y="79" font-size="11" fill="#555">4 &gt; −1 ✓ 不被覆盖</text>
+  <text x="470" y="79" text-anchor="end" font-size="11" fill="#d6a040" font-weight="bold">cnt=1, max=4</text>
+
+  <!-- Step 1: [2,8] keep -->
+  <text x="62" y="112" text-anchor="end" font-size="11" fill="#4a7a3a" font-weight="bold">②[2,8]</text>
+  <rect x="150" y="96" width="240" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="115" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">保留</text>
+  <text x="300" y="115" font-size="11" fill="#555">8 &gt; 4 ✓ 不被覆盖</text>
+  <text x="470" y="115" text-anchor="end" font-size="11" fill="#d6a040" font-weight="bold">cnt=2, max=8</text>
+
+  <!-- Step 2: [3,6] covered -->
+  <text x="62" y="148" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold">③[3,6]</text>
+  <rect x="190" y="132" width="120" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="151" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">删除</text>
+  <text x="300" y="151" font-size="11" fill="#555">6 ≤ 8 ✗ 被 [2,8] 覆盖</text>
+  <text x="470" y="151" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold">cnt=2, max=8</text>
+
+  <!-- number line -->
+  <line x1="70" y1="184" x2="398" y2="184" stroke="#888" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M 398 184 L 390 180 L 390 188 Z" fill="#888" filter="url(#rough2)"/>
+  <g font-size="10.5" fill="#888" text-anchor="middle">
+    <line x1="70" y1="180" x2="70" y2="190" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="70" y="204">0</text>
+    <line x1="150" y1="180" x2="150" y2="190" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="150" y="204">2</text>
+    <line x1="230" y1="180" x2="230" y2="190" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="230" y="204">4</text>
+    <line x1="310" y1="180" x2="310" y2="190" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="310" y="204">6</text>
+    <line x1="390" y1="180" x2="390" y2="190" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="390" y="204">8</text>
+  </g>
+  <text x="234" y="224" text-anchor="middle" font-size="10.5" fill="#888" font-style="italic">区间端点（覆盖需 c ≤ a 且 b ≤ d）</text>
+
+  <!-- conclusion -->
+  <rect x="40" y="240" width="440" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="261" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">保留 2 个：[1,4]、[2,8]；[3,6] 被 [2,8] 完全包住</text>
+  <text x="260" y="279" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">返回 count = 2</text>
+</svg>

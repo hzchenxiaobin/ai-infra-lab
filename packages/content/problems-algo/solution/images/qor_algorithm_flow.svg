@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 472" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="472" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">intersect(a, b) 递归流程</text>
+
+  <!-- 1. start -->
+  <rect x="120" y="34" width="140" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="54" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">intersect(a, b)</text>
+  <line x1="190" y1="64" x2="190" y2="78" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. diamond: both leaves? -->
+  <polygon points="190,80 256,112 190,144 124,112" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="108" text-anchor="middle" font-size="12" fill="#333">a, b</text>
+  <text x="190" y="122" text-anchor="middle" font-size="12" fill="#333">皆叶?</text>
+  <!-- yes -> right -->
+  <line x1="256" y1="112" x2="330" y2="112" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="106" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="334" y="94" width="200" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="434" y="116" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return leaf(a.val | b.val)</text>
+  <!-- no -> down -->
+  <line x1="190" y1="144" x2="190" y2="158" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="202" y="154" font-size="11" fill="#b85450">否</text>
+
+  <!-- 3. diamond: a is leaf? -->
+  <polygon points="190,160 256,192 190,224 124,192" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="196" text-anchor="middle" font-size="12" fill="#333">a 是叶?</text>
+  <line x1="256" y1="192" x2="330" y2="192" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="186" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="334" y="170" width="210" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="439" y="189" text-anchor="middle" font-size="12" fill="#333">a.val=true → 叶(true)</text>
+  <text x="439" y="207" text-anchor="middle" font-size="12" fill="#333">a.val=false → 返回 b</text>
+  <line x1="190" y1="224" x2="190" y2="238" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="202" y="234" font-size="11" fill="#b85450">否</text>
+
+  <!-- 4. diamond: b is leaf? -->
+  <polygon points="190,240 256,272 190,304 124,272" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="276" text-anchor="middle" font-size="12" fill="#333">b 是叶?</text>
+  <line x1="256" y1="272" x2="330" y2="272" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="266" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="334" y="250" width="210" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="439" y="269" text-anchor="middle" font-size="12" fill="#333">b.val=true → 叶(true)</text>
+  <text x="439" y="287" text-anchor="middle" font-size="12" fill="#333">b.val=false → 返回 a</text>
+  <line x1="190" y1="304" x2="190" y2="318" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="202" y="314" font-size="11" fill="#b85450">否</text>
+
+  <!-- 5. recurse 4 children -->
+  <rect x="100" y="320" width="180" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="342" text-anchor="middle" font-size="12" fill="#333">tl/tr/bl/br = intersect(四子)</text>
+  <line x1="190" y1="356" x2="190" y2="370" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 6. diamond: all leaves & same val? -->
+  <polygon points="190,372 268,404 190,436 112,404" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="400" text-anchor="middle" font-size="11" fill="#333">四子皆叶</text>
+  <text x="190" y="414" text-anchor="middle" font-size="11" fill="#333">且同值?</text>
+  <!-- yes -> right -->
+  <line x1="268" y1="404" x2="330" y2="404" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="299" y="398" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="334" y="386" width="195" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="431" y="408" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return leaf(tl.val)  ← 压缩</text>
+  <!-- no -> down -->
+  <line x1="190" y1="436" x2="190" y2="450" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="202" y="446" font-size="11" fill="#b85450">否</text>
+
+  <!-- final: return internal -->
+  <rect x="80" y="450" width="220" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="463" text-anchor="middle" font-size="11" fill="#333">return internal(tl, tr, bl, br)</text>
+</svg>

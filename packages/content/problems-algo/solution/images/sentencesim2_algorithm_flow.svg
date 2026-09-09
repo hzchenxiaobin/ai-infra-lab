@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 580" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="580" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">句子相似性 II 判定流程：建并查集 → 逐位查同根</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="62" rx="150" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#333">开始: 读入 s1, s2, pairs</text>
+
+  <!-- arrow down to diamond A: len equal? -->
+  <path d="M 280 82 L 280 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond A: len(s1) == len(s2) ? -->
+  <polygon points="280,104 384,154 280,204 176,154" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="150" text-anchor="middle" font-size="12" fill="#333">len(s1) ==</text>
+  <text x="280" y="166" text-anchor="middle" font-size="12" fill="#333">len(s2) ?</text>
+
+  <!-- A: No -> return false -->
+  <path d="M 384 154 L 456 154" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="420" y="146" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="492" cy="154" rx="46" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="492" y="158" text-anchor="middle" font-size="12" fill="#333">返回 false</text>
+
+  <!-- A: Yes -> down to process: build UF -->
+  <path d="M 280 204 L 280 222" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="218" font-size="11" fill="#82b366">是</text>
+
+  <!-- Process: build union-find from pairs -->
+  <rect x="120" y="224" width="320" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="244" text-anchor="middle" font-size="12" fill="#333">建并查集: 遍历 pairs 中每个 (a, b)</text>
+  <text x="280" y="262" text-anchor="middle" font-size="11.5" fill="#446688">union(a, b): find(a), find(b) 不同根则挂接</text>
+  <text x="280" y="276" text-anchor="middle" font-size="10.5" fill="#888">parent 用哈希表 string→string，懒初始化</text>
+
+  <!-- arrow down to process: i = 0 -->
+  <path d="M 280 280 L 280 298" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Process: i = 0 -->
+  <rect x="216" y="300" width="128" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="323" text-anchor="middle" font-size="12" fill="#333">i = 0</text>
+
+  <!-- arrow down to diamond B: i < n ? -->
+  <path d="M 280 336 L 280 354" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond B: i < n ? -->
+  <polygon points="280,358 374,404 280,450 186,404" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="400" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="280" y="416" text-anchor="middle" font-size="10" fill="#888">(遍历位置)</text>
+
+  <!-- B: No -> return true -->
+  <path d="M 374 404 L 456 404" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="415" y="396" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="492" cy="404" rx="46" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="492" y="408" text-anchor="middle" font-size="12" fill="#333">返回 true</text>
+
+  <!-- B: Yes -> down to diamond C -->
+  <path d="M 280 450 L 280 468" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="464" font-size="11" fill="#82b366">是</text>
+
+  <!-- Diamond C: w1==w2 or find(w1)==find(w2) ? -->
+  <polygon points="280,472 470,524 280,576 90,524" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="510" text-anchor="middle" font-size="11" fill="#333">w1==w2 或</text>
+  <text x="280" y="526" text-anchor="middle" font-size="11" fill="#333">find(w1)==find(w2) ?</text>
+  <text x="280" y="542" text-anchor="middle" font-size="10" fill="#888">(同根即相似)</text>
+
+  <!-- C: No -> return false (left) -->
+  <path d="M 90 524 L 56 524" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="73" y="516" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="40" cy="470" rx="36" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="474" text-anchor="middle" font-size="11" fill="#333">false</text>
+  <path d="M 40 490 L 40 524 L 56 524" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- C: Yes -> i++ then loop back -->
+  <path d="M 470 524 L 520 524 L 520 318 L 344 318" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="494" y="516" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <text x="520" y="424" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 520 424)">i++ 继续下一轮</text>
+</svg>

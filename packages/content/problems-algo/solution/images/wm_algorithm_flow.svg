@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN → 逐行算体积 → GROUP BY → SUM</text>
+
+  <!-- Step 1: JOIN -->
+  <rect x="130" y="50" width="300" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="72" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① JOIN ON product_id</text>
+  <text x="280" y="92" text-anchor="middle" font-size="10" fill="#888">Warehouse ⋈ Products → 每行含 units + W/L/H</text>
+  <text x="120" y="84" font-size="11" fill="#d6a040" font-weight="bold">FROM</text>
+
+  <!-- arrow -->
+  <path d="M 280 106 L 280 128" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: per-row volume -->
+  <rect x="130" y="128" width="300" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="150" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 逐行算体积</text>
+  <text x="280" y="170" text-anchor="middle" font-size="10" fill="#888">row_volume = units × Width × Length × Height</text>
+  <text x="120" y="162" font-size="11" fill="#d6a040" font-weight="bold">SELECT</text>
+
+  <!-- arrow -->
+  <path d="M 280 184 L 280 206" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="130" y="206" width="300" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ GROUP BY name</text>
+  <text x="280" y="248" text-anchor="middle" font-size="10" fill="#888">同一仓库的多行折叠成一组</text>
+  <text x="120" y="240" font-size="11" fill="#d6a040" font-weight="bold">GROUP BY</text>
+
+  <!-- arrow -->
+  <path d="M 280 262 L 280 284" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SUM -->
+  <rect x="130" y="284" width="300" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ SUM(row_volume) AS volume</text>
+  <text x="280" y="326" text-anchor="middle" font-size="10" fill="#888">每组求和 → 仓库总存货量（立方英尺）</text>
+  <text x="120" y="318" font-size="11" fill="#d6a040" font-weight="bold">SUM</text>
+
+  <!-- arrow -->
+  <path d="M 280 340 L 280 362" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="150" y="362" width="260" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">输出：warehouse_name, volume</text>
+  <text x="280" y="402" text-anchor="middle" font-size="10" fill="#888">每仓库一行，顺序任意</text>
+
+  <!-- Execution order note -->
+  <rect x="30" y="425" width="500" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="443" text-anchor="middle" font-size="11" fill="#444">SQL 执行序：FROM(JOIN) → WHERE → GROUP BY → HAVING → SELECT(SUM) → ORDER BY</text>
+</svg>

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：差值归约 + 贪心削峰</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">一次操作无论落在 nums1 还是 nums2，对差值 d[i] 的影响都是 ±1</text>
+
+  <!-- ===== Part A: 差值归约 ===== -->
+  <text x="48" y="74" text-anchor="start" font-size="12.5" fill="#446688" font-weight="bold">① 差值归约：两类操作在「差值维度」等价</text>
+
+  <!-- line 1: nums1 -->
+  <text x="48" y="100" text-anchor="start" font-size="11.5" fill="#333">改 nums1[i] ±1</text>
+  <path d="M168 96 L212 96" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="222" y="100" text-anchor="start" font-size="11.5" fill="#333">d[i] = nums1[i] − nums2[i] 改 ±1</text>
+
+  <!-- line 2: nums2 -->
+  <text x="48" y="122" text-anchor="start" font-size="11.5" fill="#333">改 nums2[i] ±1</text>
+  <path d="M168 118 L212 118" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="222" y="122" text-anchor="start" font-size="11.5" fill="#333">d[i] 改 ∓1（同样可让 |d[i]| 减 1）</text>
+
+  <!-- equivalence box -->
+  <rect x="40" y="138" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="156" text-anchor="middle" font-size="11.5" fill="#333">⟹ 两类操作在差值上等价，合并总预算</text>
+  <text x="280" y="173" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">K = k1 + k2 ，全部预算花在「让 |d[i]| 减小」方向</text>
+
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#888">（远离 0 只会增大平方，亏本；每个 d[i] 削到 0 为止）</text>
+
+  <!-- divider -->
+  <line x1="40" y1="212" x2="520" y2="212" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== Part B: 贪心削峰 ===== -->
+  <text x="48" y="234" text-anchor="start" font-size="12.5" fill="#4a7a3a" font-weight="bold">② 贪心削峰：每次削减当前最大的 d[i]</text>
+
+  <!-- bar chart: d=[4,4,4,3] desc, baseline y=370, scale 28px/unit -->
+  <!-- bars: width 42, gap 18, x = 169,229,289,349 -->
+  <line x1="150" y1="370" x2="410" y2="370" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+
+  <!-- dashed level-3 line across -->
+  <line x1="150" y1="286" x2="410" y2="286" stroke="#b85450" stroke-width="1.2" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="414" y="290" text-anchor="start" font-size="10" fill="#b85450">削到 3</text>
+
+  <!-- bar 1: value 4, top unit shaved (red hatch) -->
+  <rect x="169" y="258" width="42" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <line x1="169" y1="272" x2="211" y2="262" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="169" y1="278" x2="211" y2="268" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="169" y="286" width="42" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="190" y="384" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4→3</text>
+
+  <!-- bar 2: value 4, top unit shaved -->
+  <rect x="229" y="258" width="42" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <line x1="229" y1="272" x2="271" y2="262" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="229" y1="278" x2="271" y2="268" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="229" y="286" width="42" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="384" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4→3</text>
+
+  <!-- bar 3: value 4, unchanged -->
+  <rect x="289" y="258" width="42" height="112" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="310" y="384" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4</text>
+
+  <!-- bar 4: value 3, unchanged -->
+  <rect x="349" y="286" width="42" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="370" y="384" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">3</text>
+
+  <!-- 削峰 down arrows on bars 1,2 -->
+  <path d="M190 250 L190 236" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="190" y="228" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">削 1</text>
+  <path d="M250 250 L250 236" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="250" y="228" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">削 1</text>
+
+  <!-- original values above -->
+  <text x="190" y="252" text-anchor="middle" font-size="9.5" fill="#888">4</text>
+  <text x="250" y="252" text-anchor="middle" font-size="9.5" fill="#888">4</text>
+  <text x="310" y="252" text-anchor="middle" font-size="9.5" fill="#888">4</text>
+  <text x="370" y="280" text-anchor="middle" font-size="9.5" fill="#888">3</text>
+
+  <!-- benefit formula box -->
+  <rect x="40" y="404" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="423" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">边际收益  x² − (x−1)² = 2x − 1 ，x 越大收益越大</text>
+  <text x="280" y="440" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⟹ 每次都削当前最大者，反复削到「与次大齐平」再一起削</text>
+</svg>

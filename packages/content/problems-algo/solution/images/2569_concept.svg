@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="470" fill="#fafafa"/>
+  <text x="320" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：操作二只需 nums1 中 1 的总数，不必逐位维护 nums2</text>
+  <text x="320" y="48" text-anchor="middle" font-size="11" fill="#888">sum2 = Σnums2[i]；操作二让 sum2 += p × Σnums1[i] = p × cnt1</text>
+
+  <!-- nums1 row -->
+  <text x="36" y="100" font-size="12" fill="#446688" font-weight="bold">nums1（0/1）</text>
+  <rect x="160" y="84" width="52" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="186" y="106" text-anchor="middle" font-size="13" fill="#333">1</text>
+  <rect x="236" y="84" width="52" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="262" y="106" text-anchor="middle" font-size="13" fill="#333">0</text>
+  <rect x="312" y="84" width="52" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="338" y="106" text-anchor="middle" font-size="13" fill="#333">1</text>
+  <text x="380" y="106" font-size="11" fill="#888">...</text>
+
+  <!-- cnt1 highlight -->
+  <path d="M 160 118 L 160 138" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="3,2" fill="none" filter="url(#rough2)"/>
+  <rect x="160" y="140" width="204" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="262" y="162" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">cnt1 = 数 1 的个数 = 2</text>
+  <text x="392" y="162" font-size="10" fill="#d6a040">线段树维护</text>
+
+  <!-- operation 2 explanation -->
+  <rect x="36" y="200" width="300" height="100" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="56" y="224" font-size="12" fill="#333" font-weight="bold">操作二 [2, p, 0]：</text>
+  <text x="56" y="244" font-size="11" fill="#555">nums2[i] += nums1[i] × p（逐位）</text>
+  <text x="56" y="264" font-size="11" fill="#555">两边求和：</text>
+  <text x="56" y="284" font-size="11" fill="#4a7a3a" font-weight="bold">sum2 += p × cnt1  ← 只需总数！</text>
+
+  <path d="M 262 174 Q 280 188 200 210" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- operation 1 explanation -->
+  <rect x="36" y="320" width="300" height="92" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="56" y="344" font-size="12" fill="#333" font-weight="bold">操作一 [1, l, r]：区间翻转</text>
+  <text x="56" y="364" font-size="11" fill="#555">0→1，1→0。翻转一段 [l,r]</text>
+  <text x="56" y="382" font-size="11" fill="#446688" font-weight="bold">cnt1 变为 len − cnt1，懒标记传递</text>
+  <text x="56" y="400" font-size="11" fill="#555">线段树区间更新 O(log n)</text>
+
+  <!-- operation 3 + result -->
+  <rect x="364" y="320" width="240" height="92" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="384" y="344" font-size="12" fill="#333" font-weight="bold">操作三 [3, 0, 0]：</text>
+  <text x="384" y="364" font-size="11" fill="#555">直接返回当前 sum2</text>
+  <text x="384" y="388" font-size="12" fill="#b85450" font-weight="bold">ans.append(sum2)</text>
+  <text x="384" y="406" font-size="10" fill="#888">O(1) 读取标量</text>
+
+  <path d="M 200 300 Q 220 310 186 318" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- key insight box -->
+  <rect x="364" y="84" width="244" height="118" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="384" y="108" font-size="12" fill="#444" font-weight="bold">关键降维：</text>
+  <text x="384" y="128" font-size="11" fill="#555">nums2 不需逐位更新，</text>
+  <text x="384" y="146" font-size="11" fill="#555">只维护标量 sum2 即可。</text>
+  <text x="384" y="170" font-size="11" fill="#b85450" font-weight="bold">瓶颈在操作一的区间翻转</text>
+  <text x="384" y="188" font-size="11" fill="#555">→ 线段树 + 懒标记</text>
+
+  <!-- bottom summary -->
+  <rect x="364" y="220" width="244" height="80" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="384" y="244" font-size="11" fill="#4a7a3a" font-weight="bold">三个操作的复杂度：</text>
+  <text x="384" y="264" font-size="11" fill="#555">① 区间翻转 O(log n)</text>
+  <text x="384" y="282" font-size="11" fill="#555">② 标量加法 O(1)</text>
+  <text x="384" y="300" font-size="11" fill="#555">③ 标量读取 O(1)</text>
+</svg>

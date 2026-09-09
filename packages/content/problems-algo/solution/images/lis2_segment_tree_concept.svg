@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">线段树维护「值域」上的 LIS 长度</text>
+  <text x="270" y="42" text-anchor="middle" font-size="11" fill="#888">叶子 = 值 v，存 dp[v] = 以 v 结尾的最长 LIS</text>
+
+  <!-- ===== value axis ===== -->
+  <text x="30" y="70" font-size="11.5" fill="#446688" font-weight="bold">① 值域 [1, V] 的叶子</text>
+  <line x1="60" y1="120" x2="500" y2="120" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <!-- leaves v=1..8, gap 55, start 88 -->
+  <g stroke="#446688" stroke-width="1.2" filter="url(#rough2)">
+    <line x1="88" y1="120" x2="88" y2="124"/>
+    <line x1="143" y1="120" x2="143" y2="124"/>
+    <line x1="198" y1="120" x2="198" y2="124"/>
+    <line x1="253" y1="120" x2="253" y2="124"/>
+    <line x1="308" y1="120" x2="308" y2="124"/>
+    <line x1="363" y1="120" x2="363" y2="124"/>
+    <line x1="418" y1="120" x2="418" y2="124"/>
+    <line x1="473" y1="120" x2="473" y2="124"/>
+  </g>
+  <g font-size="10.5" fill="#446688" text-anchor="middle">
+    <text x="88" y="136">1</text>
+    <text x="143" y="136">2</text>
+    <text x="198" y="136">3</text>
+    <text x="253" y="136">…</text>
+    <text x="308" y="136">x−k</text>
+    <text x="363" y="136">…</text>
+    <text x="418" y="136">x−1</text>
+    <text x="473" y="136">x</text>
+  </g>
+
+  <!-- ===== query range highlight [x-k, x-1] ===== -->
+  <rect x="288" y="92" width="135" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="355" y="107" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">查询区间 [x−k, x−1]</text>
+
+  <!-- update point x (orange) -->
+  <rect x="455" y="92" width="36" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="473" y="107" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">更新 x</text>
+
+  <!-- arrow down to tree -->
+  <path d="M 270 150 L 270 168" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== segment tree sketch ===== -->
+  <text x="30" y="184" font-size="11.5" fill="#446688" font-weight="bold">② 线段树：内部节点 = 子区间 dp 最大值</text>
+
+  <!-- root -->
+  <rect x="230" y="196" width="80" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="215" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">max(dp[1..V])</text>
+  <text x="270" y="225" text-anchor="middle" font-size="8" fill="#888">= 全局答案</text>
+  <!-- lines to children -->
+  <g stroke="#888" stroke-width="1.2" fill="none" filter="url(#rough2)">
+    <line x1="255" y1="226" x2="155" y2="250"/>
+    <line x1="285" y1="226" x2="385" y2="250"/>
+  </g>
+  <!-- left child -->
+  <rect x="110" y="250" width="90" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="268" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">max(dp[1..m])</text>
+  <!-- right child (green = contains query range) -->
+  <rect x="340" y="250" width="90" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="385" y="268" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">max(dp[m..V])</text>
+  <!-- lines to leaves -->
+  <g stroke="#aaa" stroke-width="1" fill="none" filter="url(#rough2)">
+    <line x1="140" y1="278" x2="100" y2="302"/>
+    <line x1="170" y1="278" x2="210" y2="302"/>
+    <line x1="370" y1="278" x2="330" y2="302"/>
+    <line x1="400" y1="278" x2="440" y2="302"/>
+  </g>
+  <!-- leaves -->
+  <g font-size="9" text-anchor="middle">
+    <rect x="70" y="302" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+    <text x="100" y="317" fill="#446688" font-weight="bold">dp[1]</text>
+    <rect x="180" y="302" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+    <text x="210" y="317" fill="#446688" font-weight="bold">dp[2]</text>
+    <!-- query-range leaves (green) -->
+    <rect x="300" y="302" width="60" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+    <text x="330" y="317" fill="#4a7a3a" font-weight="bold">dp[x−k]</text>
+    <rect x="410" y="302" width="60" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+    <text x="440" y="317" fill="#4a7a3a" font-weight="bold">dp[x−1]</text>
+  </g>
+
+  <!-- ===== note box ===== -->
+  <rect x="30" y="338" width="480" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="358" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">核心：dp[x] = 区间 [x−k, x−1] 的最大 dp + 1</text>
+  <text x="270" y="376" text-anchor="middle" font-size="10.5" fill="#b85450">查询区间最值 O(log V) + 单点更新 O(log V)，总体 O(n log V)</text>
+</svg>

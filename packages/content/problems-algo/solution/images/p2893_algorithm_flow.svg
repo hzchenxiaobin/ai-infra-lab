@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：算桶号 → 分组求和 → 排序输出</text>
+
+  <rect x="40" y="44" width="440" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="66" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 算术分桶（逐行现算分组键）</text>
+  <text x="60" y="86" font-size="11" fill="#333" font-family="monospace" filter="url(#rough2)">CEIL(minute / 6) AS interval_no</text>
+  <text x="60" y="102" font-size="11" fill="#999" filter="url(#rough2)">第 m 分钟 → 第 ⌈m/6⌉ 个区间</text>
+
+  <path d="M 260 108 L 260 126" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="126" width="440" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="148" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 分组聚合：同桶累加订单数</text>
+  <text x="60" y="168" font-size="11" fill="#333" font-family="monospace" filter="url(#rough2)">GROUP BY 1  ·  SUM(order_count) AS total_orders</text>
+  <text x="60" y="184" font-size="11" fill="#999" filter="url(#rough2)">GROUP BY 1 = 按输出第 1 列（区间编号）分桶</text>
+
+  <path d="M 260 190 L 260 208" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="208" width="440" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="230" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ 排序：ORDER BY interval_no 升序</text>
+  <text x="60" y="250" font-size="11" fill="#333" filter="url(#rough2)">按题目要求区间编号从小到大输出</text>
+
+  <path d="M 260 264 L 260 282" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="282" width="440" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="304" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 输出两列：interval_no / total_orders</text>
+  <text x="60" y="324" font-size="11" fill="#333" filter="url(#rough2)">示例：1 → 17，2 → 18</text>
+
+  <text x="260" y="362" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">⚠️ 整除方言里 minute/6 已被截断，CEIL 是空操作——跨库统一写 (minute−1) DIV 6 + 1</text>
+  <text x="260" y="384" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">GROUP BY / ORDER BY 可引用别名或列位置（MySQL 方言特性）</text>
+</svg>

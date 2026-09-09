@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="470" fill="#fafafa"/>
+
+  <text x="260" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：后序 DFS 累加子树和</text>
+
+  <!-- Step 1: build children adjacency -->
+  <rect x="130" y="48" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="73" text-anchor="middle" font-size="12" fill="#333">① 由 parent 建立孩子们邻接表 children[]</text>
+
+  <path d="M 260 88 L 260 104" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: post-order dfs(u) -->
+  <rect x="100" y="106" width="320" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="126" text-anchor="middle" font-size="12" fill="#333">② dfs(u)：先递归所有孩子 v，拿到 (s_v, c_v)</text>
+  <text x="260" y="143" text-anchor="middle" font-size="11" fill="#666">被删的孩子返回 (0, 0)，自然不贡献</text>
+
+  <path d="M 260 154 L 260 170" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: accumulate -->
+  <rect x="80" y="172" width="360" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="192" text-anchor="middle" font-size="12" fill="#333">③ s = value[u] + Σ s_v，  c = 1 + Σ c_v</text>
+  <text x="260" y="209" text-anchor="middle" font-size="11" fill="#666">s = 子树权值和，c = 子树剩余节点数</text>
+
+  <path d="M 260 220 L 260 238" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="260,240 350,278 260,316 170,278" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="275" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">s == 0 ?</text>
+  <text x="260" y="292" text-anchor="middle" font-size="10" fill="#888">（含自身及未删后代）</text>
+
+  <!-- Yes branch (left, delete) -->
+  <path d="M 170 278 L 110 278 L 110 318" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="150" y="270" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="36" y="320" width="148" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="343" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">删除该子树</text>
+  <text x="110" y="362" text-anchor="middle" font-size="11" fill="#b85450">return (0, 0)</text>
+
+  <!-- No branch (right, keep) -->
+  <path d="M 350 278 L 410 278 L 410 318" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="370" y="270" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="336" y="320" width="148" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="343" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">保留该子树</text>
+  <text x="410" y="362" text-anchor="middle" font-size="11" fill="#4a7a3a">return (s, c)</text>
+
+  <!-- merge arrows down to answer -->
+  <path d="M 110 378 L 110 400 L 240 400" stroke="#b85450" stroke-width="1.6" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <path d="M 410 378 L 410 400 L 280 400" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5,3" filter="url(#rough2)"/>
+
+  <!-- Step 4: answer -->
+  <rect x="150" y="408" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="430" text-anchor="middle" font-size="12" fill="#333">④ 答案 = dfs(0) 返回的 c</text>
+  <text x="260" y="446" text-anchor="middle" font-size="10" fill="#888">（根的子树和一般不为 0，否则全删）</text>
+</svg>

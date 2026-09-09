@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：n = 10 → 补数 = 5（对照 n = 0 边界）</text>
+
+  <!-- ========= Case A: n = 10 ========= -->
+  <rect x="28" y="44" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="148" y="66" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">Case A：n = 10</text>
+
+  <!-- step 1: read n / L -->
+  <text x="34" y="100" font-size="11" fill="#666" font-weight="bold">① 读 n 与位长 L</text>
+  <text x="34" y="118" font-size="11" fill="#333">10 = 1010₂，最高设置位在第 3 位</text>
+  <text x="34" y="134" font-size="11" fill="#446688" font-weight="bold">L = bit_length(10) = 4</text>
+
+  <!-- step 2: mask -->
+  <text x="34" y="162" font-size="11" fill="#666" font-weight="bold">② 构造等长全 1 掩码</text>
+  <rect x="34" y="170" width="50" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="59" y="188" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="86" y="170" width="50" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="111" y="188" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="138" y="170" width="50" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="163" y="188" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="190" y="170" width="50" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="188" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <text x="250" y="188" font-size="10.5" fill="#d6a040" font-weight="bold">mask=15</text>
+
+  <!-- step 3: XOR -->
+  <text x="34" y="220" font-size="11" fill="#666" font-weight="bold">③ 异或翻转</text>
+  <text x="34" y="240" font-size="11" fill="#333">n    = 1 0 1 0</text>
+  <text x="34" y="256" font-size="11" fill="#333">mask = 1 1 1 1</text>
+  <line x1="34" y1="262" x2="120" y2="262" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="34" y="278" font-size="11" fill="#b85450" font-weight="bold">^    = 0 1 0 1 = 5 ✓</text>
+
+  <rect x="28" y="290" width="240" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="148" y="312" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">4 位全翻转，前导零不动 → 5</text>
+
+  <!-- ========= Case B: n = 0 (right) ========= -->
+  <rect x="290" y="44" width="222" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="401" y="66" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">Case B（边界）：n = 0</text>
+
+  <!-- step 1 -->
+  <text x="298" y="100" font-size="11" fill="#666" font-weight="bold">① 读 n 与位长 L</text>
+  <text x="298" y="118" font-size="11" fill="#333">0 = 0₂，无设置位</text>
+  <text x="298" y="134" font-size="11" fill="#b85450" font-weight="bold">bit_length(0) = 0 ⚠</text>
+
+  <!-- step 2: mask with max(1,L) -->
+  <text x="298" y="162" font-size="11" fill="#666" font-weight="bold">② L 兜底为 1，再造掩码</text>
+  <rect x="298" y="170" width="60" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="328" y="188" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <text x="368" y="188" font-size="10" fill="#d6a040" font-weight="bold">mask=1</text>
+  <text x="298" y="212" font-size="10" fill="#888">L=max(1,0)=1 → (1&lt;&lt;1)−1=1</text>
+
+  <!-- step 3: XOR -->
+  <text x="298" y="240" font-size="11" fill="#666" font-weight="bold">③ 异或翻转</text>
+  <text x="298" y="258" font-size="11" fill="#333">n    = 0</text>
+  <text x="298" y="274" font-size="11" fill="#333">mask = 1</text>
+  <line x1="298" y1="280" x2="360" y2="280" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="298" y="296" font-size="11" fill="#b85450" font-weight="bold">^    = 1 ✓</text>
+
+  <rect x="290" y="306" width="222" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="401" y="328" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">0 的补数 = 1（需兜底）</text>
+
+  <!-- bottom note -->
+  <rect x="28" y="346" width="484" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="366" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">关键差异：bit_length(0)=0 会使 mask=0、结果错误为 0</text>
+  <text x="270" y="380" text-anchor="middle" font-size="10.5" fill="#666">故须 if n==0 return 1，或 L=max(1, bit_length(n)) 兜底</text>
+</svg>

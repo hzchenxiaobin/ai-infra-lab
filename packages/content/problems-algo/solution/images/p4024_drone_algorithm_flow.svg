@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="260" y="16" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：单趟扫描，「严格小于」更新</text>
+
+    <!-- step 1: init -->
+    <rect x="95" y="28" width="210" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="200" y="50" text-anchor="middle" font-size="10" fill="#333">① best = −1，bestDist = +∞，i = 0</text>
+
+    <path d="M 200 64 L 200 70" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- diamond A: more drones? -->
+    <polygon points="200,72 290,106 200,140 110,106" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="200" y="103" text-anchor="middle" font-size="10.5" fill="#333">还有无人机？</text>
+    <text x="200" y="118" text-anchor="middle" font-size="9.5" fill="#333">（i &lt; n）</text>
+
+    <!-- no: return -->
+    <path d="M 290 106 H 346" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="302" y="99" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <rect x="350" y="88" width="158" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="429" y="108" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">⑤ 返回 best</text>
+    <text x="429" y="125" text-anchor="middle" font-size="8.5" fill="#2f5527">（无可达无人机时为 −1）</text>
+
+    <!-- yes: compute dist -->
+    <path d="M 200 140 L 200 154" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="208" y="152" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <rect x="95" y="156" width="210" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="200" y="174" text-anchor="middle" font-size="10" fill="#333">② dist = |xᵢ − tx| + |yᵢ − ty|</text>
+    <text x="200" y="188" text-anchor="middle" font-size="8.5" fill="#557">（曼哈顿距离）</text>
+
+    <path d="M 200 194 L 200 200" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- diamond B: reachable and strictly closer -->
+    <polygon points="200,202 300,238 200,274 100,238" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="200" y="235" text-anchor="middle" font-size="10.5" fill="#333">dist ≤ rangeᵢ 且</text>
+    <text x="200" y="250" text-anchor="middle" font-size="10.5" fill="#333">dist &lt; bestDist？</text>
+
+    <!-- yes: update -->
+    <path d="M 200 274 L 200 280" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="208" y="279" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <rect x="95" y="282" width="210" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="200" y="305" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">③ best = i，bestDist = dist</text>
+
+    <!-- box 3 joins the loop line -->
+    <path d="M 95 301 H 48" stroke="#b85450" stroke-width="1.6" fill="none"/>
+
+    <!-- no: skip and loop back -->
+    <path d="M 300 238 H 336 V 344 H 48 V 106 H 104" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="312" y="231" font-size="10" fill="#b85450" font-weight="bold">否</text>
+    <text x="332" y="268" text-anchor="end" font-size="8" fill="#b85450">不可达 / 并列或更远</text>
+    <text x="40" y="230" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 40 230)">取下一架无人机（i++）</text>
+
+    <!-- right: complexity -->
+    <rect x="350" y="152" width="158" height="76" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="429" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6d1f">复杂度</text>
+    <text x="429" y="190" text-anchor="middle" font-size="9.5" fill="#7a5c1a">时间 O(n)：每架无人机</text>
+    <text x="429" y="205" text-anchor="middle" font-size="9.5" fill="#7a5c1a">2 减 2 绝对值 2 比较</text>
+    <text x="429" y="220" text-anchor="middle" font-size="9.5" fill="#7a5c1a">空间 O(1)：best、bestDist</text>
+
+    <!-- right: tie note -->
+    <rect x="350" y="248" width="158" height="100" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="429" y="268" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">并列 ⇒ 保小下标</text>
+    <text x="429" y="286" text-anchor="middle" font-size="8.5" fill="#33506b">按 i 升序遍历 +</text>
+    <text x="429" y="300" text-anchor="middle" font-size="8.5" fill="#33506b">严格小于才更新 ⇒</text>
+    <text x="429" y="314" text-anchor="middle" font-size="8.5" fill="#33506b">首个最小 dist 留下</text>
+    <text x="429" y="330" text-anchor="middle" font-size="8.5" fill="#33506b">示例 2：1、2 号均 dist 2</text>
+    <text x="429" y="344" text-anchor="middle" font-size="8.5" fill="#33506b">先到的 1 号保住 ⇒ 答案 1</text>
+
+    <!-- bottom: pitfalls -->
+    <rect x="55" y="356" width="440" height="78" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="275" y="374" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">三个免踩的坑</text>
+    <text x="71" y="392" font-size="9" fill="#8a3a35">① 「严格小于」别写成「≤」——并列会被大下标顶掉，示例 2 将错答 2</text>
+    <text x="71" y="410" font-size="9" fill="#8a3a35">② bestDist 初值取 +∞（或先判 best == −1）——初值 0 则 dist &lt; 0 永假、恒返 −1</text>
+    <text x="71" y="428" font-size="9" fill="#8a3a35">③ 无解返回 −1，别顺手返回 0——0 是合法下标，语义完全不同</text>
+  </g>
+</svg>

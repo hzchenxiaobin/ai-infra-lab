@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：记忆化 dfs(i, j, x)</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">x = 最近一次外层配对所用的字符（26 表示尚无外层配对，不约束）</text>
+
+  <!-- Start node -->
+  <rect x="210" y="58" width="140" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="79" text-anchor="middle" font-size="12" fill="#a87020" font-weight="bold">dfs(i, j, x)</text>
+
+  <!-- arrow down -->
+  <path d="M 280 92 L 280 108" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: i >= j ? -->
+  <polygon points="280,112 380,150 280,188 180,150" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="11.5" fill="#335" font-weight="bold">i ≥ j ?</text>
+  <text x="280" y="161" text-anchor="middle" font-size="10" fill="#666">（无法再凑出一对）</text>
+
+  <!-- Yes branch -> return 0 -->
+  <path d="M 180 150 L 110 150" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="150" y="143" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="40" y="134" width="68" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="74" y="155" text-anchor="middle" font-size="12" fill="#2a4a1a" font-weight="bold">return 0</text>
+
+  <!-- No branch down -->
+  <path d="M 280 188 L 280 206" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="296" y="200" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Decision 2: s[i]==s[j] and s[i]!=x ? -->
+  <polygon points="280,210 410,256 280,302 150,256" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="250" text-anchor="middle" font-size="11" fill="#335" font-weight="bold">s[i] == s[j]</text>
+  <text x="280" y="266" text-anchor="middle" font-size="11" fill="#335" font-weight="bold">且 s[i] ≠ x ?</text>
+  <text x="280" y="282" text-anchor="middle" font-size="9.5" fill="#888">（可作新一对外层配对）</text>
+
+  <!-- Yes branch -> pair -->
+  <path d="M 410 256 L 470 256" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="440" y="249" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="350" y="320" width="200" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="338" text-anchor="middle" font-size="11" fill="#2a4a1a" font-weight="bold">配对：dfs(i+1, j-1, s[i]) + 2</text>
+  <text x="450" y="354" text-anchor="middle" font-size="10" fill="#4a6a3a">把约束传给内部 = s[i]</text>
+  <path d="M 470 256 C 470 290, 450 300, 450 318" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- No branch -> shrink -->
+  <path d="M 150 256 L 90 256" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="120" y="249" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="30" y="320" width="240" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="338" text-anchor="middle" font-size="11" fill="#a87020" font-weight="bold">舍弃一端：max(dfs(i+1,j,x),</text>
+  <text x="150" y="354" text-anchor="middle" font-size="11" fill="#a87020" font-weight="bold">dfs(i,j-1,x))</text>
+  <path d="M 90 256 C 90 290, 150 300, 150 318" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- memo note -->
+  <rect x="40" y="390" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="408" text-anchor="middle" font-size="11" fill="#335" font-weight="bold">用 memo / @cache 缓存 (i, j, x) 三元组</text>
+  <text x="280" y="423" text-anchor="middle" font-size="10.5" fill="#556688">状态数 O(n²·C)，C = 26（字符集）→ 答案 dfs(0, n−1, 26)</text>
+</svg>

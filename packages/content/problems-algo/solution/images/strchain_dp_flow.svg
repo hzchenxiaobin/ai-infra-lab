@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="500" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">最长字符串链 — 算法流程</text>
+
+  <!-- Step 1: 按长度排序 -->
+  <rect x="50" y="42" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="60" font-size="11.5" fill="#446688" font-weight="bold">Step 1</text>
+  <text x="270" y="60" text-anchor="middle" font-size="12" fill="#333">按单词长度升序排序</text>
+  <text x="270" y="75" text-anchor="middle" font-size="10.5" fill="#888">a, b, ba, bca, bda, bdca</text>
+
+  <path d="M 270 84 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: 初始化哈希表 -->
+  <rect x="50" y="104" width="440" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="122" font-size="11.5" fill="#4a7a3a" font-weight="bold">Step 2</text>
+  <text x="270" y="122" text-anchor="middle" font-size="12" fill="#333">初始化哈希表 dp = {}，ans = 1</text>
+  <text x="270" y="137" text-anchor="middle" font-size="10.5" fill="#888">dp[word] = 以 word 结尾的最长词链长度</text>
+
+  <path d="M 270 146 L 270 162" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: 遍历每个单词 -->
+  <rect x="50" y="166" width="440" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="184" font-size="11.5" fill="#d6a040" font-weight="bold">Step 3</text>
+  <text x="270" y="184" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历每个 word（已按长度升序）</text>
+  <text x="270" y="200" text-anchor="middle" font-size="11" fill="#333">best = 1（自身至少构成长度 1 的链）</text>
+  <text x="270" y="212" text-anchor="middle" font-size="10.5" fill="#888">对 word 的每个位置 i，删去 word[i] 得到 predecessor</text>
+
+  <path d="M 270 216 L 270 232" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: 枚举前身 -->
+  <rect x="50" y="236" width="440" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="254" font-size="11.5" fill="#b85450" font-weight="bold">Step 4</text>
+  <text x="270" y="254" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">枚举所有前身（删一个字符）</text>
+  <text x="270" y="270" text-anchor="middle" font-size="11" fill="#333">word = "bdca" → 删 b 得 "dca"，删 d 得 "bca"，</text>
+  <text x="270" y="284" text-anchor="middle" font-size="11" fill="#333">删 c 得 "bda"，删 a 得 "bdc"</text>
+
+  <path d="M 270 294 L 270 310" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: 哈希查表 + 转移 -->
+  <rect x="50" y="314" width="440" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="332" font-size="11.5" fill="#4a7a3a" font-weight="bold">Step 5</text>
+  <text x="270" y="332" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">查哈希表，若前身存在则转移</text>
+  <text x="270" y="348" text-anchor="middle" font-size="11.5" fill="#4a7a3a">best = max(best, dp[predecessor] + 1)</text>
+  <text x="270" y="362" text-anchor="middle" font-size="10.5" fill="#888">dp["bca"]+1=3, dp["bda"]+1=3 → best=3</text>
+
+  <path d="M 270 372 L 270 388" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: 更新 -->
+  <rect x="50" y="392" width="440" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="410" font-size="11.5" fill="#446688" font-weight="bold">Step 6</text>
+  <text x="270" y="410" text-anchor="middle" font-size="12" fill="#333">dp[word] = best，ans = max(ans, best)</text>
+  <text x="270" y="426" text-anchor="middle" font-size="10.5" fill="#888">dp["bdca"]=3, ans 更新为 4（来自 "bdca"→"bda"→"ba"→"a"）</text>
+
+  <path d="M 270 438 L 270 454" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 返回 -->
+  <rect x="120" y="458" width="300" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="479" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">返回 ans = 4</text>
+</svg>

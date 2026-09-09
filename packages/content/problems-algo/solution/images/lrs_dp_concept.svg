@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：最长重复子串 = 串与自身的最长公共子串（排除同位置）</text>
+
+  <!-- ===== string row ===== -->
+  <text x="30" y="60" font-size="11" fill="#888">s =</text>
+  <g font-size="13">
+    <rect x="70" y="46" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="87" y="65" text-anchor="middle" fill="#333" font-weight="bold">a</text>
+    <rect x="106" y="46" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="123" y="65" text-anchor="middle" fill="#333" font-weight="bold">b</text>
+    <rect x="142" y="46" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="159" y="65" text-anchor="middle" fill="#333" font-weight="bold">b</text>
+    <rect x="178" y="46" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="195" y="65" text-anchor="middle" fill="#333" font-weight="bold">a</text>
+    <rect x="214" y="46" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="231" y="65" text-anchor="middle" fill="#333" font-weight="bold">b</text>
+    <rect x="250" y="46" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="267" y="65" text-anchor="middle" fill="#333" font-weight="bold">a</text>
+  </g>
+  <g font-size="9.5" fill="#888">
+    <text x="87" y="84" text-anchor="middle">0</text>
+    <text x="123" y="84" text-anchor="middle">1</text>
+    <text x="159" y="84" text-anchor="middle">2</text>
+    <text x="195" y="84" text-anchor="middle">3</text>
+    <text x="231" y="84" text-anchor="middle">4</text>
+    <text x="267" y="84" text-anchor="middle">5</text>
+  </g>
+
+  <!-- ===== DP definition box ===== -->
+  <rect x="320" y="44" width="220" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="64" text-anchor="middle" font-size="11.5" fill="#7a5a20" font-weight="bold">dp[i][j] = 以 i、j 结尾的</text>
+  <text x="430" y="80" text-anchor="middle" font-size="11.5" fill="#7a5a20" font-weight="bold">最长公共后缀长度（i≠j）</text>
+
+  <!-- ===== DP table (mini) ===== -->
+  <text x="30" y="112" font-size="11" fill="#666" font-weight="bold">dp 表（6×6，对角线 i=j 排除）</text>
+
+  <!-- header row j -->
+  <g font-size="10" fill="#888">
+    <text x="58" y="130" text-anchor="middle">j</text>
+    <text x="92" y="130" text-anchor="middle">0</text>
+    <text x="122" y="130" text-anchor="middle">1</text>
+    <text x="152" y="130" text-anchor="middle">2</text>
+    <text x="182" y="130" text-anchor="middle">3</text>
+    <text x="212" y="130" text-anchor="middle">4</text>
+    <text x="242" y="130" text-anchor="middle">5</text>
+  </g>
+  <!-- header col i -->
+  <g font-size="10" fill="#888">
+    <text x="58" y="150" text-anchor="middle">0</text>
+    <text x="58" y="170" text-anchor="middle">1</text>
+    <text x="58" y="190" text-anchor="middle">2</text>
+    <text x="58" y="210" text-anchor="middle">3</text>
+    <text x="58" y="230" text-anchor="middle">4</text>
+    <text x="58" y="250" text-anchor="middle">5</text>
+  </g>
+
+  <!-- diagonal cells (greyed out) -->
+  <rect x="78" y="138" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="92" y="152" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+  <rect x="108" y="158" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="122" y="172" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+  <rect x="138" y="178" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="152" y="192" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+  <rect x="168" y="198" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="182" y="212" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+  <rect x="198" y="218" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="212" y="232" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+  <rect x="228" y="238" width="28" height="20" fill="#eee" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="242" y="252" text-anchor="middle" font-size="10" fill="#aaa">—</text>
+
+  <!-- key cell dp[1][4]=2 highlighted -->
+  <rect x="198" y="158" width="28" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="212" y="172" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">2</text>
+
+  <!-- its dependency dp[0][3]=1 -->
+  <rect x="168" y="138" width="28" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="182" y="152" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">1</text>
+
+  <!-- arrow from dp[0][3] to dp[1][4] -->
+  <path d="M 182 158 Q 197 156 205 158" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- other non-zero cells (light) -->
+  <g font-size="10" fill="#555">
+    <rect x="228" y="138" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="242" y="152" text-anchor="middle">1</text>
+    <rect x="138" y="158" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="152" y="172" text-anchor="middle">1</text>
+    <rect x="108" y="178" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="122" y="192" text-anchor="middle">1</text>
+    <rect x="198" y="178" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="212" y="192" text-anchor="middle">1</text>
+    <rect x="78" y="198" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="92" y="212" text-anchor="middle">1</text>
+    <rect x="228" y="198" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="242" y="212" text-anchor="middle">2</text>
+    <rect x="108" y="218" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="122" y="232" text-anchor="middle">1</text>
+    <rect x="138" y="218" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="152" y="232" text-anchor="middle">1</text>
+    <rect x="78" y="238" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="92" y="252" text-anchor="middle">1</text>
+    <rect x="168" y="238" width="28" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="182" y="252" text-anchor="middle">2</text>
+  </g>
+
+  <!-- zero cells -->
+  <g font-size="10" fill="#ccc">
+    <text x="92" y="172" text-anchor="middle">0</text>
+    <text x="122" y="152" text-anchor="middle">0</text>
+    <text x="152" y="152" text-anchor="middle">0</text>
+    <text x="182" y="172" text-anchor="middle">0</text>
+    <text x="212" y="152" text-anchor="middle">0</text>
+    <text x="92" y="192" text-anchor="middle">0</text>
+    <text x="122" y="212" text-anchor="middle">0</text>
+    <text x="152" y="192" text-anchor="middle">0</text>
+    <text x="182" y="192" text-anchor="middle">0</text>
+    <text x="212" y="212" text-anchor="middle">0</text>
+    <text x="242" y="172" text-anchor="middle">0</text>
+    <text x="122" y="232" text-anchor="middle">0</text>
+    <text x="152" y="212" text-anchor="middle">0</text>
+    <text x="182" y="232" text-anchor="middle">0</text>
+    <text x="212" y="232" text-anchor="middle">0</text>
+    <text x="242" y="232" text-anchor="middle">0</text>
+    <text x="92" y="232" text-anchor="middle">0</text>
+    <text x="122" y="252" text-anchor="middle">0</text>
+    <text x="152" y="252" text-anchor="middle">0</text>
+    <text x="212" y="252" text-anchor="middle">0</text>
+    <text x="242" y="252" text-anchor="middle">0</text>
+  </g>
+
+  <!-- ===== transition formula ===== -->
+  <rect x="300" y="120" width="240" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="420" y="142" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">状态转移</text>
+  <text x="420" y="164" text-anchor="middle" font-size="11" fill="#446688">s[i] == s[j] 且 i ≠ j：</text>
+  <text x="420" y="182" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">dp[i][j] = dp[i−1][j−1] + 1</text>
+  <text x="420" y="198" text-anchor="middle" font-size="10.5" fill="#888">否则 dp[i][j] = 0</text>
+
+  <!-- ===== answer box ===== -->
+  <rect x="300" y="218" width="240" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="420" y="240" text-anchor="middle" font-size="11.5" fill="#3a5a2a" font-weight="bold">答案 = max(dp[i][j])，i ≠ j</text>
+  <text x="420" y="256" text-anchor="middle" font-size="10.5" fill="#555">dp[1][4] = 2 → "ab" 在位置 0、3 各出现</text>
+
+  <!-- ===== intuition ===== -->
+  <rect x="30" y="278" width="510" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="298" font-size="10.5" fill="#7a5a20" font-weight="bold">直觉：</text>
+  <text x="44" y="316" font-size="10.5" fill="#555">把 s 和 s 自身做「最长公共子串」——但排除对角线（i=j，同一位置不算重复）。dp[i][j] 追踪的是「后缀匹配」,</text>
+  <text x="44" y="330" font-size="10.5" fill="#555">字符相同则前一对 +1 延长，不同则归零——与 718 最长重复子数组完全同构。</text>
+
+  <!-- ===== space optimization hint ===== -->
+  <rect x="30" y="340" width="510" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="360" font-size="10.5" fill="#b85450" font-weight="bold">空间优化：</text>
+  <text x="44" y="376" font-size="10.5" fill="#555">dp[i][j] 只依赖左上角 dp[i−1][j−1] → 滚动成 1D，j 倒序遍历，O(n) 空间。</text>
+</svg>

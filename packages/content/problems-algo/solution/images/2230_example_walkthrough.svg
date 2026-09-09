@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：4 行购买 → 双谓词过滤 → DISTINCT 取用户列表</text>
+  <text x="300" y="40" text-anchor="middle" font-size="9" fill="#888">startDate=03-08, endDate=03-20(00:00:00), minAmount=1000</text>
+
+  <!-- ===== Timeline axis ===== -->
+  <line x1="50" y1="200" x2="560" y2="200" stroke="#999" stroke-width="2" filter="url(#rough2)"/>
+
+  <!-- Tick marks and date labels -->
+  <line x1="120" y1="194" x2="120" y2="206" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="120" y="220" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">03-08</text>
+  <text x="120" y="232" text-anchor="middle" font-size="7" fill="#446688">startDate</text>
+  <text x="120" y="242" text-anchor="middle" font-size="6" fill="#888">00:00:00</text>
+
+  <line x1="300" y1="194" x2="300" y2="206" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="300" y="220" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">03-20</text>
+  <text x="300" y="232" text-anchor="middle" font-size="7" fill="#b85450">endDate</text>
+  <text x="300" y="242" text-anchor="middle" font-size="6" fill="#888">00:00:00</text>
+
+  <line x1="380" y1="196" x2="380" y2="204" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="380" y="220" text-anchor="middle" font-size="8" fill="#999">03-30</text>
+
+  <line x1="510" y1="196" x2="510" y2="204" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="510" y="220" text-anchor="middle" font-size="8" fill="#999">04-20</text>
+
+  <!-- Valid interval highlight [03-08, 03-20] -->
+  <rect x="120" y="196" width="180" height="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="210" y="190" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">合格时间区间 [03-08 00:00, 03-20 00:00]</text>
+
+  <!-- ===== Purchase markers on timeline ===== -->
+
+  <!-- Purchase 3: user 3, 03-18, 4523 (WINNER - in range + amount OK) -->
+  <line x1="250" y1="200" x2="250" y2="120" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <circle cx="250" cy="200" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="180" y="76" width="140" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="92" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">user 3 · 03-18 12:03</text>
+  <text x="250" y="106" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">amount = 4523</text>
+  <text x="250" y="116" text-anchor="middle" font-size="7" fill="#4a7a3a">✓ 区间内 ✓ ≥1000 → 保留</text>
+
+  <!-- Purchase 2: user 2, 03-19, 678 (in range, amount too low) -->
+  <line x1="280" y1="200" x2="280" y2="270" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <circle cx="280" cy="200" r="5" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="340" y="256" width="150" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="415" y="272" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">user 2 · 03-19 19:24</text>
+  <text x="415" y="286" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">amount = 678</text>
+  <text x="415" y="296" text-anchor="middle" font-size="7" fill="#d6a040">✓ 区间内 ✗ &lt;1000 → 丢弃</text>
+
+  <!-- Purchase 4: user 3, 03-30, 626 (out of range) -->
+  <line x1="380" y1="200" x2="380" y2="270" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <circle cx="380" cy="200" r="5" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="340" y="304" width="150" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="415" y="320" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">user 3 · 03-30 09:43</text>
+  <text x="415" y="334" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">amount = 626</text>
+  <text x="415" y="344" text-anchor="middle" font-size="7" fill="#b85450">✗ 超区间 ✗ &lt;1000 → 丢弃</text>
+
+  <!-- Purchase 1: user 1, 04-20, 4416 (out of range, amount OK) -->
+  <line x1="510" y1="200" x2="510" y2="120" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <circle cx="510" cy="200" r="5" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="404" y="76" width="150" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="479" y="92" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">user 1 · 04-20 09:03</text>
+  <text x="479" y="106" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">amount = 4416</text>
+  <text x="479" y="116" text-anchor="middle" font-size="7" fill="#b85450">✗ 超区间 ✓ ≥1000 → 丢弃</text>
+
+  <!-- ===== Legend ===== -->
+  <rect x="40" y="360" width="250" height="40" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="375" font-size="8" fill="#555" font-weight="bold">图例</text>
+  <circle cx="60" cy="388" r="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="70" y="392" font-size="7" fill="#4a7a3a">双条件 ✓ 保留</text>
+  <circle cx="160" cy="388" r="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="392" font-size="7" fill="#d6a040">部分 ✓ 丢弃</text>
+  <circle cx="250" cy="388" r="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="392" font-size="7" fill="#b85450">全 ✗ 丢弃</text>
+
+  <!-- ===== Result: user_id list (NOT count) ===== -->
+  <rect x="320" y="360" width="240" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="376" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">SELECT DISTINCT user_id → 结果集</text>
+  <rect x="410" y="382" width="60" height="20" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="397" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">3</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="40" y="414" width="520" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="430" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">关键洞察</text>
+  <text x="300" y="444" text-anchor="middle" font-size="8" fill="#666">时间 ✓ + 金额 ✓ 缺一不可（AND）；一次合格即有资格（存在性判定）；DISTINCT 取用户列表</text>
+  <text x="300" y="456" text-anchor="middle" font-size="8" fill="#4a7a3a">2230 输出 user_id 多行（结果集），2205 输出 COUNT 标量 1</text>
+</svg>

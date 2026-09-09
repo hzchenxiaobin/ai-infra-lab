@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一趟扫描 + 末两位判定（慢指针原地写）</text>
+
+  <!-- Input -->
+  <rect x="150" y="46" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="70" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">输入字符串 s（仅小写字母）</text>
+
+  <path d="M 260 90 L 260 108" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Loop entry -->
+  <rect x="150" y="114" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="138" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历每个字符 c = s[i]</text>
+
+  <path d="M 260 156 L 260 178" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: check last two -->
+  <path d="M 260 184 L 400 234 L 260 284 L 120 234 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="222" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">结果长度 ≥ 2 且</text>
+  <text x="260" y="240" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">末两位都 == c ？</text>
+  <text x="260" y="258" text-anchor="middle" font-size="10" fill="#888">(s[j−1]==c 且 s[j−2]==c)</text>
+
+  <!-- Right branch: yes -> skip -->
+  <path d="M 400 234 L 460 234" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="430" y="226" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="412" y="250" width="96" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="268" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">跳过（删除）</text>
+  <text x="460" y="282" text-anchor="middle" font-size="10" fill="#888">不写，j 不动</text>
+
+  <!-- Left branch: no -> append -->
+  <path d="M 120 234 L 60 234" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="90" y="226" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="12" y="250" width="96" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="268" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">追加 s[j++]=c</text>
+  <text x="60" y="282" text-anchor="middle" font-size="10" fill="#888">写入结果</text>
+
+  <!-- Loop back arrows to "遍历" box -->
+  <path d="M 460 290 Q 460 110 260 110" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 60 290 Q 60 110 260 110" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="260" y="106" text-anchor="middle" font-size="9.5" fill="#888">下一个字符</text>
+
+  <!-- End -->
+  <path d="M 260 156 L 260 156" stroke="none"/>
+  <rect x="150" y="320" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="344" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历结束 → s.resize(j) 返回</text>
+
+  <path d="M 260 300 L 260 318" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="288" y="314" font-size="10" fill="#888">所有字符处理完</text>
+
+  <!-- Note -->
+  <text x="40" y="392" font-size="10.5" fill="#888">j 为慢指针（结果长度），始终 ≤ 读位置 i，故原地覆写不破坏未读数据。</text>
+  <text x="40" y="408" font-size="10.5" fill="#888">时间 O(n)，额外空间 O(1)（C++ 原地；Python 用 list 模拟，O(n) 存结果）。</text>
+</svg>

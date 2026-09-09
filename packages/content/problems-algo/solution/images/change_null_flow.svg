@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="400" fill="#fafafa"/>
+
+  <text x="430" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：无序输入 → 按 id 排序 → 累计 grp → COALESCE 填充 → 输出</text>
+
+  <!-- ===== Panel 1: input (unordered) ===== -->
+  <text x="90" y="50" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">① 输入（无序）</text>
+  <rect x="20" y="56" width="140" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="40" y="71" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">id</text>
+  <text x="100" y="71" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">drink</text>
+  <line x1="60" y1="56" x2="60" y2="78" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+  <!-- input order: 9,6,7,3,1,2 -->
+  <g font-size="8.5" filter="url(#rough2)">
+    <rect x="20" y="78" width="140" height="26" fill="#fff" stroke="#ccc" stroke-width="0.6" rx="2"/><text x="40" y="95" text-anchor="middle" fill="#333" font-weight="bold">9</text><text x="66" y="95" fill="#d6a040" font-weight="bold">Rum and Coke</text>
+    <rect x="20" y="104" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="40" y="121" text-anchor="middle" fill="#333" font-weight="bold">6</text><text x="66" y="121" fill="#b85450" font-weight="bold">NULL</text>
+    <rect x="20" y="130" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="40" y="147" text-anchor="middle" fill="#333" font-weight="bold">7</text><text x="66" y="147" fill="#b85450" font-weight="bold">NULL</text>
+    <rect x="20" y="156" width="140" height="26" fill="#fff" stroke="#ccc" stroke-width="0.6" rx="2"/><text x="40" y="173" text-anchor="middle" fill="#333" font-weight="bold">3</text><text x="66" y="173" fill="#4a7a3a" font-weight="bold">St Germain Spritz</text>
+    <rect x="20" y="182" width="140" height="26" fill="#fff" stroke="#ccc" stroke-width="0.6" rx="2"/><text x="40" y="199" text-anchor="middle" fill="#333" font-weight="bold">1</text><text x="66" y="199" fill="#446688" font-weight="bold">Orange Margarita</text>
+    <rect x="20" y="208" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="40" y="225" text-anchor="middle" fill="#333" font-weight="bold">2</text><text x="66" y="225" fill="#b85450" font-weight="bold">NULL</text>
+  </g>
+
+  <!-- arrow 1->2 -->
+  <text x="180" y="150" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">ORDER</text>
+  <text x="180" y="162" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">BY id</text>
+  <path d="M165 145 L 195 145" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Panel 2: sorted by id ===== -->
+  <text x="290" y="50" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">② 按 id 排序</text>
+  <rect x="220" y="56" width="140" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="71" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">id</text>
+  <text x="300" y="71" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">drink</text>
+  <line x1="260" y1="56" x2="260" y2="78" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <g font-size="8.5" filter="url(#rough2)">
+    <rect x="220" y="78" width="140" height="26" fill="#e8f0fe" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="240" y="95" text-anchor="middle" fill="#333" font-weight="bold">1</text><text x="266" y="95" fill="#446688" font-weight="bold">Orange Margarita</text>
+    <rect x="220" y="104" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="240" y="121" text-anchor="middle" fill="#333" font-weight="bold">2</text><text x="266" y="121" fill="#b85450" font-weight="bold">NULL</text>
+    <rect x="220" y="130" width="140" height="26" fill="#e6f4ea" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="240" y="147" text-anchor="middle" fill="#333" font-weight="bold">3</text><text x="266" y="147" fill="#4a7a3a" font-weight="bold">St Germain Spritz</text>
+    <rect x="220" y="156" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="240" y="173" text-anchor="middle" fill="#333" font-weight="bold">6</text><text x="266" y="173" fill="#b85450" font-weight="bold">NULL</text>
+    <rect x="220" y="182" width="140" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="3,2" rx="2"/><text x="240" y="199" text-anchor="middle" fill="#333" font-weight="bold">7</text><text x="266" y="199" fill="#b85450" font-weight="bold">NULL</text>
+    <rect x="220" y="208" width="140" height="26" fill="#fff8e1" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="240" y="225" text-anchor="middle" fill="#333" font-weight="bold">9</text><text x="266" y="225" fill="#d6a040" font-weight="bold">Rum and Coke</text>
+  </g>
+
+  <!-- arrow 2->3 -->
+  <text x="380" y="150" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">+ 累计</text>
+  <text x="380" y="162" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">COUNT</text>
+  <path d="M365 145 L 395 145" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Panel 3: + grp ===== -->
+  <text x="495" y="50" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">③ 算 grp（岛屿分组）</text>
+  <rect x="410" y="56" width="170" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="425" y="71" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">id</text>
+  <text x="478" y="71" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">drink</text>
+  <text x="548" y="71" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">grp</text>
+  <line x1="440" y1="56" x2="440" y2="78" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="516" y1="56" x2="516" y2="78" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <g font-size="8.5" filter="url(#rough2)">
+    <rect x="410" y="78" width="170" height="26" fill="#e8f0fe" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="95" text-anchor="middle" fill="#333" font-weight="bold">1</text><text x="445" y="95" fill="#446688" font-weight="bold">Orange Marg.</text><text x="548" y="95" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="410" y="104" width="170" height="26" fill="#e8f0fe" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="121" text-anchor="middle" fill="#333" font-weight="bold">2</text><text x="445" y="121" fill="#b85450" font-weight="bold">NULL</text><text x="548" y="121" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <line x1="410" y1="130" x2="580" y2="130" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <rect x="410" y="130" width="170" height="26" fill="#e6f4ea" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="147" text-anchor="middle" fill="#333" font-weight="bold">3</text><text x="445" y="147" fill="#4a7a3a" font-weight="bold">St Germain Spr.</text><text x="548" y="147" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <rect x="410" y="156" width="170" height="26" fill="#e6f4ea" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="173" text-anchor="middle" fill="#333" font-weight="bold">6</text><text x="445" y="173" fill="#b85450" font-weight="bold">NULL</text><text x="548" y="173" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <rect x="410" y="182" width="170" height="26" fill="#e6f4ea" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="199" text-anchor="middle" fill="#333" font-weight="bold">7</text><text x="445" y="199" fill="#b85450" font-weight="bold">NULL</text><text x="548" y="199" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <line x1="410" y1="208" x2="580" y2="208" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <rect x="410" y="208" width="170" height="26" fill="#fff8e1" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="425" y="225" text-anchor="middle" fill="#333" font-weight="bold">9</text><text x="445" y="225" fill="#d6a040" font-weight="bold">Rum and Coke</text><text x="548" y="225" text-anchor="middle" fill="#d6a040" font-weight="bold">3</text>
+  </g>
+
+  <!-- arrow 3->4 -->
+  <text x="600" y="150" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">COALESCE</text>
+  <text x="600" y="162" text-anchor="middle" font-size="8.5" fill="#888" font-weight="bold">+ MAX(grp)</text>
+  <path d="M585 145 L 615 145" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Panel 4: output ===== -->
+  <text x="715" y="50" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">④ 输出（已填充）</text>
+  <rect x="630" y="56" width="170" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="655" y="71" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">id</text>
+  <text x="715" y="71" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">drink</text>
+  <line x1="680" y1="56" x2="680" y2="78" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <g font-size="8.5" filter="url(#rough2)">
+    <rect x="630" y="78" width="170" height="26" fill="#e8f0fe" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="655" y="95" text-anchor="middle" fill="#333" font-weight="bold">1</text><text x="685" y="95" fill="#446688" font-weight="bold">Orange Margarita</text>
+    <rect x="630" y="104" width="170" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2"/><text x="655" y="121" text-anchor="middle" fill="#333" font-weight="bold">2</text><text x="685" y="121" fill="#446688" font-weight="bold">Orange Margarita</text>
+    <rect x="630" y="130" width="170" height="26" fill="#e6f4ea" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="655" y="147" text-anchor="middle" fill="#333" font-weight="bold">3</text><text x="685" y="147" fill="#4a7a3a" font-weight="bold">St Germain Spritz</text>
+    <rect x="630" y="156" width="170" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2"/><text x="655" y="173" text-anchor="middle" fill="#333" font-weight="bold">6</text><text x="685" y="173" fill="#4a7a3a" font-weight="bold">St Germain Spritz</text>
+    <rect x="630" y="182" width="170" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2"/><text x="655" y="199" text-anchor="middle" fill="#333" font-weight="bold">7</text><text x="685" y="199" fill="#4a7a3a" font-weight="bold">St Germain Spritz</text>
+    <rect x="630" y="208" width="170" height="26" fill="#fff8e1" stroke="#bbb" stroke-width="0.6" rx="2"/><text x="655" y="225" text-anchor="middle" fill="#333" font-weight="bold">9</text><text x="685" y="225" fill="#d6a040" font-weight="bold">Rum and Coke</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="120" y="290" width="620" height="86" fill="#fff" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="312" font-size="9.5" fill="#333" font-weight="bold">grp 计算（累计 COUNT(drink)，NULL 不计数）：</text>
+  <text x="140" y="330" font-size="9" fill="#446688">id=1 计数→1 · id=2 NULL 不增→1 · id=3 计数→2 · id=6 NULL→2 · id=7 NULL→2 · id=9 计数→3</text>
+  <text x="140" y="350" font-size="9.5" fill="#333" font-weight="bold">填充规则：</text>
+  <text x="140" y="368" font-size="9" fill="#4a7a3a">同 grp 内 MAX(drink) = 唯一非空值 → COALESCE 原值非空取原值，NULL 取组内 MAX。</text>
+</svg>

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">dp[i][j] 的四种来源：配对 + 三方向继承</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">p = nums1[i−1] × nums2[j−1]；边界 dp[0][*]=dp[*][0]=−∞ 保证非空</text>
+
+  <!-- ===== dp grid (top-left region) ===== -->
+  <!-- column headers -->
+  <g font-size="10" fill="#888">
+    <text x="96" y="76" text-anchor="middle">−∞</text>
+    <text x="146" y="76" text-anchor="middle">…j−1</text>
+    <text x="196" y="76" text-anchor="middle">j</text>
+  </g>
+  <!-- row headers -->
+  <g font-size="10" fill="#888">
+    <text x="70" y="112" text-anchor="end">…i−1</text>
+    <text x="70" y="142" text-anchor="end">i</text>
+  </g>
+
+  <!-- cell (i-1, j-1) left-top -->
+  <rect x="121" y="96" width="50" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="117" text-anchor="middle" font-size="11" fill="#333">dp[i−1]</text>
+  <text x="146" y="124" text-anchor="middle" font-size="9" fill="#4a7a3a">[j−1]</text>
+
+  <!-- cell (i-1, j) top -->
+  <rect x="171" y="96" width="50" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="196" y="117" text-anchor="middle" font-size="11" fill="#333">dp[i−1]</text>
+  <text x="196" y="124" text-anchor="middle" font-size="9" fill="#446688">[j]</text>
+
+  <!-- cell (i, j-1) left -->
+  <rect x="121" y="128" width="50" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="149" text-anchor="middle" font-size="11" fill="#333">dp[i]</text>
+  <text x="146" y="156" text-anchor="middle" font-size="9" fill="#d6a040">[j−1]</text>
+
+  <!-- cell (i, j) target - highlighted -->
+  <rect x="171" y="128" width="50" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="196" y="149" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp[i]</text>
+  <text x="196" y="156" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">[j]</text>
+
+  <!-- arrow: left-top (i-1,j-1) -> (i,j)  option ② -->
+  <path d="M 168 126 L 190 128" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+
+  <!-- arrow: top (i-1,j) -> (i,j)  option ③ -->
+  <path d="M 196 128 L 196 128" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <path d="M 196 128 L 196 128" stroke="#446688" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <path d="M 196 126 L 196 128" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- arrow: left (i,j-1) -> (i,j)  option ④ -->
+  <path d="M 170 144 L 171 144" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== four option boxes on the right ===== -->
+  <text x="400" y="76" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">四选一取 max</text>
+
+  <!-- option ① single pair -->
+  <rect x="300" y="88" width="240" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="104" font-size="10" fill="#b85450" font-weight="bold">① 单独配对</text>
+  <text x="420" y="120" text-anchor="middle" font-size="12" fill="#333" font-family="'Segoe UI', monospace">p</text>
+  <text x="470" y="106" font-size="9" fill="#888">前缀为负时</text>
+  <text x="470" y="118" font-size="9" fill="#888">抛弃前缀只留此对</text>
+
+  <!-- option ② pair + prev -->
+  <rect x="300" y="136" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="152" font-size="10" fill="#4a7a3a" font-weight="bold">② 配对+前缀</text>
+  <text x="420" y="168" text-anchor="middle" font-size="12" fill="#333" font-family="'Segoe UI', monospace">p + dp[i−1][j−1]</text>
+  <text x="470" y="154" font-size="9" fill="#888">前缀为正时</text>
+  <text x="470" y="166" font-size="9" fill="#888">续接增益</text>
+
+  <!-- option ③ skip nums1[i-1] -->
+  <rect x="300" y="184" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="200" font-size="10" fill="#446688" font-weight="bold">③ 跳过 nums1[i−1]</text>
+  <text x="420" y="216" text-anchor="middle" font-size="12" fill="#333" font-family="'Segoe UI', monospace">dp[i−1][j]</text>
+  <text x="470" y="202" font-size="9" fill="#888">nums1[i−1]</text>
+  <text x="470" y="214" font-size="9" fill="#888">不参与配对</text>
+
+  <!-- option ④ skip nums2[j-1] -->
+  <rect x="300" y="232" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="312" y="248" font-size="10" fill="#d6a040" font-weight="bold">④ 跳过 nums2[j−1]</text>
+  <text x="420" y="264" text-anchor="middle" font-size="12" fill="#333" font-family="'Segoe UI', monospace">dp[i][j−1]</text>
+  <text x="470" y="250" font-size="9" fill="#888">nums2[j−1]</text>
+  <text x="470" y="262" font-size="9" fill="#888">不参与配对</text>
+
+  <!-- arrows from grid cells to option boxes -->
+  <!-- (i-1,j-1) -> option ② -->
+  <path d="M 171 112 L 250 112 L 250 156 L 300 156" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="3 2" fill="none" filter="url(#rough2)"/>
+  <!-- (i-1,j) -> option ③ -->
+  <path d="M 221 112 L 260 112 L 260 204 L 300 204" stroke="#446688" stroke-width="1.2" stroke-dasharray="3 2" fill="none" filter="url(#rough2)"/>
+  <!-- (i,j-1) -> option ④ -->
+  <path d="M 171 144 L 250 144 L 250 252 L 300 252" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="3 2" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== formula banner ===== -->
+  <rect x="60" y="296" width="480" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="316" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">dp[i][j] = max( p , p + dp[i−1][j−1] , dp[i−1][j] , dp[i][j−1] )</text>
+  <text x="300" y="330" text-anchor="middle" font-size="10" fill="#888">① 单飞 ／ ② 续接 ／ ③ 跳 nums1 ／ ④ 跳 nums2</text>
+
+  <!-- ===== negative trap note ===== -->
+  <rect x="60" y="350" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="370" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⚠️ 负数陷阱：边界用 −∞ 而非 0</text>
+  <text x="300" y="386" text-anchor="middle" font-size="10" fill="#555">全负样例 [-1,-1]×[1,1]：若边界为 0 会误返回 0（空点积），−∞ 强制至少配一对 → 正确答案 −1</text>
+  <text x="300" y="400" text-anchor="middle" font-size="9" fill="#888">C++ 用 INT_MIN/2 防 p + (−∞) 溢出</text>
+</svg>

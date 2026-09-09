@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 530"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="530" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：DFS「进入 / 退出」+ 容忍一个 dup 的滑窗</text>
+
+  <!-- 主流程（左列） -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="40" width="270" height="28" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="175" y="58" text-anchor="middle" font-size="11" fill="#333">建邻接表（无向边双向各加一次），从根 0 出发</text>
+    <path d="M 175 68 L 175 80" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="84" width="270" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8"/>
+    <text x="175" y="102" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#33506b">进入 u（链上下标 i、父边权 w）：</text>
+    <text x="175" y="120" text-anchor="middle" font-size="10" fill="#33506b">dist[i] ← dist[i−1] + w；occ[nums[u]] 追加 i</text>
+    <path d="M 175 130 L 175 142" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="146" width="270" height="30" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="175" y="165" text-anchor="middle" font-size="10.5" fill="#333">cnt ← occ[v] 末尾 ≥ top 的个数（1 / 2 / 3）</text>
+    <path d="M 175 176 L 175 188" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <polygon points="175,190 253,216 175,242 97,216" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="175" y="221" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6d1f">cnt = ?</text>
+
+    <!-- 总线与三条分支 -->
+    <path d="M 253 216 L 302 216" stroke="#d6a040" stroke-width="2" fill="none"/>
+    <path d="M 302 139 L 302 313" stroke="#d6a040" stroke-width="2" fill="none"/>
+    <path d="M 302 139 L 336 139" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+    <path d="M 302 223 L 336 223" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+    <path d="M 302 313 L 336 313" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+    <text x="315" y="133" text-anchor="middle" font-size="9" font-weight="bold" fill="#2f5d24">1</text>
+    <text x="315" y="217" text-anchor="middle" font-size="9" font-weight="bold" fill="#8a6d1f">2</text>
+    <text x="315" y="307" text-anchor="middle" font-size="9" font-weight="bold" fill="#b85450">3</text>
+  </g>
+
+  <!-- 右列：三种情况 -->
+  <g filter="url(#rough2)">
+    <rect x="332" y="104" width="176" height="264" fill="none" stroke="#999" stroke-width="1.2"
+          stroke-dasharray="6 4" rx="10"/>
+    <text x="420" y="98" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">按 cnt 三选一推进 top / dup</text>
+
+    <rect x="340" y="118" width="160" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6"/>
+    <text x="420" y="136" text-anchor="middle" font-size="10" font-weight="bold" fill="#2f5d24">cnt = 1：v 首次入窗</text>
+    <text x="420" y="151" text-anchor="middle" font-size="9.5" fill="#2f5d24">top、dup 均不动</text>
+
+    <rect x="340" y="172" width="160" height="102" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6"/>
+    <text x="420" y="190" text-anchor="middle" font-size="10" font-weight="bold" fill="#8a6d1f">cnt = 2：v 恰好第 2 次</text>
+    <text x="420" y="205" text-anchor="middle" font-size="9.5" fill="#8a6d1f">dup 空 → dup ← v</text>
+    <text x="420" y="220" text-anchor="middle" font-size="9.5" fill="#8a6d1f">已有 dup →</text>
+    <text x="420" y="235" text-anchor="middle" font-size="9.5" fill="#8a6d1f">top ← min(a, b) + 1</text>
+    <text x="420" y="250" text-anchor="middle" font-size="9.5" fill="#8a6d1f">a、b = 两组重复较早下标</text>
+    <text x="420" y="265" text-anchor="middle" font-size="9.5" fill="#8a6d1f">砍较早组，dup ← 幸存组</text>
+
+    <rect x="340" y="286" width="160" height="54" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6"/>
+    <text x="420" y="304" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450">cnt = 3：v 第 3 次入窗</text>
+    <text x="420" y="319" text-anchor="middle" font-size="9.5" fill="#b85450">top ← occ[v][−3] + 1</text>
+    <text x="420" y="334" text-anchor="middle" font-size="9.5" fill="#b85450">保留最近两次，dup ← v</text>
+  </g>
+
+  <!-- 汇合与主流程下半 -->
+  <g filter="url(#rough2)">
+    <path d="M 420 368 L 420 388" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="392" width="460" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8"/>
+    <text x="270" y="410" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#33506b">用 (dist[i] − dist[top], i − top + 1) 更新答案</text>
+    <text x="270" y="427" text-anchor="middle" font-size="10" fill="#33506b">更长 → 替换；等长 → 节点数取 min</text>
+    <path d="M 175 434 L 175 446" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="450" width="460" height="26" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="270" y="467" text-anchor="middle" font-size="10.5" fill="#333">子节点依次入栈（迭代 DFS，n 可达 5×10⁴，防递归爆栈）</text>
+    <path d="M 175 476 L 175 488" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)"/>
+
+    <rect x="40" y="492" width="460" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8"/>
+    <text x="270" y="511" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#2f5d24">退出 u：恢复 top / dup，弹出 occ[nums[u]] 末尾与 dist（恢复现场）</text>
+  </g>
+</svg>

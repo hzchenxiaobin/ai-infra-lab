@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">核心：后到的查询覆盖先到的 ⇒ 倒序处理，每条查询只统计「尚未被覆盖」的格子</text>
+
+  <!-- Forward timeline label -->
+  <text x="280" y="52" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">时间正向 →（后面的查询覆盖同一行/列前面的值）</text>
+
+  <!-- Query boxes (forward) -->
+  <rect x="40" y="62" width="100" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="80" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">Q1 行0=1</text>
+  <text x="90" y="94" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">[0,0,1]</text>
+
+  <rect x="160" y="62" width="100" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="210" y="80" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">Q2 列2=2</text>
+  <text x="210" y="94" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">[1,2,2]</text>
+
+  <rect x="280" y="62" width="100" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="330" y="80" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">Q3 行2=3</text>
+  <text x="330" y="94" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">[0,2,3]</text>
+
+  <rect x="400" y="62" width="100" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="80" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">Q4 列0=4</text>
+  <text x="450" y="94" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">[1,0,4]</text>
+
+  <!-- forward arrows -->
+  <path d="M 140,82 L 158,82" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 260,82 L 278,82" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 380,82 L 398,82" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Reverse arrow -->
+  <path d="M 460,112 Q 280,150 90,112" stroke="#b85450" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="280" y="140" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">↑ 倒序遍历：从 Q4 往回看，谁后到谁说了算</text>
+
+  <!-- Formula section -->
+  <text x="280" y="172" text-anchor="middle" font-size="12" fill="#555" font-weight="bold" filter="url(#rough2)">每条查询的「净贡献」= 本次新覆盖的格子数 × val</text>
+
+  <!-- row query formula -->
+  <rect x="40" y="186" width="230" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="55" y="206" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">行查询 type=0</text>
+  <text x="55" y="226" font-size="13" fill="#333" filter="url(#rough2)">贡献 = val × (n − colCnt)</text>
+  <text x="55" y="244" font-size="10" fill="#888" filter="url(#rough2)">colCnt = 已被「更晚」的列查询覆盖的列数</text>
+
+  <!-- col query formula -->
+  <rect x="290" y="186" width="230" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="305" y="206" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">列查询 type=1</text>
+  <text x="305" y="226" font-size="13" fill="#333" filter="url(#rough2)">贡献 = val × (n − rowCnt)</text>
+  <text x="305" y="244" font-size="10" fill="#888" filter="url(#rough2)">rowCnt = 已被「更晚」的行查询覆盖的行数</text>
+
+  <!-- marking note -->
+  <rect x="40" y="266" width="480" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="287" font-size="11" fill="#333" filter="url(#rough2)"><tspan font-weight="bold" fill="#555">标记去重</tspan>：用 rowSeen[] / colSeen[] 记录已处理的行/列；再次出现直接跳过（已被覆盖）</text>
+
+  <!-- summary -->
+  <rect x="40" y="312" width="480" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="333" font-size="11" fill="#333" filter="url(#rough2)"><tspan font-weight="bold" fill="#4a7a3a">本质</tspan>：把「逐格填矩阵 O(n²·m)」压成「逐查询数格子 O(m)」，靠的是「倒序 + 维度对偶计数」</text>
+
+  <text x="55" y="366" font-size="10" fill="#aaa" filter="url(#rough2)">示例 1：n=3, queries=[[0,0,1],[1,2,2],[0,2,3],[1,0,4]]，答案 23</text>
+</svg>

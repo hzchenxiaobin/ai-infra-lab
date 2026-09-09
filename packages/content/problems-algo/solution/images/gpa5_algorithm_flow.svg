@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="440" fill="#fafafa"/>
+
+  <text x="340" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 逻辑执行流程：子查询首登 → LEFT JOIN 次日 → 按日期分组计数</text>
+
+  <!-- step boxes (vertical pipeline) -->
+  <!-- step 1: FROM subquery -->
+  <rect x="60" y="50" width="560" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="72" font-size="11" fill="#446688" font-weight="bold">① 子查询 a：求每人首登日期</text>
+  <text x="80" y="89" font-size="10" fill="#333">SELECT player_id, MIN(event_date) AS install_dt FROM Activity GROUP BY player_id</text>
+  <text x="600" y="72" font-size="9.5" fill="#888" text-anchor="end">5 行 → 3 行</text>
+
+  <path d="M340 96 L340 112" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2: LEFT JOIN -->
+  <rect x="60" y="112" width="560" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="134" font-size="11" fill="#b85450" font-weight="bold">② LEFT JOIN Activity b：次日存在性判定</text>
+  <text x="80" y="151" font-size="10" fill="#333">ON b.player_id=a.player_id AND b.event_date=DATE_ADD(a.install_dt, INTERVAL 1 DAY)</text>
+  <text x="600" y="134" font-size="9.5" fill="#888" text-anchor="end">b 非 NULL=留存</text>
+
+  <path d="M340 158 L340 174" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 3: per-player row with Day1 flag -->
+  <rect x="60" y="174" width="560" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="196" font-size="11" fill="#d6a040" font-weight="bold">③ 中间结果 t：每人一行 (player_id, install_dt, Day1 标志)</text>
+  <text x="80" y="213" font-size="10" fill="#333">IF(b.event_date IS NOT NULL, 1, 0) AS is_day1  —— LEFT JOIN 不乘行（主键保证每人至多 1 匹配）</text>
+  <text x="600" y="196" font-size="9.5" fill="#888" text-anchor="end">仍 3 行</text>
+
+  <path d="M340 220 L340 236" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 4: GROUP BY install_dt -->
+  <rect x="60" y="236" width="560" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="258" font-size="11" fill="#4a7a3a" font-weight="bold">④ GROUP BY install_dt：按首登日期聚成同期群</text>
+  <text x="80" y="275" font-size="10" fill="#333">COUNT(*) AS amount（每群玩家数）, SUM(is_day1) AS Day1（次日留存数）</text>
+  <text x="600" y="258" font-size="9.5" fill="#888" text-anchor="end">3 行 → 2 行</text>
+
+  <path d="M340 282 L340 298" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 5: SELECT + ORDER BY -->
+  <rect x="60" y="298" width="560" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="320" font-size="11" fill="#446688" font-weight="bold">⑤ SELECT install_dt, amount, Day1 → ORDER BY install_dt</text>
+  <text x="80" y="337" font-size="10" fill="#333">输出列：install_dt（分组键）/ amount=COUNT(*) / Day1=SUM(is_day1)</text>
+  <text x="600" y="320" font-size="9.5" fill="#888" text-anchor="end">2 行结果</text>
+
+  <!-- execution order note -->
+  <rect x="60" y="362" width="560" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="384" font-size="11" fill="#333" font-weight="bold">书写顺序 vs 执行顺序</text>
+  <text x="80" y="402" font-size="10" fill="#555">书写：SELECT … FROM (子查询) a LEFT JOIN … b ON … GROUP BY … ORDER BY …</text>
+  <text x="80" y="418" font-size="10" fill="#555">执行：FROM/JOIN（① ② ③ 物化中间表）→ GROUP BY（④ 分群聚合）→ SELECT（⑤ 投影）→ ORDER BY</text>
+</svg>

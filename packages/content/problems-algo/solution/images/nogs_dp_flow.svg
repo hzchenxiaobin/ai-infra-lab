@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：按值分组 → 质数掩码上的状压背包</text>
+
+  <!-- Step 1: count freq -->
+  <rect x="30" y="46" width="220" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="64" font-size="11" fill="#446688" font-weight="bold">① 频率统计</text>
+  <text x="40" y="82" font-size="11" fill="#555">cnt[v] = 值 v 在 nums 中出现次数</text>
+
+  <!-- Step 2: filter square-free -->
+  <rect x="30" y="106" width="220" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="124" font-size="11" fill="#4a7a3a" font-weight="bold">② 过滤平方因子</text>
+  <text x="40" y="142" font-size="11" fill="#555">v 含 p² → 舍弃；否则得质数掩码 m_v</text>
+
+  <!-- Step 3: ways per value -->
+  <rect x="30" y="166" width="220" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="184" font-size="11" fill="#d6a040" font-weight="bold">③ 每个值的选取方式数</text>
+  <text x="40" y="202" font-size="11" fill="#555">w_v = 2^cnt[v] − 1 （非空子集）</text>
+
+  <!-- arrows down on left -->
+  <path d="M 140 92 L 140 106" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 140 152 L 140 166" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: DP box (right, big) -->
+  <rect x="290" y="46" width="240" height="200" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="68" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ 状压背包 DP</text>
+  <text x="410" y="86" text-anchor="middle" font-size="11" fill="#555">dp[mask] = 凑出该质数</text>
+  <text x="410" y="100" text-anchor="middle" font-size="11" fill="#555">掩码的方式数</text>
+  <text x="300" y="122" font-size="11" fill="#333">dp[0] = 1   （空选）</text>
+  <text x="300" y="142" font-size="11" fill="#333">for v in 2..30:</text>
+  <text x="300" y="158" font-size="11" fill="#555">  若 v 平方自由 且 cnt[v]&gt;0:</text>
+  <text x="300" y="174" font-size="11" fill="#555">    for mask 高→低:</text>
+  <text x="300" y="190" font-size="11" fill="#b85450" font-weight="bold">      若 mask &amp; m_v == 0:</text>
+  <text x="300" y="206" font-size="11" fill="#333">        dp[mask|m_v]</text>
+  <text x="300" y="220" font-size="11" fill="#333">          += dp[mask]·w_v</text>
+  <text x="300" y="238" font-size="10" fill="#888">逆序保证每个值只用一次</text>
+
+  <!-- arrow from step3 to step4 -->
+  <path d="M 250 189 L 290 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: assemble answer -->
+  <rect x="30" y="240" width="500" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="40" y="258" font-size="11" fill="#446688" font-weight="bold">⑤ 汇总答案</text>
+  <text x="40" y="276" font-size="11" fill="#555">ans = ( Σ dp[mask], mask≠0 ) · 2^cnt[1]  mod 1e9+7</text>
+  <text x="40" y="290" font-size="10" fill="#888">1 不影响乘积，可自由挂到任意好子集上 → 乘 2^cnt[1] 种选法</text>
+
+  <path d="M 410 246 L 410 240" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 140 212 L 140 240" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- footnote: complexity -->
+  <rect x="30" y="312" width="500" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">复杂度：O(18 · 2¹⁰) ≈ 1.8×10⁴ 次转移 + O(n) 频率统计</text>
+  <text x="280" y="350" text-anchor="middle" font-size="10" fill="#888">仅 18 个平方自由值（2..30 中），10 位掩码 → 状态空间 1024</text>
+
+</svg>

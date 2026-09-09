@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：数位 DP + 差分，统计 [low, high] 内的美丽整数</text>
+
+  <!-- ===== Section 1: definition ===== -->
+  <text x="30" y="52" font-size="11.5" fill="#666" font-weight="bold">美丽整数：① 奇数数位个数 = 偶数数位个数　② 能被 k 整除</text>
+
+  <g font-size="12" fill="#4a7a3a" font-weight="bold">
+    <rect x="30" y="62" width="38" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="49" y="80" text-anchor="middle">12</text>
+    <rect x="74" y="62" width="38" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="93" y="80" text-anchor="middle">18</text>
+  </g>
+  <text x="122" y="80" font-size="10.5" fill="#4a7a3a">✓ 1奇1偶，3 | 12, 18</text>
+
+  <g font-size="12" fill="#b85450" font-weight="bold">
+    <rect x="30" y="94" width="38" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="49" y="112" text-anchor="middle">15</text>
+    <rect x="74" y="94" width="38" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="93" y="112" text-anchor="middle">16</text>
+  </g>
+  <text x="122" y="112" font-size="10.5" fill="#b85450">✗ 15 奇偶不等；16 不被 3 整除</text>
+
+  <path d="M280 124 L280 144" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Section 2: difference ===== -->
+  <rect x="30" y="150" width="500" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="170" font-size="11.5" fill="#333" font-weight="bold">差分思想：答案 = count(≤ high) − count(≤ low − 1)</text>
+  <text x="40" y="188" font-size="11" fill="#555">只需实现 count(x)：统计 [1, x] 内的美丽整数，一次递归搞定一个上界</text>
+
+  <!-- ===== Section 3: two key details ===== -->
+  <text x="30" y="222" font-size="11.5" fill="#666" font-weight="bold">两个隐蔽但致命的细节：</text>
+
+  <rect x="30" y="232" width="240" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="252" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">① 总位数必为偶数</text>
+  <text x="42" y="272" font-size="11" fill="#333">奇偶各半 ⇒ 位数为 2m</text>
+  <text x="42" y="290" font-size="11" fill="#555">⇒ 一位数 1~9 永远不美丽</text>
+  <text x="42" y="308" font-size="10.5" fill="#888">（可用作实现后的快速验算）</text>
+
+  <rect x="290" y="232" width="240" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="252" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">② 前导 0 不算偶数位</text>
+  <text x="302" y="272" font-size="11" fill="#333">0012 = 12 是「1奇1偶」</text>
+  <text x="302" y="290" font-size="11" fill="#555">不是「1奇3偶」</text>
+  <text x="302" y="308" font-size="10.5" fill="#888">⇒ 需要 started 标志跳过前导零</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="336" width="500" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="356" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">为什么可行：high ≤ 10^9（至多 10 位）、k ≤ 20</text>
+  <text x="280" y="374" text-anchor="middle" font-size="11" fill="#555">不能枚举数值，但「奇偶差 diff」与「余数 rem」两个判定状态极小</text>
+  <text x="280" y="392" text-anchor="middle" font-size="10.5" fill="#888">状态空间 10 × 21 × 20 × 2 ≈ 8400，记忆化搜索秒级都不用</text>
+</svg>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">DP 状态转移：f[i][j] = (f[i−1] 左前缀最小) + |x − j|</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">f[i][j] = 前缀 i 个变非递减且 b_i=j 的最小代价；j 取值 0..M</text>
+
+  <!-- ===== Panel 1: f[i-1][j] convex curve ===== -->
+  <rect x="32" y="62" width="150" height="170" fill="#ffffff" stroke="#cfcfcf" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="107" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① f[i−1][j]（凸）</text>
+  <!-- axes -->
+  <line x1="56" y1="210" x2="170" y2="210" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="56" y1="210" x2="56" y2="86" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="170" y="222" font-size="9" fill="#888">j</text>
+  <text x="48" y="92" font-size="9" fill="#888">代价</text>
+  <!-- convex curve (U shape): down then up -->
+  <path d="M 64 96 Q 90 200 113 200 Q 136 200 162 96" fill="none" stroke="#446688" stroke-width="2.2" filter="url(#rough2)"/>
+  <!-- min point -->
+  <circle cx="113" cy="200" r="3" fill="#b85450" filter="url(#rough2)"/>
+  <text x="118" y="196" font-size="9" fill="#b85450" font-weight="bold">min</text>
+  <text x="60" y="246" font-size="9.5" fill="#555">凸分片线性函数</text>
+
+  <!-- arrow panel1 -> panel2 -->
+  <path d="M 188 150 L 208 150" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="190" y="142" font-size="8.5" fill="#666">左前缀</text>
+  <text x="190" y="152" font-size="8.5" fill="#666">最小</text>
+
+  <!-- ===== Panel 2: h[j] = prefix-min (flatten right half) ===== -->
+  <rect x="212" y="62" width="150" height="170" fill="#ffffff" stroke="#cfcfcf" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="287" y="58" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">② h[j]=minₖ≤ⱼ f[i−1][k]</text>
+  <line x1="236" y1="210" x2="350" y2="210" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="236" y1="210" x2="236" y2="86" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="350" y="222" font-size="9" fill="#888">j</text>
+  <!-- h: decreasing then flat (left half same as f, right half flat at min) -->
+  <path d="M 244 96 Q 270 200 293 200 L 342 200" fill="none" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <circle cx="293" cy="200" r="3" fill="#b85450" filter="url(#rough2)"/>
+  <!-- shade the flattened region -->
+  <path d="M 293 200 L 342 200 L 342 96 L 293 96 Z" fill="#e6f4ea" opacity="0.5" filter="url(#rough2)"/>
+  <text x="318" y="150" font-size="8.5" fill="#4a7a3a" font-weight="bold">右侧拉平</text>
+  <text x="318" y="162" font-size="8.5" fill="#4a7a3a" font-weight="bold">= min</text>
+  <text x="240" y="246" font-size="9.5" fill="#555">右侧「上扬段」削平到最小值</text>
+
+  <!-- arrow panel2 -> panel3 -->
+  <path d="M 368 150 L 388 150" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="142" font-size="8.5" fill="#666">+ |x−j|</text>
+
+  <!-- ===== Panel 3: f[i][j] = h[j] + |x-j| (convex again) ===== -->
+  <rect x="392" y="62" width="130" height="170" fill="#ffffff" stroke="#cfcfcf" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="457" y="58" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ f[i][j]（仍凸）</text>
+  <line x1="412" y1="210" x2="516" y2="210" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="412" y1="210" x2="412" y2="86" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="516" y="222" font-size="9" fill="#888">j</text>
+  <!-- V-shape |x-j| added -> convex result, min shifts to near x -->
+  <path d="M 420 110 L 462 196 L 510 110" fill="none" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <circle cx="462" cy="196" r="3" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="467" y="192" font-size="9" fill="#d6a040" font-weight="bold">近 x</text>
+  <text x="416" y="246" font-size="9.5" fill="#555">加 V 形 → 新凸函数</text>
+
+  <!-- ===== formula band ===== -->
+  <rect x="32" y="270" width="476" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="288" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">f[i][j] = min{ f[i−1][k] : 0 ≤ k ≤ j } + | nums[i−1] − j |</text>
+  <text x="270" y="304" text-anchor="middle" font-size="10" fill="#555">维护 prefMin 沿 j 递推 → 每个状态 O(1) 转移</text>
+
+  <!-- ===== running min explanation ===== -->
+  <rect x="32" y="322" width="476" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="342" font-size="11" fill="#333" font-weight="bold">关键优化：扫描 j = 0 → M 时同步维护 prefMin = min(prefMin, f[i−1][j])</text>
+  <text x="48" y="358" font-size="10.5" fill="#555">→ f[i][j] = prefMin + |x − j|，省去内层 k 循环，O(n·M) 时间、O(M) 滚动空间</text>
+  <text x="48" y="372" font-size="10.5" fill="#555">本题 M = 1001（值域 0..1000）；非递增 = 翻转数组再跑一次同样的 solve</text>
+</svg>

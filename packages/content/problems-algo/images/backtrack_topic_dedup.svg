@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">去重套路：先排序，同层「跳过与前一个相同且前一个未用」的候选</text>
+  <text x="320" y="46" text-anchor="middle" font-size="11" fill="#888">例：nums=[1,1,2] 的全排列，避免产生重复排列</text>
+
+  <!-- ===== Left: wrong (no dedup) ===== -->
+  <text x="150" y="74" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">不剪重复分支 → 产生重复</text>
+
+  <ellipse cx="150" cy="96" rx="34" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="100" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[]</text>
+
+  <!-- two 1 branches both taken -->
+  <path d="M 132 109 L 95 134" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 168 109 L 205 134" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="70" y="136" width="50" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="151" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[1ₐ]</text>
+  <rect x="180" y="136" width="50" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="151" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[1ᵦ]</text>
+
+  <!-- both lead to identical subtrees -->
+  <path d="M 95 158 L 80 184" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 205 158 L 190 184" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="56" y="186" width="48" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="200" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">[1,2]</text>
+  <rect x="166" y="186" width="48" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="200" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">[1,2]</text>
+
+  <path d="M 80 206 L 80 230" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 190 206 L 190 230" stroke="#888" stroke-width="1" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="48" y="232" width="64" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="246" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">[1,2,1]</text>
+  <rect x="158" y="232" width="64" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="246" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">[1,2,1]</text>
+
+  <rect x="40" y="266" width="220" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="284" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">两棵子树完全一样 → 重复结果</text>
+  <text x="150" y="299" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">1ₐ 和 1ᵦ 同层并列是冗余的</text>
+
+  <!-- ===== Right: correct (dedup) ===== -->
+  <text x="490" y="74" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">同层剪掉 1ᵦ → 只留 1ₐ 一棵</text>
+
+  <ellipse cx="490" cy="96" rx="34" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="490" y="100" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[]</text>
+
+  <!-- take 1a, skip 1b -->
+  <path d="M 472 109 L 435 134" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 508 109 L 545 134" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="410" y="136" width="50" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="435" y="151" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">[1ₐ]</text>
+  <rect x="520" y="136" width="50" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="545" y="151" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">✗[1ᵦ]</text>
+
+  <!-- continue from 1a only -->
+  <path d="M 435 158 L 420 184" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="396" y="186" width="48" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="420" y="200" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">[1,2]</text>
+
+  <path d="M 420 206 L 420 230" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="388" y="232" width="64" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="420" y="246" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">[1,2,1]</text>
+
+  <!-- note: 1b can be used deeper (as 3rd element) -->
+  <rect x="380" y="266" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="284" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">只砍「同层并列」，纵深仍可用</text>
+  <text x="490" y="299" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">[1ₐ,2,1ᵦ] 合法保留 ✓</text>
+
+  <!-- ===== bottom: the rule ===== -->
+  <rect x="40" y="324" width="560" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="320" y="346" text-anchor="middle" font-size="12" fill="#444" font-weight="bold" filter="url(#rough2)">去重剪枝条件（先排序！否则相邻不一定相等）</text>
+  <rect x="60" y="358" width="520" height="34" fill="#ffffff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="320" y="378" text-anchor="middle" font-size="11" fill="#b85450" font-family="monospace" filter="url(#rough2)">if (i &gt; 0 &amp;&amp; nums[i]==nums[i-1] &amp;&amp; !used[i-1]) continue;</text>
+  <text x="60" y="404" font-size="10" fill="#555" filter="url(#rough2)">• 「同层」= 同一个 for 循环里；used[i-1]==false 表示前一个相同值本层没用过（已被撤销）</text>
+  <text x="60" y="420" font-size="10" fill="#555" filter="url(#rough2)">• 等价直觉：相同值在一条路径里只允许「从前往后连续地用」，杜绝并列分叉 → 排列/组合/子集去重通用</text>
+  <text x="60" y="436" font-size="10" fill="#888" filter="url(#rough2)">• 子集 II / 组合总和 II 同此套路；不排序直接用 set 去重也可，但慢且不优雅</text>
+</svg>

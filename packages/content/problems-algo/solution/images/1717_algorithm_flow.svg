@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：两趟栈贪心 —— 先删高分对，剩余串再删低分对</text>
+
+  <!-- Decision diamond -->
+  <g filter="url(#rough2)">
+    <polygon points="280,48 360,86 280,124 200,86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="82" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">x ≥ y ?</text>
+    <text x="280" y="98" text-anchor="middle" font-size="10" fill="#888">选高分对</text>
+  </g>
+
+  <!-- Yes branch (left) -->
+  <path d="M 200 86 L 130 86 L 130 112" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="150" y="80" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="40" y="116" width="180" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="130" y="136" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">第一趟删 "ab"，分值 x</text>
+    <text x="130" y="152" text-anchor="middle" font-size="10" fill="#888">第二趟删 "ba"，分值 y</text>
+  </g>
+
+  <!-- No branch (right) -->
+  <path d="M 360 86 L 430 86 L 430 112" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="392" y="80" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <g filter="url(#rough2)">
+    <rect x="340" y="116" width="180" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="430" y="136" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">第一趟删 "ba"，分值 y</text>
+    <text x="430" y="152" text-anchor="middle" font-size="10" fill="#888">第二趟删 "ab"，分值 x</text>
+  </g>
+
+  <!-- merge down -->
+  <path d="M 130 160 L 130 176 L 280 176 L 280 186" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 430 160 L 430 176 L 280 176" stroke="#666" stroke-width="2" fill="none" filter="url(#rough2)"/>
+
+  <!-- Pass 1: stack loop -->
+  <rect x="60" y="190" width="440" height="118" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="210" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">第一趟：栈贪心删高分对 (first, second)，分值 hi</text>
+  <line x1="72" y1="218" x2="488" y2="218" stroke="#c0d0e8" stroke-width="1" filter="url(#rough2)"/>
+  <text x="72" y="236" font-size="10" fill="#555" filter="url(#rough2)">stk = []，g1 = 0</text>
+  <text x="72" y="252" font-size="10" fill="#555" filter="url(#rough2)">for c in s:</text>
+  <text x="88" y="268" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">if stk 非空 and stk[-1]==first and c==second:</text>
+  <text x="104" y="284" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">stk.pop();  g1 += hi        ← 命中高分对，弹出并加分</text>
+  <text x="88" y="300" font-size="10" fill="#555" filter="url(#rough2)">else: stk.append(c)              ← 否则压栈（含屏障字母）</text>
+
+  <!-- arrow down to pass 2 -->
+  <path d="M 280 310 L 280 328" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="324" font-size="10" fill="#888" filter="url(#rough2)">剩余串 = stk</text>
+
+  <!-- Pass 2: stack loop -->
+  <rect x="60" y="332" width="440" height="118" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">第二趟：拿剩余串再栈贪心删低分对 (first2, second2)，分值 lo</text>
+  <line x1="72" y1="360" x2="488" y2="360" stroke="#c0e0c0" stroke-width="1" filter="url(#rough2)"/>
+  <text x="72" y="378" font-size="10" fill="#555" filter="url(#rough2)">stk2 = []，g2 = 0</text>
+  <text x="72" y="394" font-size="10" fill="#555" filter="url(#rough2)">for c in 剩余串:</text>
+  <text x="88" y="410" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">if stk2 非空 and stk2[-1]==first2 and c==second2:</text>
+  <text x="104" y="426" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">stk2.pop();  g2 += lo       ← 命中低分对</text>
+  <text x="88" y="442" font-size="10" fill="#555" filter="url(#rough2)">else: stk2.append(c)</text>
+
+  <!-- return -->
+  <path d="M 280 452 L 280 470" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="180" y="474" width="200" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6"/>
+    <text x="280" y="490" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">return g1 + g2</text>
+  </g>
+</svg>

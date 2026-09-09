@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888888"/>
+    </marker>
+  </defs>
+
+  <rect width="460" height="440" fill="#fafafa"/>
+  <text x="230" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">枚举法流程：双重循环 + popcount 筛选</text>
+
+  <!-- Step 1: enumerate (h, m) -->
+  <rect x="70" y="50" width="320" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">枚举所有 (h, m)</text>
+  <text x="230" y="90" text-anchor="middle" font-size="10.5" fill="#555">h ∈ [0, 11], m ∈ [0, 59]，共 12×60 = 720 组</text>
+
+  <path d="M 230 106 L 230 124" stroke="#888888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: count bits -->
+  <rect x="70" y="128" width="320" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="150" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">计算亮灯数 cnt</text>
+  <text x="230" y="168" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">cnt = popcount(h) + popcount(m)</text>
+
+  <path d="M 230 184 L 230 202" stroke="#888888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: decision diamond -->
+  <polygon points="230,206 350,256 230,306 110,256" fill="#f0f0f0" stroke="#888888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="250" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">cnt == turnedOn ?</text>
+  <text x="230" y="268" text-anchor="middle" font-size="10.5" fill="#777">亮灯数恰好等于目标？</text>
+
+  <!-- Yes branch -->
+  <path d="M 110 256 L 60 256 L 60 340" stroke="#82b366" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="78" y="248" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+
+  <!-- No branch -->
+  <path d="M 350 256 L 400 256 L 400 340" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="368" y="248" font-size="11" fill="#b85450" font-weight="bold">No</text>
+
+  <!-- Yes: format and collect -->
+  <rect x="20" y="344" width="180" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="110" y="366" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">格式化为 "h:mm"</text>
+  <text x="110" y="382" text-anchor="middle" font-size="10.5" fill="#555">小时无前导零</text>
+  <text x="110" y="396" text-anchor="middle" font-size="10.5" fill="#555">分钟两位补零</text>
+  <text x="110" y="412" text-anchor="middle" font-size="10.5" fill="#4a7a3a">加入 res</text>
+
+  <!-- No: skip -->
+  <rect x="260" y="344" width="180" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="350" y="372" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">跳过</text>
+  <text x="350" y="390" text-anchor="middle" font-size="10.5" fill="#888">亮灯数不匹配</text>
+  <text x="350" y="406" text-anchor="middle" font-size="10.5" fill="#888">不做任何操作</text>
+
+  <!-- loop back arrows -->
+  <path d="M 110 406 L 110 420 L 420 420 L 420 78 L 390 78" stroke="#888888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 350 406 L 350 420 L 420 420" stroke="#888888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="300" y="434" font-size="9.5" fill="#888">继续下一组 (h, m) 直到枚举完毕</text>
+</svg>

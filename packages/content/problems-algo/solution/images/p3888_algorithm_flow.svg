@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 610"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="610" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：一遍扫描，T 当未知数</text>
+
+  <!-- 开始 -->
+  <ellipse cx="280" cy="52" rx="46" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="57" text-anchor="middle" font-size="12" fill="#33506b" font-weight="bold" filter="url(#rough2)">开始</text>
+  <path d="M 280 67 L 280 84" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 扫描框 -->
+  <rect x="150" y="86" width="260" height="46" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="105" text-anchor="middle" font-size="11" fill="#a07020" font-weight="bold" filter="url(#rough2)">行优先扫描 (i,j)：差分还原 β = grid + diff</text>
+  <text x="280" y="123" text-anchor="middle" font-size="10.5" fill="#a07020" filter="url(#rough2)">闭式计算 α —— 当前值 cur = α·T + β</text>
+  <path d="M 280 132 L 280 146" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形 1：锚点？ -->
+  <polygon points="280,148 392,190 280,232 168,190" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="187" text-anchor="middle" font-size="11" fill="#a07020" font-weight="bold" filter="url(#rough2)">(i,j) 是锚点？</text>
+  <text x="280" y="203" text-anchor="middle" font-size="10" fill="#a07020" filter="url(#rough2)">（k×k 块不出界）</text>
+
+  <!-- 是 → 左 -->
+  <path d="M 168 190 L 136 190 L 136 222" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="154" y="182" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <rect x="16" y="224" width="240" height="72" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10" fill="#2f5d24" text-anchor="middle">
+    <text x="136" y="240" font-weight="bold">锚点：被迫放置</text>
+    <text x="136" y="256">对齐 (α=0)：x = T − β</text>
+    <text x="136" y="270">记下界 lo = max(lo, β)</text>
+    <text x="136" y="286">非对齐 (α=1)：x = −β，须 β ≤ 0</text>
+  </g>
+  <path d="M 136 296 L 136 316" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="16" y="318" width="240" height="48" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10" fill="#2f5d24" text-anchor="middle">
+    <text x="136" y="336">二维差分登记常数 −β（k×k 覆盖）</text>
+    <text x="136" y="352">sumD += 1−α，sumNB −= β</text>
+  </g>
+
+  <!-- 否 → 右 -->
+  <path d="M 392 190 L 424 190 L 424 222" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="406" y="182" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <rect x="304" y="224" width="240" height="72" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10" fill="#b85450" text-anchor="middle">
+    <text x="424" y="240" font-weight="bold">非锚点（下/右条带）</text>
+    <text x="424" y="256">值再也无法改变 → 等式钉死</text>
+    <text x="424" y="272">α=0：强制 T = β（冲突 ⇒ −1）</text>
+    <text x="424" y="288">α=1：须 β = 0（否则 −1）</text>
+  </g>
+
+  <!-- 汇合 -->
+  <path d="M 136 366 L 136 416 L 156 416" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 424 296 L 424 416 L 404 416" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="158" y="396" width="244" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11" fill="#33506b" text-anchor="middle">
+    <text x="280" y="412" font-weight="bold">处理下一格</text>
+    <text x="280" y="428" font-size="10">（全部扫完 → 进入收尾判定）</text>
+  </g>
+  <path d="M 280 436 L 280 446" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形 2：有强制的 T？ -->
+  <polygon points="280,448 372,482 280,516 188,482" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="487" text-anchor="middle" font-size="11" fill="#a07020" font-weight="bold" filter="url(#rough2)">有强制的 T？</text>
+
+  <!-- 否 → 左 -->
+  <path d="M 188 482 L 169 482" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="177" y="474" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="15" y="458" width="152" height="50" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10.5" fill="#2f5d24" text-anchor="middle">
+    <text x="91" y="478" font-weight="bold">T = lo</text>
+    <text x="91" y="494" font-size="9.5">（各下界取最大）</text>
+  </g>
+
+  <!-- 是 → 右 -->
+  <path d="M 372 482 L 391 482" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="383" y="474" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="393" y="458" width="152" height="50" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10.5" fill="#33506b" text-anchor="middle">
+    <text x="469" y="478" font-weight="bold">T = forced</text>
+    <text x="469" y="494" font-size="9.5">forced &lt; lo ⇒ −1</text>
+  </g>
+
+  <!-- 汇合到结果 -->
+  <path d="M 91 508 L 91 571 L 156 571" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 469 508 L 469 571 L 404 571" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="160" y="548" width="240" height="46" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11" fill="#2f5d24" text-anchor="middle">
+    <text x="280" y="568" font-weight="bold">返回 sumD·T + sumNB</text>
+    <text x="280" y="584" font-size="10">= (mn·T − S) / k²（恒等式交叉验证）</text>
+  </g>
+</svg>

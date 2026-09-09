@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流程</text>
+
+  <!-- Step 1: UNION -->
+  <rect x="60" y="50" width="440" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="72" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">① 构建 CTE：UNION 统一视图 T</text>
+  <text x="280" y="92" text-anchor="middle" font-size="10.5" fill="#555">SELECT * FROM Transactions</text>
+  <text x="280" y="106" text-anchor="middle" font-size="10.5" fill="#d6a040">UNION SELECT id, country, 'chargeback', amount, c.trans_date FROM Transactions JOIN Chargebacks</text>
+  <path d="M 280 114 L 280 134" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 2: extract month -->
+  <rect x="100" y="136" width="360" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="156" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">② 提取月份：DATE_FORMAT(trans_date, '%Y-%m')</text>
+  <text x="280" y="172" text-anchor="middle" font-size="10.5" fill="#555">如 2019-05-18 → '2019-05'</text>
+  <path d="M 280 180 L 280 200" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="100" y="202" width="360" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="222" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">③ GROUP BY month, country</text>
+  <text x="280" y="238" text-anchor="middle" font-size="10.5" fill="#555">按 (月份, 国家) 分组，同组数据聚合</text>
+  <path d="M 280 246 L 280 266" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Aggregate -->
+  <rect x="40" y="268" width="480" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="290" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">④ 聚合计算四列指标</text>
+  <text x="120" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a">approved_count</text>
+  <text x="120" y="326" text-anchor="middle" font-size="9.5" fill="#555">SUM(state='approved')</text>
+  <text x="260" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a">approved_amount</text>
+  <text x="260" y="326" text-anchor="middle" font-size="9.5" fill="#555">SUM(IF(approved,amount,0))</text>
+  <text x="400" y="312" text-anchor="middle" font-size="10" fill="#d6a040">chargeback_count</text>
+  <text x="400" y="326" text-anchor="middle" font-size="9.5" fill="#555">SUM(state='chargeback')</text>
+  <text x="480" y="312" text-anchor="middle" font-size="10" fill="#d6a040">chargeback_amount</text>
+  <text x="480" y="326" text-anchor="middle" font-size="9.5" fill="#555">SUM(IF(cb,amount,0))</text>
+  <path d="M 280 348 L 280 368" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 5: HAVING filter -->
+  <polygon points="280,370 440,410 280,450 120,410" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="406" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">HAVING</text>
+  <text x="280" y="422" text-anchor="middle" font-size="11" fill="#444">approved_amount OR</text>
+  <text x="280" y="436" text-anchor="middle" font-size="11" fill="#444">chargeback_amount ≠ 0 ?</text>
+  <text x="448" y="414" font-size="11" fill="#888">否</text>
+  <text x="112" y="414" font-size="11" fill="#888" text-anchor="end">是</text>
+
+  <!-- No branch: discard -->
+  <path d="M 440 410 L 500 410 L 500 452" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <rect x="440" y="454" width="110" height="30" fill="#f6f6f6" stroke="#ccc" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="495" y="473" text-anchor="middle" font-size="10.5" fill="#999">丢弃全零行</text>
+
+  <!-- Yes branch: output -->
+  <path d="M 120 410 L 60 410 L 60 452" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <rect x="10" y="454" width="110" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="65" y="473" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">输出该行</text>
+
+  <!-- result box -->
+  <rect x="150" y="454" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="474" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">最终结果表</text>
+  <text x="280" y="490" text-anchor="middle" font-size="10" fill="#555">month, country, 4 列指标</text>
+
+  <!-- loop back arrow from output to top for next group -->
+  <path d="M 65 454 L 65 30 L 280 30 L 280 48" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="90" y="44" font-size="9" fill="#aaa">下一组</text>
+</svg>

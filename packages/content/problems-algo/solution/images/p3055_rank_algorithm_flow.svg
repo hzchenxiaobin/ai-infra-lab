@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="430" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 物化排名 → 过滤 rk=1 → 三键排序输出</text>
+
+  <!-- ===== Step 1 ===== -->
+  <rect x="60" y="42" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="60" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Fraud</text>
+  <text x="210" y="75" text-anchor="middle" font-size="9" fill="#666">读取全部 14 行原始数据</text>
+
+  <path d="M 210 82 L 210 102" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2 ===== -->
+  <rect x="60" y="106" width="300" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="125" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">② CTE ranked：窗口排名</text>
+  <text x="210" y="143" text-anchor="middle" font-size="9" fill="#666">RANK() OVER (PARTITION BY state</text>
+  <text x="210" y="157" text-anchor="middle" font-size="9" fill="#666">ORDER BY fraud_score DESC) AS rk</text>
+  <text x="210" y="171" text-anchor="middle" font-size="9" fill="#666">每州内部降序编号，并列同名次</text>
+
+  <path d="M 210 178 L 210 198" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3 ===== -->
+  <rect x="60" y="202" width="300" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="221" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">③ WHERE rk = 1</text>
+  <text x="210" y="237" text-anchor="middle" font-size="9" fill="#666">只留每州榜首（含并列）：14 行 → 4 行</text>
+
+  <path d="M 210 248 L 210 268" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4 ===== -->
+  <rect x="60" y="272" width="300" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="291" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">④ ORDER BY state ↑, fraud_score ↓, policy_id ↑</text>
+  <text x="210" y="307" text-anchor="middle" font-size="9" fill="#666">按题面要求三键排序</text>
+
+  <path d="M 210 318 L 210 338" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5 ===== -->
+  <rect x="60" y="342" width="300" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="361" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑤ 输出 4 行（每州 1 行）</text>
+  <text x="210" y="377" text-anchor="middle" font-size="9" fill="#666">policy_id, state, fraud_score</text>
+
+  <!-- ===== Right notes ===== -->
+  <rect x="390" y="106" width="170" height="100" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="126" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">⚠️ 窗口函数在 SELECT 阶段</text>
+  <text x="475" y="141" text-anchor="middle" font-size="9" fill="#b85450">求值，晚于 WHERE——不能</text>
+  <text x="475" y="156" text-anchor="middle" font-size="9" fill="#b85450">同层写 WHERE rk=1，必须先</text>
+  <text x="475" y="171" text-anchor="middle" font-size="9" fill="#b85450">经 CTE / 派生表物化，</text>
+  <text x="475" y="186" text-anchor="middle" font-size="9" fill="#b85450">外层再过滤</text>
+
+  <rect x="390" y="218" width="170" height="70" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="238" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">💡 用 RANK 而非</text>
+  <text x="475" y="253" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">ROW_NUMBER：</text>
+  <text x="475" y="268" text-anchor="middle" font-size="9" fill="#666">并列最大值全部保留</text>
+
+  <rect x="390" y="300" width="170" height="70" fill="#fff" stroke="#888" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="320" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">💡 同州幸存行分数必相同</text>
+  <text x="475" y="335" text-anchor="middle" font-size="9" fill="#666">fraud_score ↓ 实际不起作用</text>
+  <text x="475" y="350" text-anchor="middle" font-size="9" fill="#666">真正次级键是 policy_id ↑</text>
+
+  <!-- Mini California rank illustration -->
+  <rect x="390" y="382" width="170" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="398" text-anchor="middle" font-size="9" fill="#d6a040">California 分区示意：</text>
+  <text x="475" y="413" text-anchor="middle" font-size="9" fill="#666">0.92→1 · 0.68→2 · 0.17→3</text>
+</svg>

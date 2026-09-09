@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#b85450" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">状态转移：枚举 mask 与「最后加入的任务 i」</text>
+
+  <!-- Init box -->
+  <rect x="160" y="44" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="68" text-anchor="middle" font-size="12" fill="#333">初始化 dp[0] = (1, sessionTime)</text>
+
+  <path d="M 260 84 L 260 100" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop mask -->
+  <rect x="160" y="100" width="200" height="34" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="122" text-anchor="middle" font-size="12" fill="#333">for mask = 1 .. (1&lt;&lt;n) − 1</text>
+
+  <path d="M 260 134 L 260 150" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop i -->
+  <rect x="160" y="150" width="200" height="34" fill="#fafafa" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="172" text-anchor="middle" font-size="12" fill="#333">for 每个任务 i ∈ mask</text>
+
+  <path d="M 260 184 L 260 208" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="260,208 372,236 260,264 148,236" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="240" text-anchor="middle" font-size="11" fill="#444">tasks[i] ≤ prev.remaining ?</text>
+
+  <!-- Yes branch -->
+  <path d="M 148 236 L 110 296" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="20" y="296" width="170" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="320" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">塞进当前段 ✓</text>
+  <text x="105" y="342" text-anchor="middle" font-size="11" fill="#555">cand = (s, r − tasks[i])</text>
+
+  <!-- No branch -->
+  <path d="M 372 236 L 410 296" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="330" y="296" width="170" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="320" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">新开一段 ✗</text>
+  <text x="415" y="342" text-anchor="middle" font-size="11" fill="#555">cand = (s+1, sessionTime − tasks[i])</text>
+
+  <!-- converge arrows -->
+  <path d="M 105 360 L 230 388" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 415 360 L 290 388" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Update box -->
+  <rect x="110" y="388" width="300" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="410" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">更新 dp[mask]：先最少段数 → 再最大剩余</text>
+
+  <!-- footnote -->
+  <text x="260" y="432" text-anchor="middle" font-size="11" fill="#888">答案 = dp[(1&lt;&lt;n) − 1].sessions</text>
+</svg>

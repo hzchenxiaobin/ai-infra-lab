@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 640"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="640" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">逆 BFS 序自底向上：每个节点 O(k) 合并孩子</text>
+
+  <!-- 开始 -->
+  <rect x="175" y="30" width="210" height="30" rx="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="49" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">开始：edges, nums, k</text>
+  <path d="M280,60 L280,74" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 建图 BFS -->
+  <rect x="95" y="76" width="370" height="46" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="94" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">建邻接表，从根 0 出发 BFS</text>
+  <text x="280" y="112" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">得到 parent[] 与 BFS 序 order[]</text>
+  <path d="M280,122 L280,136" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 取节点 -->
+  <rect x="95" y="138" width="370" height="40" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="162" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">按逆 BFS 序取下一节点 v（孩子必已算好）</text>
+  <path d="M280,178 L280,192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 初始化 -->
+  <rect x="95" y="194" width="370" height="52" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="212" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">初始化自身贡献（val = ±nums[v]）：</text>
+  <text x="280" y="232" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">A[p][d] = val（不反转）　B[p] = −val（反转）</text>
+  <path d="M280,246 L280,260" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 合并孩子 -->
+  <rect x="95" y="262" width="370" height="58" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="282" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">逐个合并孩子 c：</text>
+  <text x="280" y="300" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">A[p][d] += dp[c][p][min(d+1, k)]</text>
+  <text x="280" y="316" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">B[p] += dp[c][p⊕1][1]</text>
+  <path d="M280,320 L280,334" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 收尾 -->
+  <rect x="95" y="336" width="370" height="46" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="354" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">dp[v][p][d] = A[p][d]</text>
+  <text x="280" y="372" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">d == k（允许反转）时再与 B[p] 取 max</text>
+  <path d="M280,382 L280,396" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形判断 -->
+  <polygon points="280,400 415,452 280,504 145,452" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="446" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">还有未处理</text>
+  <text x="280" y="464" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">的节点？</text>
+
+  <!-- 是：回环 -->
+  <path d="M145,452 L52,452 L52,158 L93,158" stroke="#888888" stroke-width="1.3" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="128" y="444" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <text x="46" y="300" font-size="11" fill="#888" text-anchor="middle" transform="rotate(-90 46 300)" filter="url(#rough2)">下一个 v</text>
+
+  <!-- 否：结束 -->
+  <path d="M280,504 L280,518" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="516" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="175" y="520" width="210" height="32" rx="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="540" text-anchor="middle" font-size="12" fill="#2e5a24" filter="url(#rough2)">返回 dp[0][0][k]</text>
+
+  <!-- 复杂度标注 -->
+  <rect x="75" y="570" width="410" height="52" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="6 4" filter="url(#rough2)"/>
+  <text x="280" y="588" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">每条边只合并一次，每次 O(2·(k+1))</text>
+  <text x="280" y="606" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450" filter="url(#rough2)">总复杂度 O(n·k)：n ≤ 5×10⁴、k ≤ 50</text>
+</svg>

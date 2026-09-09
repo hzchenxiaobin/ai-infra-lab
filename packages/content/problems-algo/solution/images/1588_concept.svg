@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：贡献计数——每个元素被多少个奇数长度子数组包含</text>
+
+  <!-- ===== Left: brute force ===== -->
+  <text x="145" y="56" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">暴力：枚举子数组再求和</text>
+
+  <rect x="60" y="68" width="170" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="145" y="88" text-anchor="middle" font-size="11" fill="#333">arr = [1,4,2,5,3]</text>
+
+  <path d="M 145 98 L 145 112" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="40" y="116" width="210" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="134" text-anchor="middle" font-size="10.5" fill="#555">枚举所有奇数长度子数组</text>
+  <text x="145" y="149" text-anchor="middle" font-size="10" fill="#888">[1],[4],[2],[5],[3],[1,4,2]…</text>
+
+  <path d="M 145 156 L 145 170" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="40" y="174" width="210" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="192" text-anchor="middle" font-size="10.5" fill="#555">逐个求和 O(n³)</text>
+  <text x="145" y="207" text-anchor="middle" font-size="10" fill="#888">sum([1,4,2]) + sum([4,2,5]) …</text>
+
+  <path d="M 145 214 L 145 228" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="55" y="232" width="180" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="255" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">逐子数组累加</text>
+
+  <text x="145" y="290" text-anchor="middle" font-size="10.5" fill="#888">元素被反复求和，未复用</text>
+
+  <!-- ===== Right: contribution ===== -->
+  <text x="430" y="56" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">最优：贡献计数 O(n)</text>
+
+  <!-- key idea -->
+  <rect x="320" y="68" width="220" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="86" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">答案 = Σ arr[i] × count(i)</text>
+  <text x="430" y="102" text-anchor="middle" font-size="10" fill="#555">count(i) = 包含 arr[i] 的奇数长度子数组数</text>
+
+  <path d="M 430 118 L 430 132" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decomposition: a + 1 + b -->
+  <rect x="320" y="136" width="220" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="154" text-anchor="middle" font-size="11" fill="#335" font-weight="bold">左取 a 个 + arr[i] + 右取 b 个</text>
+  <text x="430" y="170" text-anchor="middle" font-size="10" fill="#555">长度 = a + 1 + b</text>
+
+  <path d="M 430 186 L 430 200" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- parity pairing -->
+  <rect x="320" y="204" width="220" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="222" text-anchor="middle" font-size="11" fill="#a87020" font-weight="bold">奇数长度 ⟺ a, b 同奇偶</text>
+  <text x="430" y="238" text-anchor="middle" font-size="10" fill="#555">count = LE·RE + LO·RO</text>
+
+  <path d="M 430 254 L 430 268" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="335" y="272" width="190" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="295" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">一次遍历 O(n) 累加</text>
+
+  <text x="430" y="318" text-anchor="middle" font-size="10.5" fill="#888">居中元素被包含次数最多</text>
+
+  <!-- divider -->
+  <path d="M 290 50 L 290 320" stroke="#ddd" stroke-width="1.5" stroke-dasharray="5,4" filter="url(#rough2)"/>
+
+  <!-- footer -->
+  <rect x="80" y="338" width="420" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="358" text-anchor="middle" font-size="11" fill="#666">整体求和 → 拆解为逐元素贡献，奇数长度 → 奇偶配对计数</text>
+</svg>

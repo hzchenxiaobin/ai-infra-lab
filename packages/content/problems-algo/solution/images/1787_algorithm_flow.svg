@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">
+    DP 流程：逐组决策，维护累计异或值
+  </text>
+
+  <!-- ===== DP definition ===== -->
+  <rect x="40" y="44" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">
+    dp[i][xor] = 处理完前 i 组，累计异或值为 xor 时的最小修改次数
+  </text>
+  <text x="280" y="78" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">
+    初始 dp[0][0] = 0，其余 = ∞；答案 = dp[k][0]
+  </text>
+
+  <!-- ===== Group transitions ===== -->
+  <!-- Group i box -->
+  <rect x="40" y="110" width="140" height="90" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="128" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">处理第 i 组</text>
+  <text x="110" y="146" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">频次表 freq</text>
+  <text x="110" y="160" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">组大小 sz</text>
+  <text x="110" y="178" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">min_prev = min(dp[i−1])</text>
+  <text x="110" y="192" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)"></text>
+
+  <!-- Branch 1: pick existing value -->
+  <rect x="210" y="100" width="160" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="118" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">分支 1：选已有值 v</text>
+  <text x="290" y="134" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">cost = sz − freq[v]</text>
+  <text x="290" y="146" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">dp[i][x⊕v] = min(..., dp[i−1][x]+cost)</text>
+
+  <!-- Branch 2: pick new value -->
+  <rect x="210" y="160" width="160" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="178" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">分支 2：选全新值</text>
+  <text x="290" y="194" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">cost = sz（全改）</text>
+  <text x="290" y="206" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">dp[i][任意t] = min(..., min_prev+sz)</text>
+
+  <!-- arrows from group to branches -->
+  <path d="M180,135 L208,128" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M180,170 L208,185" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- arrow from branches to next dp -->
+  <path d="M370,125 L400,125 L400,155" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M370,185 L400,185 L400,155" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Next dp row -->
+  <rect x="400" y="140" width="120" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="160" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">dp[i][...]</text>
+  <text x="460" y="176" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">2^10 = 1024 个状态</text>
+  <text x="460" y="188" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">滚动数组优化</text>
+
+  <!-- ===== Loop indication ===== -->
+  <path d="M460,190 Q460,230 280,230 Q110,230 110,200" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="280" y="244" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">对 k 组依次处理</text>
+
+  <!-- ===== Complexity box ===== -->
+  <rect x="40" y="262" width="480" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="282" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">复杂度分析</text>
+  <text x="280" y="298" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">每组：O(|freq| × 2^10) 枚举已有值 + O(2^10) 全新值基线</text>
+  <text x="280" y="312" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">总计 O(n × 2^10)，空间 O(2^10)（滚动数组）</text>
+
+  <!-- ===== Key insight ===== -->
+  <rect x="40" y="334" width="480" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="354" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">关键优化：全新值不必枚举所有 2^k 种</text>
+  <text x="280" y="372" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">选全新值时 cost = sz 与具体值无关</text>
+  <text x="280" y="386" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">→ 对所有目标异或 t，统一用 min(dp[i−1]) + sz 作为上界</text>
+  <text x="280" y="400" text-anchor="middle" font-size="10" fill="#5a4a1a" filter="url(#rough2)">已有值分支再逐个尝试覆盖更优解</text>
+</svg>

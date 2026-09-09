@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="380" fill="#fafafa"/>
+
+  <text x="340" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 两阶段聚合 → 剔除极值</text>
+
+  <!-- ===== Step 1: Friends table ===== -->
+  <rect x="20" y="48" width="120" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="68" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Friends</text>
+  <text x="80" y="84" text-anchor="middle" font-size="9.5" fill="#666">id | name | activity</text>
+  <text x="80" y="97" text-anchor="middle" font-size="9" fill="#888">每行 = 一位参与者</text>
+
+  <!-- arrow -->
+  <path d="M140 76 L175 76" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="157" y="68" text-anchor="middle" font-size="9" fill="#446688">GROUP BY</text>
+  <text x="157" y="92" text-anchor="middle" font-size="9" fill="#446688">activity</text>
+
+  <!-- ===== Step 2: CTE t (counts table) ===== -->
+  <rect x="180" y="48" width="150" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="66" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">CTE t（计数表）</text>
+  <text x="255" y="82" text-anchor="middle" font-size="9.5" fill="#333">activity | cnt</text>
+  <text x="255" y="96" text-anchor="middle" font-size="9" fill="#666">COUNT(*) AS cnt</text>
+
+  <!-- arrow down to split -->
+  <path d="M255 104 L255 128" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: compute MAX & MIN (two parallel boxes) ===== -->
+  <rect x="115" y="132" width="125" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="177" y="150" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">SELECT MAX(cnt)</text>
+  <text x="177" y="166" text-anchor="middle" font-size="9.5" fill="#666">FROM t → 全局最大</text>
+
+  <rect x="265" y="132" width="125" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="327" y="150" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">SELECT MIN(cnt)</text>
+  <text x="327" y="166" text-anchor="middle" font-size="9.5" fill="#666">FROM t → 全局最小</text>
+
+  <!-- arrows from t to MAX/MIN -->
+  <path d="M235 104 Q235 118 177 132" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M275 104 Q275 118 327 132" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- arrows from MAX/MIN to filter -->
+  <path d="M177 176 L255 200" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M327 176 L255 200" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: filter ===== -->
+  <rect x="140" y="204" width="230" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="222" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">WHERE cnt ≠ MAX AND cnt ≠ MIN</text>
+  <text x="255" y="238" text-anchor="middle" font-size="9.5" fill="#666">从 t 中筛掉极值行</text>
+
+  <!-- arrow to result -->
+  <path d="M255 248 L255 270" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: result ===== -->
+  <rect x="170" y="274" width="170" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <rect x="170" y="274" width="170" height="20" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="288" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">results</text>
+  <text x="255" y="312" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">Singing</text>
+
+  <!-- ===== right side: three approaches ===== -->
+  <rect x="430" y="48" width="230" height="200" fill="#fafafa" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="545" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">三种实现「聚合的聚合」</text>
+  <line x1="445" y1="76" x2="645" y2="76" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="445" y="94" font-size="10" fill="#333" font-weight="bold">① CTE + 子查询（推荐）</text>
+  <text x="455" y="108" font-size="9" fill="#666">WITH t AS (... )</text>
+  <text x="455" y="120" font-size="9" fill="#666">SELECT ... FROM t</text>
+  <text x="455" y="132" font-size="9" fill="#666">WHERE cnt ≠ (SELECT MAX</text>
+  <text x="455" y="144" font-size="9" fill="#666">FROM t)</text>
+  <line x1="445" y1="152" x2="645" y2="152" stroke="#888" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="445" y="170" font-size="10" fill="#333" font-weight="bold">② HAVING + 嵌套子查询</text>
+  <text x="455" y="184" font-size="9" fill="#666">GROUP BY activity HAVING</text>
+  <text x="455" y="196" font-size="9" fill="#666">COUNT(*) ≠ (SELECT MAX(c)</text>
+  <text x="455" y="208" font-size="9" fill="#666">FROM (...) tmp)</text>
+  <line x1="445" y1="216" x2="645" y2="216" stroke="#888" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="445" y="234" font-size="10" fill="#333" font-weight="bold">③ 窗口函数 OVER()</text>
+  <text x="455" y="244" font-size="9" fill="#666">MAX(cnt) OVER() 广播</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="338" width="640" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="340" y="352" text-anchor="middle" font-size="10" fill="#333">题眼：<tspan fill="#b85450" font-weight="bold">「聚合的聚合」</tspan>——筛选条件 COUNT(*) 上的 MAX/MIN 本身也是聚合，须用子查询/CTE/窗口函数「再包一层」</text>
+  <text x="340" y="364" text-anchor="middle" font-size="9.5" fill="#666">题目保证每个活动都有人参与，无需 LEFT JOIN Activities 补零</text>
+</svg>

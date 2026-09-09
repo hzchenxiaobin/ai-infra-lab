@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="360" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">示例演算：逐车递归模拟</text>
+
+  <!-- ===== Step 1: Bus sorted + new_arrivals ===== -->
+  <text x="40" y="52" font-size="10" fill="#888" filter="url(#rough2)">① 按到达时间排序，计算每辆车区间内新到乘客</text>
+
+  <!-- Table header -->
+  <g filter="url(#rough2)"><rect x="60" y="60" width="600" height="26" fill="#f0f0f0" stroke="#999" stroke-width="1" rx="4"/></g>
+  <text x="100" y="78" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">bus_id</text>
+  <text x="180" y="78" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">arrival_time</text>
+  <text x="280" y="78" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">capacity</text>
+  <text x="390" y="78" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">prev_arrival</text>
+  <text x="520" y="78" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">区间新到乘客 (new_pax)</text>
+
+  <!-- Row Bus 1 -->
+  <g filter="url(#rough2)"><rect x="60" y="88" width="600" height="28" fill="#dbeafe" stroke="none" rx="2"/></g>
+  <text x="100" y="106" text-anchor="middle" font-size="10" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="180" y="106" text-anchor="middle" font-size="10" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="280" y="106" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="390" y="106" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">NULL</text>
+  <text x="520" y="106" text-anchor="middle" font-size="10" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">P11,P12 → 2</text>
+
+  <!-- Row Bus 2 -->
+  <g filter="url(#rough2)"><rect x="60" y="118" width="600" height="28" fill="#e8f0fe" stroke="none" rx="2"/></g>
+  <text x="100" y="136" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="180" y="136" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">4</text>
+  <text x="280" y="136" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">10</text>
+  <text x="390" y="136" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">2</text>
+  <text x="520" y="136" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">无（2&lt;t≤4）→ 0</text>
+
+  <!-- Row Bus 3 -->
+  <g filter="url(#rough2)"><rect x="60" y="148" width="600" height="28" fill="#fff8e1" stroke="none" rx="2"/></g>
+  <text x="100" y="166" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <text x="180" y="166" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">7</text>
+  <text x="280" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="390" y="166" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">4</text>
+  <text x="520" y="166" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">P13,P14,P15 → 3</text>
+
+  <!-- Arrow down -->
+  <path d="M 360 180 L 360 196" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Recursive simulation ===== -->
+  <text x="40" y="212" font-size="10" fill="#888" filter="url(#rough2)">② 递归模拟：waiting = prev_remaining + new_pax，picked = min(cap, waiting)</text>
+
+  <!-- Table header -->
+  <g filter="url(#rough2)"><rect x="60" y="220" width="600" height="26" fill="#f0f0f0" stroke="#999" stroke-width="1" rx="4"/></g>
+  <text x="110" y="238" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">rn</text>
+  <text x="190" y="238" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">new_pax</text>
+  <text x="300" y="238" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">prev_rem</text>
+  <text x="410" y="238" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">waiting</text>
+  <text x="510" y="238" text-anchor="middle" font-size="9" fill="#888" font-weight="bold" filter="url(#rough2)">cap</text>
+  <text x="580" y="238" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">picked</text>
+  <text x="640" y="238" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">rem</text>
+
+  <!-- Row rn=1 -->
+  <g filter="url(#rough2)"><rect x="60" y="248" width="600" height="30" fill="#dbeafe" stroke="none" rx="2"/></g>
+  <text x="110" y="268" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="190" y="268" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="300" y="268" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">0</text>
+  <text x="410" y="268" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">0+2=2</text>
+  <text x="510" y="268" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="580" y="268" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">min(1,2)=1</text>
+  <text x="640" y="268" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <!-- Row rn=2 -->
+  <g filter="url(#rough2)"><rect x="60" y="280" width="600" height="30" fill="#e8f0fe" stroke="none" rx="2"/></g>
+  <text x="110" y="300" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="190" y="300" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">0</text>
+  <text x="300" y="300" text-anchor="middle" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="410" y="300" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">1+0=1</text>
+  <text x="510" y="300" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">10</text>
+  <text x="580" y="300" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">min(10,1)=1</text>
+  <text x="640" y="300" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">0</text>
+
+  <!-- Row rn=3 -->
+  <g filter="url(#rough2)"><rect x="60" y="312" width="600" height="30" fill="#fff8e1" stroke="none" rx="2"/></g>
+  <text x="110" y="332" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <text x="190" y="332" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <text x="300" y="332" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">0</text>
+  <text x="410" y="332" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">0+3=3</text>
+  <text x="510" y="332" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="580" y="332" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">min(2,3)=2</text>
+  <text x="640" y="332" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <!-- Arrow down -->
+  <path d="M 360 346 L 360 362" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Final result ===== -->
+  <text x="40" y="378" font-size="10" fill="#888" filter="url(#rough2)">③ 最终输出（ORDER BY bus_id）</text>
+  <g filter="url(#rough2)"><rect x="240" y="384" width="240" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8"/></g>
+  <text x="280" y="404" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">bus_id</text>
+  <text x="400" y="404" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">passengers_cnt</text>
+  <line x1="270" y1="392" x2="270" y2="438" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="360" y1="392" x2="360" y2="438" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="288" y="420" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="410" y="420" font-size="11" fill="#4a8edb" font-weight="bold" filter="url(#rough2)">1</text>
+  <text x="288" y="434" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">2</text>
+  <text x="410" y="434" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <!-- Side note -->
+  <g filter="url(#rough2)"><rect x="500" y="384" width="160" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/></g>
+  <text x="580" y="404" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠️ P15 被溢出</text>
+  <text x="580" y="420" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">Bus3 cap=2,</text>
+  <text x="580" y="432" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">3人等→取2剩1</text>
+</svg>

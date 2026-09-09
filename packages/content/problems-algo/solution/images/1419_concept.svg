@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：青蛙状态机 + 并发计数</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">5 状态流转 c→r→o→a→k，叫完 k 可复用；答案 = 并发数峰值</text>
+
+  <!-- ===== State machine ===== -->
+  <text x="50" y="78" font-size="12" fill="#888" font-weight="bold">青蛙状态机:</text>
+
+  <!-- 5 state boxes -->
+  <g filter="url(#rough2)">
+    <rect x="80" y="90" width="50" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="105" y="112" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">c</text>
+    <text x="105" y="138" text-anchor="middle" font-size="9" fill="#888">cnt[0]</text>
+
+    <rect x="180" y="90" width="50" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="205" y="112" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">r</text>
+    <text x="205" y="138" text-anchor="middle" font-size="9" fill="#888">cnt[1]</text>
+
+    <rect x="280" y="90" width="50" height="34" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="305" y="112" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">o</text>
+    <text x="305" y="138" text-anchor="middle" font-size="9" fill="#888">cnt[2]</text>
+
+    <rect x="380" y="90" width="50" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="405" y="112" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">a</text>
+    <text x="405" y="138" text-anchor="middle" font-size="9" fill="#888">cnt[3]</text>
+
+    <rect x="480" y="90" width="50" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="505" y="112" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">k</text>
+    <text x="505" y="138" text-anchor="middle" font-size="9" fill="#888">cnt[4]</text>
+  </g>
+
+  <!-- Arrows between states -->
+  <path d="M 130 107 L 178 107" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 230 107 L 278 107" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 330 107 L 378 107" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <path d="M 430 107 L 478 107" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Reuse arrow: k -> c (curved below) -->
+  <path d="M 505 124 Q 505 180 310 180 Q 105 180 105 124" stroke="#d6a040" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrO)" fill="none" filter="url(#rough2)"/>
+  <text x="310" y="196" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">复用：叫完 k 的青蛙可从 c 重新开始</text>
+
+  <!-- ===== Two interleaved frogs example ===== -->
+  <text x="50" y="232" font-size="12" fill="#888" font-weight="bold">交错示例 "crcoakroak" (2 只青蛙):</text>
+
+  <!-- Frog A row -->
+  <text x="50" y="262" font-size="11" fill="#446688" font-weight="bold">青蛙A:</text>
+  <g filter="url(#rough2)" font-size="12">
+    <rect x="110" y="248" width="28" height="22" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/><text x="124" y="264" text-anchor="middle" fill="#446688" font-weight="bold">c</text>
+    <rect x="140" y="248" width="28" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/><text x="154" y="264" text-anchor="middle" fill="#4a7a3a" font-weight="bold">r</text>
+    <rect x="226" y="248" width="28" height="22" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/><text x="240" y="264" text-anchor="middle" fill="#d6a040" font-weight="bold">o</text>
+    <rect x="256" y="248" width="28" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/><text x="270" y="264" text-anchor="middle" fill="#4a7a3a" font-weight="bold">a</text>
+    <rect x="286" y="248" width="28" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/><text x="300" y="264" text-anchor="middle" fill="#b85450" font-weight="bold">k</text>
+  </g>
+  <text x="330" y="264" font-size="10" fill="#888">第1步(c) 第2步(r) 第4步(o) 第5步(a) 第6步(k)</text>
+
+  <!-- Frog B row -->
+  <text x="50" y="296" font-size="11" fill="#b85450" font-weight="bold">青蛙B:</text>
+  <g filter="url(#rough2)" font-size="12">
+    <rect x="170" y="282" width="28" height="22" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/><text x="184" y="298" text-anchor="middle" fill="#446688" font-weight="bold">c</text>
+    <rect x="366" y="282" width="28" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/><text x="380" y="298" text-anchor="middle" fill="#4a7a3a" font-weight="bold">r</text>
+    <rect x="396" y="282" width="28" height="22" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/><text x="410" y="298" text-anchor="middle" fill="#d6a040" font-weight="bold">o</text>
+    <rect x="426" y="282" width="28" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/><text x="440" y="298" text-anchor="middle" fill="#4a7a3a" font-weight="bold">a</text>
+    <rect x="456" y="282" width="28" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/><text x="470" y="298" text-anchor="middle" fill="#b85450" font-weight="bold">k</text>
+  </g>
+  <text x="500" y="298" font-size="10" fill="#888">第3步(c) 第7-10步</text>
+
+  <!-- Step 3 highlight: new frog needed -->
+  <rect x="158" y="276" width="44" height="34" rx="6" fill="none" stroke="#b85450" stroke-width="2" stroke-dasharray="4 2" filter="url(#rough2)"/>
+  <text x="180" y="326" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">第3步: 无空闲青蛙 → 新建 B</text>
+
+  <!-- ===== Key insight ===== -->
+  <rect x="40" y="340" width="560" height="100" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="60" y="362" font-size="12" fill="#d6a040" font-weight="bold">💡 关键洞察</text>
+  <text x="60" y="382" font-size="11" fill="#666">① 只需 5 个计数器 cnt[0..4]，记录各状态青蛙数——不需要追踪「哪只青蛙在哪」</text>
+  <text x="60" y="400" font-size="11" fill="#666">② 'c' 的前驱是 'k'：优先复用刚叫完的空闲青蛙，无空闲才新建</text>
+  <text x="60" y="418" font-size="11" fill="#b85450" font-weight="bold">③ 答案 = 并发数峰值 max(cnt[0]+cnt[1]+cnt[2]+cnt[3])，即「同时在场」的青蛙最多时</text>
+</svg>

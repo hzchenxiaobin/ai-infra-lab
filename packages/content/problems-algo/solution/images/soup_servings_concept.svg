@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">四种操作（单位 = 25ml）· 期望消耗不等 → P(A 先空) → 1</text>
+
+  <!-- 4 operation boxes -->
+  <rect x="30" y="40" width="100" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">操作 1</text>
+  <text x="80" y="76" text-anchor="middle" font-size="11" fill="#333">A: 4 · B: 0</text>
+  <text x="80" y="94" text-anchor="middle" font-size="9" fill="#888">(100, 0) ml</text>
+  <text x="80" y="106" text-anchor="middle" font-size="9" fill="#888">p = 0.25</text>
+
+  <rect x="140" y="40" width="100" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">操作 2</text>
+  <text x="190" y="76" text-anchor="middle" font-size="11" fill="#333">A: 3 · B: 1</text>
+  <text x="190" y="94" text-anchor="middle" font-size="9" fill="#888">(75, 25) ml</text>
+  <text x="190" y="106" text-anchor="middle" font-size="9" fill="#888">p = 0.25</text>
+
+  <rect x="250" y="40" width="100" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="58" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">操作 3</text>
+  <text x="300" y="76" text-anchor="middle" font-size="11" fill="#333">A: 2 · B: 2</text>
+  <text x="300" y="94" text-anchor="middle" font-size="9" fill="#888">(50, 50) ml</text>
+  <text x="300" y="106" text-anchor="middle" font-size="9" fill="#888">p = 0.25</text>
+
+  <rect x="360" y="40" width="100" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="410" y="58" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">操作 4</text>
+  <text x="410" y="76" text-anchor="middle" font-size="11" fill="#333">A: 1 · B: 3</text>
+  <text x="410" y="94" text-anchor="middle" font-size="9" fill="#888">(25, 75) ml</text>
+  <text x="410" y="106" text-anchor="middle" font-size="9" fill="#888">p = 0.25</text>
+
+  <!-- average computation -->
+  <rect x="50" y="124" width="420" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="144" text-anchor="middle" font-size="11" fill="#444">E[A] = (4+3+2+1)/4 = 2.5 &gt; E[B] = (0+1+2+3)/4 = 1.5</text>
+  <text x="260" y="164" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">A 每步平均多消耗 1 单位 → n 越大 P(A 先空) → 1</text>
+
+  <!-- DP recurrence -->
+  <rect x="20" y="190" width="480" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="212" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">dp(a, b) = ¼ × [ dp(a−4, b) + dp(a−3, b−1) + dp(a−2, b−2) + dp(a−1, b−3) ]</text>
+  <text x="260" y="232" text-anchor="middle" font-size="10" fill="#888">基底：dp(0, 0) = 0.5 · dp(a&gt;0, 0) = 0 · dp(0, b&gt;0) = 1</text>
+  <text x="260" y="250" text-anchor="middle" font-size="10" fill="#888">（a 或 b ≤ 0 即视为空，「不足则尽供」自动正确）</text>
+
+  <!-- threshold -->
+  <rect x="70" y="276" width="380" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="298" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">n ≥ 4800 ml（192 单位）时直接返回 1.0</text>
+  <text x="260" y="318" text-anchor="middle" font-size="10" fill="#555">P(A 先空) 与 1.0 的差 &lt; 10⁻⁵，满足精度要求</text>
+  <text x="260" y="334" text-anchor="middle" font-size="10" fill="#555">DP 只在 n &lt; 4800 时运行，状态 ≤ 192×192</text>
+</svg>

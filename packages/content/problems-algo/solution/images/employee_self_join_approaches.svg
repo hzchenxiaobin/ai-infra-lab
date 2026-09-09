@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两种解法对比：Self JOIN（连接）vs 相关子查询（嵌套）</text>
+
+  <!-- Approach A: Self JOIN (left) -->
+  <rect x="20" y="44" width="250" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="65" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：Self JOIN</text>
+
+  <rect x="30" y="88" width="230" height="170" fill="#fff" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="44" y="106" font-size="9.5" fill="#b85450" font-weight="bold">FROM</text>
+  <text x="78" y="106" font-size="9.5" fill="#333">Employee e</text>
+  <text x="44" y="122" font-size="9.5" fill="#b85450" font-weight="bold">JOIN</text>
+  <text x="78" y="122" font-size="9.5" fill="#333">Employee m</text>
+  <text x="44" y="138" font-size="9.5" fill="#b85450" font-weight="bold">  ON</text>
+  <text x="78" y="138" font-size="9.5" fill="#4a7a3a">e.managerId = m.id</text>
+  <text x="44" y="156" font-size="9.5" fill="#b85450" font-weight="bold">WHERE</text>
+  <text x="86" y="156" font-size="9.5" fill="#d6a040" font-weight="bold">e.salary &gt; m.salary</text>
+  <text x="44" y="174" font-size="9.5" fill="#b85450" font-weight="bold">SELECT</text>
+  <text x="86" y="174" font-size="9.5" fill="#333">e.name AS Employee</text>
+
+  <line x1="50" y1="188" x2="240" y2="188" stroke="#446688" stroke-width="0.6" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="145" y="204" text-anchor="middle" font-size="9" fill="#446688">两表副本按 managerId=id 配对</text>
+  <text x="145" y="220" text-anchor="middle" font-size="9" fill="#446688">同行即可比较 e.salary 与 m.salary</text>
+  <text x="145" y="240" text-anchor="middle" font-size="9" fill="#4a7a3a">→ 一次 JOIN 出结果，直观</text>
+
+  <!-- Approach B: Subquery (right) -->
+  <rect x="290" y="44" width="250" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="65" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">解法 B：相关子查询</text>
+
+  <rect x="300" y="88" width="230" height="170" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="314" y="106" font-size="9.5" fill="#b85450" font-weight="bold">SELECT</text>
+  <text x="356" y="106" font-size="9.5" fill="#333">e.name AS Employee</text>
+  <text x="314" y="124" font-size="9.5" fill="#b85450" font-weight="bold">FROM</text>
+  <text x="348" y="124" font-size="9.5" fill="#333">Employee e</text>
+  <text x="314" y="142" font-size="9.5" fill="#b85450" font-weight="bold">WHERE</text>
+  <text x="356" y="142" font-size="9.5" fill="#d6a040" font-weight="bold">e.salary &gt; (</text>
+  <text x="368" y="158" font-size="9.5" fill="#b85450">SELECT m.salary</text>
+  <text x="368" y="174" font-size="9.5" fill="#b85450">FROM Employee m</text>
+  <text x="368" y="190" font-size="9.5" fill="#4a7a3a">WHERE m.id = e.managerId</text>
+  <text x="356" y="206" font-size="9.5" fill="#d6a040" font-weight="bold">)</text>
+
+  <line x1="320" y1="220" x2="510" y2="220" stroke="#4a7a3a" stroke-width="0.6" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="415" y="236" text-anchor="middle" font-size="9" fill="#4a7a3a">逐员工去子查询取经理 salary</text>
+  <text x="415" y="250" text-anchor="middle" font-size="9" fill="#b85450">⚠ 子查询须保证返回标量</text>
+
+  <!-- Decision box bottom -->
+  <rect x="60" y="284" width="440" height="156" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">关键对比</text>
+
+  <text x="78" y="328" font-size="10" fill="#446688" font-weight="bold">Self JOIN：</text>
+  <text x="150" y="328" font-size="9.5" fill="#333">把两张表「横向并排」，员工列与经理列同行 → WHERE 直接比两列</text>
+
+  <text x="78" y="348" font-size="10" fill="#4a7a3a" font-weight="bold">相关子查询：</text>
+  <text x="160" y="348" font-size="9.5" fill="#333">对每个员工「纵向钻取」一次查经理 salary → WHERE 比员工列与子查询结果</text>
+
+  <line x1="80" y1="362" x2="480" y2="362" stroke="#d6a040" stroke-width="0.6" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <text x="80" y="382" font-size="9.5" fill="#b85450" font-weight="bold">陷阱：</text>
+  <text x="116" y="382" font-size="9.5" fill="#333">子查询必须返回标量（一行一列）。</text>
+  <text x="116" y="398" font-size="9.5" fill="#333">若一个 managerId 对应多行（本题不会，id 是主键），</text>
+  <text x="116" y="414" font-size="9.5" fill="#333">子查询返回多行会报错；Self JOIN 无此限制。</text>
+
+  <text x="80" y="432" font-size="9.5" fill="#446688" font-weight="bold">结论：</text>
+  <text x="116" y="432" font-size="9.5" fill="#446688">面试首推 Self JOIN——语义清晰、无需担心标量约束、NULL 自动被 JOIN 过滤。</text>
+</svg>

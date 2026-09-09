@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">DP 转移：看“最后落下的一个字母”占了几个按键</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">段长 L 的方案数 = 最后字母按 1/2/3(或4) 次，前面剩余长度的方案累加</text>
+
+  <!-- ===== Top: 3-letter key (blue) ===== -->
+  <text x="40" y="78" font-size="11.5" fill="#446688" font-weight="bold">3 字母键（2,3,4,5,6,8）：最后字母占 1 / 2 / 3 次</text>
+
+  <!-- run of L presses, last group highlighted -->
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="90" width="28" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="108" text-anchor="middle" fill="#666">…</text>
+    <!-- case: last 1 -->
+    <rect x="92" y="90" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="108" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="140" y="108" font-size="10.5" fill="#333">→ f(L−1)（剩 L−1）</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="128" width="28" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="146" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="128" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="146" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="122" y="128" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="136" y="146" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="170" y="146" font-size="10.5" fill="#333">→ f(L−2)（最后字母占 2 次）</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="166" width="28" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="184" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="166" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="184" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="122" y="166" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="136" y="184" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="152" y="166" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="166" y="184" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="200" y="184" font-size="10.5" fill="#333">→ f(L−3)（最后字母占 3 次）</text>
+
+  <!-- sum box -->
+  <rect x="320" y="118" width="220" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="140" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">f(L) = f(L−1)+f(L−2)+f(L−3)</text>
+  <text x="430" y="156" text-anchor="middle" font-size="9.5" fill="#446688">泰波那契型递推</text>
+  <path d="M 250 108 Q 290 108 320 132" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 250 146 Q 290 146 320 140" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 250 184 Q 290 184 320 148" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <text x="280" y="212" text-anchor="middle" font-size="9.5" fill="#888">种子：f(0)=1, f(1)=1, f(2)=2（空段算 1 种，递推种子）</text>
+
+  <!-- ===== Bottom: 4-letter key (orange) ===== -->
+  <line x1="40" y1="226" x2="520" y2="226" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <text x="40" y="250" font-size="11.5" fill="#d6a040" font-weight="bold">4 字母键（7,9）：最后字母可占 1 / 2 / 3 / 4 次</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="262" width="28" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="280" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="262" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="280" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="140" y="280" font-size="10.5" fill="#333">→ g(L−1)</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="294" width="28" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="312" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="294" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="312" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="122" y="294" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="136" y="312" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="170" y="312" font-size="10.5" fill="#333">→ g(L−2)</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="326" width="28" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="344" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="326" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="344" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="122" y="326" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="136" y="344" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="152" y="326" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="166" y="344" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="200" y="344" font-size="10.5" fill="#333">→ g(L−3)</text>
+
+  <g font-size="11" font-weight="bold">
+    <rect x="60" y="358" width="28" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="74" y="376" text-anchor="middle" fill="#666">…</text>
+    <rect x="92" y="358" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="106" y="376" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="122" y="358" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="136" y="376" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="152" y="358" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="166" y="376" text-anchor="middle" fill="#b85450">d</text>
+    <rect x="182" y="358" width="28" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)"/>
+    <text x="196" y="376" text-anchor="middle" fill="#b85450">d</text>
+  </g>
+  <text x="230" y="376" font-size="10.5" fill="#333">→ g(L−4)（第4个字母，仅 7/9 有）</text>
+
+  <!-- sum box 4 -->
+  <rect x="360" y="294" width="180" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="316" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">g(L) = g(L−1)+g(L−2)</text>
+  <text x="450" y="332" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">+g(L−3)+g(L−4)</text>
+  <path d="M 260 278 Q 320 290 360 308" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 260 312 Q 320 312 360 316" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 260 344 Q 320 332 360 324" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 260 376 Q 320 360 360 332" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="280" y="404" text-anchor="middle" font-size="9.5" fill="#888">种子：g(0)=1, g(1)=1, g(2)=2, g(3)=4</text>
+
+  <!-- footer -->
+  <rect x="40" y="418" width="480" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="439" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">本质：步长集合 {1,2,3} 或 {1,2,3,4} 的爬楼梯；f(0)=1 保证“整段合成一个字母”被计入</text>
+</svg>

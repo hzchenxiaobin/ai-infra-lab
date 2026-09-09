@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：每次查询 = 单点修改 + 路径上推，O(log n)</text>
+  <text x="260" y="42" text-anchor="middle" font-size="11" fill="#888">q 个查询逐个处理；修改持久生效，线段树始终持有数组的当前状态</text>
+
+  <!-- left flow -->
+  <rect x="36" y="58" width="296" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="83" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 读入查询 [pos, x]</text>
+  <path d="M 184 100 L 184 120" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="36" y="122" width="296" height="42" fill="#ffffff" stroke="#999" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="141" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">② 叶子赋值：f[1][1] ← x</text>
+  <text x="184" y="157" text-anchor="middle" font-size="9" fill="#888">f[0][0]=0、f[0][1]=f[1][0]=−∞ 都不变</text>
+  <path d="M 184 164 L 184 184" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="36" y="186" width="296" height="42" fill="#ffffff" stroke="#999" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="205" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">③ 自底向上：路径上每个祖先做 merge</text>
+  <text x="184" y="221" text-anchor="middle" font-size="9" fill="#888">parent = merge(左孩子, 右孩子)，共 O(log n) 层</text>
+  <path d="M 184 228 L 184 248" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="36" y="250" width="296" height="42" fill="#ffffff" stroke="#999" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="269" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">④ cur = max(根.f00, 根.f01, 根.f10, 根.f11)</text>
+  <text x="184" y="285" text-anchor="middle" font-size="9" fill="#888">cur ≥ 0（空子序列兜底）；用 long long 存</text>
+  <path d="M 184 292 L 184 312" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="36" y="314" width="296" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="184" y="333" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">⑤ ans = (ans + cur) mod 10⁹+7</text>
+  <text x="184" y="349" text-anchor="middle" font-size="9" fill="#888">树内 f 值严禁取模——它们要参与 max 比较</text>
+
+  <!-- loop arrow -->
+  <path d="M 36 335 L 18 335 L 18 79 L 32 79" stroke="#446688" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="12" y="208" text-anchor="middle" font-size="9" fill="#446688" transform="rotate(-90 12 208)">重复 q 次</text>
+
+  <!-- right chain -->
+  <rect x="372" y="58" width="120" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="432" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">根 [0, n−1]</text>
+  <path d="M 432 100 L 432 134" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="372" y="136" width="120" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="432" y="158" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">祖先节点</text>
+  <path d="M 432 172 L 432 206" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="372" y="208" width="120" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="432" y="230" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">父节点</text>
+  <path d="M 432 244 L 432 278" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="372" y="280" width="120" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="432" y="302" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">叶子 pos ← x</text>
+  <text x="432" y="336" text-anchor="middle" font-size="9.5" fill="#888">单点修改只触碰这条链</text>
+  <text x="432" y="352" text-anchor="middle" font-size="9.5" fill="#888">每层一次 O(1) 的 merge</text>
+
+  <!-- bottom note -->
+  <rect x="36" y="366" width="456" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="264" y="383" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">总复杂度 O((n + q) log n)：建树 O(n) + q 次查询各 O(log n)；暴力 O(nq) ≈ 2.5×10⁹ 必然超时</text>
+</svg>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="460" fill="#fafafa"/>
+
+  <text x="360" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一条 step() 递归贯穿 next / throw / cancel 三个入口</text>
+
+  <!-- guard note -->
+  <rect x="470" y="44" width="230" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="585" y="62" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">每步入口先查 settled</text>
+  <text x="585" y="78" text-anchor="middle" font-size="10" fill="#888">已 resolve/reject → 直接 return，丢弃迟到回调</text>
+
+  <!-- start -->
+  <rect x="270" y="56" width="180" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="76" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">step('next', undefined)  启动</text>
+
+  <!-- res = gen[method](arg) -->
+  <rect x="250" y="112" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="130" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">res = generator[method](arg)</text>
+  <text x="360" y="144" text-anchor="middle" font-size="9" fill="#888">method = 'next'(喂值) 或 'throw'(抛错)</text>
+  <path d="M 360 88 L 360 110" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- try/catch for synchronous throw -->
+  <rect x="250" y="168" width="220" height="34" fill="#fff" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="184" text-anchor="middle" font-size="10" fill="#888">若 gen 同步抛错（未捕获）→ reject(err), settled=true</text>
+  <path d="M 360 152 L 360 166" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond: res.done? -->
+  <polygon points="360,214 440,250 360,286 280,250" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="360" y="246" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">res.done ?</text>
+  <text x="360" y="260" text-anchor="middle" font-size="9" fill="#888">生成器是否收尾</text>
+  <path d="M 360 202 L 360 212" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- yes branch: resolve -->
+  <rect x="120" y="236" width="130" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="185" y="250" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">resolve(res.value)</text>
+  <text x="185" y="264" text-anchor="middle" font-size="9" fill="#888">settled = true（终态）</text>
+  <path d="M 280 250 L 252 250" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="266" y="242" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- no branch: await promise -->
+  <path d="M 360 286 L 360 306" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="372" y="300" font-size="10" fill="#888" font-weight="bold">否</text>
+  <rect x="250" y="306" width="220" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">await res.value  （一个 Promise）</text>
+  <text x="360" y="338" text-anchor="middle" font-size="9" fill="#888">挂起，直到 resolve 或 reject 或 cancel 打断</text>
+
+  <!-- two outcome branches -->
+  <!-- resolved -> step('next') -->
+  <rect x="80" y="360" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="378" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">resolved(val) → step('next', val)</text>
+  <path d="M 250 326 C 200 326, 180 348, 170 358" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="210" y="348" font-size="10" fill="#4a7a3a" font-weight="bold">resolve</text>
+
+  <!-- rejected -> step('throw') -->
+  <rect x="460" y="360" width="190" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="555" y="378" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">rejected(err) → step('throw', err)</text>
+  <path d="M 470 326 C 520 326, 545 348, 555 358" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="510" y="348" font-size="10" fill="#b85450" font-weight="bold">reject</text>
+
+  <!-- loop back arrows to res = gen[method] -->
+  <path d="M 170 360 C 170 100, 360 100, 360 110" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <path d="M 555 360 C 555 100, 360 100, 360 110" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="40" y="180" font-size="10" fill="#4a7a3a">递归回顶</text>
+  <text x="600" y="180" font-size="10" fill="#b85450">递归回顶</text>
+
+  <!-- cancel input (separate, red) -->
+  <rect x="250" y="410" width="220" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="360" y="428" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">cancel() → step('throw', 'Cancelled')</text>
+  <text x="360" y="442" text-anchor="middle" font-size="9" fill="#888">随时可注入；被 catch 则续行，否则 reject('Cancelled')</text>
+  <path d="M 360 410 C 360 392, 360 340, 360 340" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="3,3" marker-end="url(#arrr)" filter="url(#rough2)"/>
+</svg>

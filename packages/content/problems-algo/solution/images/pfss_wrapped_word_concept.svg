@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 460" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="71" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="940" height="460" fill="#fdfcf7"/>
+
+  <text x="470" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">包装词技巧：suffix + '#' + word</text>
+  <path d="M 300 42 Q 470 50 640 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="470" y="58" text-anchor="middle" font-size="11" fill="#888">对每个 word 枚举所有后缀，拼成「后缀#原词」插入 Trie，沿途节点存 max 下标</text>
+
+  <!-- ===== Left panel: suffix expansion ===== -->
+  <g filter="url(#sk)">
+    <rect x="40" y="80" width="380" height="320" rx="8" fill="#f6f6f6" stroke="#ccc" stroke-width="1"/>
+  </g>
+  <text x="230" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b2b2b">枚举后缀（word = "apple", i=0）</text>
+
+  <!-- word badge -->
+  <g filter="url(#sk)">
+    <rect x="150" y="118" width="120" height="26" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+  </g>
+  <text x="210" y="136" text-anchor="middle" font-size="12" fill="#2b6e9e" font-weight="bold">apple  [0]</text>
+
+  <!-- suffix rows -->
+  <g font-size="11" fill="#444">
+    <text x="70" y="172" font-weight="bold" fill="#2e8b57">"apple"</text>
+    <text x="150" y="172" fill="#888">→</text>
+    <text x="175" y="172" fill="#b85450" font-weight="bold">apple#apple</text>
+
+    <text x="70" y="200" font-weight="bold" fill="#2e8b57">"pple"</text>
+    <text x="150" y="200" fill="#888">→</text>
+    <text x="175" y="200" fill="#b85450" font-weight="bold">pple#apple</text>
+
+    <text x="70" y="228" font-weight="bold" fill="#2e8b57">"ple"</text>
+    <text x="150" y="228" fill="#888">→</text>
+    <text x="175" y="228" fill="#b85450" font-weight="bold">ple#apple</text>
+
+    <text x="70" y="256" font-weight="bold" fill="#2e8b57">"le"</text>
+    <text x="150" y="256" fill="#888">→</text>
+    <text x="175" y="256" fill="#b85450" font-weight="bold">le#apple</text>
+
+    <text x="70" y="284" font-weight="bold" fill="#2e8b57">"e"</text>
+    <text x="150" y="284" fill="#888">→</text>
+    <text x="175" y="284" fill="#b85450" font-weight="bold">e#apple</text>
+  </g>
+
+  <text x="60" y="324" font-size="10" fill="#888">长度 L 的词 → L 个包装串（L≤7）</text>
+  <text x="60" y="342" font-size="10" fill="#888">'#' 非字母，做分隔符防跨界误匹配</text>
+  <text x="60" y="360" font-size="10" fill="#888">沿途每个节点都更新 weight = max(·, i)</text>
+
+  <!-- arrow to trie -->
+  <path d="M 420 220 L 470 220" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="445" y="212" text-anchor="middle" font-size="9" fill="#888">插入</text>
+
+  <!-- ===== Right panel: trie sketch ===== -->
+  <g filter="url(#sk)">
+    <rect x="480" y="80" width="420" height="320" rx="8" fill="#f6f6f6" stroke="#ccc" stroke-width="1"/>
+  </g>
+  <text x="690" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b2b2b">共享 Trie（节点存 max 下标）</text>
+
+  <!-- root -->
+  <g filter="url(#sk)">
+    <circle cx="660" cy="140" r="22" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/>
+  </g>
+  <text x="660" y="145" text-anchor="middle" font-size="10" fill="#2b6e9e" font-weight="bold">root</text>
+  <text x="660" y="124" text-anchor="middle" font-size="9" fill="#888">w=-1</text>
+
+  <!-- ===== left branch: e -> # -> a  (query path, highlighted) ===== -->
+  <path d="M 648 158 L 580 195" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="600" y="172" font-size="10" fill="#b85450" font-weight="bold">e</text>
+  <g filter="url(#sk)">
+    <circle cx="570" cy="205" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="570" y="209" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">e</text>
+  <text x="540" y="210" text-anchor="end" font-size="9" fill="#2e8b57">w=0</text>
+
+  <path d="M 570 223 L 570 253" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="582" y="244" font-size="10" fill="#b85450" font-weight="bold">#</text>
+  <g filter="url(#sk)">
+    <circle cx="570" cy="269" r="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="570" y="273" text-anchor="middle" font-size="10" fill="#a06820" font-weight="bold">#</text>
+  <text x="540" y="274" text-anchor="end" font-size="9" fill="#2e8b57">w=0</text>
+
+  <path d="M 570 287 L 570 317" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="582" y="308" font-size="10" fill="#b85450" font-weight="bold">a</text>
+  <g filter="url(#sk)">
+    <circle cx="570" cy="333" r="20" fill="#fce4ec" stroke="#b85450" stroke-width="2.4"/>
+  </g>
+  <text x="570" y="338" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">a</text>
+  <text x="535" y="338" text-anchor="end" font-size="9" fill="#b85450" font-weight="bold">w=0</text>
+
+  <text x="570" y="370" text-anchor="middle" font-size="9" fill="#b85450">查询 f("a","e") 命中此节点</text>
+
+  <!-- ===== right branch: a -> p -> ... (stub, from apple#apple) ===== -->
+  <path d="M 672 158 L 760 195" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="720" y="172" font-size="9" fill="#888">a</text>
+  <g filter="url(#sk)">
+    <circle cx="772" cy="205" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <text x="772" y="209" text-anchor="middle" font-size="10" fill="#2b6e9e">a</text>
+  <text x="802" y="210" font-size="9" fill="#2e8b57">w=0</text>
+
+  <path d="M 772 223 L 772 253" stroke="#5a5a5a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="784" y="244" font-size="9" fill="#888">p</text>
+  <g filter="url(#sk)">
+    <circle cx="772" cy="269" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.2"/>
+  </g>
+  <text x="772" y="273" text-anchor="middle" font-size="9" fill="#2b6e9e">p</text>
+
+  <text x="772" y="305" text-anchor="middle" font-size="9" fill="#888">↓ p l e # a p p l e</text>
+  <text x="772" y="320" text-anchor="middle" font-size="8" fill="#888">(apple#apple 整串)</text>
+
+  <!-- ===== bottom note ===== -->
+  <g filter="url(#sk)">
+    <rect x="40" y="416" width="860" height="34" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="0.8"/>
+  </g>
+  <text x="470" y="432" text-anchor="middle" font-size="10" fill="#2b6e9e">💡 查询键 = suff + '#' + pref，它恰是某「后缀#原词」包装串的前缀</text>
+  <text x="470" y="446" text-anchor="middle" font-size="10" fill="#2b6e9e">⇔ 该词以 pref 为前缀、且以 suff 为后缀；命中节点存的就是满足条件的最大下标</text>
+</svg>

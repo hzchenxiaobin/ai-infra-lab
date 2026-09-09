@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">粉刷房子 DP 核心：相邻不同色 → 当前色取前一行「另两色」最小</text>
+
+  <!-- House row -->
+  <text x="34" y="62" font-size="12" fill="#888">房子：</text>
+
+  <rect x="80" y="44" width="120" height="58" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="140" y="60" text-anchor="middle" font-size="10" fill="#888">house 0</text>
+  <rect x="90" y="66" width="32" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="106" y="85" text-anchor="middle" font-size="11" fill="#333">红</text>
+  <rect x="124" y="66" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="140" y="85" text-anchor="middle" font-size="11" fill="#333">蓝</text>
+  <rect x="158" y="66" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="174" y="85" text-anchor="middle" font-size="11" fill="#333">绿</text>
+
+  <rect x="220" y="44" width="120" height="58" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="10" fill="#888">house 1</text>
+  <rect x="230" y="66" width="32" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="246" y="85" text-anchor="middle" font-size="11" fill="#333">红</text>
+  <rect x="264" y="66" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="85" text-anchor="middle" font-size="11" fill="#333">蓝</text>
+  <rect x="298" y="66" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="314" y="85" text-anchor="middle" font-size="11" fill="#333">绿</text>
+
+  <rect x="360" y="44" width="120" height="58" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="60" text-anchor="middle" font-size="10" fill="#888">house i</text>
+  <rect x="370" y="66" width="32" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="386" y="85" text-anchor="middle" font-size="11" fill="#333">红</text>
+  <rect x="404" y="66" width="32" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="420" y="85" text-anchor="middle" font-size="11" fill="#333">蓝</text>
+  <rect x="438" y="66" width="32" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="454" y="85" text-anchor="middle" font-size="11" fill="#333">绿</text>
+
+  <text x="200" y="118" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">相邻房子不能同色 ✗</text>
+  <path d="M 200 110 L 200 100" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <!-- DP transition block -->
+  <text x="34" y="160" font-size="12" fill="#888">prev = dp[i−1]：</text>
+  <rect x="150" y="144" width="90" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="195" y="164" text-anchor="middle" font-size="12" fill="#333">dp[i−1][红]</text>
+  <rect x="250" y="144" width="90" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="295" y="164" text-anchor="middle" font-size="12" fill="#333">dp[i−1][蓝]</text>
+  <rect x="350" y="144" width="90" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="395" y="164" text-anchor="middle" font-size="12" fill="#333">dp[i−1][绿]</text>
+
+  <!-- Arrows: cur[红] reads prev[蓝] and prev[绿] (skip prev[红]) -->
+  <path d="M 295 176 Q 240 200 200 220" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 395 176 Q 270 205 210 222" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- cur[蓝] reads prev[红] and prev[绿] -->
+  <path d="M 195 176 Q 270 205 305 222" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 395 176 Q 330 205 310 222" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- cur[绿] reads prev[红] and prev[蓝] -->
+  <path d="M 195 176 Q 360 210 410 222" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 295 176 Q 360 205 415 222" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="34" y="240" font-size="12" fill="#888">cur  = dp[i]：</text>
+  <rect x="150" y="224" width="90" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="195" y="244" text-anchor="middle" font-size="11" fill="#333">红 + min(蓝,绿)</text>
+  <rect x="250" y="224" width="90" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="295" y="244" text-anchor="middle" font-size="11" fill="#333">蓝 + min(红,绿)</text>
+  <rect x="350" y="224" width="90" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="395" y="244" text-anchor="middle" font-size="11" fill="#333">绿 + min(红,蓝)</text>
+
+  <!-- Formula box -->
+  <rect x="40" y="280" width="460" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="298" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">转移方程</text>
+  <text x="270" y="316" text-anchor="middle" font-size="12" fill="#444">dp[i][c] = cost[i][c] + min( dp[i−1][c′], c′ ≠ c )</text>
+
+  <!-- Key insight -->
+  <rect x="40" y="338" width="460" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="357" text-anchor="middle" font-size="11" fill="#333">只依赖前一行 → 滚动数组压成 3 个变量 O(1) 空间</text>
+  <text x="270" y="375" text-anchor="middle" font-size="11" fill="#4a7a3a">颜色数 K 固定为 3，每格转移 O(K)，总 O(n·K) = O(n)</text>
+</svg>

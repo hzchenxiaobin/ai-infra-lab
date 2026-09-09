@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 450" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="450" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：过滤 → 分组聚合 → 外层 MAX − MIN</text>
+
+  <!-- ===== Step 1: FROM ===== -->
+  <rect x="50" y="36" width="300" height="40" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Salaries</text>
+  <text x="200" y="68" text-anchor="middle" font-size="9" fill="#888">读取全部行（示例 10 行）</text>
+
+  <path d="M 200 76 L 200 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: WHERE ===== -->
+  <rect x="50" y="96" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="114" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">② WHERE department IN ('Engineering','Marketing')</text>
+  <text x="200" y="130" text-anchor="middle" font-size="9" fill="#888">防线：挡掉无关部门（稳妥但可选）</text>
+
+  <path d="M 200 140 L 200 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: GROUP BY + MAX ===== -->
+  <rect x="50" y="160" width="300" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="180" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">③ GROUP BY department + MAX(salary)</text>
+  <text x="200" y="198" text-anchor="middle" font-size="9" fill="#888">每部门多行折叠成一行最高薪</text>
+
+  <path d="M 200 212 L 200 228" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Derived table t ===== -->
+  <rect x="80" y="232" width="240" height="56" fill="#fff" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <rect x="90" y="238" width="220" height="22" fill="#fff" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="253" text-anchor="middle" font-size="9" fill="#446688">t: Engineering → s = 102,000</text>
+  <rect x="90" y="262" width="220" height="22" fill="#fff" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="277" text-anchor="middle" font-size="9" fill="#d6a040">t: Marketing → s = 53,000</text>
+
+  <path d="M 200 288 L 200 304" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: outer MAX - MIN ===== -->
+  <rect x="50" y="308" width="300" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="200" y="328" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ SELECT MAX(s) − MIN(s)</text>
+  <text x="200" y="346" text-anchor="middle" font-size="9" fill="#888">两数取大减小 = 绝对差，免写 ABS</text>
+
+  <path d="M 200 360 L 200 376" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Result ===== -->
+  <rect x="110" y="380" width="180" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="398" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑤ AS salary_difference</text>
+  <text x="200" y="416" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">49,000</text>
+
+  <!-- ===== Right note 1: clause order ===== -->
+  <rect x="390" y="60" width="160" height="110" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="80" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">SQL 执行顺序</text>
+  <text x="470" y="102" text-anchor="middle" font-size="9" fill="#666">FROM → WHERE</text>
+  <text x="470" y="120" text-anchor="middle" font-size="9" fill="#666">→ GROUP BY → SELECT</text>
+  <text x="470" y="142" text-anchor="middle" font-size="9" fill="#888">内层子查询先产出</text>
+  <text x="470" y="158" text-anchor="middle" font-size="9" fill="#888">派生表 t，外层再聚合</text>
+
+  <!-- ===== Right note 2: double aggregation ===== -->
+  <rect x="390" y="200" width="160" height="104" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="220" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">双层聚合</text>
+  <text x="470" y="242" text-anchor="middle" font-size="9" fill="#666">内层 MAX(salary)</text>
+  <text x="470" y="256" text-anchor="middle" font-size="9" fill="#888">= 组内纵向折叠</text>
+  <text x="470" y="276" text-anchor="middle" font-size="9" fill="#666">外层 MAX − MIN</text>
+  <text x="470" y="290" text-anchor="middle" font-size="9" fill="#888">= 跨组横向比较</text>
+
+  <!-- ===== Right note 3: pitfall ===== -->
+  <rect x="390" y="330" width="160" height="94" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="350" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠ 隐蔽坑</text>
+  <text x="470" y="370" text-anchor="middle" font-size="9" fill="#666">若表混入第三个部门</text>
+  <text x="470" y="386" text-anchor="middle" font-size="9" fill="#666">GROUP BY 会多出一行</text>
+  <text x="470" y="402" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">MAX−MIN 变错答案</text>
+  <text x="470" y="416" text-anchor="middle" font-size="9" fill="#b85450">→ WHERE 先过滤</text>
+</svg>

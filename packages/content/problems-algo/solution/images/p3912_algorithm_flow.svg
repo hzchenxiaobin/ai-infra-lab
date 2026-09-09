@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：倒序建 rightMax → 正序一趟判定</text>
+
+  <!-- ① 倒序预计算 -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="36" width="320" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="280" y="54" text-anchor="middle" font-size="10.5" fill="#8a6d1a" font-weight="bold">① 倒序预计算 rightMax[]（空侧记 −∞）</text>
+    <text x="280" y="70" text-anchor="middle" font-size="10" fill="#8a6d1a">rightMax[n−1]=−∞；rightMax[i]=max(rightMax[i+1], nums[i+1])</text>
+  </g>
+  <path d="M 280 80 L 280 94" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 正序扫描 -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="96" width="320" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="280" y="114" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold">② 正序扫描 i = 0 .. n−1</text>
+    <text x="280" y="130" text-anchor="middle" font-size="10" fill="#33506b">滚动维护 leftMax = max(nums[0..i−1])，初始 −∞</text>
+  </g>
+  <path d="M 280 140 L 280 152" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <g filter="url(#rough2)">
+    <polygon points="280,154 438,196 280,238 122,196" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="280" y="192" text-anchor="middle" font-size="10.5" fill="#8a3030" font-weight="bold">nums[i] &gt; leftMax[i]</text>
+    <text x="280" y="208" text-anchor="middle" font-size="10.5" fill="#8a3030" font-weight="bold">或 nums[i] &gt; rightMax[i] ？</text>
+  </g>
+
+  <!-- 是 → 加入 ans -->
+  <path d="M 438 196 L 456 196" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="447" y="187" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <g filter="url(#rough2)">
+    <rect x="458" y="178" width="86" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="501" y="200" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold">加入 ans</text>
+  </g>
+  <path d="M 501 214 C 508 250, 480 282, 440 282" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <!-- 否 → 更新 -->
+  <path d="M 280 238 L 280 260" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="253" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- ③ 更新 -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="262" width="316" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="278" y="279" text-anchor="middle" font-size="10.5" fill="#33506b">③ 更新 leftMax ← max(leftMax, nums[i])，i ← i+1</text>
+    <text x="278" y="295" text-anchor="middle" font-size="9.5" fill="#4a6b8a">（判定在前、更新在后：判定时 leftMax 恰为左侧最大值）</text>
+  </g>
+
+  <!-- 回环 -->
+  <path d="M 120 282 C 56 282, 56 118, 120 118" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="46" y="205" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)" transform="rotate(-90 46 205)">未扫完（i ≤ n−1）</text>
+
+  <!-- 扫完 → 返回 -->
+  <path d="M 280 302 L 280 318" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="295" y="313" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">扫完</text>
+  <g filter="url(#rough2)">
+    <rect x="190" y="320" width="180" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="280" y="339" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold">④ 返回 ans</text>
+  </g>
+
+  <!-- 底部左：前后缀分工 -->
+  <g filter="url(#rough2)">
+    <rect x="20" y="358" width="336" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="188" y="376" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">为什么右侧要先建表？（前后缀分工）</text>
+    <text x="32" y="394" font-size="9.5" fill="#8a6d1a">与扫描同向的信息（左侧 max）⇒ 边走边滚动，一个变量搞定</text>
+    <text x="32" y="409" font-size="9.5" fill="#8a6d1a">与扫描逆向的信息（右侧 max）⇒ 必须先倒序建表备好</text>
+    <text x="32" y="424" font-size="9.5" fill="#8a6d1a">—— 42 接雨水 / 238 除自身乘积 同款前后缀分解套路</text>
+  </g>
+
+  <!-- 底部右：复杂度 -->
+  <g filter="url(#rough2)">
+    <rect x="372" y="358" width="168" height="72" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="456" y="376" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold">复杂度</text>
+    <text x="384" y="394" font-size="9.5" fill="#33506b">时间：两趟线性 O(n)</text>
+    <text x="384" y="409" font-size="9.5" fill="#33506b">空间：rightMax 数组 O(n)</text>
+    <text x="384" y="424" font-size="9.5" fill="#33506b">（n ≤ 100，暴力 O(n²) 也能过）</text>
+  </g>
+</svg>

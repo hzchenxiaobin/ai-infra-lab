@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="540" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">最大堆 Dijkstra 变体算法流程</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">主流程纵向推进；虚线分支表示回到循环顶部</text>
+
+  <!-- ===== Step 1 (init) ===== -->
+  <rect x="50" y="58" width="270" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="185" y="80" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">① 初始化</text>
+  <text x="185" y="98" text-anchor="middle" font-size="10" fill="#555">建邻接表(双向)；prob[start]=1，其余=0；堆=[(1.0, start)]</text>
+
+  <path d="M 185 110 L 185 132" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Diamond: heap empty? ===== -->
+  <polygon points="185,134 245,168 185,202 125,168" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="185" y="164" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">堆为空?</text>
+  <text x="185" y="180" text-anchor="middle" font-size="9" fill="#888">是 → end 不可达</text>
+
+  <!-- yes arrow to return 0 -->
+  <path d="M 245 168 L 360 168" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="302" y="160" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="362" y="146" width="160" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="442" y="168" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">返回 0</text>
+  <text x="442" y="184" text-anchor="middle" font-size="9" fill="#555">end 不可达</text>
+
+  <!-- no arrow down -->
+  <path d="M 185 202 L 185 224" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="196" y="216" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- ===== Step 2: pop max ===== -->
+  <rect x="95" y="226" width="180" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="185" y="250" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② 弹出最大堆顶 (p, u)</text>
+
+  <path d="M 185 264 L 185 286" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Diamond: u == end? (early termination) ===== -->
+  <polygon points="185,288 260,324 185,360 110,324" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="185" y="320" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">u == end ?</text>
+  <text x="185" y="336" text-anchor="middle" font-size="9" fill="#888">提前终止?</text>
+
+  <!-- yes arrow to return p -->
+  <path d="M 260 324 L 360 324" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="302" y="316" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="362" y="304" width="160" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="442" y="322" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 p</text>
+  <text x="442" y="338" text-anchor="middle" font-size="9" fill="#555">prob[end] 已确定</text>
+
+  <!-- no down -->
+  <path d="M 185 360 L 185 382" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="196" y="374" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- ===== Diamond: stale? ===== -->
+  <polygon points="185,384 255,418 185,452 115,418" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="185" y="414" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">p &lt; prob[u] ?</text>
+  <text x="185" y="430" text-anchor="middle" font-size="9" fill="#888">过期记录?</text>
+
+  <!-- yes branch (right): skip -->
+  <path d="M 255 418 L 360 418" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="302" y="410" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="362" y="400" width="150" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="437" y="416" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">懒删除：continue</text>
+  <text x="437" y="430" text-anchor="middle" font-size="9" fill="#888">跳过，回 ① 循环</text>
+
+  <!-- no down -->
+  <path d="M 185 452 L 185 470" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="196" y="464" font-size="10" fill="#446688" font-weight="bold">否</text>
+
+  <!-- ===== Step 3: relax ===== -->
+  <rect x="80" y="472" width="210" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="185" y="496" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">③ 松弛 u—v(w)：np=p×w</text>
+
+  <!-- relax detail -->
+  <path d="M 290 491 L 360 491" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="362" y="472" width="150" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="437" y="490" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">若 np &gt; prob[v]</text>
+  <text x="437" y="506" text-anchor="middle" font-size="9" fill="#555">更新 prob[v]，push(np,v)</text>
+
+  <!-- loop back note -->
+  <path d="M 185 510 L 185 524" stroke="#888" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="534" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">弹出 end 即返回 → 提前终止；总松弛 O(E)，每次堆操作 O(log V)</text>
+</svg>

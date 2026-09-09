@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="460" fill="#fafafa"/>
+
+  <text x="380" y="32" text-anchor="middle" font-size="18" fill="#444" font-weight="bold">float4 向量化加载 vs 逐元素加载</text>
+
+  <!-- 左：逐元素加载 -->
+  <g transform="translate(40, 60)">
+    <text x="0" y="0" font-size="13" fill="#b85450" font-weight="bold">逐元素加载：4 条 32-bit load</text>
+    <rect x="0" y="10" width="320" height="150" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="14" y="38" font-family="monospace" font-size="12" fill="#444">float a0 = ptr[0];  // 32-bit</text>
+    <text x="14" y="58" font-family="monospace" font-size="12" fill="#444">float a1 = ptr[1];  // 32-bit</text>
+    <text x="14" y="78" font-family="monospace" font-size="12" fill="#444">float a2 = ptr[2];  // 32-bit</text>
+    <text x="14" y="98" font-family="monospace" font-size="12" fill="#444">float a3 = ptr[3];  // 32-bit</text>
+    <rect x="14" y="118" width="130" height="28" rx="6" fill="#b85450" opacity="0.2" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="79" y="137" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">4 条指令</text>
+  </g>
+
+  <!-- 右：float4 加载 -->
+  <g transform="translate(400, 60)">
+    <text x="0" y="0" font-size="13" fill="#4a7a3a" font-weight="bold">float4 加载：1 条 128-bit load</text>
+    <rect x="0" y="10" width="320" height="150" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="14" y="38" font-family="monospace" font-size="12" fill="#444">float4 val =</text>
+    <text x="14" y="58" font-family="monospace" font-size="12" fill="#444">  reinterpret_cast&lt;const float4*&gt;(ptr)[0];</text>
+    <text x="14" y="84" font-size="11" fill="#888">// val.x=ptr[0]  val.y=ptr[1]</text>
+    <text x="14" y="102" font-size="11" fill="#888">// val.z=ptr[2]  val.w=ptr[3]</text>
+    <rect x="176" y="118" width="130" height="28" rx="6" fill="#4a7a3a" opacity="0.2" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="241" y="137" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1 条指令</text>
+  </g>
+
+  <!-- 中间对比箭头 -->
+  <text x="380" y="135" text-anchor="middle" font-size="22" fill="#888">→</text>
+
+  <!-- 使用条件 -->
+  <g transform="translate(40, 240)">
+    <rect x="0" y="0" width="680" height="120" rx="8" fill="#f6f6f6" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+    <rect x="0" y="0" width="680" height="26" fill="#446688" opacity="0.12" rx="8" filter="url(#rough2)"/>
+    <text x="340" y="18" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">使用条件</text>
+    <text x="20" y="52" font-size="12" fill="#4a7a3a" font-weight="bold">✓ 地址 16 字节对齐</text>
+    <text x="210" y="52" font-size="11" fill="#777">cudaMalloc 分配的内存天然对齐</text>
+    <text x="20" y="78" font-size="12" fill="#4a7a3a" font-weight="bold">✓ Coalesced 访问模式</text>
+    <text x="210" y="78" font-size="11" fill="#777">连续线程访问连续地址，合并为最少 cache line</text>
+    <text x="20" y="104" font-size="12" fill="#4a7a3a" font-weight="bold">✓ 数据布局支持</text>
+    <text x="210" y="104" font-size="11" fill="#777">行优先矩阵的连续行元素天然连续</text>
+  </g>
+
+  <!-- 收益底栏 -->
+  <rect x="150" y="385" width="460" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="380" y="412" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">收益：Global Memory 带宽利用率提升 10-15%</text>
+</svg>

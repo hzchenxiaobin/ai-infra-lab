@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一次扫描维护 onesLeft，对每个分界点算 cost</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="58" rx="180" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="11" fill="#333">开始: totalOnes = 统计 '1' 个数; onesLeft = 0; ans = n</text>
+
+  <!-- arrow down -->
+  <path d="M 270 78 L 270 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: p <= n ? -->
+  <polygon points="270,100 376,134 270,168 164,134" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="130" text-anchor="middle" font-size="12" fill="#333">p ≤ n ?</text>
+  <text x="270" y="146" text-anchor="middle" font-size="10" fill="#666">(还有分界点未试)</text>
+
+  <!-- No -> end -->
+  <path d="M 376 134 L 420 134" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="126" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="476" cy="134" rx="50" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="476" y="138" text-anchor="middle" font-size="11" fill="#333">返回 ans</text>
+
+  <!-- Yes -> down -->
+  <path d="M 270 168 L 270 188" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="184" font-size="11" fill="#82b366">是</text>
+
+  <!-- zerosRight box -->
+  <rect x="110" y="190" width="320" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="212" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">zerosRight = (n − p) − (totalOnes − onesLeft)</text>
+
+  <!-- arrow down -->
+  <path d="M 270 224 L 270 242" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ans update box -->
+  <rect x="150" y="244" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="266" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">ans = min(ans, onesLeft + zerosRight)</text>
+
+  <!-- arrow down -->
+  <path d="M 270 278 L 270 296" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 2: s[p]=='1' && p<n ? -->
+  <polygon points="270,300 410,336 270,372 130,336" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="332" text-anchor="middle" font-size="12" fill="#333">s[p]=='1' 且 p&lt;n ?</text>
+  <text x="270" y="348" text-anchor="middle" font-size="10" fill="#666">(为下一个 p 准备)</text>
+
+  <!-- Yes -> onesLeft++ -->
+  <path d="M 270 372 L 270 390" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="388" font-size="11" fill="#82b366">是</text>
+  <rect x="190" y="392" width="160" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="412" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">onesLeft++</text>
+
+  <!-- No -> skip -->
+  <path d="M 410 336 L 446 336" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="428" y="328" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="446" y="318" width="84" height="36" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="341" text-anchor="middle" font-size="11" fill="#888">（不操作）</text>
+  <!-- No path down to merge at p++ -->
+  <path d="M 488 354 L 488 436" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+
+  <!-- p++ box -->
+  <path d="M 270 422 L 270 436" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="210" y="436" width="120" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="456" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">p++</text>
+
+  <!-- No branch merge into p++ -->
+  <path d="M 488 436 L 330 436" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" filter="url(#rough2)"/>
+
+  <!-- loop-back to diamond 1 -->
+  <path d="M 210 451 L 50 451 L 50 134 L 164 134" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="290" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 50 290)">下一个分界点</text>
+
+  <!-- summary note -->
+  <text x="270" y="472" text-anchor="middle" font-size="11" fill="#888">仅遍历一次 → O(n)；只用常数变量 → O(1) 空间</text>
+</svg>

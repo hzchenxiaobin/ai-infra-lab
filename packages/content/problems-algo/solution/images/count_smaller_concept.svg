@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心：归并排序 + 索引数组，把逆序归属到原始下标</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">排序会打乱元素位置 → 用 idx[] 跟随原始下标，计数累加到 count[idx[i]]</text>
+
+  <!-- ===== Original array with indices ===== -->
+  <text x="40" y="76" font-size="11" fill="#446688" font-weight="bold">原数组 nums（下标标在格子顶上）</text>
+
+  <text x="92" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">0</text>
+  <text x="148" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">1</text>
+  <text x="204" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">2</text>
+  <text x="260" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">3</text>
+
+  <rect x="72" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="119" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <rect x="128" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="119" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="184" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="204" y="119" text-anchor="middle" font-size="11" fill="#333">6</text>
+  <rect x="240" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="119" text-anchor="middle" font-size="11" fill="#333">1</text>
+
+  <!-- Arrow down: sort shuffles positions -->
+  <path d="M 166 134 L 166 150" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="146" font-size="10" fill="#888">按值排序后位置打乱，但 idx 跟着元素走</text>
+
+  <!-- ===== Two halves during merge (sorted by value, carrying idx) ===== -->
+  <text x="40" y="168" font-size="11" fill="#446688" font-weight="bold">左半（按值有序，带原下标）</text>
+  <rect x="60" y="176" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="74" y="190" text-anchor="middle" font-size="8" fill="#888">idx1</text>
+  <text x="86" y="203" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="120" y="176" width="52" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="134" y="190" text-anchor="middle" font-size="8" fill="#888">idx0</text>
+  <text x="146" y="203" text-anchor="middle" font-size="11" fill="#333">5</text>
+
+  <!-- pointer i -->
+  <path d="M 146 162 L 146 174" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="146" y="158" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">i</text>
+
+  <text x="320" y="168" font-size="11" fill="#b85450" font-weight="bold">右半（按值有序，带原下标）</text>
+  <rect x="340" y="176" width="52" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="354" y="190" text-anchor="middle" font-size="8" fill="#888">idx3</text>
+  <text x="366" y="203" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="400" y="176" width="52" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="414" y="190" text-anchor="middle" font-size="8" fill="#888">idx2</text>
+  <text x="426" y="203" text-anchor="middle" font-size="11" fill="#333">6</text>
+
+  <!-- pointer j: already past idx3 (val 1), now at idx2 (val 6) -->
+  <path d="M 426 162 L 426 174" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="426" y="158" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">j</text>
+
+  <!-- faded "already placed" marker on idx3 -->
+  <text x="366" y="170" text-anchor="middle" font-size="8" fill="#b85450">已放入</text>
+
+  <!-- ===== Rule box ===== -->
+  <rect x="40" y="226" width="480" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">取左半元素 idx[i] 时：右半已放入 j−(mid+1) 个，全部比它小</text>
+  <text x="280" y="268" text-anchor="middle" font-size="11" fill="#888">→ count[ idx[i] ] += j − (mid+1)　　归属到原始下标，而非全局求和</text>
+
+  <!-- ===== Count array update ===== -->
+  <text x="40" y="306" font-size="11" fill="#4a7a3a" font-weight="bold">结果数组 count（按下标存放每个位置的右侧更小个数）</text>
+
+  <text x="92" y="324" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">idx0</text>
+  <text x="148" y="324" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">idx1</text>
+  <text x="204" y="324" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">idx2</text>
+  <text x="260" y="324" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">idx3</text>
+
+  <rect x="72" y="330" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="349" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">2</text>
+  <rect x="128" y="330" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="349" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="184" y="330" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="204" y="349" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="240" y="330" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="349" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- arrow from left element idx0 (val 5) to count[idx0] -->
+  <path d="M 146 214 L 100 326" stroke="#4a7a3a" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="300" y="338" font-size="10" fill="#4a7a3a">取左 5(idx0) 时右半已放 1 个 → count[0]+=1</text>
+
+  <!-- ===== Bottom notes ===== -->
+  <text x="20" y="384" font-size="10" fill="#888">💡 与「逆序对总数」的区别：315 要每个位置单独计数 → 必须带 idx 数组，把增量写进 count[idx[i]]</text>
+  <text x="20" y="402" font-size="10" fill="#888">⚠️ 取左半时才计数（此时右半已放入的都比它小）；取右半不计数（左半待处理元素还不知归属）</text>
+  <text x="20" y="420" font-size="10" fill="#888">⚠️ 合并写回的是 idx 数组（按 nums 值有序），nums 本身不动；递归对 idx[lo..hi] 切分</text>
+</svg>

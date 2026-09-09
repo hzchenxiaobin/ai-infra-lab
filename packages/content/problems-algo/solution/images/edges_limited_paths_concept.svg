@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：离线排序 + 并查集增量加边</text>
+
+  <!-- Left: sorted edges -->
+  <text x="100" y="58" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">边按长度升序</text>
+  <rect x="30" y="68" width="140" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="85" text-anchor="middle" font-size="10.5" fill="#333">[0,1,2]   dis=2</text>
+  <rect x="30" y="94" width="140" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="111" text-anchor="middle" font-size="10.5" fill="#333">[1,2,4]   dis=4</text>
+  <rect x="30" y="120" width="140" height="24" fill="#f0f0f0" stroke="#bbb" stroke-width="1.1" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="137" text-anchor="middle" font-size="10.5" fill="#888">[2,0,8]   dis=8</text>
+  <rect x="30" y="146" width="140" height="24" fill="#f0f0f0" stroke="#bbb" stroke-width="1.1" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="163" text-anchor="middle" font-size="10.5" fill="#888">[1,0,16] dis=16</text>
+  <text x="100" y="190" text-anchor="middle" font-size="9.5" fill="#888">↑ 短边先加入</text>
+
+  <!-- Middle: sorted queries -->
+  <text x="280" y="58" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">查询按 limit 升序</text>
+  <rect x="210" y="68" width="140" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="85" text-anchor="middle" font-size="10.5" fill="#333">[0,1,2]  limit=2</text>
+  <rect x="210" y="94" width="140" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="111" text-anchor="middle" font-size="10.5" fill="#333">[0,2,5]  limit=5</text>
+  <text x="280" y="140" text-anchor="middle" font-size="9.5" fill="#888">↑ 小 limit 先回答</text>
+
+  <!-- Arrows from edges to queries -->
+  <line x1="170" y1="80" x2="210" y2="80" stroke="#446688" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <line x1="170" y1="106" x2="210" y2="106" stroke="#446688" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Right: union-find incremental -->
+  <text x="460" y="58" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">并查集增量加边</text>
+  <!-- limit=2: no edges -->
+  <rect x="380" y="68" width="160" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="460" y="85" text-anchor="middle" font-size="10" fill="#b85450">limit=2: 加 dis&lt;2 → 无</text>
+  <!-- limit=5: add 2 edges -->
+  <rect x="380" y="94" width="160" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="460" y="111" text-anchor="middle" font-size="10" fill="#333">limit=5: 加 dis&lt;5 → 2条</text>
+  <text x="460" y="140" text-anchor="middle" font-size="9.5" fill="#888">↑ 复用已有连通信息</text>
+
+  <!-- Key idea box -->
+  <rect x="30" y="210" width="500" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="232" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">单调性：limit 越大，可用边越多，连通性只增不减</text>
+  <text x="280" y="250" text-anchor="middle" font-size="11" fill="#666">前一个查询加过的边，后一个查询（limit 更大）直接复用</text>
+
+  <!-- Union-find state visualization -->
+  <text x="100" y="296" text-anchor="middle" font-size="11" fill="#888">limit=2 时：</text>
+  <circle cx="80" cy="320" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="80" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <circle cx="120" cy="320" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="120" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <circle cx="160" cy="320" r="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="160" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <text x="100" y="352" text-anchor="middle" font-size="10" fill="#b85450">find(0)≠find(1) → false</text>
+
+  <text x="460" y="296" text-anchor="middle" font-size="11" fill="#888">limit=5 时：</text>
+  <circle cx="420" cy="320" r="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="420" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <circle cx="460" cy="320" r="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="460" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <circle cx="500" cy="320" r="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="500" y="325" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <line x1="434" y1="320" x2="446" y2="320" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <line x1="474" y1="320" x2="486" y2="320" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="460" y="352" text-anchor="middle" font-size="10" fill="#4a7a3a">find(0)==find(2) → true</text>
+
+  <rect x="30" y="370" width="500" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="387" text-anchor="middle" font-size="10.5" fill="#b85450">⚠️ 严格小于：加边条件 dis &lt; L，不是 dis ≤ L</text>
+</svg>

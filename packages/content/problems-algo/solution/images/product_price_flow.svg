@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：取全部产品 → 过滤 ≤ 目标日 → 按日期倒序取最新 → LEFT JOIN 补默认 10</text>
+
+  <!-- ===== Step 1: All distinct products ===== -->
+  <rect x="20" y="48" width="140" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="66" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">① 全部产品</text>
+  <text x="90" y="80" text-anchor="middle" font-size="7.5" fill="#446688">SELECT DISTINCT</text>
+  <text x="90" y="90" text-anchor="middle" font-size="7.5" fill="#446688">product_id</text>
+  <rect x="35" y="98" width="50" height="14" fill="#fff" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="60" y="108" text-anchor="middle" font-size="8" fill="#333">P1</text>
+  <rect x="35" y="112" width="50" height="14" fill="#fff" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="60" y="122" text-anchor="middle" font-size="8" fill="#333">P2</text>
+  <rect x="95" y="98" width="50" height="14" fill="#fff" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="120" y="108" text-anchor="middle" font-size="8" fill="#333">P3</text>
+  <text x="120" y="124" text-anchor="middle" font-size="7" fill="#888">3 个产品</text>
+
+  <!-- arrow 1→2 -->
+  <path d="M162 88 L198 88" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Filter changes <= target date ===== -->
+  <rect x="200" y="48" width="160" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">② 过滤 ≤ 目标日改价</text>
+  <text x="280" y="80" text-anchor="middle" font-size="7.5" fill="#d6a040">WHERE change_date</text>
+  <text x="280" y="90" text-anchor="middle" font-size="7.5" fill="#d6a040" font-weight="bold">≤ '2019-08-16'</text>
+  <text x="280" y="106" text-anchor="middle" font-size="7.5" fill="#333">P1: 20/30/35 ✓</text>
+  <text x="280" y="118" text-anchor="middle" font-size="7.5" fill="#333">P2: 50 ✓ ｜ P3: ✗</text>
+
+  <!-- arrow 2→3 -->
+  <path d="M362 88 L398 88" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: ROW_NUMBER desc, keep rn=1 ===== -->
+  <rect x="400" y="48" width="200" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="66" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">③ 按日期倒序取最新</text>
+  <text x="500" y="80" text-anchor="middle" font-size="7.5" fill="#446688">ROW_NUMBER() OVER(</text>
+  <text x="500" y="90" text-anchor="middle" font-size="7.5" fill="#446688" font-weight="bold">PARTITION BY product_id</text>
+  <text x="500" y="100" text-anchor="middle" font-size="7.5" fill="#446688">ORDER BY change_date DESC)</text>
+  <text x="500" y="114" text-anchor="middle" font-size="7.5" fill="#4a7a3a">rn=1 → P1=35, P2=50</text>
+
+  <!-- arrow down from step 3 -->
+  <path d="M500 130 L500 168" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="520" y="152" font-size="8" fill="#446688" font-weight="bold">子查询 t</text>
+
+  <!-- ===== Step 4: LEFT JOIN + IFNULL ===== -->
+  <rect x="180" y="172" width="340" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="190" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">④ LEFT JOIN 全部产品 + IFNULL(new_price, 10)</text>
+  <text x="200" y="208" font-size="8" fill="#333">①全部产品 <tspan fill="#4a7a3a" font-weight="bold">p</tspan></text>
+  <text x="300" y="208" font-size="8" fill="#888">LEFT JOIN</text>
+  <text x="380" y="208" font-size="8" fill="#333">③子查询 <tspan fill="#4a7a3a" font-weight="bold">t</tspan> ON p.product_id=t.product_id</text>
+  <text x="200" y="226" font-size="8" fill="#333">P1→35, P2→50 <tspan fill="#888">｜</tspan> P3→<tspan fill="#b85450" font-weight="bold">NULL</tspan> → <tspan fill="#d6a040" font-weight="bold">IFNULL(NULL,10)=10</tspan></text>
+
+  <!-- arrow down to result -->
+  <path d="M350 244 L350 278" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Result ===== -->
+  <rect x="230" y="282" width="240" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="290" y="296" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">product_id</text>
+  <text x="410" y="296" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">price</text>
+  <line x1="350" y1="282" x2="350" y2="302" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="230" y="302" width="240" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="290" y="314" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">1</text>
+  <text x="410" y="314" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">35</text>
+  <line x1="350" y1="302" x2="350" y2="318" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <rect x="230" y="318" width="240" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="290" y="330" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">2</text>
+  <text x="410" y="330" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">50</text>
+  <line x1="350" y1="318" x2="350" y2="334" stroke="#4a7a3a" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <rect x="230" y="334" width="240" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="290" y="346" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">3</text>
+  <text x="410" y="346" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">10</text>
+  <line x1="350" y1="334" x2="350" y2="350" stroke="#d6a040" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- ===== Key points box ===== -->
+  <rect x="20" y="370" width="580" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="388" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">关键陷阱</text>
+  <text x="40" y="404" font-size="9" fill="#333">• ⚠️ 只取 <tspan fill="#b85450" font-weight="bold">MAX(change_date)</tspan> 而不加 <tspan fill="#b85450" font-weight="bold">WHERE ≤ 目标日</tspan> → 会选到目标日之后的改价 ✗</text>
+  <text x="40" y="420" font-size="9" fill="#333">• ⚠️ 用 <tspan fill="#b85450" font-weight="bold">INNER JOIN</tspan> 而非 LEFT JOIN → P3（目标日前无改价）被丢弃，结果漏行 ✗</text>
+  <text x="40" y="436" font-size="9" fill="#333">• ✓ <tspan fill="#4a7a3a" font-weight="bold">LEFT JOIN 全部产品 + IFNULL(new_price, 10)</tspan> → 无改价产品补默认 10，不丢行</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">保证图可完全遍历：算法流程</text>
+
+  <!-- Step 1: Initialize -->
+  <rect x="40" y="50" width="480" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="68" cy="78" r="16" fill="#446688" filter="url(#rough2)"/>
+  <text x="68" y="82" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">1</text>
+  <text x="100" y="74" font-size="12" fill="#333" font-weight="bold">初始化两个并查集</text>
+  <text x="100" y="92" font-size="11" fill="#555">ua, ub 各 n 个节点自成一派；removed = 0；按 type 降序排边（类型 3 在前）</text>
+
+  <path d="M 280 106 L 280 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: type 3 -->
+  <rect x="40" y="128" width="480" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="68" cy="160" r="16" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="68" y="164" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">2</text>
+  <text x="100" y="152" font-size="12" fill="#333" font-weight="bold">处理类型 3 边（共享骨架，优先！）</text>
+  <text x="100" y="170" font-size="11" fill="#555">对每条 [3,u,v]：在 ua 和 ub 各做一次 union</text>
+  <text x="100" y="184" font-size="11" fill="#b85450">若两端在两个集合中都已连通 → removed++（冗余）</text>
+
+  <path d="M 280 192 L 280 212" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: type 1 -->
+  <rect x="40" y="214" width="480" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="68" cy="242" r="16" fill="#446688" filter="url(#rough2)"/>
+  <text x="68" y="246" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">3</text>
+  <text x="100" y="238" font-size="12" fill="#333" font-weight="bold">处理类型 1 边（仅 Alice）</text>
+  <text x="100" y="256" font-size="11" fill="#555">对每条 [1,u,v]：只在 ua 做 union；若已连通 → removed++</text>
+
+  <path d="M 280 270 L 280 290" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: type 2 -->
+  <rect x="40" y="292" width="480" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="68" cy="320" r="16" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="68" y="324" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">4</text>
+  <text x="100" y="316" font-size="12" fill="#333" font-weight="bold">处理类型 2 边（仅 Bob）</text>
+  <text x="100" y="334" font-size="11" fill="#555">对每条 [2,u,v]：只在 ub 做 union；若已连通 → removed++</text>
+
+  <path d="M 280 348 L 280 368" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: check + return -->
+  <rect x="40" y="370" width="480" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <circle cx="68" cy="408" r="16" fill="#b85450" filter="url(#rough2)"/>
+  <text x="68" y="412" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">5</text>
+  <text x="100" y="392" font-size="12" fill="#333" font-weight="bold">连通性检查 + 返回</text>
+  <text x="100" y="410" font-size="11" fill="#555">若 ua 或 ub 的连通分量数 &gt; 1（有人到不了某些节点）→ 返回 −1</text>
+  <text x="100" y="428" font-size="11" fill="#4a7a3a" font-weight="bold">否则返回 removed（可删除的最大边数）</text>
+
+  <!-- bottom note -->
+  <text x="280" y="472" text-anchor="middle" font-size="11" fill="#888">每条边只处理一次，并查集单次操作近似 O(α(n))</text>
+  <text x="280" y="490" text-anchor="middle" font-size="11" fill="#888">总复杂度 O(m·α(n))，m 为边数，n 为节点数</text>
+  <text x="280" y="508" text-anchor="middle" font-size="10" fill="#aaa">关键贪心：类型 3 先处理，避免「能用一条边连通两人」的边被浪费</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">按斜杠切分 → 栈处理每一段</text>
+
+  <!-- Step 1: raw path -->
+  <text x="30" y="62" font-size="11" fill="#888" font-weight="bold">原始路径</text>
+  <rect x="30" y="46" width="460" height="34" fill="#f0f0f0" stroke="#888" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="68" font-size="13" fill="#333" font-family="'Comic Sans MS', monospace">/a/./b/../../c/</text>
+
+  <!-- arrow down -->
+  <path d="M 260 80 L 260 94" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="276" y="92" font-size="10.5" fill="#888" font-weight="bold">split('/')</text>
+
+  <!-- Step 2: parts array -->
+  <text x="30" y="116" font-size="11" fill="#888" font-weight="bold">切分结果</text>
+  <rect x="30" y="102" width="460" height="40" fill="none" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <!-- parts: a, ., b, .., .., c -->
+  <rect x="40" y="110" width="60" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="128" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">a</text>
+  <rect x="108" y="110" width="60" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="138" y="128" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">.</text>
+  <rect x="176" y="110" width="60" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="206" y="128" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">b</text>
+  <rect x="244" y="110" width="60" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="274" y="128" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">..</text>
+  <rect x="312" y="110" width="60" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="342" y="128" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">..</text>
+  <rect x="380" y="110" width="60" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="128" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">c</text>
+
+  <!-- arrow down -->
+  <path d="M 260 142 L 260 156" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="276" y="154" font-size="10.5" fill="#888" font-weight="bold">逐段判定</text>
+
+  <!-- Step 3: rules table -->
+  <rect x="30" y="164" width="460" height="110" fill="#f8f8f8" stroke="#888" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="186" font-size="12" fill="#333" font-weight="bold">三条规则</text>
+
+  <!-- rule 1: skip -->
+  <rect x="50" y="196" width="130" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="214" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">"" 或 "."</text>
+  <text x="190" y="214" font-size="11" fill="#555">→ 跳过（skip）</text>
+
+  <!-- rule 2: pop -->
+  <rect x="50" y="230" width="130" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="248" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">".."</text>
+  <text x="190" y="248" font-size="11" fill="#555">→ 弹栈（若非空）</text>
+
+  <!-- rule 3: push -->
+  <rect x="50" y="264" width="130" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="282" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">其他目录名</text>
+  <text x="190" y="282" font-size="11" fill="#555">→ 压栈（push）</text>
+
+  <!-- Stack visual on right -->
+  <text x="380" y="186" font-size="11" fill="#888" font-weight="bold">栈</text>
+  <rect x="350" y="196" width="120" height="80" fill="none" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <rect x="362" y="244" width="96" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="262" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">c</text>
+  <text x="410" y="292" text-anchor="middle" font-size="10" fill="#888">最终: [c]</text>
+
+  <!-- Result -->
+  <path d="M 260 274 L 260 300" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="130" y="304" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="330" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">"/" + join(["c"], "/") = "/c"</text>
+</svg>

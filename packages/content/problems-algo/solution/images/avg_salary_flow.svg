@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="28" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">
+    算法流程：JOIN → 月份 → 双窗口聚合 → 去重 → CASE
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="160" y="50" width="220" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="68" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">① JOIN Salary &amp; Employee</text>
+  <text x="270" y="84" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">ON employee_id → 每行带 department_id</text>
+  <path d="M270,94 L270,110" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="160" y="112" width="220" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="130" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">② DATE_FORMAT(pay_date,'%Y-%m')</text>
+  <text x="270" y="146" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">→ pay_month（如 2017-03）</text>
+  <path d="M270,156 L270,172" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3 & 4 并列双窗口 -->
+  <rect x="40" y="174" width="215" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="147" y="194" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">③ AVG OVER (PARTITION BY</text>
+  <text x="147" y="210" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">pay_month)</text>
+  <text x="147" y="224" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">→ company_avg（每行都有）</text>
+
+  <rect x="285" y="174" width="215" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="392" y="194" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">④ AVG OVER (PARTITION BY</text>
+  <text x="392" y="210" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">pay_month, department_id)</text>
+  <text x="392" y="224" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">→ dept_avg（每行都有）</text>
+  <path d="M270,232 L270,250" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="160" y="252" width="220" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="270" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">⑤ DISTINCT</text>
+  <text x="270" y="286" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">每月每部门保留一行（去重）</text>
+  <path d="M270,296 L270,312" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 6: CASE 决策菱形 -->
+  <polygon points="270,314 380,354 270,394 160,354" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="350" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">⑥ CASE 比较</text>
+  <text x="270" y="368" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">dept_avg vs company_avg</text>
+
+  <!-- 三个分支 -->
+  <path d="M160,354 L80,394" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M270,394 L270,418" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M380,354 L460,394" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="30" y="416" width="100" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="80" y="438" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">&gt; → higher</text>
+
+  <rect x="220" y="416" width="100" height="34" rx="6" fill="#f0f0f0" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="438" text-anchor="middle" font-size="12" fill="#555" filter="url(#rough2)">= → same</text>
+
+  <rect x="410" y="416" width="100" height="34" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="460" y="438" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">&lt; → lower</text>
+</svg>

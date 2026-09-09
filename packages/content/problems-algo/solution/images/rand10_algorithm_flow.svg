@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">拒绝采样算法流程（最小化 rand7() 调用次数）</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="86" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: 调用 a = rand7(), b = rand7()</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Compute x -->
+  <rect x="160" y="104" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="122" text-anchor="middle" font-size="12" fill="#333">x = (a − 1) × 7 + b</text>
+  <text x="270" y="139" text-anchor="middle" font-size="11" fill="#666">得到 [1, 49] 上的均匀整数</text>
+
+  <!-- arrow down -->
+  <path d="M 270 148 L 270 168" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: x <= 40? -->
+  <polygon points="270,172 370,218 270,264 170,218" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="214" text-anchor="middle" font-size="12" fill="#333">x ≤ 40 ?</text>
+  <text x="270" y="232" text-anchor="middle" font-size="11" fill="#666">(落在取用区?)</text>
+
+  <!-- No branch -> reject, loop back -->
+  <path d="M 370 218 L 460 218" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="412" y="210" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="448" y="200" width="80" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="218" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">丢弃</text>
+  <text x="488" y="232" text-anchor="middle" font-size="10" fill="#888">x ∈ [41,49]</text>
+  <!-- loop back arrow to start -->
+  <path d="M 488 200 L 488 62 L 356 62" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="498" y="135" font-size="10" fill="#888" transform="rotate(-90 498 135)">重新采样 ↑</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 264 L 270 284" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="280" font-size="11" fill="#82b366">是</text>
+
+  <!-- Return -->
+  <rect x="150" y="288" width="240" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="306" text-anchor="middle" font-size="12" fill="#333">return (x − 1) % 10 + 1</text>
+  <text x="270" y="323" text-anchor="middle" font-size="11" fill="#666">映射到 [1, 10]（40 = 4×10，等概率）</text>
+
+  <!-- arrow down to end -->
+  <path d="M 270 332 L 270 352" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <ellipse cx="270" cy="372" rx="60" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="376" text-anchor="middle" font-size="12" fill="#333">返回结果</text>
+
+  <!-- summary note -->
+  <text x="270" y="406" text-anchor="middle" font-size="11" fill="#888">每次取用概率 40/49；期望调用 rand7() ≈ 2 × 49/40 ≈ 2.45 次</text>
+</svg>

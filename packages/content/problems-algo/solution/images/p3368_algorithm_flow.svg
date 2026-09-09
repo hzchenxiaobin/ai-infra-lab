@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：numbers 数字表 → CROSS JOIN 拆词 → 逐词变形 → GROUP_CONCAT 拼回</text>
+
+  <rect x="30" y="38" width="500" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="58" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 递归 CTE 造数字表 numbers：n = 1, 2, 3, …, 1000</text>
+  <text x="50" y="76" font-size="9" fill="#666" filter="url(#rough2)">WITH RECURSIVE numbers AS (SELECT 1 UNION ALL SELECT n+1 WHERE n &lt; 1000)</text>
+
+  <path d="M 280 92 L 280 106" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="108" width="500" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="128" font-size="10.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② CROSS JOIN numbers，WHERE n ≤ 空格数 + 1 —— 一行炸成 w 行</text>
+  <text x="50" y="146" font-size="9" fill="#666" filter="url(#rough2)">词数 = CHAR_LENGTH(content_text) − CHAR_LENGTH(REPLACE(content_text,' ','')) + 1</text>
+  <text x="50" y="164" font-size="9" fill="#333" filter="url(#rough2)">"the QUICK brown fox"（空格 3）→ 保留 n=1..4 四行，n=5..1000 全被裁掉</text>
+
+  <path d="M 280 180 L 280 194" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="196" width="500" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="216" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ 双层 SUBSTRING_INDEX 取第 n 个词：word = SI(SI(s,' ',n),' ',-1)</text>
+  <text x="330" y="216" font-size="9" fill="#888" filter="url(#rough2)">（SI = SUBSTRING_INDEX 简写）</text>
+  <rect x="48" y="228" width="466" height="30" fill="#fafafa" stroke="#4a7a3a" stroke-width="1" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="62" y="240" font-size="8.5" fill="#333" filter="url(#rough2)">n=1: SI(s,' ',1)="the"　→　SI(…,' ',-1)="the"　　　n=2: SI(s,' ',2)="the QUICK"→"QUICK"</text>
+  <text x="62" y="252" font-size="8.5" fill="#333" filter="url(#rough2)">内层：取前 n 个词的前缀串　→　外层：取该前缀的最后一个词 = 第 n 个词 ✓</text>
+
+  <path d="M 280 268 L 280 282" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="30" y="284" width="240" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="302" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 逐词变形 cap_word</text>
+  <text x="150" y="318" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">CONCAT(UPPER(LEFT(word,1)),</text>
+  <text x="150" y="331" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">LOWER(SUBSTRING(word,2)))</text>
+
+  <path d="M 274 312 L 292 312" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="296" y="284" width="234" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="413" y="302" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">⑤ GROUP_CONCAT 拼回</text>
+  <text x="413" y="318" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">GROUP BY content_id, content_text</text>
+  <text x="413" y="331" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">ORDER BY word_pos SEPARATOR ' '</text>
+
+  <rect x="30" y="350" width="500" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="368" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">⑥ 输出：content_id + original_text + converted_text，按 content_id 排序</text>
+  <text x="280" y="384" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">"the QUICK brown fox" → The / Quick / Brown / Fox → "The Quick Brown Fox" ✓</text>
+  <text x="280" y="398" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">⚠ GROUP_CONCAT 必须内置 ORDER BY word_pos：GROUP BY 后组内行序无语义保证</text>
+</svg>

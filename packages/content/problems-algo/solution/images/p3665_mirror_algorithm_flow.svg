@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="16" fill="#333"
+        filter="url(#rough2)">算法流程：逆序建跳表 + 行优先 DP 计数</text>
+
+  <!-- 开始 -->
+  <ellipse cx="260" cy="52" rx="42" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="57" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">开始</text>
+  <path d="M 260 68 L 260 80" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ① 建跳表 -->
+  <rect x="140" y="82" width="240" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="104" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 逆序填跳表 enterR / enterD</text>
+  <text x="260" y="122" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">i：m−1 → 0；j：n−1 → 0</text>
+  <text x="260" y="140" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">空格 = 自身；镜子 = 翻转查邻；越界 = −1</text>
+  <path d="M 260 150 L 260 162" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 初始化 -->
+  <rect x="160" y="164" width="200" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="184" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② dp[0][0] = 1</text>
+  <text x="260" y="202" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">行优先扫描每个格子 (i, j)</text>
+  <path d="M 260 210 L 260 224" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 循环容器 -->
+  <rect x="88" y="226" width="344" height="152" fill="#ffffff" stroke="#9a9a9a" stroke-width="1.4"
+        stroke-dasharray="7 5" rx="10" filter="url(#rough2)"/>
+  <text x="215" y="243" text-anchor="middle" font-size="11" fill="#666" font-weight="bold"
+        filter="url(#rough2)">循环：行优先取每个格子 (i, j)</text>
+
+  <!-- 判断菱形 -->
+  <polygon points="200,254 258,282 200,310 142,282" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="200" y="286" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">dp[i][j] &gt; 0 ?</text>
+
+  <!-- 否：跳过，汇入取下一格 -->
+  <path d="M 142 282 L 104 282 L 104 356 L 124 356" fill="none" stroke="#9a9a9a"
+        stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="128" y="276" font-size="10.5" fill="#888" filter="url(#rough2)">否</text>
+
+  <!-- 是：进入转移 -->
+  <path d="M 258 282 L 280 282" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="269" y="276" font-size="10.5" fill="#446688" filter="url(#rough2)">是</text>
+
+  <!-- ③ 查表转移 -->
+  <rect x="282" y="248" width="136" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="268" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">goR = enterR[i][j+1]</text>
+  <text x="350" y="283" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">goD = enterD[i+1][j]</text>
+  <text x="350" y="298" text-anchor="middle" font-size="10" fill="#b3541e" filter="url(#rough2)">落点有效（≥ 0）⇒</text>
+  <text x="350" y="313" text-anchor="middle" font-size="9.5" fill="#b3541e" font-weight="bold" filter="url(#rough2)">dp[落点] += dp[i][j]</text>
+  <text x="350" y="327" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（mod 1e9+7）</text>
+
+  <!-- 取下一格回路 -->
+  <path d="M 350 334 L 350 356 L 124 356 L 124 250" fill="none" stroke="#446688"
+        stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="250" y="350" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">取下一格</text>
+
+  <!-- 扫描完出口 -->
+  <path d="M 260 378 L 260 392" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="276" y="390" font-size="10" fill="#666" filter="url(#rough2)">扫描完</text>
+
+  <!-- 返回 -->
+  <ellipse cx="260" cy="410" rx="100" ry="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="415" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold"
+        filter="url(#rough2)">返回 dp[m−1][n−1]</text>
+</svg>

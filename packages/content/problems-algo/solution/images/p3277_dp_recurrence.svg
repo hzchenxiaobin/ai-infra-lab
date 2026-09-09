@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a07830"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">两张区间 DP 表：f 管分数，g 管最大值</text>
+
+  <!-- f triangle grid: cell (i,j) at x=30+46j, y=50+32i, w=40, h=26 -->
+  <text x="14" y="46" font-size="9.5" fill="#888" filter="url(#rough2)">i↓</text>
+  <text x="252" y="44" text-anchor="end" font-size="9.5" fill="#888" filter="url(#rough2)">j→</text>
+  <!-- row 0 -->
+  <rect x="30" y="50" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="76" y="50" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="122" y="50" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="168" y="50" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="214" y="50" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <!-- row 1 -->
+  <rect x="76" y="82" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="122" y="82" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="142" y="99" text-anchor="middle" font-size="8.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">(i, j−1)</text>
+  <rect x="168" y="82" width="40" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" rx="4" filter="url(#rough2)"/>
+  <text x="188" y="99" text-anchor="middle" font-size="9" fill="#a07830" font-weight="bold" filter="url(#rough2)">(i, j)</text>
+  <rect x="214" y="82" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <!-- row 2 -->
+  <rect x="122" y="114" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="168" y="114" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="188" y="131" text-anchor="middle" font-size="8.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">(i+1, j)</text>
+  <rect x="214" y="114" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <!-- row 3 -->
+  <rect x="168" y="146" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="214" y="146" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <!-- row 4 -->
+  <rect x="214" y="178" width="40" height="26" fill="#f0f0f0" stroke="#c0c0c0" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+
+  <!-- arrows: green -> orange, blue -> orange -->
+  <path d="M 148 95 L 165 95" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 188 122 L 188 111" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <text x="142" y="222" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">行 = 左端点 i（自底向上），列 = 右端点 j（自左向右），只画 j ≥ i 的上半三角</text>
+
+  <!-- f formula box -->
+  <rect x="272" y="54" width="235" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="76" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">分数表 f：塔尖的来历</text>
+  <text x="389" y="99" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">f[i][j] = f[i][j−1] ⊕ f[i+1][j]</text>
+  <text x="389" y="135" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">去掉末位的分数 ⊕ 去掉首位的分数（归纳可证）</text>
+
+  <!-- g part -->
+  <text x="36" y="242" font-size="12" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">查询表 g：区间内子数组按「端点是否顶满」三分</text>
+
+  <!-- bar A -->
+  <text x="110" y="251" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">i</text>
+  <text x="410" y="251" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">j−1</text>
+  <rect x="110" y="254" width="300" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="268" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">g[i][j−1]：右端不顶到 j 的子数组</text>
+
+  <!-- bar B -->
+  <text x="130" y="277" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">i+1</text>
+  <text x="430" y="277" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">j</text>
+  <rect x="130" y="280" width="300" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="294" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">g[i+1][j]：左端不顶到 i 的子数组</text>
+
+  <!-- bar C -->
+  <text x="110" y="303" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">i</text>
+  <text x="430" y="303" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">j</text>
+  <rect x="110" y="306" width="320" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="320" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">f[i][j]：整段 [i, j] 自己</text>
+
+  <!-- g formula box -->
+  <rect x="80" y="334" width="360" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="351" text-anchor="middle" font-size="11" fill="#8a3833" font-weight="bold" filter="url(#rough2)">g[i][j] = max(g[i][j−1], g[i+1][j], f[i][j])</text>
+</svg>

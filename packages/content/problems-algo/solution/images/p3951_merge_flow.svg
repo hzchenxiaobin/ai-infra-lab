@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#778899"/>
+    </marker>
+    <marker id="arrGr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：最少灯数 k 与 有效时长 T 两个独立子问题，相乘即答案</text>
+
+  <!-- ① 求灯数 -->
+  <rect x="32" y="38" width="218" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="141" y="57" text-anchor="middle" font-size="10" fill="#2f5a24" font-weight="bold" filter="url(#rough2)">① k = ⌈B/3⌉ = (B+2) ÷ 3</text>
+  <text x="141" y="71" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">一盏灯至多照亮 3 格（最少灯数）</text>
+
+  <!-- ② 排序 -->
+  <rect x="270" y="38" width="218" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="379" y="57" text-anchor="middle" font-size="10" fill="#33507a" font-weight="bold" filter="url(#rough2)">② 区间按 start 升序排序</text>
+  <text x="379" y="71" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">闭区间 [s, e] 占 e−s+1 个单位时间</text>
+
+  <!-- k 的长连线（绕左侧直达最终答案） -->
+  <path d="M 141 80 C 62 130, 58 280, 166 316" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrGr)" filter="url(#rough2)"/>
+  <text x="72" y="210" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">k</text>
+
+  <!-- ② → 循环容器 -->
+  <path d="M 379 80 L 379 94" fill="none" stroke="#778899" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 循环容器 -->
+  <rect x="90" y="98" width="410" height="142" rx="12" fill="none" stroke="#999" stroke-width="1.4" stroke-dasharray="8,5" filter="url(#rough2)"/>
+  <text x="295" y="233" text-anchor="middle" font-size="8.5" fill="#777" filter="url(#rough2)">求有效时长 T = 区间并集的大小</text>
+
+  <!-- 循环回边 -->
+  <path d="M 390 132 C 390 112, 200 112, 200 138" fill="none" stroke="#778899" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="295" y="108" text-anchor="middle" font-size="8.5" fill="#778899" filter="url(#rough2)">处理完一个区间 → 取下一个</text>
+
+  <!-- 判定菱形 -->
+  <polygon points="200,140 260,172 200,204 140,172" fill="#ffffff" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="169" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">start ≤ curEnd ?</text>
+  <text x="200" y="183" text-anchor="middle" font-size="7.5" fill="#777" filter="url(#rough2)">（与当前段重叠）</text>
+
+  <!-- 是 分支 -->
+  <path d="M 260 172 L 281 172" fill="none" stroke="#778899" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="269" y="163" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="285" y="134" width="211" height="42" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="390" y="152" text-anchor="middle" font-size="9.5" fill="#33507a" filter="url(#rough2)">是：curEnd = max(curEnd, e)</text>
+  <text x="390" y="167" text-anchor="middle" font-size="8.5" fill="#555" filter="url(#rough2)">并入当前段（取更长的右端）</text>
+
+  <!-- 否 分支 -->
+  <path d="M 200 204 C 228 204, 252 208, 281 209" fill="none" stroke="#778899" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="235" y="196" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="285" y="188" width="211" height="42" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="390" y="206" text-anchor="middle" font-size="9" fill="#8a3030" filter="url(#rough2)">否：total += curEnd−curStart+1</text>
+  <text x="390" y="221" text-anchor="middle" font-size="8.5" fill="#7a4040" filter="url(#rough2)">另起新段：curStart = s，curEnd = e</text>
+
+  <!-- 出循环 → 收尾 -->
+  <path d="M 295 240 L 295 252" fill="none" stroke="#778899" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="170" y="254" width="250" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="295" y="266" text-anchor="middle" font-size="10" fill="#33507a" filter="url(#rough2)">③ total += 末段长度</text>
+  <text x="295" y="280" text-anchor="middle" font-size="8.5" fill="#555" filter="url(#rough2)">（curEnd − curStart + 1，别漏最后一段）</text>
+
+  <path d="M 295 286 L 295 298" fill="none" stroke="#778899" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 最终答案 -->
+  <rect x="170" y="300" width="250" height="36" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="295" y="323" text-anchor="middle" font-size="13" fill="#8a3030" font-weight="bold" filter="url(#rough2)">④ 返回 k × total</text>
+
+  <text x="260" y="354" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">k 只依赖 brightness，T 只依赖 intervals —— 子问题独立，各自最优相乘即全局最优</text>
+</svg>

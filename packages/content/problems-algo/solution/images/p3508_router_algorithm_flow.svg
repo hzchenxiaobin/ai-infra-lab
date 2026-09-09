@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+  <text x="320" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：addPacket 先查重、后淘汰、再登记</text>
+  <text x="320" y="44" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">所有出队（转发 / 淘汰）共用 _retire()，三本账同步销账</text>
+
+  <!-- 左：addPacket 决策流 -->
+  <rect x="85" y="58" width="150" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="160" y="76" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">addPacket(s, d, t)</text>
+
+  <path d="M 160 86 L 160 100" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <path d="M 160 100 L 218 130 L 160 160 L 102 130 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="160" y="128" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">(s,d,t) ∈ seen ?</text>
+  <text x="160" y="141" text-anchor="middle" font-size="8" fill="#999" filter="url(#rough2)">（当前存储中）</text>
+
+  <path d="M 218 130 L 244 130" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="228" y="123" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="244" y="116" width="92" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="134" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">return false</text>
+  <text x="290" y="156" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">重复：不触发淘汰</text>
+
+  <path d="M 160 160 L 160 178" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="168" y="173" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">否</text>
+
+  <path d="M 160 178 L 222 208 L 160 238 L 98 208 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="160" y="212" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">len(dq) == limit ?</text>
+
+  <path d="M 222 208 L 246 208" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="232" y="201" text-anchor="middle" font-size="9" fill="#8a6a1f" filter="url(#rough2)">是</text>
+  <rect x="246" y="191" width="94" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="293" y="205" text-anchor="middle" font-size="10" fill="#8a6a1f" font-weight="bold" filter="url(#rough2)">_retire()</text>
+  <text x="293" y="219" text-anchor="middle" font-size="8.5" fill="#8a6a1f" filter="url(#rough2)">淘汰最旧腾位</text>
+
+  <path d="M 293 225 L 293 286 L 268 286" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arro)" filter="url(#rough2)"/>
+
+  <path d="M 160 238 L 160 262" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="168" y="255" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">否</text>
+
+  <rect x="57" y="264" width="206" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="281" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">dq.append((s, d, t))</text>
+  <text x="160" y="297" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">seen.add ＋ ts[d].append(t)</text>
+
+  <path d="M 160 306 L 160 322" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <rect x="100" y="324" width="120" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="160" y="341" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">return true</text>
+
+  <!-- 右上：retire 细节 -->
+  <rect x="360" y="58" width="262" height="152" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="491" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">_retire()：两种出队共用</text>
+  <text x="491" y="104" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">① p = dq.pop_front()（队头 = 全局最旧）</text>
+  <text x="491" y="126" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">② seen.remove(p)（旧包可重新入队）</text>
+  <text x="491" y="148" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">③ ts[p.dest].pop_front()（必在头部）</text>
+  <text x="491" y="172" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">转发 forwardPacket 与容量淘汰共用这套销账逻辑</text>
+
+  <!-- 右中：forwardPacket -->
+  <rect x="360" y="224" width="262" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="491" y="245" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">forwardPacket()</text>
+  <text x="491" y="265" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">dq 空 → 返回 []</text>
+  <text x="491" y="280" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">否则 _retire() → 返回 [s, d, t]</text>
+
+  <!-- 右下：getCount -->
+  <rect x="360" y="300" width="262" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="491" y="321" text-anchor="middle" font-size="11.5" fill="#8a6a1f" font-weight="bold" filter="url(#rough2)">getCount(dest, l, r)</text>
+  <text x="491" y="341" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">在有序序列 ts[dest] 上二分：</text>
+  <text x="491" y="359" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">hi = bisect_right(r)，lo = bisect_left(l)</text>
+  <text x="491" y="377" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">Python 惰性版：答案 = hi − max(lo, head[d])</text>
+</svg>

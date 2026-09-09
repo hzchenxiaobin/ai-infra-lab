@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">示例演算：f0 resolve 30(200ms), f1 reject "Error"(100ms)</text>
+
+  <!-- timeline labels -->
+  <text x="40" y="86" font-size="10" fill="#888">f0</text>
+  <text x="40" y="128" font-size="10" fill="#888">f1</text>
+  <text x="40" y="170" font-size="10" fill="#888">count</text>
+  <text x="40" y="212" font-size="10" fill="#888">results</text>
+
+  <!-- baselines -->
+  <line x1="100" y1="81" x2="520" y2="81" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="100" y1="123" x2="520" y2="123" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- time markers -->
+  <text x="100" y="280" font-size="9" fill="#aaa">0</text>
+  <text x="250" y="280" font-size="9" fill="#aaa">100ms</text>
+  <text x="430" y="280" font-size="9" fill="#aaa">200ms</text>
+
+  <!-- f0 bar 0→200ms resolve 30 (pending through 100ms, settles at 200ms) -->
+  <rect x="100" y="74" width="330" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="85" font-size="10" fill="#4a7a3a" font-weight="bold">→ 30 ✓ (200ms)</text>
+
+  <!-- f1 bar 0→100ms reject Error -->
+  <rect x="100" y="116" width="150" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="260" y="127" font-size="10" fill="#b85450" font-weight="bold">→ "Error" ✗ (100ms)</text>
+
+  <!-- count steps -->
+  <rect x="100" y="163" width="150" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="115" y="174" font-size="9" fill="#d6a040">1（f1 完成·拒绝）</text>
+  <rect x="430" y="163" width="10" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="445" y="174" font-size="9" fill="#4a7a3a">2=n ✓</text>
+
+  <!-- results slots -->
+  <rect x="100" y="205" width="150" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="219" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">[1]="Error"</text>
+
+  <rect x="330" y="205" width="100" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="219" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">[0]=30</text>
+
+  <!-- arrows: reject lands at 100ms, resolve lands at 200ms -->
+  <path d="M 250 130 L 250 205" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <path d="M 430 88 L 430 205" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <!-- final resolve arrow -->
+  <path d="M 440 177 L 440 205" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <!-- final result box -->
+  <rect x="160" y="300" width="260" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">resolve([30, "Error"])  ← 保序</text>
+
+  <!-- key insight notes -->
+  <rect x="40" y="352" width="480" height="72" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="372" text-anchor="middle" font-size="11" fill="#333">100ms 时 f1 拒绝 → results[1] = "Error"，但外层不短路</text>
+  <text x="280" y="390" text-anchor="middle" font-size="11" fill="#333">200ms 时 f0 解析 → results[0] = 30，count 达 n → resolve([30,"Error"])</text>
+  <text x="280" y="408" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">总耗时 200ms（等最慢的），拒绝原因被当作结果收进数组</text>
+</svg>

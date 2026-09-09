@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="r7"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="71"/><feDisplacementMap in="SourceGraphic" scale="1.5"/></filter>
+    <marker id="ar7" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#3a3a3a"/></marker>
+  </defs>
+  <rect width="620" height="400" fill="#fafafa"/>
+  <text x="310" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#333" filter="url(#r7)">线段树节点：在 peak[] 上维护「含峰子数组数」</text>
+
+  <!-- peak array illustration -->
+  <text x="20" y="58" font-size="12" font-weight="bold" fill="#446688" filter="url(#r7)">peak[]（位置 1..n−2 可为峰，0/n−1 恒 0）</text>
+  <g filter="url(#r7)" font-size="11" font-family="monospace">
+    <rect x="40" y="68" width="40" height="30" fill="#f5f5f5" stroke="#bbb"/><text x="60" y="88" text-anchor="middle" fill="#888">0</text>
+    <rect x="80" y="68" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/><text x="100" y="88" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <rect x="120" y="68" width="40" height="30" fill="#e8f0fe" stroke="#446688"/><text x="140" y="88" text-anchor="middle" fill="#333">0</text>
+    <rect x="160" y="68" width="40" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/><text x="180" y="88" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <rect x="200" y="68" width="40" height="30" fill="#e8f0fe" stroke="#446688"/><text x="220" y="88" text-anchor="middle" fill="#333">0</text>
+    <rect x="240" y="68" width="40" height="30" fill="#e8f0fe" stroke="#446688"/><text x="260" y="88" text-anchor="middle" fill="#333">0</text>
+    <rect x="280" y="68" width="40" height="30" fill="#f5f5f5" stroke="#bbb"/><text x="300" y="88" text-anchor="middle" fill="#888">0</text>
+    <text x="60" y="112" text-anchor="middle" font-size="9" fill="#888">0</text>
+    <text x="100" y="112" text-anchor="middle" font-size="9" fill="#888">1</text>
+    <text x="140" y="112" text-anchor="middle" font-size="9" fill="#888">2</text>
+    <text x="180" y="112" text-anchor="middle" font-size="9" fill="#888">3</text>
+    <text x="220" y="112" text-anchor="middle" font-size="9" fill="#888">4</text>
+    <text x="260" y="112" text-anchor="middle" font-size="9" fill="#888">5</text>
+    <text x="300" y="112" text-anchor="middle" font-size="9" fill="#888">6</text>
+  </g>
+
+  <!-- node fields -->
+  <rect x="20" y="128" width="580" height="118" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#r7)"/>
+  <text x="36" y="150" font-size="12" font-weight="bold" fill="#4a7a3a" filter="url(#r7)">节点维护区间 [lo, hi] 上的五个量</text>
+  <g filter="url(#r7)" font-size="11" fill="#333">
+    <text x="40" y="170">len   = hi − lo + 1</text>
+    <text x="40" y="188">cnt   = [lo,hi] 内「长度≥3 且内部含峰」的子数组数（即所求）</text>
+    <text x="40" y="206">pre0  = 前缀连续非峰长度（peak[lo..lo+pre0−1] 全 0）</text>
+    <text x="40" y="224">suf0  = 后缀连续非峰长度（peak[hi−suf0+1..hi] 全 0）</text>
+    <text x="320" y="170">all0  = 整段无峰（1/0）</text>
+    <text x="320" y="188" fill="#b85450">合并 O(1)：cnt = L.cnt + R.cnt + 跨界峰子数组</text>
+    <text x="320" y="206" fill="#888">pre0/suf0 用于跨界判定（边界峰算内部）</text>
+    <text x="320" y="224" fill="#888">单点更新影响 peak[k], k∈{idx−1,idx,idx+1}</text>
+  </g>
+
+  <!-- update & query -->
+  <rect x="20" y="258" width="280" height="124" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#r7)"/>
+  <text x="36" y="280" font-size="12" font-weight="bold" fill="#446688" filter="url(#r7)">更新 nums[idx] → 重算峰</text>
+  <text x="36" y="300" font-size="11" fill="#333" filter="url(#r7)">峰 k 由三元组 (k−1,k,k+1) 决定</text>
+  <text x="36" y="318" font-size="11" fill="#333" filter="url(#r7)">故改动 idx 影响峰 {idx−1, idx, idx+1}</text>
+  <text x="36" y="336" font-size="11" fill="#333" filter="url(#r7)">∩ [1, n−2]，逐个重算 peak[k]</text>
+  <text x="36" y="354" font-size="11" fill="#b85450" filter="url(#r7)">叶节点改值，向上 pushup：O(log n)</text>
+  <text x="36" y="372" font-size="11" fill="#888" filter="url(#r7)">至多 3 个叶更新 → O(log n)</text>
+
+  <rect x="320" y="258" width="280" height="124" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#r7)"/>
+  <text x="336" y="280" font-size="12" font-weight="bold" fill="#b85450" filter="url(#r7)">查询 [1, L, R]</text>
+  <text x="336" y="300" font-size="11" fill="#333" filter="url(#r7)">在 peak[] 线段树上区间查询 [L, R]</text>
+  <text x="336" y="318" font-size="11" fill="#333" filter="url(#r7)">合并覆盖 [L,R] 的若干节点</text>
+  <text x="336" y="336" font-size="11" fill="#333" filter="url(#r7)">返回合并结果的 .cnt</text>
+  <text x="336" y="354" font-size="11" fill="#b85450" filter="url(#r7)">= [L,R] 内峰值子数组数 ✓</text>
+  <text x="336" y="372" font-size="11" fill="#888" filter="url(#r7)">每次合并 O(1)，共 O(log n) 节点</text>
+</svg>

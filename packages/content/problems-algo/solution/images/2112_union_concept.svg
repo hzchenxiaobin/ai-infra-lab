@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 500"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="500" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：每条航班拆为两行（出发机场 + 到达机场），UNION ALL 后按机场求和</text>
+
+  <!-- ===== Flights table (left) ===== -->
+  <text x="48" y="54" font-size="10" fill="#888">Flights（航班表）</text>
+  <rect x="40" y="60" width="200" height="104" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="52" y="76" font-size="9" fill="#446688" font-weight="bold">dep  arr  cnt</text>
+  <line x1="40" y1="82" x2="240" y2="82" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <!-- Row 1: 1→2, 4 (blue) -->
+  <rect x="42" y="86" width="196" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.6"/>
+  <text x="56" y="101" font-size="10" fill="#446688" font-weight="bold">1    2    4</text>
+  <!-- Row 2: 2→1, 5 (green) -->
+  <rect x="42" y="110" width="196" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.6"/>
+  <text x="56" y="125" font-size="10" fill="#4a7a3a" font-weight="bold">2    1    5</text>
+  <!-- Row 3: 2→4, 5 (orange) -->
+  <rect x="42" y="134" width="196" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.6"/>
+  <text x="56" y="149" font-size="10" fill="#d6a040" font-weight="bold">2    4    5</text>
+
+  <!-- ===== Melt arrows: each row → 2 rows ===== -->
+  <text x="280" y="54" font-size="9" fill="#888">UNION ALL 拆行</text>
+  <!-- Row 1 (blue) → (1,4) and (2,4) -->
+  <path d="M 240 97 C 285 97, 285 92, 330 92" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)" opacity="0.75"/>
+  <path d="M 240 97 C 285 97, 285 112, 330 112" stroke="#446688" stroke-width="1" fill="none" marker-end="url(#arrB)" filter="url(#rough2)" opacity="0.55" stroke-dasharray="3,2"/>
+  <!-- Row 2 (green) → (2,5) and (1,5) -->
+  <path d="M 240 121 C 285 121, 285 132, 330 132" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" opacity="0.75"/>
+  <path d="M 240 121 C 285 121, 285 152, 330 152" stroke="#4a7a3a" stroke-width="1" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" opacity="0.55" stroke-dasharray="3,2"/>
+  <!-- Row 3 (orange) → (2,5) and (4,5) -->
+  <path d="M 240 145 C 285 145, 285 172, 330 172" stroke="#d6a040" stroke-width="1.2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)" opacity="0.75"/>
+  <path d="M 240 145 C 285 145, 285 192, 330 192" stroke="#d6a040" stroke-width="1" fill="none" marker-end="url(#arrO)" filter="url(#rough2)" opacity="0.55" stroke-dasharray="3,2"/>
+
+  <!-- ===== AirportTraffic table (right) ===== -->
+  <text x="348" y="54" font-size="10" fill="#888">AirportTraffic（拆行后）</text>
+  <rect x="340" y="60" width="200" height="156" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="352" y="76" font-size="9" fill="#446688" font-weight="bold">airport_id  cnt</text>
+  <line x1="340" y1="82" x2="540" y2="82" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <!-- 6 rows -->
+  <rect x="342" y="86" width="196" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="356" y="100" font-size="9.5" fill="#446688">1           4</text>
+  <rect x="342" y="108" width="196" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.35"/>
+  <text x="356" y="122" font-size="9.5" fill="#446688">2           4</text>
+  <rect x="342" y="130" width="196" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="356" y="144" font-size="9.5" fill="#4a7a3a">2           5</text>
+  <rect x="342" y="152" width="196" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.35"/>
+  <text x="356" y="166" font-size="9.5" fill="#4a7a3a">1           5</text>
+  <rect x="342" y="174" width="196" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="356" y="188" font-size="9.5" fill="#d6a040">2           5</text>
+  <rect x="342" y="196" width="196" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="0.6" rx="3" filter="url(#rough2)" opacity="0.35"/>
+  <text x="356" y="210" font-size="9.5" fill="#d6a040">4           5</text>
+
+  <!-- ===== Arrow down to GROUP BY ===== -->
+  <path d="M 290 230 L 290 250" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="244" font-size="10" fill="#666">GROUP BY airport_id + SUM(cnt)</text>
+
+  <!-- ===== AirportTotal result ===== -->
+  <rect x="150" y="258" width="280" height="110" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="162" y="274" font-size="9" fill="#446688" font-weight="bold">airport_id   total</text>
+  <line x1="150" y1="280" x2="430" y2="280" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <!-- Airport 1: 4+5=9 -->
+  <rect x="152" y="284" width="276" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="168" y="299" font-size="10.5" fill="#446688">1              9   ← 4+5</text>
+  <!-- Airport 2: 4+5+5=14 (HIGHLIGHTED) -->
+  <rect x="152" y="308" width="276" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="3" filter="url(#rough2)" opacity="0.7"/>
+  <text x="168" y="323" font-size="10.5" fill="#b85450" font-weight="bold">2             14   ← 4+5+5  MAX</text>
+  <!-- Airport 4: 5 -->
+  <rect x="152" y="332" width="276" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="168" y="347" font-size="10.5" fill="#d6a040">4              5   ← 5</text>
+
+  <!-- ===== Arrow down to output ===== -->
+  <path d="M 290 372 L 290 392" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="386" font-size="10" fill="#666">WHERE total = (SELECT MAX(total) …)</text>
+
+  <!-- ===== Output ===== -->
+  <rect x="210" y="400" width="160" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="418" text-anchor="middle" font-size="10" fill="#b85450">输出 airport_id</text>
+  <text x="290" y="434" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">2</text>
+
+  <!-- Footer note -->
+  <rect x="40" y="452" width="500" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="468" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">⚠️ 必须用 UNION ALL 而非 UNION</text>
+  <text x="290" y="482" text-anchor="middle" font-size="9.5" fill="#777">UNION 会去重整行，当存在双向航班且 cnt 相同时会丢数据</text>
+</svg>

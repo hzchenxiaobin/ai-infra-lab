@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建掩码 → 枚举邻居 union → 统计组</text>
+
+  <!-- step 1 -->
+  <rect x="170" y="46" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="11.5" fill="#333">① 建掩码表 maskToIdx + maskCount</text>
+  <path d="M280 88 L280 104" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <rect x="170" y="108" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="11.5" fill="#333">② 初始化并查集 parent[i]=i</text>
+  <path d="M280 150 L280 166" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 3 box (loop) -->
+  <rect x="40" y="170" width="480" height="150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="192" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 对每个真实掩码 m（下标 i）：</text>
+
+  <!-- add/remove -->
+  <rect x="60" y="204" width="210" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="165" y="224" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">添加 / 删去</text>
+  <text x="165" y="240" text-anchor="middle" font-size="10.5" fill="#555">for b in 0..25:</text>
+  <text x="165" y="252" text-anchor="middle" font-size="10.5" fill="#555">  m'=m^(1&lt;&lt;b); 若在表→union</text>
+
+  <!-- replace -->
+  <rect x="290" y="204" width="210" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="395" y="224" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">替换（虚点）</text>
+  <text x="395" y="240" text-anchor="middle" font-size="10.5" fill="#555">for 置1位 c:</text>
+  <text x="395" y="252" text-anchor="middle" font-size="10.5" fill="#555">  v=getVirtual(m^(1&lt;&lt;c)); union</text>
+
+  <text x="280" y="276" text-anchor="middle" font-size="10.5" fill="#888">每个掩码 O(26) 邻居，总 O(26n)</text>
+  <text x="280" y="292" text-anchor="middle" font-size="10.5" fill="#888">虚点编号从 realN 起分配，sub→idx 去重</text>
+  <text x="280" y="308" text-anchor="middle" font-size="10.5" fill="#888">相同掩码用 maskCount 聚合（替换字母成自身）</text>
+
+  <path d="M280 322 L280 338" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 4 -->
+  <rect x="120" y="342" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="366" text-anchor="middle" font-size="11.5" fill="#333">④ 统计：只遍历真实下标，按 find(i) 聚合 maskCount</text>
+  <path d="M280 384 L280 400" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="120" y="404" width="320" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="428" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 [不同根数, 最大组大小]</text>
+</svg>

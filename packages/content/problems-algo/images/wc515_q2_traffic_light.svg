@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">交通灯：r = arrival % period 决定等待</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">r &lt; max(lights) 则选绿灯期够长的灯，等待 0；否则等 period - r</text>
+
+  <text x="40" y="72" font-size="11" fill="#333" font-weight="bold">period=8, lights=[2,3], arrivalTime=[2,5,8,11], max_light=3</text>
+
+  <rect x="30" y="84" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <rect x="36" y="90" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="66" y="107" text-anchor="middle" font-size="9" fill="#333">绿2s</text>
+  <rect x="96" y="90" width="188" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="190" y="107" text-anchor="middle" font-size="9" fill="#b85450">红灯 6s (period - lights[0])</text>
+  <text x="160" y="128" text-anchor="middle" font-size="10" fill="#888">灯0: 绿 0-2s，红 2-8s</text>
+
+  <rect x="30" y="138" width="260" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <rect x="36" y="144" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="81" y="161" text-anchor="middle" font-size="9" fill="#333">绿3s</text>
+  <rect x="126" y="144" width="158" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="205" y="161" text-anchor="middle" font-size="9" fill="#b85450">红灯 5s</text>
+  <text x="160" y="182" text-anchor="middle" font-size="10" fill="#888">灯1: 绿 0-3s，红 3-8s</text>
+
+  <text x="320" y="72" font-size="11" fill="#333" font-weight="bold">逐车分析：</text>
+
+  <rect x="310" y="84" width="220" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="102" font-size="10" fill="#333">t=2: r=2 &lt; 3, 选灯1, 等0</text>
+
+  <rect x="310" y="112" width="220" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="130" font-size="10" fill="#333">t=5: r=5 &gt;= 3, 等 8-5=3</text>
+
+  <rect x="310" y="140" width="220" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="330" y="158" font-size="10" fill="#333">t=8: r=0 &lt; 3, 等0</text>
+
+  <rect x="310" y="168" width="220" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="330" y="186" font-size="10" fill="#b85450" font-weight="bold">t=11: r=3 &gt;= 3, 等 8-3=5</text>
+
+  <rect x="30" y="210" width="500" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="232" font-size="11" fill="#3a4a66" font-weight="bold">关键观察：车辆间互不影响（绿灯不限容量）</text>
+  <text x="50" y="250" font-size="10.5" fill="#555">每车独立选最优灯：若 r &lt; max(lights)，存在绿灯期 &gt; r 的灯，等待=0</text>
+  <text x="50" y="266" font-size="10.5" fill="#555">若 r &gt;= max(lights)，所有灯都红灯，等待 = period - r（对所有灯相同）</text>
+  <text x="50" y="282" font-size="10.5" fill="#555">故答案 = max over cars of (r &lt; max_light ? 0 : period - r)</text>
+
+  <rect x="30" y="300" width="500" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="322" font-size="11" fill="#4a7a3a" font-weight="bold">答案 = max(0, 3, 0, 5) = 5</text>
+  <text x="50" y="340" font-size="10.5" fill="#555">O(n + m)：一次求 max(lights)，一次遍历 arrivalTime</text>
+
+  <rect x="30" y="360" width="500" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="382" font-size="10.5" fill="#333" font-weight="bold">注意：r = period 时（即 arrivalTime % period == 0），r = 0 &lt; max_light，等待 0</text>
+  <text x="50" y="400" font-size="10.5" fill="#555">绿灯期 [0, lights[i])，红灯期 [lights[i], period)</text>
+</svg>

@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="900" height="560" fill="#fdfcf7"/>
+  <text x="450" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">示例演算：BFS 逐层扩展，发现边界出口即返回</text>
+  <path d="M 320 40 Q 450 48 580 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== Example 1 (top half) ===== -->
+  <text x="34" y="74" font-size="14" font-weight="bold" fill="#34506e">示例 1：entrance = [1,2]，返回 1</text>
+
+  <!-- maze grid 4 cols x 3 rows, cell=42, start (40, 86) -->
+  <!-- row0: + + . + -->
+  <!-- row1: . . E + -->
+  <!-- row2: + + + . -->
+
+  <!-- Step 0: entrance marked -->
+  <text x="44" y="106" font-size="10.5" fill="#6a9a6a">层 0：入口入队，标记为 +</text>
+  <g font-size="13" text-anchor="middle">
+    <!-- row 0 -->
+    <g filter="url(#sk)"><rect x="40" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="61" y="141" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="82" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="103" y="141" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="124" y="114" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="145" y="141" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="166" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="187" y="141" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 1 -->
+    <g filter="url(#sk)"><rect x="40" y="156" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="61" y="183" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="82" y="156" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="103" y="183" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="124" y="156" width="42" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="2.4"/></g>
+    <text x="145" y="183" fill="#34506e" font-weight="bold">E</text>
+    <g filter="url(#sk)"><rect x="166" y="156" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="187" y="183" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 2 -->
+    <g filter="url(#sk)"><rect x="40" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="61" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="82" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="103" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="124" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="145" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="166" y="198" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="187" y="225" fill="#34506e">·</text>
+  </g>
+  <text x="145" y="106" text-anchor="middle" font-size="9" fill="#34506e">(1,2)</text>
+
+  <!-- arrow to step 1 -->
+  <path d="M 220 160 L 280 160" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="250" y="154" text-anchor="middle" font-size="10" fill="#5a5a5a">扩展</text>
+
+  <!-- Step 1: discover (0,2) = exit -->
+  <text x="300" y="106" font-size="10.5" fill="#b85450" font-weight="bold">层 1：发现 (0,2) 在边界 → 返回 steps=1 ✓</text>
+  <g font-size="13" text-anchor="middle">
+    <!-- row 0 -->
+    <g filter="url(#sk)"><rect x="300" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="321" y="141" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="342" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="363" y="141" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="384" y="114" width="42" height="42" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.6"/></g>
+    <text x="405" y="141" fill="#2e6e2e" font-weight="bold">·</text>
+    <g filter="url(#sk)"><rect x="426" y="114" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="447" y="141" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 1 -->
+    <g filter="url(#sk)"><rect x="300" y="156" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="321" y="183" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="342" y="156" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="363" y="183" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="384" y="156" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="2"/></g>
+    <text x="405" y="183" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="426" y="156" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="447" y="183" fill="#b85450" font-weight="bold">+</text>
+    <!-- row 2 -->
+    <g filter="url(#sk)"><rect x="300" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="321" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="342" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="363" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="124" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4" opacity="0"/></g>
+    <g filter="url(#sk)"><rect x="384" y="198" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="405" y="225" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="426" y="198" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="447" y="225" fill="#34506e">·</text>
+  </g>
+  <!-- arrow from entrance (now +) to (0,2) -->
+  <path d="M 405 156 L 405 156" stroke="#4a8e4a" stroke-width="2.4" fill="none"/>
+  <path d="M 405 156 L 405 156" stroke="#4a8e4a" stroke-width="2.4" fill="none" marker-end="url(#arg)"/>
+  <text x="405" y="106" text-anchor="middle" font-size="9" fill="#2e6e2e">(0,2) 出口</text>
+  <text x="420" y="170" font-size="9.5" fill="#4a8e4a" font-weight="bold">↑ 1 步</text>
+
+  <!-- result badge example 1 -->
+  <g filter="url(#sk)">
+    <rect x="500" y="140" width="120" height="40" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2"/>
+  </g>
+  <text x="560" y="166" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">答案 = 1</text>
+
+  <!-- ===== Example 2 (middle) ===== -->
+  <text x="34" y="276" font-size="14" font-weight="bold" fill="#34506e">示例 2：entrance = [1,0]，返回 2</text>
+  <text x="44" y="300" font-size="10.5" fill="#6a9a6a">层 0：入口 (1,0) 标为 +（虽在边界但不算出口）</text>
+
+  <!-- maze 3x3, cell=42, start (40, 308) -->
+  <!-- row0: + + + -->
+  <!-- row1: E . . -->
+  <!-- row2: + + + -->
+  <g font-size="13" text-anchor="middle">
+    <g filter="url(#sk)"><rect x="40" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="61" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="82" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="103" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="124" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="145" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="40" y="350" width="42" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="2.4"/></g>
+    <text x="61" y="377" fill="#34506e" font-weight="bold">E</text>
+    <g filter="url(#sk)"><rect x="82" y="350" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="103" y="377" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="124" y="350" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="145" y="377" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="40" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="61" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="82" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="103" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="124" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="145" y="419" fill="#b85450" font-weight="bold">+</text>
+  </g>
+  <text x="61" y="300" text-anchor="middle" font-size="9" fill="#34506e">(1,0)</text>
+
+  <!-- arrow -->
+  <path d="M 190 371 L 250 371" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="220" y="365" text-anchor="middle" font-size="10" fill="#5a5a5a">层1</text>
+
+  <!-- step 1: (1,1) discovered, not boundary -->
+  <text x="270" y="300" font-size="10.5" fill="#34506e">层 1：发现 (1,1)，非边界 → 入队</text>
+  <g font-size="13" text-anchor="middle">
+    <g filter="url(#sk)"><rect x="270" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="291" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="312" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="333" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="354" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="375" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="270" y="350" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="2"/></g>
+    <text x="291" y="377" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="312" y="350" width="42" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/></g>
+    <text x="333" y="377" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="354" y="350" width="42" height="42" fill="#fff" stroke="#7f9cc0" stroke-width="1.2"/></g>
+    <text x="375" y="377" fill="#34506e">·</text>
+    <g filter="url(#sk)"><rect x="270" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="291" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="312" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="333" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="354" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="375" y="419" fill="#b85450" font-weight="bold">+</text>
+  </g>
+  <text x="333" y="300" text-anchor="middle" font-size="9" fill="#34506e">(1,1)</text>
+
+  <!-- arrow -->
+  <path d="M 420 371 L 480 371" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="450" y="365" text-anchor="middle" font-size="10" fill="#5a5a5a">层2</text>
+
+  <!-- step 2: (1,2) = exit -->
+  <text x="500" y="300" font-size="10.5" fill="#b85450" font-weight="bold">层 2：发现 (1,2) 在右边界 → 返回 2 ✓</text>
+  <g font-size="13" text-anchor="middle">
+    <g filter="url(#sk)"><rect x="500" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="521" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="542" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="563" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="584" y="308" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="605" y="335" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="500" y="350" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="2"/></g>
+    <text x="521" y="377" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="542" y="350" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="2"/></g>
+    <text x="563" y="377" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="584" y="350" width="42" height="42" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2.6"/></g>
+    <text x="605" y="377" fill="#2e6e2e" font-weight="bold">·</text>
+    <g filter="url(#sk)"><rect x="500" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="521" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="542" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="563" y="419" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="584" y="392" width="42" height="42" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="605" y="419" fill="#b85450" font-weight="bold">+</text>
+  </g>
+  <text x="605" y="300" text-anchor="middle" font-size="9" fill="#2e6e2e">(1,2) 出口</text>
+  <text x="575" y="365" font-size="9.5" fill="#4a8e4a" font-weight="bold">→ 2 步</text>
+
+  <!-- result badge example 2 -->
+  <g filter="url(#sk)">
+    <rect x="660" y="352" width="120" height="40" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2"/>
+  </g>
+  <text x="720" y="378" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">答案 = 2</text>
+
+  <!-- ===== Example 3 (bottom) ===== -->
+  <text x="34" y="468" font-size="14" font-weight="bold" fill="#34506e">示例 3：entrance = [0,0]，返回 -1</text>
+  <text x="44" y="492" font-size="10.5" fill="#b85450">层 0：入口 (0,0) 标为 +，邻居 (0,1) 是墙 → 队列空 → 无出口</text>
+
+  <!-- maze 1x2, cell=50, start (40, 500) -->
+  <g font-size="14" text-anchor="middle">
+    <g filter="url(#sk)"><rect x="40" y="500" width="50" height="50" fill="#fdecee" stroke="#b85450" stroke-width="2"/></g>
+    <text x="65" y="532" fill="#b85450" font-weight="bold">+</text>
+    <g filter="url(#sk)"><rect x="90" y="500" width="50" height="50" fill="#fdecee" stroke="#b85450" stroke-width="1.4"/></g>
+    <text x="115" y="532" fill="#b85450" font-weight="bold">+</text>
+  </g>
+  <text x="65" y="492" text-anchor="middle" font-size="9" fill="#b85450">E→+</text>
+
+  <!-- arrow -->
+  <path d="M 160 525 L 220 525" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="190" y="519" text-anchor="middle" font-size="10" fill="#5a5a5a">BFS</text>
+
+  <!-- empty queue -->
+  <g filter="url(#sk)">
+    <rect x="220" y="505" width="160" height="42" rx="8" fill="#fdecee" stroke="#b85450" stroke-width="1.8"/>
+  </g>
+  <text x="300" y="532" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">队列空 → return -1</text>
+
+  <!-- result badge example 3 -->
+  <g filter="url(#sk)">
+    <rect x="420" y="505" width="120" height="42" rx="8" fill="#fdecee" stroke="#b85450" stroke-width="2"/>
+  </g>
+  <text x="480" y="532" text-anchor="middle" font-size="14" font-weight="bold" fill="#b85450">答案 = -1</text>
+
+  <!-- key insight box -->
+  <g filter="url(#sk)">
+    <rect x="570" y="460" width="300" height="92" rx="8" fill="#fffdf3" stroke="#c9a93a" stroke-width="1.2" stroke-dasharray="5 3"/>
+  </g>
+  <text x="720" y="482" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#7a5415">三个样例的共同要点</text>
+  <text x="584" y="502" font-size="10.5" fill="#7a5415">• 入口先标 + → 永不被误判为出口</text>
+  <text x="584" y="520" font-size="10.5" fill="#7a5415">• 发现邻居即检查边界 → 省一轮入队</text>
+  <text x="584" y="538" font-size="10.5" fill="#7a5415">• 首次命中 = 最近，无需继续搜索</text>
+
+  <text x="450" y="552" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold">BFS 层 = 步数，O(mn) 一趟搞定</text>
+</svg>

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arro" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">粉刷房子 II 核心：前一行只记「最小 + 次小」，跳过同色 O(1) 取值</text>
+
+  <!-- Previous row: 5 colors, values [4,1,7,3,5] -->
+  <text x="40" y="62" font-size="12" fill="#888">prev = dp[i−1]：</text>
+
+  <rect x="64" y="46" width="80" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="104" y="60" text-anchor="middle" font-size="10" fill="#888">色0</text>
+  <text x="104" y="74" text-anchor="middle" font-size="12" fill="#333">4</text>
+
+  <rect x="154" y="46" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="60" text-anchor="middle" font-size="10" fill="#b85450">色1</text>
+  <text x="194" y="74" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">1</text>
+  <text x="194" y="40" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">min1 (idx=1)</text>
+
+  <rect x="244" y="46" width="80" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="284" y="60" text-anchor="middle" font-size="10" fill="#888">色2</text>
+  <text x="284" y="74" text-anchor="middle" font-size="12" fill="#333">7</text>
+
+  <rect x="334" y="46" width="80" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="374" y="60" text-anchor="middle" font-size="10" fill="#d6a040">色3</text>
+  <text x="374" y="74" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">3</text>
+  <text x="374" y="40" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">min2</text>
+
+  <rect x="424" y="46" width="80" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="464" y="60" text-anchor="middle" font-size="10" fill="#888">色4</text>
+  <text x="464" y="74" text-anchor="middle" font-size="12" fill="#333">5</text>
+
+  <text x="270" y="100" text-anchor="middle" font-size="11" fill="#888">K 个值里，只有最小值所在色 (idx) 需「跳过自身」，其余色直接取最小即可</text>
+
+  <!-- Two-branch decision -->
+  <rect x="190" y="118" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="140" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">当前色 c 是否等于 idx ?</text>
+
+  <!-- Left branch: c == idx -> min2 -->
+  <path d="M 210 152 L 130 180" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="150" y="170" font-size="11" fill="#d6a040" font-weight="bold">c == idx</text>
+  <rect x="56" y="182" width="150" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="131" y="200" text-anchor="middle" font-size="11" fill="#333">最小色正是 c</text>
+  <text x="131" y="216" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">取次小 min2</text>
+  <!-- arrow from min2 box to this branch -->
+  <path d="M 374 80 Q 250 110 131 182" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arro)" filter="url(#rough2)"/>
+
+  <!-- Right branch: c != idx -> min1 -->
+  <path d="M 330 152 L 410 180" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="380" y="170" font-size="11" fill="#b85450" font-weight="bold">c ≠ idx</text>
+  <rect x="334" y="182" width="150" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="409" y="200" text-anchor="middle" font-size="11" fill="#333">最小色不是 c</text>
+  <text x="409" y="216" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">取最小 min1</text>
+  <!-- arrow from min1 box to this branch -->
+  <path d="M 194 80 Q 300 110 409 182" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arrr)" filter="url(#rough2)"/>
+
+  <!-- cur row -->
+  <text x="40" y="252" font-size="12" fill="#888">cur  = dp[i]：</text>
+  <rect x="64" y="236" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="104" y="256" text-anchor="middle" font-size="10" fill="#b85450">cost+min1</text>
+  <rect x="154" y="236" width="80" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="256" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">cost+min2</text>
+  <rect x="244" y="236" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="284" y="256" text-anchor="middle" font-size="10" fill="#b85450">cost+min1</text>
+  <rect x="334" y="236" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="374" y="256" text-anchor="middle" font-size="10" fill="#b85450">cost+min1</text>
+  <rect x="424" y="236" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="464" y="256" text-anchor="middle" font-size="10" fill="#b85450">cost+min1</text>
+
+  <text x="270" y="288" text-anchor="middle" font-size="11" fill="#888">5 个颜色中仅 1 个走 min2 分支，其余 4 个走 min1 —— 整行 O(K) 而非 O(K²)</text>
+
+  <!-- Formula box -->
+  <rect x="40" y="304" width="460" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="322" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">转移方程（O(1) 单点取值）</text>
+  <text x="270" y="340" text-anchor="middle" font-size="12" fill="#444">dp[i][c] = cost[i][c] + ( c == idx ? min2 : min1 )</text>
+
+  <!-- Key insight -->
+  <rect x="40" y="358" width="460" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="377" text-anchor="middle" font-size="11" fill="#333">每行维护 min1 / min2 / idx 三量 → 跳过单点最小值 O(1) 应答</text>
+  <text x="270" y="395" text-anchor="middle" font-size="11" fill="#4a7a3a">朴素 O(n·K²) → 优化 O(n·K)，空间 O(1)</text>
+</svg>

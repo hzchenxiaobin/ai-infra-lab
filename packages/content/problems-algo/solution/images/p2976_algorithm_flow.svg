@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 450" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="450" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：建图 → Floyd 全源最短路 → 逐位查表累加</text>
+
+  <!-- step 1: build graph -->
+  <rect x="105" y="40" width="310" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="62" text-anchor="middle" font-size="12" fill="#334" font-weight="bold" filter="url(#rough2)">① 建图：26×26 距离矩阵</text>
+  <text x="260" y="82" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">dist[i][i]=0，其余 ∞；重边取 min</text>
+
+  <path d="M 260 98 L 260 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2: floyd -->
+  <rect x="105" y="118" width="310" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="140" text-anchor="middle" font-size="12" fill="#334" font-weight="bold" filter="url(#rough2)">② Floyd-Warshall（k,i,j 三重循环）</text>
+  <text x="260" y="160" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">dist[i][j]=min(dist[i][j], dist[i][k]+dist[k][j])，26³ ≈ 1.8 万次</text>
+
+  <path d="M 260 176 L 260 194" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- step 3: scan -->
+  <rect x="105" y="196" width="310" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="217" text-anchor="middle" font-size="12" fill="#334" font-weight="bold" filter="url(#rough2)">③ 逐位扫描 source / target</text>
+  <text x="260" y="237" text-anchor="middle" font-size="10.5" fill="#8a6d3b" filter="url(#rough2)">ans += dist[source[i]][target[i]]，O(1) 查表</text>
+
+  <path d="M 260 250 L 260 268" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="278" y="264" font-size="10" fill="#8a6d3b" filter="url(#rough2)">每一位</text>
+
+  <!-- decision diamond -->
+  <polygon points="260,270 390,304 260,338 130,304" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="301" text-anchor="middle" font-size="11" fill="#334" font-weight="bold" filter="url(#rough2)">查到的 dist = ∞ ？</text>
+  <text x="260" y="318" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">（这对字符不可达）</text>
+
+  <path d="M 390 304 L 406 304" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="394" y="296" font-size="10.5" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <rect x="408" y="284" width="100" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="458" y="309" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 −1</text>
+
+  <path d="M 260 338 L 260 356" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="272" y="352" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">否，继续累加</text>
+
+  <rect x="180" y="358" width="160" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="382" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">扫描完 → 返回 ans</text>
+
+  <!-- bottom note -->
+  <rect x="60" y="410" width="400" height="30" fill="#ffffff" stroke="#999" stroke-width="1.4" rx="8" stroke-dasharray="6 4" filter="url(#rough2)"/>
+  <text x="260" y="429" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">ans 上界 ≈ 10⁵ 位 × 25 边 × 10⁶ = 2.5×10¹² → C++ 必须 long long</text>
+</svg>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 500"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="500" fill="#fafafa"/>
+
+  <text x="20" y="26" font-size="13" fill="#333" filter="url(#rough2)">流程：枚举字符对 → 前缀 + ready 预处理 → 双指针延迟激活 → 查桶更新</text>
+
+  <!-- start -->
+  <rect x="185" y="36" width="150" height="30" rx="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="56" text-anchor="middle" font-size="12" fill="#2d4d22" filter="url(#rough2)">开始：s, k</text>
+  <path d="M260,66 L260,80" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- precompute prefix -->
+  <rect x="140" y="84" width="240" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="105" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">预处理 pre[0..4][0..n]（5 个前缀数组）</text>
+  <path d="M260,116 L260,130" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- enumerate pairs -->
+  <rect x="140" y="132" width="240" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="153" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">枚举有序对 (a, b)，a ≠ b（≤ 20 对）</text>
+  <path d="M260,164 L260,178" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- posb & ready -->
+  <rect x="96" y="180" width="328" height="38" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="196" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">pos_b ← pre_b 各值首次取到的下标</text>
+  <text x="260" y="212" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">ready[l] ← max(l+k, pos_b[pre_b[l]+1])</text>
+  <path d="M260,218 L260,230" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- init scan -->
+  <rect x="160" y="232" width="200" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="251" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">r ← k；lp ← 0；4 桶 ← +∞</text>
+  <path d="M260,260 L260,270" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond A: ready[lp] <= r ? -->
+  <polygon points="260,272 376,306 260,340 144,306" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">ready[lp] ≤ r ?</text>
+  <text x="260" y="320" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">（长度够 且 pre_b 越过？）</text>
+
+  <!-- yes branch: push into bucket -->
+  <text x="382" y="298" font-size="12" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M376,306 L398,306" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="400" y="284" width="112" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="456" y="302" text-anchor="middle" font-size="11.5" fill="#2d4d22" filter="url(#rough2)">l = lp 入桶</text>
+  <text x="456" y="319" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">按状态更新 min；lp++</text>
+  <path d="M456,284 L456,264 L308,264 L308,284" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="260" font-size="9.5" fill="#666" filter="url(#rough2)">继续判定下一个</text>
+
+  <!-- no: fall through -->
+  <text x="270" y="356" font-size="12" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M260,340 L260,360" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond B: target bucket nonempty ? -->
+  <polygon points="260,362 376,396 260,430 144,396" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="392" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">target 桶非空 ?</text>
+  <text x="260" y="410" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">target = ((pa[r]%2)^1, pb[r]%2)</text>
+
+  <!-- yes branch: update ans -->
+  <text x="382" y="388" font-size="12" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M376,396 L398,396" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="400" y="374" width="112" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="456" y="392" text-anchor="middle" font-size="11.5" fill="#2d4d22" filter="url(#rough2)">ans ← max(ans,</text>
+  <text x="456" y="409" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">pa[r]−pb[r] − 桶)</text>
+  <path d="M456,418 L456,436 L270,436 L270,444" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- no: fall through -->
+  <text x="270" y="446" font-size="12" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M260,430 L260,444" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop control -->
+  <rect x="56" y="446" width="408" height="44" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="464" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">r ← r+1；r ≤ n → 继续扫描；r &gt; n → 换下一个字符对</text>
+  <text x="260" y="482" text-anchor="middle" font-size="11.5" fill="#7a5a10" filter="url(#rough2)">全部 20 对处理完 → 返回 ans</text>
+
+  <!-- loop back to enumerate -->
+  <path d="M56,468 L24,468 L24,148 L138,148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="28" y="140" font-size="9.5" fill="#666" filter="url(#rough2)">下一对</text>
+</svg>

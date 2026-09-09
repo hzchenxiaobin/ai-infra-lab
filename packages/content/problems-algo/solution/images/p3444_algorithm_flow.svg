@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">算法流程：逐数滚动 dp，子集松弛</text>
+
+  <!-- start box -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="36" width="260" height="36" rx="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="280" y="59" text-anchor="middle" font-size="13" fill="#446688">预处理 L[mask]：各目标子集的 lcm（16 个）</text>
+  </g>
+
+  <!-- decision diamond -->
+  <g filter="url(#rough2)">
+    <path d="M 280 82 L 350 116 L 280 150 L 210 116 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="121" text-anchor="middle" font-size="13" fill="#8a6d1a">还有数 x 未处理？</text>
+    <text x="288" y="102" font-size="11" fill="#4a7a3a">是</text>
+    <text x="356" y="106" font-size="11" fill="#b85450">否</text>
+  </g>
+
+  <!-- return box -->
+  <g filter="url(#rough2)">
+    <rect x="416" y="98" width="110" height="36" rx="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <text x="471" y="121" text-anchor="middle" font-size="13" fill="#b85450">返回 dp[full]</text>
+    <path d="M 350 116 L 412 116" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- init box -->
+  <g filter="url(#rough2)">
+    <rect x="180" y="170" width="200" height="36" rx="16" fill="#f0f0f0" stroke="#999" stroke-width="1.5"/>
+    <text x="280" y="193" text-anchor="middle" font-size="13" fill="#555">dp[0] = 0，其余 = ∞</text>
+    <path d="M 280 150 L 280 166" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- cost box -->
+  <g filter="url(#rough2)">
+    <rect x="100" y="232" width="360" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="280" y="253" text-anchor="middle" font-size="13" font-weight="bold" fill="#2d4d22">对当前数 x 算 16 个代价</text>
+    <text x="280" y="273" text-anchor="middle" font-size="12" fill="#333">cost[s] = (L[s] − x mod L[s]) mod L[s]</text>
+    <path d="M 280 206 L 280 228" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- relax box -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="314" width="420" height="66" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="280" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="#446688">ndp ← dp（「不动 x」）</text>
+    <text x="280" y="356" text-anchor="middle" font-size="12" fill="#333">对每个有限 dp[j]，枚举 j 的补集的非空子集 s：</text>
+    <text x="280" y="374" text-anchor="middle" font-size="12" fill="#333">ndp[j|s] = min( ndp[j|s], dp[j] + cost[s] )</text>
+    <path d="M 280 284 L 280 310" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- advance box -->
+  <g filter="url(#rough2)">
+    <rect x="210" y="404" width="140" height="34" rx="16" fill="#f0f0f0" stroke="#999" stroke-width="1.5"/>
+    <text x="280" y="426" text-anchor="middle" font-size="13" fill="#555">dp ← ndp，下一个 x</text>
+    <path d="M 280 380 L 280 400" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- loop back arrow -->
+  <g filter="url(#rough2)">
+    <path d="M 210 421 L 50 421 L 50 116 L 206 116" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- note box -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="446" width="440" height="16" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="7,4"/>
+    <text x="280" y="458" text-anchor="middle" font-size="11" fill="#8a6d1a">只枚举不相交子集：多覆盖的目标白花钱（代价单调）；每个 x 松弛 3^m 次，总计 O(n·3^m)</text>
+  </g>
+</svg>

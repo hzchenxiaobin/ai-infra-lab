@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="460" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：SQL 逻辑执行顺序（非书写顺序）</text>
+  <text x="260" y="42" text-anchor="middle" font-size="9.5" fill="#999">FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT</text>
+
+  <!-- Step 1: FROM + JOIN -->
+  <rect x="50" y="56" width="420" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="50" y="56" width="100" height="50" fill="#446688" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="86" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">① FROM</text>
+  <text x="165" y="76" font-size="10.5" fill="#333" font-weight="bold">Products p JOIN Orders o ON p.product_id = o.product_id</text>
+  <text x="165" y="93" font-size="9" fill="#777">连接两表：Products 出产品名，Orders 出订单量</text>
+
+  <!-- arrow -->
+  <path d="M260 108 L260 124" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE -->
+  <rect x="50" y="128" width="420" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="50" y="128" width="100" height="50" fill="#d6a040" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="158" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">② WHERE</text>
+  <text x="165" y="148" font-size="10.5" fill="#333" font-weight="bold">order_date >= '2020-02-01' AND &lt; '2020-03-01'</text>
+  <text x="165" y="165" font-size="9" fill="#777">SARGable 范围过滤（走索引），等价 DATE_FORMAT(,'%Y-%m')='2020-02'</text>
+
+  <!-- arrow -->
+  <path d="M260 180 L260 196" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="50" y="200" width="420" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="50" y="200" width="100" height="50" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="230" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">③ GROUP BY</text>
+  <text x="165" y="220" font-size="10.5" fill="#333" font-weight="bold">GROUP BY p.product_id, p.product_name</text>
+  <text x="165" y="237" font-size="9" fill="#777">按产品分组，同产品的多笔订单合并为一行</text>
+
+  <!-- arrow -->
+  <path d="M260 252 L260 268" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: HAVING -->
+  <rect x="50" y="272" width="420" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="50" y="272" width="100" height="50" fill="#b85450" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="302" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">④ HAVING</text>
+  <text x="165" y="292" font-size="10.5" fill="#333" font-weight="bold">HAVING SUM(o.unit) >= 100</text>
+  <text x="165" y="309" font-size="9" fill="#777">过滤聚合后的组（不可用 WHERE，WHERE 看不到 SUM）</text>
+
+  <!-- arrow -->
+  <path d="M260 324 L260 340" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: SELECT -->
+  <rect x="50" y="344" width="420" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="50" y="344" width="100" height="50" fill="#446688" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="374" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">⑤ SELECT</text>
+  <text x="165" y="364" font-size="10.5" fill="#333" font-weight="bold">SELECT p.product_name, SUM(o.unit) AS unit</text>
+  <text x="165" y="381" font-size="9" fill="#777">输出产品名与 2 月总下单量（顺序无要求）</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="408" width="460" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="45" y="426" font-size="9.5" fill="#333">⚠️ <tspan fill="#b85450" font-weight="bold">WHERE 看不到聚合函数</tspan>：WHERE SUM(unit)>=100 会报错。行级条件→WHERE，</text>
+  <text x="45" y="440" font-size="9.5" fill="#333">组级条件（含 SUM/COUNT/MAX 等）→<tspan fill="#b85450" font-weight="bold">HAVING</tspan>。这是本题最易踩的坑。</text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L7 4 L0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">矩阵区域和：k 邻域裁剪 + 四角容斥</text>
+
+  <!-- 列标号 0..4 -->
+  <text x="128" y="62" text-anchor="middle" font-size="10" fill="#999">c=0</text>
+  <text x="164" y="62" text-anchor="middle" font-size="10" fill="#999">1</text>
+  <text x="200" y="62" text-anchor="middle" font-size="10" fill="#999">2</text>
+  <text x="236" y="62" text-anchor="middle" font-size="10" fill="#999">3</text>
+  <text x="272" y="62" text-anchor="middle" font-size="10" fill="#999">4</text>
+
+  <!-- 行标号 0..4 -->
+  <text x="100" y="92" text-anchor="end" font-size="10" fill="#999">r=0</text>
+  <text x="100" y="128" text-anchor="end" font-size="10" fill="#999">1</text>
+  <text x="100" y="164" text-anchor="end" font-size="10" fill="#999">2</text>
+  <text x="100" y="200" text-anchor="end" font-size="10" fill="#999">3</text>
+  <text x="100" y="236" text-anchor="end" font-size="10" fill="#999">4</text>
+
+  <!-- 网格背景 -->
+  <rect x="110" y="70" width="180" height="180" fill="#ffffff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+  <!-- 网格线（竖） -->
+  <path d="M146 70 V250 M182 70 V250 M218 70 V250 M254 70 V250" stroke="#d8d8d8" stroke-width="1" filter="url(#rough2)"/>
+  <!-- 网格线（横） -->
+  <path d="M110 106 H290 M110 142 H290 M110 178 H290 M110 214 H290" stroke="#d8d8d8" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- 内部格 (1,1)：完整 3×3 邻域（行 0..2, 列 0..2）绿色 -->
+  <rect x="110" y="70" width="108" height="108" fill="#e6f4ea" opacity="0.85" filter="url(#rough2)"/>
+  <rect x="110" y="70" width="108" height="108" fill="none" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <circle cx="164" cy="124" r="4" fill="#4a7a3a" stroke="#fff" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="164" y="100" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">内部格 (1,1)</text>
+  <text x="164" y="112" text-anchor="middle" font-size="8" fill="#4a7a3a">完整 3×3 邻域</text>
+
+  <!-- 角格 (4,4)：期望 3×3 邻域（行 3..5, 列 3..5）虚线红，越界 -->
+  <rect x="236" y="196" width="108" height="108" fill="none" stroke="#b85450" stroke-width="1.6" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <!-- 实际裁剪后 2×2（行 3..4, 列 3..4）橙色 -->
+  <rect x="236" y="196" width="72" height="72" fill="#fff8e1" opacity="0.9" filter="url(#rough2)"/>
+  <rect x="236" y="196" width="72" height="72" fill="none" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <circle cx="272" cy="232" r="4" fill="#d6a040" stroke="#fff" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="300" y="300" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">期望 3×3（越界裁掉）</text>
+  <text x="272" y="250" text-anchor="middle" font-size="8" fill="#d6a040">裁剪后 2×2</text>
+
+  <!-- 越界部分标注箭头 -->
+  <path d="M328 268 L344 268" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="348" y="265" font-size="9" fill="#b85450">越界</text>
+
+  <!-- 右侧裁剪公式 -->
+  <rect x="330" y="78" width="218" height="120" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="439" y="100" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">邻域裁剪规则</text>
+  <text x="346" y="124" font-size="13" fill="#444">r₁ = max(0, i − k)</text>
+  <text x="346" y="146" font-size="13" fill="#444">r₂ = min(m−1, i + k)</text>
+  <text x="346" y="168" font-size="13" fill="#444">c₁ = max(0, j − k)</text>
+  <text x="346" y="190" font-size="13" fill="#444">c₂ = min(n−1, j + k)</text>
+
+  <!-- 底部四角容斥公式 -->
+  <rect x="36" y="300" width="488" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="326" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">四角容斥查询（裁剪后矩形 r1..r2, c1..c2）</text>
+  <text x="280" y="356" text-anchor="middle" font-size="13" fill="#444">
+    <tspan fill="#b85450" font-weight="bold">pre[r2+1][c2+1]</tspan>
+    <tspan fill="#333">  −  </tspan>
+    <tspan fill="#446688" font-weight="bold">pre[r1][c2+1]</tspan>
+    <tspan fill="#333">  −  </tspan>
+    <tspan fill="#446688" font-weight="bold">pre[r2+1][c1]</tspan>
+    <tspan fill="#333">  +  </tspan>
+    <tspan fill="#4a7a3a" font-weight="bold">pre[r1][c1]</tspan>
+  </text>
+</svg>

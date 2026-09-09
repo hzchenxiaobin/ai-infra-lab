@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 414" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="414" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：状压 DP 递推（mask 从小到大「推」贡献）</text>
+  <text x="280" y="42" text-anchor="middle" font-size="12" fill="#555" filter="url(#rough2)">n ≤ 12 → 状态数 2^12 = 4096；与记忆化搜索完全等价</text>
+
+  <!-- init box -->
+  <rect x="160" y="50" width="240" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="12" fill="#33507a">
+    <text x="280" y="68" text-anchor="middle">预处理 cand[pos] =</text>
+    <text x="280" y="86" text-anchor="middle">与 pos 互质的数字位集；dp[0] = 1</text>
+  </g>
+
+  <path d="M 280 94 L 280 102" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- enumerate mask -->
+  <rect x="190" y="104" width="180" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="123" text-anchor="middle" font-size="12" fill="#33507a" filter="url(#rough2)">按 mask 从小到大枚举</text>
+
+  <path d="M 280 134 L 280 142" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- diamond 1 -->
+  <polygon points="280,146 367,180 280,214 193,180" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="184" text-anchor="middle" font-size="12" fill="#33507a" filter="url(#rough2)">dp[mask] ≠ 0 ?</text>
+
+  <!-- no -> skip -->
+  <path d="M 367 180 H 472 V 119 H 378" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="420" y="174" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否：跳过</text>
+
+  <!-- yes -->
+  <path d="M 280 214 L 280 224" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="292" y="222" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- pos & avail -->
+  <rect x="150" y="226" width="260" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11.5" fill="#2e5c22">
+    <text x="280" y="246" text-anchor="middle">pos = popcount(mask) + 1</text>
+    <text x="280" y="264" text-anchor="middle">avail = cand[pos] &amp; ~mask（互质 ∧ 未用）</text>
+  </g>
+
+  <path d="M 280 274 L 280 282" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- diamond 2 -->
+  <polygon points="280,286 362,318 280,350 198,318" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="12" fill="#33507a" filter="url(#rough2)">avail ≠ 0 ?</text>
+
+  <!-- no -> next mask -->
+  <path d="M 362 318 H 508 V 127 H 378" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="448" y="312" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否：下一个 mask</text>
+
+  <!-- yes -->
+  <path d="M 280 350 L 280 360" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="292" y="358" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- loop body -->
+  <rect x="140" y="362" width="280" height="40" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11.5" fill="#b07818">
+    <text x="280" y="380" text-anchor="middle">bit = avail &amp; −avail（取最低位 1）</text>
+    <text x="280" y="396" text-anchor="middle">dp[mask | bit] += dp[mask]；avail ^= bit</text>
+  </g>
+
+  <!-- loop back to diamond 2 -->
+  <path d="M 140 382 H 108 V 318 H 192" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="100" y="352" text-anchor="end" font-size="11" fill="#b07818" filter="url(#rough2)">取下一个 1 位</text>
+
+  <!-- exit -->
+  <path d="M 190 119 L 182 119" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="186" y="112" text-anchor="end" font-size="10" fill="#b07818" filter="url(#rough2)">枚举完</text>
+  <rect x="28" y="103" width="148" height="32" rx="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="102" y="123" text-anchor="middle" font-size="12" fill="#8c3a36" font-weight="bold" filter="url(#rough2)">返回 dp[(1&lt;&lt;n)−1]</text>
+</svg>

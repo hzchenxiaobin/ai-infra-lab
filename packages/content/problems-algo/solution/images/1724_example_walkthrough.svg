@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <text x="300" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    示例演算：n=6 的 Kruskal 重构树 + 三次在线查询
+  </text>
+  <text x="300" y="42" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">
+    edgeList = [[0,1,2],[2,3,3],[4,5,4],[1,2,5],[3,4,6],[0,4,9]]
+  </text>
+
+  <!-- ===== KRT 树边（普通边灰蓝，q1 高亮边红色） ===== -->
+  <!-- v10-v9 (q2/q3 路径，橙色高亮) -->
+  <line x1="300" y1="80" x2="200" y2="150" stroke="#d6a040" stroke-width="2.5" filter="url(#rough2)"/>
+  <!-- v10-v8 -->
+  <line x1="300" y1="80" x2="400" y2="150" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <!-- v9-v6 (q1 路径，红色高亮) -->
+  <line x1="200" y1="160" x2="140" y2="230" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <!-- v9-v7 (q1 路径，红色高亮) -->
+  <line x1="200" y1="160" x2="250" y2="230" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <!-- v8-4 -->
+  <line x1="400" y1="160" x2="350" y2="230" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <!-- v8-5 -->
+  <line x1="400" y1="160" x2="460" y2="230" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <!-- v6-0 (q1 路径，红色) -->
+  <line x1="140" y1="240" x2="110" y2="320" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+  <!-- v6-1 -->
+  <line x1="140" y1="240" x2="170" y2="320" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <!-- v7-2 -->
+  <line x1="250" y1="240" x2="220" y2="320" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <!-- v7-3 (q1 路径，红色) -->
+  <line x1="250" y1="240" x2="280" y2="320" stroke="#b85450" stroke-width="2.5" filter="url(#rough2)"/>
+
+  <!-- ===== 虚点（橙色方块） ===== -->
+  <rect x="280" y="68" width="40" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="86" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">v10·6</text>
+
+  <rect x="180" y="148" width="40" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="166" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">v9·5</text>
+
+  <rect x="380" y="148" width="40" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="400" y="166" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">v8·4</text>
+
+  <rect x="120" y="228" width="40" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="140" y="246" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">v6·2</text>
+
+  <rect x="230" y="228" width="40" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="246" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">v7·3</text>
+
+  <!-- ===== 叶子节点 ===== -->
+  <circle cx="110" cy="328" r="13" fill="#e8f0fe" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="110" y="332" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">0</text>
+  <circle cx="170" cy="328" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="332" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">1</text>
+  <circle cx="220" cy="328" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="220" y="332" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">2</text>
+  <circle cx="280" cy="328" r="13" fill="#e8f0fe" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">3</text>
+  <circle cx="350" cy="240" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="350" y="244" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">4</text>
+  <circle cx="460" cy="240" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="460" y="244" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">5</text>
+
+  <!-- LCA 高亮圈 -->
+  <circle cx="200" cy="161" r="22" fill="none" stroke="#b85450" stroke-width="2" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <circle cx="300" cy="81" r="24" fill="none" stroke="#d6a040" stroke-width="2" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== 查询结果框 ===== -->
+  <!-- q1 -->
+  <rect x="20" y="370" width="180" height="90" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="110" y="392" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">query(0, 3, 6)</text>
+  <line x1="40" y1="400" x2="180" y2="400" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="110" y="418" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">LCA = v9, w = 5</text>
+  <text x="110" y="438" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">5 &lt; 6 → true ✓</text>
+  <text x="110" y="454" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">路径 0-1-2-3 瓶颈=5</text>
+
+  <!-- q2 -->
+  <rect x="210" y="370" width="180" height="90" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="392" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">query(0, 5, 6)</text>
+  <line x1="230" y1="400" x2="370" y2="400" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="300" y="418" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">LCA = v10, w = 6</text>
+  <text x="300" y="438" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">6 &lt; 6 → false ✗</text>
+  <text x="300" y="454" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">瓶颈=6 不严格小于6</text>
+
+  <!-- q3 -->
+  <rect x="400" y="370" width="180" height="90" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="490" y="392" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">query(1, 4, 5)</text>
+  <line x1="420" y1="400" x2="560" y2="400" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+  <text x="490" y="418" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">LCA = v10, w = 6</text>
+  <text x="490" y="438" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">6 &lt; 5 → false ✗</text>
+  <text x="490" y="454" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">瓶颈=6 超过 limit=5</text>
+</svg>

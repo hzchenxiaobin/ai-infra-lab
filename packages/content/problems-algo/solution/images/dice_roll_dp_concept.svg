@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三维 DP 状态：(骰子序号 i, 末尾点数 j, 连续次数 k)</text>
+
+  <!-- Left panel: state definition -->
+  <rect x="20" y="44" width="200" height="250" fill="#ffffff" stroke="#bbb" stroke-width="1.2" rx="10" filter="url(#rough2)"/>
+  <rect x="20" y="44" width="200" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="120" y="63" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">状态定义</text>
+
+  <text x="36" y="92" font-size="11.5" fill="#444" font-weight="bold">dp[i][j][k]</text>
+  <text x="36" y="112" font-size="10.5" fill="#666">i：已掷 i 次骰子</text>
+  <text x="36" y="130" font-size="10.5" fill="#666">j：第 i 次的点数 (1~6)</text>
+  <text x="36" y="148" font-size="10.5" fill="#666">k：末尾连续出现 j 的次数</text>
+
+  <rect x="36" y="164" width="168" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="180" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">约束：1 ≤ k ≤ rollMax[j−1]</text>
+  <text x="120" y="194" text-anchor="middle" font-size="9.5" fill="#888">连续次数不得超过上限</text>
+
+  <text x="36" y="220" font-size="10.5" fill="#666">基础：dp[1][j][1] = 1</text>
+  <text x="36" y="236" font-size="9.5" fill="#888">第一次掷骰子，每种点数各 1 种</text>
+  <text x="36" y="262" font-size="10.5" fill="#666">答案：Σ dp[n][j][k]</text>
+  <text x="36" y="278" font-size="9.5" fill="#888">对所有 j、k 求和</text>
+
+  <!-- Right panel: transitions -->
+  <rect x="240" y="44" width="300" height="250" fill="#ffffff" stroke="#bbb" stroke-width="1.2" rx="10" filter="url(#rough2)"/>
+  <rect x="240" y="44" width="300" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="390" y="63" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">状态转移（两种分支）</text>
+
+  <!-- Transition 1: extend same value -->
+  <rect x="256" y="86" width="268" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="104" font-size="11" fill="#b85450" font-weight="bold">① 续掷相同点数 j</text>
+  <text x="270" y="122" font-size="10" fill="#555">dp[i][j][k] → dp[i+1][j][k+1]</text>
+  <text x="270" y="136" font-size="9.5" fill="#888">条件：k+1 ≤ rollMax[j−1]</text>
+  <text x="470" y="114" font-size="18" fill="#b85450">j→j</text>
+
+  <!-- Arrow between two boxes -->
+  <path d="M 390 146 L 390 158" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Transition 2: switch to different value -->
+  <rect x="256" y="162" width="268" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="180" font-size="11" fill="#4a7a3a" font-weight="bold">② 换掷不同点数 m (m ≠ j)</text>
+  <text x="270" y="198" font-size="10" fill="#555">dp[i][j][k] → dp[i+1][m][1]</text>
+  <text x="270" y="212" font-size="9.5" fill="#888">连续次数归 1，无上限约束</text>
+  <text x="470" y="190" font-size="18" fill="#4a7a3a">j→m</text>
+
+  <!-- Optimization hint -->
+  <rect x="256" y="230" width="268" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="248" font-size="10" fill="#444" font-weight="bold">优化技巧</text>
+  <text x="270" y="264" font-size="9.5" fill="#666">dp[i][m][1] = total[i−1] − rowSum[m]</text>
+
+  <!-- Bottom: visual transition diagram -->
+  <path d="M 40 316 L 520 316" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <text x="280" y="340" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">转移示意：第 i 步 → 第 i+1 步</text>
+
+  <!-- Layer i -->
+  <rect x="60" y="358" width="70" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="376" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">dp[i][j][k]</text>
+  <text x="95" y="390" text-anchor="middle" font-size="9" fill="#888">末尾 j 连续 k 次</text>
+
+  <!-- Arrow 1: extend (red) -->
+  <path d="M 130 372 L 210 372" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="170" y="366" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">续 j</text>
+  <text x="170" y="384" text-anchor="middle" font-size="8" fill="#b85450">k→k+1</text>
+
+  <!-- Arrow 2: switch (green) -->
+  <path d="M 130 384 L 370 384" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="250" y="378" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">换 m (m≠j)</text>
+  <text x="250" y="398" text-anchor="middle" font-size="8" fill="#4a7a3a">k→1</text>
+
+  <!-- Layer i+1: extend result -->
+  <rect x="210" y="358" width="80" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="376" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">dp[i+1][j][k+1]</text>
+  <text x="250" y="390" text-anchor="middle" font-size="9" fill="#888">续掷 j</text>
+
+  <!-- Layer i+1: switch result -->
+  <rect x="370" y="358" width="90" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="415" y="376" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">dp[i+1][m][1]</text>
+  <text x="415" y="390" text-anchor="middle" font-size="9" fill="#888">换掷 m</text>
+</svg>

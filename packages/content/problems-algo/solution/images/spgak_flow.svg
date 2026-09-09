@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">状压 BFS 算法流程</text>
+
+  <!-- Step 1: init -->
+  <rect x="140" y="44" width="280" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 初始化：找到起点 @，统计钥匙数 k</text>
+  <text x="280" y="84" text-anchor="middle" font-size="11" fill="#555">入队 (sr, sc, 0)，visited[sr][sc][0] = true</text>
+
+  <path d="M 280 96 L 280 116" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: queue empty? -->
+  <polygon points="280,120 380,158 280,196 180,158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="154" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">队列为空?</text>
+  <text x="280" y="170" text-anchor="middle" font-size="10" fill="#888">所有状态已展开</text>
+
+  <!-- Yes → return -1 -->
+  <path d="M 380 158 L 442 158" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="152" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="444" y="134" width="96" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="492" y="156" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回</text>
+  <text x="492" y="172" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">-1</text>
+
+  <!-- No -->
+  <path d="M 280 196 L 280 216" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="210" font-size="11" fill="#666">否</text>
+
+  <!-- Step 2: pop state -->
+  <rect x="140" y="220" width="280" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="242" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 按层弹出 (r, c, keys)</text>
+  <text x="280" y="258" text-anchor="middle" font-size="11" fill="#555">一层一层处理，steps 记录当前移动次数</text>
+
+  <path d="M 280 268 L 280 288" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: keys == full? -->
+  <polygon points="280,292 380,330 280,368 180,330" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="326" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">keys ==</text>
+  <text x="280" y="342" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">(1&lt;&lt;k)-1 ?</text>
+
+  <!-- Yes → return steps -->
+  <path d="M 380 330 L 442 330" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="324" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="444" y="306" width="96" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="492" y="328" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回</text>
+  <text x="492" y="344" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">steps</text>
+
+  <!-- No → explore -->
+  <path d="M 280 368 L 280 384" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="380" font-size="11" fill="#666">否</text>
+
+  <!-- Step 3: explore neighbors -->
+  <rect x="70" y="388" width="420" height="82" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="408" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">③ 向 4 方向探索 (nr, nc)</text>
+  <text x="90" y="428" font-size="10" fill="#555">• 墙 # / 越界 → 跳过</text>
+  <text x="90" y="446" font-size="10" fill="#555">• 锁(大写) &amp; 无对应钥匙 → 跳过</text>
+  <text x="300" y="428" font-size="10" fill="#555">• 钥匙(小写) → 更新 mask</text>
+  <text x="300" y="446" font-size="10" fill="#555">• 未访问 → 标记 + 入队</text>
+  <text x="280" y="462" text-anchor="middle" font-size="10" fill="#888">本层处理完 → steps += 1，回到 ②</text>
+
+  <!-- loop back arrow -->
+  <path d="M 70 429 Q 25 429 25 335 Q 25 244 80 244 L 138 244" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="33" y="340" font-size="10" fill="#4a7a3a" font-weight="bold">回到 ②</text>
+  <text x="33" y="354" font-size="10" fill="#888">下一层</text>
+
+  <!-- Footnote -->
+  <text x="280" y="490" text-anchor="middle" font-size="10" fill="#888">无权网格按层 BFS：首次弹出 keys=full 的步数即最少移动次数</text>
+</svg>

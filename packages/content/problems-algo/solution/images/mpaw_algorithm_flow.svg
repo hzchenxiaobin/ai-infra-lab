@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：排序 + 双指针（best 跟踪前缀最大收益）</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="130" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: jobs 按难度排序, worker 排序</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init -->
+  <rect x="150" y="104" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="126" text-anchor="middle" font-size="12" fill="#333">j = 0, best = 0, ans = 0</text>
+
+  <!-- arrow down -->
+  <path d="M 270 138 L 270 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: more workers? -->
+  <polygon points="270,160 380,206 270,252 160,206" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="202" text-anchor="middle" font-size="12" fill="#333">还有工人?</text>
+  <text x="270" y="218" text-anchor="middle" font-size="11" fill="#666">(遍历 worker)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 380 206 L 458 206" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="414" y="198" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="488" cy="206" rx="46" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="488" y="210" text-anchor="middle" font-size="12" fill="#333">返回 ans</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 252 L 270 270" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="266" font-size="11" fill="#82b366">是</text>
+
+  <!-- Take worker w -->
+  <rect x="150" y="274" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="296" text-anchor="middle" font-size="12" fill="#333">取下一个工人 w（已排序）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 308 L 270 326" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: j<n and jobs[j].diff <= w? -->
+  <polygon points="270,330 410,380 270,430 130,380" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="374" text-anchor="middle" font-size="12" fill="#333">j &lt; n 且</text>
+  <text x="270" y="392" text-anchor="middle" font-size="12" fill="#333">jobs[j].diff ≤ w ?</text>
+
+  <!-- Yes (unlock job) -> update best, j++ -->
+  <path d="M 130 380 L 70 380" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="100" y="372" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="14" y="358" width="56" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="42" y="376" text-anchor="middle" font-size="10" fill="#333">best =</text>
+  <text x="42" y="390" text-anchor="middle" font-size="10" fill="#333">max(best,</text>
+  <text x="42" y="402" text-anchor="middle" font-size="10" fill="#333">p[j]), j++</text>
+
+  <!-- loop back from left box up to inner decision -->
+  <path d="M 42 358 L 42 330 L 130 380" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No (no more unlockable) -> ans += best -->
+  <path d="M 410 380 L 440 380" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="425" y="372" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="442" y="358" width="86" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="485" y="385" text-anchor="middle" font-size="11" fill="#333">ans += best</text>
+  <text x="485" y="400" text-anchor="middle" font-size="10" fill="#888">→ 下一个工人</text>
+
+  <!-- loop back from right box up to "还有工人?" decision -->
+  <path d="M 485 358 L 485 206 L 380 206" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="498" y="280" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 498 280)">继续下一工人</text>
+
+  <!-- summary note -->
+  <text x="270" y="462" text-anchor="middle" font-size="11" fill="#888">关键：worker 排序后 j 只前进不回退，best 只增不减 → 每工人 O(1) 摊还</text>
+</svg>

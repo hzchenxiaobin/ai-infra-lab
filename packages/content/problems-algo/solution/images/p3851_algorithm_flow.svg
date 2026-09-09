@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrW" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#999"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="18" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：哈希分组 → 组内排序 → 能留则留扫描 → 求和</text>
+  <text x="260" y="33" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">各用户完全独立；冲突判定只看「最近 k 个保留时刻」的队首</text>
+
+  <!-- step 1 -->
+  <rect x="170" y="44" width="180" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="62" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">① 哈希分组：user → 时刻列表</text>
+
+  <!-- step 2 -->
+  <rect x="170" y="88" width="180" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="106" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">② 组内时刻升序排序（输入乱序）</text>
+
+  <!-- step 3: loop head -->
+  <rect x="170" y="132" width="180" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="150" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">③ 取该用户下一时刻 t（升序）</text>
+
+  <!-- decision diamond -->
+  <polygon points="260,170 370,204 260,238 150,204" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="200" text-anchor="middle" font-size="8" fill="#333" filter="url(#rough2)">队列 == k 且</text>
+  <text x="260" y="214" text-anchor="middle" font-size="8" fill="#333" filter="url(#rough2)">t − 队首 ≤ window ?</text>
+
+  <!-- branch: drop (right) -->
+  <rect x="400" y="188" width="112" height="32" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="456" y="200" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">放弃 t＝删冲突区间</text>
+  <text x="456" y="214" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">内最新的请求</text>
+
+  <!-- branch: keep (left) -->
+  <rect x="6" y="188" width="118" height="32" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="65" y="200" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">保留 t：ans+1、入队；</text>
+  <text x="65" y="214" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">队长 &gt; k 弹出队首</text>
+
+  <!-- main flow arrows -->
+  <path d="M 260 72 L 260 84" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+  <path d="M 260 116 L 260 128" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+  <path d="M 260 160 L 260 166" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+
+  <!-- decision branches -->
+  <path d="M 370 204 L 396 204" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="383" y="196" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 150 204 L 128 204" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="139" y="196" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- loop return arrows back to step 3 -->
+  <path d="M 456 188 L 456 148 L 354 148" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+  <text x="430" y="141" font-size="7.5" fill="#888" filter="url(#rough2)">下一时刻</text>
+  <path d="M 65 188 L 65 148 L 166 148" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+  <text x="72" y="141" font-size="7.5" fill="#888" filter="url(#rough2)">下一时刻</text>
+
+  <!-- exit: user done -->
+  <path d="M 260 238 L 260 252" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+  <text x="270" y="249" font-size="7.5" fill="#888" filter="url(#rough2)">该用户时刻用尽</text>
+
+  <!-- step 4 -->
+  <rect x="170" y="256" width="180" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="274" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">④ 本用户扫描完，贡献已计入 ans</text>
+
+  <!-- step 5 -->
+  <rect x="170" y="300" width="180" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="318" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">⑤ 遍历完所有用户 → 返回 ans</text>
+
+  <path d="M 260 284 L 260 296" stroke="#999" stroke-width="1.5" fill="none" marker-end="url(#arrW)" filter="url(#rough2)"/>
+
+  <!-- bottom annotation -->
+  <rect x="30" y="342" width="460" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="260" y="354" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">判定只看队首：更早的保留时刻与未来请求的跨度只增不减 ⇒ 容量为 k 的队列足够</text>
+  <text x="260" y="366" text-anchor="middle" font-size="8.5" fill="#333" filter="url(#rough2)">复杂度：排序 O(n log n) 占大头；扫描中每个请求至多一进一出，均摊 O(n)</text>
+</svg>

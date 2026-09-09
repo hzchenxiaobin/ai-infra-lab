@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="13.5" fill="#444" font-weight="bold">算法流程：统计频次 → 算总数 → 逐值减去等值三元组 → 返回</text>
+
+  <!-- ① count frequency -->
+  <rect x="150" y="40" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 遍历 nums，建频次表 cnt[v]</text>
+  <line x1="270" y1="74" x2="270" y2="96" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② total -->
+  <rect x="110" y="100" width="320" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="123" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② ans = C(n,3) = n·(n−1)·(n−2)/6</text>
+  <line x1="270" y1="136" x2="270" y2="156" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ◇ loop diamond -->
+  <polygon points="270,158 372,196 270,234 168,196" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="192" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">频次表还有 (v,c)?</text>
+  <text x="270" y="208" text-anchor="middle" font-size="9.5" fill="#888">（逐值处理）</text>
+
+  <!-- No branch (left) → return -->
+  <line x1="168" y1="196" x2="128" y2="196" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="148" y="190" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="14" y="174" width="116" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="72" y="192" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ return</text>
+  <text x="72" y="208" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">ans</text>
+
+  <!-- Yes branch (down) -->
+  <line x1="270" y1="234" x2="270" y2="258" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="284" y="252" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- ③ subtract -->
+  <rect x="110" y="262" width="320" height="40" fill="#f4f7fb" stroke="#888" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="279" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ ans −= C(c,3) + C(c,2)·(n−c)</text>
+  <text x="270" y="294" text-anchor="middle" font-size="9.5" fill="#888">三同 + 两同一异（c&lt;3 时对应项为 0）</text>
+  <line x1="270" y1="302" x2="270" y2="322" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- next value box -->
+  <rect x="200" y="326" width="140" height="32" fill="#f4f7fb" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="346" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">取下一个 (v,c)</text>
+
+  <!-- loop back to diamond -->
+  <path d="M 340 342 L 460 342 L 460 196 L 376 196" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="486" y="272" text-anchor="middle" font-size="9.5" fill="#888">下一值</text>
+
+  <!-- footer -->
+  <rect x="30" y="378" width="480" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="397" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">补集计数：正向数「两两不同」难，反向减去「至少一对相等」易——按频次线性求和。</text>
+  <text x="270" y="413" text-anchor="middle" font-size="10" fill="#4a7a3a">C(c,2)=c(c−1)/2，C(c,3)=c(c−1)(c−2)/6，c&lt;2 或 c&lt;3 时对应组合数为 0 自然跳过。</text>
+
+  <text x="30" y="448" font-size="10" fill="#888">• 两次遍历：一趟建频次，一趟遍历频次表（不同值个数 m ≤ n）。整体 O(n + U)。</text>
+  <text x="30" y="462" font-size="10" fill="#888">• n≤100 时 n³=10⁶，暴力三重循环同样 AC；本法价值在 n 放大时的线性可扩展。</text>
+</svg>

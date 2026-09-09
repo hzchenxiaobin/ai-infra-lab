@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：拆分两列独立排序 → 按 rn 重新配对</text>
+
+  <!-- ===== Stage 1: Original Data (coupled rows) ===== -->
+  <text x="40" y="52" font-size="10" fill="#888">① Data 原表</text>
+  <rect x="30" y="58" width="150" height="150" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="105" y="74" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">行内耦合</text>
+  <line x1="30" y1="80" x2="180" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="48" y="94" font-size="9" fill="#888">first  second</text>
+  <text x="48" y="112" font-size="10" fill="#333">4        2</text>
+  <text x="48" y="128" font-size="10" fill="#333">2        3</text>
+  <text x="48" y="144" font-size="10" fill="#333">3        1</text>
+  <text x="48" y="160" font-size="10" fill="#333">1        4</text>
+  <text x="48" y="184" font-size="8" fill="#b85450">同行绑定，无法独立换序</text>
+
+  <!-- Split arrows: to a (up-right) and b (down-right) -->
+  <path d="M 180 120 Q 215 120 245 95" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 180 150 Q 215 150 245 230" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="210" y="112" font-size="8" fill="#4a7a3a">拆 first</text>
+  <text x="210" y="170" font-size="8" fill="#d6a040">拆 second</text>
+
+  <!-- ===== Stage 2a: CTE a (first_col ASC) ===== -->
+  <text x="250" y="52" font-size="10" fill="#888">② CTE a：first_col ↑ ASC</text>
+  <rect x="250" y="58" width="150" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="325" y="74" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">ROW_NUMBER · ASC</text>
+  <line x1="250" y1="80" x2="400" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="262" y="94" font-size="9" fill="#888">rn   first</text>
+  <text x="262" y="110" font-size="10" fill="#333">1     1</text>
+  <text x="262" y="126" font-size="10" fill="#333">2     2</text>
+  <text x="262" y="142" font-size="8" fill="#999">3→3   4→4 …</text>
+
+  <!-- ===== Stage 2b: CTE b (second_col DESC) ===== -->
+  <text x="250" y="194" font-size="10" fill="#888">② CTE b：second_col ↓ DESC</text>
+  <rect x="250" y="200" width="150" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="325" y="216" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">ROW_NUMBER · DESC</text>
+  <line x1="250" y1="222" x2="400" y2="222" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="262" y="236" font-size="9" fill="#888">rn   second</text>
+  <text x="262" y="252" font-size="10" fill="#333">1     4</text>
+  <text x="262" y="268" font-size="10" fill="#333">2     3</text>
+  <text x="262" y="284" font-size="8" fill="#999">3→2   4→1 …</text>
+
+  <!-- Converging arrows to JOIN -->
+  <path d="M 400 104 Q 435 104 455 160" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 400 246 Q 435 246 455 180" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="150" font-size="8" fill="#888">JOIN</text>
+  <text x="430" y="206" font-size="8" fill="#888">on rn</text>
+
+  <!-- ===== Stage 3: Result (re-paired) ===== -->
+  <text x="460" y="52" font-size="10" fill="#888">③ 结果（按 rn 配对）</text>
+  <rect x="460" y="58" width="130" height="150" fill="#fff" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="525" y="74" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">重新耦合</text>
+  <line x1="460" y1="80" x2="590" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="476" y="94" font-size="9" fill="#888">first  second</text>
+  <text x="476" y="112" font-size="10" fill="#333">1        4</text>
+  <text x="476" y="128" font-size="10" fill="#333">2        3</text>
+  <text x="476" y="144" font-size="10" fill="#333">3        2</text>
+  <text x="476" y="160" font-size="10" fill="#333">4        1</text>
+  <text x="476" y="184" font-size="8" fill="#b85450">i 小 first ↔ i 大 second</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="30" y="312" width="560" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="330" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">SQL 的 ORDER BY 作用于「整行」——两列被同行的位置绑定</text>
+  <text x="300" y="345" text-anchor="middle" font-size="9" fill="#666">要让两列各自换序，必须拆成两组独立序号 rn，再用 rn 把它们重新缝合</text>
+</svg>

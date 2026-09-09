@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → WHERE → SELECT DISTINCT → ORDER BY</text>
+
+  <!-- Step 1: Input -->
+  <rect x="160" y="42" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Views 表（7 行，无主键）</text>
+
+  <path d="M270 76 L270 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE filter -->
+  <rect x="80" y="94" width="380" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="114" font-size="10" fill="#4a7a3a" font-weight="bold">① WHERE author_id = viewer_id</text>
+  <text x="100" y="130" font-size="9" fill="#4a7a3a">逐行筛选：只保留 author_id 等于 viewer_id 的行（自浏览行）</text>
+  <text x="100" y="140" font-size="8.5" fill="#888">⚠ 7 行 → 3 行（其中 1 行是重复行）</text>
+
+  <path d="M270 142 L270 158" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: SELECT DISTINCT -->
+  <rect x="60" y="160" width="420" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="180" font-size="10" fill="#d6a040" font-weight="bold">② SELECT DISTINCT author_id AS id</text>
+  <text x="80" y="196" font-size="9" fill="#d6a040">投影 author_id 列并重命名为 id，同时对结果去重</text>
+  <text x="80" y="210" font-size="8.5" fill="#888">⚠ 3 个值 {7, 4, 4} 去重为 {7, 4}；重复行被消除</text>
+
+  <path d="M270 216 L270 232" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: ORDER BY -->
+  <rect x="100" y="234" width="340" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="253" font-size="10" fill="#d6a040" font-weight="bold">③ ORDER BY id</text>
+  <text x="120" y="268" font-size="9" fill="#d6a040">按 id 升序排列（ORDER BY 可用 SELECT 的别名 id）</text>
+
+  <path d="M270 274 L270 290" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="140" y="292" width="260" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="313" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出：id = {4, 7}（升序）</text>
+
+  <!-- ===== Right side: SQL clause execution order ===== -->
+  <rect x="430" y="94" width="100" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="112" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">SQL 执行顺序</text>
+  <line x1="440" y1="118" x2="520" y2="118" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="445" y="132" font-size="8" fill="#446688">1. FROM</text>
+  <text x="445" y="148" font-size="8" fill="#4a7a3a" font-weight="bold">2. WHERE ✓</text>
+  <text x="445" y="164" font-size="8" fill="#888">3. GROUP BY</text>
+  <text x="445" y="180" font-size="8" fill="#888">4. HAVING</text>
+  <text x="445" y="196" font-size="8" fill="#d6a040" font-weight="bold">5. SELECT ✓</text>
+  <text x="455" y="208" font-size="7" fill="#d6a040">(含 DISTINCT)</text>
+  <text x="445" y="222" font-size="8" fill="#d6a040" font-weight="bold">6. ORDER BY ✓</text>
+  <text x="445" y="238" font-size="8" fill="#888">7. LIMIT</text>
+  <text x="445" y="256" font-size="7" fill="#b85450">⚠ WHERE 中</text>
+  <text x="445" y="268" font-size="7" fill="#b85450">不能用别名 id</text>
+  <text x="445" y="280" font-size="7" fill="#4a7a3a">ORDER BY 中可用</text>
+
+  <!-- ===== Bottom: row count flow ===== -->
+  <rect x="20" y="340" width="500" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="360" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">行数变化追踪</text>
+
+  <rect x="40" y="370" width="90" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="85" y="386" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">7 行</text>
+
+  <path d="M130 382 L165 382" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="147" y="376" text-anchor="middle" font-size="7" fill="#4a7a3a">WHERE</text>
+
+  <rect x="170" y="370" width="90" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="386" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">3 行</text>
+
+  <path d="M260 382 L295 382" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="277" y="376" text-anchor="middle" font-size="7" fill="#d6a040">DISTINCT</text>
+
+  <rect x="300" y="370" width="90" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="345" y="386" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">2 行</text>
+
+  <path d="M390 382 L425 382" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="407" y="376" text-anchor="middle" font-size="7" fill="#b85450">ORDER BY</text>
+
+  <rect x="430" y="370" width="90" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="475" y="386" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">2 行排序</text>
+
+  <text x="270" y="418" text-anchor="middle" font-size="8.5" fill="#888">7 行原始 → WHERE 筛 3 行自浏览 → DISTINCT 去重 1 行重复 → 2 行结果排序输出</text>
+</svg>

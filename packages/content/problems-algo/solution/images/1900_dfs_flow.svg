@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 410"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="410" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">
+    DFS 状态转移流程：记忆化搜索求最早 / 最晚回合
+  </text>
+
+  <!-- ===== Step 1: State ===== -->
+  <rect x="150" y="42" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">状态 state = 存活选手元组（升序）</text>
+
+  <!-- arrow -->
+  <path d="M280,76 L280,92" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Fold pair ===== -->
+  <rect x="120" y="92" width="320" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="114" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">折半配对：第 i 名 ↔ 倒数第 i 名，奇数则中间轮空</text>
+
+  <!-- arrow -->
+  <path d="M280,126 L280,142" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Check meeting ===== -->
+  <rect x="100" y="142" width="360" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="162" text-anchor="middle" font-size="11" fill="#5a1a1a" filter="url(#rough2)">
+    若 firstPlayer 与 secondPlayer 配对 → 返回 (1, 1)，他们本回合相遇
+  </text>
+
+  <!-- arrow split -->
+  <path d="M280,172 L280,182" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: Separate fixed / flexible ===== -->
+  <!-- Fixed box -->
+  <rect x="40" y="182" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="200" text-anchor="middle" font-size="11" fill="#2a4a1a" font-weight="bold" filter="url(#rough2)">fixed（确定赢家）</text>
+  <text x="150" y="216" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">必胜选手 + 轮空选手</text>
+
+  <!-- Flexible box -->
+  <rect x="300" y="182" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="410" y="200" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">flexible（胜负未定）</text>
+  <text x="410" y="216" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">k 对非特殊选手对决</text>
+
+  <!-- arrows down from both -->
+  <path d="M150,226 L150,240 L280,240 L280,252" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M410,226 L410,240 L280,240" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Step 5: Enumerate 2^k ===== -->
+  <rect x="140" y="252" width="200" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="272" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">枚举 2^k 种胜负组合</text>
+
+  <!-- branching arrows to options -->
+  <path d="M180,282 L100,300" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M240,282 L240,300" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M300,282 L380,300" stroke="#446688" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Option boxes -->
+  <rect x="40" y="300" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="318" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">option 0</text>
+
+  <rect x="180" y="300" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="318" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">option 1</text>
+
+  <rect x="320" y="300" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="318" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">option 2 ...</text>
+
+  <!-- arrows down to memo -->
+  <path d="M100,328 L100,338 L280,338 L280,348" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M240,328 L240,338" stroke="#4a7a3a" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M380,328 L380,338 L280,338" stroke="#4a7a3a" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Step 6: Memoized recursion ===== -->
+  <rect x="120" y="348" width="320" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="366" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">dfs(新状态) — 命中记忆化直接返回，否则递归</text>
+
+  <!-- arrow down -->
+  <path d="M280,376 L280,386" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 7: Combine ===== -->
+  <rect x="60" y="386" width="440" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="400" text-anchor="middle" font-size="10" fill="#5a1a1a" filter="url(#rough2)">
+    earliest = min(各 option 的 e) + 1　　latest = max(各 option 的 l) + 1
+  </text>
+</svg>

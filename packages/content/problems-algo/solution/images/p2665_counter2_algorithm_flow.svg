@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <text x="300" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建一次状态，每次调用按方法名分派</text>
+
+  <!-- Step 1: build state -->
+  <rect x="40" y="56" width="520" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="78" font-size="12" fill="#446688" font-weight="bold">① 建状态（一次性）</text>
+  <text x="60" y="98" font-size="11" fill="#333">createCounter(init)：令 current = init，把 init / current 封进闭包</text>
+  <text x="60" y="114" font-size="11" fill="#333">→ 返回对象 {increment, decrement, reset}，三方法都「记得」这个 current</text>
+
+  <!-- arrow down -->
+  <path d="M 300 116 L 300 140" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: dispatch -->
+  <rect x="40" y="146" width="520" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="168" font-size="12" fill="#d6a040" font-weight="bold">② 每次调用：按方法名分派</text>
+  <text x="60" y="188" font-size="11" fill="#333">calls[i] ∈ {increment, decrement, reset} → 调对应方法</text>
+  <text x="60" y="204" font-size="11" fill="#888">方法体内只读写「自己的 current」，不碰全局</text>
+
+  <!-- arrows from dispatch to three branches -->
+  <path d="M 120 206 L 120 226" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 300 206 L 300 226" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 480 206 L 480 226" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- three branches -->
+  <rect x="40" y="226" width="160" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="250" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">increment()</text>
+  <text x="120" y="270" text-anchor="middle" font-size="11" fill="#333">current += 1</text>
+  <text x="120" y="288" text-anchor="middle" font-size="11" fill="#333">return current</text>
+
+  <rect x="220" y="226" width="160" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="250" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">decrement()</text>
+  <text x="300" y="270" text-anchor="middle" font-size="11" fill="#333">current -= 1</text>
+  <text x="300" y="288" text-anchor="middle" font-size="11" fill="#333">return current</text>
+
+  <rect x="400" y="226" width="160" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="250" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">reset()</text>
+  <text x="480" y="270" text-anchor="middle" font-size="11" fill="#333">current = init</text>
+  <text x="480" y="288" text-anchor="middle" font-size="11" fill="#333">return current</text>
+
+  <!-- merge bus -->
+  <path d="M 120 306 L 120 326 M 300 306 L 300 326 M 480 306 L 480 326" stroke="#666" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <path d="M 120 326 L 480 326" stroke="#666" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <path d="M 300 326 L 300 346" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="200" y="346" width="200" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="366" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回操作后的 current</text>
+  <text x="300" y="382" text-anchor="middle" font-size="10" fill="#888">每次调用都立即返回，状态留在闭包里</text>
+
+  <text x="300" y="408" text-anchor="middle" font-size="11" fill="#888">⚠️ reset 用捕获的 init（不可变），increment/decrement 改 current（可变）</text>
+</svg>

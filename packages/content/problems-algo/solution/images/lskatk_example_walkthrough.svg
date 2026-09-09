@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrDL" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：s = “ababbc”，k = 2</text>
+
+  <!-- Root: divide(0,6) -->
+  <rect x="70" y="48" width="380" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="68" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">divide(0, 6)   s = ababbc</text>
+  <text x="260" y="84" text-anchor="middle" font-size="10.5" fill="#555">频率：a=2 ✓   b=3 ✓   c=1 &lt; 2 ✗</text>
+  <text x="260" y="100" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">c 不达标 → 按 c 切分</text>
+
+  <!-- split arrows to two children -->
+  <path d="M 180 110 L 130 150" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrDL)" filter="url(#rough2)"/>
+  <path d="M 340 110 L 390 150" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrDL)" filter="url(#rough2)"/>
+  <text x="120" y="134" font-size="9.5" fill="#888">段 “ababb”</text>
+  <text x="372" y="134" font-size="9.5" fill="#888">段 “”（c 后）</text>
+
+  <!-- Left child: divide(0,5) ababb → return 5 -->
+  <rect x="40" y="154" width="180" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="130" y="174" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">divide(0, 5)</text>
+  <text x="130" y="190" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">s = ababb</text>
+  <text x="130" y="206" text-anchor="middle" font-size="10.5" fill="#555">a=2 ✓   b=3 ✓</text>
+  <text x="130" y="222" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">全部 ≥ k → return 5</text>
+
+  <!-- Right child: divide(6,6) empty → return 0 -->
+  <rect x="300" y="154" width="180" height="74" fill="#f0f0f0" stroke="#bbb" stroke-width="1.8" stroke-dasharray="4,3" rx="10" filter="url(#rough2)"/>
+  <text x="390" y="174" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">divide(6, 6)</text>
+  <text x="390" y="190" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">s = “”（空）</text>
+  <text x="390" y="206" text-anchor="middle" font-size="10.5" fill="#999">区间为空</text>
+  <text x="390" y="222" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold">return 0</text>
+
+  <!-- merge arrows down -->
+  <path d="M 130 228 L 130 256 L 260 256 L 260 280" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M 390 228 L 390 256 L 260 256" stroke="#888" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="200" y="250" font-size="9.5" fill="#888" font-style="italic">取 max</text>
+
+  <!-- Result -->
+  <rect x="110" y="284" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="304" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">ans = max(5, 0) = 5</text>
+  <text x="260" y="320" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">最长合法子串 = “ababb”，长度 5</text>
+
+  <!-- note -->
+  <rect x="50" y="348" width="420" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="368" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">递归深度上限 = 26（每次至少淘汰一种字符）</text>
+  <text x="260" y="386" text-anchor="middle" font-size="10.5" fill="#555">每层处理的总字符数 ≤ n，故总时间 O(26·n) = O(n)</text>
+  <text x="260" y="406" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">若全串每种字符都 ≥ k，直接返回长度，无需再切</text>
+</svg>

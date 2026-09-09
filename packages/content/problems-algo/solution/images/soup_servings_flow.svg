@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">分汤：记忆化概率 DP 流程</text>
+
+  <!-- Step 1: convert -->
+  <rect x="150" y="36" width="220" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="55" text-anchor="middle" font-size="11" fill="#333">① m = ⌈n / 25⌉（ml → 单位）</text>
+
+  <path d="M 260 66 L 260 78" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: threshold diamond -->
+  <polygon points="260,80 336,110 260,140 184,110" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="106" text-anchor="middle" font-size="10" fill="#444">m ≥ 192?</text>
+  <text x="260" y="120" text-anchor="middle" font-size="9" fill="#888">(n ≥ 4800ml)</text>
+
+  <!-- Yes branch -->
+  <path d="M 336 110 L 396 110" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="364" y="104" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="396" y="94" width="114" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="453" y="116" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return 1.0</text>
+
+  <!-- No branch -->
+  <path d="M 260 140 L 260 152" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="150" font-size="9" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Step 3: memoized DFS -->
+  <rect x="120" y="154" width="280" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="173" text-anchor="middle" font-size="11" fill="#333">② 记忆化递归 dp(a, b)，memo 缓存</text>
+
+  <path d="M 260 184 L 260 196" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: base cases -->
+  <rect x="70" y="198" width="380" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="218" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 基底（a ≤ 0 或 b ≤ 0 视为空）</text>
+  <text x="260" y="236" text-anchor="middle" font-size="10" fill="#444">a ≤ 0 ∧ b ≤ 0 → 0.5 · a ≤ 0 → 1.0 · b ≤ 0 → 0.0</text>
+  <text x="260" y="250" text-anchor="middle" font-size="9" fill="#888">否则继续递归</text>
+
+  <path d="M 260 254 L 260 266" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: recurrence -->
+  <rect x="40" y="268" width="440" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="288" text-anchor="middle" font-size="10.5" fill="#444">④ dp(a, b) = ¼[dp(a−4, b) + dp(a−3, b−1) + dp(a−2, b−2) + dp(a−1, b−3)]</text>
+  <text x="260" y="304" text-anchor="middle" font-size="10" fill="#888">写 memo[a][b] 后返回</text>
+
+  <path d="M 260 312 L 260 324" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: return -->
+  <rect x="160" y="326" width="200" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="345" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ return dp(m, m)</text>
+
+  <!-- loop-back arrow from ④ to ② -->
+  <path d="M 40 290 Q 24 290 24 220 Q 24 170 120 169" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="20" y="250" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 20 250)">递归</text>
+</svg>

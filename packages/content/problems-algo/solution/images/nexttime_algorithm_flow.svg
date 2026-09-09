@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：解析 → 数字集合 → 逐分钟递增检查 → 命中即返回</text>
+  <text x="270" y="46" text-anchor="middle" font-size="11" fill="#888">一天 1440 分钟 → 循环至多 1440 次；当前时刻自身兜底，必命中</text>
+
+  <!-- ① parse -->
+  <rect x="130" y="64" width="280" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="90" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 解析 "HH:MM" → start = HH × 60 + MM</text>
+  <path d="M 270 106 L 270 118" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② allowed set -->
+  <rect x="120" y="120" width="300" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="142" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">② 取 allowed = {time[0], time[1], time[3], time[4]}</text>
+  <text x="270" y="160" text-anchor="middle" font-size="11" fill="#666">跳过下标 2 的 ':'，4 个数位入集合</text>
+  <path d="M 270 168 L 270 180" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ cur = (cur+1) % 1440 -->
+  <rect x="140" y="182" width="260" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="208" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ cur = (cur + 1) % 1440</text>
+  <path d="M 270 224 L 270 238" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="270,240 410,298 270,356 130,298" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="290" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">cur 的 4 个数位</text>
+  <text x="270" y="308" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">全在 allowed ？</text>
+
+  <!-- Yes branch -> right (green) -->
+  <path d="M 410 298 L 448 298" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="428" y="290" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="372" y="320" width="158" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="451" y="342" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">格式化 cur</text>
+  <text x="451" y="358" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">→ "HH:MM"</text>
+  <text x="451" y="374" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">→ 返回（最近时刻）</text>
+
+  <!-- No branch -> down (orange) -->
+  <path d="M 270 356 L 270 374" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="284" y="370" font-size="11" fill="#d6a040" font-weight="bold">否</text>
+
+  <!-- continue / loop back note -->
+  <rect x="170" y="376" width="200" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="398" text-anchor="middle" font-size="11.5" fill="#333">继续下一分钟，回到 ③</text>
+
+  <!-- loop-back arrow: from box left side up to ③ box left side -->
+  <path d="M 170 394 Q 64 394 64 203 L 138 203" stroke="#888" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="64" y="300" text-anchor="middle" font-size="10" fill="#888">下一分钟</text>
+
+  <!-- exit: loop ends guarantee -->
+  <path d="M 370 394 Q 476 394 476 432 L 422 432" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="476" y="414" text-anchor="middle" font-size="10" fill="#b85450">走满 1440</text>
+  <rect x="196" y="416" width="226" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="309" y="438" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">必命中（当前时刻自身兜底）</text>
+
+  <!-- bottom note -->
+  <text x="270" y="464" text-anchor="middle" font-size="10.5" fill="#888">每步检查 4 个数位 → 总 O(1440) = O(1)；cur ∈ [0,1439] 天然保证时刻合法</text>
+</svg>

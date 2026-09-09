@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心递推：dp[i] = A[i] + min{ dp[j] : i+1 ≤ j ≤ i+B }（反向计算）</text>
+
+  <!-- DP direction arrow (right to left) -->
+  <text x="280" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">DP 方向：从终点 N 向起点 1 倒推 ←</text>
+  <path d="M470 72 L90 72" stroke="#446688" stroke-width="2.2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="9.5" fill="#446688">dp[N] 先已知 → 逐格向左填</text>
+
+  <!-- Array cells: steps 1..5, costs [1,2,4,-1,2], B=2 -->
+  <!-- step 1 (cost 1) -->
+  <rect x="60" y="110" width="70" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="135" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+  <text x="95" y="153" text-anchor="middle" font-size="9" fill="#446688">A₁=1</text>
+  <text x="95" y="178" text-anchor="middle" font-size="9" fill="#888">dp=7</text>
+
+  <!-- step 2 (cost 2) -- current i, orange highlight -->
+  <rect x="130" y="110" width="70" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="2.6" rx="4" filter="url(#rough2)"/>
+  <text x="165" y="135" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">2</text>
+  <text x="165" y="153" text-anchor="middle" font-size="9" fill="#d6a040">A₂=2</text>
+  <text x="165" y="178" text-anchor="middle" font-size="9" fill="#888">dp=8</text>
+  <text x="165" y="100" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">当前 i</text>
+
+  <!-- step 3 (cost 4) -- window i+1, valid, green -->
+  <rect x="200" y="110" width="70" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="235" y="135" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="235" y="153" text-anchor="middle" font-size="9" fill="#4a7a3a">A₃=4</text>
+  <text x="235" y="178" text-anchor="middle" font-size="9" fill="#888">dp=6</text>
+
+  <!-- step 4 (cost -1) -- window i+2, blocked, red -->
+  <rect x="270" y="110" width="70" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="305" y="135" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">4</text>
+  <text x="305" y="153" text-anchor="middle" font-size="9" fill="#b85450">A₄=−1</text>
+  <text x="305" y="178" text-anchor="middle" font-size="9" fill="#b85450">dp=∞</text>
+  <!-- red cross over blocked cell -->
+  <path d="M278 118 L332 154 M332 118 L278 154" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+
+  <!-- step 5 (cost 2) -- out of window (B=2), greyed -->
+  <rect x="340" y="110" width="70" height="52" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="135" text-anchor="middle" font-size="14" fill="#666" font-weight="bold">5</text>
+  <text x="375" y="153" text-anchor="middle" font-size="9" fill="#666">A₅=2</text>
+  <text x="375" y="178" text-anchor="middle" font-size="9" fill="#888">dp=2</text>
+  <text x="375" y="100" text-anchor="middle" font-size="9" fill="#666">终点 N</text>
+
+  <!-- window bracket: i+1 .. i+B covering steps 3,4 -->
+  <path d="M200 200 L200 194 L340 194 L340 200" stroke="#4a7a3a" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <text x="270" y="214" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">一跳可达窗口 [i+1, i+B]（B=2）</text>
+
+  <!-- arrow from step 3 (valid, min dp) back to step i=2 -->
+  <path d="M235 162 C 235 240, 165 240, 165 162" stroke="#d6a040" stroke-width="2.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="200" y="256" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">取窗口内 min dp[j]</text>
+
+  <!-- blocked step 4 excluded note -->
+  <text x="305" y="240" text-anchor="middle" font-size="9" fill="#b85450">A=−1 → 禁入</text>
+  <text x="305" y="252" text-anchor="middle" font-size="9" fill="#b85450">不参与 min</text>
+
+  <!-- formula box -->
+  <rect x="40" y="280" width="480" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">dp[i] = A[i] + min(dp[i+1], …, dp[i+B])</text>
+  <text x="280" y="316" text-anchor="middle" font-size="9.5" fill="#555">基例 dp[N]=A[N]；A[i]=−1 时 dp[i]=∞；nxt[i] 记最小代价后继（同代价取最小 j）</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="338" width="500" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="357" font-size="10" fill="#333">关键：<tspan fill="#d6a040" font-weight="bold">从终点倒推</tspan> 每格只需看右侧 B 格窗口，局部最优拼出全局最优；<tspan fill="#b85450" font-weight="bold">−1 格</tspan>直接置 ∞ 排除</text>
+</svg>

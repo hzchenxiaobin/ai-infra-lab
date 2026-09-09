@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="540" viewBox="0 0 860 540" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="860" height="540" fill="#fdfcf7"/>
+  <text x="430" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">双哈希表协同 + 最小堆延迟删除</text>
+  <path d="M 300 46 Q 430 54 560 46" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== Left: idx2num ===== -->
+  <g filter="url(#sk)"><rect x="40" y="74" width="340" height="250" rx="10" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.6"/></g>
+  <text x="210" y="100" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b6e9e">idx2num: index → number</text>
+  <text x="210" y="118" text-anchor="middle" font-size="10.5" fill="#5a7a9e">记录每个下标当前存的是哪个数</text>
+
+  <g font-size="11.5" fill="#555">
+    <g filter="url(#sk)"><rect x="60" y="134" width="300" height="28" rx="5" fill="#fff" stroke="#4a8edb" stroke-width="1.1"/></g>
+    <text x="76" y="152" font-weight="bold" fill="#2b6e9e">2</text><text x="200" y="152" text-anchor="middle">→</text><text x="230" y="152">10</text>
+
+    <g filter="url(#sk)"><rect x="60" y="166" width="300" height="28" rx="5" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.6"/></g>
+    <text x="76" y="184" font-weight="bold" fill="#7a5415">1</text><text x="200" y="184" text-anchor="middle">→</text><text x="230" y="184" font-weight="bold" fill="#b03a3a">20</text>
+    <text x="278" y="184" font-size="9.5" fill="#b03a3a">改写了！</text>
+
+    <g filter="url(#sk)"><rect x="60" y="198" width="300" height="28" rx="5" fill="#fff" stroke="#4a8edb" stroke-width="1.1"/></g>
+    <text x="76" y="216" font-weight="bold" fill="#2b6e9e">3</text><text x="200" y="216" text-anchor="middle">→</text><text x="230" y="216">10</text>
+
+    <g filter="url(#sk)"><rect x="60" y="230" width="300" height="28" rx="5" fill="#fff" stroke="#4a8edb" stroke-width="1.1"/></g>
+    <text x="76" y="248" font-weight="bold" fill="#2b6e9e">5</text><text x="200" y="248" text-anchor="middle">→</text><text x="230" y="248">10</text>
+  </g>
+  <text x="210" y="290" text-anchor="middle" font-size="10.5" fill="#888">O(1) 读写任意 index（值域高达 10⁹，必须哈希）</text>
+  <text x="210" y="306" text-anchor="middle" font-size="10.5" fill="#2e6e2e" font-weight="bold">change 时直接覆盖写</text>
+
+  <!-- ===== Right: heaps ===== -->
+  <g filter="url(#sk)"><rect x="440" y="74" width="380" height="250" rx="10" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="630" y="100" text-anchor="middle" font-size="15" font-weight="bold" fill="#2e6e2e">heaps: number → 最小堆</text>
+  <text x="630" y="118" text-anchor="middle" font-size="10.5" fill="#4a7a3a">每个 number 维护一堆下标，堆顶 = 最小</text>
+
+  <g font-size="11.5">
+    <g filter="url(#sk)"><rect x="460" y="134" width="340" height="92" rx="6" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/></g>
+    <text x="476" y="154" font-weight="bold" fill="#2e6e2e">heaps[10]</text>
+    <text x="560" y="154" font-size="9.5" fill="#888">含一个过期的 1</text>
+    <g fill="#555">
+      <g filter="url(#sk)"><rect x="474" y="162" width="40" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/></g>
+      <text x="494" y="177" text-anchor="middle" fill="#b03a3a" font-weight="bold">1</text>
+      <g filter="url(#sk)"><rect x="518" y="162" width="40" height="22" rx="4" fill="#eaf6ee" stroke="#4a7a3a"/></g>
+      <text x="538" y="177" text-anchor="middle">2</text>
+      <g filter="url(#sk)"><rect x="562" y="162" width="40" height="22" rx="4" fill="#eaf6ee" stroke="#4a7a3a"/></g>
+      <text x="582" y="177" text-anchor="middle">3</text>
+      <g filter="url(#sk)"><rect x="606" y="162" width="40" height="22" rx="4" fill="#eaf6ee" stroke="#4a7a3a"/></g>
+      <text x="626" y="177" text-anchor="middle">5</text>
+    </g>
+    <text x="474" y="202" font-size="10" fill="#888">堆顶 1：idx2num[1]=20≠10 → 假，待弹出</text>
+    <text x="474" y="218" font-size="10" fill="#888">堆顶 2：idx2num[2]=10=10 → 真，返回 2</text>
+
+    <g filter="url(#sk)"><rect x="460" y="234" width="340" height="34" rx="6" fill="#fff" stroke="#4a7a3a" stroke-width="1.2"/></g>
+    <text x="476" y="256" font-weight="bold" fill="#2e6e2e">heaps[20]</text>
+    <text x="552" y="256" fill="#555">[ 1 ]</text>
+    <text x="596" y="256" font-size="9.5" fill="#888">change(1,20) 时新压入</text>
+  </g>
+
+  <!-- find validation arrow: heap top -> idx2num -->
+  <path d="M 460 175 Q 380 175 360 180" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#ar2)" filter="url(#sk)"/>
+  <text x="392" y="168" text-anchor="middle" font-size="10" fill="#b03a3a" font-weight="bold">验证</text>
+
+  <!-- ===== Bottom: operations ===== -->
+  <g filter="url(#sk)"><rect x="40" y="346" width="340" height="58" rx="10" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.6"/></g>
+  <text x="210" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a5415">change(index, number)</text>
+  <text x="210" y="392" text-anchor="middle" font-size="11" fill="#555">idx2num[index]=number；heaps[number].push(index)</text>
+  <text x="210" y="406" text-anchor="middle" font-size="10" fill="#888">不主动清理旧堆 → O(log n) 一次</text>
+
+  <g filter="url(#sk)"><rect x="440" y="346" width="380" height="58" rx="10" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="630" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">find(number)</text>
+  <text x="630" y="392" text-anchor="middle" font-size="11" fill="#555">弹掉堆顶过期项；返回新堆顶或 −1</text>
+  <text x="630" y="406" text-anchor="middle" font-size="10" fill="#888">每项至多被弹一次 → 摊还 O(1)</text>
+
+  <g filter="url(#sk)"><rect x="40" y="424" width="780" height="92" rx="12" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" stroke-dasharray="5 3"/></g>
+  <text x="430" y="452" text-anchor="middle" font-size="14" font-weight="bold" fill="#b03a3a">延迟删除（Lazy Deletion）核心不变式</text>
+  <text x="430" y="474" text-anchor="middle" font-size="11.5" fill="#555">堆里可能残留「已不属于 number 的下标」，但不影响正确性</text>
+  <text x="430" y="492" text-anchor="middle" font-size="11.5" fill="#555">find 时按 idx2num[top] == number 逐个验证，过期就弹出</text>
+  <text x="430" y="510" text-anchor="middle" font-size="10.5" fill="#888">总弹出次数 ≤ 总压入次数 ≤ 调用次数 10⁵，整体摊还高效</text>
+</svg>

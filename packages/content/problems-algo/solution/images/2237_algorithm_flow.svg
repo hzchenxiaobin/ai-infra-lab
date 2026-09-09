@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：差分打标 → 前缀和还原 → 统计达标位置</text>
+
+  <!-- ===== Phase 1 label ===== -->
+  <rect x="40" y="44" width="120" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="60" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">打标阶段</text>
+
+  <!-- Step 1: init diff array -->
+  <rect x="40" y="76" width="480" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="96" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 初始化差分数组 d[0..n] = 0（长度 n+1）</text>
+  <text x="280" y="112" text-anchor="middle" font-size="10" fill="#555">下标 0~n，多一位用于 d[R+1] 越界打标</text>
+
+  <path d="M 280 120 L 280 138" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop each lamp -->
+  <rect x="40" y="142" width="480" height="84" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="164" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 遍历每盏灯 lights[i] = [p, r]</text>
+  <text x="280" y="184" text-anchor="middle" font-size="11" fill="#555">L = max(0, p − r)，R = min(n − 1, p + r)</text>
+  <text x="280" y="202" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">d[L] += 1　　d[R + 1] −= 1</text>
+  <text x="280" y="218" text-anchor="middle" font-size="10" fill="#888">单灯 O(1)：区间加压成两端标记</text>
+
+  <path d="M 280 230 L 280 248" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Phase 2 label ===== -->
+  <rect x="40" y="254" width="120" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="270" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">还原 + 统计</text>
+
+  <!-- Step 3: prefix sum + count -->
+  <rect x="40" y="286" width="480" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="308" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 前缀和滚动 + 统计：s = 0, ans = 0</text>
+  <text x="280" y="328" text-anchor="middle" font-size="11" fill="#555">for i in 0..n−1:　s += d[i]　　// s 即位置 i 亮度</text>
+  <text x="280" y="346" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">if s &gt;= requirement[i]:　ans += 1</text>
+  <text x="280" y="364" text-anchor="middle" font-size="10" fill="#888">一次遍历同时还原亮度并判定达标</text>
+
+  <path d="M 280 386 L 280 404" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: return ans -->
+  <rect x="40" y="408" width="480" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="431" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ 返回 ans（亮度 ≥ requirement 的位置数）</text>
+
+  <!-- bottom note -->
+  <text x="280" y="460" text-anchor="middle" font-size="10" fill="#888">总复杂度 O(m + n)，m = lights.length</text>
+</svg>

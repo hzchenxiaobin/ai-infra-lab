@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="400" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">一次遍历：枚举 k，三个状态滚动维护</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">每来一个新元素 x = nums[k]，按固定顺序执行三步</text>
+
+  <!-- new element x -->
+  <rect x="260" y="62" width="100" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="85" text-anchor="middle" font-size="13" fill="#8a3a3a" font-weight="bold" filter="url(#rough2)">新元素 x</text>
+
+  <!-- three state boxes -->
+  <rect x="40" y="150" width="160" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="172" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold" filter="url(#rough2)">pre_max</text>
+  <text x="120" y="190" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">max(nums[0..k−1])</text>
+
+  <rect x="230" y="150" width="160" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="172" text-anchor="middle" font-size="13" fill="#8a6420" font-weight="bold" filter="url(#rough2)">max_diff</text>
+  <text x="310" y="190" text-anchor="middle" font-size="10" fill="#8a6420" filter="url(#rough2)">max(nums[i] − nums[j])</text>
+
+  <rect x="420" y="150" width="160" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="500" y="172" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">ans</text>
+  <text x="500" y="190" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">最终答案（初值 0）</text>
+
+  <!-- step arrows -->
+  <path d="M 290 98 Q 240 118 500 148" fill="none" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="510" y="122" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">① x 作 k 结算</text>
+  <text x="510" y="137" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">ans ← max(ans, max_diff × x)</text>
+
+  <path d="M 290 98 Q 295 120 305 148" fill="none" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="310" y="120" text-anchor="middle" font-size="0" fill="#d6a040" filter="url(#rough2)"> </text>
+
+  <path d="M 330 98 Q 390 122 190 148" fill="none" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="130" y="122" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② x 作 j 配对</text>
+  <text x="130" y="137" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">max_diff ← max(max_diff, pre_max − x)</text>
+
+  <path d="M 270 98 Q 150 122 110 148" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="80" y="120" text-anchor="start" font-size="0" fill="#446688" filter="url(#rough2)"> </text>
+
+  <!-- internal flow arrows -->
+  <path d="M 200 176 L 228 176" fill="none" stroke="#999" stroke-width="1.5" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="214" y="140" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">③ x 作 i 入池</text>
+  <text x="214" y="215" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">pre_max ← max(pre_max, x)</text>
+
+  <!-- order warning box -->
+  <rect x="60" y="238" width="500" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="262" text-anchor="middle" font-size="12" fill="#8a3a3a" font-weight="bold" filter="url(#rough2)">⚠️ 三步顺序不能乱：先结算、再配对、最后入池</text>
+  <text x="310" y="282" text-anchor="middle" font-size="11" fill="#8a3a3a" filter="url(#rough2)">若 ② 提前，x 会用含自己的 pre_max 减自己（i = j）；</text>
+  <text x="310" y="298" text-anchor="middle" font-size="11" fill="#8a3a3a" filter="url(#rough2)">三步依次消费「上一轮」的状态值，当前 x 才不会越权上阵</text>
+
+  <!-- relation to 121 -->
+  <rect x="60" y="320" width="500" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="342" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">本质：121 买卖股票的两层嵌套</text>
+  <text x="310" y="361" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">121 求 max(nums[j] − nums[i])（即 max_diff），本题再把历史最大差乘上后面的数</text>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：二分阈值 T + 等差数列批量求和</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">O(n log max) 时间 · O(1) 额外空间</text>
+
+  <!-- ① 起点 -->
+  <rect x="200" y="60" width="160" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="78" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① lo = 0, hi = max(inventory)</text>
+  <text x="280" y="93" text-anchor="middle" font-size="10" fill="#888">阈值 T ∈ [0, max]</text>
+
+  <line x1="280" y1="102" x2="280" y2="118" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 二分判定 -->
+  <polygon points="280,122 400,170 280,218 160,170" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="164" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">g(mid) &gt; orders ?</text>
+  <text x="280" y="182" text-anchor="middle" font-size="10" fill="#888">g(T) = Σ max(0, inv[i] − T)</text>
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#888">卖超了？</text>
+
+  <!-- 是：抬高阈值 -->
+  <line x1="280" y1="218" x2="280" y2="236" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="232" font-size="11" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="170" y="240" width="220" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">lo = mid + 1</text>
+  <text x="280" y="273" text-anchor="middle" font-size="10" fill="#888">阈值太低卖超 → 抬高</text>
+
+  <!-- 否：尝试更低 -->
+  <line x1="400" y1="170" x2="470" y2="170" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="164" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <rect x="430" y="150" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="168" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">hi = mid</text>
+  <text x="490" y="183" text-anchor="middle" font-size="10" fill="#888">没卖超 → 试更低</text>
+
+  <!-- 回到 ② -->
+  <path d="M 490 150 L 490 120 L 280 120 L 280 122" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="496" y="138" font-size="10" fill="#888">lo &lt; hi</text>
+
+  <!-- lo==hi 退出，进入求值 -->
+  <path d="M 280 280 L 280 296" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="292" font-size="10" fill="#888">lo == hi</text>
+
+  <!-- ③ T 已定，批量求和 -->
+  <rect x="150" y="300" width="260" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="320" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ T = lo；遍历 inventory</text>
+  <text x="280" y="338" text-anchor="middle" font-size="10" fill="#555">ans += (inv+T+1)(inv−T)/2，cnt += inv−T  (仅 inv &gt; T)</text>
+
+  <line x1="280" y1="352" x2="280" y2="368" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 补齐剩余 -->
+  <rect x="150" y="372" width="260" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="390" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ ans += (orders − cnt) × T</text>
+  <text x="280" y="406" text-anchor="middle" font-size="10" fill="#888">剩余 orders−cnt 个，每个价值 T</text>
+
+  <line x1="280" y1="416" x2="280" y2="432" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 返回 -->
+  <rect x="200" y="436" width="160" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="459" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">⑤ 返回 ans mod (10⁹+7)</text>
+</svg>

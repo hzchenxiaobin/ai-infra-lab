@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：计数 → 分桶 → 桶内排序取 Top-k → 额外工人收尾</text>
+
+  <!-- Step 1 -->
+  <rect x="110" y="38" width="300" height="26" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="55" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">① 哈希计数：cnt[s] = 技能 s 的工人数</text>
+  <path d="M 260 64 L 260 76" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="110" y="78" width="300" height="26" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="95" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">② 任务分桶：bucket[tasks[j][0]] ← profit</text>
+  <path d="M 260 104 L 260 116" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="110" y="118" width="300" height="26" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="135" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">③ 取一个未处理的桶 s，桶内利润降序排序</text>
+  <path d="M 260 144 L 260 156" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="80" y="158" width="360" height="42" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="175" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">④ 常规工人认领：ans += 前 min(c_s, m_s) 大之和</text>
+  <text x="260" y="192" text-anchor="middle" font-size="10" fill="#7a4a2b" filter="url(#rough2)">best = max(best, p_s[c_s])——第 c_s+1 大即剩余候选</text>
+  <path d="M 260 200 L 260 212" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="260,212 365,240 260,268 155,240" fill="#ffffff" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="244" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">还有未处理的桶？</text>
+
+  <!-- yes: loop back to step 3 -->
+  <path d="M 365 240 L 445 240 L 445 131 L 414 131" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" fill="none" filter="url(#rough2)"/>
+  <text x="398" y="232" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- no: go down -->
+  <path d="M 260 268 L 260 282" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <text x="270" y="279" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- Step 5 -->
+  <rect x="110" y="284" width="300" height="26" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="301" text-anchor="middle" font-size="11" fill="#2d5523" filter="url(#rough2)">⑤ 返回 ans + best——额外工人收剩余最大</text>
+
+  <!-- bottom notes -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="322" width="220" height="32" rx="8" fill="#ffffff" stroke="#9db4c9" stroke-width="1.2" stroke-dasharray="5 3"/>
+    <text x="150" y="336" text-anchor="middle" font-size="9" fill="#55677d">第 c_s+1 大 = 本桶「够不着」的最大者；</text>
+    <text x="150" y="348" text-anchor="middle" font-size="9" fill="#55677d">任务数 ≤ c_s 时不存在，不贡献剩余池</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="280" y="322" width="220" height="32" rx="8" fill="#ffffff" stroke="#9db4c9" stroke-width="1.2" stroke-dasharray="5 3"/>
+    <text x="390" y="336" text-anchor="middle" font-size="9" fill="#55677d">时间 O(n + m log m)：计数、分桶线性，</text>
+    <text x="390" y="348" text-anchor="middle" font-size="9" fill="#55677d">各桶排序成本之和 ≤ 整体排序一次</text>
+  </g>
+</svg>

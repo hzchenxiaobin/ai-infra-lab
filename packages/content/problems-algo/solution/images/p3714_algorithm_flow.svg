@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="30" y="20" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：一趟扫描维护 4 个签名；命中查差、首现记录；游程另算</text>
+
+  <!-- 并行动作：游程扫描 -->
+  <rect x="380" y="40" width="160" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="460" y="60" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">并行动作（情形①）：</text>
+  <text x="460" y="78" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">另扫一遍最长同字符游程</text>
+  <path d="M 460 96 L 460 110 L 546 110 L 546 398 L 326 398" fill="none" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="536" y="262" text-anchor="end" font-size="9" fill="#4a7a3a" filter="url(#rough2)">run</text>
+
+  <!-- A: 初始化 -->
+  <rect x="90" y="38" width="250" height="34" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="59" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">ans = 1；a = b = c = 0；空前缀入 4 张表</text>
+  <line x1="215" y1="72" x2="215" y2="90" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B: 更新前缀计数 -->
+  <rect x="90" y="94" width="250" height="36" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="116" text-anchor="middle" font-size="10.5" fill="#33506b" filter="url(#rough2)">i = 1 … n：读 s[i−1]，更新 a / b / c</text>
+  <line x1="215" y1="130" x2="215" y2="148" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- C: 计算签名 -->
+  <rect x="90" y="152" width="250" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="170" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">计算 4 个签名：</text>
+  <text x="215" y="188" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">(a−b,c) (a−c,b) (b−c,a) (b−a,c−a)</text>
+  <line x1="215" y1="196" x2="215" y2="214" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D: 查表判定 -->
+  <polygon points="215,218 308,252 215,286 122,252" fill="#fafafa" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="248" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">签名已在</text>
+  <text x="215" y="264" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">对应表中？</text>
+
+  <!-- 是 → E1 结算 -->
+  <text x="316" y="244" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 308 252 L 340 252" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="344" y="230" width="180" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="434" y="248" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">ans = max(ans,</text>
+  <text x="434" y="264" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">i − 首现下标)</text>
+
+  <!-- E1 汇回 E2 -->
+  <path d="M 434 274 L 434 332 L 296 332" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 否 → E2 记首现 -->
+  <text x="222" y="300" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <line x1="215" y1="286" x2="215" y2="306" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="140" y="310" width="150" height="44" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="328" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">表[签名] = i</text>
+  <text x="215" y="344" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">（记录首现）</text>
+
+  <!-- 循环回边 -->
+  <path d="M 140 332 L 48 332 L 48 112 L 84 112" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="58" y="326" font-size="9" fill="#8a6d1f" filter="url(#rough2)">下一个 i</text>
+
+  <!-- 出口 -->
+  <line x1="215" y1="354" x2="215" y2="376" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="226" y="370" font-size="9.5" fill="#666" filter="url(#rough2)">i &gt; n</text>
+
+  <!-- F: 返回 -->
+  <rect x="110" y="380" width="210" height="36" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="402" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">返回 max(ans, 最长游程)</text>
+</svg>

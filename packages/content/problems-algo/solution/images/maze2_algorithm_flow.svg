@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="410" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">Dijkstra 算法流程</text>
+
+  <!-- 1. Init rect -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="40" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="260" y="62" text-anchor="middle" font-size="11" fill="#333">初始化：dist[start] = 0，入堆 (0, start)</text>
+    <text x="260" y="76" text-anchor="middle" font-size="10" fill="#888">其余 dist = ∞</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 260 86 L 260 100" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 2. Diamond: heap empty? -->
+  <g filter="url(#rough2)">
+    <path d="M 160 128 L 260 100 L 360 128 L 260 156 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="260" y="132" text-anchor="middle" font-size="11" fill="#333">堆为空？</text>
+  </g>
+
+  <!-- 2 Yes -> right: return -->
+  <g filter="url(#rough2)">
+    <path d="M 360 128 L 386 128" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)"/>
+    <text x="372" y="122" font-size="10" fill="#d6a040" font-weight="bold">是</text>
+    <rect x="388" y="106" width="124" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6"/>
+    <text x="450" y="124" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">返回 dist[dest]</text>
+    <text x="450" y="138" text-anchor="middle" font-size="10" fill="#777">（∞ 则 -1）</text>
+  </g>
+
+  <!-- 2 No -> down -->
+  <g filter="url(#rough2)">
+    <path d="M 260 156 L 260 178" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)"/>
+    <text x="268" y="170" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  </g>
+
+  <!-- 3. Rect: pop + lazy deletion -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="180" width="240" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="260" y="200" text-anchor="middle" font-size="11" fill="#333">弹出 (d, r, c)</text>
+    <text x="260" y="216" text-anchor="middle" font-size="10" fill="#888">若 d > dist[r][c]：跳过（懒删除）</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 260 230 L 260 246" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- 4. Diamond: is dest? -->
+  <g filter="url(#rough2)">
+    <path d="M 160 274 L 260 246 L 360 274 L 260 302 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="260" y="278" text-anchor="middle" font-size="11" fill="#333">到达终点？</text>
+  </g>
+
+  <!-- 4 Yes -> right: return d -->
+  <g filter="url(#rough2)">
+    <path d="M 360 274 L 386 274" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)"/>
+    <text x="372" y="268" font-size="10" fill="#d6a040" font-weight="bold">是</text>
+    <rect x="388" y="252" width="124" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="450" y="270" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">返回 d ✓</text>
+    <text x="450" y="284" text-anchor="middle" font-size="10" fill="#777">（最短距离）</text>
+  </g>
+
+  <!-- 4 No -> down -->
+  <g filter="url(#rough2)">
+    <path d="M 260 302 L 260 322" stroke="#555" stroke-width="1.8" fill="none" marker-end="url(#arrD)"/>
+    <text x="268" y="316" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  </g>
+
+  <!-- 5. Rect: roll 4 dirs + relax -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="324" width="240" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="260" y="344" text-anchor="middle" font-size="11" fill="#333">4 方向各滚到墙 → (nr, nc, step)</text>
+    <text x="260" y="360" text-anchor="middle" font-size="10" fill="#888">若 d+step &lt; dist[nr][nc]：</text>
+    <text x="260" y="374" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">更新 dist + 入堆</text>
+  </g>
+
+  <!-- Loop back: 5 -> 2 -->
+  <g filter="url(#rough2)">
+    <path d="M 140 354 L 100 354 L 100 128 L 158 128" stroke="#555" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrD)"/>
+    <text x="108" y="240" font-size="10" fill="#888" transform="rotate(-90 108 240)">回到循环</text>
+  </g>
+</svg>

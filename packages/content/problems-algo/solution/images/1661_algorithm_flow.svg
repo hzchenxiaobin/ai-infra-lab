@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="430" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM 自连接 → WHERE 筛 start/end → GROUP BY → SELECT ROUND(AVG)</text>
+
+  <!-- 步骤 1 FROM JOIN -->
+  <rect x="20" y="54" width="170" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="76" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① FROM Activity a1</text>
+  <text x="105" y="92" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">JOIN Activity a2</text>
+  <text x="105" y="108" text-anchor="middle" font-size="9" fill="#333">ON m_id, p_id 配对</text>
+
+  <path d="M192 88 L228 88" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 步骤 2 WHERE -->
+  <rect x="230" y="54" width="170" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="315" y="76" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">② WHERE</text>
+  <text x="315" y="94" text-anchor="middle" font-size="9.5" fill="#333">a1.type = 'start'</text>
+  <text x="315" y="110" text-anchor="middle" font-size="9.5" fill="#333">a2.type = 'end'</text>
+
+  <path d="M402 88 L438 88" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 步骤 3 GROUP BY -->
+  <rect x="440" y="54" width="170" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="525" y="76" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">③ GROUP BY</text>
+  <text x="525" y="94" text-anchor="middle" font-size="9.5" fill="#333">a1.machine_id</text>
+  <text x="525" y="110" text-anchor="middle" font-size="9" fill="#333">按机器折叠进程配对</text>
+
+  <!-- 步骤 4 SELECT -->
+  <rect x="230" y="150" width="380" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="172" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">④ SELECT</text>
+  <text x="420" y="192" text-anchor="middle" font-size="10" fill="#333">a1.machine_id,</text>
+  <text x="420" y="210" text-anchor="middle" font-size="10" fill="#333">ROUND(AVG(a2.ts − a1.ts), 3) AS processing_time</text>
+
+  <path d="M525 124 L525 148" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 结果表 -->
+  <rect x="180" y="244" width="280" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="264" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">结果（machine_id | processing_time）</text>
+  <rect x="200" y="272" width="120" height="22" fill="#fafafa" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="260" y="288" text-anchor="middle" font-size="9.5" fill="#888">machine_id</text>
+  <rect x="320" y="272" width="120" height="22" fill="#fafafa" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="380" y="288" text-anchor="middle" font-size="9.5" fill="#888">processing_time</text>
+
+  <text x="260" y="312" text-anchor="middle" font-size="10" fill="#333">0</text>
+  <text x="380" y="312" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">0.894</text>
+  <text x="260" y="328" text-anchor="middle" font-size="10" fill="#333">1</text>
+  <text x="380" y="328" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">0.995</text>
+
+  <path d="M420 224 L420 242" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- 子句执行顺序说明 -->
+  <rect x="20" y="150" width="190" height="96" fill="#fafafa" stroke="#999" stroke-width="1.2" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="115" y="172" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">SQL 子句执行顺序</text>
+  <text x="35" y="192" font-size="9.5" fill="#555">FROM → ON → JOIN</text>
+  <text x="35" y="208" font-size="9.5" fill="#555">→ WHERE → GROUP BY</text>
+  <text x="35" y="224" font-size="9.5" fill="#555">→ SELECT → ORDER BY</text>
+  <text x="35" y="240" font-size="9" fill="#888">INNER JOIN 下 ON 与 WHERE 等价</text>
+
+  <!-- 底部说明 -->
+  <rect x="20" y="356" width="600" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="378" font-size="10.5" fill="#333">JOIN 阶段按 (machine_id, process_id) 哈希配对 → WHERE 限定 a1=start / a2=end 角色</text>
+  <text x="40" y="396" font-size="10.5" fill="#333">GROUP BY 按机器折叠 → SELECT 对每组 AVG(end−start) 并 ROUND 到 3 位小数</text>
+</svg>

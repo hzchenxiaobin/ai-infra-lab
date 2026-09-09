@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：算两标志 → 2×2 派发</text>
+
+  <!-- Start -->
+  <ellipse cx="200" cy="58" rx="56" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="63" text-anchor="middle" font-size="12" fill="#2a5a2a">输入 L, W, H, mass</text>
+
+  <!-- arrow down -->
+  <path d="M 200 78 L 200 96" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box: compute isBulky -->
+  <rect x="70" y="98" width="260" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="120" text-anchor="middle" font-size="12" fill="#2a4466" font-weight="bold">计算 isBulky</text>
+  <text x="200" y="138" text-anchor="middle" font-size="10.5" fill="#446688">isBulky = (L≥1e4 || W≥1e4 || H≥1e4)</text>
+  <text x="200" y="154" text-anchor="middle" font-size="10.5" fill="#446688">|| (1LL*L*W*H ≥ 1e9)   ← 用 long long</text>
+
+  <!-- arrow down -->
+  <path d="M 200 162 L 200 180" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box: compute isHeavy -->
+  <rect x="70" y="182" width="260" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="200" y="200" text-anchor="middle" font-size="12" fill="#7a5510" font-weight="bold">计算 isHeavy</text>
+  <text x="200" y="218" text-anchor="middle" font-size="10.5" fill="#9a7a30">isHeavy = (mass ≥ 100)</text>
+
+  <!-- arrow down to dispatch diamond -->
+  <path d="M 200 228 L 200 250" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond 1: isBulky && isHeavy ? -->
+  <polygon points="200,252 300,300 200,348 100,300" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="200" y="296" text-anchor="middle" font-size="11.5" fill="#8a3030" font-weight="bold">isBulky</text>
+  <text x="200" y="312" text-anchor="middle" font-size="11.5" fill="#8a3030" font-weight="bold">&amp;&amp; isHeavy ?</text>
+
+  <!-- Yes branch (right) -> Both -->
+  <path d="M 300 300 L 360 300" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="320" y="293" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="362" y="280" width="120" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="305" text-anchor="middle" font-size="14" fill="#8a3030" font-weight="bold">Both</text>
+
+  <!-- No branch (down) -->
+  <path d="M 200 348 L 200 366" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="210" y="362" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Diamond 2: isBulky ? -->
+  <polygon points="200,368 270,398 200,428 130,398" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="402" text-anchor="middle" font-size="11.5" fill="#2a4466" font-weight="bold">isBulky ?</text>
+
+  <!-- Yes -> Bulky (right) -->
+  <path d="M 270 398 L 360 398" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="305" y="392" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="362" y="378" width="120" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="422" y="403" text-anchor="middle" font-size="14" fill="#2a4466" font-weight="bold">Bulky</text>
+
+  <!-- No -> check isHeavy (note: both no-heavy & no-bulky path) -->
+  <path d="M 130 398 L 60 398 L 60 300" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="95" y="392" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- isHeavy diamond (left) -->
+  <polygon points="60,260 120,300 60,340 0,300" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="304" text-anchor="middle" font-size="11.5" fill="#7a5510" font-weight="bold">isHeavy ?</text>
+
+  <!-- Yes -> Heavy -->
+  <path d="M 0 300 L -10 300" stroke="#555" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <!-- Heavy box placed left -->
+  <rect x="2" y="240" width="116" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="262" text-anchor="middle" font-size="13" fill="#7a5510" font-weight="bold">Heavy</text>
+  <path d="M 60 274 L 60 340" stroke="#555" stroke-width="0" fill="none"/>
+
+  <!-- No -> Neither -->
+  <path d="M 60 260 L 60 240" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="78" y="232" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="2" y="196" width="116" height="34" fill="#ffffff" stroke="#bbb" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="218" text-anchor="middle" font-size="13" fill="#666" font-weight="bold">Neither</text>
+
+  <!-- Bottom note -->
+  <text x="280" y="432" text-anchor="middle" font-size="10.5" fill="#888">派发顺序无关紧要：本质上只是查 2×2 表，任一分支顺序都正确</text>
+</svg>

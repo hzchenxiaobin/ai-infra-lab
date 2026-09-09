@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">差分数组：一次涂色只改两格，前缀和还原覆盖层数</text>
+  <text x="280" y="48" text-anchor="middle" font-size="12" fill="#555" filter="url(#rough2)">以一辆车 [3, 6] 为例（多辆车同理叠加）</text>
+
+  <!-- annotations above stakes -->
+  <text x="250" y="72" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">diff[s] += 1</text>
+  <line x1="250" y1="78" x2="250" y2="96" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <text x="450" y="72" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">diff[e+1] -= 1</text>
+  <line x1="450" y1="78" x2="450" y2="142" stroke="#b85450" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="450" y="58" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">（打在车外一格 e+1 = 7）</text>
+
+  <!-- car bar: points 3..6, point p -> x = 100 + 50p -->
+  <rect x="225" y="100" width="200" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="325" y="118" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">一辆车 [3, 6]</text>
+
+  <!-- number line -->
+  <line x1="80" y1="150" x2="520" y2="150" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <line x1="150" y1="144" x2="150" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="200" y1="144" x2="200" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="250" y1="144" x2="250" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="300" y1="144" x2="300" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="350" y1="144" x2="350" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="400" y1="144" x2="400" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="450" y1="144" x2="450" y2="156" stroke="#888" stroke-width="1"/>
+    <line x1="500" y1="144" x2="500" y2="156" stroke="#888" stroke-width="1"/>
+  </g>
+
+  <!-- point markers + cover values -->
+  <g filter="url(#rough2)">
+    <circle cx="150" cy="150" r="5" fill="#fafafa" stroke="#999" stroke-width="1.5"/>
+    <circle cx="200" cy="150" r="5" fill="#fafafa" stroke="#999" stroke-width="1.5"/>
+    <circle cx="250" cy="150" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <circle cx="300" cy="150" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <circle cx="350" cy="150" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <circle cx="400" cy="150" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <circle cx="450" cy="150" r="5" fill="#fafafa" stroke="#999" stroke-width="1.5"/>
+    <circle cx="500" cy="150" r="5" fill="#fafafa" stroke="#999" stroke-width="1.5"/>
+
+    <text x="150" y="176" text-anchor="middle" font-size="11" fill="#999">0</text>
+    <text x="200" y="176" text-anchor="middle" font-size="11" fill="#999">0</text>
+    <text x="250" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="300" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="350" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="400" y="176" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="450" y="176" text-anchor="middle" font-size="11" fill="#999">0</text>
+    <text x="500" y="176" text-anchor="middle" font-size="11" fill="#999">0</text>
+    <text x="325" y="176" text-anchor="middle" font-size="9" fill="#888">← cover（前缀和）→</text>
+  </g>
+
+  <!-- brace under covered region -->
+  <path d="M 250 190 L 250 196 L 325 196 L 325 202 L 325 196 L 400 196 L 400 190"
+        fill="none" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="325" y="216" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">cover &gt; 0 ⇔ 点 3~6 被覆盖</text>
+
+  <!-- bottom boxes -->
+  <rect x="40" y="228" width="235" height="108" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="157" y="252" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">✓ 打桩 O(n)</text>
+  <text x="157" y="276" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">每辆车只改两格：</text>
+  <text x="157" y="296" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">diff[s]++ / diff[e+1]−−</text>
+  <text x="157" y="316" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">代价与区间长度无关</text>
+
+  <rect x="295" y="228" width="225" height="108" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="252" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">✓ 拉线 O(C)</text>
+  <text x="407" y="276" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">cover[p] = Σ diff[j]（j ≤ p）</text>
+  <text x="407" y="296" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">多辆车叠加，层数相加</text>
+  <text x="407" y="316" text-anchor="middle" font-size="11" fill="#d6a040" filter="url(#rough2)">cover &gt; 0 即覆盖，只数一次</text>
+</svg>

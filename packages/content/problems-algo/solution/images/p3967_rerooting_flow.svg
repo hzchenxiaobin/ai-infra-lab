@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：BFS 定序 → 逆序求 down → 正序换根求 up 与 ans</text>
+  <text x="260" y="40" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">全程迭代无递归（链深 10⁵ 安全）；完成时间可达 2⁵³，C++ 用 long long</text>
+
+  <!-- ① -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="60" width="224" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="138" y="76" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① 建无向邻接表 adj</text>
+    <text x="138" y="92" text-anchor="middle" font-size="8" fill="#555">edges 方向不影响换根；n = 1 直接返回 baseTime[0]</text>
+  </g>
+  <path d="M 138 104 L 138 114" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- ② -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="116" width="224" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="138" y="132" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">② 从 0 出发 BFS 定序</text>
+    <text x="138" y="148" text-anchor="middle" font-size="8" fill="#555">得 order 与 par：父必先于子（免爆栈）</text>
+  </g>
+  <path d="M 138 160 L 138 170" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- ③ -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="172" width="224" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="138" y="188" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">③ 逆序遍历 order 求 down（= 后序）</text>
+    <text x="138" y="203" text-anchor="middle" font-size="7.5" fill="#555">down[v] = 2·max(孩子down) − min(孩子down) + baseTime[v]</text>
+    <text x="138" y="216" text-anchor="middle" font-size="7.5" fill="#555">叶子：down[v] = baseTime[v]（即第 I 版算法）</text>
+  </g>
+  <path d="M 138 224 L 138 234" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- ④ 核心 -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="236" width="224" height="52" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/>
+    <text x="138" y="252" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold">④ 正序遍历 order 换根（核心）</text>
+    <text x="138" y="267" text-anchor="middle" font-size="7.5" fill="#7a5c1a">ans(v)：孩子 down ∪ up[v] 的 2·max − min + baseTime</text>
+    <text x="138" y="280" text-anchor="middle" font-size="7.5" fill="#7a5c1a">up[c]：排除 c 后「其余孩子 down ∪ up[v]」聚合（见右图）</text>
+  </g>
+  <path d="M 138 288 L 138 298" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- ⑤ -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="300" width="224" height="42" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="138" y="316" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑤ 答案 = 所有 ans(v) 的最小值</text>
+    <text x="138" y="332" text-anchor="middle" font-size="8" fill="#4a7a3a">其中 ans(0) = down[0]（即第 I 版答案）</text>
+  </g>
+
+  <!-- 右侧：前缀/后缀排除 -->
+  <g filter="url(#rough2)">
+    <rect x="280" y="64" width="216" height="238" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="388" y="84" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">④ 核心：排除单个孩子</text>
+    <text x="388" y="100" text-anchor="middle" font-size="8.5" fill="#333">v 的孩子序列（down 值）：给 c3 算 up 时划掉它</text>
+
+    <rect x="296" y="108" width="36" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.4"/>
+    <text x="314" y="126" text-anchor="middle" font-size="10" fill="#4a7a3a">d1</text>
+    <rect x="336" y="108" width="36" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.4"/>
+    <text x="354" y="126" text-anchor="middle" font-size="10" fill="#4a7a3a">d2</text>
+    <rect x="376" y="108" width="36" height="26" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" stroke-dasharray="4 3"/>
+    <text x="394" y="126" text-anchor="middle" font-size="10" fill="#b85450">d3</text>
+    <line x1="376" y1="108" x2="412" y2="134" stroke="#b85450" stroke-width="1.6"/>
+    <rect x="416" y="108" width="36" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.4"/>
+    <text x="434" y="126" text-anchor="middle" font-size="10" fill="#4a7a3a">d4</text>
+
+    <path d="M 296 146 L 372 146" fill="none" stroke="#4a7a3a" stroke-width="1.3"/>
+    <path d="M 296 142 L 296 150 M 372 142 L 372 150" fill="none" stroke="#4a7a3a" stroke-width="1.3"/>
+    <text x="334" y="160" text-anchor="middle" font-size="8" fill="#4a7a3a">前缀 max/min</text>
+    <path d="M 416 146 L 452 146" fill="none" stroke="#4a7a3a" stroke-width="1.3"/>
+    <path d="M 416 142 L 416 150 M 452 142 L 452 150" fill="none" stroke="#4a7a3a" stroke-width="1.3"/>
+    <text x="434" y="160" text-anchor="middle" font-size="8" fill="#4a7a3a">后缀</text>
+
+    <text x="388" y="184" text-anchor="middle" font-size="9" fill="#333">up[c] = 2·max(其余 down ∪ up[v])</text>
+    <text x="388" y="198" text-anchor="middle" font-size="9" fill="#333">− min(其余 down ∪ up[v]) + baseTime[v]</text>
+
+    <text x="388" y="222" text-anchor="middle" font-size="8" fill="#b85450">⚠ min/max 不可逆：不能从全局 max 里「减掉」一个孩子</text>
+    <text x="388" y="240" text-anchor="middle" font-size="8" fill="#4a7a3a">v = 0 且排除后集合为空 → up[c] = baseTime[v]</text>
+    <text x="388" y="258" text-anchor="middle" font-size="8" fill="#4a7a3a">叶子为根：ans(v) = up[v] + baseTime[v]（公式自动退化）</text>
+    <text x="388" y="278" text-anchor="middle" font-size="8" fill="#4a7a3a">也可用「最大/次大 + 计数」做 O(1) 排除，思路相同</text>
+  </g>
+</svg>

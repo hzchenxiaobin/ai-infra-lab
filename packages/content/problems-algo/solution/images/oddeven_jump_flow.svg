@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="440" height="560" fill="#fafafa"/>
+
+  <text x="220" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">奇偶跳：从右向左 DP + 有序表</text>
+
+  <!-- Init -->
+  <rect x="70" y="40" width="300" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="62" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="220" y="80" text-anchor="middle" font-size="10.5" fill="#555">odd[n−1] = even[n−1] = true, ans = 1</text>
+  <text x="220" y="92" text-anchor="middle" font-size="10" fill="#888">有序表 map = {arr[n−1] → n−1}</text>
+
+  <path d="M 220 100 L 220 118" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop entry -->
+  <rect x="70" y="122" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="142" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for i = n−2 downto 0</text>
+  <text x="220" y="158" text-anchor="middle" font-size="10.5" fill="#555">从右向左逐个处理</text>
+
+  <path d="M 220 170 L 220 188" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Ceiling query -->
+  <rect x="90" y="192" width="260" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="212" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">oddNext[i] = map.lower_bound(arr[i])</text>
+  <text x="220" y="230" text-anchor="middle" font-size="10" fill="#446688">ceiling：最小 key ≥ arr[i] → 奇跳目标</text>
+
+  <path d="M 220 244 L 220 262" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Floor query -->
+  <rect x="90" y="266" width="260" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="286" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">evenNext[i] = map.floor(arr[i])</text>
+  <text x="220" y="304" text-anchor="middle" font-size="10" fill="#d6a040">floor：最大 key ≤ arr[i] → 偶跳目标</text>
+
+  <path d="M 220 318 L 220 336" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- DP transition -->
+  <rect x="80" y="340" width="280" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="360" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">DP 状态转移</text>
+  <text x="220" y="376" text-anchor="middle" font-size="10.5" fill="#555">odd[i] = even[oddNext[i]]（奇跳后接偶跳）</text>
+  <text x="220" y="390" text-anchor="middle" font-size="10.5" fill="#555">even[i] = odd[evenNext[i]]（偶跳后接奇跳）</text>
+
+  <path d="M 220 400 L 220 418" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Count -->
+  <rect x="110" y="422" width="220" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="440" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">if odd[i]: ans++</text>
+  <text x="220" y="456" text-anchor="middle" font-size="10" fill="#b85450">好起点 = 从奇跳出发能到终点</text>
+
+  <path d="M 220 466 L 220 484" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Insert into map -->
+  <rect x="90" y="488" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="506" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">map[arr[i]] = i</text>
+  <text x="220" y="520" text-anchor="middle" font-size="10" fill="#888">覆盖旧值，保留最小下标</text>
+
+  <!-- loop back -->
+  <path d="M 350 508 L 410 508 L 410 144 L 370 144" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="416" y="326" font-size="9.5" fill="#aaa" transform="rotate(-90 416 326)">循环</text>
+
+  <!-- final -->
+  <text x="220" y="548" text-anchor="middle" font-size="11" fill="#d6a040" font-style="italic">遍历结束 → return ans （O(n log n), O(n)）</text>
+</svg>

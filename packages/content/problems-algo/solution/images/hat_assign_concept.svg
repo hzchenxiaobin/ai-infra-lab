@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">二分图匹配计数：帽子外层 × 人 mask 内层</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">hats=[[3,5,1],[3,5]] → 人少(≤10)压人，帽多(=40)当物品外层</text>
+
+  <!-- ===== Left: people ===== -->
+  <g>
+    <text x="80" y="76" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">人 (n ≤ 10)</text>
+    <ellipse cx="80" cy="110" rx="34" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="80" y="115" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold" filter="url(#rough2)">P0</text>
+    <text x="80" y="142" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">{3,5,1}</text>
+
+    <ellipse cx="80" cy="178" rx="34" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="80" y="183" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold" filter="url(#rough2)">P1</text>
+    <text x="80" y="210" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">{3,5}</text>
+  </g>
+
+  <!-- ===== Right: hats ===== -->
+  <g>
+    <text x="430" y="76" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">帽子 (1..40)</text>
+    <rect x="398" y="92" width="64" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+    <text x="430" y="115" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">帽 1</text>
+
+    <rect x="398" y="148" width="64" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+    <text x="430" y="171" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">帽 3</text>
+
+    <rect x="398" y="204" width="64" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+    <text x="430" y="227" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">帽 5</text>
+
+    <text x="466" y="160" font-size="10" fill="#aaa" filter="url(#rough2)">…</text>
+    <text x="466" y="216" font-size="10" fill="#aaa" filter="url(#rough2)">…</text>
+  </g>
+
+  <!-- ===== Edges: preferences ===== -->
+  <g stroke="#d6a040" stroke-width="1.4" fill="none" opacity="0.8">
+    <!-- P0 likes 3,5,1 -->
+    <path d="M 114 110 L 398 110" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <path d="M 114 116 Q 250 150 398 166" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <path d="M 114 122 Q 250 175 398 222" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <!-- P1 likes 3,5 -->
+    <path d="M 114 172 Q 250 165 398 170" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <path d="M 114 184 Q 250 195 398 222" marker-end="url(#arr)" filter="url(#rough2)"/>
+  </g>
+
+  <!-- ===== Insight box 1: reverse index ===== -->
+  <g>
+    <rect x="36" y="248" width="230" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="151" y="268" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">① 反转：建 hatToPeople[h]</text>
+    <text x="151" y="284" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">帽 1→[P0]，帽 3→[P0,P1]</text>
+    <text x="151" y="298" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">问「帽 h 给谁」而非「人 p 选哪顶」</text>
+  </g>
+
+  <!-- ===== Insight box 2: mask over people ===== -->
+  <g>
+    <rect x="278" y="248" width="226" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="391" y="268" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② mask 压人：2^n ≤ 1024</text>
+    <text x="391" y="284" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">第 p 位=1 表人 p 已分到帽</text>
+    <text x="391" y="298" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">帽子 40 种太多 → 不进状态</text>
+  </g>
+
+  <!-- ===== Bottom summary: knapsack analogy ===== -->
+  <g>
+    <rect x="40" y="320" width="460" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="270" y="340" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">③ 帽子 = 0-1 背包物品，逐顶入场；每顶「不给 / 给某个喜欢的人」</text>
+    <text x="270" y="356" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">外层 40 顶帽 × 内层 2^n 个 mask 倒序滚动 → 每帽至多用一次</text>
+  </g>
+</svg>

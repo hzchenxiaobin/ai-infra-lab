@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">三态编码：墙与警卫同为「2」，一个条件 g[next] &lt; 2 搞定</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">射线穿过 0/1 格子继续走，遇到 ≥2 的格子立刻停</text>
+
+  <!-- ===== Three state cards ===== -->
+  <!-- state 0: unguarded empty -->
+  <rect x="36" y="70" width="150" height="86" fill="#ffffff" stroke="#cfd8e8" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <rect x="56" y="88" width="40" height="40" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="76" y="113" text-anchor="middle" font-size="16" fill="#446688" font-weight="bold">0</text>
+  <text x="112" y="98" font-size="11" fill="#333" font-weight="bold">空格未保卫</text>
+  <text x="112" y="114" font-size="9.5" fill="#666">初始态</text>
+  <text x="112" y="128" font-size="9.5" fill="#666">射线可进入</text>
+  <text x="112" y="142" font-size="9.5" fill="#4a7a3a">→ 标 1</text>
+
+  <!-- state 1: guarded -->
+  <rect x="196" y="70" width="150" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="216" y="88" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="236" y="113" text-anchor="middle" font-size="16" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="272" y="98" font-size="11" fill="#333" font-weight="bold">已保卫空格</text>
+  <text x="272" y="114" font-size="9.5" fill="#666">射线标记后</text>
+  <text x="272" y="128" font-size="9.5" fill="#666">射线可穿过</text>
+  <text x="272" y="142" font-size="9.5" fill="#4a7a3a">不阻挡视线 ✓</text>
+
+  <!-- state 2: blocker (wall or guard) -->
+  <rect x="356" y="70" width="150" height="86" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="376" y="88" width="40" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="396" y="113" text-anchor="middle" font-size="16" fill="#b85450" font-weight="bold">2</text>
+  <text x="432" y="98" font-size="11" fill="#333" font-weight="bold">墙 W / 警卫 G</text>
+  <text x="432" y="114" font-size="9.5" fill="#666">阻挡视线</text>
+  <text x="432" y="128" font-size="9.5" fill="#666">射线到此停</text>
+  <text x="432" y="142" font-size="9.5" fill="#b85450">→ break ✗</text>
+
+  <!-- ===== Walk condition banner ===== -->
+  <rect x="36" y="172" width="470" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="271" y="191" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">行走条件：while 越界检查 and g[next] &lt; 2</text>
+  <text x="271" y="207" text-anchor="middle" font-size="10" fill="#666">0 与 1 均 &lt; 2 → 继续走并标 1；2 → 不满足 → 停止本方向</text>
+
+  <!-- ===== Mini scenario: ray passing through guarded, stopping at wall ===== -->
+  <text x="36" y="240" font-size="10.5" fill="#666" font-weight="bold">场景：警卫 G 向右发射线，中间是已保卫格，末端是墙</text>
+
+  <!-- 6 cells row: G, 1, 1, 0, W, 0 -->
+  <rect x="36"  y="250" width="60" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="66"  y="279" text-anchor="middle" font-size="15" fill="#d6a040" font-weight="bold">G</text>
+  <rect x="100" y="250" width="60" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="130" y="279" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="164" y="250" width="60" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="279" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="228" y="250" width="60" height="46" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="258" y="279" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">0</text>
+  <rect x="292" y="250" width="60" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="322" y="279" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">W</text>
+  <rect x="356" y="250" width="60" height="46" fill="#ffffff" stroke="#cfd8e8" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="386" y="279" text-anchor="middle" font-size="13" fill="#888" font-weight="bold">0</text>
+
+  <!-- ray arrow over G->1->1->0, stopping before W -->
+  <line x1="66" y1="232" x2="288" y2="232" stroke="#b85450" stroke-width="2.2" stroke-dasharray="5 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="130" y="225" text-anchor="middle" font-size="9" fill="#4a7a3a">穿过 1</text>
+  <text x="258" y="225" text-anchor="middle" font-size="9" fill="#4a7a3a">标记 1</text>
+  <!-- stop mark at W -->
+  <text x="322" y="225" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">遇 2 停</text>
+  <!-- W blocks cell beyond -->
+  <line x1="386" y1="250" x2="386" y2="240" stroke="#888" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="386" y="234" text-anchor="middle" font-size="9" fill="#888">不可达</text>
+
+  <!-- ===== Answer: count of 0 ===== -->
+  <rect x="36" y="312" width="470" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="271" y="333" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">最后只需数 g[i][j] == 0 的格子数</text>
+  <text x="271" y="350" text-anchor="middle" font-size="10" fill="#666">墙/警卫=2、已保卫=1 都已剔除，剩下的 0 即「没被保卫的空格」</text>
+</svg>

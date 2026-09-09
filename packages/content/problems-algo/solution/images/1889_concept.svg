@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：排序后按箱子尺寸分段，前缀和 + 二分加速</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">每个箱子负责 (prev, idx] 段包裹，段浪费 = b × cnt − 段和</text>
+
+  <!-- Sorted packages label -->
+  <text x="24" y="78" font-size="10.5" fill="#666">packages 排序后</text>
+
+  <!-- Sorted packages: 2,3,5 (3 cards) -->
+  <rect x="70" y="60" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="82" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+
+  <rect x="114" y="60" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="134" y="82" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+
+  <rect x="158" y="60" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="82" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+
+  <!-- prefix sum label -->
+  <text x="220" y="82" font-size="10.5" fill="#888">prefix = [0, 2, 5, 10]</text>
+
+  <!-- Supplier boxes label -->
+  <text x="24" y="132" font-size="10.5" fill="#666">boxes 排序后</text>
+
+  <!-- Box 4 (orange) -->
+  <rect x="70" y="114" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="135" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">b=4</text>
+
+  <!-- Box 8 (orange) -->
+  <rect x="158" y="114" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="180" y="135" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">b=8</text>
+
+  <!-- Binary search arrows from boxes up to packages -->
+  <!-- b=4 covers packages 2,3 (idx=2) -->
+  <path d="M 92 114 Q 92 104 90 94" stroke="#d6a040" stroke-width="1.8" fill="none" stroke-dasharray="3,2" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M 134 114 Q 134 104 134 94" stroke="#d6a040" stroke-width="1.8" fill="none" stroke-dasharray="3,2" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- b=8 covers package 5 (idx=3) -->
+  <path d="M 180 114 Q 180 100 178 94" stroke="#d6a040" stroke-width="1.8" fill="none" stroke-dasharray="3,2" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- upper_bound annotation -->
+  <text x="240" y="130" font-size="10.5" fill="#d6a040" font-weight="bold">upper_bound(packages, b)</text>
+  <text x="240" y="144" font-size="10" fill="#aaa">→ 得 idx，分段 (prev, idx]</text>
+
+  <!-- Partition brackets -->
+  <text x="24" y="186" font-size="10.5" fill="#666">分段装箱</text>
+
+  <!-- Segment 1: packages 2,3 → box 4 (blue group) -->
+  <rect x="70" y="170" width="84" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="112" y="190" text-anchor="middle" font-size="11" fill="#333">[2, 3] → 装 b=4</text>
+
+  <!-- Segment 2: package 5 → box 8 (green group) -->
+  <rect x="158" y="170" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="180" y="190" text-anchor="middle" font-size="11" fill="#333">[5]→b=8</text>
+
+  <!-- Waste formula box -->
+  <rect x="40" y="218" width="480" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="240" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">段浪费 = b × (idx − prev) − (prefix[idx] − prefix[prev])</text>
+  <text x="280" y="258" text-anchor="middle" font-size="10.5" fill="#555">段 1：4 × 2 − (prefix[2] − prefix[0]) = 8 − 5 = 3</text>
+  <text x="280" y="274" text-anchor="middle" font-size="10.5" fill="#555">段 2：8 × 1 − (prefix[3] − prefix[2]) = 8 − 5 = 3　→　总浪费 = 6</text>
+
+  <!-- Bottom notes -->
+  <rect x="40" y="302" width="480" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">为什么贪心成立？</text>
+  <text x="280" y="340" text-anchor="middle" font-size="10.5" fill="#555">箱子供应无限 → 包裹 p 归属最小可行 b 严格更优，且不影响其他包裹归属</text>
+
+  <!-- Footer -->
+  <text x="280" y="372" text-anchor="middle" font-size="10" fill="#aaa">每个箱子 O(log n) 二分 + O(1) 前缀和 → 总计 O(Σbⱼ · log n)</text>
+  <text x="280" y="388" text-anchor="middle" font-size="10" fill="#aaa">包裹排序 + 前缀和预处理全局只做一次</text>
+</svg>

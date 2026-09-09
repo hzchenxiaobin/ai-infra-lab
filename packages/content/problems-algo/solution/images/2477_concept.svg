@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr_red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：每条边的车数 = ⌈子树代表数 ÷ seats⌉</text>
+
+  <!-- ===== left: subtree rooted at u ===== -->
+  <text x="130" y="56" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">以 0 为根，自底向上累计代表数 P</text>
+
+  <!-- edges to children (gray) -->
+  <g stroke="#bbb" stroke-width="1.5" fill="none" filter="url(#rough2)">
+    <line x1="130" y1="148" x2="72" y2="182"/>
+    <line x1="130" y1="148" x2="130" y2="182"/>
+    <line x1="130" y1="148" x2="188" y2="182"/>
+  </g>
+  <!-- highlighted edge u -> parent (red, the edge whose cost we compute) -->
+  <g stroke="#b85450" stroke-width="3" fill="none" filter="url(#rough2)">
+    <line x1="130" y1="108" x2="130" y2="84" marker-end="url(#arr_red)"/>
+  </g>
+
+  <!-- parent node -->
+  <g filter="url(#rough2)">
+    <circle cx="130" cy="68" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <text x="130" y="73" text-anchor="middle" font-size="11" fill="#333">父</text>
+  </g>
+
+  <!-- node u -->
+  <g filter="url(#rough2)">
+    <circle cx="130" cy="128" r="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4"/>
+    <text x="130" y="133" text-anchor="middle" font-size="13" fill="#7a4a10" font-weight="bold">u</text>
+  </g>
+  <!-- P_u annotation right of u -->
+  <text x="158" y="132" font-size="11" fill="#d6a040" filter="url(#rough2)">P=1+1+1+1=4</text>
+  <!-- cars annotation on edge -->
+  <text x="142" y="98" font-size="11" fill="#b85450" filter="url(#rough2)">⌈4/2⌉=2 辆</text>
+
+  <!-- children a b c -->
+  <g filter="url(#rough2)">
+    <circle cx="72" cy="198" r="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="72" y="203" text-anchor="middle" font-size="12" fill="#333">a</text>
+    <text x="72" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a">P=1</text>
+
+    <circle cx="130" cy="198" r="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="130" y="203" text-anchor="middle" font-size="12" fill="#333">b</text>
+    <text x="130" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a">P=1</text>
+
+    <circle cx="188" cy="198" r="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="188" y="203" text-anchor="middle" font-size="12" fill="#333">c</text>
+    <text x="188" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a">P=1</text>
+  </g>
+
+  <!-- direction note -->
+  <text x="130" y="252" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">子树 u 全部代表必须过这条边进京</text>
+
+  <!-- ===== right: formula panel ===== -->
+  <g filter="url(#rough2)" font-size="12" fill="#333">
+    <rect x="300" y="60" width="232" height="120" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="312" y="84" font-size="13" fill="#446688" font-weight="bold">递推关系</text>
+    <text x="312" y="108">P_u = 1 + Σ P_c</text>
+    <text x="312" y="126" font-size="11" fill="#666">（本城 1 人 + 各子树代表之和）</text>
+    <text x="312" y="150">cost(u→父) = ⌈P_u / seats⌉</text>
+    <text x="312" y="170" font-size="11" fill="#666">总油耗 = Σ 所有非根边 cost</text>
+  </g>
+
+  <!-- reasoning panel -->
+  <g filter="url(#rough2)" font-size="12" fill="#333">
+    <rect x="300" y="196" width="232" height="140" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="312" y="220" font-size="13" fill="#4a7a3a" font-weight="bold">为什么对</text>
+    <text x="312" y="244">· 树路径唯一 → 子树 u 全部</text>
+    <text x="312" y="262">  代表必经边 (u→父)</text>
+    <text x="312" y="286">· 每车最多 seats 人 →</text>
+    <text x="312" y="304">  最少车数 = ⌈P_u / seats⌉</text>
+    <text x="312" y="324" font-size="11" fill="#666">· 各边独立累加，互不干扰</text>
+  </g>
+
+  <!-- bottom note -->
+  <text x="280" y="384" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">后序 DFS：先求各子树 P，再在 u 处合并并给上行边计油耗（根 0 无父不计）</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="4.5" refY="8" orient="auto">
+      <path d="M0,0 L9,0 L4.5,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrL" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto">
+      <path d="M8,0 L0,4 L8,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">upper_bound：找第一个「严格大于」target 的字母</text>
+
+  <!-- ===== 场景一：正常命中 ===== -->
+  <text x="20" y="62" font-size="12" fill="#446688" font-weight="bold">场景一：target = 'c'，存在比它大的字母</text>
+  <text x="20" y="92" font-size="12" fill="#888">letters:</text>
+
+  <!-- c : <= target, skip -->
+  <rect x="70" y="76" width="60" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="96" text-anchor="middle" font-size="13" fill="#aaa">c</text>
+  <text x="100" y="124" text-anchor="middle" font-size="9.5" fill="#aaa">≤ target ✗</text>
+
+  <!-- f : > target, answer -->
+  <rect x="140" y="76" width="60" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="96" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">f</text>
+  <text x="170" y="124" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">> target ✓</text>
+
+  <!-- j -->
+  <rect x="210" y="76" width="60" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="96" text-anchor="middle" font-size="13" fill="#333">j</text>
+
+  <text x="300" y="96" font-size="11" fill="#888">下标：</text>
+  <text x="100" y="140" text-anchor="middle" font-size="9.5" fill="#aaa">0</text>
+  <text x="170" y="140" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="240" y="140" text-anchor="middle" font-size="9.5" fill="#aaa">2</text>
+
+  <!-- answer box -->
+  <rect x="350" y="78" width="170" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="96" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">答案 = 'f'</text>
+  <text x="435" y="112" text-anchor="middle" font-size="10" fill="#555">第一个 &gt; 'c' 的字母</text>
+
+  <!-- ===== 场景二：环绕 ===== -->
+  <text x="20" y="184" font-size="12" fill="#b85450" font-weight="bold">场景二：target = 'j'，没有比它大的字母 → 环绕回 letters[0]</text>
+  <text x="20" y="214" font-size="12" fill="#888">letters:</text>
+
+  <!-- c : wrap target -->
+  <rect x="70" y="198" width="60" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="218" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+  <text x="100" y="246" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold">环绕 ✓</text>
+
+  <!-- f -->
+  <rect x="140" y="198" width="60" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="218" text-anchor="middle" font-size="13" fill="#aaa">f</text>
+  <text x="170" y="246" text-anchor="middle" font-size="9.5" fill="#aaa">≤ target ✗</text>
+
+  <!-- j -->
+  <rect x="210" y="198" width="60" height="30" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="218" text-anchor="middle" font-size="13" fill="#aaa">j</text>
+  <text x="240" y="246" text-anchor="middle" font-size="9.5" fill="#aaa">≤ target ✗</text>
+
+  <text x="300" y="218" font-size="11" fill="#888">target='j'</text>
+
+  <!-- wrap arrow: from after j back to c -->
+  <path d="M 270 213 C 320 170, 360 170, 100 196" stroke="#d6a040" stroke-width="1.8" stroke-dasharray="5 3" fill="none" marker-end="url(#arrL)" filter="url(#rough2)"/>
+  <text x="360" y="166" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">环绕：回到 letters[0]</text>
+
+  <!-- answer box -->
+  <rect x="350" y="200" width="170" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="218" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">答案 = 'c'（letters[0]）</text>
+  <text x="435" y="234" text-anchor="middle" font-size="10" fill="#555">left 走到 n，取 left % n</text>
+
+  <!-- ===== 关键对比 ===== -->
+  <rect x="30" y="278" width="480" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="300" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">对比 35 题 lower_bound：找首个 ≥ target</text>
+  <text x="270" y="322" text-anchor="middle" font-size="11.5" fill="#555">35 题：letters[mid] &lt; target 才右移（等于即命中，停止）</text>
+  <text x="270" y="342" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">744 题：letters[mid] ≤ target 都右移（等于也要跳过，找严格更大）</text>
+  <text x="270" y="358" text-anchor="middle" font-size="10.5" fill="#888">「&lt;」变「≤」一字之差，lower_bound 升级为 upper_bound</text>
+</svg>

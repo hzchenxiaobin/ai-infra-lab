@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：事件点 → 初等区间 → 覆盖计数 → 聚合输出</text>
+
+  <!-- Box 1 -->
+  <rect x="70" y="44" width="380" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="64" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① T：收集事件点（所有起止时刻）</text>
+  <text x="86" y="82" font-size="10" fill="#446688" filter="url(#rough2)">start_time UNION end_time —— UNION 自带去重</text>
+
+  <path d="M 260 94 L 260 108" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box 2 -->
+  <rect x="70" y="108" width="380" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="128" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② P：相邻事件点配对成初等区间 [st, ed)</text>
+  <text x="86" y="146" font-size="10" fill="#4a7a3a" filter="url(#rough2)">LEAD(st) OVER (PARTITION BY employee_id ORDER BY st)</text>
+
+  <path d="M 260 158 L 260 172" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box 3 -->
+  <rect x="70" y="172" width="380" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="192" font-size="12" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">③ S：范围 JOIN 数出每段覆盖数 COUNT(*)</text>
+  <text x="86" y="210" font-size="10" fill="#8a6d3b" filter="url(#rough2)">st &gt;= start_time AND ed &lt;= end_time（空档段被 INNER JOIN 自动丢弃）</text>
+
+  <path d="M 260 222 L 260 236" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box 4 -->
+  <rect x="70" y="236" width="380" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="256" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ 按员工聚合：并集时长 + 最大并发</text>
+  <text x="86" y="274" font-size="10" fill="#4a7a3a" filter="url(#rough2)">FLOOR(SUM(秒)/3600) = total_task_hours ；MAX(覆盖数) = max_concurrent_tasks</text>
+
+  <path d="M 260 286 L 260 300" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Box 5 -->
+  <rect x="70" y="300" width="380" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="318" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">⑤ ORDER BY employee_id 升序输出</text>
+  <text x="86" y="336" font-size="10" fill="#446688" filter="url(#rough2)">窗口函数在 SELECT 阶段求值：LEAD 必须包一层 CTE 供外层引用</text>
+</svg>

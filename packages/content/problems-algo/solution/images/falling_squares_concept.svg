@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：方块落在「严格重叠」的最高顶上</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">半开区间 [L, R)，R = L + sideLength；擦边（共享一点）不算着陆</text>
+
+  <!-- ===== Stacking diagram (example 1) ===== -->
+  <!-- scale: 1 unit = 30px, base x = 90 → x:1→120,2→150,3→180,5→240,6→270,7→300 -->
+  <!-- x-axis -->
+  <line x1="70" y1="240" x2="380" y2="240" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="64" y="244" text-anchor="end" font-size="11" fill="#446688" font-style="italic">x</text>
+  <g font-size="10.5" fill="#446688" text-anchor="middle">
+    <text x="120" y="256">1</text>
+    <text x="150" y="256">2</text>
+    <text x="180" y="256">3</text>
+    <text x="240" y="256">5</text>
+    <text x="270" y="256">6</text>
+    <text x="300" y="256">7</text>
+  </g>
+  <g stroke="#446688" stroke-width="1.2" filter="url(#rough2)">
+    <line x1="120" y1="240" x2="120" y2="244"/>
+    <line x1="150" y1="240" x2="150" y2="244"/>
+    <line x1="180" y1="240" x2="180" y2="244"/>
+    <line x1="240" y1="240" x2="240" y2="244"/>
+    <line x1="270" y1="240" x2="270" y2="244"/>
+    <line x1="300" y1="240" x2="300" y2="244"/>
+  </g>
+
+  <!-- Square 0: [1,3) side 2 → x 120-180, top h=2 → y 240-60=180. rect x=120 y=180 w=60 h=60 -->
+  <rect x="120" y="180" width="60" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="2" filter="url(#rough2)"/>
+  <text x="150" y="216" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">方块0</text>
+  <text x="150" y="170" text-anchor="middle" font-size="9.5" fill="#446688">[1,3) h=2</text>
+
+  <!-- overlap highlight on sq0 top over [2,3) → x 150..180 at y=180 -->
+  <line x1="150" y1="180" x2="180" y2="180" stroke="#b85450" stroke-width="4" filter="url(#rough2)"/>
+
+  <!-- Square 1: [2,5) side 3 → x 150-240, base=2 top=5 → y 240-150=90. rect x=150 y=90 w=90 h=90 -->
+  <rect x="150" y="90" width="90" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="2" filter="url(#rough2)"/>
+  <text x="195" y="140" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">方块1</text>
+  <text x="195" y="80" text-anchor="middle" font-size="9.5" fill="#4a7a3a">[2,5) h=2+3=5</text>
+
+  <!-- Square 2: [6,7) side 1 → x 270-300, base=0 top=1 → y 240-30=210. rect x=270 y=210 w=30 h=30 -->
+  <rect x="270" y="210" width="30" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="2" filter="url(#rough2)"/>
+  <text x="285" y="229" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">方块2</text>
+  <text x="285" y="200" text-anchor="middle" font-size="9" fill="#d6a040">[6,7) h=1</text>
+
+  <!-- annotation: sq1 sits on the red segment -->
+  <path d="M 165 178 C 165 160, 210 130, 230 110" stroke="#b85450" stroke-width="1.2" fill="none" stroke-dasharray="3,2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="232" y="104" font-size="9.5" fill="#b85450">叠在方块0 顶</text>
+  <text x="232" y="116" font-size="9.5" fill="#b85450">（重叠 [2,3)）</text>
+
+  <!-- ===== Formula box (right) ===== -->
+  <rect x="400" y="70" width="130" height="160" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="92" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">严格重叠判定</text>
+  <line x1="412" y1="100" x2="518" y2="100" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="412" y="120" font-size="10.5" fill="#555">半开区间：</text>
+  <text x="412" y="136" font-size="10.5" fill="#333" font-weight="bold">[L, R), R=L+side</text>
+  <text x="412" y="158" font-size="10.5" fill="#555">两方块严格重叠：</text>
+  <text x="412" y="178" font-size="11" fill="#b85450" font-weight="bold">max(L₁,L₂) &lt;</text>
+  <text x="412" y="194" font-size="11" fill="#b85450" font-weight="bold">min(R₁,R₂)</text>
+  <text x="412" y="214" font-size="9.5" fill="#888">擦边/相离则</text>
+  <text x="412" y="226" font-size="9.5" fill="#888">落在地面或他块</text>
+
+  <!-- ===== Grazing contrast (example 2) bottom ===== -->
+  <line x1="20" y1="288" x2="520" y2="288" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="30" y="310" font-size="11.5" fill="#b85450" font-weight="bold">对比·擦边不算着陆（示例 2）</text>
+
+  <!-- mini x-axis -->
+  <line x1="60" y1="380" x2="340" y2="380" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <!-- Square A [100,200): x 80-200, h=40, y 340-380 -->
+  <rect x="80" y="340" width="120" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="140" y="365" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">A</text>
+  <text x="140" y="332" text-anchor="middle" font-size="9" fill="#446688">[100,200)</text>
+  <!-- Square B [200,300): x 200-320, h=40, y 340-380 (on ground, NOT on A) -->
+  <rect x="200" y="340" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="260" y="365" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B</text>
+  <text x="260" y="332" text-anchor="middle" font-size="9" fill="#4a7a3a">[200,300)</text>
+  <!-- shared edge -->
+  <line x1="200" y1="328" x2="200" y2="386" stroke="#b85450" stroke-width="1.6" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="200" y="398" text-anchor="middle" font-size="9" fill="#b85450">x=200</text>
+
+  <!-- note box -->
+  <rect x="350" y="324" width="180" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="344" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">仅共享一点 x=200</text>
+  <text x="440" y="358" text-anchor="middle" font-size="9" fill="#b85450">max(L)=200 = min(R)=200</text>
+  <text x="440" y="372" text-anchor="middle" font-size="9.5" fill="#b85450">→ 不算着陆，B 落地</text>
+</svg>

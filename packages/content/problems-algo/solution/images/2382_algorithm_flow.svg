@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：逆序撤销删除 + 并查集维护段和</text>
+
+  <!-- 1. init -->
+  <rect x="120" y="46" width="360" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="68" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">① 初始化</text>
+  <text x="300" y="88" text-anchor="middle" font-size="12" fill="#555">parent[i]=i, sum[i]=0, active[i]=false</text>
+  <text x="300" y="100" text-anchor="middle" font-size="11" fill="#888">answer[n−1]=0, cur=0（全删终态）</text>
+  <path d="M 300 102 L 300 124" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. loop -->
+  <rect x="60" y="124" width="480" height="290" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="148" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">② 逆序遍历 i = n−1 downto 1</text>
+  <text x="300" y="166" text-anchor="middle" font-size="11" fill="#888">（撤销第 i 次删除，恢复到「前 i−1 次删除后」状态）</text>
+
+  <!-- a. take idx -->
+  <rect x="86" y="180" width="428" height="34" fill="#ffffff" stroke="#cccccc" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="202" text-anchor="start" font-size="12" fill="#444">idx = removeQueries[i]；active[idx]=true；sum[idx]=nums[idx]</text>
+
+  <!-- b. union left -->
+  <rect x="86" y="222" width="428" height="34" fill="#ffffff" stroke="#cccccc" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="244" text-anchor="start" font-size="12" fill="#446688">若 idx−1 活跃：union(idx−1, idx)　← 左邻段合并</text>
+
+  <!-- c. union right -->
+  <rect x="86" y="264" width="428" height="34" fill="#ffffff" stroke="#cccccc" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="286" text-anchor="start" font-size="12" fill="#446688">若 idx+1 活跃：union(根, idx+1)　← 右邻段合并</text>
+
+  <!-- d. update cur -->
+  <rect x="86" y="306" width="428" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="328" text-anchor="start" font-size="12" fill="#4a7a3a" font-weight="bold">cur = max(cur, sum[find(idx)])　← 段和只增不减</text>
+
+  <!-- e. fill answer -->
+  <rect x="86" y="348" width="428" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="370" text-anchor="start" font-size="12" fill="#b85450" font-weight="bold">answer[i−1] = cur　← 此刻即「前 i−1 次删除后」的最大</text>
+
+  <!-- loop back arrow -->
+  <path d="M 540 365 Q 568 365 568 260 Q 568 148 300 148" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="566" y="256" text-anchor="middle" font-size="10" fill="#888">i 减 1</text>
+
+  <path d="M 300 414 L 300 436" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3. return -->
+  <rect x="120" y="436" width="360" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="458" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">③ 返回 answer</text>
+  <text x="300" y="476" text-anchor="middle" font-size="11" fill="#888">answer[n−1]=0 已由初始化给出，循环只填 answer[0..n−2]</text>
+
+  <!-- footer note -->
+  <text x="300" y="512" text-anchor="middle" font-size="11" fill="#888">并查集：find 路径压缩 + 按规模合并；sum 挂在根上，union 时相加</text>
+  <text x="300" y="528" text-anchor="middle" font-size="11" fill="#b85450">⚠ nums[i] ≤ 10⁹、n ≤ 10⁵，段和可达 10¹⁴，须用 64 位整型</text>
+</svg>

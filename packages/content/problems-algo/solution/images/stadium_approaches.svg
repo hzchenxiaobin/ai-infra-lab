@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种解法对比：自连接 UNION vs LAG/LEAD vs 岛屿分组</text>
+
+  <!-- Approach A: self-join (left column) -->
+  <rect x="20" y="44" width="180" height="372" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：自连接+UNION</text>
+  <text x="110" y="78" text-anchor="middle" font-size="9" fill="#888">经典 · 承接 180 题</text>
+
+  <!-- mini table diagram for self-join -->
+  <rect x="36" y="92" width="34" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="53" y="102" text-anchor="middle" font-size="8" fill="#333">s1</text>
+  <rect x="76" y="100" width="34" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="93" y="110" text-anchor="middle" font-size="8" fill="#333">s2</text>
+  <rect x="116" y="108" width="34" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="133" y="118" text-anchor="middle" font-size="8" fill="#333">s3</text>
+  <text x="110" y="134" text-anchor="middle" font-size="8" fill="#4a7a3a">id+1 / id+2 错位</text>
+
+  <text x="30" y="154" font-size="9" fill="#333">① 三表自连接找合法三元组</text>
+  <text x="30" y="170" font-size="9" fill="#333">  s2.id=s1.id+1, s3.id=s1.id+2</text>
+  <text x="30" y="184" font-size="9" fill="#333">  三行 people≥100</text>
+  <text x="30" y="204" font-size="9" fill="#333">② UNION 收集三元组的</text>
+  <text x="30" y="218" font-size="9" fill="#333">  s1.id / s2.id / s3.id</text>
+  <text x="30" y="238" font-size="9" fill="#333">③ JOIN 回原表取完整行</text>
+
+  <rect x="34" y="252" width="152" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="268" text-anchor="middle" font-size="9" fill="#333">优点：思路直观</text>
+  <text x="110" y="282" text-anchor="middle" font-size="9" fill="#333">承接 180 自连接母题</text>
+
+  <rect x="34" y="304" width="152" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="320" text-anchor="middle" font-size="9" fill="#b85450">缺点：三表 JOIN 重复</text>
+  <text x="110" y="334" text-anchor="middle" font-size="9" fill="#b85450">UNION 写三遍 WHERE</text>
+
+  <rect x="34" y="358" width="152" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="374" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">时间 O(n)~O(n²)</text>
+  <text x="110" y="388" text-anchor="middle" font-size="9" fill="#4a7a3a">id 有索引时近 O(n)</text>
+
+  <!-- Approach B: LAG/LEAD (middle column) -->
+  <rect x="210" y="44" width="180" height="372" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="64" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">解法 B：LAG/LEAD</text>
+  <text x="300" y="78" text-anchor="middle" font-size="9" fill="#888">现代 · 单趟扫描</text>
+
+  <!-- LAG/LEAD diagram -->
+  <rect x="258" y="92" width="40" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="278" y="102" text-anchor="middle" font-size="8" fill="#333">prev2</text>
+  <rect x="278" y="100" width="40" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="298" y="110" text-anchor="middle" font-size="8" fill="#333">prev1</text>
+  <rect x="298" y="108" width="40" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="2" filter="url(#rough2)"/>
+  <text x="318" y="118" text-anchor="middle" font-size="8" fill="#333">me</text>
+  <rect x="318" y="116" width="40" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="338" y="126" text-anchor="middle" font-size="8" fill="#333">next1</text>
+  <rect x="338" y="124" width="40" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="358" y="134" text-anchor="middle" font-size="8" fill="#333">next2</text>
+
+  <text x="300" y="154" text-anchor="middle" font-size="9" fill="#333">① LAG/LEAD 拉前后各2行</text>
+  <text x="300" y="170" text-anchor="middle" font-size="9" fill="#333">  people 值到当前行</text>
+  <text x="300" y="194" text-anchor="middle" font-size="9" fill="#333">② 我是三元组成员?</text>
+  <text x="300" y="208" text-anchor="middle" font-size="9" fill="#4a7a3a">  ·我是第1个: next1,next2≥100</text>
+  <text x="300" y="222" text-anchor="middle" font-size="9" fill="#4a7a3a">  ·我是第2个: prev1,next1≥100</text>
+  <text x="300" y="236" text-anchor="middle" font-size="9" fill="#4a7a3a">  ·我是第3个: prev1,prev2≥100</text>
+  <text x="300" y="254" text-anchor="middle" font-size="9" fill="#333">③ people≥100 且 OR 命中</text>
+
+  <rect x="224" y="268" width="152" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="284" text-anchor="middle" font-size="9" fill="#333">优点：一次排序单趟扫描</text>
+  <text x="300" y="298" text-anchor="middle" font-size="9" fill="#333">无需 JOIN/UNION</text>
+
+  <rect x="224" y="320" width="152" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="336" text-anchor="middle" font-size="9" fill="#b85450">缺点：三元组判定条件</text>
+  <text x="300" y="350" text-anchor="middle" font-size="9" fill="#b85450">需写三个 OR 分支</text>
+
+  <rect x="224" y="372" width="152" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="388" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">时间 O(n log n)</text>
+  <text x="300" y="402" text-anchor="middle" font-size="9" fill="#4a7a3a">排序为主开销</text>
+
+  <!-- Approach C: Islands (right column) -->
+  <rect x="400" y="44" width="180" height="372" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="64" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">解法 C：岛屿分组</text>
+  <text x="490" y="78" text-anchor="middle" font-size="9" fill="#888">最通用 · 任意 N 可扩展</text>
+
+  <!-- islands diagram -->
+  <rect x="436" y="96" width="24" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="448" y="106" text-anchor="middle" font-size="8" fill="#333">2</text>
+  <rect x="460" y="96" width="24" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="472" y="106" text-anchor="middle" font-size="8" fill="#333">3</text>
+  <rect x="484" y="96" width="24" height="14" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="496" y="106" text-anchor="middle" font-size="8" fill="#999">4</text>
+  <rect x="508" y="96" width="24" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="520" y="106" text-anchor="middle" font-size="8" fill="#333">5</text>
+  <rect x="532" y="96" width="24" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="2" filter="url(#rough2)"/>
+  <text x="544" y="106" text-anchor="middle" font-size="8" fill="#333">6</text>
+  <text x="490" y="126" text-anchor="middle" font-size="8" fill="#4a7a3a">→ 按连续 id 分岛</text>
+
+  <text x="412" y="154" font-size="9" fill="#333">① 筛 people≥100 的行</text>
+  <text x="412" y="170" font-size="9" fill="#333">② id ≠ prev_id+1 → 新岛</text>
+  <text x="412" y="184" font-size="9" fill="#333">  前缀和 SUM 标记 island_id</text>
+  <text x="412" y="204" font-size="9" fill="#333">③ 按 island_id 分组</text>
+  <text x="412" y="218" font-size="9" fill="#333">  HAVING COUNT(*) ≥ 3</text>
+  <text x="412" y="238" font-size="9" fill="#333">④ 取合格岛的全部行</text>
+
+  <rect x="414" y="252" width="152" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="268" text-anchor="middle" font-size="9" fill="#333">优点：通用化"连续 N 次"</text>
+  <text x="490" y="282" text-anchor="middle" font-size="9" fill="#333">只改 HAVING 的 3→N</text>
+
+  <rect x="414" y="304" width="152" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="320" text-anchor="middle" font-size="9" fill="#b85450">缺点：多层 CTE 嵌套</text>
+  <text x="490" y="334" text-anchor="middle" font-size="9" fill="#b85450">思路稍抽象</text>
+
+  <rect x="414" y="358" width="152" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="374" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">时间 O(n log n)</text>
+  <text x="490" y="388" text-anchor="middle" font-size="9" fill="#4a7a3a">两趟窗口排序</text>
+
+  <!-- bottom comparison line -->
+  <text x="300" y="432" text-anchor="middle" font-size="10" fill="#555">推荐：面试先说 A（直观）→ 再说 B（高效）→ 提 C（通用化 N）</text>
+</svg>

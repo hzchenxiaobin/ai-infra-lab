@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：dp[i] 依赖窗口 [i−k, i−1] 内 dp 最大值 → 单调队列 O(1)</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">dp[i] = nums[i] + max{dp[j] : i−k ≤ j ≤ i−1}，起点固定 0、终点固定 n−1，答案 = dp[n−1]</text>
+
+  <!-- ===== DP recurrence formula box ===== -->
+  <rect x="40" y="58" width="540" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="310" y="79" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">dp[i] = nums[i] + 窗口 [i−k, i−1] 内 dp 的最大值</text>
+
+  <!-- ===== Example: computing dp[5], k=2 ===== -->
+  <text x="40" y="112" font-size="11" fill="#446688" font-weight="bold">示例：nums = [1, −1, −2, 4, −7, 3], k = 2，计算 dp[5]</text>
+
+  <!-- index labels -->
+  <g font-size="9" fill="#888">
+    <text x="94" y="132" text-anchor="middle">i=0</text>
+    <text x="146" y="132" text-anchor="middle">1</text>
+    <text x="198" y="132" text-anchor="middle">2</text>
+    <text x="250" y="132" text-anchor="middle">3</text>
+    <text x="302" y="132" text-anchor="middle">4</text>
+    <text x="354" y="132" text-anchor="middle">5</text>
+  </g>
+
+  <!-- nums row -->
+  <text x="50" y="155" font-size="10" fill="#555">nums:</text>
+  <g font-size="12" fill="#333">
+    <rect x="70" y="136" width="48" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="94" y="155" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="122" y="136" width="48" height="28" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+    <text x="146" y="155" text-anchor="middle">−1</text>
+    <rect x="174" y="136" width="48" height="28" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+    <text x="198" y="155" text-anchor="middle">−2</text>
+    <rect x="226" y="136" width="48" height="28" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+    <text x="250" y="155" text-anchor="middle">4</text>
+    <rect x="278" y="136" width="48" height="28" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+    <text x="302" y="155" text-anchor="middle">−7</text>
+    <rect x="330" y="136" width="48" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="354" y="155" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+  </g>
+  <text x="94" y="174" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">起点</text>
+  <text x="354" y="174" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">终点</text>
+
+  <!-- dp row -->
+  <text x="50" y="201" font-size="10" fill="#555">dp:</text>
+  <g font-size="12">
+    <rect x="70" y="182" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="94" y="201" text-anchor="middle" fill="#888">1</text>
+    <rect x="122" y="182" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="146" y="201" text-anchor="middle" fill="#888">0</text>
+    <rect x="174" y="182" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="198" y="201" text-anchor="middle" fill="#888">−1</text>
+    <!-- window cells highlighted -->
+    <rect x="226" y="182" width="48" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="250" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">4</text>
+    <rect x="278" y="182" width="48" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="302" y="201" text-anchor="middle" fill="#d6a040">−3</text>
+    <!-- dp[5] being computed -->
+    <rect x="330" y="182" width="48" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+    <text x="354" y="201" text-anchor="middle" fill="#4a7a3a" font-weight="bold">7</text>
+  </g>
+
+  <!-- window bracket for [3,4] -->
+  <path d="M 224 216 L 224 222 L 330 222 L 330 216" stroke="#d6a040" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <text x="277" y="234" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">窗口 [i−k, i−1] = [3, 4]</text>
+
+  <!-- computation arrow -->
+  <text x="400" y="194" font-size="11" fill="#555">dp[5] = nums[5] + max(dp[3], dp[4])</text>
+  <text x="400" y="210" font-size="11" fill="#555">      = 3 + max(4, −3)</text>
+  <text x="400" y="226" font-size="11" fill="#b85450" font-weight="bold">      = 3 + 4 = 7 ✓</text>
+
+  <!-- ===== Monotonic deque ===== -->
+  <text x="40" y="266" font-size="11" fill="#d6a040" font-weight="bold">单调队列（存下标，dp 值单调递减）维护窗口内 dp 最大值</text>
+
+  <!-- deque cells: [3]=4 when computing dp[5] -->
+  <rect x="70" y="280" width="84" height="34" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="112" y="302" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">[3]=4</text>
+  <text x="70" y="276" font-size="8" fill="#b85450" font-weight="bold">队头 ← 窗口最大</text>
+
+  <rect x="166" y="280" width="76" height="34" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="204" y="302" text-anchor="middle" font-size="11" fill="#d6a040">[4]=−3</text>
+  <text x="166" y="276" font-size="8" fill="#d6a040">队尾</text>
+
+  <text x="256" y="294" font-size="10" fill="#555">计算 dp[5] 时，队头</text>
+  <text x="256" y="308" font-size="10" fill="#555">dp[3]=4 即窗口最大</text>
+
+  <!-- operations -->
+  <rect x="40" y="328" width="270" height="50" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="54" y="346" font-size="10" fill="#d6a040" font-weight="bold">两个操作（均摊 O(1)）</text>
+  <text x="54" y="362" font-size="10" fill="#555">① <tspan fill="#b85450" font-weight="bold">左端过期出队</tspan>：队头下标 &lt; i−k 则弹出</text>
+  <text x="54" y="374" font-size="10" fill="#555">② <tspan fill="#4a7a3a" font-weight="bold">右端弹尾保单调</tspan>：dp[队尾] ≤ dp[i] 则弹出</text>
+
+  <!-- no max(0,·) note -->
+  <rect x="320" y="328" width="260" height="50" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="334" y="346" font-size="10" fill="#4a7a3a" font-weight="bold">为什么没有 max(0, ·)？</text>
+  <text x="334" y="362" font-size="10" fill="#555">起点固定 0，每步必从某前驱跳来</text>
+  <text x="334" y="374" font-size="10" fill="#555">不能"另起一段"，直接取窗口 max</text>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="40" y="392" width="540" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="310" y="412" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">关键：dp 转移 = "窗口内 dp 最大值" + nums[i] → 单调队列把 O(nk) 降为 O(n)</text>
+  <text x="310" y="428" text-anchor="middle" font-size="10" fill="#555">与 239 滑动窗口最大值同构——那里维护 nums 的窗口 max，这里维护 dp 的窗口 max</text>
+  <text x="310" y="442" text-anchor="middle" font-size="10" fill="#555">固定首尾的"路径版"，对照 1425 带限制的子序列和（"子序列版"多一个 max(0,·)）</text>
+</svg>

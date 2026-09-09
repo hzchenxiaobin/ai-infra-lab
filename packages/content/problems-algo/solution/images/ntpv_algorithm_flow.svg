@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="340" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：交易聚合 → 访问补零 → 序列填缺</text>
+
+  <rect x="15" y="46" width="160" height="252" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="15" y="46" width="160" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 交易聚合 tx_agg</text>
+
+  <rect x="25" y="80" width="140" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="32" y="94" font-size="8.5" fill="#333">GROUP BY user_id,</text>
+  <text x="32" y="106" font-size="8.5" fill="#333">  transaction_date</text>
+  <text x="32" y="118" font-size="8.5" fill="#d6a040" font-weight="bold">COUNT(*) AS cnt</text>
+
+  <rect x="30" y="136" width="40" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="50" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">user</text>
+  <rect x="70" y="136" width="34" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="87" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">date</text>
+  <rect x="104" y="136" width="34" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="121" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">cnt</text>
+
+  <rect x="30" y="156" width="108" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="50" y="168" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="87" y="168" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">D2</text>
+  <text x="121" y="168" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">1</text>
+
+  <rect x="30" y="174" width="108" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="50" y="186" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">9</text>
+  <text x="87" y="186" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">D3</text>
+  <text x="121" y="186" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">3</text>
+
+  <rect x="25" y="200" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="32" y="214" font-size="8.5" fill="#b85450" font-weight="bold">无交易的用户/日期</text>
+  <text x="32" y="226" font-size="8.5" fill="#b85450">不在 tx_agg 中</text>
+  <text x="32" y="236" font-size="8.5" fill="#b85450">→ LEFT JOIN 得 NULL</text>
+
+  <text x="95" y="260" text-anchor="middle" font-size="8.5" fill="#555">每 (user, date) 一行</text>
+  <text x="95" y="273" text-anchor="middle" font-size="8.5" fill="#555">cnt = 交易条数</text>
+  <text x="95" y="289" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">从 Transactions 表</text>
+
+  <path d="M180 172 L202 172" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="191" y="165" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">JOIN</text>
+
+  <rect x="205" y="46" width="160" height="252" fill="#ffffff" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="205" y="46" width="160" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="285" y="63" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 访问补零 visit_cnt</text>
+
+  <rect x="215" y="80" width="140" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="222" y="94" font-size="8.5" fill="#333">Visits LEFT JOIN tx_agg</text>
+  <text x="222" y="106" font-size="8.5" fill="#333">  ON user, date</text>
+  <text x="222" y="118" font-size="8.5" fill="#d6a040" font-weight="bold">IFNULL(cnt, 0)</text>
+
+  <rect x="220" y="136" width="40" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">user</text>
+  <rect x="260" y="136" width="34" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="277" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">date</text>
+  <rect x="294" y="136" width="34" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="311" y="150" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">cnt</text>
+
+  <rect x="220" y="156" width="108" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="240" y="168" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">1</text>
+  <text x="277" y="168" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">D1</text>
+  <text x="311" y="168" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">0</text>
+
+  <rect x="220" y="174" width="108" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="240" y="186" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="277" y="186" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">D2</text>
+  <text x="311" y="186" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">1</text>
+
+  <rect x="220" y="192" width="108" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="240" y="204" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">9</text>
+  <text x="277" y="204" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">D3</text>
+  <text x="311" y="204" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">3</text>
+
+  <rect x="215" y="218" width="140" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="222" y="232" font-size="8.5" fill="#d6a040" font-weight="bold">无交易的访问 cnt=0</text>
+  <text x="222" y="244" font-size="8.5" fill="#333">IFNULL(NULL, 0)</text>
+  <text x="222" y="254" font-size="8.5" fill="#333">→ 0 而非 NULL</text>
+
+  <text x="285" y="276" text-anchor="middle" font-size="8.5" fill="#555">每次访问恰一行</text>
+  <text x="285" y="289" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">cnt ∈ {0,1,2,...}</text>
+
+  <path d="M370 172 L392 172" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="381" y="165" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">补缺</text>
+
+  <rect x="395" y="46" width="160" height="252" fill="#ffffff" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <rect x="395" y="46" width="160" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="63" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 序列填缺 output</text>
+
+  <rect x="405" y="80" width="140" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="412" y="94" font-size="8.5" fill="#b85450" font-weight="bold">WITH RECURSIVE seq:</text>
+  <text x="412" y="106" font-size="8.5" fill="#333">SELECT 0 AS n</text>
+  <text x="412" y="118" font-size="8.5" fill="#333">UNION ALL</text>
+  <text x="412" y="130" font-size="8.5" fill="#333">SELECT n+1 WHERE n&lt;max</text>
+
+  <rect x="410" y="148" width="34" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="427" y="162" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">n</text>
+  <rect x="444" y="148" width="46" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="467" y="162" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">visits</text>
+
+  <rect x="410" y="168" width="80" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="427" y="180" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">0</text>
+  <text x="467" y="180" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">1</text>
+
+  <rect x="410" y="186" width="80" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="427" y="198" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="467" y="198" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">1</text>
+
+  <rect x="410" y="204" width="80" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="2" filter="url(#rough2)"/>
+  <text x="427" y="216" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">2</text>
+  <text x="467" y="216" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">0</text>
+
+  <rect x="410" y="222" width="80" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="427" y="234" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">3</text>
+  <text x="467" y="234" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">1</text>
+
+  <rect x="405" y="246" width="140" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="412" y="260" font-size="8.5" fill="#333">seq LEFT JOIN visit_cnt</text>
+  <text x="412" y="272" font-size="8.5" fill="#333">  ON n = cnt</text>
+  <text x="412" y="284" font-size="8.5" fill="#4a7a3a" font-weight="bold">GROUP BY n → COUNT</text>
+
+  <rect x="15" y="306" width="540" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="35" y="323" font-size="9.5" fill="#333">三步流水线：<tspan fill="#446688" font-weight="bold">聚合</tspan>（GROUP BY 交易数）→ <tspan fill="#d6a040" font-weight="bold">补零</tspan>（LEFT JOIN + IFNULL）→ <tspan fill="#b85450" font-weight="bold">填缺</tspan>（RECURSIVE 序列 + LEFT JOIN + COUNT）。</text>
+</svg>

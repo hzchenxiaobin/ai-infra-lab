@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">fill(r, c, n, start)：按象限顺序递归分配</text>
+
+  <!-- 入口 -->
+  <rect x="170" y="34" width="180" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="53" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">fill(r, c, n, start)</text>
+  <path d="M 260 64 L 260 74" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <path d="M 260 78 L 330 108 L 260 138 L 190 108 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="113" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold" filter="url(#rough2)">n = 0 ?</text>
+
+  <!-- 是：递归出口 -->
+  <text x="350" y="98" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <path d="M 330 108 L 376 108" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="380" y="88" width="126" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="443" y="105" text-anchor="middle" font-size="11.5" fill="#2a5a2a" font-weight="bold" filter="url(#rough2)">grid[r][c] = start</text>
+  <text x="443" y="120" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">1×1 递归出口</text>
+
+  <!-- 否：切分参数 -->
+  <text x="272" y="156" text-anchor="start" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <path d="M 260 138 L 260 158" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="145" y="162" width="230" height="34" rx="6" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="183" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">half = 2^(n−1)，block = 4^(n−1)</text>
+  <path d="M 260 196 L 260 206" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 四个递归调用（严格串行） -->
+  <rect x="95" y="210" width="330" height="27" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="228" text-anchor="middle" font-size="11.5" fill="#2a5a2a" font-weight="bold" filter="url(#rough2)">① 右上：fill(r, c+half, n−1, start)</text>
+  <text x="432" y="228" text-anchor="start" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">第 1 块（最小）</text>
+  <path d="M 260 237 L 260 245" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="244" text-anchor="start" font-size="9" fill="#999" filter="url(#rough2)">依次调用</text>
+
+  <rect x="95" y="249" width="330" height="27" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="267" text-anchor="middle" font-size="11.5" fill="#3a5a7a" font-weight="bold" filter="url(#rough2)">② 右下：fill(r+half, c+half, n−1, start+block)</text>
+  <text x="432" y="267" text-anchor="start" font-size="9.5" fill="#446688" filter="url(#rough2)">第 2 块</text>
+  <path d="M 260 276 L 260 284" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="95" y="288" width="330" height="27" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="306" text-anchor="middle" font-size="11.5" fill="#8a6d3a" font-weight="bold" filter="url(#rough2)">③ 左下：fill(r+half, c, n−1, start+2·block)</text>
+  <text x="432" y="306" text-anchor="start" font-size="9.5" fill="#d6a040" filter="url(#rough2)">第 3 块</text>
+  <path d="M 260 315 L 260 323" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="95" y="327" width="330" height="27" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="345" text-anchor="middle" font-size="11.5" fill="#a04848" font-weight="bold" filter="url(#rough2)">④ 左上：fill(r, c, n−1, start+3·block)</text>
+  <text x="432" y="345" text-anchor="start" font-size="9.5" fill="#b85450" filter="url(#rough2)">第 4 块（最大）</text>
+</svg>

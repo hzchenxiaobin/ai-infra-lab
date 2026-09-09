@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 580" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="580" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：初始化双堆 → k 轮「比较·弹出·补员」</text>
+
+  <!-- Step 1 init front -->
+  <rect x="120" y="44" width="300" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="64" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">① 初始化 front 堆：从 left 起压 candidates 个</text>
+  <text x="270" y="82" text-anchor="middle" font-size="10.5" fill="#4a7a3a">while size &lt; candidates 且 left ≤ right：push(costs[left])，left++</text>
+  <text x="270" y="96" text-anchor="middle" font-size="10" fill="#888">→ 从最左吞入前窗</text>
+  <path d="M 270 102 L 270 122" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 2 init back -->
+  <rect x="120" y="124" width="300" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="144" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 初始化 back 堆：从 right 起压 candidates 个</text>
+  <text x="270" y="162" text-anchor="middle" font-size="10.5" fill="#d6a040">while size &lt; candidates 且 left ≤ right：push(costs[right])，right--</text>
+  <text x="270" y="176" text-anchor="middle" font-size="10" fill="#888">→ 从最右吞入后窗（与前窗不重叠）</text>
+  <path d="M 270 182 L 270 204" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 3 loop header -->
+  <rect x="120" y="206" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="228" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">③ 重复 k 轮，每轮雇佣 1 人</text>
+  <path d="M 270 242 L 270 262" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- decision diamond: which heap empty -->
+  <polygon points="270,264 380,316 270,368 160,316" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="306" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">哪个堆顶更小？</text>
+  <text x="270" y="322" text-anchor="middle" font-size="10.5" fill="#b85450">（并列→下标小=前窗）</text>
+  <text x="270" y="338" text-anchor="middle" font-size="10" fill="#888">空堆直接取另一堆</text>
+
+  <!-- Yes front branch -->
+  <path d="M 160 316 L 80 316 L 80 362" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="96" y="310" font-size="11" fill="#4a7a3a" font-weight="bold">前≤后</text>
+  <rect x="14" y="364" width="132" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="384" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">3a 弹 front</text>
+  <text x="24" y="402" font-size="10.5" fill="#4a7a3a">(c, idx) = front.pop()</text>
+  <text x="24" y="418" font-size="10.5" fill="#4a7a3a">ans += c</text>
+  <text x="24" y="434" font-size="10.5" fill="#4a7a3a">if left ≤ right:</text>
+  <text x="30" y="450" font-size="10" fill="#4a7a3a">front.push(left); left++</text>
+
+  <!-- No back branch -->
+  <path d="M 380 316 L 460 316 L 460 362" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="416" y="310" font-size="11" fill="#d6a040" font-weight="bold">前&gt;后</text>
+  <rect x="394" y="364" width="132" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="384" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">3b 弹 back</text>
+  <text x="404" y="402" font-size="10.5" fill="#d6a040">(c, idx) = back.pop()</text>
+  <text x="404" y="418" font-size="10.5" fill="#d6a040">ans += c</text>
+  <text x="404" y="434" font-size="10.5" fill="#d6a040">if left ≤ right:</text>
+  <text x="410" y="450" font-size="10" fill="#d6a040">back.push(right); right--</text>
+
+  <!-- loop back arrow -->
+  <path d="M 80 456 L 80 492 L 460 492 L 460 456" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="270" y="510" text-anchor="middle" font-size="11" fill="#888">k 轮结束 → 返回 ans（总代价）</text>
+
+  <!-- tips -->
+  <rect x="14" y="528" width="512" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="30" y="545" font-size="10.5" fill="#b85450" font-weight="bold">⚠️ 溢出：总代价最坏 k×10⁹ = 10¹⁴，超 32 位 int，C++ 用 long long</text>
+  <text x="30" y="561" font-size="10.5" fill="#b85450">💡 关键：弹出哪侧就从同侧补员（left++ 或 right--），保证两窗不重叠、中间区被双向吞并</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：排序后固定 nums[i]，双指针夹逼 + 区间一次性计数</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">s = nums[i] + nums[left] + nums[right]，只数“&lt; target”的三元组个数</text>
+
+  <!-- sorted array row -->
+  <g font-size="12" fill="#333">
+    <text x="44" y="92" font-size="11" fill="#888">排序后数组：</text>
+
+    <!-- nums[i] cell (fixed) -->
+    <rect x="100" y="76" width="50" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="125" y="98" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">nums[i]</text>
+
+    <text x="170" y="98" font-size="14" fill="#888">…</text>
+
+    <!-- left cell -->
+    <rect x="200" y="76" width="50" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="225" y="98" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">nums[l]</text>
+
+    <!-- highlighted middle cells: all satisfy together with current l -->
+    <rect x="252" y="76" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="274" y="98" text-anchor="middle" font-size="11" fill="#4a7a3a">≤</text>
+    <rect x="298" y="76" width="44" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="320" y="98" text-anchor="middle" font-size="11" fill="#4a7a3a">≤</text>
+
+    <!-- right cell -->
+    <rect x="344" y="76" width="50" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="369" y="98" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">nums[r]</text>
+
+    <!-- pointer labels -->
+    <text x="125" y="70" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">固定 i</text>
+    <text x="225" y="70" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">left →</text>
+    <text x="369" y="70" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">← right</text>
+
+    <!-- bracket: right-left pairs all counted -->
+    <path d="M 226 116 L 226 124 L 368 124 L 368 116" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+    <text x="297" y="138" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">一次计 (right − left) 个</text>
+  </g>
+
+  <!-- two movement rules -->
+  <g font-size="11" fill="#333">
+    <!-- rule 1: s < target  -> count += right-left, left++ -->
+    <rect x="40" y="156" width="460" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="178" font-size="12" fill="#4a7a3a" font-weight="bold">情况 ①</text>
+    <text x="106" y="178" font-family="monospace" font-size="11" fill="#555">s &lt; target  →  命中！</text>
+    <text x="54" y="198" font-size="10" fill="#555">nums[l] 固定，nums[r] 已是最大配对；r 左边任意 r′ 都让和更小，必也 &lt; target</text>
+    <text x="54" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">count += right − left；left++</text>
+    <path d="M 360 208 L 410 208" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+    <text x="385" y="204" text-anchor="middle" font-size="9" fill="#4a7a3a">left 右移</text>
+
+    <!-- rule 2: s >= target -> right-- -->
+    <rect x="40" y="244" width="460" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="266" font-size="12" fill="#d6a040" font-weight="bold">情况 ②</text>
+    <text x="106" y="266" font-family="monospace" font-size="11" fill="#555">s ≥ target  →  和偏大</text>
+    <text x="54" y="286" font-size="10" fill="#555">nums[r] 太大，right-- 换更小的右端去逼近 target</text>
+    <path d="M 410 280 L 360 280" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+    <text x="385" y="276" text-anchor="middle" font-size="9" fill="#d6a040">right 左移</text>
+  </g>
+
+  <!-- bottom notes: no dedup -->
+  <rect x="40" y="320" width="460" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="54" y="342" font-size="12" fill="#b85450" font-weight="bold">⚠️ 与 15 三数之和的关键差异</text>
+  <text x="54" y="360" font-size="10" fill="#555">15 题求“不重复三元组（按值）”→ 必须两层去重；</text>
+  <text x="54" y="376" font-size="10" fill="#555">259 题求“下标三元组个数（i&lt;j&lt;k）”→ 值相同但下标不同也分别计数，<tspan font-weight="bold" fill="#b85450">不去重</tspan></text>
+</svg>

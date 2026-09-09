@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 450" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="500" height="450" fill="#fafafa"/>
+
+  <text x="250" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">算法流程：单趟扫描税级，维护 prev 游标</text>
+
+  <!-- start oval -->
+  <ellipse cx="250" cy="50" rx="92" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="54" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">prev = 0, tax = 0</text>
+
+  <!-- arrow to diamond -->
+  <path d="M 250 70 L 250 80" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond (loop guard) -->
+  <polygon points="250,80 375,135 250,190 125,135" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="128" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">还有税级 且</text>
+  <text x="250" y="142" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">income &gt; prev ?</text>
+
+  <!-- Yes label + arrow down -->
+  <text x="262" y="206" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 250 190 L 250 213" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+
+  <!-- rect1: taxable -->
+  <rect x="105" y="215" width="290" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="240" text-anchor="middle" font-size="11.5" fill="#333">taxable = min(income, upper) − prev</text>
+
+  <path d="M 250 257 L 250 277" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- rect2: accumulate tax -->
+  <rect x="125" y="279" width="250" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="304" text-anchor="middle" font-size="11.5" fill="#333">tax += taxable × percent / 100</text>
+
+  <path d="M 250 321 L 250 341" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- rect3: advance prev -->
+  <rect x="150" y="343" width="200" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="368" text-anchor="middle" font-size="11.5" fill="#333">prev = upper</text>
+
+  <!-- loopback: right side up to diamond right -->
+  <path d="M 350 364 L 430 364 L 430 135 L 378 135" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrGreen)" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="438" y="250" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">回</text>
+  <text x="438" y="263" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">到</text>
+  <text x="438" y="276" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">顶</text>
+
+  <!-- No exit: left side down to end oval -->
+  <text x="100" y="128" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 125 135 L 55 135 L 55 415 L 162 415" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrRed)" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="44" y="250" text-anchor="middle" font-size="9.5" fill="#b85450">退出循环</text>
+
+  <!-- end oval -->
+  <ellipse cx="250" cy="415" rx="88" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="250" y="419" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return tax</text>
+</svg>

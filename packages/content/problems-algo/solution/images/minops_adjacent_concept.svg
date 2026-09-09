@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：棋盘着色 → 二分图 → 最小顶点覆盖</text>
+
+  <!-- ===== Top: 3x3 Grid with chessboard coloring ===== -->
+  <text x="40" y="50" font-size="11" fill="#888">grid =</text>
+
+  <!-- Row 0 -->
+  <rect x="80" y="44" width="48" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="104" y="67" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="104" y="90" text-anchor="middle" font-size="8" fill="#446688">(0,0)●</text>
+
+  <rect x="130" y="44" width="48" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="67" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="154" y="90" text-anchor="middle" font-size="8" fill="#4a7a3a">(0,1)○</text>
+
+  <rect x="180" y="44" width="48" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)" opacity="0.4"/>
+  <text x="204" y="67" text-anchor="middle" font-size="14" fill="#aaa">0</text>
+
+  <!-- Row 1 -->
+  <rect x="80" y="82" width="48" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)" opacity="0.4"/>
+  <text x="104" y="105" text-anchor="middle" font-size="14" fill="#aaa">0</text>
+
+  <rect x="130" y="82" width="48" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="105" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="154" y="128" text-anchor="middle" font-size="8" fill="#446688">(1,1)●</text>
+
+  <rect x="180" y="82" width="48" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="204" y="105" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="204" y="128" text-anchor="middle" font-size="8" fill="#4a7a3a">(1,2)○</text>
+
+  <!-- Row 2 -->
+  <rect x="80" y="120" width="48" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="104" y="143" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="104" y="166" text-anchor="middle" font-size="8" fill="#446688">(2,0)●</text>
+
+  <rect x="130" y="120" width="48" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="154" y="143" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="154" y="166" text-anchor="middle" font-size="8" fill="#4a7a3a">(2,1)○</text>
+
+  <rect x="180" y="120" width="48" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="204" y="143" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">1</text>
+  <text x="204" y="166" text-anchor="middle" font-size="8" fill="#446688">(2,2)●</text>
+
+  <!-- Legend -->
+  <rect x="270" y="48" width="16" height="12" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="292" y="58" font-size="10" fill="#555">● (i+j)偶 = 左部</text>
+  <rect x="270" y="68" width="16" height="12" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="292" y="78" font-size="10" fill="#555">○ (i+j)奇 = 右部</text>
+  <rect x="270" y="88" width="16" height="12" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="2" filter="url(#rough2)" opacity="0.4"/>
+  <text x="292" y="98" font-size="10" fill="#888">0 = 无需处理</text>
+
+  <!-- Arrow down -->
+  <text x="150" y="195" text-anchor="middle" font-size="11" fill="#666">↓ 相邻的 1 连边 → 构建二分图</text>
+  <line x1="150" y1="172" x2="150" y2="200" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom: Bipartite Graph ===== -->
+  <text x="80" y="225" font-size="11" fill="#446688" font-weight="bold">左部 L (● 偶)</text>
+  <text x="440" y="225" font-size="11" fill="#4a7a3a" font-weight="bold">右部 R (○ 奇)</text>
+
+  <!-- Left nodes -->
+  <ellipse cx="100" cy="250" rx="28" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="254" text-anchor="middle" font-size="10" fill="#333">(0,0)</text>
+
+  <ellipse cx="100" cy="295" rx="28" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="299" text-anchor="middle" font-size="10" fill="#333">(1,1)</text>
+
+  <ellipse cx="100" cy="340" rx="28" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="344" text-anchor="middle" font-size="10" fill="#333">(2,0)</text>
+
+  <ellipse cx="100" cy="385" rx="28" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="389" text-anchor="middle" font-size="10" fill="#333">(2,2)</text>
+
+  <!-- Right nodes -->
+  <ellipse cx="440" cy="265" rx="28" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="440" y="269" text-anchor="middle" font-size="10" fill="#333">(0,1)</text>
+
+  <ellipse cx="440" cy="320" rx="28" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="440" y="324" text-anchor="middle" font-size="10" fill="#333">(1,2)</text>
+
+  <ellipse cx="440" cy="375" rx="28" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="440" y="379" text-anchor="middle" font-size="10" fill="#333">(2,1)</text>
+
+  <!-- Edges (adjacent 1s) -->
+  <line x1="128" y1="250" x2="412" y2="265" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="295" x2="412" y2="265" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="295" x2="412" y2="320" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="295" x2="412" y2="375" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="340" x2="412" y2="375" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="385" x2="412" y2="320" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="128" y1="385" x2="412" y2="375" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <!-- Key insight box -->
+  <rect x="240" y="200" width="220" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)" opacity="0"/>
+  <text x="290" y="408" text-anchor="middle" font-size="10" fill="#888">7 条边 = 7 对相邻的 1，需选最少顶点覆盖全部边</text>
+</svg>

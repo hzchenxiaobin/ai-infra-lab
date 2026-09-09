@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 442" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="442" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：两段异构 Top-1 经 UNION ALL 拼成单列 results</text>
+
+  <!-- ===== Left branch header ===== -->
+  <text x="150" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">第 1 问：评论数最多的用户</text>
+  <!-- ===== Right branch header ===== -->
+  <text x="450" y="54" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">第 2 问：2020-02 均分最高的电影</text>
+
+  <!-- ===== Left step 1 ===== -->
+  <rect x="50" y="64" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="80" text-anchor="middle" font-size="11" fill="#333">MovieRating JOIN Users</text>
+  <text x="150" y="95" text-anchor="middle" font-size="10" fill="#666">GROUP BY user_id, name</text>
+
+  <!-- ===== Right step 1 ===== -->
+  <rect x="350" y="64" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="80" text-anchor="middle" font-size="11" fill="#333">MovieRating (WHERE Feb 2020)</text>
+  <text x="450" y="95" text-anchor="middle" font-size="10" fill="#666">JOIN Movies · GROUP BY movie_id</text>
+
+  <!-- arrows step1 -> step2 -->
+  <path d="M150 104 L150 120" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M450 104 L450 120" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Left step 2 ===== -->
+  <rect x="50" y="124" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="140" text-anchor="middle" font-size="11" fill="#333">COUNT(*) AS cnt</text>
+  <text x="150" y="155" text-anchor="middle" font-size="10" fill="#666">ORDER BY cnt DESC, name ASC</text>
+
+  <!-- ===== Right step 2 ===== -->
+  <rect x="350" y="124" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="140" text-anchor="middle" font-size="11" fill="#333">AVG(rating) AS avg_r</text>
+  <text x="450" y="155" text-anchor="middle" font-size="10" fill="#666">ORDER BY avg_r DESC, title ASC</text>
+
+  <!-- arrows step2 -> step3 -->
+  <path d="M150 164 L150 180" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M450 164 L450 180" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== Left step 3: LIMIT 1 + result ===== -->
+  <rect x="50" y="184" width="200" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="205" text-anchor="middle" font-size="11" fill="#333">LIMIT 1</text>
+
+  <!-- ===== Right step 3 ===== -->
+  <rect x="350" y="184" width="200" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="205" text-anchor="middle" font-size="11" fill="#333">LIMIT 1</text>
+
+  <!-- arrows to results -->
+  <path d="M150 218 L150 240" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M450 218 L450 240" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== per-branch Top-1 result chips ===== -->
+  <rect x="90" y="244" width="120" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="16" filter="url(#rough2)"/>
+  <text x="150" y="265" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">Daniel</text>
+
+  <rect x="390" y="244" width="120" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="16" filter="url(#rough2)"/>
+  <text x="450" y="265" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">Frozen 2</text>
+
+  <!-- ===== merge arrows to UNION ALL ===== -->
+  <path d="M210 261 Q255 261 280 285" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M390 261 Q345 261 320 285" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== UNION ALL node ===== -->
+  <rect x="240" y="288" width="120" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="309" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">UNION ALL</text>
+
+  <!-- arrow down to final results -->
+  <path d="M300 320 L300 338" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== final results column ===== -->
+  <rect x="220" y="342" width="160" height="70" fill="#fafafa" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <rect x="220" y="342" width="160" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="358" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">results</text>
+  <line x1="220" y1="364" x2="380" y2="364" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="300" y="380" text-anchor="middle" font-size="12" fill="#333">Daniel</text>
+  <line x1="220" y1="388" x2="380" y2="388" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="300" y="404" text-anchor="middle" font-size="12" fill="#333">Frozen 2</text>
+
+  <!-- side note -->
+  <text x="430" y="358" font-size="10" fill="#b85450" font-weight="bold">两段各 1 行</text>
+  <text x="430" y="372" font-size="9.5" fill="#b85450">异构但同列</text>
+  <text x="430" y="386" font-size="9.5" fill="#b85450">UNION ALL</text>
+  <text x="430" y="400" font-size="9.5" fill="#b85450">不去重拼接</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="420" width="560" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="433" text-anchor="middle" font-size="10" fill="#333">每段 <tspan fill="#b85450" font-weight="bold">(SELECT ... ORDER BY ... LIMIT 1)</tspan> 必须加括号，否则 LIMIT 会吞掉另一段</text>
+</svg>

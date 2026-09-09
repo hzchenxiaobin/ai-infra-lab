@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">一条正则搞定：FROM → WHERE REGEXP → SELECT 投影</text>
+
+  <!-- Step 1 -->
+  <rect x="110" y="40" width="300" height="30" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="59" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① FROM Products —— 7 行进入判定</text>
+  <path d="M260,70 L260,84" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: REGEXP filter -->
+  <rect x="64" y="88" width="392" height="50" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="108" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">② WHERE name REGEXP '012|123|234|…|789'</text>
+  <text x="260" y="126" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">逐行判定：name 中是否包含连续递增三元组（子串匹配）</text>
+
+  <!-- branch arrows -->
+  <path d="M160,138 C 140 150, 130 155, 122 166" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="136" y="156" font-size="13" fill="#b85450" filter="url(#rough2)">✗</text>
+  <path d="M360,138 C 380 150, 390 155, 396 166" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="386" y="156" font-size="13" fill="#4a7a3a" filter="url(#rough2)">✓</text>
+
+  <!-- left: discarded rows -->
+  <rect x="28" y="170" width="190" height="136" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="123" y="190" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">✗ 丢弃 · 4 行</text>
+  <text x="123" y="210" text-anchor="middle" font-size="9.8" fill="#7a2f2b" filter="url(#rough2)">A12B34C — 只有 2 位段</text>
+  <text x="123" y="226" text-anchor="middle" font-size="9.8" fill="#7a2f2b" filter="url(#rough2)">NoDigitsHere — 无数字</text>
+  <text x="123" y="242" text-anchor="middle" font-size="9.8" fill="#7a2f2b" filter="url(#rough2)">Item003… — 003 不连续</text>
+  <text x="123" y="258" text-anchor="middle" font-size="9.8" fill="#7a2f2b" filter="url(#rough2)">Product12X34 — 只有 2 位段</text>
+  <text x="123" y="288" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">（WHERE 逐行布尔判定）</text>
+
+  <!-- right: kept rows -->
+  <rect x="302" y="170" width="190" height="136" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="397" y="190" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">✓ 保留 · 3 行</text>
+  <text x="397" y="210" text-anchor="middle" font-size="9.8" fill="#2d5523" filter="url(#rough2)">ABC123XYZ — 含 123</text>
+  <text x="397" y="226" text-anchor="middle" font-size="9.8" fill="#2d5523" filter="url(#rough2)">Product56789 — 含 567/678/789</text>
+  <text x="397" y="242" text-anchor="middle" font-size="9.8" fill="#2d5523" filter="url(#rough2)">789Product — 含 789</text>
+  <text x="397" y="272" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">（命中多组也只保留一行）</text>
+
+  <!-- Step 3 -->
+  <path d="M396,306 L396,322" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="276" y="326" width="240" height="28" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="396" y="344" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ SELECT product_id, name</text>
+  <path d="M396,354 L396,366" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: output -->
+  <rect x="276" y="370" width="240" height="26" rx="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="396" y="387" text-anchor="middle" font-size="11.5" fill="#2d5523" filter="url(#rough2)">输出 3 行（按 product_id 升序展示）</text>
+
+  <!-- bottom-left variant note -->
+  <rect x="28" y="336" width="230" height="52" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="143" y="356" text-anchor="middle" font-size="10" fill="#7a4a2b" filter="url(#rough2)">⚠ 若题意是「任意三个连排数字」：</text>
+  <text x="143" y="374" text-anchor="middle" font-size="10" fill="#7a4a2b" filter="url(#rough2)">改用 REGEXP '[0-9]{3}'（003 也命中）</text>
+</svg>

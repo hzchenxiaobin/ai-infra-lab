@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心概念：博弈状态 + 逆向归纳（拓扑排序）</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">状态 (m, c, turn) → 从终止态反推每个状态的胜负</text>
+
+  <!-- Left: Grid -->
+  <text x="120" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">游戏棋盘 grid (rows×cols ≤ 8×8)</text>
+  <g filter="url(#rough2)">
+    <!-- grid 3x5 example -->
+    <rect x="40" y="76" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="72" y="76" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="104" y="76" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="136" y="76" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="168" y="76" width="32" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="2"/>
+    <text x="184" y="97" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">F</text>
+
+    <rect x="40" y="108" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="72" y="108" width="32" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="2"/>
+    <text x="88" y="129" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">C</text>
+    <rect x="104" y="108" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="136" y="108" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="168" y="108" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+
+    <rect x="40" y="140" width="32" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2"/>
+    <text x="56" y="161" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">M</text>
+    <rect x="72" y="140" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="104" y="140" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="136" y="140" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+    <rect x="168" y="140" width="32" height="32" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="2"/>
+  </g>
+  <text x="120" y="192" text-anchor="middle" font-size="9" fill="#888">M=老鼠  C=猫  F=食物  #=墙(不可过)</text>
+  <text x="120" y="206" text-anchor="middle" font-size="9" fill="#888">跳 1~maxJump 格，遇墙停；可原地不动</text>
+
+  <!-- Right: State definition -->
+  <rect x="270" y="68" width="250" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="88" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">状态 = (m, c, turn)</text>
+  <text x="395" y="104" text-anchor="middle" font-size="10" fill="#333">m = 老鼠位置(0~63)  c = 猫位置</text>
+  <text x="395" y="118" text-anchor="middle" font-size="10" fill="#333">turn: 0=老鼠走  1=猫走（奇偶交替）</text>
+
+  <!-- Terminal states -->
+  <text x="395" y="142" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">终止状态（已知胜负，入队）</text>
+  <rect x="270" y="148" width="78" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="309" y="166" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">m == food</text>
+  <text x="309" y="180" text-anchor="middle" font-size="10" fill="#4a7a3a">老鼠赢 ✓</text>
+
+  <rect x="356" y="148" width="78" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="395" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">m == c</text>
+  <text x="395" y="180" text-anchor="middle" font-size="10" fill="#b85450">猫赢(同格)</text>
+
+  <rect x="442" y="148" width="78" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="481" y="166" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">c == food</text>
+  <text x="481" y="180" text-anchor="middle" font-size="10" fill="#b85450">猫赢(抢食)</text>
+
+  <!-- Backward induction -->
+  <path d="M 270 196 L 270 214" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="395" y="208" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">逆向归纳：从终止态 BFS 反传到前驱</text>
+
+  <!-- Layer 0: terminal -->
+  <rect x="80" y="218" width="380" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="237" text-anchor="middle" font-size="10" fill="#333">第 0 层：终止态 (m==F / m==c / c==F) → 直接入队</text>
+
+  <!-- arrow down -->
+  <path d="M 270 250 L 270 266" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Layer 1: predecessors -->
+  <rect x="80" y="270" width="380" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="288" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">第 1 层：前驱状态（能一步到达终止态）</text>
+  <text x="270" y="304" text-anchor="middle" font-size="9" fill="#333">当前方=赢家 → 直接判定前驱赢(有一手赢棋)</text>
+  <text x="270" y="316" text-anchor="middle" font-size="9" fill="#333">当前方=输家 → loss_count++，满 degree 则全输→前驱输</text>
+
+  <path d="M 270 318 L 270 334" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Layer 2+ -->
+  <rect x="80" y="338" width="380" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="356" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">第 2, 3, … 层：逐层反传直到无新状态</text>
+  <text x="270" y="368" text-anchor="middle" font-size="9" fill="#333">未被解析的状态 = 双方都无法强制取胜 → 平局 → 猫赢(1000步限制)</text>
+
+  <!-- Result -->
+  <path d="M 270 378 L 270 392" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <rect x="130" y="394" width="280" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="408" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">答案 = result[初始m][初始c][0] == 老鼠赢?</text>
+</svg>

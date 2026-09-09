@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="520" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：逆序滚动哈希，最后命中即最左</text>
+
+  <!-- Init -->
+  <rect x="170" y="46" width="280" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="68" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">初始化</text>
+  <text x="310" y="86" text-anchor="middle" font-size="11" fill="#555">pk = powerᵏ mod m； h = 0； res = 0</text>
+
+  <path d="M 310 100 L 310 122" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop header -->
+  <rect x="170" y="126" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">for i = n−1 downto 0（逆序）</text>
+  <text x="310" y="162" text-anchor="middle" font-size="11" fill="#555">从最右字符向左推进</text>
+
+  <path d="M 310 174 L 310 196" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Accumulate -->
+  <rect x="120" y="200" width="380" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="220" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">h = ( h · power + val(s[i]) ) mod m</text>
+  <text x="310" y="236" text-anchor="middle" font-size="11" fill="#555">累计后缀哈希：旧项升一位 + 新字符落 p⁰</text>
+
+  <path d="M 310 248 L 310 268" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: i + k < n ? -->
+  <polygon points="310,272 410,310 310,348 210,310" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="306" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">i + k &lt; n ?</text>
+  <text x="310" y="322" text-anchor="middle" font-size="10" fill="#888">有字符越界离开窗口？</text>
+
+  <!-- Yes branch: subtract leaving char -->
+  <path d="M 410 310 L 460 310" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="428" y="302" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="464" y="288" width="148" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="538" y="308" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">h = (h − val(s[i+k])·pk)</text>
+  <text x="538" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">    mod m</text>
+
+  <path d="M 538 332 Q 538 360 420 360" stroke="#666" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No branch: skip -->
+  <path d="M 310 348 L 310 372" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="368" font-size="11" fill="#b85450" font-weight="bold">否（仍在建窗）</text>
+
+  <!-- Decision 2: valid window and match? -->
+  <polygon points="310,376 430,420 310,464 190,420" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="412" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i + k ≤ n 且</text>
+  <text x="310" y="428" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">h == hashValue ?</text>
+  <text x="310" y="444" text-anchor="middle" font-size="10" fill="#888">有效窗口且哈希命中？</text>
+
+  <!-- Yes: record res -->
+  <path d="M 430 420 L 470 420" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="442" y="412" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="474" y="404" width="130" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="539" y="426" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">res = i ⭐</text>
+
+  <!-- loop back arrow -->
+  <path d="M 190 420 Q 80 420 80 148 Q 80 126 168 148" stroke="#666" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="284" font-size="10" fill="#888">i −−，继续</text>
+
+  <!-- No: continue -->
+  <path d="M 310 464 L 310 488" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="482" font-size="10" fill="#b85450">否</text>
+
+  <!-- Return -->
+  <rect x="120" y="492" width="260" height="0" fill="none" stroke="none"/>
+  <rect x="380" y="478" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="500" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return s[res … res+k−1]</text>
+</svg>

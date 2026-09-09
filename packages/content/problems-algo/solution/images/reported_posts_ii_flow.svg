@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → WHERE → LEFT JOIN → GROUP BY → 比率 → AVG → ROUND</text>
+
+  <!-- Step 1: FROM Actions -->
+  <rect x="180" y="46" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="61" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Actions a</text>
+  <text x="280" y="74" text-anchor="middle" font-size="8" fill="#888">读取全部操作行（含 view/like/report/...）</text>
+
+  <path d="M280 80 L280 96" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE -->
+  <rect x="150" y="96" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">② WHERE a.action='report' AND a.extra='spam'</text>
+  <text x="280" y="127" text-anchor="middle" font-size="8" fill="#888">只留"被举报为 spam"的行；丢弃 view/like/racism 等</text>
+
+  <path d="M280 136 L280 152" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: LEFT JOIN -->
+  <rect x="120" y="152" width="320" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="170" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">③ LEFT JOIN Removals b ON a.post_id = b.post_id</text>
+  <text x="280" y="185" text-anchor="middle" font-size="8" fill="#888">保留所有 spam 行；被删帖 → b.post_id 有值，未删 → NULL</text>
+  <text x="280" y="195" text-anchor="middle" font-size="7.5" fill="#b85450">⚠ 不匹配 remove_date，只看帖子是否在 Removals 中</text>
+
+  <path d="M280 198 L280 214" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: GROUP BY -->
+  <rect x="170" y="214" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="230" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">④ GROUP BY a.action_date</text>
+  <text x="280" y="245" text-anchor="middle" font-size="8" fill="#888">按举报日期分组；无 spam 的日期不出现</text>
+
+  <path d="M280 254 L280 270" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: COUNT(DISTINCT) ratio (decision diamond-ish) -->
+  <polygon points="280,270 410,310 280,350 150,310" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">⑤ 逐日算百分比</text>
+  <text x="280" y="314" text-anchor="middle" font-size="8" fill="#333">removed × 100 / total</text>
+  <text x="280" y="326" text-anchor="middle" font-size="7.5" fill="#888">COUNT(DISTINCT b.post_id) ÷ COUNT(DISTINCT a.post_id)</text>
+  <text x="280" y="338" text-anchor="middle" font-size="7" fill="#888">（NULL 不计入分子）</text>
+
+  <path d="M280 350 L280 366" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 6: AVG -->
+  <rect x="160" y="366" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="382" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑥ AVG(每日百分比)（外层无 GROUP BY）</text>
+  <text x="280" y="397" text-anchor="middle" font-size="8" fill="#888">对所有"有 spam 的日期"取均值</text>
+
+  <path d="M280 406 L280 422" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 7: ROUND -->
+  <rect x="180" y="422" width="200" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="437" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⑦ ROUND(..., 2)</text>
+  <text x="280" y="450" text-anchor="middle" font-size="8" fill="#888">→ average_daily_percent = 75.00</text>
+
+  <!-- side note -->
+  <rect x="430" y="152" width="120" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="170" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">为何用 LEFT JOIN</text>
+  <text x="438" y="186" font-size="7.5" fill="#333">• INNER JOIN 会丢掉</text>
+  <text x="438" y="198" font-size="7.5" fill="#333">　未删的 spam 帖（如 post 4）</text>
+  <text x="438" y="210" font-size="7.5" fill="#333">　→ 分母变小 → 比例虚高</text>
+  <text x="438" y="222" font-size="7.5" fill="#333">• LEFT JOIN 保留全量</text>
+  <text x="438" y="234" font-size="7.5" fill="#333">　分母正确，NULL 自动</text>
+  <text x="438" y="244" font-size="7.5" fill="#333">　不计入分子</text>
+</svg>

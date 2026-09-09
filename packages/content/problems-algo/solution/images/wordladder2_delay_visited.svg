@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">延迟标记 visited：保住「同层多父共子」</text>
+
+  <!-- ===== Left: wrong (early mark) ===== -->
+  <text x="155" y="58" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">✗ 发现即标记（127 的做法）</text>
+
+  <!-- level labels -->
+  <text x="80" y="80" text-anchor="middle" font-size="10" fill="#888">层 k</text>
+  <text x="230" y="80" text-anchor="middle" font-size="10" fill="#888">层 k+1</text>
+
+  <line x1="155" y1="88" x2="155" y2="220" stroke="#eee" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- A (level k) -->
+  <rect x="57" y="115" width="46" height="26" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="80" y="132" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">dot</text>
+
+  <!-- B (level k) -->
+  <rect x="57" y="185" width="46" height="26" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="80" y="202" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">lot</text>
+
+  <!-- C (level k+1) discovered by A first, marked visited -->
+  <rect x="207" y="150" width="46" height="26" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="167" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">cog</text>
+  <text x="230" y="190" text-anchor="middle" font-size="9" fill="#b85450">已访问</text>
+
+  <!-- A -> C (kept) -->
+  <path d="M 103 128 L 205 160" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="150" y="138" text-anchor="middle" font-size="9" fill="#4a7a3a">记入 ✓</text>
+
+  <!-- B -> C (rejected because C already visited) -->
+  <path d="M 103 198 Q 155 210 205 178" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="150" y="218" text-anchor="middle" font-size="9" fill="#b85450">漏记 ✗</text>
+
+  <!-- result box -->
+  <rect x="40" y="238" width="230" height="48" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="155" y="258" text-anchor="middle" font-size="10" fill="#444">B 扩展时 cog 已在 visited</text>
+  <text x="155" y="274" text-anchor="middle" font-size="10" fill="#444">→ 丢失 lot→log→cog 路径</text>
+
+  <!-- ===== Right: correct (delay mark) ===== -->
+  <text x="465" y="58" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">✓ 层末统一标记（126 的做法）</text>
+
+  <text x="390" y="80" text-anchor="middle" font-size="10" fill="#888">层 k</text>
+  <text x="540" y="80" text-anchor="middle" font-size="10" fill="#888">层 k+1</text>
+
+  <line x1="465" y1="88" x2="465" y2="220" stroke="#eee" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- A -->
+  <rect x="367" y="115" width="46" height="26" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="390" y="132" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">dot</text>
+
+  <!-- B -->
+  <rect x="367" y="185" width="46" height="26" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="390" y="202" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">lot</text>
+
+  <!-- C in level_visited (not yet in global visited) -->
+  <rect x="517" y="150" width="46" height="26" rx="5" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="540" y="167" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">cog</text>
+  <text x="540" y="190" text-anchor="middle" font-size="9" fill="#d6a040">暂存</text>
+
+  <!-- A -> C -->
+  <path d="M 413 128 L 515 160" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="460" y="138" text-anchor="middle" font-size="9" fill="#4a7a3a">记入 ✓</text>
+
+  <!-- B -> C (also kept, because C only in level_visited) -->
+  <path d="M 413 198 Q 465 210 515 178" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="460" y="218" text-anchor="middle" font-size="9" fill="#4a7a3a">记入 ✓</text>
+
+  <!-- result box -->
+  <rect x="350" y="238" width="230" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="465" y="258" text-anchor="middle" font-size="10" fill="#444">cog 仅在 level_visited，未并入 visited</text>
+  <text x="465" y="274" text-anchor="middle" font-size="10" fill="#444">→ 两条路径都保住</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="306" x2="590" y2="306" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Mechanism -->
+  <text x="310" y="330" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">机制对照</text>
+
+  <rect x="50" y="346" width="520" height="76" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="310" y="368" text-anchor="middle" font-size="11" fill="#444">visited 防止「下一层重复入队」；level_visited 保住「同层多父共子」</text>
+  <text x="310" y="386" text-anchor="middle" font-size="11" fill="#444">层内：nb not in visited 为真 → 各父节点都能把 nb 记入 children</text>
+  <text x="310" y="404" text-anchor="middle" font-size="11" fill="#444">层末：visited |= level_visited，再统一入队（nb 只入队一次）</text>
+</svg>

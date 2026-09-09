@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">三段式构造：保留前缀 + 第 i 位放大 + 后缀自由贪心</text>
+
+  <!-- num 的数位格子（以 1 2 3 | 5 | 5 5 为例） -->
+  <text x="40" y="56" font-size="11" fill="#666" filter="url(#rough2)">x（等长且 &gt; num）的唯一形态：</text>
+
+  <!-- 前缀 3 格（蓝） -->
+  <rect x="40" y="66" width="40" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="60" y="93" text-anchor="middle" font-size="15" fill="#33506b" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="84" y="66" width="40" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="104" y="93" text-anchor="middle" font-size="15" fill="#33506b" font-weight="bold" filter="url(#rough2)">2</text>
+  <rect x="128" y="66" width="40" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="148" y="93" text-anchor="middle" font-size="15" fill="#33506b" font-weight="bold" filter="url(#rough2)">3</text>
+  <!-- 放大位（橙） -->
+  <rect x="176" y="62" width="44" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" rx="5" filter="url(#rough2)"/>
+  <text x="198" y="88" text-anchor="middle" font-size="15" fill="#a07830" font-weight="bold" filter="url(#rough2)">5↑</text>
+  <text x="198" y="106" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">d&gt;5</text>
+  <!-- 后缀 2 格（绿） -->
+  <rect x="228" y="66" width="40" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="248" y="93" text-anchor="middle" font-size="15" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">?</text>
+  <rect x="272" y="66" width="40" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="5" filter="url(#rough2)"/>
+  <text x="292" y="93" text-anchor="middle" font-size="15" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">?</text>
+
+  <!-- 段落标签 -->
+  <text x="104" y="130" text-anchor="middle" font-size="11" fill="#33506b" font-weight="bold" filter="url(#rough2)">前缀原样保留（必须无 0）</text>
+  <text x="198" y="148" text-anchor="middle" font-size="11" fill="#a07830" font-weight="bold" filter="url(#rough2)">放大位 i</text>
+  <text x="270" y="130" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">m 位自由（1~9 随便填）</text>
+
+  <!-- 扫描方向箭头 -->
+  <path d="M 292 168 C 240 186, 160 186, 110 166" fill="none" stroke="#446688" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="255" y="200" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">i 从右往左扫：改动越靠右答案越小，首个可行 i 即最优</text>
+
+  <!-- 三种情形 -->
+  <rect x="30" y="216" width="460" height="94" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="46" y="238" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">三种情形（依次尝试）：</text>
+  <text x="62" y="258" font-size="11" fill="#33506b" filter="url(#rough2)">① x = num 本身：无 0 且质因子计数已盖住 need（示例 2 直接返回 "12355"）</text>
+  <text x="62" y="277" font-size="11" fill="#33506b" filter="url(#rough2)">② 等长改后缀：i 从 min(首个0下标, n−1) 递减，d 从 num[i]+1 升试，</text>
+  <text x="203" y="295" font-size="11" fill="#33506b" filter="url(#rough2)">判定 slots(rem − d) ≤ m；后缀逐位贪心放最小可行数位</text>
+  <text x="62" y="314" font-size="11" fill="#33506b" filter="url(#rough2)">③ 升长兜底：L = max(n+1, slots(need))，贪心填 L 位（前导全是 1）</text>
+
+  <!-- 底部剪枝提示 -->
+  <rect x="30" y="320" width="460" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="46" y="340" font-size="10.5" fill="#8f3a36" filter="url(#rough2)">⚠ 剪枝：一个数位至多消 1 个名额 ⇒ slots(rem) &gt; m+1 的 i 直接跳过，整体 O(n)</text>
+</svg>

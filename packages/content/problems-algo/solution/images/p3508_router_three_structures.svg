@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="620" height="400" fill="#fafafa"/>
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：三本账各记一件事</text>
+  <text x="310" y="44" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">dq 管 FIFO 转发 ｜ seen 管查重 ｜ ts[dest] 管区间计数 —— 一次入队，三处同步</text>
+
+  <!-- 面板 1：FIFO 队列 -->
+  <rect x="18" y="58" width="184" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="110" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① FIFO 队列 dq</text>
+
+  <rect x="45" y="92" width="130" height="26" fill="#ffffff" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="109" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(2, 5, 90)</text>
+  <rect x="45" y="124" width="130" height="26" fill="#ffffff" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="141" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(3, 5, 95)</text>
+  <rect x="45" y="156" width="130" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="173" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">(4, 5, 105)</text>
+
+  <text x="110" y="204" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">↑ 队头=最旧：转发 / 淘汰都从这出</text>
+  <text x="110" y="220" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">↓ 队尾=最新：addPacket 从这进</text>
+  <text x="110" y="242" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">（状态：示例 1 第 5 步刚入队 (4,5,105)）</text>
+
+  <!-- 面板 2：查重集合 -->
+  <rect x="218" y="58" width="184" height="200" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="80" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 查重集合 seen</text>
+
+  <rect x="245" y="92" width="130" height="26" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="109" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(2, 5, 90)</text>
+  <rect x="245" y="124" width="130" height="26" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="141" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(3, 5, 95)</text>
+  <rect x="245" y="156" width="130" height="26" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="173" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(4, 5, 105)</text>
+
+  <text x="310" y="204" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">addPacket 先查它：在 → false</text>
+  <text x="310" y="220" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">入队 +1 ｜ 出队 −1，与 dq 严格同步</text>
+  <text x="310" y="242" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">(1,4,90) 已随淘汰移除，可再次入队</text>
+
+  <!-- 面板 3：时间戳索引 -->
+  <rect x="418" y="58" width="184" height="200" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="510" y="80" text-anchor="middle" font-size="11.5" fill="#8a6a1f" font-weight="bold" filter="url(#rough2)">③ ts[dest] 时间戳索引</text>
+
+  <text x="432" y="107" font-size="10.5" fill="#333" filter="url(#rough2)">5 →</text>
+  <rect x="452" y="92" width="34" height="22" fill="#ffffff" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="469" y="107" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">90</text>
+  <rect x="490" y="92" width="34" height="22" fill="#ffffff" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="507" y="107" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">95</text>
+  <rect x="528" y="92" width="34" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="545" y="107" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">105</text>
+  <path d="M 528 120 L 528 126 L 562 126 L 562 120" fill="none" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="545" y="139" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">∈ [100,110]</text>
+
+  <text x="432" y="163" font-size="10.5" fill="#999" filter="url(#rough2)">4 → ∅（已清空删除）</text>
+
+  <text x="510" y="204" text-anchor="middle" font-size="9" fill="#8a6a1f" filter="url(#rough2)">getCount(5,100,110) 二分计数 = 1</text>
+  <text x="510" y="220" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">时间戳非递减 ⇒ 追加即有序</text>
+  <text x="510" y="242" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">删除只发生在每条序列的头部</text>
+
+  <!-- 底部：两条性质 -->
+  <rect x="18" y="270" width="584" height="118" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="292" text-anchor="middle" font-size="12" fill="#8a6a1f" font-weight="bold" filter="url(#rough2)">两条题设性质，让「有序 + 头删」全部免费</text>
+  <text x="310" y="316" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">性质 1｜时间戳非递减：新包只追加到序列尾部且 ≥ 队尾 → 追加即有序，免排序</text>
+  <text x="310" y="338" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">性质 2｜删除只在全局队头：队头包对其目的地也最早 → ts[d] 的删除必在头部，头删 O(1)</text>
+  <text x="310" y="364" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">写操作全 O(1)（C++ 查重 O(log n)），查询 O(log n) 二分 —— 无任何主动排序 / 搬移</text>
+</svg>

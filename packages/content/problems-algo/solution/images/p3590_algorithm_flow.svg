@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="470" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">算法流程：BFS 定序递推前缀，逆序扫描小并大聚合</text>
+
+  <!-- 开始 -->
+  <ellipse cx="150" cy="48" rx="38" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="53" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">开始</text>
+
+  <path d="M150,64 L150,78" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- P1 预处理 -->
+  <rect x="48" y="78" width="204" height="54" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="99" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">预处理：建孩子表，从根 BFS 定序</text>
+  <text x="150" y="117" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">递推 xor[u]=xor[par[u]]⊕vals[u]，查询按节点分组</text>
+
+  <path d="M150,132 L150,146" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 循环容器 -->
+  <rect x="36" y="146" width="228" height="246" rx="10" fill="none" stroke="#446688" stroke-width="1.2" stroke-dasharray="7 5" filter="url(#rough2)"/>
+  <text x="150" y="166" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">按逆 BFS 序处理每个节点 u（孩子先于父亲）</text>
+
+  <!-- P2 收集合并 -->
+  <rect x="48" y="176" width="204" height="64" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="150" y="196" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">收集子集合：第一个孩子直接收养</text>
+  <text x="150" y="213" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">其余孩子：小集合逐个插入大集合</text>
+  <text x="150" y="231" text-anchor="middle" font-size="9.5" fill="#777" filter="url(#rough2)">———— 小并大，总搬运量 O(n log n)</text>
+
+  <path d="M150,240 L150,254" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- P3 插入自身 -->
+  <rect x="48" y="254" width="204" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="272" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">插入 xor[u]，容器自动去重</text>
+  <text x="150" y="290" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">至此 S(u) = {xor[u]} ∪ ⋃S(v) 就绪</text>
+
+  <path d="M150,298 L150,312" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- P4 回答查询 -->
+  <rect x="48" y="312" width="204" height="48" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="150" y="332" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">回答 u 上的查询：|S| ≥ k ?</text>
+  <text x="150" y="350" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">是 → 第 k 小 find_by_order(k−1)；否 → −1</text>
+
+  <path d="M150,360 L150,378" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 结束 -->
+  <rect x="48" y="378" width="204" height="42" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="150" y="404" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">return ans（全部查询当场答完）</text>
+
+  <!-- 右侧坑点面板 -->
+  <rect x="300" y="78" width="196" height="342" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="398" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#333" filter="url(#rough2)">⚠ 四个必须绕开的坑</text>
+
+  <text x="398" y="128" text-anchor="middle" font-size="10" font-weight="bold" fill="#333" filter="url(#rough2)">① par[i] 不保证 &lt; i</text>
+  <text x="398" y="144" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">必须从根 BFS 定序</text>
+  <text x="398" y="160" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">不能按下标顺序递推 xor</text>
+
+  <text x="398" y="188" text-anchor="middle" font-size="10" font-weight="bold" fill="#333" filter="url(#rough2)">② 链长 5×10⁴ 递归爆栈</text>
+  <text x="398" y="204" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">（Python 上限约 1000）</text>
+  <text x="398" y="220" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">逆 BFS 序迭代，孩子先于父</text>
+
+  <text x="398" y="248" text-anchor="middle" font-size="10" font-weight="bold" fill="#333" filter="url(#rough2)">③ 不同节点 xor 可能撞值</text>
+  <text x="398" y="264" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">容器必须去重（set 语义）</text>
+  <text x="398" y="280" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">否则排名全错</text>
+
+  <text x="398" y="308" text-anchor="middle" font-size="10" font-weight="bold" fill="#333" filter="url(#rough2)">④ k_j 可超过不同值个数</text>
+  <text x="398" y="324" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">先初始化 -1</text>
+  <text x="398" y="340" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">仅当 |S(u)| ≥ k 才取第 k 小</text>
+
+  <path d="M316,356 L480,356" stroke="#d6a040" stroke-width="1" stroke-dasharray="4 4" filter="url(#rough2)"/>
+  <text x="398" y="378" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#333" filter="url(#rough2)">搬运 O(n log n) × 插入 O(log n)</text>
+  <text x="398" y="396" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">= O(n log²n) + 查询 O(q log n)</text>
+  <text x="398" y="414" text-anchor="middle" font-size="9.5" fill="#777" filter="url(#rough2)">内存 O(n)：每个值只在一个活跃集合</text>
+</svg>

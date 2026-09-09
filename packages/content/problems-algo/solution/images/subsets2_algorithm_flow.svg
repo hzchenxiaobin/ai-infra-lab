@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">子集 II 回溯流程：入节点先收集，循环遇同层重复即剪枝</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">与 78 题相比，循环里多了一个红色去重判断</text>
+
+  <g filter="url(#rough2)" font-size="11">
+    <!-- 1. Enter backtrack(start): collect -->
+    <rect x="170" y="60" width="200" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="270" y="80" text-anchor="middle" fill="#4a7a3a" font-weight="bold">① 入节点即收集</text>
+    <text x="270" y="96" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">ans.push_back(path)</text>
+
+    <path d="M 270 106 L 270 122" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 2. Loop init -->
+    <rect x="160" y="124" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="270" y="142" text-anchor="middle" fill="#446688" font-weight="bold">② 循环 i = start … n-1</text>
+    <text x="270" y="156" text-anchor="middle" fill="#555" font-size="9">只往后选，避免顺序不同的重复</text>
+
+    <path d="M 270 164 L 270 178" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 3. Dedup diamond -->
+    <polygon points="270,180 400,222 270,264 140,222" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="270" y="216" text-anchor="middle" fill="#b85450" font-weight="bold" font-size="10">i &gt; start</text>
+    <text x="270" y="232" text-anchor="middle" fill="#b85450" font-weight="bold" font-size="10">且 nums[i]==nums[i-1]?</text>
+
+    <!-- Yes (right) → continue skip -->
+    <path d="M 400 222 L 458 222" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrR)"/>
+    <text x="428" y="214" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+    <rect x="458" y="204" width="74" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6"/>
+    <text x="495" y="222" text-anchor="middle" fill="#b85450" font-weight="bold" font-size="10">continue</text>
+    <text x="495" y="234" text-anchor="middle" fill="#b85450" font-size="9">跳过本层重复</text>
+    <!-- loop back up to loop init (i++) -->
+    <path d="M 495 204 L 495 144 L 380 144" stroke="#b85450" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+    <text x="500" y="180" font-size="9" fill="#b85450" font-weight="bold" transform="rotate(-90 500 180)">i++ 继续</text>
+
+    <!-- No (down) → select / recurse / undo -->
+    <path d="M 270 264 L 270 280" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrG)"/>
+    <text x="282" y="276" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+    <rect x="150" y="282" width="240" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8"/>
+    <text x="270" y="302" text-anchor="middle" fill="#4a7a3a" font-weight="bold">③ 选 → 递归 → 撤销</text>
+    <text x="270" y="318" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">path.push(nums[i])</text>
+    <text x="270" y="332" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">backtrack(i+1); path.pop()</text>
+    <!-- loop back up to loop init (i++) -->
+    <path d="M 150 311 L 70 311 L 70 144 L 160 144" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)"/>
+    <text x="58" y="230" font-size="9" fill="#4a7a3a" font-weight="bold" transform="rotate(-90 58 230)">i++ 继续</text>
+
+    <!-- loop end → return -->
+    <rect x="380" y="288" width="120" height="44" fill="#f5f5f5" stroke="#888" stroke-width="1.3" rx="6"/>
+    <text x="440" y="306" text-anchor="middle" fill="#555" font-weight="bold">循环结束</text>
+    <text x="440" y="322" text-anchor="middle" fill="#555" font-size="10">return</text>
+    <path d="M 380 300 L 350 300" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="3,3" marker-end="url(#arrN)"/>
+    <text x="440" y="278" text-anchor="middle" font-size="9" fill="#888">i 越界</text>
+  </g>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="30" y="358" width="480" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="374" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">⚠️ 关键：收集在「入节点」（继承 78 题），去重在「循环内」（继承 40 题）</text>
+  <text x="270" y="388" text-anchor="middle" font-size="10" fill="#888">一行排序 + 一行剪枝，回溯三步模板不变</text>
+</svg>

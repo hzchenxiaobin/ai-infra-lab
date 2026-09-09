@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：solve 求非递减 → 翻转再求一次 → 取较小值</text>
+
+  <!-- ===== Entry: nums ===== -->
+  <rect x="210" y="40" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="61" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输入 nums</text>
+
+  <!-- branch lines to two solves -->
+  <line x1="270" y1="74" x2="270" y2="88" stroke="#666" stroke-width="1.8" filter="url(#rough2)"/>
+  <line x1="120" y1="88" x2="420" y2="88" stroke="#666" stroke-width="1.8" filter="url(#rough2)"/>
+  <line x1="120" y1="88" x2="120" y2="104" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <line x1="420" y1="88" x2="420" y2="104" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="124" y="100" font-size="9.5" fill="#446688" font-weight="bold">原序</text>
+  <text x="392" y="100" font-size="9.5" fill="#4a7a3a" font-weight="bold">翻转后</text>
+
+  <!-- ===== solve(nums) box (left) ===== -->
+  <rect x="40" y="108" width="180" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="128" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">solve(nums) → 非递减代价 A</text>
+
+  <!-- ===== reverse + solve (right) ===== -->
+  <rect x="320" y="108" width="200" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="128" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">solve(nums[::-1]) → 代价 B</text>
+
+  <!-- ===== solve internals (shared, center) ===== -->
+  <rect x="60" y="150" width="420" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="171" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">solve：f[j]=0 (j=0..M)；遍历每个 x = nums[i]</text>
+  <text x="270" y="183" text-anchor="middle" font-size="9" fill="#888">M = 1001（值域上界 +1）</text>
+
+  <!-- arrow into loop -->
+  <line x1="270" y1="184" x2="270" y2="198" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== inner loop body ===== -->
+  <rect x="70" y="202" width="400" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="222" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">prefMin = +∞；for j = 0 .. M：</text>
+
+  <line x1="270" y1="232" x2="270" y2="244" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="80" y="248" width="380" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="268" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">prefMin = min(prefMin, f_prev[j])   ← O(1) 维护左前缀最小</text>
+
+  <line x1="270" y1="278" x2="270" y2="290" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="80" y="294" width="380" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="314" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">f[j] = prefMin + |x − j|</text>
+
+  <!-- loop back arrow -->
+  <path d="M 470 309 Q 510 309 510 217 L 460 217" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="500" y="262" font-size="9.5" fill="#888">下一 j</text>
+
+  <!-- after inner loop: f_prev = f -->
+  <line x1="270" y1="324" x2="270" y2="338" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="100" y="342" width="340" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="361" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">内层结束：f_prev ← f；进入下一个 x</text>
+
+  <!-- outer loop back -->
+  <path d="M 440 356 Q 486 356 486 167 L 480 167" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="490" y="262" font-size="9.5" fill="#888" transform="rotate(-90 490 262)">下一 x</text>
+
+  <!-- return min(f) -->
+  <line x1="270" y1="370" x2="270" y2="384" stroke="#666" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="388" width="240" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="407" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">return min(f)   ← 终态 b 可取任意 j</text>
+
+  <!-- ===== merge two results ===== -->
+  <line x1="130" y1="416" x2="130" y2="430" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="420" y1="416" x2="420" y2="430" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="130" y1="430" x2="420" y2="430" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="270" y1="430" x2="270" y2="438" stroke="#b85450" stroke-width="2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="150" y="440" width="240" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="458" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">return min(A, B)</text>
+</svg>

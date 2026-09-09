@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：backtrack(start, path) — 收集 + 剪枝 + 循环选</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">组合题标志：只在 path.size()==k 时收集（区别于子集的每节点收集）</text>
+
+  <g filter="url(#rough2)" font-size="11">
+    <!-- 0. Entry -->
+    <rect x="190" y="58" width="180" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8"/>
+    <text x="280" y="76" text-anchor="middle" fill="#446688" font-weight="bold">进入 backtrack(start, path)</text>
+    <text x="280" y="90" text-anchor="middle" fill="#555" font-size="9">从 start 往后选下一个数</text>
+
+    <path d="M 280 94 L 280 110" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 1. Collect check (diamond) -->
+    <polygon points="280,112 400,150 280,188 160,150" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="280" y="146" text-anchor="middle" fill="#4a7a3a" font-weight="bold">path.size() == k ?</text>
+    <text x="280" y="162" text-anchor="middle" fill="#555" font-size="9">(已选够 k 个)</text>
+
+    <!-- Yes → collect & return -->
+    <path d="M 400 150 L 470 150" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)"/>
+    <text x="435" y="142" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="430" y="132" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="490" y="150" text-anchor="middle" fill="#4a7a3a" font-weight="bold">① 收集并返回</text>
+    <text x="490" y="165" text-anchor="middle" fill="#555" font-family="monospace" font-size="9">ans.push_back(path)</text>
+
+    <!-- No → down to prune check -->
+    <path d="M 280 188 L 280 206" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="292" y="202" font-size="10" fill="#666" font-weight="bold">否</text>
+
+    <!-- 2. Prune check (diamond) -->
+    <polygon points="280,208 400,244 280,280 160,244" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <text x="280" y="240" text-anchor="middle" fill="#b85450" font-weight="bold">剩余 &lt; 还需 ?</text>
+    <text x="280" y="256" text-anchor="middle" fill="#555" font-size="9">n−start+1 &lt; k−path.size()</text>
+
+    <!-- Yes → return (prune) -->
+    <path d="M 400 244 L 470 244" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arrR)"/>
+    <text x="435" y="236" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+    <rect x="430" y="226" width="120" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" stroke-dasharray="4,3" rx="6"/>
+    <text x="490" y="244" text-anchor="middle" fill="#b85450" font-weight="bold">✂ 剪枝返回</text>
+    <text x="490" y="259" text-anchor="middle" fill="#555" font-size="9">凑不够 k 个，提前退出</text>
+
+    <!-- No → down to loop -->
+    <path d="M 280 280 L 280 298" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="292" y="294" font-size="10" fill="#666" font-weight="bold">否</text>
+
+    <!-- 3. Loop label -->
+    <rect x="130" y="300" width="300" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="6"/>
+    <text x="280" y="316" text-anchor="middle" fill="#446688" font-weight="bold">② for i = start … n</text>
+
+    <path d="M 280 324 L 280 340" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 4. Loop body: pick → recurse → undo -->
+    <rect x="120" y="342" width="320" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8"/>
+    <text x="280" y="362" text-anchor="middle" fill="#d6a040" font-weight="bold">③ 选 → 递归 → 撤销</text>
+    <text x="280" y="378" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">path.push(i); backtrack(i+1); path.pop()</text>
+    <text x="280" y="392" text-anchor="middle" fill="#888" font-size="9">i+1 保证只往后选，避免重复组合</text>
+
+    <!-- loop-back arrow -->
+    <path d="M 120 369 L 70 369 L 70 312 L 130 312" stroke="#d6a040" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+    <text x="56" y="340" font-size="9" fill="#d6a040" font-weight="bold" transform="rotate(-90 56 340)">下一个 i</text>
+  </g>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="20" y="404" width="520" height="12" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="414" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">⚠️ 与子集(78)的区别：组合只在 size==k 收集，子集每节点都收集；剪枝是组合题的专属优化</text>
+</svg>

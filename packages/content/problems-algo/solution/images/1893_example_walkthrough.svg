@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：ranges = [[1,2],[3,4],[5,6]], left = 2, right = 5</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">逐步追踪 diff 数组变化 → 前缀和 → 检查查询区间</text>
+
+  <!-- Table header -->
+  <text x="36" y="70" font-size="10.5" fill="#666">步骤</text>
+  <text x="86" y="70" font-size="10.5" fill="#666">操作</text>
+  <text x="200" y="70" font-size="10.5" fill="#666">diff 数组 (下标 1..7)</text>
+  <text x="470" y="70" font-size="10.5" fill="#666">说明</text>
+
+  <path d="M 28 78 L 540 78" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Step 0: init -->
+  <rect x="28" y="84" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="102" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <text x="86" y="102" font-size="10.5" fill="#555">初始化</text>
+  <text x="200" y="102" font-size="10" fill="#888">[0, 0, 0, 0, 0, 0, 0]</text>
+  <text x="470" y="102" font-size="10" fill="#888">全零</text>
+
+  <!-- Step 1: add [1,2] -->
+  <rect x="28" y="116" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="134" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <text x="86" y="134" font-size="10.5" fill="#555">加入 [1,2]</text>
+  <text x="200" y="134" font-size="10" fill="#446688" font-weight="bold">[+1, 0, −1, 0, 0, 0, 0]</text>
+  <text x="470" y="134" font-size="10" fill="#555">diff[1]++, diff[3]−−</text>
+
+  <!-- Step 2: add [3,4] -->
+  <rect x="28" y="148" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="166" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <text x="86" y="166" font-size="10.5" fill="#555">加入 [3,4]</text>
+  <text x="200" y="166" font-size="10" fill="#4a7a3a" font-weight="bold">[+1, 0, 0, 0, −1, 0, 0]</text>
+  <text x="470" y="166" font-size="10" fill="#a87020">diff[3]+1→0, diff[5]−−</text>
+
+  <!-- Step 3: add [5,6] -->
+  <rect x="28" y="180" width="40" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="198" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">3</text>
+  <text x="86" y="198" font-size="10.5" fill="#555">加入 [5,6]</text>
+  <text x="200" y="198" font-size="10" fill="#a87020" font-weight="bold">[+1, 0, 0, 0, 0, 0, −1]</text>
+  <text x="470" y="198" font-size="10" fill="#a87020">diff[5]+1→0, diff[7]−−</text>
+
+  <!-- Divider -->
+  <path d="M 28 216 L 540 216" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Step 4: prefix sum -->
+  <rect x="28" y="222" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="240" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4</text>
+  <text x="86" y="240" font-size="10.5" fill="#555">前缀和</text>
+  <text x="200" y="240" font-size="10" fill="#4a7a3a" font-weight="bold">cover = [1, 1, 1, 1, 1, 1, 0]</text>
+  <text x="470" y="240" font-size="10" fill="#555">cover[i]=Σdiff[1..i]</text>
+
+  <!-- Step 5: check [2,5] -->
+  <rect x="28" y="254" width="40" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="48" y="272" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+  <text x="86" y="272" font-size="10.5" fill="#555">检查 [2,5]</text>
+  <text x="200" y="272" font-size="10" fill="#446688" font-weight="bold">cover[2..5] = [1, 1, 1, 1]</text>
+  <text x="470" y="272" font-size="10" fill="#4a7a3a" font-weight="bold">全 ≥ 1 ✓</text>
+
+  <!-- Result box -->
+  <rect x="80" y="296" width="400" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="316" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">最终：[2,5] 每个整数都被覆盖 → return true</text>
+
+  <!-- Counter-example note -->
+  <rect x="40" y="340" width="480" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="360" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">反例：ranges = [[1,10],[10,20]], left = 21, right = 21</text>
+  <text x="280" y="378" text-anchor="middle" font-size="10.5" fill="#555">cover[21] = 0（无区间覆盖 21）→ return false</text>
+</svg>

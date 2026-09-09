@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="520" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：过滤 → JOIN → CASE 分类</text>
+
+  <!-- Step 1: Weather 全表 -->
+  <text x="40" y="54" font-size="11.5" fill="#888">① Weather 表（17 行，多日多国）</text>
+  <rect x="40" y="62" width="500" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="80" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">country_id</text>
+  <text x="260" y="80" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">weather_state</text>
+  <text x="400" y="80" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">day</text>
+  <text x="80" y="98" font-size="10" fill="#555">2</text>
+  <text x="180" y="98" font-size="10" fill="#555">15</text>
+  <text x="330" y="98" font-size="10" fill="#555">2019-11-01</text>
+  <text x="80" y="114" font-size="10" fill="#555">3</text>
+  <text x="180" y="114" font-size="10" fill="#555">-2</text>
+  <text x="330" y="114" font-size="10" fill="#555">2019-11-10</text>
+  <text x="80" y="130" font-size="10" fill="#999">… 更多行 …</text>
+  <text x="250" y="130" font-size="10" fill="#b85450" font-weight="bold">仅 1 行 day = 2019-11-15</text>
+
+  <path d="M 290 142 L 290 160" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE 过滤后 -->
+  <text x="40" y="174" font-size="11.5" fill="#888">② WHERE day = '2019-11-15' 过滤后（只剩 1 行）</text>
+  <rect x="40" y="182" width="500" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="200" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">country_id</text>
+  <text x="260" y="200" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">weather_state</text>
+  <text x="400" y="200" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">day</text>
+  <text x="100" y="218" font-size="11" fill="#333" font-weight="bold">8</text>
+  <text x="240" y="218" font-size="11" fill="#333" font-weight="bold">27</text>
+  <text x="370" y="218" font-size="11" fill="#333" font-weight="bold">2019-11-15</text>
+
+  <path d="M 290 228 L 290 246" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN Countries -->
+  <text x="40" y="260" font-size="11.5" fill="#888">③ JOIN Countries：country_id=8 → Morocco</text>
+  <rect x="40" y="268" width="500" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="286" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">country_name</text>
+  <text x="280" y="286" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">weather_state</text>
+  <text x="440" y="286" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">day</text>
+  <text x="90" y="304" font-size="11" fill="#333" font-weight="bold">Morocco</text>
+  <text x="270" y="304" font-size="11" fill="#333" font-weight="bold">27</text>
+  <text x="410" y="304" font-size="11" fill="#333" font-weight="bold">2019-11-15</text>
+
+  <path d="M 290 314 L 290 332" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: CASE WHEN 分类 -->
+  <text x="40" y="346" font-size="11.5" fill="#888">④ CASE WHEN：27 不 le 15 也不 ge 30 → Warm</text>
+  <rect x="120" y="354" width="340" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="374" text-anchor="middle" font-size="11" fill="#555">27 &le; 15 ? 否</text>
+  <text x="290" y="390" text-anchor="middle" font-size="11" fill="#555">27 &ge; 30 ? 否 → ELSE 'Warm'</text>
+  <text x="290" y="402" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">weather_type = Warm</text>
+
+  <path d="M 290 412 L 290 430" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <text x="40" y="444" font-size="11.5" fill="#888">⑤ 最终输出</text>
+  <rect x="160" y="450" width="260" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="470" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">country_name</text>
+  <text x="350" y="470" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">weather_type</text>
+  <text x="220" y="490" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">Morocco</text>
+  <text x="350" y="490" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">Warm</text>
+</svg>

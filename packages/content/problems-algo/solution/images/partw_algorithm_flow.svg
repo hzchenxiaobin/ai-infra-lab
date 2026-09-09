@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：扫 i + 双哈希表，O(n) 求最大方案数</text>
+
+  <!-- Step 1: prefix + no_change -->
+  <rect x="60" y="46" width="440" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">预处理</text>
+  <text x="280" y="84" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">求 prefix[1..n-1]、S = Σnums</text>
+  <text x="280" y="98" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">ans = #{p : 2·prefix[p] == S}   ← 不改的方案数</text>
+
+  <path d="M 280 104 L 280 120" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init hash maps -->
+  <rect x="60" y="124" width="440" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="144" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">初始化两张表</text>
+  <text x="280" y="162" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">rightCnt = Counter(prefix[1..n-1])，leftCnt = {}（空）</text>
+
+  <path d="M 280 172 L 280 188" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop header -->
+  <rect x="60" y="192" width="440" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="218" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">for i = 0 … n-1 ：（枚举改动下标）</text>
+
+  <path d="M 280 234 L 280 250" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: compute d + targets -->
+  <rect x="60" y="254" width="440" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="274" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">d = k − nums[i]</text>
+  <text x="280" y="290" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">lc = (S+d 偶) ? leftCnt[(S+d)/2] : 0</text>
+  <text x="280" y="304" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">rc = (S−d 偶) ? rightCnt[(S−d)/2] : 0</text>
+
+  <path d="M 280 312 L 280 328" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: update ans -->
+  <rect x="60" y="332" width="440" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="358" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">ans = max( ans, lc + rc )</text>
+
+  <path d="M 280 374 L 280 390" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: move pivot i+1 from right to left -->
+  <rect x="60" y="394" width="440" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="414" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">若 i+1 ≤ n−1：把 prefix[i+1] 从 rightCnt 移入 leftCnt</text>
+  <text x="280" y="431" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">（下一轮 i+1 时，pivot p=i+1 已属左半）</text>
+
+  <!-- loop back arrow -->
+  <path d="M 500 417 L 538 417 L 538 212 L 500 212" stroke="#666" stroke-width="1.6" fill="none"
+        stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="546" y="316" font-size="9.5" fill="#888" filter="url(#rough2)" transform="rotate(90 546 316)">下一个 i</text>
+
+  <path d="M 280 442 L 280 458" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Return -->
+  <rect x="140" y="462" width="280" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="487" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">return ans</text>
+</svg>

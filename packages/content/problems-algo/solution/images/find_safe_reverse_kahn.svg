@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">反图 + Kahn 剥出度：从终端反向传播“安全”</text>
+
+  <!-- Box 1: build reverse graph -->
+  <rect x="120" y="48" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#333">① 建反图 radj：原图 u→v 改为 v→u</text>
+  <text x="280" y="84" text-anchor="middle" font-size="11" fill="#555">统计 outdeg[i] = graph[i].size()</text>
+
+  <path d="M 280 92 L 280 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrN)" filter="url(#rough2)"/>
+
+  <!-- Box 2: enqueue terminals -->
+  <rect x="120" y="114" width="320" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="138" text-anchor="middle" font-size="12" fill="#333">② outdeg==0 的节点入队（终端 = 安全种子）</text>
+
+  <path d="M 280 152 L 280 172" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrN)" filter="url(#rough2)"/>
+
+  <!-- Diamond: queue non-empty? -->
+  <polygon points="280,176 360,214 280,252 200,214" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="210" text-anchor="middle" font-size="11" fill="#444">队列非空？</text>
+  <text x="280" y="224" text-anchor="middle" font-size="10" fill="#888">(while)</text>
+
+  <!-- No branch -> right -->
+  <path d="M 360 214 L 430 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrN)" filter="url(#rough2)"/>
+  <text x="380" y="208" text-anchor="middle" font-size="10" fill="#888">否</text>
+  <rect x="430" y="190" width="115" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="487" y="210" text-anchor="middle" font-size="11" fill="#333">⑤ 收集 safe[i]</text>
+  <text x="487" y="225" text-anchor="middle" font-size="11" fill="#333">升序返回</text>
+
+  <!-- Yes branch -> down -->
+  <path d="M 280 252 L 280 276" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="292" y="268" font-size="10" fill="#4a7a3a">是</text>
+
+  <!-- Box 3: pop u, mark safe -->
+  <rect x="150" y="278" width="260" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="301" text-anchor="middle" font-size="12" fill="#333">③ 取出 u，safe[u] = true</text>
+
+  <path d="M 280 314 L 280 334" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arrN)" filter="url(#rough2)"/>
+
+  <!-- Box 4: decrement predecessors -->
+  <rect x="110" y="336" width="340" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="356" text-anchor="middle" font-size="12" fill="#333">④ ∀ v ∈ radj[u]：outdeg[v] − 1</text>
+  <text x="280" y="372" text-anchor="middle" font-size="11" fill="#555">若 outdeg[v]==0 → v 入队（v 安全）</text>
+
+  <!-- loop back arrow: from box4 left side up to diamond left -->
+  <path d="M 110 360 Q 60 360 60 214 L 196 214" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="58" y="290" text-anchor="middle" font-size="10" fill="#4a7a3a">回到判断</text>
+
+  <!-- Bottom note -->
+  <rect x="60" y="400" width="440" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="415" text-anchor="middle" font-size="10" fill="#444">outdeg 降到 0 ⟺ 所有出边对应的后继都已安全 ⟺ 该节点安全</text>
+</svg>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：MIN 首次订单 → JOIN 回原表 → AVG 算比例</text>
+
+  <!-- Step 1: Input -->
+  <rect x="150" y="42" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Delivery 表（7 行配送记录）</text>
+
+  <path d="M270 76 L270 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Subquery - MIN(order_date) per customer -->
+  <rect x="40" y="94" width="460" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="114" font-size="10" fill="#4a7a3a" font-weight="bold">① 子查询：求每人首次订单日</text>
+  <text x="60" y="130" font-size="9" fill="#4a7a3a">SELECT customer_id, MIN(order_date) AS first_date</text>
+  <text x="60" y="142" font-size="9" fill="#4a7a3a">FROM Delivery GROUP BY customer_id</text>
+  <text x="470" y="130" font-size="8" fill="#888">7 行 → 4 行</text>
+  <text x="470" y="142" font-size="8" fill="#888">(每人 1 行)</text>
+
+  <path d="M270 150 L270 166" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN back to Delivery -->
+  <rect x="40" y="168" width="460" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="188" font-size="10" fill="#d6a040" font-weight="bold">② JOIN：关联回原表取首次订单完整记录</text>
+  <text x="60" y="204" font-size="9" fill="#d6a040">JOIN ... ON d.customer_id = f.customer_id</text>
+  <text x="60" y="216" font-size="9" fill="#d6a040">       AND d.order_date = f.first_date</text>
+  <text x="60" y="228" font-size="8.5" fill="#888">⚠ 题目保证每人只有一个首次订单，JOIN 后仍 4 行</text>
+
+  <path d="M270 232 L270 248" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Check immediate + AVG -->
+  <rect x="40" y="250" width="460" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="270" font-size="10" fill="#b85450" font-weight="bold">③ 判即时 + 算比例</text>
+  <text x="60" y="286" font-size="9" fill="#b85450">order_date = customer_pref_delivery_date → 1(即时) / 0(计划)</text>
+  <text x="60" y="298" font-size="9" fill="#b85450">ROUND(AVG(...) * 100, 2) AS immediate_percentage</text>
+  <text x="60" y="310" font-size="8.5" fill="#888">⚠ MySQL 中布尔表达式 = 1/0，AVG 直接得比例</text>
+
+  <path d="M270 314 L270 330" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="130" y="332" width="280" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="353" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出：immediate_percentage = 50.00</text>
+
+  <!-- ===== Right side: SQL clause execution order ===== -->
+  <rect x="430" y="94" width="100" height="200" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="112" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">两步解耦</text>
+  <line x1="440" y1="118" x2="520" y2="118" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="445" y="134" font-size="8" fill="#4a7a3a" font-weight="bold">内层子查询</text>
+  <text x="445" y="148" font-size="7.5" fill="#4a7a3a">GROUP BY cust</text>
+  <text x="445" y="160" font-size="7.5" fill="#4a7a3a">MIN(order_date)</text>
+  <text x="445" y="172" font-size="7" fill="#888">→ 行级最值</text>
+  <line x1="440" y1="182" x2="520" y2="182" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="445" y="198" font-size="8" fill="#d6a040" font-weight="bold">JOIN 关联</text>
+  <text x="445" y="212" font-size="7.5" fill="#d6a040">取完整首单行</text>
+  <text x="445" y="224" font-size="7" fill="#888">(order_date=</text>
+  <text x="445" y="234" font-size="7" fill="#888"> first_date)</text>
+  <line x1="440" y1="242" x2="520" y2="242" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <text x="445" y="258" font-size="8" fill="#b85450" font-weight="bold">外层聚合</text>
+  <text x="445" y="272" font-size="7.5" fill="#b85450">AVG(布尔)×100</text>
+  <text x="445" y="284" font-size="7" fill="#b85450">ROUND(,2)</text>
+
+  <!-- ===== Bottom: row count flow ===== -->
+  <rect x="20" y="382" width="500" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="402" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">行数变化追踪</text>
+
+  <rect x="40" y="412" width="80" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="80" y="428" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">7 行</text>
+
+  <path d="M120 424 L155 424" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="137" y="418" text-anchor="middle" font-size="6.5" fill="#4a7a3a">MIN</text>
+
+  <rect x="160" y="412" width="80" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="200" y="428" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">4 行</text>
+
+  <path d="M240 424 L275 424" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="257" y="418" text-anchor="middle" font-size="6.5" fill="#d6a040">JOIN</text>
+
+  <rect x="280" y="412" width="80" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="320" y="428" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">4 行</text>
+
+  <path d="M360 424 L395 424" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="377" y="418" text-anchor="middle" font-size="6.5" fill="#b85450">AVG</text>
+
+  <rect x="400" y="412" width="80" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="428" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">1 行</text>
+
+  <text x="270" y="448" text-anchor="middle" font-size="8" fill="#888">7 行原始 → MIN 聚合 4 行首次 → JOIN 取完整记录 4 行 → AVG 聚合 1 行比例</text>
+</svg>

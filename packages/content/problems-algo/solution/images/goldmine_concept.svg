@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：每个金格作起点，DFS 收集 + 回溯求最大</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">任意起点出发，四方向探索，标记-累加-撤销</text>
+
+  <!-- ===== left: grid (example 1) ===== -->
+  <text x="140" y="72" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">网格 grid</text>
+  <g font-size="12">
+    <!-- row 0: 0 6 0 -->
+    <rect x="80" y="80" width="40" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="100" y="105" text-anchor="middle" fill="#999">0</text>
+    <rect x="120" y="80" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="140" y="105" text-anchor="middle" fill="#446688">6</text>
+    <rect x="160" y="80" width="40" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="180" y="105" text-anchor="middle" fill="#999">0</text>
+    <!-- row 1: 5 8 7 -->
+    <rect x="80" y="120" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="100" y="145" text-anchor="middle" fill="#446688">5</text>
+    <rect x="120" y="120" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" filter="url(#rough2)"/>
+    <text x="140" y="145" text-anchor="middle" fill="#4a7a3a" font-weight="bold">8</text>
+    <rect x="160" y="120" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" filter="url(#rough2)"/>
+    <text x="180" y="145" text-anchor="middle" fill="#4a7a3a" font-weight="bold">7</text>
+    <!-- row 2: 0 9 0 -->
+    <rect x="80" y="160" width="40" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="100" y="185" text-anchor="middle" fill="#999">0</text>
+    <rect x="120" y="160" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" filter="url(#rough2)"/>
+    <text x="140" y="185" text-anchor="middle" fill="#4a7a3a" font-weight="bold">9</text>
+    <text x="140" y="212" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">起点 (2,1)</text>
+    <rect x="160" y="160" width="40" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="180" y="185" text-anchor="middle" fill="#999">0</text>
+  </g>
+
+  <!-- path arrows: 9 -> 8 -> 7 -->
+  <text x="200" y="170" font-size="10" fill="#4a7a3a" font-weight="bold">↑</text>
+  <text x="200" y="140" font-size="10" fill="#4a7a3a" font-weight="bold">→</text>
+  <text x="220" y="232" font-size="9" fill="#4a7a3a" font-weight="bold">9→8→7 = 24</text>
+
+  <!-- ===== right side: three-step pattern ===== -->
+  <text x="420" y="72" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">回溯三步走</text>
+  <rect x="330" y="80" width="220" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="345" y="103" font-size="11" fill="#4a7a3a" font-weight="bold">① 选择：grid[i][j] = 0（收金）</text>
+
+  <rect x="330" y="124" width="220" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="345" y="147" font-size="11" fill="#446688" font-weight="bold">② 递归：dfs(四方向) + 累加</text>
+
+  <rect x="330" y="168" width="220" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="345" y="191" font-size="11" fill="#d6a040" font-weight="bold">③ 撤销：grid[i][j] = gold（退还）</text>
+
+  <path d="M 440 116 L 440 122" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 440 160 L 440 166" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== bottom: pruning ===== -->
+  <rect x="40" y="230" width="500" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="252" font-size="12" fill="#b85450" font-weight="bold">剪枝 / 终止（递归入口）</text>
+  <text x="60" y="268" font-size="10" fill="#555">越界 / grid[i][j]==0（空格或已访问）→ 返回 0，停止这条分支</text>
+
+  <!-- ===== key insight ===== -->
+  <rect x="40" y="286" width="500" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="308" font-size="12" fill="#4a7a3a" font-weight="bold">关键：原地标记=收金（置 0），回溯=退还（恢复原值）</text>
+  <text x="60" y="324" font-size="10" fill="#555">最多 25 个金格，自避路径数有限，暴力 DFS 即可</text>
+
+  <!-- ===== complexity ===== -->
+  <rect x="40" y="340" width="500" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="360" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">时间 O(k · 3^k)，空间 O(k)（k = 金格数 ≤ 25，递归栈深度）</text>
+</svg>

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowL" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto">
+      <path d="M8,0 L0,4 L8,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowU" markerWidth="8" markerHeight="8" refX="4" refY="1" orient="auto">
+      <path d="M0,8 L4,1 L8,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="440" height="540" fill="#fafafa"/>
+
+  <text x="220" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">角矩形的数量：算法流程</text>
+
+  <!-- Step 1: iterate row pairs -->
+  <rect x="60" y="40" width="320" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="62" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">① 遍历所有行对 (r₁, r₂), r₁ &lt; r₂</text>
+  <text x="220" y="80" text-anchor="middle" font-size="10.5" fill="#555">外层两重循环枚举行对</text>
+
+  <path d="M 220 92 L 220 110" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init cnt -->
+  <rect x="150" y="114" width="140" height="34" fill="#f0f0f0" stroke="#888" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="136" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">cnt = 0</text>
+
+  <path d="M 220 148 L 220 166" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: column loop -->
+  <rect x="80" y="170" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="190" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">② for c = 0 … C−1</text>
+  <text x="220" y="206" text-anchor="middle" font-size="10.5" fill="#555">逐列扫描，统计两行同时为 1 的列</text>
+
+  <path d="M 220 214 L 220 232" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Diamond: both 1? -->
+  <polygon points="220,236 330,286 220,336 110,286" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="220" y="280" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">grid[r₁][c]==1</text>
+  <text x="220" y="298" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">且 grid[r₂][c]==1 ?</text>
+
+  <!-- Yes branch: right -->
+  <path d="M 330 286 L 380 286 L 380 344" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="345" y="278" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="326" y="348" width="108" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="368" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">cnt++</text>
+  <text x="380" y="384" text-anchor="middle" font-size="10" fill="#555">发现一个共享列</text>
+
+  <!-- Yes branch loop back to column loop -->
+  <path d="M 380 348 L 380 192 L 360 192" stroke="#888" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowL)" filter="url(#rough2)"/>
+
+  <!-- No branch: left -->
+  <path d="M 110 286 L 60 286 L 60 192 L 80 192" stroke="#888" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="75" y="278" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Loop exit: from bottom of diamond down -->
+  <path d="M 220 336 L 220 372" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="236" y="358" font-size="10" fill="#aaa" font-style="italic">c 遍历完毕</text>
+
+  <!-- Step 4: add combination -->
+  <rect x="60" y="376" width="320" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="398" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">③ ans += cnt × (cnt − 1) ÷ 2</text>
+  <text x="220" y="416" text-anchor="middle" font-size="10.5" fill="#555">该行对贡献 C(cnt, 2) 个角矩形</text>
+
+  <!-- Loop back to step 1 -->
+  <path d="M 60 402 L 28 402 L 28 66 L 60 66" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="16" y="236" font-size="10" fill="#aaa" font-style="italic" transform="rotate(-90 16 236)">下一行对</text>
+
+  <path d="M 220 428 L 220 446" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Final -->
+  <rect x="120" y="450" width="200" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="220" y="476" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">return ans</text>
+
+  <text x="220" y="514" text-anchor="middle" font-size="11" fill="#d6a040" font-style="italic">O(R²·C) 时间，O(1) 空间</text>
+</svg>

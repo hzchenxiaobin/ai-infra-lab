@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">DFS 算法流程：携带 parent / grandparent 下传</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">递归参数把上下文一代代传下去，每个节点都能拿到自己的祖父</text>
+
+  <!-- Start -->
+  <rect x="200" y="58" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="80" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">dfs(root, null, null)</text>
+
+  <line x1="280" y1="92" x2="280" y2="108" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: node null? -->
+  <polygon points="280,112 380,152 280,192 180,152" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="150" text-anchor="middle" font-size="12" fill="#333">node == null?</text>
+  <text x="280" y="166" text-anchor="middle" font-size="10" fill="#888">空节点直接返回</text>
+
+  <!-- yes branch -->
+  <text x="160" y="150" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <line x1="180" y1="152" x2="130" y2="152" stroke="#b85450" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="48" y="138" width="82" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="89" y="156" text-anchor="middle" font-size="11" fill="#b85450">return</text>
+
+  <!-- no branch -->
+  <text x="400" y="150" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <line x1="380" y1="152" x2="430" y2="152" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: grandparent even? -->
+  <polygon points="430,152 510,182 430,212 350,182" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="430" y="180" text-anchor="middle" font-size="11" fill="#333">gp 偶数?</text>
+  <text x="430" y="196" text-anchor="middle" font-size="9" fill="#888">gp != null</text>
+  <text x="430" y="208" text-anchor="middle" font-size="9" fill="#888">&amp;&amp; gp.val%2==0</text>
+
+  <!-- yes: add -->
+  <line x1="430" y1="212" x2="430" y2="232" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="226" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="368" y="234" width="124" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="254" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">ans += node.val</text>
+
+  <!-- merge down to recurse -->
+  <line x1="430" y1="264" x2="430" y2="290" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="368" y="284" font-size="10" fill="#888">否→跳过累加</text>
+  <line x1="368" y1="290" x2="418" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="3 2" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- Recurse box -->
+  <rect x="120" y="296" width="320" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="318" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">递归孩子：parent ← node, grandparent ← parent</text>
+  <text x="160" y="344" font-size="11" fill="#333">dfs(node.left,  node, parent)</text>
+  <text x="160" y="362" font-size="11" fill="#333">dfs(node.right, node, parent)</text>
+
+  <!-- role-shift arrows showing parameter handoff -->
+  <path d="M 372 338 Q 392 332 392 344" stroke="#d6a040" stroke-width="1.2" fill="none" filter="url(#rough2)" marker-end="url(#arrO)"/>
+  <text x="398" y="338" font-size="8" fill="#d6a040">parent</text>
+  <text x="398" y="350" font-size="8" fill="#d6a040">→gp</text>
+
+  <line x1="280" y1="374" x2="280" y2="392" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End -->
+  <rect x="200" y="394" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="416" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return ans</text>
+
+  <!-- side note -->
+  <rect x="30" y="296" width="80" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="70" y="316" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">参数下传</text>
+  <text x="40" y="332" font-size="8" fill="#555">每深入一层</text>
+  <text x="40" y="344" font-size="8" fill="#555">parent 变 gp</text>
+  <text x="40" y="356" font-size="8" fill="#555">node 变 parent</text>
+</svg>

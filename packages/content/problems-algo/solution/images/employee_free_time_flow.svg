@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：收集 → 排序 → 合并 → 挖缝</text>
+
+  <rect x="40" y="48" width="100" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="71" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">收集</text>
+  <text x="90" y="100" text-anchor="middle" font-size="9" fill="#888">摊平所有区间</text>
+
+  <path d="M 140 66 L 174 66" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="176" y="48" width="100" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="226" y="71" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">排序</text>
+  <text x="226" y="100" text-anchor="middle" font-size="9" fill="#888">按 start 升序</text>
+
+  <path d="M 276 66 L 310 66" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="312" y="48" width="100" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="362" y="71" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">合并 + 挖缝</text>
+  <text x="362" y="100" text-anchor="middle" font-size="9" fill="#888">线性扫描</text>
+
+  <path d="M 412 66 L 446 66" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="448" y="48" width="80" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="488" y="71" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">结果</text>
+  <text x="488" y="100" text-anchor="middle" font-size="9" fill="#888">空闲段列表</text>
+
+  <text x="30" y="130" font-size="12" fill="#d6a040" font-weight="bold">合并 + 挖缝细节（遍历 all[1:]）</text>
+
+  <rect x="40" y="142" width="480" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="162" font-size="10.5" fill="#555">维护 prev_end（当前合并段的终点）</text>
+  <text x="56" y="178" font-size="10.5" fill="#555">对每个 cur ∈ all[1:]：</text>
+  <text x="70" y="192" font-size="10.5" fill="#333">if cur.start &gt; prev_end → 缝隙 [prev_end, cur.start)，prev_end = cur.end</text>
+
+  <text x="30" y="222" font-size="12" fill="#b85450" font-weight="bold">决策示意</text>
+
+  <text x="40" y="244" font-size="10.5" fill="#888" font-weight="bold">情况 A：重叠 / 相接（cur.start ≤ prev_end）</text>
+  <rect x="60" y="252" width="120" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="264" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">已合并 [1,5)</text>
+  <rect x="100" y="272" width="80" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="3 2" rx="3" filter="url(#rough2)"/>
+  <text x="140" y="284" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">cur [2,4)</text>
+  <text x="210" y="272" font-size="10" fill="#b85450">→ 合并：prev_end = max(5, 4) = 5</text>
+
+  <text x="40" y="312" font-size="10.5" fill="#888" font-weight="bold">情况 B：有缝隙（cur.start &gt; prev_end）</text>
+  <rect x="60" y="320" width="120" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="120" y="332" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">已合并 [1,5)</text>
+  <rect x="220" y="320" width="60" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="3 2" rx="3" filter="url(#rough2)"/>
+  <text x="250" y="332" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">cur [6,7)</text>
+  <rect x="180" y="346" width="40" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="200" y="357" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold">[5,6)</text>
+  <text x="300" y="340" font-size="10" fill="#4a7a3a">→ 缝隙！加 [5,6)，prev_end = 7</text>
+</svg>

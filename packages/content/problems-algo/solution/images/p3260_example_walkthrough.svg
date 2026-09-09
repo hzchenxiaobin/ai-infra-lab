@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">示例演算：n = 5，k = 6 → 89898</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">自由位 3 个：j = 0, 1, 2（j=2 是中间位）｜位值从左到右：10⁴ 10³ 10² 10¹ 10⁰</text>
+
+  <!-- 左：系数与后缀表 -->
+  <rect x="20" y="52" width="240" height="200" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="70" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 系数 w 与后缀表 suf</text>
+  <text x="32" y="88" font-size="9" fill="#33506b" filter="url(#rough2)">w₀ = (10⁴+10⁰) mod 6 = 10001 mod 6 = 5</text>
+  <text x="32" y="102" font-size="9" fill="#33506b" filter="url(#rough2)">w₁ = (10³+10¹) mod 6 = 1010 mod 6 = 2</text>
+  <text x="32" y="116" font-size="9" fill="#33506b" filter="url(#rough2)">w₂ = 10² mod 6 = 4（中间位，只算一次）</text>
+
+  <!-- suf 表 -->
+  <rect x="32" y="130" width="216" height="86" fill="#ffffff" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <rect x="32" y="165" width="216" height="34" fill="#fff8e1" filter="url(#rough2)"/>
+  <line x1="32" y1="148" x2="248" y2="148" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="32" y1="165" x2="248" y2="165" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="32" y1="182" x2="248" y2="182" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="32" y1="199" x2="248" y2="199" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="64" y1="130" x2="64" y2="216" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="104" y1="130" x2="104" y2="216" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="48" y="142" text-anchor="middle" font-size="9" fill="#33506b" font-weight="bold" filter="url(#rough2)">i</text>
+  <text x="84" y="142" text-anchor="middle" font-size="9" fill="#33506b" font-weight="bold" filter="url(#rough2)">w[i]</text>
+  <text x="176" y="142" text-anchor="middle" font-size="9" fill="#33506b" font-weight="bold" filter="url(#rough2)">suf[i] 能凑出的余数</text>
+  <text x="48" y="161" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">3</text>
+  <text x="84" y="161" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">—</text>
+  <text x="176" y="161" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">{0}（空后缀）</text>
+  <text x="48" y="178" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">2</text>
+  <text x="84" y="178" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">4</text>
+  <text x="176" y="178" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">{0, 2, 4}</text>
+  <text x="48" y="195" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">1</text>
+  <text x="84" y="195" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">2</text>
+  <text x="176" y="195" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">{0, 2, 4}</text>
+  <text x="48" y="212" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">0</text>
+  <text x="84" y="212" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">5</text>
+  <text x="176" y="212" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">{0,1,2,3,4,5}（全部）</text>
+
+  <text x="32" y="232" font-size="9" fill="#8c3a36" filter="url(#rough2)">w₁、w₂ 全是偶系数 → 第 1 位起只能凑出偶余数</text>
+  <text x="32" y="245" font-size="9" fill="#8c3a36" filter="url(#rough2)">（这正是首位 9 被拒的深层原因）</text>
+
+  <!-- 右：贪心过程 -->
+  <rect x="272" y="52" width="232" height="200" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="388" y="70" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 贪心过程（cur = 已选余数）</text>
+
+  <rect x="282" y="80" width="212" height="50" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="388" y="95" text-anchor="middle" font-size="9" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">i=0（首位），w=5，cur=0</text>
+  <text x="388" y="109" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">d=9 → need=3 ∉ {0,2,4} ✗</text>
+  <text x="388" y="123" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">d=8 → need=2 ✓ 选 8，cur=4</text>
+
+  <rect x="282" y="136" width="212" height="36" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="388" y="151" text-anchor="middle" font-size="9" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">i=1，w=2，cur=4</text>
+  <text x="388" y="165" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">d=9 → need=2 ✓ 选 9，cur=4</text>
+
+  <rect x="282" y="178" width="212" height="50" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="388" y="193" text-anchor="middle" font-size="9" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">i=2（中间位），w=4，cur=4</text>
+  <text x="388" y="207" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">d=9 → need=2 ∉ {0} ✗</text>
+  <text x="388" y="221" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">d=8 → need=0 ✓ 选 8，cur=0</text>
+
+  <text x="388" y="243" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">half = 898，最终 cur = 0 ✓</text>
+
+  <!-- 拼接 -->
+  <text x="260" y="272" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">③ 拼接：half = 898，镜像补出后两位</text>
+  <rect x="163" y="280" width="34" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="302" text-anchor="middle" font-size="14" fill="#33506b" filter="url(#rough2)">8</text>
+  <rect x="203" y="280" width="34" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="302" text-anchor="middle" font-size="14" fill="#33506b" filter="url(#rough2)">9</text>
+  <rect x="243" y="280" width="34" height="34" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="14" fill="#a07830" filter="url(#rough2)">8</text>
+  <rect x="283" y="280" width="34" height="34" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="300" y="302" text-anchor="middle" font-size="14" fill="#2f5d24" filter="url(#rough2)">9</text>
+  <rect x="323" y="280" width="34" height="34" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="340" y="302" text-anchor="middle" font-size="14" fill="#2f5d24" filter="url(#rough2)">8</text>
+  <text x="223" y="326" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">half（自由位）</text>
+  <text x="303" y="326" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">自动镜像</text>
+
+  <!-- 底部验证 -->
+  <rect x="30" y="332" width="460" height="26" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="349" text-anchor="middle" font-size="9" fill="#a07830" filter="url(#rough2)">验证：89898 = 6×14983 ✓｜首位 9 ⇒ 末位 9 奇（2∤）✗；89m98 要求数位和 34+m≡0 (mod 3) ⇒ m=8 唯一</text>
+</svg>

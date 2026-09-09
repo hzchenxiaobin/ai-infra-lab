@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="520" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">示例 1 演算：高级累计 20000→40000→90000 | 初级偏移 40000，累计 50000→60000→100000</text>
+
+  <!-- ===== Step 1: Senior sorted + cumulative ===== -->
+  <text x="40" y="58" font-size="11" fill="#446688" font-weight="bold">步骤 ① 高级组（按 salary 升序 + 窗口累计求和）</text>
+
+  <!-- header -->
+  <rect x="40" y="64" width="360" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="79" font-size="9" fill="#333" font-weight="bold">employee_id</text>
+  <text x="170" y="79" font-size="9" fill="#333" font-weight="bold">salary</text>
+  <text x="270" y="79" font-size="9" fill="#333" font-weight="bold">cur（累计前缀和）</text>
+  <text x="370" y="79" font-size="9" fill="#333" font-weight="bold">≤70000?</text>
+
+  <!-- senior row 1: id=2, sal=20000, cur=20000 -->
+  <rect x="40" y="86" width="360" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="102" font-size="9.5" fill="#446688">2</text>
+  <text x="170" y="102" font-size="9.5" fill="#333">20000</text>
+  <text x="270" y="102" font-size="9.5" fill="#446688" font-weight="bold">20000</text>
+  <text x="370" y="102" font-size="9.5" fill="#4a7a3a" font-weight="bold">✓</text>
+
+  <!-- senior row 2: id=11, sal=20000, cur=40000 -->
+  <rect x="40" y="110" width="360" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="126" font-size="9.5" fill="#446688">11</text>
+  <text x="170" y="126" font-size="9.5" fill="#333">20000</text>
+  <text x="270" y="126" font-size="9.5" fill="#446688" font-weight="bold">40000</text>
+  <text x="370" y="126" font-size="9.5" fill="#4a7a3a" font-weight="bold">✓</text>
+
+  <!-- senior row 3: id=13, sal=50000, cur=90000 (rejected) -->
+  <rect x="40" y="134" width="360" height="24" fill="#f5f5f5" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="150" font-size="9.5" fill="#999">13</text>
+  <text x="170" y="150" font-size="9.5" fill="#999">50000</text>
+  <text x="270" y="150" font-size="9.5" fill="#b85450" font-weight="bold">90000</text>
+  <text x="370" y="150" font-size="9.5" fill="#b85450" font-weight="bold">✗</text>
+
+  <!-- budget line at 70000 -->
+  <line x1="300" y1="86" x2="300" y2="158" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="262" y="160" width="76" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="300" y="172" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">切分 70000</text>
+
+  <!-- arrow to step 2 -->
+  <path d="M220 180 L220 196" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Compute spent_senior ===== -->
+  <rect x="40" y="200" width="360" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="218" font-size="10" fill="#d6a040" font-weight="bold">步骤 ② 高级花费（偏移量）</text>
+  <text x="55" y="234" font-size="9" fill="#555">spent = MAX(cur WHERE cur ≤ 70000) = MAX(20000, 40000) = </text>
+  <text x="385" y="234" font-size="10" fill="#d6a040" font-weight="bold">40000</text>
+  <text x="55" y="246" font-size="8.5" fill="#999">IFNULL(..., 0) 兜底空集 → 此处非空，取 40000</text>
+
+  <!-- arrow to step 3 -->
+  <path d="M220 254 L220 270" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Junior sorted + cumulative + offset ===== -->
+  <text x="40" y="286" font-size="11" fill="#4a7a3a" font-weight="bold">步骤 ③ 初级组（偏移 40000 + 窗口累计求和）</text>
+
+  <!-- header -->
+  <rect x="40" y="292" width="420" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="307" font-size="9" fill="#333" font-weight="bold">employee_id</text>
+  <text x="170" y="307" font-size="9" fill="#333" font-weight="bold">salary</text>
+  <text x="270" y="307" font-size="9" fill="#333" font-weight="bold">初级前缀和</text>
+  <text x="370" y="307" font-size="9" fill="#333" font-weight="bold">cur=40000+前缀</text>
+
+  <!-- junior row 1: id=1, sal=10000, prefix=10000, cur=50000 -->
+  <rect x="40" y="314" width="420" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="330" font-size="9.5" fill="#4a7a3a">1</text>
+  <text x="170" y="330" font-size="9.5" fill="#333">10000</text>
+  <text x="270" y="330" font-size="9.5" fill="#333">10000</text>
+  <text x="370" y="330" font-size="9.5" fill="#4a7a3a" font-weight="bold">50000 ✓</text>
+
+  <!-- junior row 2: id=9, sal=10000, prefix=20000, cur=60000 -->
+  <rect x="40" y="338" width="420" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="354" font-size="9.5" fill="#4a7a3a">9</text>
+  <text x="170" y="354" font-size="9.5" fill="#333">10000</text>
+  <text x="270" y="354" font-size="9.5" fill="#333">20000</text>
+  <text x="370" y="354" font-size="9.5" fill="#4a7a3a" font-weight="bold">60000 ✓</text>
+
+  <!-- junior row 3: id=4, sal=40000, prefix=60000, cur=100000 (rejected) -->
+  <rect x="40" y="362" width="420" height="24" fill="#f5f5f5" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="70" y="378" font-size="9.5" fill="#999">4</text>
+  <text x="170" y="378" font-size="9.5" fill="#999">40000</text>
+  <text x="270" y="378" font-size="9.5" fill="#999">60000</text>
+  <text x="370" y="378" font-size="9.5" fill="#b85450" font-weight="bold">100000 ✗</text>
+
+  <!-- budget line at 70000 -->
+  <line x1="375" y1="314" x2="375" y2="386" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="338" y="388" width="76" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="376" y="400" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">切分 70000</text>
+
+  <!-- ===== Step 4: Final output ===== -->
+  <path d="M220 408 L220 424" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <rect x="80" y="428" width="280" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="448" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">步骤 ④ UNION ALL 计数</text>
+  <line x1="100" y1="454" x2="340" y2="454" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="110" y="470" font-size="10" fill="#446688" font-weight="bold">Senior</text>
+  <text x="200" y="470" font-size="10" fill="#446688" font-weight="bold">2</text>
+  <text x="110" y="486" font-size="10" fill="#4a7a3a" font-weight="bold">Junior</text>
+  <text x="200" y="486" font-size="10" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="250" y="470" font-size="8.5" fill="#999">← COUNT(cur≤70000) FROM s</text>
+  <text x="250" y="486" font-size="8.5" fill="#999">← COUNT(cur≤70000) FROM j</text>
+
+  <!-- right callout -->
+  <rect x="400" y="428" width="210" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="448" font-size="10" fill="#446688" font-weight="bold">关键数值</text>
+  <text x="415" y="464" font-size="9" fill="#555">高级花费：40000</text>
+  <text x="415" y="478" font-size="9" fill="#555">剩余预算：30000</text>
+  <text x="415" y="492" font-size="9" fill="#555">初级花费：20000（50000−40000）</text>
+</svg>

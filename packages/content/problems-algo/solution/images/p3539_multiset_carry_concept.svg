@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 432"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="432" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：按计数向量分组 × 竖式进位判 popcount</text>
+
+  <!-- ① 顺序无关 -->
+  <text x="24" y="54" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 顺序无关：合法性与贡献都只看「每个下标被选几次」</text>
+
+  <rect x="24" y="66" width="62" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="55" y="84" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">[0,1,1]</text>
+  <rect x="94" y="66" width="62" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="125" y="84" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">[1,0,1]</text>
+  <rect x="164" y="66" width="62" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="195" y="84" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">[1,1,0]</text>
+  <text x="125" y="108" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">3 种顺序 = 3!/1!·2! 个排列</text>
+
+  <path d="M230,79 L244,79" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="248" y="66" width="104" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="84" text-anchor="middle" font-size="12" fill="#2d4d24" filter="url(#rough2)">c₀=1, c₁=2</text>
+
+  <path d="M356,79 L370,79" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="374" y="66" width="162" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="84" text-anchor="middle" font-size="11.5" fill="#8a6d1f" filter="url(#rough2)">S = 2⁰+2¹+2¹ = 101₂</text>
+
+  <text x="24" y="124" font-size="11" fill="#555" filter="url(#rough2)">同组序列数 = m!/∏cⱼ!，同组每条乘积 = ∏ⱼ nums[j]^cⱼ（顺序怎么排都一样）</text>
+  <text x="24" y="142" font-size="11" fill="#555" filter="url(#rough2)">⇒ 整组贡献 = (m!/∏cⱼ!) · ∏ⱼ nums[j]^cⱼ = m! · ∏ⱼ nums[j]^cⱼ/cⱼ!</text>
+
+  <!-- ② 竖式进位 -->
+  <text x="24" y="172" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">② 竖式加法逐位判 popcount：第 j 列摞 cⱼ 个 1，再叠加低位进位</text>
+
+  <text x="162" y="197" text-anchor="end" font-size="10.5" fill="#888" filter="url(#rough2)">位置 j（低位→高位）</text>
+  <rect x="174" y="182" width="56" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="197" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">j = 0</text>
+  <rect x="242" y="182" width="56" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="197" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">j = 1</text>
+  <rect x="310" y="182" width="56" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="197" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">j = 2</text>
+
+  <text x="162" y="229" text-anchor="end" font-size="10.5" fill="#555" filter="url(#rough2)">cⱼ（放几个元素）</text>
+  <rect x="174" y="212" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="229" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="242" y="212" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="229" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="310" y="212" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="229" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">0</text>
+
+  <text x="162" y="257" text-anchor="end" font-size="10.5" fill="#555" filter="url(#rough2)">进位入（低位来）</text>
+  <rect x="174" y="240" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="257" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">0</text>
+  <rect x="242" y="240" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="257" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">0</text>
+  <rect x="310" y="240" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="257" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">1</text>
+
+  <text x="162" y="285" text-anchor="end" font-size="10.5" fill="#555" filter="url(#rough2)">s = cⱼ + 进位入</text>
+  <rect x="174" y="268" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="285" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="242" y="268" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="285" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="310" y="268" width="56" height="24" fill="#fff" stroke="#888" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="285" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">1</text>
+
+  <text x="162" y="313" text-anchor="end" font-size="10.5" fill="#555" filter="url(#rough2)">本位 = s &amp; 1</text>
+  <rect x="174" y="296" width="56" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="313" text-anchor="middle" font-size="13" fill="#2d4d24" font-weight="bold" filter="url(#rough2)">1</text>
+  <rect x="242" y="296" width="56" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="313" text-anchor="middle" font-size="13" fill="#2d4d24" font-weight="bold" filter="url(#rough2)">0</text>
+  <rect x="310" y="296" width="56" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="313" text-anchor="middle" font-size="13" fill="#2d4d24" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <text x="162" y="341" text-anchor="end" font-size="10.5" fill="#555" filter="url(#rough2)">进位出 = s ≫ 1</text>
+  <rect x="174" y="324" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="202" y="341" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">0</text>
+  <rect x="242" y="324" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="341" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">1</text>
+  <rect x="310" y="324" width="56" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="341" text-anchor="middle" font-size="13" fill="#8a6d1f" filter="url(#rough2)">0</text>
+
+  <path d="M268,322 L314,262" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="304" y="300" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">进 1</text>
+
+  <text x="382" y="204" font-size="10.5" fill="#555" filter="url(#rough2)">本位从低到高拼成</text>
+  <text x="382" y="222" font-size="11.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">S = 101₂ = 5</text>
+  <text x="382" y="242" font-size="10.5" fill="#555" filter="url(#rough2)">popcount = 2 ✓</text>
+  <text x="382" y="270" font-size="10.5" fill="#555" filter="url(#rough2)">末进位即 S 的高位：</text>
+  <text x="382" y="288" font-size="10.5" fill="#555" filter="url(#rough2)">popcount(S) = b</text>
+  <text x="382" y="304" font-size="10.5" fill="#555" filter="url(#rough2)">+ popcount(末进位)</text>
+
+  <text x="24" y="366" font-size="11" fill="#555" filter="url(#rough2)">合法 ⟺ b + popcount(末进位) = k（本例 2 + 0 = 2 ✓）</text>
+
+  <rect x="24" y="382" width="512" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="404" text-anchor="middle" font-size="11.5" fill="#2d4d24" font-weight="bold" filter="url(#rough2)">答案 = m! × Σ(合法 c) ∏ⱼ nums[j]^cⱼ/cⱼ!（1/cⱼ! 逐位乘，m! 最后统一乘）</text>
+</svg>

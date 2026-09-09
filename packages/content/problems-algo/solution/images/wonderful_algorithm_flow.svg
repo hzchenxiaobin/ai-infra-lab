@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 620" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="480" height="620" fill="#fafafa"/>
+
+  <text x="240" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">一趟遍历：掩码 + count 数组 + 枚举翻转 10 位</text>
+
+  <!-- Init -->
+  <rect x="80" y="44" width="320" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="66" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="240" y="84" text-anchor="middle" font-size="11" fill="#555">count[1024] 全填 0，count[0] = 1</text>
+  <text x="240" y="98" text-anchor="middle" font-size="11" fill="#555">mask = 0, ans = 0</text>
+
+  <path d="M 240 108 L 240 124" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop entry -->
+  <rect x="70" y="128" width="340" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough)"/>
+  <text x="240" y="148" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">for each char c in word</text>
+  <text x="240" y="164" text-anchor="middle" font-size="10.5" fill="#555">逐字符扫描</text>
+
+  <path d="M 240 176 L 240 192" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- update mask -->
+  <rect x="100" y="196" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">mask ^= (1 &lt;&lt; (c − 'a'))</text>
+  <text x="240" y="232" text-anchor="middle" font-size="10.5" fill="#555">翻转字符 c 对应的位（奇 ↔ 偶）</text>
+
+  <path d="M 240 244 L 240 260" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Query all-even -->
+  <rect x="100" y="264" width="280" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="284" text-anchor="middle" font-size="12" fill="#3a5a2a" font-weight="bold">全偶查询</text>
+  <text x="240" y="302" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">ans += count[mask]</text>
+  <text x="240" y="316" text-anchor="middle" font-size="10" fill="#888">之前有多少同掩码前缀 → 全偶子串</text>
+
+  <path d="M 240 324 L 240 340" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Query exactly-1-odd -->
+  <rect x="80" y="344" width="320" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="364" text-anchor="middle" font-size="12" fill="#7a5a20" font-weight="bold">恰 1 奇查询：枚举翻转 10 位</text>
+  <text x="240" y="382" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">for k = 0 to 9:</text>
+  <text x="240" y="398" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">  ans += count[mask ^ (1 &lt;&lt; k)]</text>
+  <text x="240" y="410" text-anchor="middle" font-size="10" fill="#888">每种翻转查一次 → 恰 1 字符奇数次子串</text>
+
+  <path d="M 240 420 L 240 436" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Increment count -->
+  <rect x="100" y="440" width="280" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="460" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">count[mask]++</text>
+  <text x="240" y="476" text-anchor="middle" font-size="10" fill="#888">先查询再自增（避免空子串多算）</text>
+
+  <!-- loop back -->
+  <path d="M 240 490 L 240 506 L 430 506 L 430 150 L 410 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="372" y="500" font-size="9.5" fill="#aaa">下一字符</text>
+
+  <!-- final -->
+  <rect x="80" y="540" width="320" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="562" text-anchor="middle" font-size="13" fill="#3a5a2a" font-weight="bold">遍历结束 → return ans</text>
+  <text x="240" y="580" text-anchor="middle" font-size="10.5" fill="#888">O(11n) = O(n) 时间 · O(1024) = O(1) 空间</text>
+</svg>

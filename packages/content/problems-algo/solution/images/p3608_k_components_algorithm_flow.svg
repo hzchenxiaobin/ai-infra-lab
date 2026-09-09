@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：check(t) 一趟并查集判定 + 外层二分最小 t</text>
+  <text x="260" y="37" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">check(t) =「删除所有 time ≤ t 的边后，连通块数是否 ≥ k」</text>
+
+  <!-- 初始化 -->
+  <g filter="url(#rough2)">
+    <rect x="140" y="46" width="180" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="230" y="65" text-anchor="middle" font-size="11" fill="#33455e" font-weight="bold">初始化并查集：comp = n</text>
+  </g>
+  <path d="M 230 76 L 230 92" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 遍历边 -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="96" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4"/>
+    <text x="230" y="113" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">① 遍历每条边 (u, v, time)</text>
+    <text x="230" y="131" text-anchor="middle" font-size="9.5" fill="#2a5a2a">time &gt; t ⟹ unite（成功则 comp−−）；≤ t ⟹ 跳过</text>
+  </g>
+  <path d="M 230 140 L 230 156" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形判定 -->
+  <g filter="url(#rough2)">
+    <polygon points="230,158 306,192 230,226 154,192" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="230" y="196" text-anchor="middle" font-size="11" fill="#33455e" font-weight="bold">comp ≥ k ?</text>
+  </g>
+  <path d="M 306 192 L 388 192" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="348" y="184" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">true</text>
+  <g filter="url(#rough2)">
+    <rect x="392" y="176" width="104" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="444" y="196" text-anchor="middle" font-size="11.5" fill="#2a5a2a" font-weight="bold">hi = mid</text>
+  </g>
+  <path d="M 230 226 L 230 248" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="242" y="243" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">false</text>
+  <g filter="url(#rough2)">
+    <rect x="150" y="252" width="160" height="30" fill="#f7f7f7" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="230" y="271" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">lo = mid + 1</text>
+  </g>
+
+  <!-- 收敛判定 -->
+  <path d="M 230 282 L 230 300" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="120" y="304" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="230" y="321" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">② 收敛判定：lo == hi ⟹ 返回 lo</text>
+    <text x="230" y="337" text-anchor="middle" font-size="9.5" fill="#8a6d1f">（lo 即最小可行 t）</text>
+  </g>
+
+  <!-- 回边 -->
+  <path d="M 120 324 L 62 324 L 62 118 L 112 118" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="52" y="220" font-size="9" fill="#666" text-anchor="middle" transform="rotate(-90 52 220)" filter="url(#rough2)">未收敛 ⟹ 取 mid=(lo+hi)/2 再跑 ①</text>
+
+  <!-- 底部说明 -->
+  <g filter="url(#rough2)">
+    <rect x="50" y="364" width="420" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8"/>
+    <text x="260" y="382" text-anchor="middle" font-size="10" fill="#8a6d1f">复杂度：每轮 check 为 O(m·α(n))，值域 [0, max time] 二分约 30 轮（log₂10⁹）</text>
+    <text x="260" y="400" text-anchor="middle" font-size="10" fill="#8a6d1f">答案必落在 {0} ∪ {time}，先排序去重时间值再二分可降到 log m 轮</text>
+  </g>
+</svg>

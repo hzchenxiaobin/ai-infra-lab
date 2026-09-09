@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：定序 → 逆序后序 → 逐点倒池截取 → 两头算积</text>
+
+  <!-- step 1 -->
+  <rect x="60" y="44" width="200" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="67" text-anchor="middle" font-size="12" fill="#2c4a6e" filter="url(#rough2)">① 建无向邻接表 g</text>
+  <path d="M 160 82 L 160 100" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- step 2 -->
+  <rect x="60" y="104" width="200" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="12" fill="#2c4a6e">
+    <text x="160" y="124" text-anchor="middle">② 栈模拟 DFS</text>
+    <text x="160" y="141" text-anchor="middle" font-size="11">收集 order + parent（防爆栈）</text>
+  </g>
+  <path d="M 160 152 L 160 170" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- step 3 -->
+  <rect x="60" y="174" width="200" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="12" fill="#8a6414">
+    <text x="160" y="191" text-anchor="middle">③ 逆序遍历 order</text>
+    <text x="160" y="207" text-anchor="middle" font-size="11">（孩子先于父 ≙ 后序）</text>
+  </g>
+  <path d="M 260 194 L 296 194" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- step 4: per-node -->
+  <rect x="300" y="88" width="238" height="208" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="419" y="108" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e5c22" filter="url(#rough2)">④ 对每个节点 x（孩子已算完）</text>
+
+  <rect x="312" y="120" width="214" height="50" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11" fill="#2e5c22">
+    <text x="419" y="140" text-anchor="middle">pool ← cost[x] ∪ 各孩子 kept[y]</text>
+    <text x="419" y="158" text-anchor="middle" font-size="10.5">size[x] = 1 + Σ size[y]</text>
+  </g>
+
+  <rect x="312" y="178" width="214" height="58" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11" fill="#2e5c22">
+    <text x="419" y="196" text-anchor="middle">pool 排序后截取：</text>
+    <text x="419" y="214" text-anchor="middle" font-size="10.5">&gt; 5 个 → 留「最小 2 ∣ 最大 3」</text>
+    <text x="419" y="230" text-anchor="middle" font-size="10.5">→ kept[x]（向上携带）</text>
+  </g>
+
+  <rect x="312" y="244" width="214" height="40" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="11" fill="#2e5c22">
+    <text x="419" y="261" text-anchor="middle">kept 已升序，两头即候选：</text>
+    <text x="419" y="277" text-anchor="middle" font-size="10.5">最大三个 ∣ 两最小 × 最大</text>
+  </g>
+
+  <path d="M 419 296 L 419 310" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- decision diamond -->
+  <polygon points="419,312 474,340 419,368 364,340" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="419" y="344" text-anchor="middle" font-size="11.5" fill="#8a6414" filter="url(#rough2)">size[x] &lt; 3 ?</text>
+
+  <!-- branches -->
+  <path d="M 392 354 L 364 378" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="372" y="366" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">是</text>
+  <path d="M 446 354 L 484 376" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="474" y="366" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">否</text>
+
+  <rect x="300" y="384" width="124" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" fill="#2c4a6e">
+    <text x="362" y="402" text-anchor="middle" font-size="11.5">coin[x] = 1</text>
+    <text x="362" y="418" text-anchor="middle" font-size="10.5">子树不足 3 个节点</text>
+  </g>
+
+  <rect x="426" y="380" width="126" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10.5" fill="#2c4a6e">
+    <text x="489" y="398" text-anchor="middle">coin[x] = max(</text>
+    <text x="489" y="414" text-anchor="middle">最大三个之积,</text>
+    <text x="489" y="430" text-anchor="middle">两最小 × 最大, 0)</text>
+  </g>
+
+  <!-- merge to step 5 -->
+  <path d="M 362 428 L 362 452" fill="none" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 489 444 L 489 452 L 270 452 L 270 360 L 266 360" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- loop back to step 3 -->
+  <path d="M 300 406 L 282 406 L 282 160 L 160 160 L 160 168" fill="none" stroke="#b85450" stroke-width="1.4" stroke-dasharray="5 4" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="272" y="300" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)" transform="rotate(-90 272 300)">每个 x 处理完 → 下一个</text>
+
+  <!-- step 5 -->
+  <rect x="60" y="336" width="200" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="12" fill="#2c4a6e">
+    <text x="160" y="356" text-anchor="middle">⑤ 全部处理完</text>
+    <text x="160" y="373" text-anchor="middle" font-size="11">返回 coin 数组</text>
+  </g>
+
+  <!-- warning box -->
+  <rect x="60" y="398" width="200" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10.5" fill="#8c3a36">
+    <text x="160" y="416" text-anchor="middle" font-size="11" font-weight="bold">⚠️ 两个坑</text>
+    <text x="160" y="432" text-anchor="middle">乘积最大 10¹² → long long</text>
+    <text x="160" y="448" text-anchor="middle">链深 2×10⁴ → Python 迭代</text>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">同余链 + 滑动窗口（以 v=2, c=2 为例）</text>
+
+  <!-- chain rem=0 -->
+  <text x="30" y="64" font-size="12" fill="#4a7a3a">余 0 链:</text>
+  <rect x="90" y="48" width="46" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="113" y="68" text-anchor="middle" font-size="12" fill="#333">f[0]</text>
+  <rect x="160" y="48" width="46" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="183" y="68" text-anchor="middle" font-size="12" fill="#333">f[2]</text>
+  <rect x="230" y="48" width="46" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="253" y="68" text-anchor="middle" font-size="12" fill="#333">f[4]</text>
+  <rect x="300" y="48" width="46" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="323" y="68" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">f[6]</text>
+  <path d="M 136 63 L 160 63" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 206 63 L 230 63" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 276 63 L 300 63" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 348 68 Q 386 68 386 92" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- window bracket on chain 0 -->
+  <path d="M 88 88 Q 220 108 346 88" stroke="#d6a040" stroke-width="2" fill="none" filter="url(#rough2)"/>
+  <text x="217" y="112" text-anchor="middle" font-size="11" fill="#d6a040">窗口 = 最近 c+1 = 3 项</text>
+
+  <!-- chain rem=1 -->
+  <text x="30" y="148" font-size="12" fill="#446688">余 1 链:</text>
+  <rect x="90" y="132" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="113" y="152" text-anchor="middle" font-size="12" fill="#333">f[1]</text>
+  <rect x="160" y="132" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="183" y="152" text-anchor="middle" font-size="12" fill="#333">f[3]</text>
+  <rect x="230" y="132" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="253" y="152" text-anchor="middle" font-size="12" fill="#333">f[5]</text>
+  <path d="M 136 147 L 160 147" stroke="#446688" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <path d="M 206 147 L 230 147" stroke="#446688" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+
+  <!-- transition formula -->
+  <rect x="30" y="190" width="300" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="180" y="212" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">计算 f'[6]（选 0..2 个 v=2）</text>
+  <text x="180" y="234" text-anchor="middle" font-size="12" fill="#b85450">f'[6] = f[6] + f[4] + f[2]</text>
+
+  <!-- prefix sum formula -->
+  <rect x="30" y="262" width="300" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="180" y="284" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">前缀和相减 O(1)</text>
+  <text x="180" y="306" text-anchor="middle" font-size="12" fill="#4a7a3a">f'[x] = pre[i] − pre[i−c−1]</text>
+
+  <!-- right column: complexity note -->
+  <rect x="352" y="190" width="146" height="130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="425" y="214" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">每个值转移 O(r)</text>
+  <text x="425" y="240" text-anchor="middle" font-size="10" fill="#555">链上每前进一格:</text>
+  <text x="425" y="258" text-anchor="middle" font-size="10" fill="#555">进一项 + 出一项</text>
+  <text x="425" y="276" text-anchor="middle" font-size="10" fill="#555">均摊 O(1)</text>
+  <text x="425" y="300" text-anchor="middle" font-size="10" fill="#888">总计 O(d·r) ≈ 4×10⁶</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="336" width="468" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="264" y="356" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">同余分组是单调队列优化多重背包的骨架</text>
+  <text x="264" y="374" text-anchor="middle" font-size="11" fill="#888">系数全 1 只需求和 → 无需单调队列，前缀和相减即可</text>
+</svg>

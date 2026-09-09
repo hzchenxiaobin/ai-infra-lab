@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心策略：每次选最大堆，移除 floor(p/2)</text>
+
+  <!-- ===== Left side: original piles as bars ===== -->
+  <text x="120" y="56" text-anchor="middle" font-size="11" fill="#888">初始 piles</text>
+
+  <!-- pile 0: height 5 -->
+  <rect x="60" y="180" width="40" height="100" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="80" y="175" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">5</text>
+  <text x="80" y="296" text-anchor="middle" font-size="9" fill="#aaa">pile 0</text>
+
+  <!-- pile 1: height 4 -->
+  <rect x="110" y="200" width="40" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="130" y="195" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">4</text>
+  <text x="130" y="296" text-anchor="middle" font-size="9" fill="#aaa">pile 1</text>
+
+  <!-- pile 2: height 9 (highlighted as max) -->
+  <rect x="160" y="60" width="40" height="180" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="55" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">9</text>
+  <text x="180" y="296" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">pile 2 (max)</text>
+
+  <!-- arrow: pick max -->
+  <path d="M 205 100 Q 240 90 250 120" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="255" y="112" font-size="10" fill="#b85450" font-weight="bold">选最大</text>
+
+  <!-- ===== Right side: operation detail ===== -->
+  <rect x="260" y="50" width="260" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="390" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">一次操作：移除 floor(p/2)</text>
+  <text x="390" y="92" text-anchor="middle" font-size="11" fill="#555">p → p − floor(p/2) = ceil(p/2)</text>
+  <text x="390" y="110" text-anchor="middle" font-size="10" fill="#888">例：9 → 9−4 = 5； 5 → 5−2 = 3</text>
+
+  <!-- ===== Comparison: pick max vs pick small ===== -->
+  <rect x="260" y="135" width="260" height="85" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="390" y="155" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">为什么选最大最优？</text>
+  <text x="275" y="175" font-size="10" fill="#555">选 9：移除 floor(9/2) = 4 颗</text>
+  <text x="275" y="192" font-size="10" fill="#555">选 5：移除 floor(5/2) = 2 颗</text>
+  <text x="275" y="210" font-size="10" fill="#b85450" font-weight="bold">→ 选大者每次多移除，总移除最大</text>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="30" y="245" width="485" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="268" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">核心观察：贪心选择性质</text>
+  <text x="50" y="290" font-size="11" fill="#555">① floor(p/2) 随 p 单调递增——p 越大，一次移除越多</text>
+  <text x="50" y="310" font-size="11" fill="#555">② 交换论证：若最优解某步未选最大，换成选最大则该步移除 ≥ 原值</text>
+  <text x="50" y="330" font-size="11" fill="#555">③ 且操作后该堆变为 ceil(p/2) ≤ 原最大值，不恶化后续——故贪心最优</text>
+  <text x="50" y="352" font-size="11" fill="#b85450" font-weight="bold">→ 用大根堆维护，每轮取堆顶做操作，O(k log n) 求解</text>
+</svg>

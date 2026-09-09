@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：n=5, ranges=[1,2,1,0,2,1] → reach=[3,3,5,3,5,5]</text>
+  <text x="300" y="40" text-anchor="middle" font-size="10" fill="#888">贪心两步：tap1 覆盖 [0,3] + tap4 覆盖 [2,5] = 全程 [0,5]</text>
+
+  <!-- reach[] boxes (positions: 0→110,1→186,2→262,3→338,4→414,5→490) -->
+  <g font-size="11" font-weight="bold">
+    <rect x="86" y="52" width="48" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="110" y="70" text-anchor="middle" fill="#446688">3</text>
+    <rect x="162" y="52" width="48" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="186" y="70" text-anchor="middle" fill="#446688">3</text>
+    <rect x="238" y="52" width="48" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+    <text x="262" y="70" text-anchor="middle" fill="#4a7a3a">5</text>
+    <rect x="314" y="52" width="48" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="338" y="70" text-anchor="middle" fill="#446688">3</text>
+    <rect x="390" y="52" width="48" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+    <text x="414" y="70" text-anchor="middle" fill="#4a7a3a">5</text>
+    <rect x="466" y="52" width="48" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="490" y="70" text-anchor="middle" fill="#446688">5</text>
+  </g>
+  <text x="50" y="68" font-size="9" fill="#888">reach[]:</text>
+
+  <!-- Garden axis -->
+  <line x1="110" y1="100" x2="490" y2="100" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <g font-size="10" fill="#555">
+    <line x1="110" y1="96" x2="110" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="110" y="118" text-anchor="middle">0</text>
+    <line x1="186" y1="96" x2="186" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="186" y="118" text-anchor="middle">1</text>
+    <line x1="262" y1="96" x2="262" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="262" y="118" text-anchor="middle">2</text>
+    <line x1="338" y1="96" x2="338" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="338" y="118" text-anchor="middle">3</text>
+    <line x1="414" y1="96" x2="414" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="414" y="118" text-anchor="middle">4</text>
+    <line x1="490" y1="96" x2="490" y2="106" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/><text x="490" y="118" text-anchor="middle">5=n</text>
+  </g>
+
+  <!-- Step 1 band: [0,3] blue -->
+  <rect x="110" y="130" width="228" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="224" y="144" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">step 1：tap1(r=2) 覆盖 [0, 3]，end=3</text>
+
+  <!-- Step 2 band: [2,5] green -->
+  <rect x="262" y="154" width="228" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="376" y="168" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">step 2：tap4(r=2) 覆盖 [2, 5]，end=5≥n ✓</text>
+
+  <!-- Combined coverage note -->
+  <rect x="60" y="182" width="480" height="22" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="300" y="198" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">两步叠加覆盖 [0, 5]，返回 steps = 2</text>
+
+  <!-- State table -->
+  <text x="50" y="226" font-size="11" fill="#444" font-weight="bold">贪心状态追踪：</text>
+
+  <!-- Table header -->
+  <g font-size="10" fill="#444">
+    <rect x="50" y="234" width="500" height="22" fill="#f0f0f0" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+    <text x="65" y="250" text-anchor="middle" font-weight="bold">i</text>
+    <text x="105" y="250" text-anchor="middle" font-weight="bold">reach[i]</text>
+    <text x="155" y="250" text-anchor="middle" font-weight="bold">maxPos</text>
+    <text x="205" y="250" text-anchor="middle" font-weight="bold">i==end?</text>
+    <text x="255" y="250" text-anchor="middle" font-weight="bold">steps</text>
+    <text x="300" y="250" text-anchor="middle" font-weight="bold">end</text>
+    <text x="430" y="250" text-anchor="middle" font-weight="bold">动作</text>
+  </g>
+
+  <!-- Row i=0 (highlight: step increment) -->
+  <g font-size="10">
+    <rect x="50" y="256" width="500" height="22" fill="#e6f4ea" stroke="#bbb" stroke-width="0.8" filter="url(#rough2)"/>
+    <text x="65" y="272" text-anchor="middle" fill="#444">0</text>
+    <text x="105" y="272" text-anchor="middle" fill="#444">3</text>
+    <text x="155" y="272" text-anchor="middle" fill="#444">3</text>
+    <text x="205" y="272" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓(=0)</text>
+    <text x="255" y="272" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="300" y="272" text-anchor="middle" fill="#444">3</text>
+    <text x="335" y="272" fill="#4a7a3a">开 tap1，end→3</text>
+  </g>
+  <!-- Row i=1 -->
+  <g font-size="10">
+    <rect x="50" y="278" width="500" height="22" fill="#fafafa" stroke="#bbb" stroke-width="0.8" filter="url(#rough2)"/>
+    <text x="65" y="294" text-anchor="middle" fill="#444">1</text>
+    <text x="105" y="294" text-anchor="middle" fill="#444">3</text>
+    <text x="155" y="294" text-anchor="middle" fill="#444">3</text>
+    <text x="205" y="294" text-anchor="middle" fill="#888">✗</text>
+    <text x="255" y="294" text-anchor="middle" fill="#444">1</text>
+    <text x="300" y="294" text-anchor="middle" fill="#444">3</text>
+    <text x="335" y="294" fill="#888">[0,3] 内扫描</text>
+  </g>
+  <!-- Row i=2 -->
+  <g font-size="10">
+    <rect x="50" y="300" width="500" height="22" fill="#fff8e1" stroke="#bbb" stroke-width="0.8" filter="url(#rough2)"/>
+    <text x="65" y="316" text-anchor="middle" fill="#444">2</text>
+    <text x="105" y="316" text-anchor="middle" fill="#d6a040" font-weight="bold">5</text>
+    <text x="155" y="316" text-anchor="middle" fill="#d6a040" font-weight="bold">5</text>
+    <text x="205" y="316" text-anchor="middle" fill="#888">✗</text>
+    <text x="255" y="316" text-anchor="middle" fill="#444">1</text>
+    <text x="300" y="316" text-anchor="middle" fill="#444">3</text>
+    <text x="335" y="316" fill="#d6a040">maxPos→5（发现远跳）</text>
+  </g>
+  <!-- Row i=3 (highlight: step increment + done) -->
+  <g font-size="10">
+    <rect x="50" y="322" width="500" height="22" fill="#e6f4ea" stroke="#bbb" stroke-width="0.8" filter="url(#rough2)"/>
+    <text x="65" y="338" text-anchor="middle" fill="#444">3</text>
+    <text x="105" y="338" text-anchor="middle" fill="#444">3</text>
+    <text x="155" y="338" text-anchor="middle" fill="#444">5</text>
+    <text x="205" y="338" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓(=3)</text>
+    <text x="255" y="338" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <text x="300" y="338" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <text x="335" y="338" fill="#4a7a3a">开 tap4，end→5≥n ✓ 返回 2</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="50" y="362" width="500" height="46" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="68" y="384" font-size="11" fill="#444">· i=0 时 end=0，必须开第一个水龙头；在 [0, end=3] 范围内继续扫描 maxPos</text>
+  <text x="68" y="400" font-size="11" fill="#444">· i=2 发现 reach[2]=5（tap4 可覆盖到 5），maxPos 更新为 5；i=3==end 时开第二个，搞定</text>
+</svg>

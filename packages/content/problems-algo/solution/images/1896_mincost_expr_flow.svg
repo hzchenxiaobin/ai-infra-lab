@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">栈上 DP 算法流程（双栈：vals 存 (c0,c1)，ops 存运算符/括号标记）</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="56" rx="120" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="12" fill="#333">开始: vals=[], ops=[]</text>
+
+  <path d="M 280 76 L 280 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Read char decision -->
+  <polygon points="280,98 390,146 280,194 170,146" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="142" text-anchor="middle" font-size="12" fill="#333">取下一字符 ch</text>
+  <text x="280" y="160" text-anchor="middle" font-size="11" fill="#666">(逐字符扫描)</text>
+
+  <!-- 4 branches: '(', '&'|', '0'|'1', ')' -->
+  <!-- branch: '(' -->
+  <path d="M 170 146 L 60 146 L 60 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="100" y="138" font-size="11" fill="#446688" font-weight="bold">'('</text>
+  <rect x="20" y="214" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="236" text-anchor="middle" font-size="11" fill="#333">ops.push('(')</text>
+
+  <!-- branch: '&' / '|' -->
+  <path d="M 170 146 L 170 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="180" font-size="11" fill="#b85450" font-weight="bold">&amp; / |</text>
+  <rect x="150" y="214" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="236" text-anchor="middle" font-size="11" fill="#333">ops.push(ch)</text>
+
+  <!-- branch: '0' / '1' -->
+  <path d="M 280 194 L 280 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="206" font-size="11" fill="#4a7a3a" font-weight="bold">0 / 1</text>
+  <rect x="280" y="214" width="130" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="345" y="231" text-anchor="middle" font-size="10" fill="#333">vals.push( (c0,c1) )</text>
+  <text x="345" y="243" text-anchor="middle" font-size="9" fill="#888">0→(0,1)  1→(1,0)</text>
+
+  <!-- branch: ')' -->
+  <path d="M 390 146 L 470 146 L 470 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="138" font-size="11" fill="#d6a040" font-weight="bold">')'</text>
+  <rect x="420" y="214" width="120" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="231" text-anchor="middle" font-size="11" fill="#333">ops.pop()</text>
+  <text x="480" y="243" text-anchor="middle" font-size="9" fill="#888">(弹出 '(' 标记)</text>
+
+  <!-- All branches converge to "reduce?" -->
+  <path d="M 80 248 L 80 276 L 280 276" stroke="#888" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 210 248 L 210 276 L 280 276" stroke="#888" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 345 248 L 345 276 L 280 276" stroke="#888" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 480 248 L 480 276 L 280 276" stroke="#888" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 280 276 L 280 296" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Reduce decision -->
+  <polygon points="280,300 400,350 280,400 160,350" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="344" text-anchor="middle" font-size="11" fill="#333">vals 顶 2 个 +</text>
+  <text x="280" y="360" text-anchor="middle" font-size="11" fill="#333">ops 顶为 &amp;/| ?</text>
+  <text x="280" y="376" text-anchor="middle" font-size="10" fill="#888">(模式 [val, op, val])</text>
+
+  <!-- Yes: combine -->
+  <path d="M 160 350 L 90 350 L 90 414" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="342" font-size="11" fill="#82b366">是</text>
+  <rect x="20" y="418" width="140" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="438" text-anchor="middle" font-size="10" fill="#333">弹出 B, op, A</text>
+  <text x="90" y="452" text-anchor="middle" font-size="10" fill="#333">按 &amp;/| 规则合并</text>
+  <text x="90" y="466" text-anchor="middle" font-size="10" fill="#4a7a3a">vals.push(合并结果)</text>
+  <!-- loop back to reduce decision -->
+  <path d="M 90 418 L 90 350 L 160 350" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="72" y="384" font-size="9" fill="#888" transform="rotate(-90 72 384)">继续折叠</text>
+
+  <!-- No: check end -->
+  <path d="M 400 350 L 470 350 L 470 414" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="342" font-size="11" fill="#b85450">否</text>
+  <polygon points="470,418 540,448 470,478 400,448" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="470" y="446" text-anchor="middle" font-size="11" fill="#333">字符耗尽?</text>
+
+  <!-- No: loop back to read char -->
+  <path d="M 400 448 L 370 448 L 370 146 L 390 146" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="376" y="300" font-size="10" fill="#888" transform="rotate(-90 376 300)">取下一字符</text>
+
+  <!-- Yes: end -->
+  <path d="M 470 478 L 470 500" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="486" y="492" font-size="11" fill="#82b366">是</text>
+  <ellipse cx="380" cy="510" rx="110" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="380" y="514" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">返回 max(c0, c1)</text>
+
+  <!-- key note -->
+  <rect x="170" y="418" width="180" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="438" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">关键：立即折叠</text>
+  <text x="260" y="452" text-anchor="middle" font-size="9" fill="#666">从左到右同优先级</text>
+  <text x="260" y="466" text-anchor="middle" font-size="9" fill="#666">压入操作数即触发 reduce</text>
+</svg>

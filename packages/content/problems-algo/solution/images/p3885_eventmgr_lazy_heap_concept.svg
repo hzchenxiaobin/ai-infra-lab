@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：live 表管真身，最大堆管排序，惰性删除缝合两者</text>
+  <text x="260" y="37" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">快照：构造 + updatePriority(9, 7) 之后 —— 堆里新推 (7, id9)，旧版本 (4, id9) 沦为幽灵</text>
+
+  <!-- top event chips -->
+  <rect x="52" y="50" width="118" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="111" y="68" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">事件 5 → 优先级 7</text>
+  <rect x="180" y="50" width="118" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="239" y="68" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">事件 2 → 优先级 7</text>
+  <rect x="308" y="50" width="158" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="387" y="68" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">事件 9：优先级 4 → 7</text>
+
+  <!-- arrows chips -> panels -->
+  <path d="M 130 80 L 142 114" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="92" y="102" font-size="9" fill="#446688" filter="url(#rough2)">登记</text>
+  <path d="M 210 80 L 158 114" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 387 80 L 383 114" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="398" y="102" font-size="9" fill="#d6a040" filter="url(#rough2)">改表+入堆</text>
+
+  <!-- live hashmap panel -->
+  <rect x="40" y="118" width="212" height="172" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="146" y="138" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">live 哈希表（唯一真相）</text>
+  <rect x="56" y="148" width="180" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="164" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">2 → 7</text>
+  <rect x="56" y="176" width="180" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="192" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">5 → 7</text>
+  <rect x="56" y="204" width="180" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="220" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">9 → 7（update 改写）</text>
+  <text x="146" y="252" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">只记「活着的事件」+ 当前生效优先级</text>
+  <text x="146" y="266" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">poll 移除后从表中删除</text>
+
+  <!-- max heap panel -->
+  <rect x="286" y="118" width="194" height="172" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="383" y="138" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">最大堆（priority, −id）</text>
+  <rect x="300" y="148" width="166" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="383" y="164" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">堆顶 (7, id=2)</text>
+  <rect x="300" y="176" width="166" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="383" y="192" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(7, id=5)</text>
+  <rect x="300" y="204" width="166" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="383" y="220" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">(7, id=9) ← update 新推</text>
+  <rect x="300" y="232" width="166" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4 3" rx="4" filter="url(#rough2)"/>
+  <text x="383" y="248" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">(4, id=9) 幽灵 · 已过期</text>
+  <path d="M 306 250 L 460 238" fill="none" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="383" y="272" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">只追加不删旧：旧版本等 poll 核对时丢弃</text>
+
+  <!-- sync arrows between panels -->
+  <path d="M 254 168 L 284 168" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 284 198 L 254 198" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="269" y="188" text-anchor="middle" font-size="8" fill="#888" filter="url(#rough2)">核对</text>
+
+  <!-- pollHighest demo -->
+  <rect x="40" y="296" width="440" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="310" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">pollHighest()：弹出堆顶 (7, id=2) → 查 live：live[2] == 7 ✓ 对得上</text>
+  <text x="260" y="324" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">→ 从 live 删除 id=2，返回 2（是幽灵则丢弃、继续弹下一个）</text>
+
+  <!-- notes -->
+  <rect x="28" y="338" width="464" height="40" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="44" y="355" font-size="10" fill="#333" filter="url(#rough2)">① live 表是唯一真相：堆顶与 live 对得上才算真身——「表里没有」或「优先级不符」都是幽灵</text>
+  <text x="44" y="370" font-size="10" fill="#333" filter="url(#rough2)">② 比较键 (priority, −id)：优先级大者先出；同优先级时 −id 大 = id 小者先出（tie-break 钉死）</text>
+</svg>

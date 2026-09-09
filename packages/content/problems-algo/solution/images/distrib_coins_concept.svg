@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+    <marker id="arro" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：子树「净流量」= 经过父子边的移动数</text>
+
+  <!-- 左侧：示例树 [0,3,0] -->
+  <text x="140" y="52" text-anchor="middle" font-size="11" fill="#888">示例树 [0,3,0]</text>
+
+  <!-- root(0) bal=0 蓝 -->
+  <line x1="135" y1="98" x2="100" y2="150" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="145" y1="98" x2="180" y2="150" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <circle cx="140" cy="84" r="17" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="140" y="88" text-anchor="middle" font-size="13" fill="#333">0</text>
+  <text x="164" y="78" font-size="10" fill="#446688" font-weight="bold">bal=0</text>
+
+  <!-- left(3) bal=+2 绿 -->
+  <circle cx="95" cy="166" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="95" y="170" text-anchor="middle" font-size="13" fill="#333">3</text>
+  <text x="56" y="158" font-size="10" fill="#4a7a3a" font-weight="bold">bal=+2</text>
+
+  <!-- right(0) bal=-1 红 -->
+  <circle cx="185" cy="166" r="17" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="185" y="170" text-anchor="middle" font-size="13" fill="#333">0</text>
+  <text x="208" y="158" font-size="10" fill="#b85450" font-weight="bold">bal=−1</text>
+
+  <!-- 流向箭头 -->
+  <path d="M 103 150 Q 124 122 130 102" stroke="#d6a040" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="112" y="130" font-size="10" fill="#d6a040" font-weight="bold">↑2</text>
+
+  <path d="M 152 102 Q 174 122 178 150" stroke="#d6a040" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="168" y="130" font-size="10" fill="#d6a040" font-weight="bold">↓1</text>
+
+  <!-- 右侧：公式框 -->
+  <rect x="300" y="52" width="240" height="210" fill="none" stroke="#ccc" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="74" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">关键公式</text>
+
+  <text x="316" y="100" font-size="11" fill="#333">balance(node) =</text>
+  <text x="332" y="118" font-size="11" fill="#446688">node.val − 1</text>
+  <text x="332" y="134" font-size="11" fill="#446688">+ balance(L) + balance(R)</text>
+
+  <line x1="316" y1="146" x2="524" y2="146" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="316" y="168" font-size="11" fill="#333">moves += |balance(L)|</text>
+  <text x="316" y="184" font-size="11" fill="#333">         + |balance(R)|</text>
+
+  <rect x="316" y="196" width="12" height="12" rx="2" fill="#e6f4ea" stroke="#4a7a3a" filter="url(#rough2)"/>
+  <text x="336" y="206" font-size="10" fill="#555">bal &gt; 0：子树过剩，向上送出</text>
+
+  <rect x="316" y="214" width="12" height="12" rx="2" fill="#fce4ec" stroke="#b85450" filter="url(#rough2)"/>
+  <text x="336" y="224" font-size="10" fill="#555">bal &lt; 0：子树不足，从父要来</text>
+
+  <rect x="316" y="232" width="12" height="12" rx="2" fill="#fff8e1" stroke="#d6a040" filter="url(#rough2)"/>
+  <text x="336" y="242" font-size="10" fill="#555">|bal| = 该父子边的移动数</text>
+
+  <!-- 底部洞察 -->
+  <rect x="40" y="288" width="480" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="312" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">关键洞察</text>
+  <text x="60" y="334" font-size="11" fill="#555">① 每条父子边承载的移动数 = |子树 balance|，与方向无关（过剩上送 / 不足下拉）；</text>
+  <text x="60" y="354" font-size="11" fill="#555">② 总移动数 = Σ 每个节点处 |balance(左子)| + |balance(右子)|；</text>
+  <text x="60" y="372" font-size="11" fill="#b85450">③ 根节点 balance 恒为 0（总硬币 = 总节点数 = n，守恒）。</text>
+</svg>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="560" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：取模倒推 + 最后一程整除判定</text>
+
+  <!-- Step 1: 初始判定 tx<sx 或 ty<sy -->
+  <polygon points="290,42 410,86 290,130 170,86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="80" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">tx &lt; sx 或 ty &lt; sy ?</text>
+  <text x="290" y="96" text-anchor="middle" font-size="9" fill="#4a7a3a">坐标只增不减</text>
+
+  <!-- No: continue down -->
+  <path d="M 290 132 L 290 150" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="306" y="146" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- Yes: return false (left) -->
+  <path d="M 170 86 L 120 86 Q 100 86 100 110" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="108" y="78" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="56" y="112" width="92" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="102" y="134" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return false</text>
+
+  <!-- Step 2: while loop condition -->
+  <polygon points="290,154 420,206 290,258 160,206" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="200" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">tx &gt; sx 且 ty &gt; sy ?</text>
+  <text x="290" y="216" text-anchor="middle" font-size="9" fill="#4a7a3a">两坐标都还在起点之上</text>
+
+  <!-- Yes: enter loop body -->
+  <path d="M 290 260 L 290 278" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="306" y="274" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- Step 3: if tx > ty -->
+  <polygon points="290,282 390,322 290,362 190,322" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="318" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">tx &gt; ty ?</text>
+  <text x="290" y="334" text-anchor="middle" font-size="9" fill="#d6a040">谁更大就减谁</text>
+
+  <!-- left branch: tx %= ty -->
+  <path d="M 190 322 L 130 322" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="158" y="316" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="40" y="306" width="92" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="86" y="328" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">tx %= ty</text>
+
+  <!-- right branch: ty %= tx (covers tx==ty) -->
+  <path d="M 390 322 L 450 322" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="422" y="316" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="450" y="306" width="92" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="496" y="328" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ty %= tx</text>
+
+  <!-- loop back arrows to step 2 (both branches) -->
+  <path d="M 86 306 Q 86 200 160 206" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 496 306 Q 496 200 420 206" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="250" font-size="9" fill="#888" font-style="italic" filter="url(#rough2)">回循环</text>
+  <text x="504" y="250" font-size="9" fill="#888" font-style="italic" filter="url(#rough2)">回循环</text>
+
+  <!-- No branch of while: down to final checks -->
+  <path d="M 160 206 L 110 206 Q 90 206 90 280 Q 90 380 200 396" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="76" y="280" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <text x="74" y="294" font-size="9" fill="#b85450" filter="url(#rough2)">退出循环</text>
+
+  <!-- Final check 1: tx==sx && ty==sy -->
+  <polygon points="290,380 400,416 290,452 180,416" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="410" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">tx==sx 且 ty==sy ?</text>
+  <text x="290" y="426" text-anchor="middle" font-size="9" fill="#4a7a3a">精确命中</text>
+
+  <!-- Yes: true -->
+  <path d="M 290 454 L 290 472" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="306" y="468" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="232" y="474" width="116" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="496" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return true ✓</text>
+
+  <!-- No: to last-leg checks -->
+  <path d="M 180 416 L 110 416 Q 70 416 70 510" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="96" y="408" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- last leg: tx==sx ? / ty==sy ? -->
+  <rect x="36" y="478" width="150" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="111" y="495" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">tx==sx ?</text>
+  <text x="111" y="509" text-anchor="middle" font-size="8" fill="#d6a040">(ty−sy)%tx==0 且 ty≥sy</text>
+
+  <rect x="394" y="478" width="150" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="469" y="495" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">ty==sy ?</text>
+  <text x="469" y="509" text-anchor="middle" font-size="8" fill="#d6a040">(tx−sx)%ty==0 且 tx≥sx</text>
+
+  <!-- arrows from last-leg to a common false -->
+  <path d="M 111 518 L 111 536 Q 111 548 200 548" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <path d="M 469 518 L 469 536 Q 469 548 380 548" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <rect x="250" y="538" width="80" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="552" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否则 false</text>
+
+  <!-- connectors from final-check-No to last-leg boxes -->
+  <path d="M 70 510 Q 70 498 90 498 L 36 498" stroke="#b85450" stroke-width="1.3" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <path d="M 400 416 Q 440 416 460 478" stroke="#b85450" stroke-width="1.3" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+</svg>

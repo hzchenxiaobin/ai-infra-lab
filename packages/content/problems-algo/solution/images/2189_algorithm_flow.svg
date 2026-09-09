@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：记忆化搜索 — 逐行「取 / 跳」决策</text>
+
+  <!-- ====== Top: DP state definition ====== -->
+  <rect x="20" y="42" width="520" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)" opacity="0.5"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">状态 dfs(r, t) = 剩余 r 张牌、当前考虑 t 个三角形的行，能凑出的方案数</text>
+  <text x="280" y="80" text-anchor="middle" font-size="11" fill="#666">cost = 3t − 1　|　答案 = dfs(n, 1)</text>
+
+  <!-- ====== Decision diamond ====== -->
+  <polygon points="280,110 380,145 280,180 180,145" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="142" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">cost vs r ?</text>
+  <text x="280" y="158" text-anchor="middle" font-size="10" fill="#888">(3t−1 vs r)</text>
+
+  <!-- arrow from top to diamond -->
+  <path d="M 280 92 L 280 108" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ====== Left branch: cost > r → 0 ====== -->
+  <path d="M 180 145 L 90 145" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="100" y="138" font-size="10" fill="#b85450" font-weight="bold">cost &gt; r</text>
+  <rect x="30" y="128" width="56" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="58" y="150" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return 0</text>
+  <text x="58" y="176" text-anchor="middle" font-size="9" fill="#888">当前及更大的行</text>
+  <text x="58" y="188" text-anchor="middle" font-size="9" fill="#888">都放不下</text>
+
+  <!-- ====== Middle-left branch: cost == r → 1 ====== -->
+  <path d="M 220 175 L 160 215" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="150" y="200" font-size="10" fill="#4a7a3a" font-weight="bold">cost == r</text>
+  <rect x="100" y="210" width="56" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="128" y="232" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return 1</text>
+  <text x="128" y="258" text-anchor="middle" font-size="9" fill="#888">取此行恰好</text>
+  <text x="128" y="270" text-anchor="middle" font-size="9" fill="#888">用完所有牌</text>
+
+  <!-- ====== Right branch: cost < r → fork ====== -->
+  <path d="M 380 145 L 440 145" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="138" font-size="10" fill="#446688" font-weight="bold">cost &lt; r</text>
+
+  <!-- Fork into two sub-branches -->
+  <rect x="380" y="128" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="150" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">取此行 + 跳过此行</text>
+
+  <!-- take branch -->
+  <path d="M 400 162 L 400 195" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="340" y="198" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="400" y="216" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">取：dfs(r−cost, t+1)</text>
+  <text x="400" y="231" text-anchor="middle" font-size="9" fill="#888">剩余减去 cost，下一行</text>
+
+  <!-- skip branch -->
+  <path d="M 520 162 L 520 195" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="460" y="198" width="96" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="508" y="216" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">跳：dfs(r, t+1)</text>
+  <text x="508" y="231" text-anchor="middle" font-size="9" fill="#888">剩余不变，下一行</text>
+
+  <!-- plus sign -->
+  <text x="445" y="222" text-anchor="middle" font-size="16" fill="#b85450" font-weight="bold">+</text>
+
+  <!-- memoization note -->
+  <rect x="20" y="270" width="520" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)" opacity="0.4"/>
+  <text x="280" y="290" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">记忆化：memo[r][t] 缓存结果，避免重复递归</text>
+  <text x="280" y="308" text-anchor="middle" font-size="10" fill="#666">r ∈ [0, n], t ∈ [1, (n+1)/3]　→　状态数 O(n²/3)</text>
+  <text x="280" y="322" text-anchor="middle" font-size="10" fill="#666">每个状态 O(1) 转移（两个子调用 + 一次加法）</text>
+
+  <!-- bottom-up variant -->
+  <rect x="20" y="338" width="520" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)" opacity="0.4"/>
+  <text x="280" y="360" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">等价写法： bottom-up 0-1 背包计数</text>
+  <text x="40" y="382" font-size="10" fill="#444" font-family="'Comic Sans MS', monospace">dp[0] = 1  // 空集和为 0</text>
+  <text x="40" y="398" font-size="10" fill="#444" font-family="'Comic Sans MS', monospace">for t = 1 .. (n+1)/3:  cost = 3t−1</text>
+  <text x="40" y="414" font-size="10" fill="#444" font-family="'Comic Sans MS', monospace">　for j = n .. cost:  dp[j] += dp[j−cost]  // 逆序保证 0-1</text>
+  <text x="320" y="398" font-size="10" fill="#888">→ 逆序滚动，每物取一次</text>
+  <text x="320" y="414" font-size="10" fill="#888">→ 空间 O(n)，答案 = dp[n]</text>
+</svg>

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="470" fill="#fafafa"/>
+
+  <text x="380" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：gather 找首个够 k 的排 / scatter 凑满 k 座</text>
+  <text x="380" y="44" text-anchor="middle" font-size="10.5" fill="#888">单次操作 O(log n)（scatter 摊还）；线段树维护 mx 与 sum 两份聚合</text>
+
+  <!-- divider -->
+  <line x1="380" y1="60" x2="380" y2="440" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- ===== gather 列（左） ===== -->
+  <text x="190" y="80" text-anchor="middle" font-size="12.5" fill="#2e6e2e" font-weight="bold">gather(k, maxRow)</text>
+
+  <!-- step1: findFirst -->
+  <rect x="50" y="92" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="114" text-anchor="middle" font-size="11.5" fill="#333">① r = findFirst([0,maxRow], free≥k)</text>
+  <text x="190" y="103" text-anchor="middle" font-size="9" fill="#888">线段树 mx 二分下走</text>
+  <path d="M 190 126 L 190 142" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision: r found? -->
+  <polygon points="190,144 300,182 190,220 80,182" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="190" y="178" text-anchor="middle" font-size="11" fill="#333">r 存在？</text>
+  <text x="190" y="194" text-anchor="middle" font-size="10" fill="#888">(mx≥k)</text>
+
+  <!-- branch no -->
+  <text x="298" y="178" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 300 182 L 350 182" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="350" y="165" width="26" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="363" y="180" text-anchor="middle" font-size="9" fill="#b85450">return</text>
+  <text x="363" y="192" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">[]</text>
+
+  <!-- branch yes -->
+  <text x="80" y="178" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 80 182 L 50 182 L 50 230" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- step2: book -->
+  <rect x="20" y="232" width="340" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="251" text-anchor="middle" font-size="11.5" fill="#333">② c = used[r]；订座 [c, c+k−1]</text>
+  <text x="190" y="269" text-anchor="middle" font-size="11.5" fill="#333">used[r] += k；update(r, m−used[r])</text>
+  <path d="M 190 282 L 190 300" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- advance lo -->
+  <rect x="60" y="302" width="260" height="30" fill="#f5f9fd" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="321" text-anchor="middle" font-size="10.5" fill="#666">若 r==lo 且 used[lo]==m → lo 前进</text>
+  <path d="M 190 332 L 190 350" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="80" y="352" width="220" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="190" y="372" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">return [r, c]</text>
+
+  <!-- ===== scatter 列（右） ===== -->
+  <text x="570" y="80" text-anchor="middle" font-size="12.5" fill="#2b5588" font-weight="bold">scatter(k, maxRow)</text>
+
+  <!-- step1: sum query -->
+  <rect x="430" y="92" width="280" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="570" y="114" text-anchor="middle" font-size="11.5" fill="#333">① total = sum([0, maxRow])</text>
+  <text x="570" y="103" text-anchor="middle" font-size="9" fill="#888">线段树 sum 区间求和</text>
+  <path d="M 570 126 L 570 142" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision: total >= k? -->
+  <polygon points="570,144 680,182 570,220 460,182" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="570" y="180" text-anchor="middle" font-size="11" fill="#333">total ≥ k？</text>
+  <text x="570" y="196" text-anchor="middle" font-size="10" fill="#888">(空位够吗)</text>
+
+  <!-- branch no -->
+  <text x="458" y="178" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 460 182 L 410 182" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="374" y="165" width="36" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="392" y="180" text-anchor="middle" font-size="9" fill="#b85450">return</text>
+  <text x="392" y="192" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">false</text>
+
+  <!-- branch yes -->
+  <text x="680" y="178" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 680 182 L 710 182 L 710 230" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- step2: init -->
+  <rect x="400" y="232" width="340" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="570" y="253" text-anchor="middle" font-size="11.5" fill="#333">② r = lo, rem = k</text>
+  <path d="M 570 266 L 570 282" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- loop body -->
+  <rect x="400" y="284" width="340" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="570" y="303" text-anchor="middle" font-size="11.5" fill="#333">take = min(free[r], rem)</text>
+  <text x="570" y="319" text-anchor="middle" font-size="11.5" fill="#333">used[r] += take；update(r)；rem -= take</text>
+  <text x="570" y="335" text-anchor="middle" font-size="10" fill="#888">free[r]==0 则跳过；r++</text>
+
+  <!-- loop back arrow -->
+  <path d="M 400 313 L 370 313 L 370 282 L 400 282" stroke="#666" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="340" y="300" font-size="9.5" fill="#888">rem&gt;0 继续</text>
+
+  <path d="M 570 342 L 570 360" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- advance lo -->
+  <rect x="430" y="362" width="280" height="30" fill="#f5f9fd" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="570" y="381" text-anchor="middle" font-size="10.5" fill="#666">满排跳过 → advance(lo)</text>
+  <path d="M 570 392 L 570 408" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- return true -->
+  <rect x="460" y="410" width="220" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="570" y="430" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">return true</text>
+
+  <!-- footer -->
+  <rect x="20" y="448" width="720" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="380" y="459" text-anchor="middle" font-size="10" fill="#7a5415">gather 用 mx 做「找首个 ≥ k」二分；scatter 用 sum 做「够不够」判定 + lo 指针摊还逐排填</text>
+</svg>

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#666"/>
+    </marker>
+    <marker id="arrb" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：双重循环枚举格点 → 逐圆判定 → 命中即停</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">每个格点命中第一个覆盖圆即 break，天然去重</text>
+
+  <!-- ===== Step 1: outer loop x ===== -->
+  <rect x="40" y="62" width="140" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="82" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">外层循环 x</text>
+  <text x="110" y="96" text-anchor="middle" font-size="9.5" fill="#555">x = 0 → 200</text>
+
+  <path d="M 180 83 L 210 83" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: inner loop y ===== -->
+  <rect x="210" y="62" width="140" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="82" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">内层循环 y</text>
+  <text x="280" y="96" text-anchor="middle" font-size="9.5" fill="#555">y = 0 → 200</text>
+
+  <path d="M 350 83 L 380 83" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: loop circles ===== -->
+  <rect x="380" y="62" width="140" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="82" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">遍历每个圆</text>
+  <text x="450" y="96" text-anchor="middle" font-size="9.5" fill="#555">(xi, yi, ri)</text>
+
+  <!-- arrow down from circles to decision -->
+  <path d="M 450 104 L 450 130" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: dx^2+dy^2 <= r^2 ? ===== -->
+  <polygon points="450,130 560,172 450,214 340,172" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="450" y="166" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">dx² + dy²</text>
+  <text x="450" y="182" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">≤ r² ?</text>
+
+  <!-- Yes branch: ans++ and break -->
+  <path d="M 340 172 L 240 172" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="300" y="164" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是 ✓</text>
+
+  <rect x="100" y="152" width="140" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="172" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">ans++ ; break</text>
+  <text x="170" y="186" text-anchor="middle" font-size="9.5" fill="#555">跳到下一个格点</text>
+
+  <!-- No branch: next circle -->
+  <path d="M 560 172 L 590 172" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="575" y="164" font-size="10" fill="#d6a040" font-weight="bold">否</text>
+
+  <!-- loop back to circles (next circle) -->
+  <path d="M 590 172 L 590 48 L 450 48 L 450 62" stroke="#d6a040" stroke-width="1.8" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="520" y="42" text-anchor="middle" font-size="9.5" fill="#d6a040">下一个圆</text>
+
+  <!-- all circles exhausted, no hit: next y -->
+  <path d="M 450 214 L 450 240" stroke="#888" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="486" y="232" font-size="9.5" fill="#888">圆遍历完</text>
+
+  <rect x="380" y="240" width="140" height="36" fill="#fafafa" stroke="#bbb" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="262" text-anchor="middle" font-size="10" fill="#888">该点不在任何圆内</text>
+
+  <!-- ===== loop back arrows for y and x ===== -->
+  <!-- from ans++ or no-hit back to next y -->
+  <path d="M 170 194 L 170 290 L 280 290 L 280 104" stroke="#446688" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <path d="M 450 276 L 450 290 L 280 290" stroke="#446688" stroke-width="1.6" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="370" y="284" text-anchor="middle" font-size="9.5" fill="#446688">下一个 y</text>
+
+  <!-- y exhausted: next x -->
+  <path d="M 280 62 L 280 54 L 110 54 L 110 62" stroke="#446688" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="195" y="48" text-anchor="middle" font-size="9.5" fill="#446688">y 遍历完 → 下一个 x</text>
+
+  <!-- ===== Return ===== -->
+  <path d="M 110 104 L 110 320" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="130" y="300" font-size="9.5" fill="#b85450">x 遍历完</text>
+
+  <rect x="40" y="322" width="180" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="130" y="342" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 ans</text>
+  <text x="130" y="358" text-anchor="middle" font-size="9.5" fill="#888">所有圆覆盖的格点总数</text>
+
+  <!-- ===== Bottom notes ===== -->
+  <rect x="250" y="322" width="290" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="262" y="342" font-size="10.5" fill="#446688" font-weight="bold">复杂度与关键点</text>
+  <text x="262" y="360" font-size="9.5" fill="#555">• 时间 O(201² × n) ≈ 8×10⁶</text>
+  <text x="262" y="376" font-size="9.5" fill="#555">• 空间 O(1)，无哈希集合</text>
+  <text x="262" y="392" font-size="9.5" fill="#555">• break 天然去重：每点至多计 1 次</text>
+  <text x="262" y="408" font-size="9.5" fill="#555">• 整数运算 dx²+dy²≤r²，无精度问题</text>
+</svg>

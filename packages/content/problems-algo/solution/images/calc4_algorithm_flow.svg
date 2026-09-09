@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="420" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">递归下降：每节点返回一个多项式</text>
+
+  <!-- tokenize -->
+  <rect x="30" y="44" width="520" height="50" fill="#f4f4f4" stroke="#888" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="42" y="64" font-size="12" fill="#444" font-weight="bold">① token 化：拆出 ( ) 后按空格切分</text>
+  <text x="42" y="82" font-size="11" fill="#666" font-family="'Comic Sans MS', monospace">(e + 8) * (e - 8)  →  (  e  +  8  )  *  (  e  -  8  )</text>
+
+  <!-- grammar box -->
+  <rect x="30" y="106" width="520" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="42" y="126" font-size="12" fill="#446688" font-weight="bold">② 文法（三层）</text>
+  <text x="42" y="144" font-size="11" fill="#333" font-family="'Comic Sans MS', monospace">expr   = term (('+'|'-') term)*</text>
+  <text x="42" y="158" font-size="11" fill="#333" font-family="'Comic Sans MS', monospace">term   = factor ('*' factor)*</text>
+  <text x="42" y="172" font-size="11" fill="#333" font-family="'Comic Sans MS', monospace">factor = 整数 | 变量 | '(' expr ')'</text>
+
+  <!-- parse_expr -->
+  <rect x="60" y="196" width="200" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="72" y="216" font-size="12" fill="#4a7a3a" font-weight="bold">parse_expr</text>
+  <text x="72" y="234" font-size="11" fill="#333">p = parse_term()</text>
+  <text x="72" y="250" font-size="11" fill="#333">遇 +/- 反复 add/sub</text>
+
+  <!-- parse_term -->
+  <rect x="190" y="276" width="200" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="202" y="296" font-size="12" fill="#d6a040" font-weight="bold">parse_term</text>
+  <text x="202" y="314" font-size="11" fill="#333">p = parse_factor()</text>
+  <text x="202" y="330" font-size="11" fill="#333">遇 * 反复 mul_poly</text>
+
+  <!-- parse_factor -->
+  <rect x="320" y="356" width="220" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="332" y="376" font-size="12" fill="#b85450" font-weight="bold">parse_factor</text>
+  <text x="332" y="394" font-size="11" fill="#333">( → 递归 expr; 数/变量 → 单项</text>
+
+  <!-- arrows: expr -> term -->
+  <path d="M 160 256 L 250 276" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- term -> factor -->
+  <path d="M 330 336 L 410 356" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- factor ( -> expr (recursion) -->
+  <path d="M 360 372 C 200 372, 60 320, 60 226 L 60 226" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="70" y="300" font-size="10" fill="#b85450">遇 ( 递归</text>
+  <text x="70" y="314" font-size="10" fill="#b85450">回 expr</text>
+
+  <!-- return labels -->
+  <text x="290" y="240" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">返回多项式</text>
+
+  <!-- note bottom -->
+  <text x="290" y="412" text-anchor="middle" font-size="11" fill="#888">term 反复 mul 天然保证 * 优先级高于 +/-；无需优先级表</text>
+</svg>

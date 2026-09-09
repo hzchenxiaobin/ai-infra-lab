@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：差值降序 —— 前 k 个强制换，正差值继续吃</text>
+  <text x="280" y="44" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">technique1 = [5,2,10]，technique2 = [10,3,8]，k = 2（示例 1）</text>
+
+  <!-- ① 每个任务的两种选择与差值 -->
+  <text x="76" y="72" font-size="11" fill="#446688" filter="url(#rough2)">① 每个任务算差值 d = t1 − t2（换成技巧 1 的增量）</text>
+
+  <text x="100" y="94" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">idx0</text>
+  <text x="200" y="94" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">idx1</text>
+  <text x="300" y="94" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">idx2</text>
+
+  <rect x="72" y="100" width="56" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="118" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t1: 5</text>
+  <rect x="172" y="100" width="56" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="118" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t1: 2</text>
+  <rect x="272" y="100" width="56" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="118" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t1: 10</text>
+
+  <rect x="72" y="132" width="56" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="100" y="150" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t2: 10</text>
+  <rect x="172" y="132" width="56" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="150" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t2: 3</text>
+  <rect x="272" y="132" width="56" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="300" y="150" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">t2: 8</text>
+
+  <text x="100" y="172" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">d = −5</text>
+  <text x="200" y="172" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">d = −1</text>
+  <text x="300" y="172" text-anchor="middle" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">d = +2</text>
+
+  <!-- 右侧说明框 -->
+  <rect x="366" y="86" width="182" height="92" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="457" y="108" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">先全部用技巧 2 打底</text>
+  <text x="457" y="126" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">base = Σt2 = 21</text>
+  <text x="457" y="144" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">总分 = base + 所换任务的 d 之和</text>
+  <text x="457" y="164" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">（换得多不一定好，看 d 的正负）</text>
+
+  <!-- ② 排序 -->
+  <text x="76" y="202" font-size="11" fill="#446688" filter="url(#rough2)">② d 降序排序：+2、−1、−5 —— 前 k=2 个必须换，后面只换赚的</text>
+
+  <!-- 柱状图 -->
+  <path d="M 70 280 L 500 280" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="512" y="284" font-size="11" fill="#446688" filter="url(#rough2)">d</text>
+
+  <rect x="100" y="230" width="168" height="92" rx="8" fill="none" stroke="#446688" stroke-width="1.2" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="184" y="224" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">前 k=2 个：强制换</text>
+
+  <rect x="112" y="252" width="44" height="28" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="134" y="246" text-anchor="middle" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">+2</text>
+
+  <rect x="212" y="280" width="44" height="14" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="234" y="310" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">−1</text>
+
+  <rect x="312" y="280" width="44" height="56" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="334" y="350" text-anchor="middle" font-size="11.5" fill="#b85450" filter="url(#rough2)">−5</text>
+
+  <text x="134" y="372" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">✓ 赚，主动换</text>
+  <text x="234" y="372" text-anchor="middle" font-size="10.5" fill="#d6a040" filter="url(#rough2)">✓ 亏，被 k 强制</text>
+  <text x="334" y="372" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">✗ 亏，停手不换</text>
+  <text x="462" y="372" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">d 全为正 → 全换（示例 2）</text>
+
+  <!-- 结论 -->
+  <rect x="70" y="384" width="478" height="30" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="309" y="404" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">ans = 21 + (+2) + (−1) = 22</text>
+</svg>

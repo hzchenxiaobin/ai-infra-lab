@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：预处理 left/right 数组 → 一次扫描收集答案</text>
+
+  <!-- Step 1: precompute left[] -->
+  <rect x="40" y="48" width="480" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="70" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 从左到右预处理 left[i]</text>
+  <text x="60" y="90" font-size="11" fill="#333" filter="url(#rough2)">left[i] = 截止 i 的连续非递增步数（security[j-1] ≥ security[j] 累计）</text>
+  <text x="60" y="108" font-size="11" fill="#333" filter="url(#rough2)">递推：security[i-1] ≥ security[i] ? left[i-1]+1 : 0，left[0]=0</text>
+  <text x="500" y="100" text-anchor="end" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">O(n)</text>
+
+  <line x1="280" y1="132" x2="280" y2="152" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: precompute right[] -->
+  <rect x="40" y="156" width="480" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="178" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 从右到左预处理 right[i]</text>
+  <text x="60" y="198" font-size="11" fill="#333" filter="url(#rough2)">right[i] = 从 i 起的连续非递减步数（security[j] ≤ security[j+1] 累计）</text>
+  <text x="60" y="216" font-size="11" fill="#333" filter="url(#rough2)">递推：security[i] ≤ security[i+1] ? right[i+1]+1 : 0，right[n-1]=0</text>
+  <text x="500" y="208" text-anchor="end" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">O(n)</text>
+
+  <line x1="280" y1="240" x2="280" y2="260" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: scan & collect -->
+  <rect x="40" y="264" width="480" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="286" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">③ 扫描每个 i，判定是否合格</text>
+  <text x="60" y="306" font-size="11" fill="#333" filter="url(#rough2)">若 left[i] ≥ time 且 right[i] ≥ time，则 i 入答案</text>
+  <text x="60" y="324" font-size="11" fill="#b85450" filter="url(#rough2)">两条件分别蕴含 i-time ≥ 0 与 i+time &lt; n，无需额外边界判断</text>
+  <text x="500" y="316" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">O(n)</text>
+
+  <!-- Summary -->
+  <rect x="40" y="356" width="480" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="376" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">总复杂度：O(n) 时间 · O(n) 空间（两个长度 n 的辅助数组）</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="230" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：CTE 排名 → 过滤 rn = 2 → 排序输出</text>
+
+  <rect x="110" y="42" width="240" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="62" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">employees 表（emp_id, salary, dept）</text>
+
+  <path d="M 230 72 L 230 92" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="238" y="86" font-size="10" fill="#888" filter="url(#rough2)">①</text>
+
+  <rect x="110" y="96" width="240" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="116" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② DENSE_RANK() OVER (PARTITION BY dept ORDER BY salary DESC)</text>
+
+  <path d="M 230 126 L 230 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="110" y="150" width="240" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="168" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">WITH ranked AS (… + rn 列)</text>
+  <text x="230" y="188" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">4 | Sales | 90000 | rn 1</text>
+  <text x="230" y="206" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">2 | Sales | 80000 | rn 2 ✓</text>
+  <text x="230" y="224" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">5 | IT | 55000 | rn 2 ✓</text>
+
+  <path d="M 230 234 L 230 254" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="238" y="248" font-size="10" fill="#888" filter="url(#rough2)">③</text>
+
+  <rect x="110" y="258" width="240" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="277" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ WHERE rn = 2（并列者全保留，HR 缺档缺席）</text>
+
+  <path d="M 230 286 L 230 306" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="238" y="300" font-size="10" fill="#888" filter="url(#rough2)">④</text>
+
+  <rect x="110" y="310" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="326" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ SELECT emp_id, dept ORDER BY emp_id</text>
+  <text x="230" y="343" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">→ (2,Sales) (3,Sales) (5,IT) (8,Marketing)</text>
+
+  <rect x="380" y="150" width="164" height="120" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="462" y="172" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠ 为什么包一层？</text>
+  <text x="462" y="192" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">窗口函数在 SELECT</text>
+  <text x="462" y="208" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">阶段求值，WHERE 在</text>
+  <text x="462" y="224" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">它之前执行，看不见 rn</text>
+  <text x="462" y="244" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">→ 必须先算好落成</text>
+  <text x="462" y="260" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">实列，外层再过滤</text>
+</svg>

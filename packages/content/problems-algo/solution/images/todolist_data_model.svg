@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 392"
+     font-family="'Comic Sans MS','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="392" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">数据模型：按 userId 分桶 + 任务对象 + 查询时过滤排序</text>
+
+  <!-- HashMap container (left) -->
+  <rect x="36" y="60" width="150" height="218" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="111" y="84" text-anchor="middle" font-size="13" fill="#223" filter="url(#rough2)">HashMap</text>
+  <text x="111" y="100" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">&lt;userId, 任务表&gt;</text>
+
+  <!-- userId = 1 entry -->
+  <rect x="52" y="116" width="118" height="34" rx="5" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="111" y="138" text-anchor="middle" font-size="13" fill="#7a5a10" filter="url(#rough2)">userId = 1</text>
+
+  <!-- userId = 5 entry (queried, no tasks) -->
+  <rect x="52" y="232" width="118" height="34" rx="5" fill="#f6f6f6" stroke="#bbb" stroke-width="1.4" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="111" y="254" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">userId = 5 → []</text>
+
+  <text x="111" y="200" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">各用户独立分桶</text>
+
+  <!-- arrow from userId=1 to task list -->
+  <path d="M 170 133 L 206 133" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- field header -->
+  <text x="216" y="86" font-size="11" fill="#888" filter="url(#rough2)">id · desc · dueDate · tags(集合) · done</text>
+
+  <!-- Task #1 card (insertion order) -->
+  <rect x="208" y="96" width="318" height="36" rx="5" fill="#f0f4f8" stroke="#9aa8b4" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="220" y="119" font-size="12" fill="#333" filter="url(#rough2)">#1 · Task1 · due=50 · tags=∅ · done=✗</text>
+
+  <!-- Task #2 card (done -> greyed + strike) -->
+  <rect x="208" y="140" width="318" height="36" rx="5" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" filter="url(#rough2)"/>
+  <line x1="214" y1="158" x2="520" y2="158" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="220" y="163" font-size="12" fill="#999" filter="url(#rough2)">#2 · Task2 · due=100 · tags={P1} · done=✓</text>
+
+  <!-- Task #3 card -->
+  <rect x="208" y="184" width="318" height="36" rx="5" fill="#f0f4f8" stroke="#9aa8b4" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="220" y="207" font-size="12" fill="#333" filter="url(#rough2)">#3 · Task3 · due=30 · tags={P1} · done=✗</text>
+
+  <!-- storage order note -->
+  <text x="367" y="240" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">↑ 存储按插入顺序；done 用标记位，不删除</text>
+
+  <!-- query panel -->
+  <rect x="28" y="262" width="504" height="110" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="40" y="286" font-size="13" fill="#7a5a10" filter="url(#rough2)">getAllTasks(1)：</text>
+  <text x="40" y="306" font-size="12" fill="#333" filter="url(#rough2)">① 遍历 userTasks[1]，过滤 done=✗ → {#1(due50), #3(due30)}　（排除 #2）</text>
+  <text x="40" y="324" font-size="12" fill="#333" filter="url(#rough2)">② 按 dueDate 升序 → [#3, #1]　　③ 取 desc → ["Task3", "Task1"]</text>
+  <text x="40" y="350" font-size="11" fill="#b85450" filter="url(#rough2)">★ dueDate 全局唯一 ⇒ 升序即全序，排序结果唯一</text>
+</svg>

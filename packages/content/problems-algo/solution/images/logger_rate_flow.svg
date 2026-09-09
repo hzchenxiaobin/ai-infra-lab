@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：shouldPrintMessage(timestamp, message)</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">查表 → 判窗口 → 更新或拒绝</text>
+
+  <!-- ===== 入口 ===== -->
+  <rect x="170" y="58" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="80" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输入 (timestamp, message)</text>
+  <line x1="280" y1="92" x2="280" y2="106" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 查表 ===== -->
+  <rect x="160" y="110" width="240" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="11" fill="#333"><tspan font-weight="bold" fill="#d6a040">①</tspan> last = map[message]（查上次打印时间）</text>
+  <line x1="280" y1="144" x2="280" y2="158" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 判定菱形 ===== -->
+  <polygon points="280,162 430,212 280,262 130,212" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">last 存在 且</text>
+  <text x="280" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">timestamp − last &lt; 10 ?</text>
+  <text x="280" y="234" text-anchor="middle" font-size="10" fill="#888">（10 秒内重复？）</text>
+
+  <!-- 是 → 拒绝（左分支） -->
+  <line x1="130" y1="212" x2="80" y2="212" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="90" y="204" font-size="11" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="20" y="194" width="60" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="217" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">拒绝</text>
+
+  <text x="50" y="246" text-anchor="middle" font-size="10" fill="#888">不更新 map</text>
+
+  <rect x="10" y="256" width="80" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="50" y="278" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return false</text>
+
+  <!-- 否 → 更新并打印（右分支） -->
+  <line x1="430" y1="212" x2="480" y2="212" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="450" y="204" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <rect x="480" y="194" width="60" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="510" y="217" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">通过</text>
+
+  <text x="510" y="246" text-anchor="middle" font-size="10" fill="#888">更新 map</text>
+
+  <rect x="470" y="256" width="80" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="510" y="272" text-anchor="middle" font-size="10" fill="#333">map[msg] = ts</text>
+  <text x="510" y="285" text-anchor="middle" font-size="10" fill="#888">（记录新时间）</text>
+
+  <!-- 更新后箭头 → 返回 true -->
+  <line x1="510" y1="290" x2="510" y2="310" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <rect x="470" y="314" width="80" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="510" y="336" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return true</text>
+
+  <!-- ===== 三种通过情况说明 ===== -->
+  <text x="40" y="376" font-size="12" fill="#444" font-weight="bold">「否」分支包含三种情况（均应打印）：</text>
+
+  <rect x="40" y="386" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="54" y="405" font-size="10" fill="#333">① 消息从未出现过（last 不存在）</text>
+
+  <rect x="210" y="386" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="405" font-size="10" fill="#333">② ts − last ≥ 10（窗口已过）</text>
+
+  <rect x="380" y="386" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="394" y="405" font-size="10" fill="#333">③ 边界：ts − last = 10（恰好）</text>
+
+  <!-- ===== 关键提示 ===== -->
+  <rect x="30" y="424" width="510" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="44" y="442" font-size="10" fill="#b85450" font-weight="bold">⚠️ 边界：ts − last = 10 时应打印（题目条件 t ≤ t' &lt; t+10，即 t' ≥ t+10 即可）</text>
+</svg>

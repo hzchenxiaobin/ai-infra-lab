@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：计数后从大到小贪心构造</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10.5" fill="#888">i 从 25(z) 向 0(a) 扫描；插间隔后 i 不变，回到同一个字符</text>
+
+  <!-- Step 1: count -->
+  <rect x="180" y="60" width="200" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="84" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">统计 cnt[0..25]，i = 25</text>
+
+  <path d="M 280 100 L 280 120" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: check cnt[i] -->
+  <rect x="150" y="124" width="260" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="144" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">cnt[i] == 0 ?</text>
+  <text x="280" y="160" text-anchor="middle" font-size="10.5" fill="#666">是 → i-- 跳过；否 → 进入构造</text>
+
+  <path d="M 280 168 L 280 188" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: take min -->
+  <rect x="120" y="192" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="212" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">t = min(cnt[i], repeatLimit)</text>
+  <text x="280" y="228" text-anchor="middle" font-size="10.5" fill="#666">追加 t 个字符 i，cnt[i] -= t</text>
+
+  <path d="M 280 236 L 280 256" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: diamond cnt[i] > 0 ? -->
+  <polygon points="280,260 380,300 280,340 180,300" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">cnt[i] &gt; 0 ?</text>
+  <text x="280" y="312" text-anchor="middle" font-size="10" fill="#888">仍有剩余?</text>
+
+  <!-- No branch: i decrement (left) -->
+  <path d="M 180 300 L 100 300 L 100 124" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="56" y="288" width="44" height="24" fill="#fafafa" stroke="none" filter="url(#rough2)"/>
+  <text x="78" y="304" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">否</text>
+  <text x="100" y="206" text-anchor="end" font-size="10" fill="#446688">i-- 继续</text>
+
+  <!-- Yes branch: find j (right/down) -->
+  <path d="M 280 340 L 280 360" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <rect x="296" y="318" width="44" height="24" fill="#fafafa" stroke="none" filter="url(#rough2)"/>
+  <text x="318" y="334" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- Step 5: find next j -->
+  <rect x="120" y="364" width="320" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">向下找首个 cnt[j] &gt; 0 的 j &lt; i</text>
+  <text x="280" y="400" text-anchor="middle" font-size="10.5" fill="#666">找不到 → break 结束构造</text>
+
+  <!-- split: found j ? -->
+  <path d="M 280 408 L 280 418" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: append 1 of j, loop back to step3 (keep i) -->
+  <rect x="100" y="422" width="240" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="441" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">追加 1 个 j，cnt[j]--</text>
+
+  <!-- loop back arrow: keep i, return to take-min step -->
+  <path d="M 100 436 L 60 436 L 60 212 L 120 212" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="5 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="48" y="324" font-size="10" fill="#4a7a3a" font-weight="bold" transform="rotate(-90 48 324)">i 不变，回构造</text>
+
+  <!-- right note: break -->
+  <rect x="370" y="422" width="150" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" stroke-dasharray="3 2" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="441" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">j &lt; 0 → 结束</text>
+  <path d="M 360 384 L 370 384 L 370 422" stroke="#bbb" stroke-width="1.4" fill="none" stroke-dasharray="3 2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- legend -->
+  <text x="440" y="84" font-size="10" fill="#888" text-anchor="middle">■ 填满/构造</text>
+  <text x="440" y="100" font-size="10" fill="#888" text-anchor="middle">■ 判定/分支</text>
+  <text x="440" y="116" font-size="10" fill="#888" text-anchor="middle">■ 间隔插入</text>
+</svg>

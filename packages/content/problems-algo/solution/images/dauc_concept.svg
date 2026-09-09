@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：日期过滤 → 按日分组 → 去重计数</text>
+
+  <!-- ===== Left: Activity table (raw) ===== -->
+  <text x="85" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Activity 表（原始）</text>
+  <rect x="20" y="60" width="135" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="38" y="75" font-size="8" fill="#446688" font-weight="bold">user_id</text>
+  <text x="78" y="75" font-size="8" fill="#446688" font-weight="bold">date</text>
+  <text x="122" y="75" font-size="7.5" fill="#446688" font-weight="bold">type</text>
+  <line x1="55" y1="60" x2="55" y2="82" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="100" y1="60" x2="100" y2="82" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row: user 1, 07-20, open_session (in range) -->
+  <rect x="20" y="82" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="93" text-anchor="middle" font-size="8" fill="#333">1</text>
+  <text x="78" y="93" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-20</text>
+  <text x="122" y="93" text-anchor="middle" font-size="6.5" fill="#888">open</text>
+  <line x1="55" y1="82" x2="55" y2="97" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="82" x2="100" y2="97" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 1, 07-20, scroll_down -->
+  <rect x="20" y="97" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="108" text-anchor="middle" font-size="8" fill="#333">1</text>
+  <text x="78" y="108" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-20</text>
+  <text x="122" y="108" text-anchor="middle" font-size="6.5" fill="#888">scroll</text>
+  <line x1="55" y1="97" x2="55" y2="112" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="97" x2="100" y2="112" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 1, 07-20, end_session -->
+  <rect x="20" y="112" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="123" text-anchor="middle" font-size="8" fill="#333">1</text>
+  <text x="78" y="123" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-20</text>
+  <text x="122" y="123" text-anchor="middle" font-size="6.5" fill="#888">end</text>
+  <line x1="55" y1="112" x2="55" y2="127" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="112" x2="100" y2="127" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 2, 07-20 -->
+  <rect x="20" y="127" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="138" text-anchor="middle" font-size="8" fill="#333">2</text>
+  <text x="78" y="138" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-20</text>
+  <text x="122" y="138" text-anchor="middle" font-size="6.5" fill="#888">open</text>
+  <line x1="55" y1="127" x2="55" y2="142" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="127" x2="100" y2="142" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 2, 07-21 -->
+  <rect x="20" y="142" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="153" text-anchor="middle" font-size="8" fill="#333">2</text>
+  <text x="78" y="153" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-21</text>
+  <text x="122" y="153" text-anchor="middle" font-size="6.5" fill="#888">send</text>
+  <line x1="55" y1="142" x2="55" y2="157" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="142" x2="100" y2="157" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 3, 07-21 -->
+  <rect x="20" y="157" width="135" height="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="168" text-anchor="middle" font-size="8" fill="#333">3</text>
+  <text x="78" y="168" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">07-21</text>
+  <text x="122" y="168" text-anchor="middle" font-size="6.5" fill="#888">open</text>
+  <line x1="55" y1="157" x2="55" y2="172" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="157" x2="100" y2="172" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row: user 4, 06-25 (out of range, will be excluded) -->
+  <rect x="20" y="172" width="135" height="15" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="38" y="183" text-anchor="middle" font-size="8" fill="#888">4</text>
+  <text x="78" y="183" text-anchor="middle" font-size="7.5" fill="#b85450" font-weight="bold">06-25</text>
+  <text x="122" y="183" text-anchor="middle" font-size="6.5" fill="#888">open</text>
+  <line x1="55" y1="172" x2="55" y2="187" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="100" y1="172" x2="100" y2="187" stroke="#446688" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <text x="85" y="202" text-anchor="middle" font-size="8" fill="#888">...（含重复行）</text>
+
+  <!-- annotation: 3 rows for user 1 same day -->
+  <path d="M160 89 L160 124" stroke="#d6a040" stroke-width="1.2" fill="none" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="170" y="110" font-size="7" fill="#d6a040" font-weight="bold">同用户</text>
+  <text x="170" y="120" font-size="7" fill="#d6a040" font-weight="bold">同日3条</text>
+
+  <!-- arrow from Activity to step 1 -->
+  <path d="M155 140 L190 140" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="172" y="134" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">①</text>
+  <text x="172" y="152" text-anchor="middle" font-size="6.5" fill="#d6a040">WHERE 日期</text>
+
+  <!-- ===== Middle: Step 1 result (filtered + grouped) ===== -->
+  <text x="295" y="54" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">过滤 + 分组后</text>
+  <rect x="210" y="60" width="140" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="75" font-size="8.5" fill="#4a7a3a" font-weight="bold">date</text>
+  <text x="305" y="75" font-size="8.5" fill="#4a7a3a" font-weight="bold">user_id 列表</text>
+  <line x1="270" y1="60" x2="270" y2="82" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- group 07-20 -->
+  <rect x="210" y="82" width="140" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="245" y="96" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">07-20</text>
+  <text x="305" y="96" text-anchor="middle" font-size="8" fill="#333">1,1,1,2</text>
+  <line x1="270" y1="82" x2="270" y2="104" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- group 07-21 -->
+  <rect x="210" y="104" width="140" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="245" y="118" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">07-21</text>
+  <text x="305" y="118" text-anchor="middle" font-size="8" fill="#333">2,2,3,3,3</text>
+  <line x1="270" y1="104" x2="270" y2="126" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- 06-25 excluded -->
+  <rect x="210" y="126" width="140" height="16" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="245" y="138" text-anchor="middle" font-size="8" fill="#888" text-decoration="line-through">06-25</text>
+  <text x="305" y="138" text-anchor="middle" font-size="7.5" fill="#b85450">✗ 差值32 ≥ 30</text>
+  <line x1="270" y1="126" x2="270" y2="142" stroke="#b85450" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <text x="295" y="158" text-anchor="middle" font-size="7.5" fill="#4a7a3a">GROUP BY activity_date</text>
+
+  <!-- arrow from step 1 to step 2 -->
+  <path d="M350 113 L390 113" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="370" y="107" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">②</text>
+  <text x="370" y="123" text-anchor="middle" font-size="6.5" fill="#d6a040">COUNT DISTINCT</text>
+
+  <!-- ===== Right: Final result ===== -->
+  <text x="475" y="54" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">最终结果</text>
+  <rect x="400" y="60" width="155" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="75" font-size="9" fill="#b85450" font-weight="bold">day</text>
+  <text x="510" y="75" font-size="8.5" fill="#b85450" font-weight="bold">active_users</text>
+  <line x1="470" y1="60" x2="470" y2="82" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <rect x="400" y="82" width="155" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="96" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">07-20</text>
+  <text x="510" y="96" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">2</text>
+  <line x1="470" y1="82" x2="470" y2="102" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="400" y="102" width="155" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="440" y="116" text-anchor="middle" font-size="9" fill="#333" font-weight="bold">07-21</text>
+  <text x="510" y="116" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">2</text>
+  <line x1="470" y1="102" x2="470" y2="122" stroke="#b85450" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- DISTINCT visualization for 07-20 -->
+  <rect x="400" y="132" width="155" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="477" y="146" text-anchor="middle" font-size="7.5" fill="#d6a040">07-20: {1,1,1,2}</text>
+  <text x="477" y="156" text-anchor="middle" font-size="7.5" fill="#4a7a3a" font-weight="bold">→ DISTINCT → {1,2} → 2</text>
+
+  <!-- date range filter box -->
+  <rect x="400" y="170" width="155" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="477" y="188" text-anchor="middle" font-size="8" fill="#446688" font-weight="bold">DATEDIFF &lt; 30</text>
+
+  <!-- bottom summary -->
+  <rect x="20" y="210" width="540" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="228" font-size="10" fill="#333">① <tspan fill="#d6a040" font-weight="bold">WHERE DATEDIFF('2019-07-27', activity_date) &lt; 30</tspan> → 筛出近 30 天记录</text>
+  <text x="40" y="242" font-size="10" fill="#333">② <tspan fill="#4a7a3a" font-weight="bold">GROUP BY activity_date</tspan> + <tspan fill="#b85450" font-weight="bold">COUNT(DISTINCT user_id)</tspan> → 每日活跃用户数</text>
+
+  <!-- Key insight box -->
+  <rect x="20" y="260" width="540" height="170" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="280" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">关键洞察：COUNT(DISTINCT) — 数"人"而非"行为次数"</text>
+
+  <text x="40" y="300" font-size="9.5" fill="#333">• user 1 在 07-20 有 3 条活动（open/scroll/end）→ <tspan fill="#b85450" font-weight="bold">COUNT(*) = 3</tspan>（错！多算了）</text>
+  <text x="40" y="318" font-size="9.5" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">COUNT(DISTINCT user_id) = 1</tspan>（对！同用户同日只算 1 个活跃用户）</text>
+  <text x="40" y="336" font-size="9.5" fill="#333">• 30 天窗口：<tspan fill="#d6a040" font-weight="bold">DATEDIFF &lt; 30</tspan> → 差值 0–29 共 30 天（含 07-27 当天）</text>
+  <text x="40" y="354" font-size="9.5" fill="#333">• ⚠️ <tspan fill="#b85450">不是 ≤ 30</tspan>：≤ 30 会覆盖差值 0–30 共 31 天，多算一天</text>
+  <text x="40" y="372" font-size="9.5" fill="#333">• 等价 BETWEEN：<tspan fill="#d6a040">BETWEEN '2019-06-28' AND '2019-07-27'</tspan>（两端含，共 30 天）</text>
+  <text x="40" y="390" font-size="9.5" fill="#333">• <tspan fill="#888">activity_type</tspan> 不需过滤：题目说"任何活动都视为有效"</text>
+  <text x="40" y="408" font-size="9.5" fill="#333">• 与 1107 对比：1107 需 <tspan fill="#888">WHERE activity='login'</tspan> 过滤；1141 不需要</text>
+  <text x="40" y="424" font-size="9.5" fill="#333">• 三步法：<tspan fill="#d6a040" font-weight="bold">过滤窗口 → 按日分组 → 去重计数</tspan>，所有"每日活跃用户数"题可套用</text>
+</svg>

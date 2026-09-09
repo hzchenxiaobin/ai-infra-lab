@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：三类典型输入</text>
+
+  <!-- Example 1: num=58, k=9 -> 2 -->
+  <rect x="40" y="38" width="480" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="58" font-size="12.5" fill="#333" font-weight="bold">例1：num=58, K=9 → 输出 2</text>
+  <text x="56" y="78" font-size="11" fill="#555">目标个位 = 58 % 10 = 8</text>
+  <g font-size="11" fill="#333" text-anchor="middle">
+    <rect x="56" y="88" width="80" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="96" y="105">cnt=1 → 9%10=9</text>
+    <rect x="144" y="88" width="80" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="184" y="105">2→18%10=8</text>
+    <rect x="232" y="88" width="80" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="272" y="105">3→27%10=7</text>
+    <rect x="320" y="88" width="80" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="360" y="105">4→36%10=6</text>
+    <rect x="408" y="88" width="96" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="456" y="105">5→45%10=5 ...</text>
+  </g>
+  <rect x="144" y="86" width="80" height="30" fill="none" stroke="#b85450" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="184" y="130" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">命中！2·9=18 ≤ 58 → return 2</text>
+  <text x="56" y="148" font-size="10.5" fill="#888">多重集 {9, 49} 或 {19, 39}：和=58，个位均 9 ✓</text>
+
+  <!-- Example 2: num=37, k=2 -> -1 -->
+  <rect x="40" y="170" width="480" height="110" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="190" font-size="12.5" fill="#333" font-weight="bold">例2：num=37, K=2 → 输出 -1</text>
+  <text x="56" y="210" font-size="11" fill="#555">目标个位 = 37 % 10 = 7，但 (cnt·2) % 10 ∈ {2,4,6,8,0} 永远到不了 7</text>
+  <g font-size="11" fill="#333" text-anchor="middle">
+    <rect x="56" y="222" width="78" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="95" y="239">1→2</text>
+    <rect x="142" y="222" width="78" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="181" y="239">2→4</text>
+    <rect x="228" y="222" width="78" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="267" y="239">3→6</text>
+    <rect x="314" y="222" width="78" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="353" y="239">4→8</text>
+    <rect x="400" y="222" width="78" height="26" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="439" y="239">5→0</text>
+  </g>
+  <text x="280" y="270" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">无匹配个位 → return -1</text>
+
+  <!-- Example 3: num=0, k=7 -> 0 -->
+  <rect x="40" y="292" width="480" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="312" font-size="12.5" fill="#333" font-weight="bold">例3：num=0, K=7 → 输出 0</text>
+  <text x="56" y="332" font-size="11" fill="#555">num == 0 直接返回 0：空多重集的和定义为 0，无需任何数。</text>
+  <text x="56" y="350" font-size="10.5" fill="#888">特判必须置于循环之前，否则 K≠0 时 cnt=1 也可能误判个位。</text>
+
+  <!-- Example 4: num=10, k=0 -> 1 -->
+  <rect x="40" y="372" width="480" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="392" font-size="12.5" fill="#333" font-weight="bold">例4(边界)：num=10, K=0 → 输出 1</text>
+  <text x="56" y="412" font-size="11" fill="#555">K=0 时 (cnt·0)%10=0，需 num%10==0；首个 cnt=1 且 0 ≤ 10 → return 1。</text>
+  <text x="56" y="432" font-size="10.5" fill="#888">取单个数 = 10（正数、个位 0）即合法，无需特殊处理。</text>
+</svg>

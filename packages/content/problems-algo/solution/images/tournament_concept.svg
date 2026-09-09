@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">核心思路：UNION ALL 展开双列 → GROUP BY 求总分 → JOIN 分组 → ROW_NUMBER 取每组第一</text>
+
+  <!-- ===== Matches table (left) ===== -->
+  <text x="130" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Matches（每行两人两分）</text>
+
+  <!-- header -->
+  <rect x="20" y="60" width="220" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="35" y="76" font-size="8.5" fill="#333">match_id</text>
+  <text x="85" y="76" font-size="8.5" fill="#446688" font-weight="bold">first_p</text>
+  <text x="125" y="76" font-size="8.5" fill="#446688" font-weight="bold">first_s</text>
+  <text x="170" y="76" font-size="8.5" fill="#4a7a3a" font-weight="bold">second_p</text>
+  <text x="215" y="76" font-size="8.5" fill="#4a7a3a" font-weight="bold">sec_s</text>
+  <line x1="75" y1="60" x2="75" y2="84" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="115" y1="60" x2="115" y2="84" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="155" y1="60" x2="155" y2="84" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="200" y1="60" x2="200" y2="84" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- match 1 -->
+  <rect x="20" y="84" width="220" height="20" fill="#fafafa" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="35" y="98" font-size="9" fill="#333">1</text>
+  <rect x="75" y="84" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="85" y="98" font-size="9" fill="#446688">15</text>
+  <text x="125" y="98" font-size="9" fill="#446688">3</text>
+  <rect x="155" y="84" width="85" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="170" y="98" font-size="9" fill="#4a7a3a">45</text>
+  <text x="215" y="98" font-size="9" fill="#4a7a3a">0</text>
+
+  <!-- match 2 -->
+  <rect x="20" y="104" width="220" height="20" fill="#fafafa" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="35" y="118" font-size="9" fill="#333">2</text>
+  <rect x="75" y="104" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="85" y="118" font-size="9" fill="#446688">30</text>
+  <text x="125" y="118" font-size="9" fill="#446688">1</text>
+  <rect x="155" y="104" width="85" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="170" y="118" font-size="9" fill="#4a7a3a">25</text>
+  <text x="215" y="118" font-size="9" fill="#4a7a3a">2</text>
+
+  <!-- match 3 -->
+  <rect x="20" y="124" width="220" height="20" fill="#fafafa" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="35" y="138" font-size="9" fill="#333">3</text>
+  <rect x="75" y="124" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="85" y="138" font-size="9" fill="#446688">30</text>
+  <text x="125" y="138" font-size="9" fill="#446688">2</text>
+  <rect x="155" y="124" width="85" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="170" y="138" font-size="9" fill="#4a7a3a">15</text>
+  <text x="215" y="138" font-size="9" fill="#4a7a3a">0</text>
+
+  <!-- match 4 -->
+  <rect x="20" y="144" width="220" height="20" fill="#fafafa" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="35" y="158" font-size="9" fill="#333">4</text>
+  <rect x="75" y="144" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="85" y="158" font-size="9" fill="#446688">40</text>
+  <text x="125" y="158" font-size="9" fill="#446688">5</text>
+  <rect x="155" y="144" width="85" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="170" y="158" font-size="9" fill="#4a7a3a">20</text>
+  <text x="215" y="158" font-size="9" fill="#4a7a3a">2</text>
+
+  <!-- match 5 -->
+  <rect x="20" y="164" width="220" height="20" fill="#fafafa" stroke="#999" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+  <text x="35" y="178" font-size="9" fill="#333">5</text>
+  <rect x="75" y="164" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="85" y="178" font-size="9" fill="#446688">35</text>
+  <text x="125" y="178" font-size="9" fill="#446688">1</text>
+  <rect x="155" y="164" width="85" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="170" y="178" font-size="9" fill="#4a7a3a">50</text>
+  <text x="215" y="178" font-size="9" fill="#4a7a3a">1</text>
+
+  <!-- arrows from two halves to UNION ALL -->
+  <path d="M115 190 L115 210 L300 210 L300 100 L335 100" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M197 190 L197 200 L300 200 L300 110 L335 110" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- UNION ALL label -->
+  <rect x="260" y="195" width="70" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="295" y="208" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">UNION ALL</text>
+
+  <!-- ===== UNION ALL result (right top) ===== -->
+  <text x="375" y="54" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">player_id | score（展开后）</text>
+  <rect x="335" y="60" width="80" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="350" y="75" font-size="9" fill="#333">player_id</text>
+  <text x="395" y="75" font-size="9" fill="#333">score</text>
+  <line x1="378" y1="60" x2="378" y2="82" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- 10 rows of union all -->
+  <rect x="335" y="82" width="80" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="93" font-size="8.5" fill="#446688">15</text>
+  <text x="395" y="93" font-size="8.5" fill="#446688">3</text>
+
+  <rect x="335" y="98" width="80" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="109" font-size="8.5" fill="#4a7a3a">45</text>
+  <text x="395" y="109" font-size="8.5" fill="#4a7a3a">0</text>
+
+  <rect x="335" y="114" width="80" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="125" font-size="8.5" fill="#446688">30</text>
+  <text x="395" y="125" font-size="8.5" fill="#446688">1</text>
+
+  <rect x="335" y="130" width="80" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="141" font-size="8.5" fill="#4a7a3a">25</text>
+  <text x="395" y="141" font-size="8.5" fill="#4a7a3a">2</text>
+
+  <rect x="335" y="146" width="80" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="157" font-size="8.5" fill="#446688">30</text>
+  <text x="395" y="157" font-size="8.5" fill="#446688">2</text>
+
+  <rect x="335" y="162" width="80" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="173" font-size="8.5" fill="#4a7a3a">15</text>
+  <text x="395" y="173" font-size="8.5" fill="#4a7a3a">2</text>
+
+  <rect x="335" y="178" width="80" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="189" font-size="8.5" fill="#446688">40</text>
+  <text x="395" y="189" font-size="8.5" fill="#446688">5</text>
+
+  <rect x="335" y="194" width="80" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="205" font-size="8.5" fill="#4a7a3a">20</text>
+  <text x="395" y="205" font-size="8.5" fill="#4a7a3a">2</text>
+
+  <rect x="335" y="210" width="80" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="221" font-size="8.5" fill="#446688">35</text>
+  <text x="395" y="221" font-size="8.5" fill="#446688">1</text>
+
+  <rect x="335" y="226" width="80" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="237" font-size="8.5" fill="#4a7a3a">50</text>
+  <text x="395" y="237" font-size="8.5" fill="#4a7a3a">1</text>
+
+  <!-- arrow down to GROUP BY -->
+  <path d="M375 246 L375 262" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- GROUP BY label -->
+  <rect x="310" y="264" width="130" height="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="277" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">GROUP BY + SUM(score)</text>
+
+  <!-- arrow down to totals -->
+  <path d="M375 286 L375 302" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Totals table (right middle) ===== -->
+  <text x="375" y="314" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">player_id | total</text>
+  <rect x="335" y="318" width="80" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="350" y="331" font-size="8.5" fill="#333">player_id</text>
+  <text x="395" y="331" font-size="8.5" fill="#333">total</text>
+  <line x1="378" y1="318" x2="378" y2="338" stroke="#446688" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <rect x="335" y="338" width="80" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="348" font-size="8" fill="#b85450">15</text>
+  <text x="395" y="348" font-size="8" fill="#b85450" font-weight="bold">5</text>
+
+  <rect x="335" y="352" width="80" height="14" fill="#fafafa" stroke="#999" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="362" font-size="8" fill="#333">30</text>
+  <text x="395" y="362" font-size="8" fill="#333">3</text>
+
+  <rect x="335" y="366" width="80" height="14" fill="#fafafa" stroke="#999" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="376" font-size="8" fill="#333">25</text>
+  <text x="395" y="376" font-size="8" fill="#333">2</text>
+
+  <rect x="335" y="380" width="80" height="14" fill="#fafafa" stroke="#999" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="390" font-size="8" fill="#333">40</text>
+  <text x="395" y="390" font-size="8" fill="#333">5</text>
+
+  <rect x="335" y="394" width="80" height="14" fill="#fafafa" stroke="#999" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="350" y="404" font-size="8" fill="#333">20</text>
+  <text x="395" y="404" font-size="8" fill="#333">2</text>
+
+  <!-- ===== Callout boxes (bottom left) ===== -->
+  <rect x="20" y="230" width="270" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="35" y="250" font-size="10" fill="#446688" font-weight="bold">蓝色列 → first_player, first_score</text>
+  <text x="35" y="265" font-size="10" fill="#4a7a3a" font-weight="bold">绿色列 → second_player, second_score</text>
+  <text x="35" y="280" font-size="10" fill="#555">UNION ALL 把两人两分展开为统一的两列</text>
+
+  <rect x="20" y="300" width="270" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="35" y="320" font-size="10" fill="#d6a040" font-weight="bold">GROUP BY player_id, SUM(score)</text>
+  <text x="35" y="335" font-size="10" fill="#555">同一选手可能参加多场比赛</text>
+  <text x="35" y="350" font-size="10" fill="#555">总分 = 所有比赛得分之和</text>
+
+  <rect x="20" y="370" width="270" height="72" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="35" y="390" font-size="10" fill="#b85450" font-weight="bold">JOIN Players → 获取 group_id</text>
+  <text x="35" y="405" font-size="10" fill="#555">ROW_NUMBER() OVER (</text>
+  <text x="35" y="418" font-size="9.5" fill="#555">  PARTITION BY group_id</text>
+  <text x="35" y="431" font-size="9.5" fill="#555">  ORDER BY total DESC, player_id ASC)</text>
+</svg>

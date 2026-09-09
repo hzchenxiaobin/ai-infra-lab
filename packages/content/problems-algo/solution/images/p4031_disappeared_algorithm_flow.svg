@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="260" y="15" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：打标记 → 双指针扫出极大空位段</text>
+
+    <!-- step 1 -->
+    <rect x="110" y="26" width="200" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="210" y="44" text-anchor="middle" font-size="10" fill="#333">① 建桶打标记：遍历 nums，</text>
+    <text x="210" y="60" text-anchor="middle" font-size="10" fill="#333">lower ≤ x ≤ upper ⇒ seen[x] = 1</text>
+
+    <path d="M 210 68 V 80" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- step 2 -->
+    <rect x="155" y="82" width="110" height="24" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="210" y="98" text-anchor="middle" font-size="10.5" fill="#333">② i = lower</text>
+
+    <path d="M 210 106 V 114" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- diamond 3: i <= upper ? -->
+    <polygon points="210,116 292,150 210,184 128,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="210" y="154" text-anchor="middle" font-size="11" fill="#333">i ≤ upper ?</text>
+
+    <!-- no: return -->
+    <path d="M 292 150 H 318" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="302" y="142" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+    <rect x="321" y="128" width="162" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="402" y="148" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#2f5527">⑥ 返回 ans</text>
+    <text x="402" y="164" text-anchor="middle" font-size="9" fill="#2f5527">（区间按 start 递增）</text>
+
+    <!-- yes -->
+    <path d="M 210 184 V 198" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="218" y="196" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <!-- diamond 4: seen[i] ? -->
+    <polygon points="210,202 292,236 210,270 128,236" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="210" y="240" text-anchor="middle" font-size="11" fill="#333">seen[i] ?</text>
+
+    <!-- yes: skip loop (left side, back to diamond 3) -->
+    <path d="M 128 236 H 62 V 150 H 122" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="95" y="228" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">是 ✓：i++ 跳过</text>
+
+    <!-- no -->
+    <path d="M 210 270 V 284" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="218" y="282" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+    <!-- step 5 -->
+    <rect x="100" y="286" width="220" height="50" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="210" y="304" text-anchor="middle" font-size="10" fill="#333">⑤ j 向右扩展到空位段末尾</text>
+    <text x="210" y="322" text-anchor="middle" font-size="10" fill="#333">输出 [i, j]；i = j + 1</text>
+
+    <!-- loop back to diamond 3 (far right, enter from top) -->
+    <path d="M 320 311 H 496 V 108 H 210 V 112" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="504" y="210" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 504 210)">下一段</text>
+
+    <!-- pitfalls -->
+    <rect x="30" y="350" width="300" height="66" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="180" y="368" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">三个免踩的坑</text>
+    <text x="44" y="386" font-size="9.5" fill="#8a3a35">① 打标记先判 x ≤ upper：防越界 + 区间外的值不参与</text>
+    <text x="44" y="402" font-size="9.5" fill="#8a3a35">② 重复值天然被桶去重，无需预处理</text>
+    <text x="44" y="418" font-size="9.5" fill="#8a3a35">③ 无缺失返回 []，单点空位输出 [x,x]——都免特判</text>
+
+    <!-- complexity -->
+    <rect x="345" y="350" width="150" height="66" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="420" y="368" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6d1f">复杂度</text>
+    <text x="420" y="386" text-anchor="middle" font-size="9.5" fill="#7a5c1a">时间 O(n + U)</text>
+    <text x="420" y="402" text-anchor="middle" font-size="9.5" fill="#7a5c1a">U = upper − lower + 1</text>
+    <text x="420" y="418" text-anchor="middle" font-size="9.5" fill="#7a5c1a">空间 O(U)：值域桶</text>
+  </g>
+</svg>

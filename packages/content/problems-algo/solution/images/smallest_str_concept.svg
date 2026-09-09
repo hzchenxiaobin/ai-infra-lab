@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：DFS 走 root→leaf，字符串读 leaf→root</text>
+  <text x="280" y="42" text-anchor="middle" font-size="11" fill="#888">节点值 0~25 映射 a~z；到叶后翻转路径即得候选串</text>
+
+  <!-- tree: 0(a) -> 1(b),2(c) ; 1 -> 3(d),4(e) ; 2 -> 3(d),4(e) -->
+  <!-- root 0 = a -->
+  <circle cx="180" cy="80" r="19" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="180" y="85" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+  <text x="206" y="74" font-size="9" fill="#888">0</text>
+
+  <!-- node 1 = b (left child, on highlighted path) -->
+  <circle cx="120" cy="142" r="19" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="120" y="147" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b</text>
+  <text x="146" y="136" font-size="9" fill="#888">1</text>
+  <!-- node 2 = c (right child) -->
+  <circle cx="250" cy="142" r="19" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="250" y="147" text-anchor="middle" font-size="13" fill="#333">c</text>
+  <text x="276" y="136" font-size="9" fill="#888">2</text>
+
+  <!-- edges level 1: highlight a->b -->
+  <path d="M 167 96 L 133 126" stroke="#4a7a3a" stroke-width="2.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 193 96 L 237 126" stroke="#446688" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+
+  <!-- leaf 3 = d (leftmost, highlighted) -->
+  <circle cx="78" cy="210" r="19" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.8" filter="url(#rough2)"/>
+  <text x="78" y="215" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">d</text>
+  <text x="104" y="204" font-size="9" fill="#888">3</text>
+  <!-- leaf 4 = e -->
+  <circle cx="162" cy="210" r="19" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="162" y="215" text-anchor="middle" font-size="13" fill="#333">e</text>
+  <text x="188" y="204" font-size="9" fill="#888">4</text>
+  <!-- leaf 3 = d -->
+  <circle cx="208" cy="210" r="19" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="208" y="215" text-anchor="middle" font-size="13" fill="#333">d</text>
+  <text x="234" y="204" font-size="9" fill="#888">3</text>
+  <!-- leaf 4 = e -->
+  <circle cx="292" cy="210" r="19" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="292" y="215" text-anchor="middle" font-size="13" fill="#333">e</text>
+  <text x="318" y="204" font-size="9" fill="#888">4</text>
+
+  <!-- edges level 2: highlight b->d(left) -->
+  <path d="M 107 158 L 90 192" stroke="#4a7a3a" stroke-width="2.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 133 158 L 150 192" stroke="#446688" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M 237 158 L 220 192" stroke="#446688" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M 263 158 L 280 192" stroke="#446688" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+
+  <!-- reversed string for highlighted leaf d: leaf->root = d b a -->
+  <path d="M 78 232 L 78 256" stroke="#b85450" stroke-width="2" fill="none" stroke-dasharray="3,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="42" y="258" width="72" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="78" y="276" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">d b a</text>
+  <text x="78" y="300" text-anchor="middle" font-size="9" fill="#888">叶→根翻转</text>
+
+  <!-- right side: all candidates -->
+  <path d="M 370 56 L 370 312" stroke="#dddddd" stroke-width="1.2" stroke-dasharray="3,4" filter="url(#rough2)"/>
+
+  <text x="465" y="64" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">四条叶→根候选串</text>
+
+  <rect x="395" y="78" width="140" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="100" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">dba  ✓ 最小</text>
+
+  <rect x="395" y="120" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="142" text-anchor="middle" font-size="12" fill="#446688">eba</text>
+
+  <rect x="395" y="162" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="184" text-anchor="middle" font-size="12" fill="#446688">dca</text>
+
+  <rect x="395" y="204" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="226" text-anchor="middle" font-size="12" fill="#446688">eca</text>
+
+  <rect x="385" y="256" width="160" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="276" text-anchor="middle" font-size="11" fill="#333">字典序比较</text>
+  <text x="465" y="294" text-anchor="middle" font-size="12" fill="#8a6a20" font-weight="bold">dba &lt; dca &lt; eba &lt; eca</text>
+
+  <text x="200" y="340" text-anchor="middle" font-size="10" fill="#888">维护 root→leaf 的 path，到叶翻转得候选，与全局最优比较</text>
+</svg>

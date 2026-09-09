@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="420" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">拓扑排序染色：从终态反向 BFS 传播胜负</text>
+
+  <rect x="110" y="48" width="320" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="70" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 初始化：终态染色并入队</text>
+  <text x="270" y="90" text-anchor="middle" font-size="11" fill="#444">m==0 → 染绿(鼠赢1) ; m==c → 染红(猫赢2)</text>
+
+  <path d="M 270 102 L 270 122" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="110" y="124" width="320" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 出队 (m, c, t, w)，找所有前驱 (m2, c2, t2)</text>
+  <text x="270" y="166" text-anchor="middle" font-size="10" fill="#888">t==猫 → 鼠刚走，前驱鼠在 graph[m] ; t==鼠 → 猫刚走，前驱猫在 graph[c]</text>
+
+  <path d="M 270 178 L 270 196" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <path d="M 200 216 Q 130 222 95 240" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <path d="M 340 216 Q 410 222 445 240" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+
+  <rect x="35" y="218" width="200" height="16" fill="none" stroke="none"/>
+  <text x="135" y="212" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">t2 == w ?</text>
+  <text x="405" y="212" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">t2 ≠ w ?</text>
+
+  <rect x="20" y="236" width="230" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="260" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">规则 A：前驱轮到赢家</text>
+  <text x="135" y="280" text-anchor="middle" font-size="10" fill="#444">t2 == w → 赢家能走到必胜态</text>
+  <text x="135" y="300" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">color[m2][c2][t2] = w</text>
+  <text x="135" y="320" text-anchor="middle" font-size="10" fill="#666">立即染色 w，并入队</text>
+
+  <rect x="290" y="236" width="230" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="260" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">规则 B：前驱轮到输家</text>
+  <text x="405" y="280" text-anchor="middle" font-size="10" fill="#444">t2 ≠ w → 这步让对手赢</text>
+  <text x="405" y="300" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">degree[m2][c2][t2] −−</text>
+  <text x="405" y="320" text-anchor="middle" font-size="10" fill="#666">若 == 0（全败）→ 染色 3−t2</text>
+
+  <path d="M 135 332 Q 135 348 200 356" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,2" filter="url(#rough2)"/>
+  <path d="M 405 332 Q 405 348 340 356" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,2" filter="url(#rough2)"/>
+  <text x="270" y="352" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">染色后入队，继续传播</text>
+
+  <path d="M 270 362 Q 270 376 200 380 Q 60 384 50 100" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="3,3" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <text x="44" y="250" font-size="9" fill="#888" transform="rotate(-90 44 250)">循环回 ②</text>
+
+  <rect x="140" y="388" width="260" height="26" fill="#f5f5f5" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="406" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">③ 队列空 → 未染色状态 = 平局 (0)</text>
+</svg>

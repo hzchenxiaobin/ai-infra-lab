@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：按截止日排序 + 大顶堆「替换更长的课」</text>
+
+  <!-- Top: timeline with sorted courses -->
+  <text x="280" y="52" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 按截止日 lastDay 升序排列课程</text>
+
+  <rect x="30" y="60" width="500" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+
+  <rect x="42" y="68" width="64" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="74" y="82" text-anchor="middle" font-size="9.5" fill="#333">d=7</text>
+  <text x="74" y="94" text-anchor="middle" font-size="9" fill="#446688">dl=11</text>
+
+  <rect x="112" y="68" width="64" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="144" y="82" text-anchor="middle" font-size="9.5" fill="#333">d=2</text>
+  <text x="144" y="94" text-anchor="middle" font-size="9" fill="#4a7a3a">dl=12</text>
+
+  <rect x="182" y="68" width="64" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="214" y="82" text-anchor="middle" font-size="9.5" fill="#333">d=5</text>
+  <text x="214" y="94" text-anchor="middle" font-size="9" fill="#d6a040">dl=12</text>
+
+  <rect x="252" y="68" width="64" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="284" y="82" text-anchor="middle" font-size="9.5" fill="#333">d=6</text>
+  <text x="284" y="94" text-anchor="middle" font-size="9" fill="#b85450">dl=14</text>
+
+  <path d="M 322 84 L 340 84" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arrF)" filter="url(#rough2)"/>
+  <text x="360" y="88" font-size="9.5" fill="#666">遍历</text>
+
+  <!-- Middle: decision -->
+  <text x="280" y="134" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">② 对每门课做贪心决策</text>
+
+  <!-- time + d <= lastDay? -->
+  <polygon points="280,142 360,176 280,210 200,176" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="172" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">time + d</text>
+  <text x="280" y="186" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">≤ lastDay?</text>
+
+  <!-- Yes: take -->
+  <path d="M 360 176 L 430 176" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="372" y="170" font-size="9.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="434" y="158" width="110" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="489" y="174" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">直接选课</text>
+  <text x="489" y="187" text-anchor="middle" font-size="9.5" fill="#4a7a3a">time += d, 入堆</text>
+
+  <!-- No: check replacement -->
+  <path d="M 200 176 L 130 176" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="142" y="170" font-size="9.5" fill="#b85450" font-weight="bold">否</text>
+
+  <polygon points="90,142 160,176 90,210 20,176" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="90" y="172" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">堆顶max</text>
+  <text x="90" y="186" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">&gt; d?</text>
+
+  <!-- Yes: replace -->
+  <path d="M 90 210 L 90 238" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="100" y="228" font-size="9.5" fill="#d6a040" font-weight="bold">是</text>
+  <rect x="28" y="242" width="124" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="258" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">替换！</text>
+  <text x="90" y="272" text-anchor="middle" font-size="9.5" fill="#d6a040">time += d − max</text>
+
+  <!-- No: skip -->
+  <path d="M 160 176 L 200 220" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="3,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="172" y="216" font-size="9.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="200" y="230" width="80" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="240" y="250" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">跳过</text>
+
+  <!-- Bottom: max-heap of durations -->
+  <text x="280" y="312" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">③ 大顶堆维护已选课程的 duration</text>
+
+  <rect x="120" y="322" width="320" height="84" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+
+  <!-- heap nodes -->
+  <ellipse cx="280" cy="348" rx="26" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="280" y="353" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">6</text>
+  <text x="280" y="338" text-anchor="middle" font-size="8" fill="#d6a040">max</text>
+
+  <ellipse cx="220" cy="386" rx="22" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="220" y="390" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+
+  <ellipse cx="340" cy="386" rx="22" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="340" y="390" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+
+  <path d="M 270 360 L 230 372" stroke="#666" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+  <path d="M 290 360 L 330 372" stroke="#666" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+
+  <!-- labels -->
+  <text x="430" y="350" font-size="9.5" fill="#666">堆顶 = 最长课程</text>
+  <text x="430" y="364" font-size="9.5" fill="#d6a040">替换时弹出</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="392" width="80" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="407" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">课程数=堆大小</text>
+</svg>

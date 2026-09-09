@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="420" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">SQL 逻辑流程：FROM Queries → LEFT JOIN NPV → IFNULL 填 0</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">三步走：选驱动表 → 联合键左连接 → NULL 替换为 0</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="64" width="540" height="64" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="64" width="36" height="64" rx="8" fill="#446688" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="102" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">①</text>
+  <text x="90" y="84" font-size="12" fill="#446688" font-weight="bold">选定驱动表：FROM Queries q</text>
+  <text x="90" y="102" font-size="10" fill="#666" font-family="'Courier New', monospace">SELECT q.id, q.year, ... FROM Queries q</text>
+  <text x="90" y="120" font-size="10" fill="#888">→ Queries 是左表（驱动表），结果集行数 = Queries 行数，不受 NPV 是否有匹配影响</text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M 310 130 L 310 148" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="152" width="540" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="152" width="36" height="64" rx="8" fill="#d6a040" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="190" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">②</text>
+  <text x="90" y="172" font-size="12" fill="#d6a040" font-weight="bold">左连接：LEFT JOIN NPV n ON q.id = n.id AND q.year = n.year</text>
+  <text x="90" y="190" font-size="10" fill="#666" font-family="'Courier New', monospace">LEFT JOIN NPV n ON q.id = n.id AND q.year = n.year</text>
+  <text x="90" y="208" font-size="10" fill="#888">→ 匹配键是 (id, year) 联合主键；LEFT JOIN 保证左表行全保留，无匹配则 n.* 为 NULL</text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M 310 218 L 310 236" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="40" y="240" width="540" height="64" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <rect x="40" y="240" width="36" height="64" rx="8" fill="#b85450" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="278" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">③</text>
+  <text x="90" y="260" font-size="12" fill="#b85450" font-weight="bold">NULL 填零：IFNULL(n.npv, 0) AS npv</text>
+  <text x="90" y="278" font-size="10" fill="#666" font-family="'Courier New', monospace">SELECT q.id, q.year, IFNULL(n.npv, 0) AS npv</text>
+  <text x="90" y="296" font-size="10" fill="#888">→ 匹配行取 n.npv；无匹配行 n.npv 为 NULL，IFNULL 把它替换为 0</text>
+
+  <!-- Arrow 3→4 -->
+  <path d="M 310 306 L 310 324" stroke="#666" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="40" y="328" width="540" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <rect x="40" y="328" width="36" height="56" rx="8" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="58" y="362" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">④</text>
+  <text x="90" y="348" font-size="12" fill="#4a7a3a" font-weight="bold">输出结果：每行查询对应的 npv（匹配取原值，无匹配取 0）</text>
+  <text x="90" y="366" font-size="10" fill="#888">→ 结果行数 = Queries 行数，无重复无遗漏</text>
+
+  <!-- Key insight box -->
+  <rect x="40" y="392" width="540" height="20" rx="8" fill="#fafafa" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="60" y="406" font-size="10" fill="#444" font-weight="bold">💡 匹配键必须用 AND 连接两列（id AND year），不能只匹配 id——否则同年不同 id 的 npv 会错配</text>
+</svg>

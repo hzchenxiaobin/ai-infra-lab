@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：两次 DP 预处理 + 枚举差异位累加</text>
+
+  <!-- Step 1 -->
+  <rect x="60" y="48" width="440" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="72" font-size="12" fill="#4a7a3a" font-weight="bold">① 预处理 lcs[i][j]（正序 DP）</text>
+  <text x="80" y="92" font-size="11" fill="#444">lcs[i][j] = s[i]==t[j] ? lcs[i-1][j-1]+1 : 0</text>
+  <text x="80" y="108" font-size="10" fill="#888">含义：以 (i,j) 结尾的最长公共后缀（向左能匹配多少）</text>
+
+  <!-- arrow 1 -> 2 -->
+  <path d="M280,116 L280,134" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="60" y="136" width="440" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="160" font-size="12" fill="#446688" font-weight="bold">② 预处理 lcp[i][j]（倒序 DP）</text>
+  <text x="80" y="180" font-size="11" fill="#444">lcp[i][j] = s[i]==t[j] ? lcp[i+1][j+1]+1 : 0</text>
+  <text x="80" y="196" font-size="10" fill="#888">含义：以 (i,j) 开头的最长公共前缀（向右能匹配多少）</text>
+
+  <!-- arrow 2 -> 3 -->
+  <path d="M280,204 L280,222" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="60" y="224" width="440" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="248" font-size="12" fill="#d6a040" font-weight="bold">③ 枚举所有差异位 (p,q)，其中 s[p] != t[q]</text>
+  <text x="80" y="268" font-size="11" fill="#444">left  = lcs[p-1][q-1]   （差异位左侧连续匹配数）</text>
+  <text x="80" y="286" font-size="11" fill="#444">right = lcp[p+1][q+1]   （差异位右侧连续匹配数）</text>
+  <text x="80" y="302" font-size="11" fill="#b85450" font-weight="bold">ans += (left + 1) × (right + 1)</text>
+
+  <!-- arrow 3 -> 4 -->
+  <path d="M280,304 L280,322" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="60" y="324" width="440" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="358" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">④ 返回 ans</text>
+
+  <!-- complexity note -->
+  <rect x="60" y="396" width="440" height="48" fill="#fafafa" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="416" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">复杂度</text>
+  <text x="280" y="434" text-anchor="middle" font-size="11" fill="#666">时间 O(n·m)　·　空间 O(n·m)，可滚动数组优化到 O(min(n,m))</text>
+</svg>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M 1.5 1.5 L 8 4.5 L 1.5 7.5" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="20" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">算法流程：单趟扫描 + 内层级联（均摊 O(n)）</text>
+
+  <!-- Start -->
+  <rect x="90" y="34" width="160" height="30" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="53" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">st ← 空栈</text>
+
+  <path d="M 170 64 V 80" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Read next element -->
+  <rect x="90" y="80" width="160" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="101" text-anchor="middle" font-size="11.5" fill="#333">取下一个元素 x，v ← x</text>
+
+  <path d="M 170 114 V 130" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: cascade check -->
+  <polygon points="170,130 268,166 170,202 72,166" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="162" text-anchor="middle" font-size="11" fill="#444">st 非空 且</text>
+  <text x="170" y="178" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">st.top() == v ?</text>
+
+  <!-- Yes: merge -->
+  <path d="M 268 166 H 330" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="160" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="330" y="149" width="150" height="34" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="405" y="170" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">v ← 2v；st.pop()</text>
+
+  <!-- loop back to decision 1 -->
+  <path d="M 405 149 V 122 H 176" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="116" text-anchor="middle" font-size="10" fill="#b85450">继续级联判定</text>
+
+  <!-- No: push -->
+  <path d="M 170 202 V 218" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <rect x="105" y="218" width="130" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="239" text-anchor="middle" font-size="11.5" fill="#333">st.push(v)</text>
+
+  <path d="M 170 252 V 268" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 2: more elements? -->
+  <polygon points="170,268 252,302 170,336 88,302" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="306" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">还有元素?</text>
+
+  <!-- Yes: back to read next element -->
+  <path d="M 252 302 H 494 V 97 H 254" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="296" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- No: end -->
+  <path d="M 170 336 V 352" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="348" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <rect x="95" y="352" width="150" height="32" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="170" y="372" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">返回 st（即最终数组）</text>
+
+  <!-- Note box -->
+  <rect x="310" y="352" width="190" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="405" y="370" text-anchor="middle" font-size="10.5" fill="#444" font-weight="bold">均摊 O(n)：</text>
+  <text x="405" y="385" text-anchor="middle" font-size="10.5" fill="#666">每个值至多一进一出</text>
+  <text x="405" y="400" text-anchor="middle" font-size="10.5" fill="#888">（总弹栈 ≤ 总入栈 ≤ n）</text>
+</svg>

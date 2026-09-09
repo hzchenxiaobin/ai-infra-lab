@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="560" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">O(n) 流程：与版本 I 同一公式，多了「溢出关卡」这道坎</text>
+
+  <!-- A: init -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="42" width="320" height="48" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="62" text-anchor="middle" font-size="12" fill="#333">初始化：排序离散化；suf = 全量计数、pre = 0</text>
+    <text x="220" y="80" text-anchor="middle" font-size="12" fill="#333">sumSuf2 = ΣC(suf,2)，S₁ = S₂ = S₃ = sumPre2 = 0</text>
+  </g>
+  <path d="M 220 90 L 220 104" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B: loop head -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="106" width="320" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="220" y="128" text-anchor="middle" font-size="12.5" fill="#7a5c1e">枚举中间下标 k = 0…n−1，记 v = a[k]</text>
+  </g>
+  <path d="M 220 140 L 220 154" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- C: remove from suffix -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="156" width="320" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="178" text-anchor="middle" font-size="12.5" fill="#333">把 k 移出后缀：O(1) 更新 sumSuf2、S₁、S₂、S₃</text>
+  </g>
+  <path d="M 220 190 L 220 204" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D: derive -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="206" width="320" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="228" text-anchor="middle" font-size="12.5" fill="#333">O(1) 导出 p、b、K、M、E_L、E_R、cross₁、cross₂</text>
+  </g>
+  <path d="M 220 240 L 220 254" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- E: formula -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="256" width="360" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="220" y="278" text-anchor="middle" font-size="12.5" fill="#2d4d22">valid(k) = C(k,2)·C(n−1−k,2) − C(K,2)·C(M,2)</text>
+    <text x="220" y="298" text-anchor="middle" font-size="12.5" fill="#2d4d22">− b·(M·E_L + cross₁) − p·(K·E_R + cross₂)</text>
+  </g>
+  <path d="M 220 308 L 220 322" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- F: overflow gate -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="324" width="360" height="74" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+    <text x="220" y="346" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#7a2e2a">⚠️ 溢出关卡（n = 10⁵ 新增）</text>
+    <text x="220" y="366" text-anchor="middle" font-size="11.5" fill="#7a2e2a">C(k,2)·C(n−1−k,2) ≈ 2.5×10¹⁹、b·(M·E_L+cross₁) ≈ 9×10¹⁹</text>
+    <text x="220" y="386" text-anchor="middle" font-size="11.5" fill="#7a2e2a">都超 int64 → 因子先 %MOD 再乘；减法后 +MOD 归一化</text>
+  </g>
+  <path d="M 220 398 L 220 412" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- G: accumulate -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="414" width="320" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="436" text-anchor="middle" font-size="12.5" fill="#333">ans = (ans + valid) % MOD</text>
+  </g>
+  <path d="M 220 448 L 220 462" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- H: add to prefix -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="464" width="320" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="486" text-anchor="middle" font-size="12.5" fill="#333">把 k 加入前缀：O(1) 更新 sumPre2、S₁、S₂、S₃</text>
+  </g>
+
+  <!-- loop back -->
+  <path d="M 380 481 L 430 481 L 430 123 L 386 123" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="446" y="300" font-size="11.5" fill="#888" filter="url(#rough2)">下一个 k</text>
+
+  <!-- side note: exactness of aggregates -->
+  <g filter="url(#rough2)">
+    <rect x="412" y="324" width="132" height="74" rx="10" fill="#f0f0f0" stroke="#999" stroke-width="1.2"/>
+    <text x="478" y="346" text-anchor="middle" font-size="11" fill="#444">S₁…cross₂ 等中间量</text>
+    <text x="478" y="364" text-anchor="middle" font-size="11" fill="#444">精确值 ≤ ~9×10¹⁴</text>
+    <text x="478" y="382" text-anchor="middle" font-size="11" fill="#444">int64 内保持精确</text>
+  </g>
+
+  <!-- final -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="516" width="320" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="220" y="536" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2d4d22">循环结束，返回 ans（已归一到 [0, MOD)）</text>
+  </g>
+</svg>

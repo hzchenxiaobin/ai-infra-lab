@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    核心观察：按位分解 + 异或即奇偶
+  </text>
+
+  <!-- ===== Top: problem ===== -->
+  <rect x="60" y="42" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    求 ⊕ (arr1[i] &amp; arr2[j])，对所有 (i, j) 数对
+  </text>
+
+  <!-- arrow down -->
+  <line x1="280" y1="86" x2="280" y2="100" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Middle: bit k decomposition ===== -->
+  <text x="280" y="116" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">
+    固定某一位 k，只看该位：
+  </text>
+
+  <!-- left: arr1 bit k -->
+  <rect x="40" y="128" width="140" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="146" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">arr1 中 bit k=1 的个数</text>
+  <text x="110" y="164" text-anchor="middle" font-size="14" fill="#4a7a3a" filter="url(#rough2)">c₁ = c1_k</text>
+  <text x="110" y="178" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">c1_k mod 2 = XOR(arr1) 第 k 位</text>
+
+  <!-- right: arr2 bit k -->
+  <rect x="380" y="128" width="140" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="146" text-anchor="middle" font-size="11" fill="#2a4a1a" filter="url(#rough2)">arr2 中 bit k=1 的个数</text>
+  <text x="450" y="164" text-anchor="middle" font-size="14" fill="#4a7a3a" filter="url(#rough2)">c₂ = c2_k</text>
+  <text x="450" y="178" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">c2_k mod 2 = XOR(arr2) 第 k 位</text>
+
+  <!-- center: pairs -->
+  <rect x="200" y="128" width="160" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">两数组 bit k 均为 1 的数对数</text>
+  <text x="280" y="164" text-anchor="middle" font-size="14" fill="#d6a040" filter="url(#rough2)">c1_k × c2_k</text>
+  <text x="280" y="178" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">这些数对的 AND 在 bit k = 1</text>
+
+  <!-- arrows from left and right to center -->
+  <line x1="180" y1="157" x2="196" y2="157" stroke="#4a7a3a" stroke-width="1.3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <line x1="380" y1="157" x2="364" y2="157" stroke="#4a7a3a" stroke-width="1.3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- arrow down from center -->
+  <line x1="280" y1="190" x2="280" y2="206" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Key formula ===== -->
+  <rect x="60" y="210" width="440" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="230" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">
+    XOR 第 k 位 = (c1_k × c2_k) mod 2 = (c1_k mod 2) &amp; (c2_k mod 2)
+  </text>
+  <text x="280" y="248" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    乘积的奇偶 = 两个因子奇偶的「与」
+  </text>
+
+  <!-- arrow down -->
+  <line x1="280" y1="260" x2="280" y2="274" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom: final result ===== -->
+  <rect x="60" y="278" width="440" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="300" text-anchor="middle" font-size="13" fill="#2a4a1a" filter="url(#rough2)">
+    结果 = (⊕ arr1) &amp; (⊕ arr2)
+  </text>
+  <text x="280" y="318" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">
+    arr1 全员异或 与 arr2 全员异或 的按位与
+  </text>
+
+  <!-- ===== Footer note ===== -->
+  <rect x="40" y="344" width="480" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="362" text-anchor="middle" font-size="10" fill="#5a1a1a" filter="url(#rough2)">
+    关键：异或只关心 1 的个数奇偶；AND 两位都为 1 才为 1
+  </text>
+  <text x="280" y="378" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">
+    两者结合 → 乘积奇偶性 = 两因子奇偶的 AND
+  </text>
+</svg>

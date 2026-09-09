@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN → 两次 RANK() 窗口 → 相减</text>
+
+  <!-- ===== Step 1: JOIN two tables ===== -->
+  <rect x="40" y="48" width="200" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="68" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① JOIN TeamPoints &amp; PointsChange</text>
+  <text x="140" y="84" text-anchor="middle" font-size="9" fill="#666">USING (team_id)</text>
+  <text x="140" y="100" text-anchor="middle" font-size="8" fill="#999">team_id 唯一，1:1 内连接</text>
+  <text x="140" y="112" text-anchor="middle" font-size="8" fill="#999">得到 points + points_change</text>
+
+  <!-- ===== Step 2a: old rank ===== -->
+  <rect x="280" y="48" width="160" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="360" y="68" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">② 算 rank_old</text>
+  <text x="360" y="84" text-anchor="middle" font-size="8" fill="#666">RANK() OVER</text>
+  <text x="360" y="96" text-anchor="middle" font-size="8" fill="#666">(ORDER BY points DESC,</text>
+  <text x="360" y="107" text-anchor="middle" font-size="8" fill="#666"> name ASC)</text>
+
+  <!-- ===== Step 2b: new rank ===== -->
+  <rect x="460" y="48" width="140" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="530" y="68" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">② 算 rank_new</text>
+  <text x="530" y="84" text-anchor="middle" font-size="8" fill="#666">RANK() OVER</text>
+  <text x="530" y="96" text-anchor="middle" font-size="8" fill="#666">(ORDER BY points+change</text>
+  <text x="530" y="107" text-anchor="middle" font-size="8" fill="#666"> DESC, name ASC)</text>
+
+  <!-- arrows from JOIN to both ranks -->
+  <path d="M 240 83 Q 260 70 280 70" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 240 83 Q 350 120 460 83" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: subtract ===== -->
+  <rect x="220" y="180" width="300" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="370" y="200" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">③ 相减：rank_diff = rank_old − rank_new</text>
+  <text x="370" y="216" text-anchor="middle" font-size="8" fill="#666">CAST(rank_old AS SIGNED) − CAST(rank_new AS SIGNED)</text>
+  <text x="370" y="232" text-anchor="middle" font-size="8" fill="#888">两窗口函数在同一条 SELECT 中并列即可</text>
+
+  <!-- arrows from both ranks to subtract -->
+  <path d="M 360 118 Q 360 150 370 180" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 530 118 Q 530 150 440 180" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: output ===== -->
+  <rect x="160" y="290" width="300" height="56" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="310" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">④ 输出 SELECT team_id, name, rank_diff</text>
+  <text x="310" y="326" text-anchor="middle" font-size="8" fill="#666">返回顺序任意（题面允许）</text>
+  <text x="310" y="340" text-anchor="middle" font-size="8" fill="#888">4 行结果</text>
+
+  <path d="M 370 240 Q 370 265 310 290" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Side notes ===== -->
+  <rect x="40" y="160" width="150" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="115" y="178" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">SQL 子句执行序</text>
+  <line x1="40" y1="184" x2="190" y2="184" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="50" y="198" font-size="8" fill="#666">FROM/JOIN → WHERE</text>
+  <text x="50" y="212" font-size="8" fill="#666">→ GROUP BY → HAVING</text>
+  <text x="50" y="226" font-size="8" fill="#666">→ SELECT(窗口函数在此)</text>
+  <text x="50" y="240" font-size="8" fill="#b85450" font-weight="bold">→ ORDER BY → LIMIT</text>
+
+  <rect x="430" y="160" width="160" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="510" y="178" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">为何能直接相减？</text>
+  <line x1="430" y1="184" x2="590" y2="184" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="440" y="198" font-size="8" fill="#666">两个 RANK() 作用于</text>
+  <text x="440" y="210" font-size="8" fill="#666">同一行集（JOIN 结果）</text>
+  <text x="440" y="224" font-size="8" fill="#666">每行同时拿到 old/new</text>
+  <text x="440" y="238" font-size="8" fill="#4a7a3a">无需自连接</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="40" y="362" width="540" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="382" text-anchor="middle" font-size="9" fill="#666">窗口函数在 SELECT 阶段对「已 JOIN 的行集」整体排序打号——两次 RANK 共享同一输入，逐行对齐相减</text>
+</svg>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="11"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：最小费用最大流（SPFA 找费用最短增广路）</text>
+
+  <!-- ① 建图 -->
+  <rect x="100" y="40" width="320" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">① 建图（n²+2n 条容量为 1 的边）</text>
+  <text x="260" y="78" text-anchor="middle" font-size="9" fill="#2f5d24" filter="url(#rough2)">S→锁i(费0) · 锁i→次序j(费⌈sᵢ/j⌉) · 次序j→T(费0)</text>
+
+  <path d="M 260 90 L 260 103" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ② SPFA -->
+  <rect x="100" y="108" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="132" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">② SPFA 求残量网络中 S→T 的费用最短路</text>
+
+  <path d="M 260 148 L 260 161" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- 菱形判断 -->
+  <polygon points="260,166 356,198 260,230 164,198" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="203" text-anchor="middle" font-size="10.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">dist[T] 可达？</text>
+
+  <!-- 否 → 结束 -->
+  <path d="M 356 198 L 390 198" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <text x="373" y="190" text-anchor="middle" font-size="9.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="394" y="178" width="118" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="453" y="196" text-anchor="middle" font-size="10.5" fill="#8a3833" font-weight="bold" filter="url(#rough2)">④ 输出 total</text>
+  <text x="453" y="212" text-anchor="middle" font-size="8.5" fill="#8a3833" filter="url(#rough2)">= 打开全部锁的最少时间</text>
+
+  <!-- 是 → 增广 -->
+  <path d="M 260 230 L 260 243" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+  <text x="272" y="242" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- ③ 增广 -->
+  <rect x="100" y="248" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="266" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">③ 沿最短路增广 1 单位流量</text>
+  <text x="260" y="283" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">total += dist[T]，回到 ② 继续找下一条</text>
+
+  <!-- 循环箭头 -->
+  <path d="M 100 270 L 58 270 L 58 128 L 94 128" stroke="#4a7a3a" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+
+  <!-- 底部说明 -->
+  <rect x="25" y="306" width="470" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="323" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">增广恰进行 n 次：完全二分图必有完美匹配，流量必能推满 n</text>
+  <text x="260" y="339" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">反向边费用为负 → 用 SPFA / Bellman-Ford 而非 Dijkstra</text>
+</svg>

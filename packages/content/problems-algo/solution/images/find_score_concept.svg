@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#333" filter="url(#rough2)">核心观察：值不变 → 排序一次定候选序，惰性跳过已标记</text>
+
+  <!-- 原始数组 -->
+  <text x="30" y="72" font-size="12" fill="#666" filter="url(#rough2)">原始 nums：</text>
+  <g filter="url(#rough2)">
+    <rect x="118" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="140" y="75" text-anchor="middle" font-size="13" fill="#333">2</text>
+    <rect x="164" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="186" y="75" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <rect x="210" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="232" y="75" text-anchor="middle" font-size="13" fill="#333">3</text>
+    <rect x="256" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="278" y="75" text-anchor="middle" font-size="13" fill="#333">4</text>
+    <rect x="302" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="324" y="75" text-anchor="middle" font-size="13" fill="#333">5</text>
+    <rect x="348" y="56" width="44" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="370" y="75" text-anchor="middle" font-size="13" fill="#333">2</text>
+  </g>
+  <!-- 下标 -->
+  <g filter="url(#rough2)" font-size="10" fill="#999">
+    <text x="140" y="100" text-anchor="middle">i=0</text>
+    <text x="186" y="100" text-anchor="middle">i=1</text>
+    <text x="232" y="100" text-anchor="middle">i=2</text>
+    <text x="278" y="100" text-anchor="middle">i=3</text>
+    <text x="324" y="100" text-anchor="middle">i=4</text>
+    <text x="370" y="100" text-anchor="middle">i=5</text>
+  </g>
+
+  <!-- 箭头 -->
+  <path d="M290,110 L290,134" stroke="#446688" stroke-width="2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="300" y="128" font-size="11" fill="#446688" filter="url(#rough2)">按下标排序</text>
+  <text x="300" y="142" font-size="10" fill="#446688" filter="url(#rough2)">键：(值↑，同值下标↑)</text>
+
+  <!-- 候选序：6 张卡片，宽 54 高 46，步长 62，从 x=118 起 -->
+  <!-- 候选1: 值1 i=1  PICK  score1 标记{0,1,2} -->
+  <g filter="url(#rough2)">
+    <rect x="118" y="150" width="54" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="5"/>
+    <text x="145" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">值1</text>
+    <text x="145" y="186" text-anchor="middle" font-size="10" fill="#4a7a3a">i=1</text>
+  </g>
+  <!-- 候选2: 值2 i=0  SKIP -->
+  <g filter="url(#rough2)">
+    <rect x="180" y="150" width="54" height="46" fill="#fafafa" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" rx="5"/>
+    <text x="207" y="168" text-anchor="middle" font-size="13" fill="#999">值2</text>
+    <text x="207" y="186" text-anchor="middle" font-size="10" fill="#b85450">i=0</text>
+  </g>
+  <!-- 候选3: 值2 i=5  PICK  score3 标记{4,5} -->
+  <g filter="url(#rough2)">
+    <rect x="242" y="150" width="54" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="5"/>
+    <text x="269" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">值2</text>
+    <text x="269" y="186" text-anchor="middle" font-size="10" fill="#4a7a3a">i=5</text>
+  </g>
+  <!-- 候选4: 值3 i=2  SKIP -->
+  <g filter="url(#rough2)">
+    <rect x="304" y="150" width="54" height="46" fill="#fafafa" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" rx="5"/>
+    <text x="331" y="168" text-anchor="middle" font-size="13" fill="#999">值3</text>
+    <text x="331" y="186" text-anchor="middle" font-size="10" fill="#b85450">i=2</text>
+  </g>
+  <!-- 候选5: 值4 i=3  PICK  score7 标记{2,3,4} -->
+  <g filter="url(#rough2)">
+    <rect x="366" y="150" width="54" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="5"/>
+    <text x="393" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">值4</text>
+    <text x="393" y="186" text-anchor="middle" font-size="10" fill="#4a7a3a">i=3</text>
+  </g>
+  <!-- 候选6: 值5 i=4  SKIP -->
+  <g filter="url(#rough2)">
+    <rect x="428" y="150" width="54" height="46" fill="#fafafa" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" rx="5"/>
+    <text x="455" y="168" text-anchor="middle" font-size="13" fill="#999">值5</text>
+    <text x="455" y="186" text-anchor="middle" font-size="10" fill="#b85450">i=4</text>
+  </g>
+
+  <!-- 选/跳 标注 -->
+  <g filter="url(#rough2)" font-size="10">
+    <text x="145" y="216" text-anchor="middle" fill="#4a7a3a">✓选 +1</text>
+    <text x="207" y="216" text-anchor="middle" fill="#b85450">✗已标记</text>
+    <text x="269" y="216" text-anchor="middle" fill="#4a7a3a">✓选 +2</text>
+    <text x="331" y="216" text-anchor="middle" fill="#b85450">✗已标记</text>
+    <text x="393" y="216" text-anchor="middle" fill="#4a7a3a">✓选 +4</text>
+    <text x="455" y="216" text-anchor="middle" fill="#b85450">✗已标记</text>
+  </g>
+
+  <!-- 说明框 -->
+  <rect x="40" y="244" width="500" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="266" font-size="12" fill="#333" filter="url(#rough2)">• 排序后按序遍历，遇到的第一个「未标记」即当前全局最小未标记元素</text>
+  <text x="50" y="284" font-size="12" fill="#333" filter="url(#rough2)">• 值在过程中不变 → 无需堆：排序一次即可，遇 marked 直接跳过</text>
+  <text x="50" y="302" font-size="12" fill="#333" filter="url(#rough2)">• 选中后标记 idx−1 / idx / idx+1（越界跳过），后续同位置候选自动失效</text>
+
+  <!-- 结果 -->
+  <rect x="190" y="338" width="200" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="362" text-anchor="middle" font-size="14" font-weight="bold" fill="#4a7a3a">score = 1 + 2 + 4 = 7</text>
+
+  <text x="290" y="392" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">绿=选中并累加；红虚=已被先前选择标记，惰性跳过</text>
+</svg>

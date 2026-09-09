@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a7a7a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一次遍历 + 哈希表存「最早下标」</text>
+
+  <!-- Init oval -->
+  <rect x="150" y="40" width="240" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">初始化：map = {0 : −1}，prefix = 0，ans = 0</text>
+  <path d="M 270 74 L 270 90" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- prefix update -->
+  <rect x="140" y="92" width="260" height="32" rx="6" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="113" text-anchor="middle" font-size="11.5" fill="#333">prefix += (nums[i] == 0 ? −1 : 1)</text>
+  <path d="M 270 124 L 270 136" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 1: map contains prefix? -->
+  <polygon points="270,138 380,176 270,214 160,176" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="173" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">map 已含</text>
+  <text x="270" y="187" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">prefix ?</text>
+  <text x="372" y="170" text-anchor="end" font-size="10.5" fill="#82b366" font-weight="bold">是</text>
+  <text x="168" y="170" text-anchor="start" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Yes box (right) -->
+  <rect x="392" y="148" width="120" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="452" y="168" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">ans = max(ans,</text>
+  <text x="452" y="182" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">i − map[prefix])</text>
+  <text x="452" y="196" text-anchor="middle" font-size="9.5" fill="#4a7a3a">不更新 map</text>
+  <path d="M 380 176 L 391 176" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No box (left) -->
+  <rect x="28" y="148" width="120" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="88" y="172" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">map[prefix] = i</text>
+  <text x="88" y="190" text-anchor="middle" font-size="9.5" fill="#b85450">首次出现才记录</text>
+  <path d="M 160 176 L 149 176" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- merge to decision 2 -->
+  <path d="M 452 204 L 452 232 L 270 232" stroke="#7a7a7a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 88 204 L 88 232 L 270 232" stroke="#7a7a7a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 232 L 270 244" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 2: next i? -->
+  <polygon points="270,246 380,282 270,318 160,282" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="279" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">还有下一个</text>
+  <text x="270" y="293" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i ?</text>
+  <text x="372" y="276" text-anchor="end" font-size="10.5" fill="#82b366" font-weight="bold">是</text>
+  <text x="282" y="312" text-anchor="start" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- loop back to prefix update (right side) -->
+  <path d="M 380 282 L 525 282 L 525 108 L 401 108" stroke="#82b366" stroke-width="1.6" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="520" y="200" text-anchor="end" font-size="9.5" fill="#4a7a3a" font-style="italic">i++，下一轮</text>
+
+  <!-- exit to end -->
+  <path d="M 270 318 L 270 336" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="160" y="338" width="220" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="360" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">遍历结束，返回 ans</text>
+</svg>

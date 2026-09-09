@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：匹配 → 计数 → 取最大 → 判定输出</text>
+
+  <!-- Step 1: Cross Join + Match -->
+  <rect x="120" y="40" width="320" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Posts ⋈ Keywords：词级匹配</text>
+  <text x="280" y="76" text-anchor="middle" font-size="9" fill="#666">CONCAT(' ', LOWER(p.content), ' ')</text>
+  <text x="280" y="88" text-anchor="middle" font-size="9" fill="#666">LIKE CONCAT('% ', LOWER(k.word), ' %')</text>
+
+  <!-- Arrow down -->
+  <path d="M 280 96 L 280 116" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Count per topic -->
+  <rect x="120" y="120" width="320" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="140" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">② GROUP BY (post_id, topic_id) → COUNT</text>
+  <text x="280" y="156" text-anchor="middle" font-size="9" fill="#666">每篇每主题的命中关键词数 cnt</text>
+
+  <!-- Arrow down -->
+  <path d="M 280 168 L 280 188" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Max per post -->
+  <rect x="120" y="192" width="320" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="212" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">③ MAX(cnt) per post_id</text>
+  <text x="280" y="228" text-anchor="middle" font-size="9" fill="#666">选出每篇命中数最多的主题</text>
+
+  <!-- Arrow down -->
+  <path d="M 280 240 L 280 260" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="280,264 360,300 280,336 200,300" fill="#fff" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">有几个主题</text>
+  <text x="280" y="310" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">达到最大值?</text>
+
+  <!-- Branch 1: 0 (no match) -->
+  <path d="M 200 300 L 60 300 L 60 350" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="72" y="296" font-size="9" fill="#b85450" font-weight="bold">0 个</text>
+  <rect x="20" y="354" width="100" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="70" y="372" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">"No Topic"</text>
+  <text x="70" y="384" text-anchor="middle" font-size="8" fill="#888">LEFT JOIN 保空</text>
+
+  <!-- Branch 2: >1 (tie) -->
+  <path d="M 280 336 L 280 354" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="290" y="348" font-size="9" fill="#d6a040" font-weight="bold">&gt;1 个</text>
+  <rect x="220" y="358" width="120" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="376" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">"Ambiguous"</text>
+  <text x="280" y="388" text-anchor="middle" font-size="8" fill="#888">并列最大</text>
+
+  <!-- Branch 3: 1 (unique) -->
+  <path d="M 360 300 L 460 300 L 460 350" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="296" font-size="9" fill="#4a7a3a" font-weight="bold">恰好 1 个</text>
+  <rect x="410" y="354" width="120" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="372" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">topic_id</text>
+  <text x="470" y="384" text-anchor="middle" font-size="8" fill="#888">唯一最大者</text>
+
+  <!-- Final output -->
+  <path d="M 70 390 L 70 408" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 280 394 L 280 408" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 470 390 L 470 408" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="100" y="412" width="360" height="36" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="430" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">输出：post_id, topic（CASE WHEN 三分支）</text>
+  <text x="280" y="444" text-anchor="middle" font-size="8" fill="#888">ORDER BY post_id</text>
+</svg>

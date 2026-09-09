@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="410" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：数组劈两半，各算子集和，中间二分汇合</text>
+
+  <!-- nums array -->
+  <text x="60" y="58" font-size="11" fill="#888">nums (n≤40)</text>
+  <rect x="120" y="44" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="137" y="60" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+  <rect x="154" y="44" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="171" y="60" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">-7</text>
+  <rect x="188" y="44" width="34" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="205" y="60" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">3</text>
+  <rect x="222" y="44" width="34" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="239" y="60" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+
+  <!-- split bracket -->
+  <path d="M 137 70 L 137 80 L 188 80 L 188 70" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 205 70 L 205 80 L 256 80 L 256 70" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="137" y="96" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">左半 L (n/2)</text>
+  <text x="222" y="96" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">右半 R (n/2)</text>
+
+  <!-- arrows down to subset sums -->
+  <path d="M 137 102 L 137 120" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 222 102 L 222 120" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="137" y="116" text-anchor="middle" font-size="9" fill="#4a7a3a">枚举子集</text>
+  <text x="222" y="116" text-anchor="middle" font-size="9" fill="#4a7a3a">枚举子集</text>
+
+  <!-- Left subset sums box -->
+  <rect x="50" y="130" width="180" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="140" y="150" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">左子集和 LS (2^(n/2))</text>
+  <text x="64" y="172" font-size="10" fill="#333">{ } → 0</text>
+  <text x="64" y="188" font-size="10" fill="#333">{5} → 5</text>
+  <text x="64" y="204" font-size="10" fill="#333">{-7} → -7</text>
+  <text x="64" y="220" font-size="10" fill="#333">{5,-7} → -2</text>
+
+  <!-- Right subset sums box -->
+  <rect x="310" y="130" width="180" height="92" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="400" y="150" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">右子集和 RS (2^(n/2))</text>
+  <text x="324" y="172" font-size="10" fill="#333">{ } → 0</text>
+  <text x="324" y="188" font-size="10" fill="#333">{3} → 3</text>
+  <text x="324" y="204" font-size="10" fill="#333">{5} → 5</text>
+  <text x="324" y="220" font-size="10" fill="#333">{3,5} → 8</text>
+
+  <!-- sort arrow on right -->
+  <path d="M 492 176 L 520 176" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="530" y="172" font-size="9" fill="#b85450">排序</text>
+  <text x="530" y="184" font-size="9" fill="#b85450">O(2^(n/2) log)</text>
+
+  <!-- sorted RS list -->
+  <rect x="520" y="196" width="86" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="563" y="214" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">RS 排序后</text>
+  <text x="534" y="232" font-size="9" fill="#333">0, 3, 5, 8</text>
+  <text x="534" y="250" font-size="9" fill="#888">有序数组</text>
+  <text x="534" y="266" font-size="9" fill="#888">可二分</text>
+
+  <!-- Meet in the middle area -->
+  <rect x="120" y="248" width="380" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="270" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">中间相遇：对每个 LS[i]，在 RS 二分找最接近 goal−LS[i] 的值</text>
+
+  <text x="180" y="294" text-anchor="middle" font-size="10" fill="#333">LS[i]</text>
+  <path d="M 200 290 L 240 290" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="310" y="294" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">target = goal − LS[i]</text>
+  <path d="M 380 290 L 420 290" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="460" y="294" text-anchor="middle" font-size="10" fill="#333">lower_bound(RS)</text>
+
+  <!-- arrows from LS and RS to meet area -->
+  <path d="M 140 222 L 140 248" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 563 274 L 563 248 L 500 248" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="150" y="340" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="310" y="362" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">min | LS[i] + RS[j] − goal |</text>
+  <text x="310" y="376" text-anchor="middle" font-size="10" fill="#888">遍历 LS × 二分 RS</text>
+
+  <!-- complexity -->
+  <rect x="150" y="388" width="320" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="402" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">O(2^(n/2) · n/2) 时间 / O(2^(n/2)) 空间</text>
+</svg>

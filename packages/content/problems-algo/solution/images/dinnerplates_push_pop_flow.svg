@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DinnerPlates：push / pop / popAtStack 流程</text>
+
+  <!-- ===== push column ===== -->
+  <rect x="20" y="46" width="160" height="376" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="12" filter="url(#rough2)"/>
+  <text x="100" y="70" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">push(val)</text>
+  <line x1="32" y1="80" x2="168" y2="80" stroke="#d6a040" stroke-width="1" filter="url(#rough2)"/>
+
+  <rect x="32" y="92" width="136" height="62" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="110" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">① 清堆顶过期</text>
+  <text x="100" y="126" text-anchor="middle" font-size="9.5" fill="#666">idx ≥ size 或 已满</text>
+  <text x="100" y="140" text-anchor="middle" font-size="9.5" fill="#666">→ 丢弃继续取</text>
+
+  <path d="M 100 154 L 100 168" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="32" y="172" width="136" height="56" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="190" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">② 堆空？</text>
+  <text x="100" y="206" text-anchor="middle" font-size="9.5" fill="#666">是 → 新建栈，idx=size</text>
+  <text x="100" y="220" text-anchor="middle" font-size="9.5" fill="#666">否 → idx=堆顶</text>
+
+  <path d="M 100 228 L 100 242" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="32" y="246" width="136" height="62" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="264" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">③ stacks[idx].push</text>
+  <text x="100" y="280" text-anchor="middle" font-size="9.5" fill="#666">填满则 free.pop()</text>
+  <text x="100" y="294" text-anchor="middle" font-size="9.5" fill="#666">未满则留堆</text>
+
+  <rect x="40" y="324" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="100" y="346" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">O(log n) 均摊</text>
+
+  <text x="100" y="390" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">惰性校验消化过期</text>
+  <text x="100" y="404" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">堆顶即最左未满</text>
+
+  <!-- ===== pop column ===== -->
+  <rect x="190" y="46" width="160" height="376" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="12" filter="url(#rough2)"/>
+  <text x="270" y="70" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">pop()</text>
+  <line x1="202" y1="80" x2="338" y2="80" stroke="#b85450" stroke-width="1" filter="url(#rough2)"/>
+
+  <rect x="202" y="92" width="136" height="48" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="110" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">① 尾部裁剪</text>
+  <text x="270" y="126" text-anchor="middle" font-size="9.5" fill="#666">while back().empty() pop</text>
+
+  <path d="M 270 140 L 270 154" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="202" y="158" width="136" height="48" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="176" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">② stacks 空？</text>
+  <text x="270" y="192" text-anchor="middle" font-size="9.5" fill="#666">是 → 返回 -1</text>
+
+  <path d="M 270 206 L 270 220" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="202" y="224" width="136" height="48" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="242" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">③ 弹 back() 栈顶</text>
+  <text x="270" y="258" text-anchor="middle" font-size="9.5" fill="#666">取最右非空</text>
+
+  <path d="M 270 272 L 270 286" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="202" y="290" width="136" height="62" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="308" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">④ back 入堆 + 再裁剪</text>
+  <text x="270" y="324" text-anchor="middle" font-size="9.5" fill="#666">腾空位待回填</text>
+  <text x="270" y="338" text-anchor="middle" font-size="9.5" fill="#666">弹空则删除</text>
+
+  <rect x="210" y="364" width="120" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="386" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">O(1) 均摊</text>
+
+  <text x="270" y="414" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">裁剪保 back() 恒非空</text>
+
+  <!-- ===== popAtStack column ===== -->
+  <rect x="360" y="46" width="160" height="376" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="12" filter="url(#rough2)"/>
+  <text x="440" y="70" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">popAtStack(index)</text>
+  <line x1="372" y1="80" x2="508" y2="80" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+
+  <rect x="372" y="92" width="136" height="56" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="110" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">① 越界或空？</text>
+  <text x="440" y="126" text-anchor="middle" font-size="9.5" fill="#666">index ≥ size</text>
+  <text x="440" y="140" text-anchor="middle" font-size="9.5" fill="#666">或 stacks[index] 空 → -1</text>
+
+  <path d="M 440 148 L 440 162" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="372" y="166" width="136" height="48" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="184" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">② 弹 stacks[index] 顶</text>
+  <text x="440" y="200" text-anchor="middle" font-size="9.5" fill="#666">中间挖空洞</text>
+
+  <path d="M 440 214 L 440 228" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="372" y="232" width="136" height="48" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="250" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">③ index 入堆</text>
+  <text x="440" y="266" text-anchor="middle" font-size="9.5" fill="#666">空位待 push 回填</text>
+
+  <path d="M 440 280 L 440 294" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="372" y="298" width="136" height="48" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="316" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">④ 尾部裁剪</text>
+  <text x="440" y="332" text-anchor="middle" font-size="9.5" fill="#666">仅删尾部空栈</text>
+
+  <rect x="380" y="360" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="382" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">O(log n)</text>
+
+  <text x="440" y="414" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">中间空栈保留待回填</text>
+
+  <text x="270" y="450" text-anchor="middle" font-size="10" fill="#aaa" font-style="italic">三操作共用：最小堆存未满下标 + 尾部裁剪保 back() 非空</text>
+</svg>

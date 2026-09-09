@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS','Marker Felt','Kaiti SC',楷体,'Segoe UI',cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arb" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="aro" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fdfcf7"/>
+
+  <text x="320" y="32" text-anchor="middle" font-size="18" fill="#2b2b2b" font-weight="bold">示例演算："great" → "rgeat"</text>
+  <path d="M 210 42 Q 320 50 430 42" stroke="#2b2b2b" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="320" y="58" text-anchor="middle" font-size="11" fill="#888">递归树：每个内部节点尝试所有切点，命中即停</text>
+
+  <!-- Root: great / rgeat -->
+  <g filter="url(#sk)"><rect x="210" y="74" width="220" height="36" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="320" y="98" text-anchor="middle" font-size="13" fill="#2b4a6a" font-weight="bold">s1="great"  vs  s2="rgeat"</text>
+  <text x="200" y="98" text-anchor="end" font-size="11" fill="#888">len=5</text>
+
+  <!-- try k=2, swap case -->
+  <path d="M 320 114 Q 200 140 110 162" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arb)" filter="url(#sk)"/>
+  <path d="M 320 114 Q 440 140 490 162" stroke="#d6a040" stroke-width="1.3" fill="none" marker-end="url(#aro)" filter="url(#sk)"/>
+  <text x="160" y="138" font-size="10" fill="#b85450" font-weight="bold">k=2, 交换</text>
+
+  <!-- Left child: s1[:2]="gr" vs s2[3:]="at"? No... -->
+  <!-- Actually swap: s1[:2]="gr" vs s2[5-2:]="at"? Wait s2="rgeat", n=5, k=2 -->
+  <!-- swap: s1[:2]="gr" vs s2[3:]="at" AND s1[2:]="eat" vs s2[:3]="rge" -->
+  <!-- That doesn't work. Let me redo: no swap k=2: s1[:2]="gr" vs s2[:2]="rg" AND s1[2:]="eat" vs s2[2:]="eat" -->
+  <!-- s1[:2]="gr" vs s2[:2]="rg" → scramble (swap g,r) ✓; s1[2:]="eat" vs s2[2:]="eat" → equal ✓ -->
+
+  <text x="110" y="138" font-size="10" fill="#4a7a3a" font-weight="bold">k=2, 不交换 ✓</text>
+
+  <!-- Left branch: gr vs rg -->
+  <g filter="url(#sk)"><rect x="30" y="160" width="160" height="32" rx="5" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/></g>
+  <text x="110" y="182" text-anchor="middle" font-size="12" fill="#2b4a6a" font-weight="bold">"gr" vs "rg"  (k=1)</text>
+
+  <!-- Right branch: eat vs eat -->
+  <g filter="url(#sk)"><rect x="400" y="160" width="160" height="32" rx="5" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/></g>
+  <text x="480" y="182" text-anchor="middle" font-size="12" fill="#8a6a20" font-weight="bold">"eat" vs "eat"</text>
+
+  <!-- eat vs eat: equal, return true -->
+  <path d="M 480 196 Q 480 220 480 236" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="430" y="236" width="100" height="26" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/></g>
+  <text x="480" y="254" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">相等 → true ✓</text>
+
+  <!-- gr vs rg: k=1, swap -->
+  <path d="M 110 196 Q 70 220 70 236" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arb)" filter="url(#sk)"/>
+  <path d="M 110 196 Q 150 220 150 236" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#sk)"/>
+  <text x="40" y="218" font-size="10" fill="#b85450" font-weight="bold">k=1,交换</text>
+
+  <!-- Leaf: g vs r, r vs g -->
+  <g filter="url(#sk)"><rect x="36" y="238" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3"/></g>
+  <text x="54" y="258" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">g|r</text>
+  <g filter="url(#sk)"><rect x="128" y="238" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3"/></g>
+  <text x="146" y="258" text-anchor="middle" font-size="12" fill="#8a3030" font-weight="bold">r|g</text>
+
+  <!-- swap means s1[:1]="g" vs s2[1:]="g" and s1[1:]="r" vs s2[:1]="r" -->
+  <path d="M 54 270 Q 54 286 54 296" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 146 270 Q 146 286 146 296" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="30" y="296" width="48" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2"/></g>
+  <text x="54" y="312" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">g=g ✓</text>
+  <g filter="url(#sk)"><rect x="122" y="296" width="48" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2"/></g>
+  <text x="146" y="312" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">r=r ✓</text>
+
+  <!-- merge up: gr vs rg = true -->
+  <path d="M 54 324 Q 80 340 100 348" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 146 324 Q 120 340 110 348" stroke="#4a7a3a" stroke-width="1.2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="60" y="348" width="100" height="26" rx="5" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/></g>
+  <text x="110" y="366" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">"gr"→"rg" ✓</text>
+
+  <!-- final merge -->
+  <path d="M 110 376 Q 200 392 250 400" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 480 264 Q 400 360 350 400" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="220" y="400" width="200" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="320" y="424" text-anchor="middle" font-size="14" fill="#2a5a2a" font-weight="bold">两段都 true → true ✓</text>
+
+  <!-- Side note box -->
+  <g filter="url(#sk)"><rect x="430" y="300" width="190" height="108" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2" stroke-dasharray="5,3"/></g>
+  <text x="525" y="322" text-anchor="middle" font-size="12" fill="#2b2b2b" font-weight="bold">关键剪枝</text>
+  <text x="442" y="342" font-size="10" fill="#444">① 长度不等 → false</text>
+  <text x="442" y="358" font-size="10" fill="#444">② 两串相等 → true</text>
+  <text x="442" y="374" font-size="10" fill="#444">③ 字符频率不同 → false</text>
+  <text x="442" y="392" font-size="10" fill="#888">排序后比较，O(n log n)</text>
+</svg>

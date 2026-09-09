@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="500" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：dfs(start) —— 选/不选 + 同层去重 + 非递减剪枝</text>
+  <text x="270" y="42" text-anchor="middle" font-size="11" fill="#888">path 为当前子序列；进入函数即记录（len≥2）；本层 used 集合做同层去重</text>
+
+  <!-- ===== Entry: dfs(start) ===== -->
+  <rect x="150" y="56" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">dfs(start)  —— path 为当前子序列</text>
+  <path d="M 270 96 L 270 110" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: len(path) >= 2 ? ===== -->
+  <polygon points="270,114 380,150 270,186 160,150" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="148" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">len(path) ≥ 2 ?</text>
+  <text x="270" y="163" text-anchor="middle" font-size="10" fill="#4a7a3a">（已是合法子序列）</text>
+
+  <!-- yes -> record -->
+  <path d="M 380 150 L 430 150" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="144" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="430" y="134" width="96" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="478" y="155" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">res.append(副本)</text>
+
+  <!-- no / down -->
+  <path d="M 270 186 L 270 200" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="198" font-size="10.5" fill="#888" font-weight="bold">否/继续</text>
+
+  <!-- ===== used = set() ===== -->
+  <rect x="120" y="202" width="300" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="226" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">used = set()  ← 本层去重集合（每层新建）</text>
+  <path d="M 270 242 L 270 256" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Loop ===== -->
+  <rect x="90" y="258" width="360" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="280" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">遍历 i = start … n−1</text>
+  <path d="M 270 292 L 270 304" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision 1: nums[i] in used ? ===== -->
+  <polygon points="270,308 380,338 270,368 160,338" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="336" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">nums[i] ∈ used ?</text>
+  <text x="270" y="350" text-anchor="middle" font-size="9.5" fill="#b85450">（同层已试过该值）</text>
+  <path d="M 380 338 L 430 338" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="332" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <text x="436" y="342" font-size="10" fill="#888">continue</text>
+  <text x="436" y="354" font-size="9.5" fill="#aaa">（剪枝① 去重）</text>
+
+  <path d="M 270 368 L 270 380" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="378" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- ===== Decision 2: non-decreasing ? ===== -->
+  <polygon points="270,384 380,410 270,436 160,410" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="408" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">path非空 且</text>
+  <text x="270" y="422" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">nums[i]&lt;path[-1] ?</text>
+  <path d="M 380 410 L 430 410" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="404" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <text x="436" y="414" font-size="10" fill="#888">continue</text>
+  <text x="436" y="426" font-size="9.5" fill="#aaa">（剪枝② 非递减）</text>
+
+  <path d="M 270 436 L 270 448" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="446" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- ===== place / recurse / undo ===== -->
+  <rect x="60" y="450" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="469" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">used.add(nums[i])；path.append(nums[i])</text>
+  <text x="220" y="484" text-anchor="middle" font-size="10.5" fill="#4a7a3a">dfs(i+1) → path.pop()  （回溯）</text>
+
+  <!-- side note -->
+  <rect x="392" y="450" width="130" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="457" y="469" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">注意：不撤销 used</text>
+  <text x="457" y="484" text-anchor="middle" font-size="9.5" fill="#888">used 是本层共享的</text>
+</svg>

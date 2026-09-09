@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：小值域采样 + 拉格朗日插值</text>
+
+  <!-- ① 归一化 -->
+  <rect x="52" y="36" width="216" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="160" y="57" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 归一化：m = r−l+1，K = n+1</text>
+
+  <path d="M 160 70 L 160 84" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ② 决策菱形 -->
+  <polygon points="160,86 224,116 160,146 96,116" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="160" y="113" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">m ≤ K ?</text>
+  <text x="160" y="127" text-anchor="middle" font-size="9" fill="#8a6d1f" filter="url(#rough2)">（值域没超出采样区）</text>
+
+  <!-- 是分支：直接 DP -->
+  <path d="M 224 116 L 268 116" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="240" y="108" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="272" y="92" width="234" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="389" y="110" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">查表分支：只对这一个 m 跑</text>
+  <text x="389" y="124" text-anchor="middle" font-size="9.5" fill="#3a5c30" filter="url(#rough2)">3699 前缀和 DP，O(n·m) 直接返回</text>
+  <text x="389" y="136" text-anchor="middle" font-size="8.6" fill="#3a5c30" filter="url(#rough2)">⚠️ 插值公式在采样点上分母为 0，必须走这</text>
+
+  <!-- 否分支 -->
+  <path d="M 160 146 L 160 160" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="172" y="158" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">否（m 可达 10⁹）</text>
+
+  <!-- ③ 采样 -->
+  <rect x="44" y="162" width="232" height="42" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="160" y="179" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">② 采样：mm = 1..K 逐个跑 DP</text>
+  <text x="160" y="194" text-anchor="middle" font-size="9" fill="#3d5a80" filter="url(#rough2)">up/dn 双数组 + 前缀/后缀和两层扫</text>
+  <text x="160" y="202" text-anchor="middle" font-size="8.2" fill="#3d5a80" filter="url(#rough2)">（3699 原班转移，每 mm 一趟 O(n·mm)）</text>
+
+  <path d="M 160 204 L 160 218" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ④ 预处理 -->
+  <rect x="44" y="220" width="232" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="160" y="237" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">③ 预处理：fact 与逆元、前后缀积</text>
+  <text x="160" y="251" text-anchor="middle" font-size="9" fill="#3a5c30" filter="url(#rough2)">P[t]=Π_{j≤t}(m−j)，S[t]=Π_{j≥t}(m−j)</text>
+
+  <path d="M 160 258 L 160 272" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 拉格朗日 -->
+  <rect x="44" y="274" width="232" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="160" y="291" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">④ 拉格朗日求值（K 个项求和）</text>
+  <text x="160" y="306" text-anchor="middle" font-size="8.8" fill="#7a5c1a" filter="url(#rough2)">term = f[i]·P[i−1]·S[i+1]·inv((i−1)!(K−i)!)·(−1)^(K−i)</text>
+  <text x="160" y="314" text-anchor="middle" font-size="8.2" fill="#7a5c1a" filter="url(#rough2)">（乘法全在模 10⁹+7 下，除法换逆元）</text>
+
+  <path d="M 160 318 L 160 330" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ⑥ 返回 -->
+  <rect x="96" y="332" width="128" height="24" rx="12" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="160" y="348" text-anchor="middle" font-size="10.5" fill="#a0433f" font-weight="bold" filter="url(#rough2)">⑤ 返回 ans</text>
+
+  <!-- 右侧便签：采样DP内层 -->
+  <rect x="322" y="156" width="184" height="72" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="414" y="174" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">采样用的 DP（= 3699）</text>
+  <text x="414" y="190" text-anchor="middle" font-size="8.8" fill="#3d5a80" filter="url(#rough2)">up[i][x]：升到 x 结尾，下一步必降</text>
+  <text x="414" y="203" text-anchor="middle" font-size="8.8" fill="#3d5a80" filter="url(#rough2)">dn[i][x]：降到 x 结尾，下一步必升</text>
+  <text x="414" y="216" text-anchor="middle" font-size="8.8" fill="#3d5a80" filter="url(#rough2)">new_up[y]=Σ_{x&lt;y}dn，后缀镜像</text>
+  <text x="414" y="224" text-anchor="middle" font-size="8.2" fill="#3d5a80" filter="url(#rough2)">长度 1 双许可 up=dn=1（n≥2 口径自正）</text>
+
+  <!-- 右侧便签：模安全 -->
+  <rect x="322" y="236" width="184" height="58" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="414" y="254" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">模安全两件事</text>
+  <text x="414" y="269" text-anchor="middle" font-size="8.8" fill="#3a5c30" filter="url(#rough2)">m ≤ 10⁹ &lt; p ⟹ (m−i) mod p ≠ 0 可逆</text>
+  <text x="414" y="282" text-anchor="middle" font-size="8.8" fill="#3a5c30" filter="url(#rough2)">阶乘因子 &lt; p，费马小定理逆元恒存在</text>
+
+  <!-- 右侧便签：复杂度 -->
+  <rect x="322" y="302" width="184" height="48" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="414" y="319" text-anchor="middle" font-size="10" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">复杂度（n ≤ 200）</text>
+  <text x="414" y="334" text-anchor="middle" font-size="8.8" fill="#7a5c1a" filter="url(#rough2)">采样 Σ O(n·mm) ≈ 4×10⁶ + 插值 O(n log p)</text>
+  <text x="414" y="345" text-anchor="middle" font-size="8.8" fill="#7a5c1a" filter="url(#rough2)">空间 O(n)：滚动数组 + 一维表</text>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">下降路径 DP：当前格可从上方三个格子走来</text>
+
+  <!-- left: 3x3 grid -->
+  <text x="120" y="62" text-anchor="middle" font-size="12" fill="#888">matrix:</text>
+
+  <!-- cell w=52 h=44, origin x=68 y=72 -->
+  <!-- row 0: 2, 1, 3 -->
+  <rect x="68" y="72" width="52" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="94" y="100" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">2</text>
+  <rect x="120" y="72" width="52" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="100" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">1</text>
+  <rect x="172" y="72" width="52" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="198" y="100" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">3</text>
+
+  <!-- row 1: 6, 5(highlight), 4 -->
+  <rect x="68" y="116" width="52" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="94" y="144" text-anchor="middle" font-size="15" fill="#333">6</text>
+  <rect x="120" y="116" width="52" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="144" text-anchor="middle" font-size="16" fill="#b85450" font-weight="bold">5</text>
+  <rect x="172" y="116" width="52" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="198" y="144" text-anchor="middle" font-size="15" fill="#333">4</text>
+
+  <!-- row 2: 7, 8, 9 -->
+  <rect x="68" y="160" width="52" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="94" y="188" text-anchor="middle" font-size="15" fill="#333">7</text>
+  <rect x="120" y="160" width="52" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="188" text-anchor="middle" font-size="15" fill="#333">8</text>
+  <rect x="172" y="160" width="52" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="198" y="188" text-anchor="middle" font-size="15" fill="#333">9</text>
+
+  <!-- three arrows from row 0 into (1,1) center (146,138) -->
+  <!-- left-above: from (0,0) bottom (94,112) -> (1,1) top-left (132,130) -->
+  <path d="M 98 112 L 132 128" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="100" y="122" font-size="10" fill="#4a7a3a" font-weight="bold">左上</text>
+
+  <!-- directly-above: from (0,1) bottom (146,112) -> (1,1) top (146,130) -->
+  <path d="M 146 114 L 146 130" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="152" y="124" font-size="10" fill="#446688" font-weight="bold">正上</text>
+
+  <!-- right-above: from (0,2) bottom (198,112) -> (1,1) top-right (160,130) -->
+  <path d="M 194 112 L 160 128" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="178" y="122" font-size="10" fill="#b85450" font-weight="bold">右上</text>
+
+  <!-- current cell label -->
+  <text x="146" y="226" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">(i, j) 当前格</text>
+
+  <!-- right side: three parent concept -->
+  <text x="420" y="62" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">到达 (i,j) 的三个来源</text>
+
+  <!-- three parent boxes -->
+  <rect x="310" y="78" width="56" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="338" y="100" text-anchor="middle" font-size="10.5" fill="#333">左上</text>
+  <text x="338" y="112" text-anchor="middle" font-size="9" fill="#888">[j−1]</text>
+
+  <rect x="382" y="78" width="56" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="100" text-anchor="middle" font-size="10.5" fill="#333">正上</text>
+  <text x="410" y="112" text-anchor="middle" font-size="9" fill="#888">[j]</text>
+
+  <rect x="454" y="78" width="56" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="482" y="100" text-anchor="middle" font-size="10.5" fill="#333">右上</text>
+  <text x="482" y="112" text-anchor="middle" font-size="9" fill="#888">[j+1]</text>
+
+  <!-- arrows from parents to current -->
+  <path d="M 338 114 L 394 150" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 410 114 L 410 150" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 482 114 L 426 150" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- current cell box -->
+  <rect x="382" y="152" width="56" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="176" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">(i,j)</text>
+
+  <!-- min box -->
+  <rect x="338" y="208" width="148" height="30" fill="#f6f6f6" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="412" y="228" text-anchor="middle" font-size="11" fill="#555">取三者最小 + matrix[i][j]</text>
+
+  <!-- boundary note -->
+  <rect x="300" y="252" width="232" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="416" y="270" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">⚠️ 边界：首列无左上，末列无右上</text>
+  <text x="416" y="285" text-anchor="middle" font-size="10" fill="#888">用 if(j&gt;0) / if(j&lt;n−1) 守卫</text>
+
+  <!-- recurrence box -->
+  <rect x="40" y="250" width="240" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="160" y="276" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">状态转移：</text>
+  <text x="160" y="298" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">dp[i][j] = min(左上, 正上, 右上)</text>
+  <text x="160" y="316" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">           + matrix[i][j]</text>
+</svg>

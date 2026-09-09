@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：按人分组 → 排序 → 定长滑窗判 3 次是否落在 60 分钟内</text>
+
+  <!-- ===== Panel 1: raw pairs ===== -->
+  <rect x="20" y="46" width="160" height="220" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="66" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 原始记录</text>
+  <text x="100" y="84" text-anchor="middle" font-size="10" fill="#888">(name, "HH:MM")</text>
+
+  <text x="38" y="108" font-size="11" fill="#333">daniel  10:00</text>
+  <text x="38" y="126" font-size="11" fill="#333">daniel  10:40</text>
+  <text x="38" y="144" font-size="11" fill="#333">luis    09:00</text>
+  <text x="38" y="162" font-size="11" fill="#333">daniel  11:00</text>
+  <text x="38" y="180" font-size="11" fill="#333">luis    11:00</text>
+  <text x="38" y="198" font-size="11" fill="#333">luis    13:00</text>
+  <text x="38" y="216" font-size="11" fill="#333">luis    15:00</text>
+  <text x="100" y="248" text-anchor="middle" font-size="10" fill="#888">顺序杂乱、按人混排</text>
+
+  <!-- arrow 1 -->
+  <path d="M 184 150 L 214 150" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="199" y="142" text-anchor="middle" font-size="9" fill="#888">分组</text>
+
+  <!-- ===== Panel 2: grouped & sorted ===== -->
+  <rect x="216" y="46" width="180" height="220" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="306" y="66" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 按人分组 + 排序</text>
+
+  <rect x="230" y="80" width="64" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="262" y="94" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">daniel</text>
+  <text x="300" y="94" font-size="10" fill="#333">10:00, 10:40, 11:00</text>
+
+  <rect x="230" y="108" width="64" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="262" y="122" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">luis</text>
+  <text x="300" y="122" font-size="10" fill="#333">09:00, 11:00, 13:00, 15:00</text>
+
+  <text x="306" y="150" text-anchor="middle" font-size="10" fill="#888">转分钟数 → 排序</text>
+
+  <rect x="232" y="162" width="148" height="40" fill="#fff" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="306" y="180" text-anchor="middle" font-size="10" fill="#333">daniel: [600, 640, 660]</text>
+  <text x="306" y="196" text-anchor="middle" font-size="10" fill="#333">luis:   [540, 660, 780, 900]</text>
+
+  <text x="306" y="230" text-anchor="middle" font-size="10" fill="#888">每人一条有序时间线</text>
+
+  <!-- arrow 2 -->
+  <path d="M 400 150 L 430 150" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="415" y="142" text-anchor="middle" font-size="9" fill="#888">滑窗</text>
+
+  <!-- ===== Panel 3: window check ===== -->
+  <rect x="432" y="46" width="132" height="220" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="498" y="66" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">③ 滑窗判 3 次</text>
+  <text x="498" y="84" text-anchor="middle" font-size="10" fill="#888">t[i+2] − t[i] ≤ 60 ?</text>
+
+  <rect x="442" y="100" width="112" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="498" y="118" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">daniel</text>
+  <text x="498" y="134" text-anchor="middle" font-size="10" fill="#333">660 − 600 = 60</text>
+  <text x="498" y="150" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">≤ 60 → ⚠ 警告</text>
+
+  <rect x="442" y="166" width="112" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="498" y="184" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">luis</text>
+  <text x="498" y="200" text-anchor="middle" font-size="10" fill="#333">最小差 240 &gt; 60</text>
+  <text x="498" y="216" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">✓ 正常</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="30" y="285" width="520" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="308" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">关键观察</text>
+  <text x="290" y="328" text-anchor="middle" font-size="11" fill="#555">排序后，若任意 3 次落在 60 分钟内，则必有 3 个「相邻」时间落在 60 分钟内</text>
+  <text x="290" y="346" text-anchor="middle" font-size="11" fill="#555">→ 只需用定长窗口 size=3 扫一遍：t[i+2] − t[i] ≤ 60 即触发警告</text>
+</svg>

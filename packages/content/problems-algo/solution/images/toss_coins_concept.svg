@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">概率 DP 核心转移</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">第 i 枚硬币：正面概率 p，反面概率 1−p</text>
+
+  <!-- Coin -->
+  <circle cx="260" cy="85" r="22" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="90" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">硬币 i</text>
+
+  <!-- Left branch: Head -->
+  <path d="M 243 100 Q 190 122 150 148" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="170" y="130" font-size="10" fill="#b85450" font-weight="bold">正面 ×p</text>
+
+  <!-- Right branch: Tail -->
+  <path d="M 277 100 Q 330 122 370 148" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="318" y="130" font-size="10" fill="#4a7a3a" font-weight="bold">反面 ×(1−p)</text>
+
+  <!-- Old dp[j-1] box (left) -->
+  <rect x="80" y="155" width="100" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="174" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">dp[j−1]</text>
+  <text x="130" y="190" text-anchor="middle" font-size="9" fill="#888">已有 j−1 个正面</text>
+
+  <!-- Old dp[j] box (right) -->
+  <rect x="340" y="155" width="100" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="174" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dp[j]</text>
+  <text x="390" y="190" text-anchor="middle" font-size="9" fill="#888">已有 j 个正面</text>
+
+  <!-- Arrow: dp[j-1] -> dp'[j] (head, red) -->
+  <path d="M 180 199 Q 190 215 210 232" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="158" y="222" font-size="9" fill="#b85450">×p</text>
+
+  <!-- Arrow: dp[j] -> dp'[j] (tail, green) -->
+  <path d="M 340 199 Q 330 215 310 232" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="330" y="222" font-size="9" fill="#4a7a3a">×(1−p)</text>
+
+  <!-- New dp'[j] box (center) -->
+  <rect x="210" y="235" width="100" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="254" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp'[j]</text>
+  <text x="260" y="270" text-anchor="middle" font-size="9" fill="#888">本轮 j 个正面</text>
+
+  <!-- Formula -->
+  <rect x="70" y="295" width="380" height="28" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="313" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">dp'[j] = dp[j−1] · p + dp[j] · (1−p)</text>
+
+  <!-- Note -->
+  <text x="260" y="345" text-anchor="middle" font-size="9" fill="#888">逆序更新 j ← target downto 1；dp[0] ← dp[0]·(1−p)</text>
+</svg>

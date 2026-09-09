@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#b85450" stroke-width="1.6"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DP 递推：从第 x 层扔下，分“碎 / 没碎”两分支</text>
+
+  <!-- ===== Top node: drop at floor x ===== -->
+  <rect x="170" y="44" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">k 枚蛋、m 次操作</text>
+  <text x="280" y="80" text-anchor="middle" font-size="12" fill="#666">从第 x 层扔下一枚蛋</text>
+
+  <!-- arrows to two branches -->
+  <path d="M 230 88 Q 200 110 170 130" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 330 88 Q 360 110 390 130" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="178" y="116" font-size="11" fill="#b85450" font-weight="bold">碎了</text>
+  <text x="358" y="116" font-size="11" fill="#4a7a3a" font-weight="bold">没碎</text>
+
+  <!-- ===== Left branch: breaks ===== -->
+  <rect x="40" y="132" width="230" height="92" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="156" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f &lt; x（蛋碎了）</text>
+  <text x="155" y="178" text-anchor="middle" font-size="12" fill="#444">剩 k−1 枚蛋、m−1 次操作</text>
+  <text x="155" y="196" text-anchor="middle" font-size="12" fill="#444">需确定下方 x−1 层</text>
+  <text x="155" y="216" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">最多覆盖 dp[k−1][m−1] 层</text>
+
+  <!-- ===== Right branch: not break ===== -->
+  <rect x="290" y="132" width="230" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="405" y="156" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">f ≥ x（蛋没碎）</text>
+  <text x="405" y="178" text-anchor="middle" font-size="12" fill="#444">剩 k 枚蛋、m−1 次操作</text>
+  <text x="405" y="196" text-anchor="middle" font-size="12" fill="#444">需确定上方 n−x 层</text>
+  <text x="405" y="216" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">最多覆盖 dp[k][m−1] 层</text>
+
+  <!-- ===== middle +1 (floor x itself) ===== -->
+  <path d="M 280 224 L 280 248" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="232" y="250" width="96" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="270" text-anchor="middle" font-size="12" fill="#444">第 x 层本身：+1</text>
+
+  <!-- ===== Bottom: formula ===== -->
+  <path d="M 280 280 L 280 300" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="80" y="302" width="400" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="325" text-anchor="middle" font-size="12" fill="#446688">两分支最大覆盖相加，再加本层：</text>
+  <text x="280" y="345" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">dp[k][m] = dp[k−1][m−1] + 1 + dp[k][m−1]</text>
+
+  <text x="280" y="370" text-anchor="middle" font-size="11" fill="#888">令 x = dp[k−1][m−1] + 1 取满下方，再取满上方 ⇒ 总覆盖最大</text>
+</svg>

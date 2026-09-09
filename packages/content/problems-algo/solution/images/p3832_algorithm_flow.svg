@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 486"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="486" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#333"
+        filter="url(#rough2)">算法流程：脏日过滤 → 分区岛键 → 分组聚合 → 阈值 → 每用户 Top-1 → 排序</text>
+
+  <!-- ① FROM -->
+  <g filter="url(#rough2)">
+    <rect x="100" y="34" width="400" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="300" y="52" text-anchor="middle" font-size="10.5" fill="#446688">① FROM activity —— n 行动作流水（主键：user_id + action_date + action）</text>
+    <path d="M 300 62 L 300 74" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ② filter dirty days -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="76" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="300" y="94" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② 过滤脏日：每天恰好一个动作的日子才有资格入串</text>
+    <text x="300" y="110" text-anchor="middle" font-size="10" fill="#446688">COUNT(*) OVER (PARTITION BY user_id, action_date) AS cnt → 保留 cnt = 1</text>
+    <path d="M 300 120 L 300 132" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ③ island key -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="134" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="300" y="152" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">③ 算岛键：分区行号差法（动作相同 ⟹ 同一分区）</text>
+    <text x="300" y="168" text-anchor="middle" font-size="9.5" fill="#446688">island = DATE_SUB(action_date, INTERVAL ROW_NUMBER() OVER (PARTITION BY user_id, action ORDER BY action_date) DAY)</text>
+    <path d="M 300 178 L 300 190" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ④ group & aggregate -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="192" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="300" y="210" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">④ 分组聚合：GROUP BY user_id, action, island</text>
+    <text x="300" y="226" text-anchor="middle" font-size="10" fill="#446688">streak_length = COUNT(*)，start_date = MIN(action_date)，end_date = MAX(action_date)</text>
+    <path d="M 300 236 L 300 248" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ⑤ diamond: threshold -->
+  <g filter="url(#rough2)">
+    <path d="M 300 250 L 418 278 L 300 306 L 182 278 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="300" y="274" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">HAVING：streak_length ≥ 5 ？</text>
+    <text x="300" y="290" text-anchor="middle" font-size="9.5" fill="#d6a040">（闭阈值：恰 5 天也入选）</text>
+  </g>
+
+  <!-- side branch: reject -->
+  <g filter="url(#rough2)">
+    <path d="M 182 278 L 154 278" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)"/>
+    <rect x="18" y="252" width="134" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8"/>
+    <text x="85" y="270" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">否 → 出局</text>
+    <text x="85" y="284" text-anchor="middle" font-size="9" fill="#b85450">用户 2：click 只连 4 天</text>
+    <text x="85" y="297" text-anchor="middle" font-size="9" fill="#b85450">（&lt; 5 天门槛）</text>
+  </g>
+
+  <!-- yes arrow -->
+  <g filter="url(#rough2)">
+    <path d="M 300 306 L 300 318" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="310" y="316" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  </g>
+
+  <!-- ⑥ top-1 per user -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="320" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="300" y="338" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑥ 每用户取最长：ROW_NUMBER() OVER (PARTITION BY user_id</text>
+    <text x="300" y="354" text-anchor="middle" font-size="10" fill="#446688">ORDER BY streak_length DESC, start_date) AS rn → 取 rn = 1</text>
+    <path d="M 300 364 L 300 374" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ⑦ order by -->
+  <g filter="url(#rough2)">
+    <rect x="100" y="376" width="400" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="300" y="394" text-anchor="middle" font-size="10.5" fill="#446688">⑦ ORDER BY streak_length DESC, user_id ASC</text>
+    <path d="M 300 404 L 300 414" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- output -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="416" width="460" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="300" y="435" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">输出：3 | view | 7 | 01-01 ~ 01-07 ､ 1 | login | 5 | 01-01 ~ 01-05</text>
+  </g>
+
+  <!-- bottom hint -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="454" width="488" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8"/>
+    <text x="270" y="468" text-anchor="middle" font-size="9.5" fill="#333">💡 逻辑顺序 GROUP BY → HAVING（≥5）→ 窗口（rn）：rn 只在「过线序列」内部排名，rn = 1 即该用户最长</text>
+  </g>
+</svg>

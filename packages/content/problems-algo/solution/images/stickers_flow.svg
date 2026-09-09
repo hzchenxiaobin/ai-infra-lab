@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="520" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：预处理 → BFS 逐层扩展 → 首达 full 即答案</text>
+  <text x="270" y="42" text-anchor="middle" font-size="11" fill="#888">每张贴纸权重 = 1，BFS 天然求最少贴纸数</text>
+
+  <!-- ===== Preprocess box ===== -->
+  <rect x="120" y="56" width="300" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="76" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">预处理：过滤贴纸字符</text>
+  <text x="270" y="93" text-anchor="middle" font-size="10.5" fill="#555">每个贴纸 → 26 字母计数，只保留 target 中出现的字符</text>
+  <text x="270" y="107" text-anchor="middle" font-size="10.5" fill="#555">丢弃对 target 完全无用的贴纸</text>
+  <path d="M 270 116 L 270 130" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Init box ===== -->
+  <rect x="140" y="132" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="152" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">初始化：dp[0] = 0，queue = [0]</text>
+  <text x="270" y="168" text-anchor="middle" font-size="10.5" fill="#555">mask = 0 表示 target 尚未拼出任何字符</text>
+  <path d="M 270 178 L 270 192" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: queue empty? ===== -->
+  <polygon points="270,196 370,230 270,264 170,230" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="228" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">queue 非空？</text>
+  <text x="270" y="244" text-anchor="middle" font-size="10" fill="#b85450">（还有状态待扩展）</text>
+
+  <!-- no -> return -1 -->
+  <path d="M 370 230 L 430 230" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="382" y="224" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+  <rect x="430" y="214" width="96" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="478" y="235" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">return -1</text>
+
+  <!-- yes -> pop -->
+  <path d="M 270 264 L 270 278" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="276" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="150" y="280" width="240" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="302" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">弹出 mask；遍历每个贴纸 sticker</text>
+  <path d="M 270 318 L 270 332" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Compute new_mask ===== -->
+  <rect x="80" y="334" width="380" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="354" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">复制贴纸计数 avail；遍历 target 位 j = 0…n−1</text>
+  <text x="270" y="370" text-anchor="middle" font-size="10.5" fill="#555">mask[j]==0 且 avail[target[j]] &gt; 0</text>
+  <text x="270" y="384" text-anchor="middle" font-size="10.5" fill="#555">→ avail[target[j]]−−，new_mask |= (1 &lt;&lt; j)</text>
+  <path d="M 270 392 L 270 406" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision: new and full? ===== -->
+  <polygon points="270,410 380,442 270,474 160,442" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="440" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">new_mask 未访问？</text>
+  <text x="270" y="456" text-anchor="middle" font-size="10" fill="#446688">dp[new_mask] == −1</text>
+
+  <!-- yes -> set dp, check full -->
+  <path d="M 380 442 L 430 442" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="436" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="430" y="414" width="100" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="432" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">dp[new]=</text>
+  <text x="480" y="446" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">dp[mask]+1</text>
+  <text x="480" y="460" text-anchor="middle" font-size="9.5" fill="#b85450">== full?</text>
+  <text x="480" y="472" text-anchor="middle" font-size="9.5" fill="#b85450">→ 返回</text>
+
+  <!-- no -> back to loop -->
+  <path d="M 160 442 L 100 442" stroke="#888" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="108" y="436" font-size="10" fill="#888">否</text>
+
+  <!-- loop back arrow -->
+  <path d="M 100 442 L 100 298 L 150 298" stroke="#888" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="70" y="370" font-size="9.5" fill="#888" transform="rotate(-90 70 370)">继续下一贴纸 / 下一状态</text>
+
+  <!-- loop back to queue check -->
+  <path d="M 270 474 L 270 488 L 460 488 L 460 230 L 370 230" stroke="#aaa" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

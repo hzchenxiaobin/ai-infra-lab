@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.4"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#b85450" stroke-width="1.4"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">
+    DP 递推流程（滚动数组）
+  </text>
+
+  <!-- 初始化 -->
+  <rect x="180" y="52" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="77" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">初始化：dp[0][j][1] = cost(0, j)</text>
+  <path d="M280,92 L280,108" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 外层循环 -->
+  <rect x="170" y="112" width="220" height="36" fill="#fafafa" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="135" text-anchor="middle" font-size="12.5" fill="#555" filter="url(#rough2)">for i = 1 … m-1 ：</text>
+
+  <!-- 判定菱形：houses[i] 已涂色? -->
+  <path d="M280,158 L380,196 L280,234 L180,196 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="192" text-anchor="middle" font-size="12.5" fill="#333" filter="url(#rough2)">houses[i] ≠ 0 ?</text>
+  <text x="280" y="208" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">（已涂色）</text>
+
+  <!-- 是 → 锁死 -->
+  <path d="M380,196 L430,196 L430,236" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="188" font-size="11" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="362" y="240" width="136" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="260" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">j 锁死为 houses[i]</text>
+  <text x="430" y="276" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">c = 0，其余颜色 INF</text>
+
+  <!-- 否 → 自由选色 -->
+  <path d="M180,196 L130,196 L130,236" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="142" y="188" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="62" y="240" width="136" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="260" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">j ∈ [1, n] 任选</text>
+  <text x="130" y="276" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">c = cost[i][j-1]</text>
+
+  <!-- 汇合到 k 循环 -->
+  <path d="M130,284 L130,302 L280,302" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M430,284 L430,302 L280,302" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M280,302 L280,316" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- k 循环 -->
+  <rect x="160" y="320" width="240" height="32" fill="#fafafa" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="341" text-anchor="middle" font-size="12.5" fill="#555" filter="url(#rough2)">for k = 1 … target：</text>
+
+  <!-- 两分支 -->
+  <!-- 同色分支 -->
+  <rect x="50" y="372" width="190" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="392" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">同色 p = j</text>
+  <text x="145" y="408" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">prev[j][k]（街区不变）</text>
+
+  <!-- 异色分支 -->
+  <rect x="320" y="372" width="190" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="415" y="392" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">异色 p ≠ j</text>
+  <text x="415" y="408" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">min prev[p][k-1]（街区+1）</text>
+
+  <!-- 两分支汇合到 min -->
+  <path d="M145,418 L145,430 L235,430" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M415,418 L415,430 L325,430" fill="none" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+
+  <!-- min + c -->
+  <rect x="195" y="424" width="170" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="446" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">cur[j][k] = min(...) + c</text>
+
+  <!-- 右侧答案标注 -->
+  <path d="M365,441 L470,441" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="470" y="424" width="84" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="512" y="440" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">答案</text>
+  <text x="512" y="453" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">min_j prev[j][target]</text>
+</svg>

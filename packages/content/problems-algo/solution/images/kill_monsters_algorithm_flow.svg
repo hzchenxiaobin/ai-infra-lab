@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：记忆化 dfs(mask) — mask 第 i 位=1 表示怪物 i 仍存活</text>
+
+  <!-- Start oval -->
+  <ellipse cx="270" cy="48" rx="58" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="53" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">调用 dfs((1&lt;&lt;n)-1)</text>
+
+  <path d="M 270 66 L 270 80" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Decision: mask == 0? -->
+  <polygon points="270,82 372,124 270,166 168,124" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="120" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">mask == 0 ?</text>
+  <text x="270" y="136" text-anchor="middle" font-size="10" fill="#888">全部击败？</text>
+
+  <!-- Yes branch: return 0 -->
+  <path d="M 168 124 L 110 124" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="138" y="116" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+  <rect x="20" y="106" width="90" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="65" y="129" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return 0</text>
+
+  <!-- No branch: down -->
+  <path d="M 270 166 L 270 182" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="282" y="178" font-size="10.5" fill="#446688" font-weight="bold">否</text>
+
+  <!-- Box: compute gain -->
+  <rect x="90" y="184" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="202" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">计算当前每日法力获取量</text>
+  <text x="270" y="220" text-anchor="middle" font-size="11" fill="#333">gain = 1 + (n - popcount(mask))   ← 已击败数 +1</text>
+
+  <path d="M 270 232 L 270 248" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Loop box -->
+  <rect x="60" y="250" width="420" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="270" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">枚举每个存活怪物 i（mask 第 i 位 = 1）</text>
+  <text x="270" y="290" text-anchor="middle" font-size="11" fill="#333">cost = ⌈power[i] / gain⌉ = (power[i] + gain - 1) / gain</text>
+  <text x="270" y="306" text-anchor="middle" font-size="11" fill="#333">ans = min(ans, dfs(mask ^ (1&lt;&lt;i)) + cost)</text>
+
+  <!-- Loop back arrow (right side) -->
+  <path d="M 482 282 C 510 282, 510 190, 270 190" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="506" y="240" font-size="9.5" fill="#d6a040">枚举完</text>
+
+  <path d="M 270 316 L 270 332" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Memo + return -->
+  <rect x="110" y="334" width="320" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="352" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">记忆化：memo[mask] = ans</text>
+  <text x="270" y="370" text-anchor="middle" font-size="11" fill="#333">return ans   ← 同一 mask 只算一次</text>
+
+  <!-- Notes -->
+  <text x="30" y="406" font-size="10.5" fill="#888">• 自顶向下：从「全存活」出发，逐步挑一个怪物击败，递归到 mask=0</text>
+  <text x="30" y="424" font-size="10.5" fill="#888">• 等价自底向上递推：f[mask] = min(f[mask^(1&lt;&lt;i)] + ⌈power[i]/popcount(mask)⌉)，f[0]=0</text>
+</svg>

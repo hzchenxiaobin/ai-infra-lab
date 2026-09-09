@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 352"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="352" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：逐天去重计数 → 终选（次数最大，字典序最小）</text>
+
+  <!-- ① -->
+  <rect x="78" y="36" width="364" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="11.5" fill="#446688" filter="url(#rough2)">① 读入 responses：D ≤ 1000 天，每天 ≤ 1000 条（总字符 ≤ 10⁷）</text>
+  <path d="M 260 74 L 260 92" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② -->
+  <rect x="78" y="94" width="364" height="38" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="118" text-anchor="middle" font-size="11.5" fill="#8a6d3a" filter="url(#rough2)">② 第 i 天建哈希集合 seen：天内查重，重复回答只记 1 次</text>
+  <path d="M 260 132 L 260 150" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ -->
+  <rect x="78" y="152" width="364" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="176" text-anchor="middle" font-size="11.5" fill="#2a5a2a" filter="url(#rough2)">③ 当天首次出现的词 → 全局计数 cnt[s] += 1（统计天数）</text>
+
+  <!-- 循环回边：③ → ② -->
+  <path d="M 442 171 C 476 171, 476 113, 444 113" fill="none" stroke="#446688" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="487" y="142" text-anchor="middle" font-size="9.5" fill="#446688" transform="rotate(90 487 142)" filter="url(#rough2)">还有下一天</text>
+
+  <!-- ③ → ④（最后一天） -->
+  <path d="M 260 190 L 260 208" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="203" font-size="9.5" fill="#666" filter="url(#rough2)">最后一天完成</text>
+
+  <!-- ④ -->
+  <rect x="78" y="210" width="364" height="38" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="234" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">④ 计数完毕终选：次数最大；并列取字典序最小</text>
+  <path d="M 260 248 L 260 266" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ -->
+  <rect x="78" y="268" width="364" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="292" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">⑤ 返回 best（示例 1 →「good」，3 天）</text>
+
+  <!-- 底注 -->
+  <text x="260" y="326" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">规模上界：1000 天 × 1000 词 × 10 字符 = 10⁷ 总字符，哈希全程线性 O(C)</text>
+  <text x="260" y="342" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">Python 终选一行：min(cnt, key=lambda s: (-cnt[s], s))</text>
+</svg>

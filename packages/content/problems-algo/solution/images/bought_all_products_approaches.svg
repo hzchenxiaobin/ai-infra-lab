@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两种解法对比：聚合比较 vs 双重否定</text>
+
+  <!-- ====== 左列：解法 A ====== -->
+  <rect x="25" y="44" width="265" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="157" y="66" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">解法 A：GROUP BY + HAVING</text>
+
+  <text x="40" y="96" font-size="10" fill="#446688" font-weight="bold">思路：聚合后比总数</text>
+  <rect x="35" y="102" width="245" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="45" y="118" font-size="9" fill="#555">① 按客户分组去重计数</text>
+  <text x="45" y="134" font-size="9" fill="#555">② COUNT(DISTINCT product_key)</text>
+  <text x="45" y="150" font-size="9" fill="#555">③ HAVING 计数 = Product 总数</text>
+
+  <text x="40" y="178" font-size="10" fill="#446688" font-weight="bold">SQL：</text>
+  <rect x="35" y="184" width="245" height="108" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="42" y="200" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">SELECT customer_id</text>
+  <text x="42" y="214" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">FROM Customer</text>
+  <text x="42" y="228" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">GROUP BY customer_id</text>
+  <text x="42" y="242" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">HAVING COUNT(DISTINCT</text>
+  <text x="50" y="256" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">product_key) = (</text>
+  <text x="58" y="270" font-size="9" fill="#b85450" font-weight="bold" font-family="'Comic Sans MS', monospace">SELECT COUNT(*)</text>
+  <text x="66" y="284" font-size="9" fill="#b85450" font-weight="bold" font-family="'Comic Sans MS', monospace">FROM Product)</text>
+
+  <rect x="35" y="300" width="245" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="45" y="316" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 直觉、简洁、最常用</text>
+  <text x="45" y="330" font-size="9" fill="#555">语义=「去重计数等于总数」</text>
+  <text x="45" y="344" font-size="9" fill="#555">需子查询取 Product 总数</text>
+
+  <!-- 性能 -->
+  <rect x="35" y="356" width="245" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="45" y="375" font-size="9" fill="#446688">扫描 Customer 一次 + Product 一次</text>
+
+  <!-- ====== 右列：解法 B ====== -->
+  <rect x="310" y="44" width="265" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="442" y="66" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">解法 B：NOT EXISTS 双重否定</text>
+
+  <text x="325" y="96" font-size="10" fill="#446688" font-weight="bold">思路：关系除法 / 双重否定</text>
+  <rect x="320" y="102" width="255" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="118" font-size="9" fill="#555">买下全部 ⇔ 不存在一件产品</text>
+  <text x="330" y="134" font-size="9" fill="#555">  该客户没买</text>
+  <text x="330" y="150" font-size="9" fill="#b85450" font-weight="bold">NOT EXISTS (NOT EXISTS ...)</text>
+
+  <text x="325" y="178" font-size="10" fill="#446688" font-weight="bold">SQL：</text>
+  <rect x="320" y="184" width="255" height="108" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="327" y="200" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">SELECT DISTINCT c.customer_id</text>
+  <text x="327" y="214" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">FROM Customer c</text>
+  <text x="327" y="228" font-size="9" fill="#b85450" font-weight="bold" font-family="'Comic Sans MS', monospace">WHERE NOT EXISTS (</text>
+  <text x="335" y="242" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">SELECT 1 FROM Product p</text>
+  <text x="335" y="256" font-size="9" fill="#b85450" font-weight="bold" font-family="'Comic Sans MS', monospace">WHERE NOT EXISTS (</text>
+  <text x="343" y="270" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">SELECT 1 FROM Customer c2</text>
+  <text x="343" y="284" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">WHERE c2.customer_id=c.id</text>
+  <text x="349" y="298" font-size="9" fill="#333" font-family="'Comic Sans MS', monospace">AND c2.product_key=p.k))</text>
+
+  <rect x="320" y="300" width="255" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="316" font-size="9" fill="#b85450" font-weight="bold">✓ 经典关系除法范式</text>
+  <text x="330" y="330" font-size="9" fill="#555">语义=「不存在没买的产品」</text>
+  <text x="330" y="344" font-size="9" fill="#555">嵌套两层、可读性较低</text>
+
+  <rect x="320" y="356" width="255" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="375" font-size="9" fill="#446688">相关子查询，可走索引半连接</text>
+
+  <!-- 底部对比箭头 -->
+  <path d="M157 396 L157 416" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M442 396 L442 416" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="80" y="420" width="440" height="30" fill="#fff" stroke="#446688" stroke-width="1.2" rx="5" filter="url(#rough2)"/>
+  <text x="300" y="440" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">两者等价；首选 A（直觉），B 为关系除法教学范本</text>
+</svg>

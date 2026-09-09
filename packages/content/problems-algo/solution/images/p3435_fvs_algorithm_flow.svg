@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">流程：bitmask 建图 → 子集 DP 剥汇判无环 → 取最大无环保留集</text>
+
+  <!-- Left column: steps -->
+  <rect x="40" y="44" width="212" height="46" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="146" y="62" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">① 字母编号 0..n−1（n ≤ 16）</text>
+  <text x="146" y="80" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">adj[x] |= 1&lt;&lt;y（"xx" 成自环）</text>
+
+  <path d="M 146,90 L 146,104" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="106" width="212" height="58" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="146" y="124" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">② dp[S]：S 里有汇点 v</text>
+  <text x="146" y="142" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">（adj[v] &amp; S = 0）且 dp[S\v]</text>
+  <text x="146" y="158" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">反复剥汇 = 拓扑排序，dp[∅] = ✓</text>
+
+  <path d="M 146,164 L 146,178" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="180" width="212" height="38" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="146" y="203" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">③ best = 无环子集的最大 |S|</text>
+
+  <path d="M 146,218 L 146,232" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="234" width="212" height="38" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="146" y="257" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">④ 每个 |S|=best：D = P\S</text>
+
+  <path d="M 146,272 L 146,286" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="288" width="212" height="52" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="146" y="306" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⑤ freq[c]：c∈D → 2，c∈S → 1</text>
+  <text x="146" y="324" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">未出现 → 0，收集返回</text>
+
+  <text x="146" y="364" text-anchor="middle" font-size="10.5" fill="#7a4a2b" filter="url(#rough2)">时间 O(2ⁿ·n)：n ≤ 16 时约 10⁶ 次位运算</text>
+  <text x="146" y="384" text-anchor="middle" font-size="10.5" fill="#7a4a2b" filter="url(#rough2)">（每个子集独立跑 Kahn 为 O(2ⁿ·(n+m))，也能过）</text>
+
+  <!-- Right panel: worked example -->
+  <rect x="274" y="44" width="212" height="296" rx="8" fill="#f5f0e6" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="380" y="66" text-anchor="middle" font-size="11.5" fill="#7a4a2b" filter="url(#rough2)">例：words = ["ab","ba"]</text>
+
+  <circle cx="330" cy="96" r="14" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="330" y="101" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">a</text>
+  <circle cx="430" cy="96" r="14" fill="#fff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="430" y="101" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">b</text>
+  <path d="M 344,96 L 414,96" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="88" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">"ab"</text>
+  <path d="M 430,110 Q 380,138 330,110" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="380" y="132" text-anchor="middle" font-size="9.5" fill="#b85450" filter="url(#rough2)">"ba" 成环</text>
+
+  <circle cx="288" cy="172" r="3.5" fill="#446688" filter="url(#rough2)"/>
+  <text x="298" y="176" font-size="10.5" fill="#333" filter="url(#rough2)">dp[{a,b}] = ✗（没有汇点）</text>
+  <circle cx="288" cy="198" r="3.5" fill="#446688" filter="url(#rough2)"/>
+  <text x="298" y="202" font-size="10.5" fill="#333" filter="url(#rough2)">dp[{a}] = dp[{b}] = ✓</text>
+  <circle cx="288" cy="224" r="3.5" fill="#446688" filter="url(#rough2)"/>
+  <text x="298" y="228" font-size="10.5" fill="#333" filter="url(#rough2)">best = 1，两个最大保留集</text>
+
+  <rect x="292" y="244" width="176" height="34" rx="5" fill="#fff" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="380" y="266" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">S={b} → D={a} → freq [2,1,0,…]</text>
+  <rect x="292" y="286" width="176" height="34" rx="5" fill="#fff" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="380" y="308" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">S={a} → D={b} → freq [1,2,0,…]</text>
+  <text x="380" y="334" text-anchor="middle" font-size="10" fill="#7a4a2b" filter="url(#rough2)">对应 SCS "aba" 与 "bab"</text>
+</svg>

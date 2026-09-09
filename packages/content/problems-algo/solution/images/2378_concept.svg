@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">树形 DP 两状态：父边选/不选，端点 u 的配额决定子边</text>
+  <line x1="280" y1="34" x2="280" y2="350" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- ================= Left panel: dp1 (父边选中) ================= -->
+  <text x="140" y="54" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">状态① 父边选中 → dp₁[u]</text>
+
+  <!-- parent P -->
+  <circle cx="140" cy="80" r="15" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="140" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">P</text>
+
+  <!-- edge P-u chosen (thick red) -->
+  <line x1="140" y1="95" x2="140" y2="135" stroke="#b85450" stroke-width="3" filter="url(#rough2)"/>
+  <text x="158" y="118" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">score[u]</text>
+
+  <!-- node u (filled red = occupied) -->
+  <circle cx="140" cy="150" r="17" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="140" y="154" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">u</text>
+
+  <!-- children c1 c2 c3 -->
+  <circle cx="90" cy="250" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="90" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₁</text>
+  <circle cx="140" cy="250" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₂</text>
+  <circle cx="190" cy="250" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="190" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₃</text>
+
+  <!-- edges u-c forbidden (gray dashed + X) -->
+  <line x1="135" y1="166" x2="96" y2="238" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <line x1="140" y1="167" x2="140" y2="237" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <line x1="145" y1="166" x2="184" y2="238" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" stroke="#b85450" stroke-width="1.6">
+    <line x1="111" y1="196" x2="120" y2="206"/><line x1="120" y1="196" x2="111" y2="206"/>
+    <line x1="136" y1="198" x2="144" y2="206"/><line x1="144" y1="198" x2="136" y2="206"/>
+    <line x1="160" y1="196" x2="169" y2="206"/><line x1="169" y1="196" x2="160" y2="206"/>
+  </g>
+
+  <text x="140" y="288" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">u 被父边占用 → 所有子边禁选</text>
+
+  <!-- formula box -->
+  <rect x="20" y="302" width="240" height="42" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="320" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">dp₁[u] = score[u] + Σ dp₀[c]</text>
+  <text x="140" y="336" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（每个子 c 只能“不选 (c,u)”）</text>
+
+  <!-- ================= Right panel: dp0 (父边不选) ================= -->
+  <text x="420" y="54" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">状态② 父边未选 → dp₀[u]</text>
+
+  <!-- parent P -->
+  <circle cx="420" cy="80" r="15" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="420" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">P</text>
+
+  <!-- edge P-u not chosen (dashed gray) -->
+  <line x1="420" y1="95" x2="420" y2="135" stroke="#bbb" stroke-width="1.6" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- node u (free, outlined) -->
+  <circle cx="420" cy="150" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="420" y="154" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">u</text>
+
+  <!-- children -->
+  <circle cx="370" cy="250" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="370" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₁</text>
+  <circle cx="420" cy="250" r="13" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="420" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₂★</text>
+  <circle cx="470" cy="250" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="470" y="254" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">c₃</text>
+
+  <!-- edge u-c2 chosen (green, best gain); others gray dashed + X -->
+  <line x1="420" y1="167" x2="420" y2="237" stroke="#4a7a3a" stroke-width="3" filter="url(#rough2)"/>
+  <line x1="415" y1="166" x2="376" y2="238" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <line x1="425" y1="166" x2="464" y2="238" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" stroke="#bbb" stroke-width="1.6">
+    <line x1="391" y1="196" x2="400" y2="206"/><line x1="400" y1="196" x2="391" y2="206"/>
+    <line x1="440" y1="196" x2="449" y2="206"/><line x1="449" y1="196" x2="440" y2="206"/>
+  </g>
+
+  <text x="438" y="118" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">增益 max</text>
+  <text x="420" y="288" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">u 空闲 → 至多配 1 个子（增益最大且为正者）</text>
+
+  <!-- formula box -->
+  <rect x="300" y="302" width="240" height="42" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="420" y="320" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">dp₀[u] = S + max(0, max_c(dp₁[c]−dp₀[c]))</text>
+  <text x="420" y="336" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（S = Σ dp₀[c]，基底 + 翻最佳一子）</text>
+</svg>

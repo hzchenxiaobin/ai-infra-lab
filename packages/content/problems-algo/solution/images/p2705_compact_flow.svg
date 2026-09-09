@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="470" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" filter="url(#rough2)" font-weight="bold">算法流程：三路类型分派，数组/对象自带"精简+过滤"两步</text>
+
+  <!-- 入口 -->
+  <rect x="250" y="44" width="120" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="66" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">compactObject(obj)</text>
+
+  <!-- 判定1: Array.isArray? -->
+  <path d="M 310 78 L 310 100" stroke="#888" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <polygon points="310,102 410,140 310,178 210,140" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="310" y="138" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">Array.isArray?</text>
+
+  <!-- 是 → 数组分支 -->
+  <path d="M 210 140 L 120 200" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="166" font-size="11" fill="#b85450" filter="url(#rough2)" font-weight="bold">是</text>
+
+  <rect x="30" y="202" width="180" height="70" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="120" y="222" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)" font-weight="bold">数组分支</text>
+  <text x="120" y="240" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">① map(compactObject)</text>
+  <text x="120" y="256" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">② filter(Boolean)</text>
+  <text x="120" y="272" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">→ 重排索引返回 []</text>
+
+  <!-- 否 → 判定2 -->
+  <path d="M 410 140 L 470 175" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="158" font-size="11" fill="#888" filter="url(#rough2)" font-weight="bold">否</text>
+
+  <polygon points="470,177 560,210 470,243 380,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="470" y="208" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">typeof obj</text>
+  <text x="470" y="222" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">==="object"&amp;&amp;≠null?</text>
+
+  <!-- 是 → 对象分支 -->
+  <path d="M 470 243 L 470 280" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="482" y="266" font-size="11" fill="#446688" filter="url(#rough2)" font-weight="bold">是</text>
+
+  <rect x="380" y="282" width="180" height="70" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="470" y="302" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)" font-weight="bold">对象分支</text>
+  <text x="470" y="320" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">① 遍历 key</text>
+  <text x="470" y="336" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">② v=compactObject(obj[k])</text>
+  <text x="470" y="352" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">③ Boolean(v)? 留键</text>
+
+  <!-- 否 → 原始类型分支 -->
+  <path d="M 380 210 L 300 280" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="190" font-size="11" fill="#4a7a3a" filter="url(#rough2)" font-weight="bold">否</text>
+
+  <rect x="230" y="282" width="130" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="295" y="302" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)" font-weight="bold">原始类型（递归基）</text>
+  <text x="295" y="318" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">原样返回 obj</text>
+
+  <!-- 排雷提示框 -->
+  <rect x="30" y="360" width="560" height="96" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="46" y="382" font-size="12" fill="#333" filter="url(#rough2)" font-weight="bold">⚠️ 排雷三要点</text>
+  <text x="46" y="402" font-size="11" fill="#555" filter="url(#rough2)">1. 判对象前先拦 null（typeof null === "object"）；本流程先判 Array.isArray，再判 object&amp;&amp;≠null，</text>
+  <text x="56" y="418" font-size="11" fill="#555" filter="url(#rough2)">   原始类型（含 null）自然落到第三分支原样返回——null 不会误入对象分支。</text>
+  <text x="46" y="436" font-size="11" fill="#555" filter="url(#rough2)">2. 数组用 filter(Boolean) 重排索引（删元素而非留空洞），与"索引即键"语义一致。</text>
+  <text x="46" y="452" font-size="11" fill="#555" filter="url(#rough2)">3. 容器恒真：Boolean([])、Boolean({}) 皆为 true，故空壳留存——见示例 [0]→[] 留存。</text>
+</svg>

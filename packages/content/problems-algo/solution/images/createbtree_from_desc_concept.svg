@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.7"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2e6e2e"/>
+    </marker>
+  </defs>
+  <rect width="920" height="460" fill="#fdfcf7"/>
+
+  <text x="460" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">核心观察：哈希表存节点指针 + child 集合定位根</text>
+  <path d="M 250 42 Q 460 50 670 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== ① descriptions 输入 ===== -->
+  <text x="40" y="78" font-size="13" font-weight="bold" fill="#2b6e9e">① descriptions：显式父子边 [p, c, isLeft]</text>
+
+  <g filter="url(#sk)"><rect x="40" y="92" width="220" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="56" y="111" font-size="12" fill="#2b6e9e" font-weight="bold">[20, 15, 1]</text>
+  <text x="180" y="111" font-size="10" fill="#888">20.left=15</text>
+
+  <g filter="url(#sk)"><rect x="40" y="124" width="220" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="56" y="143" font-size="12" fill="#2b6e9e" font-weight="bold">[20, 17, 0]</text>
+  <text x="180" y="143" font-size="10" fill="#888">20.right=17</text>
+
+  <g filter="url(#sk)"><rect x="40" y="156" width="220" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/></g>
+  <text x="56" y="175" font-size="12" fill="#b85450" font-weight="bold">[50, 20, 1]</text>
+  <text x="180" y="175" font-size="10" fill="#888">50.left=20</text>
+
+  <g filter="url(#sk)"><rect x="40" y="188" width="220" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="56" y="207" font-size="12" fill="#2b6e9e" font-weight="bold">[50, 80, 0]</text>
+  <text x="180" y="207" font-size="10" fill="#888">50.right=80</text>
+
+  <g filter="url(#sk)"><rect x="40" y="220" width="220" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="56" y="239" font-size="12" fill="#2b6e9e" font-weight="bold">[80, 19, 1]</text>
+  <text x="180" y="239" font-size="10" fill="#888">80.left=19</text>
+
+  <text x="40" y="276" font-size="11" fill="#666">→ 每条边直接告诉 parent / child / 方向</text>
+  <text x="40" y="292" font-size="11" fill="#666">   无需 DFS 反推，信息最直接</text>
+
+  <!-- 箭头到中间面板 -->
+  <path d="M 264 170 L 296 170" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== ② 数据结构 ===== -->
+  <text x="300" y="78" font-size="13" font-weight="bold" fill="#7a5415">② 两个数据结构：nodes 表 + children 集</text>
+
+  <!-- nodes map -->
+  <g filter="url(#sk)"><rect x="300" y="92" width="240" height="148" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="420" y="110" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold">nodes: val → TreeNode*</text>
+
+  <text x="312" y="130" font-size="11" fill="#444">50 → ●</text>
+  <text x="312" y="148" font-size="11" fill="#444">20 → ●</text>
+  <text x="312" y="166" font-size="11" fill="#444">80 → ●</text>
+  <text x="312" y="184" font-size="11" fill="#444">15 → ●</text>
+  <text x="312" y="202" font-size="11" fill="#444">17 → ●</text>
+  <text x="312" y="220" font-size="11" fill="#444">19 → ●</text>
+
+  <text x="400" y="130" font-size="10" fill="#888">值互不相同 → val 即唯一键</text>
+  <text x="400" y="148" font-size="10" fill="#888">查/建节点 O(1)</text>
+
+  <!-- children set -->
+  <g filter="url(#sk)"><rect x="300" y="252" width="240" height="48" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="420" y="270" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">children 集合</text>
+  <text x="420" y="290" text-anchor="middle" font-size="11" fill="#2e6e2e">{15, 17, 20, 80, 19}</text>
+
+  <text x="300" y="320" font-size="11" fill="#666">每条边把 child 标进集合 →</text>
+  <text x="300" y="336" font-size="11" fill="#666">根 = nodes 中不在 children 的唯一节点</text>
+
+  <!-- 箭头到右面板 -->
+  <path d="M 544 170 L 576 170" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== ③ 输出树 ===== -->
+  <text x="580" y="78" font-size="13" font-weight="bold" fill="#b85450">③ 构造结果：根 50 高亮（不在 children）</text>
+
+  <!-- root 50 -->
+  <circle cx="740" cy="120" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#sk)"/>
+  <text x="740" y="125" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">50</text>
+  <text x="772" y="118" font-size="10" fill="#b85450" font-weight="bold">← 根</text>
+  <text x="772" y="132" font-size="10" fill="#b85450">(无父)</text>
+
+  <!-- 50.left -> 20 -->
+  <line x1="728" y1="134" x2="690" y2="172" stroke="#446688" stroke-width="1.5" filter="url(#sk)"/>
+  <circle cx="680" cy="184" r="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#sk)"/>
+  <text x="680" y="189" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">20</text>
+
+  <!-- 50.right -> 80 -->
+  <line x1="752" y1="134" x2="792" y2="172" stroke="#4a7a3a" stroke-width="1.5" filter="url(#sk)"/>
+  <circle cx="802" cy="184" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#sk)"/>
+  <text x="802" y="189" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">80</text>
+
+  <!-- 20.left -> 15 -->
+  <line x1="668" y1="196" x2="638" y2="232" stroke="#446688" stroke-width="1.4" filter="url(#sk)"/>
+  <circle cx="628" cy="244" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#sk)"/>
+  <text x="628" y="249" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">15</text>
+
+  <!-- 20.right -> 17 -->
+  <line x1="692" y1="196" x2="722" y2="232" stroke="#446688" stroke-width="1.4" filter="url(#sk)"/>
+  <circle cx="732" cy="244" r="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#sk)"/>
+  <text x="732" y="249" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">17</text>
+
+  <!-- 80.left -> 19 -->
+  <line x1="790" y1="196" x2="760" y2="232" stroke="#4a7a3a" stroke-width="1.4" filter="url(#sk)"/>
+  <circle cx="750" cy="244" r="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#sk)"/>
+  <text x="750" y="249" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">19</text>
+
+  <text x="740" y="288" text-anchor="middle" font-size="11" fill="#888">层序 = [50, 20, 80, 15, 17, 19] ✓</text>
+
+  <!-- 根判定示意 -->
+  <path d="M 540 270 Q 600 200 720 130" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="5 3" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="556" y="262" font-size="10" fill="#b85450" font-weight="bold">50 ∉ children</text>
+  <text x="556" y="276" font-size="10" fill="#b85450" font-weight="bold">→ 即根</text>
+
+  <!-- ===== 底部洞察条 ===== -->
+  <rect x="40" y="372" width="840" height="68" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#sk)"/>
+  <text x="460" y="396" text-anchor="middle" font-size="13" fill="#7a5415" font-weight="bold">洞察：val 互不相同 → 哈希表 O(1) 取节点；根 = 唯一"从未当 child"的节点</text>
+  <text x="460" y="418" text-anchor="middle" font-size="11" fill="#7a5415">把"按值查节点"从 O(n) DFS 压到 O(1) 哈希；把"找根"从森林合并压到集合差集</text>
+</svg>

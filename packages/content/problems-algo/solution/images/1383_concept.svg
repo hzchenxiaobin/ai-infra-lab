@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrC" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="380" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：按效率降序 + 小顶堆维护 top-k 速度</text>
+
+  <!-- Left: engineers sorted by efficiency desc -->
+  <text x="100" y="62" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">工程师（按效率降序）</text>
+  <rect x="50" y="72" width="100" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="90" text-anchor="middle" font-size="11" fill="#333">e=9 · s=1</text>
+  <rect x="50" y="104" width="100" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="122" text-anchor="middle" font-size="11" fill="#333">e=7 · s=5</text>
+  <rect x="50" y="136" width="100" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2.4" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="154" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">e=5 · s=2</text>
+  <rect x="50" y="168" width="100" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="186" text-anchor="middle" font-size="11" fill="#333">e=4 · s=10</text>
+  <rect x="50" y="200" width="100" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="100" y="218" text-anchor="middle" font-size="10.5" fill="#999">e=3 · s=3</text>
+
+  <!-- current engineer label -->
+  <text x="160" y="154" font-size="10" fill="#d6a040" font-weight="bold">← 当前 e 最小</text>
+
+  <!-- arrow: engineer -> heap -->
+  <path d="M 150 149 L 210 120" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrC)" filter="url(#rough2)"/>
+  <text x="170" y="112" font-size="10" fill="#d6a040">入堆 s</text>
+
+  <!-- Middle: min-heap -->
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">小顶堆（速度，≤ k）</text>
+  <rect x="232" y="72" width="44" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="254" y="89" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">2</text>
+  <text x="284" y="89" font-size="10" fill="#b85450" font-weight="bold">← 堆顶(min)</text>
+  <rect x="282" y="76" width="40" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="302" y="89" text-anchor="middle" font-size="11" fill="#666">5</text>
+
+  <!-- pop arrow -->
+  <path d="M 254 72 L 254 52" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="3,2" marker-end="url(#arrC)" filter="url(#rough2)"/>
+  <text x="262" y="50" font-size="9.5" fill="#b85450">超 k 踢最小</text>
+
+  <!-- sum box -->
+  <rect x="232" y="110" width="96" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="129" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">sum = 7</text>
+
+  <!-- arrow: heap -> formula -->
+  <path d="M 280 142 L 280 162" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arrC)" filter="url(#rough2)"/>
+
+  <!-- Right: performance formula -->
+  <text x="280" y="178" text-anchor="middle" font-size="11" fill="#888">表现值 =</text>
+  <rect x="210" y="184" width="140" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="206" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold">sum × e = 7 × 5 = 35</text>
+
+  <!-- Bottom: insight boxes -->
+  <rect x="32" y="232" width="456" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="48" y="254" font-size="12" fill="#4a7a3a" font-weight="bold">贪心策略：固定效率下界 e[i]，在效率 ≥ e[i] 的人中选 top-k 速度</text>
+  <text x="48" y="272" font-size="11" fill="#4a7a3a">降序保证当前 e 是堆中最小效率；小顶堆弹出最小速度，留存 top-k</text>
+
+  <rect x="32" y="296" width="456" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="48" y="318" font-size="11.5" fill="#b85450" font-weight="bold">⚠️ 溢出陷阱</text>
+  <text x="48" y="336" font-size="11" fill="#b85450">sum 可达 10^10（k × max_speed），sum × e 可达 10^18</text>
+  <text x="48" y="354" font-size="11" fill="#b85450">C++ 必须用 long long；Python 无此问题。返回前 ans % (10^9+7)</text>
+</svg>

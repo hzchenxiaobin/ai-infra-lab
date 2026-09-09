@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">设计可以求最短路径的图类：邻接表 + 按需 Dijkstra</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">addEdge O(1) 追加；shortestPath 即时跑堆优化 Dijkstra</text>
+
+  <!-- ===== Graph ===== -->
+  <text x="34" y="74" font-size="11" fill="#446688" font-weight="bold">示例图：n=4</text>
+
+  <!-- edges (solid: initial) -->
+  <!-- 0 -> 2 (5) -->
+  <path d="M 118 162 Q 230 110 432 176" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="260" y="108" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">5</text>
+
+  <!-- 0 -> 1 (2) -->
+  <path d="M 122 152 L 286 108" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="200" y="120" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">2</text>
+
+  <!-- 1 -> 2 (1) -->
+  <path d="M 326 112 L 438 168" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="392" y="130" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">1</text>
+
+  <!-- 3 -> 0 (3) -->
+  <path d="M 206 244 L 120 178" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="150" y="222" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">3</text>
+
+  <!-- 1 -> 3 (4) [added, dashed red] -->
+  <path d="M 300 120 Q 250 180 230 232" stroke="#b85450" stroke-width="1.8" fill="none" stroke-dasharray="5 3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="258" y="186" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">4 (addEdge)</text>
+
+  <!-- nodes -->
+  <ellipse cx="100" cy="162" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="100" y="167" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">0</text>
+
+  <ellipse cx="306" cy="96" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="306" y="101" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+
+  <ellipse cx="456" cy="178" rx="26" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="456" y="183" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">2</text>
+
+  <ellipse cx="220" cy="262" rx="26" ry="22" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="220" y="267" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">3</text>
+
+  <!-- ===== adjacency list ===== -->
+  <text x="34" y="308" font-size="11" fill="#4a7a3a" font-weight="bold">邻接表 adj[]（构造时建好，addEdge 只追加）</text>
+  <g font-size="10">
+    <rect x="34" y="316" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="54" y="331" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <text x="82" y="331" fill="#446688">→ (1,2)(2,5)</text>
+
+    <rect x="34" y="342" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="54" y="357" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="82" y="357" fill="#446688">→ (2,1)(3,4)✦</text>
+
+    <rect x="34" y="368" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="54" y="383" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <text x="82" y="383" fill="#aaa">→ (空)</text>
+
+    <rect x="34" y="394" width="40" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="54" y="409" text-anchor="middle" fill="#4a7a3a" font-weight="bold">3</text>
+    <text x="82" y="409" fill="#446688">→ (0,3)</text>
+  </g>
+  <text x="186" y="357" font-size="9" fill="#b85450">✦ = addEdge 追加的边</text>
+
+  <!-- ===== methods ===== -->
+  <text x="300" y="308" font-size="11" fill="#446688" font-weight="bold">三个方法</text>
+  <g font-size="10">
+    <rect x="300" y="316" width="232" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="416" y="331" text-anchor="middle" fill="#446688" font-weight="bold">Graph(n, edges)</text>
+    <text x="416" y="345" text-anchor="middle" fill="#666">建邻接表 O(E)</text>
+
+    <rect x="300" y="356" width="232" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="416" y="371" text-anchor="middle" fill="#d6a040" font-weight="bold">addEdge([from,to,w])</text>
+    <text x="416" y="385" text-anchor="middle" fill="#666">adj[from].push((to,w)) O(1)</text>
+
+    <rect x="300" y="396" width="232" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+    <text x="416" y="410" text-anchor="middle" fill="#b85450" font-weight="bold">shortestPath(s,t)：堆 Dijkstra</text>
+  </g>
+</svg>

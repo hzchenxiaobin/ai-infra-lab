@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" fill="#333"
+        filter="url(#rough2)">核心观察：末行 = 当前状态，统计一趟算齐（用户 501）</text>
+
+  <!-- 事件时间线 -->
+  <g filter="url(#rough2)">
+    <text x="96" y="46" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">历史峰值 MAX = 29.99</text>
+    <text x="424" y="46" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">末行 rn = 1 → 当前状态</text>
+  </g>
+
+  <g filter="url(#rough2)">
+    <rect x="36" y="54" width="120" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="96" y="76" text-anchor="middle" font-size="11" fill="#446688">01-01 start</text>
+    <text x="96" y="94" text-anchor="middle" font-size="10.5" fill="#446688">premium · 29.99</text>
+    <rect x="200" y="54" width="120" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="260" y="76" text-anchor="middle" font-size="11" fill="#d6a040">02-15 downgrade</text>
+    <text x="260" y="94" text-anchor="middle" font-size="10.5" fill="#d6a040">standard · 19.99</text>
+    <rect x="364" y="54" width="120" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4"/>
+    <text x="424" y="76" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">03-20 downgrade</text>
+    <text x="424" y="94" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">basic · 9.99</text>
+    <path d="M 158 84 L 196 84" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M 322 84 L 360 84" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 首末事件跨度 -->
+  <g filter="url(#rough2)">
+    <path d="M 36 132 L 484 132" stroke="#446688" stroke-width="1.6"
+          marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <text x="260" y="150" text-anchor="middle" font-size="10.5" fill="#446688">首事件 → 末事件：days_as_subscriber = DATEDIFF = 79 天 ≥ 60 ✓</text>
+  </g>
+
+  <!-- 两个信息面板 -->
+  <g filter="url(#rough2)">
+    <rect x="36" y="162" width="220" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="146" y="180" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">末行读出（当前状态）</text>
+    <text x="146" y="198" text-anchor="middle" font-size="9.5" fill="#b85450">current_plan = basic</text>
+    <text x="146" y="212" text-anchor="middle" font-size="9.5" fill="#b85450">current_monthly_amount = 9.99</text>
+    <text x="146" y="226" text-anchor="middle" font-size="9.5" fill="#b85450">event_type = downgrade ≠ cancel ✓</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="264" y="162" width="220" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="374" y="180" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">组级聚合（开窗一趟算齐）</text>
+    <text x="374" y="198" text-anchor="middle" font-size="9.5" fill="#446688">max = MAX(amount) = 29.99</text>
+    <text x="374" y="212" text-anchor="middle" font-size="9.5" fill="#446688">降级数 = SUM(type='downgrade') = 2</text>
+    <text x="374" y="226" text-anchor="middle" font-size="9.5" fill="#446688">天数 = DATEDIFF(末, 首) = 79</text>
+  </g>
+
+  <!-- 四个条件 -->
+  <g filter="url(#rough2)">
+    <rect x="36" y="242" width="106" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="89" y="260" text-anchor="middle" font-size="9" fill="#4a7a3a">① 末事件 ≠ cancel</text>
+    <text x="89" y="277" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="150" y="242" width="106" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="203" y="260" text-anchor="middle" font-size="9" fill="#4a7a3a">② 降级 ≥ 1 次</text>
+    <text x="203" y="277" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="264" y="242" width="106" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="317" y="260" text-anchor="middle" font-size="9" fill="#4a7a3a">③ 9.99 &lt; 0.5×29.99</text>
+    <text x="317" y="277" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="378" y="242" width="106" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="431" y="260" text-anchor="middle" font-size="9" fill="#4a7a3a">④ 天数 ≥ 60</text>
+    <text x="431" y="277" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <text x="260" y="302" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold"
+        filter="url(#rough2)">四条全绿 ⟹ 501 是流失风险客户 ✅</text>
+
+  <!-- 陷阱提示 -->
+  <rect x="36" y="312" width="448" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" text-anchor="middle" font-size="10" fill="#b85450">
+    <text x="260" y="328">⚠️ 若先 WHERE 掉 cancel 再聚合：start → downgrade → cancel 的用户</text>
+    <text x="260" y="344">末行被顶替成 downgrade，四条件全绿 → 被误报为风险客户！</text>
+  </g>
+</svg>

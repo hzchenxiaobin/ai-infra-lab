@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="540" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：解法 A（JOIN）与解法 B（RANK 窗口）对比</text>
+
+  <!-- 左列：解法 A JOIN -->
+  <text x="155" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：子查询 + JOIN（推荐）</text>
+
+  <!-- A step 1 -->
+  <rect x="45" y="64" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① GROUP BY product_id</text>
+  <text x="155" y="100" text-anchor="middle" font-size="10.5" fill="#555">MIN(year) AS first_year</text>
+
+  <path d="M 155 110 L 155 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- A step 2 -->
+  <rect x="45" y="130" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② JOIN Sales s</text>
+  <text x="155" y="166" text-anchor="middle" font-size="10.5" fill="#555">ON s.product_id=m.product_id</text>
+
+  <path d="M 155 176 L 155 192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- A step 3 -->
+  <rect x="45" y="196" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="216" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 同年多条全命中</text>
+  <text x="155" y="232" text-anchor="middle" font-size="10.5" fill="#555">JOIN 不去重，首年所有行保留</text>
+
+  <path d="M 155 242 L 155 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- A result -->
+  <rect x="45" y="262" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="282" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出 product_id,</text>
+  <text x="155" y="298" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">first_year, quantity, price</text>
+
+  <!-- A note -->
+  <rect x="45" y="318" width="220" height="40" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="336" text-anchor="middle" font-size="10" fill="#888">✅ 标准写法，所有数据库通用</text>
+  <text x="155" y="350" text-anchor="middle" font-size="10" fill="#888">✅ 天然保留同年多条记录</text>
+
+  <!-- 右列：解法 B RANK -->
+  <text x="465" y="54" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 B：RANK() 窗口函数</text>
+
+  <!-- B step 1 -->
+  <rect x="355" y="64" width="220" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="84" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① RANK() OVER</text>
+  <text x="465" y="100" text-anchor="middle" font-size="10.5" fill="#555">PARTITION BY product_id ORDER BY year</text>
+
+  <path d="M 465 110 L 465 126" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B step 2 -->
+  <rect x="355" y="130" width="220" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 同年并列 = rank 1</text>
+  <text x="465" y="166" text-anchor="middle" font-size="10.5" fill="#555">首年所有行 rk 均为 1</text>
+
+  <path d="M 465 176 L 465 192" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B step 3 -->
+  <rect x="355" y="196" width="220" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="465" y="216" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 外层 WHERE rk = 1</text>
+  <text x="465" y="232" text-anchor="middle" font-size="10.5" fill="#555">筛选首年全部行</text>
+
+  <path d="M 465 242 L 465 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B result -->
+  <rect x="355" y="262" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="465" y="282" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出 product_id,</text>
+  <text x="465" y="298" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">first_year, quantity, price</text>
+
+  <!-- B note -->
+  <rect x="355" y="318" width="220" height="40" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="336" text-anchor="middle" font-size="10" fill="#888">⚠️ 需 MySQL 8+ / PG / SQL Server</text>
+  <text x="465" y="350" text-anchor="middle" font-size="10" fill="#888">⚠️ ROW_NUMBER 会漏同年并列行！</text>
+
+  <!-- 底部对比 -->
+  <rect x="30" y="378" width="560" height="148" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="400" font-size="11.5" fill="#555" font-weight="bold">💡 关键陷阱：ROW_NUMBER vs RANK vs DENSE_RANK</text>
+  <text x="50" y="420" font-size="10.5" fill="#888">• ROW_NUMBER()：同 partition 同 year 也强制唯一编号 → 首年多条只留 1 条 → 漏数据 ✗</text>
+  <text x="50" y="438" font-size="10.5" fill="#888">• RANK()：相同 year 给相同 rank，首年多条均 = 1 → 全部保留 ✓（本题正确选择）</text>
+  <text x="50" y="456" font-size="10.5" fill="#888">• DENSE_RANK()：与 RANK 在本题效果相同（首年都 = 1），排名不跳跃</text>
+  <text x="50" y="478" font-size="10.5" fill="#b85450" font-weight="bold">⚠️ 题目要求「返回该产品在该年度的所有销售条目」→ 必须用 RANK 或 JOIN，不可用 ROW_NUMBER</text>
+  <text x="50" y="498" font-size="10.5" fill="#4a7a3a">✅ JOIN 写法天然不受此陷阱影响：ON year = first_year 把同年所有行都匹配回来</text>
+  <text x="50" y="516" font-size="10.5" fill="#555">面试结论：JOIN 通用稳妥，RANK 简洁但需注意窗口函数选型</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="23"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="380" fill="#fafafa"/>
+
+  <text x="300" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" filter="url(#rough2)">树状数组 + 双指针：把 P[l]≥P[r+1] 做在线计数</text>
+
+  <!-- top: condition recap -->
+  <rect x="30" y="50" width="540" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="80" text-anchor="middle" font-size="13" fill="#446688" filter="url(#rough2)">目标：对每个 r，计数 l ∈ [0, lastOdd[r]] 满足 P[l] ≥ P[r+1]</text>
+
+  <!-- left: coordinate compress -->
+  <rect x="30" y="120" width="250" height="130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="145" text-anchor="middle" font-size="13" font-weight="bold" fill="#d6a040" filter="url(#rough2)">① 离散化 P</text>
+  <text x="50" y="168" font-size="11" fill="#333" filter="url(#rough2)">P 值域达 ±10¹⁴，按下标计数不可行</text>
+  <text x="50" y="187" font-size="11" fill="#333" filter="url(#rough2)">收集 P[0..n] 排序去重 → rank 1..U</text>
+  <text x="50" y="206" font-size="11" fill="#333" filter="url(#rough2)">树状数组 BIT[1..U] 存“已插入计数”</text>
+  <text x="50" y="230" font-size="11" fill="#b85450" filter="url(#rough2)">查询 ≥阈值 = total − BIT.prefix(rank−1)</text>
+
+  <!-- right: two pointer -->
+  <rect x="300" y="120" width="270" height="130" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="145" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">② 双指针插入 P[l]</text>
+  <text x="320" y="168" font-size="11" fill="#333" filter="url(#rough2)">lastOdd[r] 随 r 单调不减</text>
+  <text x="320" y="187" font-size="11" fill="#333" filter="url(#rough2)">指针 nxt：当 nxt ≤ lastOdd[r]</text>
+  <text x="320" y="206" font-size="11" fill="#333" filter="url(#rough2)">　就把 P[nxt] 插入 BIT，nxt++</text>
+  <text x="320" y="230" font-size="11" fill="#4a7a3a" filter="url(#rough2)">插入即“该 l 对所有后续 r 都合格”</text>
+
+  <!-- arrows down -->
+  <path d="M155 250 L155 280" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M435 250 L435 280" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- bottom: per r -->
+  <rect x="30" y="280" width="540" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="305" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450" filter="url(#rough2)">③ 对每个 r：先按 lastOdd 补插 P[l]，再查询</text>
+  <text x="50" y="328" font-size="11" fill="#333" filter="url(#rough2)">ans += (已插入总数) − BIT.query(rank(P[r+1]) − 1)</text>
+  <text x="50" y="346" font-size="11" fill="#333" filter="url(#rough2)">因 l ≤ lastOdd[r] ≤ r &lt; r+1，P[r+1] 尚未插入，无自配；总复杂度 O(n log n)</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 320" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="320" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：遍历格子 → 遇水域 DFS 求和沉水 → max 跟踪</text>
+
+  <!-- Step 1: start -->
+  <rect x="30" y="60" width="150" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="80" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 初始化</text>
+  <text x="105" y="98" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">ans = 0</text>
+
+  <!-- arrow -->
+  <path d="M 180 85 L 210 85" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: loop over cells (diamond) -->
+  <path d="M 280 85 L 350 60 L 420 85 L 350 110 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="350" y="82" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold" filter="url(#rough2)">遍历 (i,j)</text>
+  <text x="350" y="98" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">还有格子?</text>
+
+  <!-- arrow down to branch -->
+  <path d="M 350 110 L 350 140" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: check grid>0 -->
+  <path d="M 420 165 L 470 145 L 520 165 L 470 185 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="470" y="162" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">grid[i][j]</text>
+  <text x="470" y="176" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold" filter="url(#rough2)">&gt; 0 ?</text>
+
+  <!-- yes branch -> dfs -->
+  <text x="437" y="140" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 420 165 Q 380 180 350 195" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- no branch -> continue loop -->
+  <text x="528" y="165" font-size="9" fill="#999" filter="url(#rough2)">否</text>
+  <path d="M 470 145 Q 510 60 420 70" stroke="#aaa" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: DFS box -->
+  <rect x="200" y="175" width="300" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="195" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">②③ DFS(i,j)</text>
+  <text x="350" y="213" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">越界或 grid==0 → 返回 0</text>
+  <text x="350" y="228" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">否则: s = grid[i][j]; grid[i][j]=0(沉水)</text>
+  <text x="350" y="243" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">递归四方向邻居累加 → 返回 s</text>
+
+  <!-- arrow to max -->
+  <path d="M 350 255 L 350 275" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: update max -->
+  <rect x="240" y="278" width="220" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="350" y="297" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">④ ans = max(ans, s) → 回到遍历</text>
+
+  <!-- loop back arrow from max to diamond -->
+  <path d="M 460 293 Q 520 293 510 85 L 420 85" stroke="#999" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="524" y="190" font-size="8" fill="#999" filter="url(#rough2)">遍历完→返回 ans</text>
+</svg>

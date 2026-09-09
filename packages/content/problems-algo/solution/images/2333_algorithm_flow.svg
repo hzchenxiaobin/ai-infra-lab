@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 450"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="450" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：排序 + 整段削平（O(n log n) 时间 / O(n) 空间）</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">把 K 次单位削减按等值层级打包，每段 O(1) 算代价</text>
+
+  <!-- start -->
+  <ellipse cx="180" cy="66" rx="112" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="71" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">d[i]=|nums1[i]−nums2[i]|,  K=k1+k2</text>
+
+  <path d="M180 84 L180 100" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- sort -->
+  <rect x="100" y="100" width="160" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="118" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">sort d 降序</text>
+
+  <path d="M180 126 L180 142" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop decision: j <= n ? -->
+  <polygon points="180,144 232,166 180,188 128,166" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">j ≤ n ?</text>
+
+  <!-- No (right) -> return 0 -->
+  <path d="M232 166 L262 166" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="247" y="160" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <ellipse cx="328" cy="166" rx="60" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="328" y="171" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return 0</text>
+
+  <!-- Yes (down) -> step box -->
+  <path d="M180 188 L180 206" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="192" y="200" text-anchor="start" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- step box: nxt, cost -->
+  <rect x="66" y="206" width="228" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="224" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">nxt = (j&lt;n) ? d[j] : 0</text>
+  <text x="180" y="241" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">cost = j × ( d[j−1] − nxt )</text>
+
+  <path d="M180 250 L180 266" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- inner diamond: K >= cost ? -->
+  <polygon points="180,268 206,294 180,320 154,294" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="298" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">K ≥ cost ?</text>
+
+  <!-- Yes (left) -> K-=cost box -> loop back up to loop decision -->
+  <path d="M154 294 L150 294" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="140" y="288" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="40" y="280" width="110" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="299" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">K −= cost；j+=1</text>
+  <!-- loop back: up the left margin then right into loop decision top -->
+  <path d="M95 280 L95 138 L180 138 L180 144" stroke="#666" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="210" text-anchor="middle" font-size="9.5" fill="#888" transform="rotate(-90 60 210)">下个 j</text>
+
+  <!-- No (down) -> partial -->
+  <path d="M180 320 L180 338" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="192" y="332" text-anchor="start" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- partial box -->
+  <rect x="44" y="338" width="272" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="180" y="357" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">q=K/j, r=K%j, base=d[j−1]−q</text>
+  <text x="180" y="375" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">ans = r·(base−1)² + (j−r)·base² + Σ_{k≥j} d[k]²</text>
+
+  <path d="M180 386 L180 402" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <ellipse cx="180" cy="416" rx="66" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="421" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return ans</text>
+
+  <!-- side note: why leveling is O(n) -->
+  <rect x="360" y="240" width="188" height="150" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="454" y="262" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">为什么是 O(n) ？</text>
+  <text x="454" y="282" text-anchor="middle" font-size="9.5" fill="#333">① 降序后相邻同值合并</text>
+  <text x="454" y="296" text-anchor="middle" font-size="9.5" fill="#333">　 一次「整层削到下一层」</text>
+  <text x="454" y="314" text-anchor="middle" font-size="9.5" fill="#333">② 每层代价 cost=j·Δ，O(1)</text>
+  <text x="454" y="328" text-anchor="middle" font-size="9.5" fill="#333">③ 至多 n 层，循环 O(n)</text>
+  <text x="454" y="348" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">把 O(K) 削峰压成 O(n)</text>
+  <text x="454" y="366" text-anchor="middle" font-size="9" fill="#888">堆逐次削 O(K log n) 会 TLE</text>
+  <text x="454" y="382" text-anchor="middle" font-size="9" fill="#888">K 可达 2×10⁹</text>
+</svg>

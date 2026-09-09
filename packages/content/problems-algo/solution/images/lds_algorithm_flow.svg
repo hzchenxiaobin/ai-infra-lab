@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：外层二分长度 + 内层 check(L) 滚动哈希</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="60" rx="120" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">开始: lo=1, hi=n−1, bestLen=0</text>
+
+  <path d="M 280 80 L 280 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision lo<=hi -->
+  <polygon points="280,100 380,144 280,188 180,144" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="140" text-anchor="middle" font-size="12" fill="#333">lo &lt;= hi ?</text>
+  <text x="280" y="158" text-anchor="middle" font-size="11" fill="#666">(二分未结束)</text>
+
+  <!-- No -> end -->
+  <path d="M 380 144 L 470 144" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="420" y="136" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="510" cy="144" rx="40" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="510" y="148" text-anchor="middle" font-size="11" fill="#333">返回答案</text>
+
+  <!-- Yes down -->
+  <path d="M 280 188 L 280 204" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="200" font-size="11" fill="#82b366">是</text>
+
+  <!-- mid -->
+  <rect x="150" y="208" width="260" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="12" fill="#333">mid = (lo + hi) / 2  （候选长度）</text>
+
+  <path d="M 280 238 L 280 254" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- check(L) box -->
+  <rect x="70" y="258" width="420" height="118" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="280" font-size="12" fill="#2a4a66" font-weight="bold">check(mid)：用 Rabin-Karp 判定「是否存在长度 mid 的重复子串」</text>
+  <text x="90" y="300" font-size="10" fill="#555">① 预计算 pow = b^(L−1) mod MOD（双模数各一份）</text>
+  <text x="90" y="318" font-size="10" fill="#555">② 算首窗口 s[0..L−1] 的双哈希 (h1, h2)，存入哈希表</text>
+  <text x="90" y="336" font-size="10" fill="#555">③ i 从 1 滚动：h = ((h − out·pow)·b + in) mod M，查表</text>
+  <text x="90" y="354" font-size="10" fill="#555">④ 命中 → 返回首次位置 p；否则存入继续；遍历完未命中 → 返回 −1</text>
+  <text x="90" y="370" font-size="10" fill="#446688" font-weight="bold">单次 check 为 O(n)</text>
+
+  <path d="M 280 376 L 280 392" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision check result -->
+  <polygon points="280,396 370,432 280,458 190,432" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="430" text-anchor="middle" font-size="11" fill="#333">check ≠ −1 ?</text>
+
+  <!-- Yes -> try longer -->
+  <path d="M 190 432 L 120 432" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="155" y="424" text-anchor="middle" font-size="10" fill="#82b366">是</text>
+  <rect x="20" y="416" width="98" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="7" filter="url(#rough2)"/>
+  <text x="69" y="432" text-anchor="middle" font-size="10" fill="#333">bestLen=mid</text>
+  <text x="69" y="445" text-anchor="middle" font-size="10" fill="#555">lo = mid+1</text>
+
+  <!-- No -> try shorter -->
+  <path d="M 370 432 L 440 432" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="405" y="424" text-anchor="middle" font-size="10" fill="#b85450">否</text>
+  <rect x="442" y="416" width="98" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="7" filter="url(#rough2)"/>
+  <text x="491" y="438" text-anchor="middle" font-size="10" fill="#333">hi = mid−1</text>
+
+  <!-- loop backs -->
+  <path d="M 69 416 L 69 144 L 180 144" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 491 416 L 491 144 L 380 144" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="300" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 60 300)">继续二分</text>
+</svg>

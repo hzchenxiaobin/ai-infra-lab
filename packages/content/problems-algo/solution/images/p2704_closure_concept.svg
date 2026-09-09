@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心直觉：expect(val) 闭包捕获 val，返回的对象方法共享这一份私有变量</text>
+
+  <!-- Closure boundary (dashed box enclosing expect and val) -->
+  <rect x="30" y="55" width="200" height="240" fill="none" stroke="#b85450" stroke-width="1.5" stroke-dasharray="6,4" rx="10" filter="url(#rough2)"/>
+  <text x="40" y="76" font-size="11" fill="#b85450" font-weight="bold">闭包作用域（私有）</text>
+
+  <!-- expect function box -->
+  <rect x="50" y="90" width="160" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="110" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">expect(val)</text>
+  <text x="130" y="128" text-anchor="middle" font-size="11" fill="#666">接收一个值</text>
+  <text x="130" y="143" text-anchor="middle" font-size="11" fill="#666">返回一个对象</text>
+
+  <!-- val captured variable -->
+  <rect x="70" y="200" width="120" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="215" text-anchor="middle" font-size="11" fill="#888">捕获的私有变量</text>
+  <text x="130" y="232" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">val = 5</text>
+
+  <!-- arrow from expect to val (captures) -->
+  <path d="M 130 152 L 130 198" stroke="#d6a040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="138" y="178" font-size="10" fill="#d6a040">捕获 ↓</text>
+
+  <!-- Returned object (outside closure boundary visually, but methods close over val) -->
+  <rect x="280" y="90" width="240" height="180" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="400" y="112" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">返回的对象</text>
+
+  <!-- toBe method -->
+  <rect x="300" y="125" width="200" height="55" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="5" filter="url(#rough2)"/>
+  <text x="310" y="143" font-size="11" fill="#4a7a3a" font-weight="bold">toBe(other)</text>
+  <text x="310" y="158" font-size="10" fill="#666">val === other ? true</text>
+  <text x="310" y="172" font-size="10" fill="#666">            : throw "Not Equal"</text>
+
+  <!-- notToBe method -->
+  <rect x="300" y="190" width="200" height="55" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="5" filter="url(#rough2)"/>
+  <text x="310" y="208" font-size="11" fill="#4a7a3a" font-weight="bold">notToBe(other)</text>
+  <text x="310" y="223" font-size="10" fill="#666">val !== other ? true</text>
+  <text x="310" y="237" font-size="10" fill="#666">            : throw "Equal"</text>
+
+  <!-- arrows from methods back to val (closure access) -->
+  <path d="M 300 152 Q 260 152 230 220" stroke="#446688" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arrBlue)" filter="url(#rough2)"/>
+  <path d="M 300 217 Q 260 217 230 225" stroke="#446688" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arrBlue)" filter="url(#rough2)"/>
+  <text x="255" y="145" font-size="10" fill="#446688">读 val</text>
+  <text x="255" y="210" font-size="10" fill="#446688">读 val</text>
+
+  <!-- return arrow from expect to object -->
+  <path d="M 210 120 Q 250 120 280 120" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="230" y="112" font-size="10" fill="#4a7a3a">return</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="310" width="480" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="330" text-anchor="middle" font-size="11" fill="#333">两个方法共享同一份 val，但每个 expect(val) 调用产生独立的闭包实例</text>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">val 不暴露给外部 —— 只能通过 toBe / notToBe 间接访问</text>
+</svg>

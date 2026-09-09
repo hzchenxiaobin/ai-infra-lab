@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="380" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">SQL 执行流程：自连接 + 三条件过滤 + 去重排序</text>
+  <path d="M 160 36 Q 380 44 600 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Step 1: two copies of LogInfo ===== -->
+  <text x="40" y="62" font-size="11" fill="#888">① FROM LogInfo l1, LogInfo l2（同表双别名，笛卡尔积候选）</text>
+
+  <g filter="url(#rough2)"><rect x="40" y="72" width="200" height="86" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6"/></g>
+  <text x="140" y="90" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">LogInfo l1（视角甲）</text>
+  <line x1="40" y1="96" x2="240" y2="96" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="52" y="112" font-size="9" fill="#888">account_id · ip · login · logout</text>
+  <text x="56" y="132" font-size="9" fill="#4a8edb">(1, ip1, 09:00, 09:30)</text>
+  <text x="56" y="148" font-size="9" fill="#4a7a3a">(4, ip10, 16:00, 17:00)</text>
+
+  <g filter="url(#rough2)"><rect x="280" y="72" width="200" height="86" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6"/></g>
+  <text x="380" y="90" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">LogInfo l2（视角乙）</text>
+  <line x1="280" y1="96" x2="480" y2="96" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="292" y="112" font-size="9" fill="#888">account_id · ip · login · logout</text>
+  <text x="296" y="132" font-size="9" fill="#4a8edb">(1, ip2, 08:00, 11:30)</text>
+  <text x="296" y="148" font-size="9" fill="#b85450">(4, ip11, 17:00, 17:59)</text>
+
+  <!-- cross join arrow -->
+  <path d="M 240 112 L 280 112" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="260" y="106" text-anchor="middle" font-size="8" fill="#888">⋈</text>
+
+  <!-- arrow down to conditions -->
+  <path d="M 380 158 L 380 178" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: three JOIN conditions (decision diamonds) ===== -->
+  <text x="40" y="176" font-size="11" fill="#888">② ON 三条件过滤（同账户 / 不同 IP / 区间重叠）</text>
+
+  <!-- condition 1 -->
+  <g filter="url(#rough2)"><polygon points="380,180 470,214 380,248 290,214" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="380" y="210" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">l1.account_id</text>
+  <text x="380" y="224" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">= l2.account_id ?</text>
+
+  <text x="500" y="210" font-size="9" fill="#888">同账户才比较</text>
+  <text x="500" y="224" font-size="9" fill="#888">否则丢弃</text>
+
+  <!-- condition 2 -->
+  <path d="M 380 248 L 380 262" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><polygon points="380,264 470,298 380,332 290,298" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="380" y="294" text-anchor="middle" font-size="10" fill="#a06a10" font-weight="bold">l1.ip_address</text>
+  <text x="380" y="308" text-anchor="middle" font-size="10" fill="#a06a10" font-weight="bold">≠ l2.ip_address ?</text>
+  <text x="500" y="294" font-size="9" fill="#888">同 IP = 同一会话</text>
+  <text x="500" y="308" font-size="9" fill="#888">不算违规</text>
+
+  <!-- condition 3 -->
+  <path d="M 380 332 L 380 346" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)"><polygon points="380,348 480,382 380,416 280,382" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/></g>
+  <text x="380" y="376" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">login₁ ≤ logout₂</text>
+  <text x="380" y="390" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">AND login₂ ≤ logout₁ ?</text>
+
+  <text x="500" y="372" font-size="9" fill="#888">区间重叠</text>
+  <text x="500" y="386" font-size="9" fill="#888">（端点相接算）</text>
+  <text x="500" y="400" font-size="9" fill="#888">→ 同时在线</text>
+
+  <!-- ===== Right: result path ===== -->
+  <path d="M 480 382 L 600 382" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: SELECT DISTINCT + ORDER BY -->
+  <g filter="url(#rough2)"><rect x="600" y="200" width="140" height="210" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/></g>
+  <text x="670" y="220" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ SELECT</text>
+  <text x="670" y="236" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">DISTINCT</text>
+  <text x="670" y="252" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">account_id</text>
+  <line x1="610" y1="262" x2="730" y2="262" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="670" y="280" text-anchor="middle" font-size="10" fill="#4a7a3a">去重：一个账户</text>
+  <text x="670" y="294" text-anchor="middle" font-size="10" fill="#4a7a3a">多对违规也只</text>
+  <text x="670" y="308" text-anchor="middle" font-size="10" fill="#4a7a3a">出现一次</text>
+  <line x1="610" y1="318" x2="730" y2="318" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="670" y="336" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">ORDER BY</text>
+  <text x="670" y="352" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">account_id</text>
+  <text x="670" y="386" text-anchor="middle" font-size="9" fill="#888">结果升序</text>
+
+  <!-- arrow up from condition results to select box -->
+  <path d="M 600 300 Q 560 300 540 300" stroke="none"/>
+
+  <!-- bottom note -->
+  <g filter="url(#rough2)"><rect x="40" y="424" width="540" height="28" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/></g>
+  <text x="56" y="442" font-size="11" fill="#a06a10" font-weight="bold">⭐ 用 l1.ip &lt; l2.ip 替代 ≠ 可减半配对数；DISTINCT 防同一账户多对重复列出。</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：排序降维，一趟扫描维护最大防御</text>
+
+  <!-- sorted characters row -->
+  <text x="60" y="62" font-size="11" fill="#888">排序后（攻击↓，同攻击防御↑）</text>
+
+  <rect x="70" y="72" width="80" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="92" text-anchor="middle" font-size="10" fill="#888">攻 / 防</text>
+  <text x="110" y="116" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">10 / 4</text>
+
+  <rect x="190" y="72" width="80" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="92" text-anchor="middle" font-size="10" fill="#888">攻 / 防</text>
+  <text x="230" y="116" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">5 / 2</text>
+
+  <rect x="310" y="72" width="80" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="350" y="92" text-anchor="middle" font-size="10" fill="#888">攻 / 防</text>
+  <text x="350" y="116" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">5 / 5</text>
+
+  <rect x="430" y="72" width="80" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="92" text-anchor="middle" font-size="10" fill="#888">攻 / 防</text>
+  <text x="470" y="116" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">3 / 6</text>
+
+  <!-- attack descending arrow -->
+  <path d="M 90 150 L 450 150" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="10" fill="#446688">攻击递减 →</text>
+
+  <!-- same attack group bracket -->
+  <path d="M 190 142 L 190 138 L 390 138 L 390 142" stroke="#d6a040" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="290" y="134" text-anchor="middle" font-size="10" fill="#d6a040">同攻击 5：防御升序 2 → 5</text>
+
+  <!-- traversal: max_def tracking -->
+  <text x="60" y="186" font-size="11" fill="#888">从左到右扫描，维护 max_def（已见过的最大防御）</text>
+
+  <rect x="70" y="196" width="80" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="214" text-anchor="middle" font-size="10" fill="#446688">4 &gt; 0</text>
+  <text x="110" y="230" text-anchor="middle" font-size="9" fill="#4a7a3a">max_def=4</text>
+
+  <rect x="190" y="196" width="80" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="214" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">2 &lt; 4 弱!</text>
+  <text x="230" y="230" text-anchor="middle" font-size="9" fill="#888">max_def=4</text>
+
+  <rect x="310" y="196" width="80" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="350" y="214" text-anchor="middle" font-size="10" fill="#446688">5 &gt; 4</text>
+  <text x="350" y="230" text-anchor="middle" font-size="9" fill="#4a7a3a">max_def=5</text>
+
+  <rect x="430" y="196" width="80" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="214" text-anchor="middle" font-size="10" fill="#446688">6 &gt; 5</text>
+  <text x="470" y="230" text-anchor="middle" font-size="9" fill="#4a7a3a">max_def=6</text>
+
+  <!-- arrows between steps -->
+  <path d="M 150 218 L 190 218" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 270 218 L 310 218" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 390 218 L 430 218" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- key insight callout -->
+  <rect x="60" y="262" width="480" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="284" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">关键洞察</text>
+  <text x="80" y="304" font-size="11" fill="#444">① 排序后左侧攻击 ≥ 当前。若 max_def &gt; 当前防御，该 max_def</text>
+  <text x="80" y="320" font-size="11" fill="#444">    必来自攻击严格更大的角色（同攻击防御升序所保证）。</text>
+  <text x="80" y="336" font-size="11" fill="#444">② 同攻击防御升序：同组防御递增，先处理的防御更小，</text>
+  <text x="80" y="350" font-size="11" fill="#444">    不会把 max_def 抬到足以误判后续同组角色为弱。</text>
+
+  <!-- complexity -->
+  <rect x="150" y="368" width="300" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="384" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">排序 O(n log n) + 一趟扫描 O(n)</text>
+
+  <!-- weak count -->
+  <rect x="210" y="402" width="180" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="420" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">弱角色数 = 1</text>
+</svg>

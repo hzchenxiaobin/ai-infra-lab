@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">
+    区间 DP：枚举所有可能的求值结果
+  </text>
+
+  <!-- Step 1: Tokenize -->
+  <text x="40" y="62" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 解析 token</text>
+  <g filter="url(#rough2)">
+    <rect x="40" y="72" width="200" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="140" y="92" text-anchor="middle" font-size="11" fill="#333">s = "7+3*1*2"</text>
+  </g>
+  <path d="M 240 87 L 270 87" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="278" y="72" width="32" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="294" y="92" text-anchor="middle" font-size="11" fill="#333">7</text>
+    <rect x="312" y="72" width="24" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="324" y="92" text-anchor="middle" font-size="11" fill="#333">+</text>
+    <rect x="338" y="72" width="32" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="354" y="92" text-anchor="middle" font-size="11" fill="#333">3</text>
+    <rect x="372" y="72" width="24" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="384" y="92" text-anchor="middle" font-size="11" fill="#333">*</text>
+    <rect x="398" y="72" width="32" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="414" y="92" text-anchor="middle" font-size="11" fill="#333">1</text>
+    <rect x="432" y="72" width="24" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4"/>
+    <text x="444" y="92" text-anchor="middle" font-size="11" fill="#333">*</text>
+    <rect x="458" y="72" width="32" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="474" y="92" text-anchor="middle" font-size="11" fill="#333">2</text>
+  </g>
+  <text x="380" y="118" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">nums=[7,3,1,2] ops=[+,*,*]</text>
+
+  <!-- Step 2: DP definition -->
+  <text x="40" y="142" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">② 定义 dp[i][j] = nums[i..j] 任意加括号能得到的所有值</text>
+
+  <!-- DP table illustration -->
+  <g filter="url(#rough2)">
+    <!-- Header row -->
+    <text x="100" y="168" font-size="10" fill="#888">j→</text>
+    <text x="60" y="200" font-size="10" fill="#888">i↓</text>
+    
+    <!-- dp[0][0] -->
+    <rect x="90" y="170" width="50" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="115" y="188" text-anchor="middle" font-size="10" fill="#333">{7}</text>
+    <!-- dp[0][1] -->
+    <rect x="144" y="170" width="60" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="174" y="188" text-anchor="middle" font-size="10" fill="#333">{10}</text>
+    <!-- dp[0][2] -->
+    <rect x="208" y="170" width="60" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="238" y="188" text-anchor="middle" font-size="10" fill="#333">{10}</text>
+    <!-- dp[0][3] -->
+    <rect x="272" y="170" width="70" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4"/>
+    <text x="307" y="188" text-anchor="middle" font-size="10" fill="#333">{13,20}</text>
+
+    <!-- Row 1 -->
+    <rect x="90" y="202" width="50" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="144" y="202" width="60" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="174" y="220" text-anchor="middle" font-size="10" fill="#333">{3}</text>
+    <rect x="208" y="202" width="60" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="238" y="220" text-anchor="middle" font-size="10" fill="#333">{3}</text>
+    <rect x="272" y="202" width="70" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="307" y="220" text-anchor="middle" font-size="10" fill="#333">{6}</text>
+
+    <!-- Row 2 -->
+    <rect x="90" y="234" width="50" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="144" y="234" width="60" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="208" y="234" width="60" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="238" y="252" text-anchor="middle" font-size="10" fill="#333">{1}</text>
+    <rect x="272" y="234" width="70" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="307" y="252" text-anchor="middle" font-size="10" fill="#333">{2}</text>
+
+    <!-- Row 3 -->
+    <rect x="90" y="266" width="50" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="144" y="266" width="60" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="208" y="266" width="60" height="28" fill="#f5f5f5" stroke="#ccc" stroke-width="1" rx="4"/>
+    <rect x="272" y="266" width="70" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="307" y="284" text-anchor="middle" font-size="10" fill="#333">{2}</text>
+  </g>
+
+  <!-- Labels -->
+  <text x="340" y="188" font-size="10" fill="#d6a040" filter="url(#rough2)">← 最终答案 dp[0][3]</text>
+
+  <!-- Step 3: Transition -->
+  <text x="40" y="318" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">③ 状态转移：枚举最后一个运算的位置 k</text>
+
+  <rect x="40" y="330" width="480" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="350" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">
+    dp[i][j] = ∪_k { a ⊕_k b : a ∈ dp[i][k], b ∈ dp[k+1][j] }
+  </text>
+  <text x="280" y="368" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">
+    ⊕_k = ops[k]（'+' → 加法，'*' → 乘法），val &gt; 1000 直接丢弃
+  </text>
+
+  <!-- Example: dp[0][3] split at k=1 -->
+  <rect x="40" y="386" width="480" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="406" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">
+    例：dp[0][3] 在 k=1 处切分 → dp[0][1]={10} × dp[2][3]={2}
+  </text>
+  <text x="280" y="424" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">
+    ops[1]='*' → 10×2=20 ✓ ≤ 1000 → 加入 dp[0][3]
+  </text>
+</svg>

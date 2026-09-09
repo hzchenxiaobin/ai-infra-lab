@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">三种反连接写法对比：三表反连接 = 归约 + 取差</text>
+
+  <!-- Approach A: NOT IN -->
+  <rect x="20" y="44" width="185" height="332" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="112" y="66" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">A. NOT IN 子查询</text>
+  <text x="112" y="80" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓ 首选：最简洁</text>
+
+  <rect x="30" y="90" width="165" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="38" y="104" font-size="8.5" fill="#333">SELECT name</text>
+  <text x="38" y="116" font-size="8.5" fill="#333">FROM SalesPerson</text>
+  <text x="38" y="128" font-size="8.5" fill="#333">WHERE sales_id NOT IN (</text>
+  <text x="38" y="140" font-size="8.5" fill="#333">  SELECT o.sales_id</text>
+  <text x="38" y="152" font-size="8.5" fill="#333">  FROM Orders o JOIN Company c</text>
+  <text x="38" y="164" font-size="8.5" fill="#333">    ON o.com_id=c.com_id</text>
+  <text x="38" y="174" font-size="8.5" fill="#b85450" font-weight="bold">  WHERE c.name='RED');</text>
+
+  <text x="112" y="196" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">核心思想</text>
+  <text x="30" y="212" font-size="9" fill="#333">子查询先把 Orders⋈Company</text>
+  <text x="30" y="224" font-size="9" fill="#333">用 name='RED' 归约成</text>
+  <text x="30" y="236" font-size="9" fill="#b85450" font-weight="bold">单列 sales_id 集合 {1,4}</text>
+  <text x="30" y="248" font-size="9" fill="#333">外层取不在集合中的行</text>
+
+  <text x="112" y="272" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">关键点</text>
+  <text x="30" y="288" font-size="9" fill="#333">① 子查询只跑一次</text>
+  <text x="30" y="302" font-size="9" fill="#333">② 语义最接近自然语言</text>
+  <text x="30" y="316" font-size="9" fill="#b85450" font-weight="bold">⚠ 子查询含 NULL 则</text>
+  <text x="30" y="330" font-size="9" fill="#b85450" font-weight="bold">  全返回空（本题不触发）</text>
+  <text x="30" y="348" font-size="9" fill="#4a7a3a">sales_id 外键非 NULL 安全</text>
+  <text x="30" y="362" font-size="9" fill="#555">性能：物化集合 + 哈希查</text>
+
+  <!-- Approach B: LEFT JOIN + IS NULL -->
+  <rect x="215" y="44" width="185" height="332" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="307" y="66" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">B. LEFT JOIN + IS NULL</text>
+  <text x="307" y="80" text-anchor="middle" font-size="9" fill="#555">外连接补 NULL</text>
+
+  <rect x="225" y="90" width="165" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="233" y="104" font-size="8.5" fill="#333">SELECT s.name</text>
+  <text x="233" y="116" font-size="8.5" fill="#333">FROM SalesPerson s</text>
+  <text x="233" y="128" font-size="8.5" fill="#333">LEFT JOIN Orders o</text>
+  <text x="233" y="140" font-size="8.5" fill="#333">  ON s.sales_id=o.sales_id</text>
+  <text x="233" y="152" font-size="8.5" fill="#333">LEFT JOIN Company c</text>
+  <text x="233" y="164" font-size="8.5" fill="#333">  ON o.com_id=c.com_id</text>
+  <text x="233" y="174" font-size="8.5" fill="#b85450" font-weight="bold">  AND c.name='RED' ← ON!</text>
+
+  <text x="307" y="196" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">核心思想</text>
+  <text x="225" y="212" font-size="9" fill="#333">外连接只匹配 RED 订单，</text>
+  <text x="225" y="224" font-size="9" fill="#333">非 RED / 无订单的行</text>
+  <text x="225" y="236" font-size="9" fill="#b85450" font-weight="bold">c.com_id 补 NULL</text>
+  <text x="225" y="248" font-size="9" fill="#333">筛 NULL 即从未向 RED 销售</text>
+
+  <text x="307" y="272" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">关键点</text>
+  <text x="225" y="288" font-size="9" fill="#333">① 两次 LEFT JOIN</text>
+  <text x="225" y="302" font-size="9" fill="#b85450" font-weight="bold">⚠ name='RED' 必须在</text>
+  <text x="225" y="316" font-size="9" fill="#b85450" font-weight="bold">  ON 子句，不能放 WHERE！</text>
+  <text x="225" y="330" font-size="9" fill="#333">  放 WHERE 会过滤掉 NULL</text>
+  <text x="225" y="344" font-size="9" fill="#333">  使反连接退化为内连接</text>
+  <text x="225" y="362" font-size="9" fill="#555">性能：依赖 JOIN 索引</text>
+
+  <!-- Approach C: NOT EXISTS -->
+  <rect x="410" y="44" width="170" height="332" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="495" y="66" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">C. NOT EXISTS</text>
+  <text x="495" y="80" text-anchor="middle" font-size="9" fill="#555">NULL 安全</text>
+
+  <rect x="418" y="90" width="155" height="86" fill="#fff" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="426" y="104" font-size="8.5" fill="#333">SELECT name</text>
+  <text x="426" y="116" font-size="8.5" fill="#333">FROM SalesPerson s</text>
+  <text x="426" y="128" font-size="8.5" fill="#333">WHERE NOT EXISTS (</text>
+  <text x="426" y="140" font-size="8.5" fill="#333">  SELECT 1</text>
+  <text x="426" y="152" font-size="8.5" fill="#333">  FROM Orders o JOIN Company c</text>
+  <text x="426" y="164" font-size="8.5" fill="#333">    ON o.com_id=c.com_id</text>
+  <text x="426" y="174" font-size="8.5" fill="#b85450" font-weight="bold">  WHERE o.sId=s.sId AND name='RED')</text>
+
+  <text x="495" y="196" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">核心思想</text>
+  <text x="418" y="212" font-size="9" fill="#333">对每个销售员 s，检查</text>
+  <text x="418" y="224" font-size="9" fill="#333">"不存在指向 RED 的订单"</text>
+  <text x="418" y="236" font-size="9" fill="#b85450" font-weight="bold">不存在即从未向 RED 销售</text>
+  <text x="418" y="248" font-size="9" fill="#333">跨表条件集成在子查询内</text>
+
+  <text x="495" y="272" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">关键点</text>
+  <text x="418" y="288" font-size="9" fill="#333">① 相关子查询（引用 s）</text>
+  <text x="418" y="302" font-size="9" fill="#4a7a3a" font-weight="bold">② NULL 安全！</text>
+  <text x="418" y="316" font-size="9" fill="#333">  EXISTS 只判有无行</text>
+  <text x="418" y="330" font-size="9" fill="#333">  不比较值，无视 NULL</text>
+  <text x="418" y="348" font-size="9" fill="#333">③ 早停：找到 1 行即返回</text>
+  <text x="418" y="362" font-size="9" fill="#555">性能：常优化为 Anti-Join</text>
+</svg>

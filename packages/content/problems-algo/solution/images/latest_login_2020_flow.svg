@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">执行流程：FROM → WHERE → GROUP BY → SELECT(MAX) → 输出</text>
+
+  <!-- Step 1: FROM -->
+  <rect x="170" y="46" width="180" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">① FROM Logins</text>
+  <text x="260" y="74" text-anchor="middle" font-size="9.5" fill="#555">读取全部登录记录（含所有年份）</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 82 L 260 98" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE -->
+  <rect x="140" y="102" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="118" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">② WHERE YEAR(time_stamp) = 2020</text>
+  <text x="260" y="134" text-anchor="middle" font-size="9.5" fill="#555">过滤：只保留 2020 年的行，丢弃 2019/2021 年记录</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 144 L 260 160" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="170" y="164" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="180" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">③ GROUP BY user_id</text>
+  <text x="260" y="196" text-anchor="middle" font-size="9.5" fill="#555">按用户分组，每个 user_id 一个组</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 206 L 260 222" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SELECT MAX -->
+  <rect x="120" y="226" width="280" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="242" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">④ SELECT user_id, MAX(time_stamp) AS last_stamp</text>
+  <text x="260" y="258" text-anchor="middle" font-size="9.5" fill="#555">每组取 time_stamp 最大值（最晚登录时间）</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 268 L 260 284" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: Output -->
+  <rect x="170" y="288" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="302" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">⑤ 输出 (user_id, last_stamp)</text>
+  <text x="260" y="316" text-anchor="middle" font-size="9.5" fill="#555">结果集不含 2020 年未登录的用户</text>
+
+  <!-- Right side notes -->
+  <text x="430" y="120" font-size="9" fill="#888" text-anchor="middle">⚠ 顺序铁律</text>
+  <text x="430" y="136" font-size="8.5" fill="#b85450" text-anchor="middle">WHERE 必须在</text>
+  <text x="430" y="148" font-size="8.5" fill="#b85450" text-anchor="middle">GROUP BY 之前</text>
+
+  <!-- Footer -->
+  <text x="260" y="344" text-anchor="middle" font-size="10" fill="#aaa">无需 ORDER BY：题目允许任意顺序返回 | 无需 HAVING：行级过滤用 WHERE</text>
+</svg>

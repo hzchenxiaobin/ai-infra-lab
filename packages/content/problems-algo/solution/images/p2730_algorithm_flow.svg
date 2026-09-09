@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2730f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arr2730g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：扫右端 → 遇新对判违例 → 违例则跳左 → 更新答案</text>
+
+  <!-- init -->
+  <rect x="200" y="48" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">l=0, last=-1, ans=0</text>
+
+  <path d="M280,86 L280,108" stroke="#446688" stroke-width="2" marker-end="url(#arr2730f)" filter="url(#rough2)"/>
+
+  <!-- loop header diamond -->
+  <path d="M280,112 L380,156 L280,200 L180,156 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="154" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">r &lt; n ?</text>
+  <text x="280" y="170" text-anchor="middle" font-size="10" fill="#d6a040">取 ch = s[r]</text>
+
+  <!-- yes branch down -->
+  <text x="290" y="216" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M280,200 L280,222" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr2730g)" filter="url(#rough2)"/>
+
+  <!-- inner condition: adjacent equal pair? -->
+  <path d="M280,226 L400,266 L280,306 L160,266 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="262" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">r&gt;0 且 s[r]==s[r-1]</text>
+  <text x="280" y="278" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">（新对）?</text>
+
+  <!-- yes: handle new pair -->
+  <text x="408" y="262" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M400,266 L440,266" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr2730g)" filter="url(#rough2)"/>
+
+  <!-- nested condition: already has pair? -->
+  <path d="M540,266 L540,310" fill="none" stroke="#446688" stroke-width="0"/>
+  <path d="M520,238 L540,266 L520,294 L500,266 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="520" y="262" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">last</text>
+  <text x="520" y="276" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">≥ l ?</text>
+
+  <!-- nested yes: jump left -->
+  <text x="478" y="312" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M500,294 L500,316 L460,316 L460,334" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr2730g)" filter="url(#rough2)"/>
+  <rect x="380" y="334" width="160" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="460" y="355" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">l = last + 1（跳越收缩）</text>
+
+  <!-- nested no: skip -->
+  <text x="548" y="312" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M540,294 L540,334" stroke="#b85450" stroke-width="2" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- update last (both merge) -->
+  <path d="M460,366 L460,386 L300,386 L300,404" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr2730g)" filter="url(#rough2)"/>
+  <rect x="200" y="404" width="200" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="425" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">last = r - 1；ans = max(ans, r-l+1)</text>
+
+  <!-- new pair branch merges into update last as well -->
+  <path d="M460,386 L460,386" fill="none" stroke="none"/>
+
+  <!-- inner condition no branch: directly to update ans -->
+  <text x="120" y="262" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M160,266 L120,266 L120,420 L200,420" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arr2730f)" filter="url(#rough2)"/>
+  <text x="100" y="345" font-size="10" fill="#b85450">无新对，仅</text>
+  <text x="100" y="358" font-size="10" fill="#b85450">更新 ans</text>
+
+  <!-- loop back from update box to loop header -->
+  <path d="M300,404 L300,390 L80,390 L80,156 L180,156" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr2730f)" filter="url(#rough2)"/>
+  <text x="92" y="384" font-size="10" fill="#446688">r++，回到循环</text>
+
+  <!-- exit branch -->
+  <text x="392" y="148" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M380,156 L460,156 L460,128" stroke="#b85450" stroke-width="2" marker-end="url(#arr2730f)" filter="url(#rough2)"/>
+  <rect x="410" y="90" width="120" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="112" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">return ans</text>
+</svg>

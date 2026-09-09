@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：对长且动的 nums2 建频率表，count 时枚举短的 nums1</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">两数组不对称：nums1 短(≤1000)只读 / nums2 长(≤10⁵)可变</text>
+
+  <!-- ====== Left: nums1 (short, fixed) ====== -->
+  <text x="36" y="76" font-size="11" fill="#666">nums1（短·只读）</text>
+  <text x="36" y="90" font-size="9.5" fill="#aaa">枚举它 → O(n₁)</text>
+
+  <!-- nums1 cells: 1,1,2,2,2,3 -->
+  <rect x="36" y="98" width="34" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="53" y="119" text-anchor="middle" font-size="13" fill="#333">1</text>
+  <rect x="72" y="98" width="34" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="89" y="119" text-anchor="middle" font-size="13" fill="#333">1</text>
+  <rect x="108" y="98" width="34" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="125" y="119" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="144" y="98" width="34" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="161" y="119" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="180" y="98" width="34" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="197" y="119" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="216" y="98" width="34" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="233" y="119" text-anchor="middle" font-size="13" fill="#333">3</text>
+
+  <!-- enumerate label -->
+  <text x="125" y="150" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">逐个枚举 x</text>
+
+  <!-- ====== Right: freq map of nums2 ====== -->
+  <text x="380" y="76" font-size="11" fill="#666">freq 表（nums2 值频率）</text>
+  <text x="380" y="90" font-size="9.5" fill="#aaa">查表 → O(1)</text>
+
+  <!-- freq table frame -->
+  <rect x="372" y="98" width="150" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="447" y="116" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">value : count</text>
+
+  <!-- freq rows -->
+  <text x="392" y="138" font-size="12" fill="#333">1</text>
+  <text x="430" y="138" font-size="11" fill="#888">:</text>
+  <text x="448" y="138" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <text x="392" y="158" font-size="12" fill="#333">2</text>
+  <text x="430" y="158" font-size="11" fill="#888">:</text>
+  <text x="448" y="158" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <text x="392" y="178" font-size="12" fill="#333">4</text>
+  <text x="430" y="178" font-size="11" fill="#888">:</text>
+  <text x="448" y="178" font-size="12" fill="#333" font-weight="bold">2</text>
+
+  <text x="392" y="198" font-size="12" fill="#b85450" font-weight="bold">5</text>
+  <text x="430" y="198" font-size="11" fill="#888">:</text>
+  <text x="448" y="198" font-size="12" fill="#b85450" font-weight="bold">2</text>
+
+  <!-- highlight row 5 (complement of x=2 for tot=7) -->
+  <rect x="380" y="186" width="76" height="22" fill="none" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+
+  <!-- ====== Middle: count formula ====== -->
+  <!-- arrow from x=2 to freq[5] -->
+  <path d="M 197 114 C 270 114, 320 150, 378 196" stroke="#b85450" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="285" y="158" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">x=2 → 查 freq[7−2=5]</text>
+
+  <!-- formula box -->
+  <rect x="60" y="232" width="440" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">count(tot) = Σ freq[ tot − x ]，x ∈ nums1</text>
+
+  <!-- ====== Bottom: why this split ====== -->
+  <rect x="40" y="290" width="480" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="310" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">为什么建表在 nums2、枚举 nums1？</text>
+  <text x="280" y="328" text-anchor="middle" font-size="10.5" fill="#555">nums1 短(≤1000) → 枚举便宜；nums2 长(≤10⁵) → 查表省下扫一遍</text>
+  <text x="280" y="344" text-anchor="middle" font-size="10.5" fill="#555">add 只动 nums2 → 频率表增删同表，O(1) 维护天然契合</text>
+  <text x="280" y="360" text-anchor="middle" font-size="10" fill="#888">反例：建表在 nums1 → count 要枚举 nums2，O(10⁵)×1000 次 = 10⁸ → TLE</text>
+</svg>

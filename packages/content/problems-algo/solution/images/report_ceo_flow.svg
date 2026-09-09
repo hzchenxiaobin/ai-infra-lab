@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold">递归 CTE 执行流程：锚点 → 递归体 → UNION ALL</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">从 CEO 的直接下属出发，逐层 JOIN 向下展开，UNION ALL 累积所有层</text>
+
+  <!-- ===== Step 1: Anchor ===== -->
+  <rect x="40" y="60" width="480" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="55" y="82" font-size="12" fill="#446688" font-weight="bold">① 锚点（Base Case）</text>
+  <text x="55" y="100" font-size="10.5" fill="#555">SELECT employee_id FROM Employees</text>
+  <text x="55" y="116" font-size="10.5" fill="#555">WHERE manager_id = 1 AND employee_id ≠ 1</text>
+
+  <!-- result tag -->
+  <rect x="400" y="72" width="100" height="24" fill="#446688" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="88" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="bold">→ {2, 77}</text>
+
+  <!-- arrow down -->
+  <path d="M280 132 L280 152" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="146" font-size="9.5" fill="#888">UNION ALL</text>
+
+  <!-- ===== Step 2: Recursive ===== -->
+  <rect x="40" y="156" width="480" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="55" y="178" font-size="12" fill="#4a7a3a" font-weight="bold">② 递归体（Recursive Step）— 重复执行直到无新行</text>
+  <text x="55" y="196" font-size="10.5" fill="#555">SELECT e.employee_id</text>
+  <text x="55" y="212" font-size="10.5" fill="#555">FROM Employees e</text>
+  <text x="55" y="228" font-size="10.5" fill="#555">JOIN subordinates s ON e.manager_id = s.employee_id</text>
+
+  <!-- result tags for each iteration -->
+  <rect x="400" y="164" width="100" height="20" fill="#4a7a3a" rx="3" filter="url(#rough2)"/>
+  <text x="450" y="178" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="bold">第1轮 → {4}</text>
+  <rect x="400" y="188" width="100" height="20" fill="#4a7a3a" rx="3" filter="url(#rough2)"/>
+  <text x="450" y="202" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="bold">第2轮 → {7}</text>
+  <rect x="400" y="212" width="100" height="20" fill="#4a7a3a" rx="3" filter="url(#rough2)"/>
+  <text x="450" y="226" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="bold">第3轮 → {} (停)</text>
+
+  <!-- arrow down -->
+  <path d="M280 244 L280 264" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Final result ===== -->
+  <rect x="40" y="268" width="480" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="55" y="290" font-size="12" fill="#d6a040" font-weight="bold">③ 最终结果（UNION ALL 去重累积）</text>
+  <text x="55" y="308" font-size="11" fill="#555">SELECT employee_id FROM subordinates → {2, 77} ∪ {4} ∪ {7}</text>
+
+  <rect x="400" y="280" width="100" height="24" fill="#d6a040" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="296" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">= {2,77,4,7}</text>
+
+  <!-- ===== Bottom: key insight ===== -->
+  <rect x="40" y="332" width="480" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="352" font-size="10.5" fill="#555"><tspan fill="#446688" font-weight="bold">锚点</tspan> 找 CEO 的直接下属（manager_id=1）；<tspan fill="#4a7a3a" font-weight="bold">递归体</tspan> 每轮把「上轮新发现的下属」当作 manager，</text>
+  <text x="55" y="368" font-size="10.5" fill="#555">JOIN 找他们的直接下属。<tspan fill="#d6a040" font-weight="bold">UNION ALL</tspan> 把每轮结果合并去重——无新行时递归终止。</text>
+  <text x="55" y="382" font-size="10.5" fill="#b85450" font-weight="bold">注意：e.manager_id = s.employee_id 是「向下展开」方向（从已知的下属找他们的下属）</text>
+</svg>

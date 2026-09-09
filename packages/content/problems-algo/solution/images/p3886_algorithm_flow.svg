@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="18" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：因数外循环 + 逐块双判据</text>
+  <text x="260" y="34" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">单个因数的工作量 O(n)：每元素进出配平桶一次 + 数一趟降点</text>
+
+  <!-- box1: preprocess -->
+  <rect x="160" y="44" width="200" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="65" text-anchor="middle" font-size="11" fill="#2c4a66" font-weight="bold" filter="url(#rough2)">s = sorted(nums)，ans = 0</text>
+  <path d="M 260 78 L 260 94" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- box2: enumerate divisors -->
+  <rect x="160" y="98" width="200" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="119" text-anchor="middle" font-size="10.5" fill="#2c4a66" filter="url(#rough2)">枚举 n 的因数 k（n mod k = 0）</text>
+  <path d="M 260 132 L 260 148" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- box3: next block -->
+  <rect x="160" y="152" width="200" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="173" text-anchor="middle" font-size="10.5" fill="#2c4a66" filter="url(#rough2)">取当前 k 的下一块 [i, i+k)</text>
+  <path d="M 260 186 L 260 204" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- diamond 1: rotation check -->
+  <polygon points="260,208 365,254 260,300 155,254" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="240" text-anchor="middle" font-size="10" fill="#7a5c14" font-weight="bold" filter="url(#rough2)">块是目标段 s[i..i+k) 的旋转？</text>
+  <text x="260" y="256" text-anchor="middle" font-size="8.5" fill="#8a6d1a" filter="url(#rough2)">判据①：计数配平，多重集相等</text>
+  <text x="260" y="268" text-anchor="middle" font-size="8.5" fill="#8a6d1a" filter="url(#rough2)">判据②：降点 ≤ 1 且末元 ≤ 首元</text>
+  <text x="270" y="224" text-anchor="start" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+
+  <!-- fail branch -->
+  <path d="M 365 254 L 423 254" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="385" y="246" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <rect x="427" y="238" width="82" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="468" y="253" text-anchor="middle" font-size="10.5" fill="#8a3030" font-weight="bold" filter="url(#rough2)">k 出局 ✗</text>
+  <text x="468" y="266" text-anchor="middle" font-size="8" fill="#8a3030" filter="url(#rough2)">换下一个因数</text>
+  <path d="M 468 236 L 468 115 L 366 115" stroke="#b85450" stroke-width="1.4" stroke-dasharray="5,4" fill="none" marker-end="url(#arrR)" opacity="0.75" filter="url(#rough2)"/>
+
+  <!-- yes branch down -->
+  <path d="M 260 300 L 260 318" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- diamond 2: more blocks? -->
+  <polygon points="260,322 350,354 260,386 170,354" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="358" text-anchor="middle" font-size="10" fill="#2c4a66" font-weight="bold" filter="url(#rough2)">还有未判定的块？</text>
+
+  <!-- loop back -->
+  <path d="M 170 354 L 70 354 L 70 169 L 154 169" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="108" y="346" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">是（下一块）</text>
+
+  <!-- no branch down -->
+  <path d="M 260 386 L 260 402" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="269" y="398" text-anchor="start" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- ans box -->
+  <rect x="170" y="406" width="180" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="425" text-anchor="middle" font-size="11.5" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">ans += k ✓</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">栅栏匹配：单块 + 配对，互不冲突</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">目标高度 h 的木板 = 单块(h) + 配对(a, h-a)，值域不交所以独立计数</text>
+
+  <text x="40" y="76" font-size="12" fill="#333" font-weight="bold">planks = [1,3,2,5,7,5,4,2,1]，目标 h = 5：</text>
+
+  <rect x="30" y="92" width="240" height="130" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="112" text-anchor="middle" font-size="12" fill="#3a4a66" font-weight="bold">单块：planks[i] == 5</text>
+  <rect x="55" y="128" width="40" height="30" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="75" y="148" text-anchor="middle" font-size="12" fill="#333">5</text>
+  <text x="75" y="172" text-anchor="middle" font-size="10" fill="#888">planks[3]</text>
+  <rect x="155" y="128" width="40" height="30" fill="#ffffff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="148" text-anchor="middle" font-size="12" fill="#333">5</text>
+  <text x="175" y="172" text-anchor="middle" font-size="10" fill="#888">planks[5]</text>
+  <text x="150" y="200" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">单块贡献 = 2</text>
+
+  <rect x="290" y="92" width="240" height="130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="112" text-anchor="middle" font-size="12" fill="#3a4a66" font-weight="bold">配对：a + b == 5</text>
+  <rect x="310" y="128" width="30" height="24" fill="#ffffff" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="325" y="145" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="352" y="145" text-anchor="middle" font-size="11" fill="#888">+</text>
+  <rect x="365" y="128" width="30" height="24" fill="#ffffff" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="145" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <text x="398" y="145" text-anchor="middle" font-size="11" fill="#888">=5</text>
+  <text x="345" y="168" text-anchor="middle" font-size="10" fill="#888">min(cnt[1],cnt[4])=1</text>
+  <rect x="310" y="180" width="30" height="24" fill="#ffffff" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="325" y="197" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="352" y="197" text-anchor="middle" font-size="11" fill="#888">+</text>
+  <rect x="365" y="180" width="30" height="24" fill="#ffffff" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="197" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="398" y="197" text-anchor="middle" font-size="11" fill="#888">=5</text>
+  <text x="345" y="215" text-anchor="middle" font-size="10" fill="#888">min(cnt[3],cnt[2])=1</text>
+
+  <path d="M 270 157 L 290 157" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="30" y="240" width="500" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="262" font-size="11" fill="#4a7a3a" font-weight="bold">h=5 总数 = 单块 2 + 配对 2 = 4 块高度为 5 的木板</text>
+  <text x="50" y="280" font-size="10.5" fill="#555">单块用值为 h 的木板；配对用值为 a 和 h-a 的木板（a,h-a &lt; h），值域不交</text>
+  <text x="50" y="296" font-size="10.5" fill="#555">枚举所有候选 h（出现过的值 + 两值之和），取最大总数</text>
+
+  <rect x="30" y="322" width="500" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="344" font-size="11" fill="#333" font-weight="bold">优化：用 freq map 枚举去重值对 (a,b), a&lt;=b</text>
+  <text x="50" y="362" font-size="10.5" fill="#555">a&lt;b: 配对数 min(cnt[a],cnt[b])；a==b: cnt[a]//2。累加到 map[a+b]</text>
+  <text x="50" y="376" font-size="10.5" fill="#555">总复杂度 O(D^2)，D=去重值个数 &lt;= 1000</text>
+</svg>

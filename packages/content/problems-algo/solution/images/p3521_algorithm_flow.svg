@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 412"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="412" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：自连接 → 聚合计数 → 阈值过滤 → 补类别 → 排序</text>
+
+  <!-- ① -->
+  <rect x="78" y="36" width="364" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="60" text-anchor="middle" font-size="11.5" fill="#446688" filter="url(#rough2)">① 读入 ProductPurchases（15 行）—— quantity 与计数无关</text>
+  <path d="M 260 74 L 260 92" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② -->
+  <rect x="78" y="94" width="364" height="38" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="118" text-anchor="middle" font-size="11.5" fill="#8a6d3a" filter="url(#rough2)">② 自连接 p1 ⋈ p2：ON 同 user 且 p1.id &lt; p2.id → 16 行对</text>
+  <path d="M 260 132 L 260 150" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ -->
+  <rect x="78" y="152" width="364" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="176" text-anchor="middle" font-size="11.5" fill="#2a5a2a" filter="url(#rough2)">③ GROUP BY (product1_id, product2_id)：COUNT(DISTINCT user_id) → 8 组</text>
+  <path d="M 260 190 L 260 208" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ -->
+  <rect x="78" y="210" width="364" height="38" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="234" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">④ HAVING customer_count ≥ 3 → 只剩 3 个推荐对</text>
+  <path d="M 260 248 L 260 266" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ -->
+  <rect x="78" y="268" width="364" height="38" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="292" text-anchor="middle" font-size="11.5" fill="#446688" filter="url(#rough2)">⑤ JOIN ProductInfo ×2 补两列类别（先过滤、后装饰）</text>
+  <path d="M 260 306 L 260 324" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ -->
+  <rect x="78" y="326" width="364" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="350" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2a5a2a" filter="url(#rough2)">⑥ ORDER BY count ↓, product1_id ↑, product2_id ↑ → 输出 3 行</text>
+
+  <!-- 底注 -->
+  <text x="260" y="388" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">要点：先聚合过滤、后 JOIN 装饰——等中间结果缩到 3 行再补类别，不放大中间表</text>
+  <text x="260" y="404" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">数据流：15 行购买 → 16 行对 → 8 组候选 → 3 个推荐对（示例实测）</text>
+</svg>

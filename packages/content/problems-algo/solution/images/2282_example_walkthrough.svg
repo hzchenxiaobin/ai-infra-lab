@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 520"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：heights = [[5,1],[3,1],[4,1]]，行趟 + 列趟</text>
+  <text x="290" y="42" text-anchor="middle" font-size="10.5" fill="#888">行趟三行都给 [1,0]（[X,1] 中 X&gt;1 弹掉 1 不 +1）；列趟是关键，下图展开 col0 与 col1</text>
+
+  <!-- ===== Row pass summary (top strip) ===== -->
+  <rect x="30" y="54" width="520" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="78" font-size="11" fill="#333" font-weight="bold">行趟</text>
+  <text x="100" y="78" font-size="10.5" fill="#555">row0 [5,1]→[1,0]　row1 [3,1]→[1,0]　row2 [4,1]→[1,0]　→　行贡献 = [[1,0],[1,0],[1,0]]</text>
+
+  <!-- divider -->
+  <path d="M 30 108 L 550 108" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- ===== Column 0 [5,3,4] walkthrough (left half) ===== -->
+  <text x="150" y="128" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">列 0：[5, 3, 4]（从下 i=2 向上到 i=0）</text>
+
+  <!-- header for col0 table -->
+  <text x="44" y="148" font-size="9.5" fill="#888">i</text>
+  <text x="78" y="148" font-size="9.5" fill="#888">h[i]</text>
+  <text x="112" y="148" font-size="9.5" fill="#888">操作</text>
+  <text x="210" y="148" font-size="9.5" fill="#888">栈（操作后）</text>
+  <text x="280" y="148" font-size="9.5" fill="#888">add[i]</text>
+
+  <!-- i=2, h=4: empty, pop<4 none, empty no +1, push 4 -> [4], add=0 -->
+  <rect x="32" y="154" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="171" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <text x="78" y="171" font-size="11" fill="#333">4</text>
+  <text x="112" y="171" font-size="10" fill="#555">栈空 → push 4</text>
+  <rect x="208" y="156" width="22" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="172" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <text x="280" y="171" font-size="11" fill="#b85450" font-weight="bold">0</text>
+
+  <!-- i=1, h=3: stack [4], pop<3 none, non-empty +1, push 3 -> [4,3], add=1 -->
+  <rect x="32" y="184" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="201" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <text x="78" y="201" font-size="11" fill="#333">3</text>
+  <text x="112" y="201" font-size="10" fill="#555">顶 4≥3 → +1；push 3</text>
+  <rect x="208" y="186" width="22" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="202" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <rect x="234" y="186" width="22" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="245" y="202" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="280" y="201" font-size="11" fill="#b85450" font-weight="bold">1</text>
+
+  <!-- i=0, h=5: stack [4,3], pop<5 pop 3&4 (+2), empty no +1, push 5 -> [5], add=2 -->
+  <rect x="32" y="214" width="30" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="231" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <text x="78" y="231" font-size="11" fill="#333">5</text>
+  <text x="112" y="231" font-size="10" fill="#555">弹 3、弹 4（+2）；栈空；push 5</text>
+  <rect x="208" y="216" width="22" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="232" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <text x="280" y="231" font-size="11" fill="#b85450" font-weight="bold">2</text>
+
+  <!-- col0 result -->
+  <rect x="30" y="246" width="290" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="175" y="263" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">col0 贡献 add = [2, 1, 0]</text>
+
+  <!-- ===== Column 1 [1,1,1] walkthrough (left half, below col0) ===== -->
+  <text x="150" y="294" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">列 1：[1, 1, 1]（清等高的关键演示）</text>
+
+  <!-- header -->
+  <text x="44" y="314" font-size="9.5" fill="#888">i</text>
+  <text x="78" y="314" font-size="9.5" fill="#888">h[i]</text>
+  <text x="112" y="314" font-size="9.5" fill="#888">操作</text>
+  <text x="210" y="314" font-size="9.5" fill="#888">栈（操作后）</text>
+  <text x="280" y="314" font-size="9.5" fill="#888">add[i]</text>
+
+  <!-- i=2, h=1: empty, push 1 -> [1], add=0 -->
+  <rect x="32" y="320" width="30" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="337" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">2</text>
+  <text x="78" y="337" font-size="11" fill="#333">1</text>
+  <text x="112" y="337" font-size="10" fill="#555">栈空 → push 1</text>
+  <rect x="208" y="322" width="22" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="338" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="280" y="337" font-size="11" fill="#b85450" font-weight="bold">0</text>
+
+  <!-- i=1, h=1: stack [1], pop<1 none, non-empty +1, clear ==1 pop, push 1 -> [1], add=1 -->
+  <rect x="32" y="350" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="367" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">1</text>
+  <text x="78" y="367" font-size="11" fill="#333">1</text>
+  <text x="112" y="367" font-size="10" fill="#555">顶1≥1 →+1；清==1 弹旧；push 1</text>
+  <rect x="208" y="352" width="22" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="368" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="280" y="367" font-size="11" fill="#b85450" font-weight="bold">1</text>
+
+  <!-- i=0, h=1: same as i=1 -->
+  <rect x="32" y="380" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="47" y="397" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <text x="78" y="397" font-size="11" fill="#333">1</text>
+  <text x="112" y="397" font-size="10" fill="#555">顶1≥1 →+1；清==1 弹旧；push 1</text>
+  <rect x="208" y="382" width="22" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="219" y="398" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="280" y="397" font-size="11" fill="#b85450" font-weight="bold">1</text>
+
+  <!-- col1 result -->
+  <rect x="30" y="412" width="290" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="175" y="429" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">col1 贡献 add = [1, 1, 0]</text>
+
+  <!-- ===== Right side: final sum ===== -->
+  <rect x="340" y="320" width="220" height="156" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="342" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">相加 = 行 + 列</text>
+
+  <!-- row contribution -->
+  <text x="356" y="364" font-size="10.5" fill="#446688" font-weight="bold">行贡献</text>
+  <text x="430" y="364" font-size="11" fill="#333">[[1,0],[1,0],[1,0]]</text>
+
+  <!-- col contribution -->
+  <text x="356" y="384" font-size="10.5" fill="#4a7a3a" font-weight="bold">列贡献</text>
+  <text x="430" y="384" font-size="11" fill="#333">[[2,1],[1,1],[0,0]]</text>
+
+  <!-- plus -->
+  <text x="414" y="408" text-anchor="middle" font-size="16" fill="#d6a040" font-weight="bold">＋</text>
+
+  <!-- answer -->
+  <text x="356" y="432" font-size="11" fill="#b85450" font-weight="bold">answer</text>
+  <text x="430" y="432" font-size="13" fill="#b85450" font-weight="bold">[[3,1],[2,1],[1,0]]</text>
+  <text x="450" y="456" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">✓ 与示例 2 一致</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="446" width="290" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="175" y="466" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">为什么 col1 要「清等高」？</text>
+  <text x="175" y="482" text-anchor="middle" font-size="10" fill="#555">等高者互相可见但互相挡住更远的人</text>
+  <text x="175" y="496" text-anchor="middle" font-size="10" fill="#555">不清则栈堆成 [1,1,1]，(0,1) 会错误看到 2 人</text>
+</svg>

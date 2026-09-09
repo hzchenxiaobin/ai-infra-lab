@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：双排序 + 游标累积 + 有序集合二分</text>
+
+  <!-- Step 1: sort rooms by size desc -->
+  <rect x="70" y="44" width="400" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① rooms 按 size 降序排；queries 按 minSize 降序排（带原下标 j）</text>
+
+  <path d="M 270 78 L 270 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init -->
+  <rect x="70" y="98" width="400" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="120" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② ptr = 0；候选集 S = ∅（有序集合）</text>
+
+  <path d="M 270 132 L 270 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop decision: query left? -->
+  <polygon points="270,152 388,196 270,240 152,196" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="192" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">还有查询?</text>
+  <text x="270" y="208" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">(按 minSize 降序)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 388 196 L 460 196" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="414" y="188" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 240 L 270 256" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="252" font-size="11" fill="#82b366" filter="url(#rough2)">是</text>
+
+  <!-- Step 3: cursor advance while -->
+  <rect x="50" y="260" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="278" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">③ while ptr &lt; n 且 rooms[ptr].size ≥ minSize:</text>
+  <text x="270" y="294" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">S.insert(rooms[ptr].id); ptr++   （游标单调推进，总迭代 n 次）</text>
+
+  <path d="M 270 300 L 270 314" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: empty check -->
+  <polygon points="270,318 360,348 270,378 180,348" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="352" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">S 为空?</text>
+
+  <!-- Yes -> -1 -->
+  <path d="M 180 348 L 120 348 L 120 392" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="156" y="340" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="64" y="394" width="112" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="412" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">answer[j] = -1</text>
+
+  <!-- No -> binary search -->
+  <path d="M 270 378 L 270 392" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="374" font-size="11" fill="#82b366" filter="url(#rough2)">否</text>
+
+  <!-- Step 5: lower_bound + compare lo/hi -->
+  <rect x="190" y="394" width="300" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="412" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">④ it = S.lower_bound(preferred)</text>
+  <text x="340" y="430" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">比较 hi=*it 与 lo=*prev(it)，取更近者（平局取 lo）</text>
+
+  <!-- merge to answer[j] = best -->
+  <path d="M 120 422 L 120 446 L 340 446 L 340 442" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="190" y="450" width="300" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="468" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">answer[j] = best</text>
+
+  <!-- loop back arrow -->
+  <path d="M 490 464 L 510 464 L 510 196 L 388 196" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="510" y="330" text-anchor="middle" font-size="10" fill="#888" transform="rotate(90 510 330)" filter="url(#rough2)">下一个查询</text>
+
+  <!-- End node -->
+  <ellipse cx="486" cy="196" rx="0" ry="0" fill="none"/>
+
+  <!-- summary note -->
+  <text x="270" y="500" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">排序 O(n log n + k log k) + 游标 n 次插入 O(n log n) + k 次二分 O(k log n) = O((n+k) log n)</text>
+</svg>

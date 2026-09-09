@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="24" text-anchor="middle" font-size="13.5" fill="#444" font-weight="bold">核心：排序后双指针定界，中间元素每个「选/不选」→ 2^(right−left) 个子序列</text>
+
+  <!-- ============ Section 1: sort invariance ============ -->
+  <text x="40" y="58" font-size="12" fill="#446688" font-weight="bold">① 排序不变性</text>
+  <text x="40" y="72" font-size="10" fill="#888">子序列的 min/max 与顺序无关 → 可排序</text>
+
+  <!-- unsorted row label -->
+  <text x="120" y="92" font-size="10.5" fill="#555">排序前</text>
+  <!-- unsorted cells: 6,3,7,5 -->
+  <rect x="160" y="78" width="40" height="26" rx="4" fill="#eeeeee" stroke="#999" stroke-width="1.4" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="180" y="96" text-anchor="middle" font-size="12" fill="#555">6</text>
+  <rect x="204" y="78" width="40" height="26" rx="4" fill="#eeeeee" stroke="#999" stroke-width="1.4" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="224" y="96" text-anchor="middle" font-size="12" fill="#555">3</text>
+  <rect x="248" y="78" width="40" height="26" rx="4" fill="#eeeeee" stroke="#999" stroke-width="1.4" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="268" y="96" text-anchor="middle" font-size="12" fill="#555">7</text>
+  <rect x="292" y="78" width="40" height="26" rx="4" fill="#eeeeee" stroke="#999" stroke-width="1.4" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="312" y="96" text-anchor="middle" font-size="12" fill="#555">5</text>
+
+  <!-- down arrow -->
+  <path d="M 246 108 L 246 124" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="256" y="120" font-size="9.5" fill="#888">sort</text>
+
+  <!-- sorted row label -->
+  <text x="120" y="146" font-size="10.5" fill="#555">排序后</text>
+  <!-- sorted cells: 3,5,6,7 -->
+  <rect x="160" y="132" width="40" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="180" y="150" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">3</text>
+  <rect x="204" y="132" width="40" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="224" y="150" text-anchor="middle" font-size="12.5" fill="#333">5</text>
+  <rect x="248" y="132" width="40" height="26" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="268" y="150" text-anchor="middle" font-size="12.5" fill="#333">6</text>
+  <rect x="292" y="132" width="40" height="26" rx="4" fill="#eeeeee" stroke="#999" stroke-width="1.4" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="312" y="150" text-anchor="middle" font-size="12.5" fill="#999">7</text>
+
+  <!-- left/right pointer labels above sorted row -->
+  <path d="M 180 112 L 180 130" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="170" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">left</text>
+  <text x="180" y="182" text-anchor="middle" font-size="9.5" fill="#446688">(min)</text>
+
+  <path d="M 268 112 L 268 130" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="268" y="170" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">right</text>
+  <text x="268" y="182" text-anchor="middle" font-size="9.5" fill="#b85450">(max)</text>
+
+  <!-- boundary annotation to the right -->
+  <rect x="370" y="124" width="240" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="490" y="142" text-anchor="middle" font-size="11" fill="#555">target = 9</text>
+  <text x="490" y="158" text-anchor="middle" font-size="11" fill="#333">3 + 6 = 9 ≤ 9 ✓   3 + 7 = 10 &gt; 9 ✗</text>
+
+  <!-- ============ Section 2: middle elements pick/skip ============ -->
+  <text x="40" y="216" font-size="12" fill="#446688" font-weight="bold">② left 与 right 之间的元素：每个「选 / 不选」</text>
+
+  <!-- element 5 (index1) toggle -->
+  <rect x="150" y="232" width="44" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="172" y="252" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">5</text>
+  <text x="172" y="276" text-anchor="middle" font-size="9.5" fill="#888">选 ✓ / 不选 ✗</text>
+
+  <!-- element 6 (index2) toggle -->
+  <rect x="230" y="232" width="44" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="252" y="252" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">6</text>
+  <text x="252" y="276" text-anchor="middle" font-size="9.5" fill="#888">选 ✓ / 不选 ✗</text>
+
+  <!-- multiply note -->
+  <rect x="330" y="236" width="220" height="32" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="440" y="256" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">2 个元素 × 2 选择 = 2² = 4</text>
+
+  <!-- ============ Section 3: resulting subsequences ============ -->
+  <text x="40" y="306" font-size="12" fill="#446688" font-weight="bold">③ 以 3 为 min 的合法子序列（共 4 个）</text>
+
+  <!-- 4 subsequence chips -->
+  <rect x="60" y="318" width="86" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="103" y="336" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[3]</text>
+
+  <rect x="158" y="318" width="86" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="201" y="336" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[3, 5]</text>
+
+  <rect x="256" y="318" width="86" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="299" y="336" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[3, 6]</text>
+
+  <rect x="354" y="318" width="100" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="404" y="336" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">[3, 5, 6]</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="360" width="560" height="48" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="320" y="380" text-anchor="middle" font-size="11" fill="#555">right 随 left 右移单调左移 → 双指针 O(n)；预处理 2 的幂，答案对 10⁹+7 取模</text>
+  <text x="320" y="398" text-anchor="middle" font-size="10.5" fill="#888">固定 min=nums[left]，找最大 right 使 nums[left]+nums[right] ≤ target，中间 right−left 个元素任意取舍</text>
+</svg>

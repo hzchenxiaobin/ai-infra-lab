@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：FROM → LEFT JOIN×2 → GROUP BY → SUM+COALESCE → 输出</text>
+
+  <!-- Step 1 -->
+  <rect x="140" y="48" width="280" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">① FROM Salesperson s</text>
+  <text x="280" y="82" text-anchor="middle" font-size="10" fill="#888">以销售员表为左表，保每名销售员为一行种子</text>
+  <path d="M 280 92 L 280 108" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="140" y="108" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="126" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">② LEFT JOIN Customer ON sp_id</text>
+  <text x="280" y="142" text-anchor="middle" font-size="10" fill="#888">接归属客户；无客户者（Jerry）留 c.* = NULL</text>
+  <path d="M 280 152 L 280 168" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="140" y="168" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="186" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">③ LEFT JOIN Sales ON customer_id</text>
+  <text x="280" y="202" text-anchor="middle" font-size="10" fill="#888">接销售记录；无销售者 sa.price = NULL</text>
+  <path d="M 280 212 L 280 228" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="140" y="228" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="246" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">④ GROUP BY s.salesperson_id, s.name</text>
+  <text x="280" y="262" text-anchor="middle" font-size="10" fill="#888">按销售员折叠，多笔销售归一组</text>
+  <path d="M 280 272 L 280 288" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="140" y="288" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">⑤ COALESCE(SUM(sa.price), 0)</text>
+  <text x="280" y="322" text-anchor="middle" font-size="10" fill="#888">组内求和；全 NULL 组归零</text>
+  <path d="M 280 332 L 280 348" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6 -->
+  <rect x="140" y="348" width="280" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="366" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">⑥ SELECT salesperson_id, name, influence</text>
+  <text x="280" y="382" text-anchor="middle" font-size="10" fill="#888">投影输出三列</text>
+
+  <!-- side note: SQL clause order -->
+  <rect x="436" y="108" width="112" height="160" fill="#fafafa" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="492" y="128" text-anchor="middle" font-size="10" fill="#888">SQL 子句顺序</text>
+  <text x="444" y="146" font-size="9" fill="#888">FROM/JOIN</text>
+  <text x="444" y="162" font-size="9" fill="#888">WHERE（无）</text>
+  <text x="444" y="178" font-size="9" fill="#888">GROUP BY</text>
+  <text x="444" y="194" font-size="9" fill="#888">HAVING（无）</text>
+  <text x="444" y="210" font-size="9" fill="#888">SELECT</text>
+  <text x="444" y="226" font-size="9" fill="#888">  /SUM/COALESCE</text>
+  <text x="444" y="242" font-size="9" fill="#888">ORDER BY（可选）</text>
+  <text x="444" y="258" font-size="9" fill="#888">LIMIT</text>
+
+  <!-- Jerry callout -->
+  <rect x="430" y="270" width="120" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="290" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">Jerry 路径</text>
+  <text x="438" y="306" font-size="9" fill="#b85450">② 无客户→NULL</text>
+  <text x="438" y="320" font-size="9" fill="#b85450">③ 连不上→price NULL</text>
+  <text x="438" y="334" font-size="9" fill="#b85450">⑤ SUM→NULL→归 0</text>
+
+  <!-- result strip -->
+  <rect x="110" y="410" width="340" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="430" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">结果：salesperson_id, name, influence（每名销售员一行）</text>
+  <text x="280" y="448" text-anchor="middle" font-size="10" fill="#888">含 Jerry（influence = 0）</text>
+  <path d="M 280 392 L 280 410" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

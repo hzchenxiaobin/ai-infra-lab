@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">乘积小于 K 的子数组：滑动窗口流程</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="60" rx="96" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#333">开始: left=0, prod=1, ans=0</text>
+
+  <!-- arrow down to diamond A -->
+  <path d="M 280 80 L 280 98" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond A: k <= 1 ? -->
+  <polygon points="280,102 374,148 280,194 186,148" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="144" text-anchor="middle" font-size="12" fill="#333">k ≤ 1 ?</text>
+  <text x="280" y="160" text-anchor="middle" font-size="10" fill="#888">(特判)</text>
+
+  <!-- A: Yes -> return 0 -->
+  <path d="M 374 148 L 450 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="412" y="140" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <ellipse cx="486" cy="148" rx="44" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="152" text-anchor="middle" font-size="12" fill="#333">返回 0</text>
+
+  <!-- A: No -> down -->
+  <path d="M 280 194 L 280 212" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="208" font-size="11" fill="#82b366">否</text>
+
+  <!-- Diamond B: right < n ? -->
+  <polygon points="280,216 374,262 280,308 186,262" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="258" text-anchor="middle" font-size="12" fill="#333">right &lt; n ?</text>
+  <text x="280" y="274" text-anchor="middle" font-size="10" fill="#888">(遍历右端点)</text>
+
+  <!-- B: No -> return ans -->
+  <path d="M 374 262 L 446 262" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="410" y="254" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="486" cy="262" rx="50" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="266" text-anchor="middle" font-size="12" fill="#333">返回 ans</text>
+
+  <!-- B: Yes -> down -->
+  <path d="M 280 308 L 280 326" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="322" font-size="11" fill="#82b366">是</text>
+
+  <!-- Process: prod *= nums[right] -->
+  <rect x="196" y="328" width="168" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="353" text-anchor="middle" font-size="12" fill="#333">prod *= nums[right]</text>
+
+  <!-- arrow down to diamond C -->
+  <path d="M 280 368 L 280 386" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond C: prod >= k ? -->
+  <polygon points="280,390 374,436 280,482 186,436" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="432" text-anchor="middle" font-size="12" fill="#333">prod ≥ k ?</text>
+  <text x="280" y="448" text-anchor="middle" font-size="10" fill="#888">(需收缩?)</text>
+
+  <!-- C: Yes -> shrink box (left) -->
+  <path d="M 186 436 L 118 436" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="152" y="428" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="20" y="414" width="98" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="69" y="432" text-anchor="middle" font-size="10" fill="#333">prod /= nums[left]</text>
+  <text x="69" y="448" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">left++</text>
+
+  <!-- inner loop: shrink box back up to diamond C top -->
+  <path d="M 69 414 L 69 388 L 280 388 L 280 390" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="170" y="382" text-anchor="middle" font-size="10" fill="#888">重判 prod ≥ k</text>
+
+  <!-- C: No -> down -->
+  <path d="M 280 482 L 280 500" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="496" font-size="11" fill="#82b366">否</text>
+
+  <!-- Process: ans += right - left + 1 -->
+  <rect x="176" y="502" width="208" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="523" text-anchor="middle" font-size="12" fill="#333">ans += right − left + 1</text>
+
+  <!-- outer loop: ans box back up to diamond B (far left, dashed) -->
+  <path d="M 176 518 L 10 518 L 10 262 L 186 262" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="10" y="390" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 10 390)">right++ 继续循环</text>
+</svg>

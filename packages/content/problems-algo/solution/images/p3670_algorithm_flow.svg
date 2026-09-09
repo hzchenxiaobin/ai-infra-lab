@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#b85450" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#4a7a3a" stroke-width="1.8" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <!-- 起点 / 终点 -->
+  <rect x="195" y="12" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="260" y="31" text-anchor="middle" font-size="13" font-weight="bold" fill="#333" filter="url(#rough2)">输入 nums</text>
+
+  <rect x="30" y="12" width="110" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="85" y="31" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e4d24" filter="url(#rough2)">返回 ans</text>
+
+  <path d="M 260 40 L 260 56" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ① 建表 -->
+  <rect x="50" y="60" width="420" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="83" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 建表：dp[x] ← max(dp[x], x) —— 值 &lt; 2²⁰，值即掩码</text>
+
+  <path d="M 260 96 L 260 110" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② SOS 传播 -->
+  <rect x="40" y="114" width="440" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="136" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② SOS 传播：dp[m] ← max(dp[m], dp[m ⊕ 2ⁱ])，i = 0 … 19</text>
+  <text x="260" y="156" text-anchor="middle" font-size="11.5" fill="#7a5c10" filter="url(#rough2)">20 轮后 dp[m] = 掩码 ⊆ m 的最大数</text>
+
+  <path d="M 260 166 L 260 180" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 取补 -->
+  <rect x="50" y="184" width="420" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="207" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ ans ← 0，逐个取 x：cm ← (2²⁰ − 1) ⊕ x（补集掩码）</text>
+
+  <path d="M 260 220 L 260 234" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 查表 -->
+  <rect x="50" y="238" width="410" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="260" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">④ 查表取搭档：ans ← max(ans, x · dp[cm])</text>
+  <text x="255" y="280" text-anchor="middle" font-size="11.5" fill="#2e4d24" filter="url(#rough2)">dp[cm] = 0 ⇔ 无合法搭档（0 当哨兵）</text>
+
+  <path d="M 260 290 L 260 304" fill="none" stroke="#555" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="260,306 340,332 260,358 180,332" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="337" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">还有 x ?</text>
+
+  <!-- 是：右侧回环 -->
+  <path d="M 340 332 L 475 332 L 475 264 L 462 264" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="410" y="325" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">是 · 下一个 x</text>
+
+  <!-- 否：左侧退出 -->
+  <path d="M 180 332 L 16 332 L 16 26 L 24 26" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="96" y="324" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否（遍历完）</text>
+</svg>

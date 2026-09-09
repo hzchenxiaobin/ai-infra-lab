@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 448" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="448" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="13.5" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：一条 CTE 走完——排名骨架 + 空窗口计数 → CASE 分档 → 排序输出</text>
+
+  <rect x="48" y="32" width="464" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="48" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① FROM TeamStats</text>
+  <text x="66" y="64" font-size="10" fill="#333" filter="url(#rough2)">n 行原始表：team_name · wins · draws（matches_played / losses 是干扰列）</text>
+
+  <path d="M 280 76 L 280 86" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="48" y="88" width="464" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="104" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② CTE：派生积分 + RANK 名次（承接 3246 的骨架）</text>
+  <text x="66" y="120" font-size="10" fill="#333" filter="url(#rough2)">points = wins × 3 + draws；position = RANK() OVER (ORDER BY wins × 3 + draws DESC)</text>
+  <text x="66" y="135" font-size="10" fill="#333" filter="url(#rough2)">同分同名次、并列占坑跳号：1, 2, …, 7, 7, 9, 10</text>
+
+  <path d="M 280 146 L 280 156" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="48" y="158" width="464" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="174" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">③ 同层再开一个「空窗口」数总数</text>
+  <text x="66" y="190" font-size="10" fill="#333" filter="url(#rough2)">total_teams = COUNT(1) OVER () —— 全表计数贴回每一行，行数不变（不 GROUP BY 不折叠）</text>
+  <text x="66" y="205" font-size="10" fill="#333" filter="url(#rough2)">⚠️ 别写成 COUNT(…) OVER (ORDER BY …)——那是逐行累计计数，语义完全不同</text>
+
+  <path d="M 280 210 L 280 220" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="48" y="222" width="464" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="238" font-size="11" fill="#b58020" font-weight="bold" filter="url(#rough2)">④ CASE WHEN 分档（判据 = 共享名次）</text>
+  <text x="66" y="254" font-size="10" fill="#333" filter="url(#rough2)">position ≤ CEIL(total × 0.33) → 'Tier 1'；position ≤ CEIL(total × 0.66) → 'Tier 2'；否则 'Tier 3'</text>
+  <text x="66" y="269" font-size="10" fill="#333" filter="url(#rough2)">并列队同名次 → 要么一起 ≤ 边界同进高档，要么一起留低档：边界平局规则自动成立</text>
+
+  <path d="M 280 284 L 280 294" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="48" y="296" width="464" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="312" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">⑤ 外层排序输出</text>
+  <text x="66" y="328" font-size="10" fill="#333" filter="url(#rough2)">ORDER BY points DESC, team_name —— 并列内部按字典序（Everton &lt; Luton Town），tier 不参与排序</text>
+  <text x="66" y="343" font-size="10" fill="#333" filter="url(#rough2)">输出列：team_name, points, position, tier（⚠️ 不含 team_id，与前作不同）</text>
+
+  <rect x="48" y="360" width="464" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="66" y="376" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠️ NTILE(3) 陷阱：桶大小 4/3/3 看着完美，但按行号分配</text>
+  <text x="66" y="392" font-size="10" fill="#333" filter="url(#rough2)">第 7 行 Everton 落桶 2、第 8 行 Luton 落桶 3 —— 并列队被拆进两档，违反「边界平局进高档」</text>
+
+  <text x="280" y="436" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">结构 = 3246 的排名骨架 ＋ 一列 COUNT() OVER () ＋ 一层 CASE 分档，三段各司其职</text>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 416" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="416" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">补集过滤 → 分组计数 → 双键降序</text>
+
+  <!-- step 1 -->
+  <text x="138" y="59" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">①</text>
+  <rect x="150" y="36" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="57" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">FROM logs（7 行日志）</text>
+  <path d="M 280 70 L 280 80" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <text x="88" y="113" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">②</text>
+  <rect x="100" y="84" width="360" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="106" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold">WHERE ip NOT REGEXP '^(八位组[.]){3}八位组$'</text>
+  <text x="280" y="126" text-anchor="middle" font-size="10" fill="#8a6d1f">整串匹配失败 ⇒ 无效行保留（剩 4 行）</text>
+  <path d="M 280 138 L 280 148" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 3 -->
+  <text x="138" y="175" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">③</text>
+  <rect x="150" y="152" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="173" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">GROUP BY ip</text>
+  <path d="M 280 186 L 280 196" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 4 -->
+  <text x="138" y="223" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">④</text>
+  <rect x="150" y="200" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="221" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">COUNT(*) AS invalid_count</text>
+  <path d="M 280 234 L 280 244" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 5 -->
+  <text x="108" y="271" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">⑤</text>
+  <rect x="120" y="248" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="269" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">ORDER BY invalid_count DESC, ip DESC</text>
+  <path d="M 280 282 L 280 292" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- output table -->
+  <rect x="150" y="296" width="160" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <rect x="310" y="296" width="100" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="230" y="313" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">ip</text>
+  <text x="360" y="313" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">invalid_count</text>
+
+  <rect x="150" y="322" width="160" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="310" y="322" width="100" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <text x="230" y="339" text-anchor="middle" font-size="10.5" fill="#333">256.1.2.3</text>
+  <text x="360" y="339" text-anchor="middle" font-size="10.5" fill="#333">2</text>
+
+  <rect x="150" y="348" width="160" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="310" y="348" width="100" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <text x="230" y="365" text-anchor="middle" font-size="10.5" fill="#333">192.168.001.1</text>
+  <text x="360" y="365" text-anchor="middle" font-size="10.5" fill="#333">2</text>
+
+  <rect x="150" y="374" width="160" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="310" y="374" width="100" height="26" fill="#ffffff" stroke="#b0b0b0" stroke-width="1" filter="url(#rough2)"/>
+  <text x="230" y="391" text-anchor="middle" font-size="10.5" fill="#333">192.168.1</text>
+  <text x="360" y="391" text-anchor="middle" font-size="10.5" fill="#333">1</text>
+
+  <!-- tie-break note -->
+  <text x="425" y="340" font-size="10" fill="#b85450">计数并列时</text>
+  <text x="425" y="356" font-size="10" fill="#b85450">按 ip 降序破平</text>
+</svg>

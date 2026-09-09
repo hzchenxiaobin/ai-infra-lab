@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：建图 → 迭代后序 → 两状态递推</text>
+
+  <!-- 1. build adjacency -->
+  <rect x="110" y="40" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="58" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">建邻接表 children[]</text>
+  <text x="270" y="72" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">遍历 edges：parent==−1 定 root，否则 children[parent].push(i)</text>
+  <path d="M 270 80 L 270 100" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. iterative DFS preorder -->
+  <rect x="110" y="105" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="123" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">迭代 DFS（栈）得先序序列 order</text>
+  <text x="270" y="137" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">root 入栈 → 弹出记入 order → 子入栈</text>
+  <path d="M 270 145 L 270 165" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3. reverse traversal -->
+  <rect x="110" y="170" width="320" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="188" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">逆序遍历 order（等价后序：子先于父）</text>
+  <text x="270" y="202" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">对当前节点 u 处理</text>
+  <path d="M 270 210 L 270 230" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4a. S box -->
+  <rect x="90" y="235" width="360" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="258" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">S = Σ dp₀[c]   （遍历 u 的所有子节点）</text>
+  <path d="M 270 271 L 270 290" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4b. gain (emphasized) -->
+  <rect x="80" y="295" width="380" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="313" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">gain = max(0, max_c (dp₁[c] − dp₀[c]))</text>
+  <text x="270" y="329" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">取“翻成选父边”增益最大且为正的一子；负权被 0 挡掉</text>
+  <path d="M 270 337 L 270 357" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4c. dp0/dp1 -->
+  <rect x="70" y="362" width="400" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="380" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">dp₀[u] = S + gain</text>
+  <text x="270" y="396" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">dp₁[u] = score[u] + S   （root 的 dp₁ 不用）</text>
+
+  <!-- loop back to "对当前节点 u" -->
+  <path d="M 470 383 L 510 383 L 510 190 L 430 190" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="498" y="290" font-size="10" fill="#888" font-weight="bold" transform="rotate(-90 498 290)" filter="url(#rough2)">处理下一节点</text>
+
+  <!-- 5. return -->
+  <path d="M 270 404 L 270 424" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="200" y="428" width="140" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="446" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" filter="url(#rough2)">返回 dp₀[root]</text>
+  <text x="270" y="475" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">整体 O(n)：每个节点扫一次其子节点，子节点总数 = n−1</text>
+</svg>

@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 460" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="71" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2e8b57"/>
+    </marker>
+  </defs>
+  <rect width="820" height="460" fill="#fdfcf7"/>
+
+  <text x="410" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">示例演算：catsdogcats</text>
+  <path d="M 260 40 Q 410 48 560 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="410" y="58" text-anchor="middle" font-size="11" fill="#888">preWords = {cat, cats, dog, rat}（均为更短词）→ "cats"+"dog"+"cats"</text>
+
+  <!-- ===== Character cells ===== -->
+  <text x="40" y="86" font-size="12" font-weight="bold" fill="#2b2b2b">w = "catsdogcats"（len=11）</text>
+
+  <!-- 11 chars, 3 colored segments: cats(0-4) dog(4-7) cats(7-11) -->
+  <g filter="url(#sk)">
+    <rect x="80" y="96" width="50" height="32" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="130" y="96" width="50" height="32" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="180" y="96" width="50" height="32" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="230" y="96" width="50" height="32" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="280" y="96" width="50" height="32" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.2"/>
+    <rect x="330" y="96" width="50" height="32" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.2"/>
+    <rect x="380" y="96" width="50" height="32" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.2"/>
+    <rect x="430" y="96" width="50" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="480" y="96" width="50" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="530" y="96" width="50" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+    <rect x="580" y="96" width="50" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/>
+  </g>
+  <g font-size="14" font-weight="bold" text-anchor="middle">
+    <text x="105" y="117" fill="#2b6e9e">c</text>
+    <text x="155" y="117" fill="#2b6e9e">a</text>
+    <text x="205" y="117" fill="#2b6e9e">t</text>
+    <text x="255" y="117" fill="#2b6e9e">s</text>
+    <text x="305" y="117" fill="#2e6e2e">d</text>
+    <text x="355" y="117" fill="#2e6e2e">o</text>
+    <text x="405" y="117" fill="#2e6e2e">g</text>
+    <text x="455" y="117" fill="#9a6a20">c</text>
+    <text x="505" y="117" fill="#9a6a20">a</text>
+    <text x="555" y="117" fill="#9a6a20">t</text>
+    <text x="605" y="117" fill="#9a6a20">s</text>
+  </g>
+
+  <!-- Position labels -->
+  <g font-size="9" fill="#888" text-anchor="middle">
+    <text x="80" y="142">0</text>
+    <text x="280" y="142">4</text>
+    <text x="430" y="142">7</text>
+    <text x="630" y="142">11</text>
+  </g>
+
+  <!-- Word brackets -->
+  <path d="M 80 150 L 80 158 L 280 158 L 280 150" stroke="#4a8edb" stroke-width="1.3" fill="none" filter="url(#sk)"/>
+  <text x="180" y="174" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">"cats" ∈ preWords ✓</text>
+  <path d="M 280 150 L 280 158 L 430 158 L 430 150" stroke="#2e8b57" stroke-width="1.3" fill="none" filter="url(#sk)"/>
+  <text x="355" y="174" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">"dog" ∈ preWords ✓</text>
+  <path d="M 430 150 L 430 158 L 630 158 L 630 150" stroke="#d6a040" stroke-width="1.3" fill="none" filter="url(#sk)"/>
+  <text x="530" y="174" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">"cats" ∈ preWords ✓</text>
+
+  <!-- ===== DP table ===== -->
+  <line x1="40" y1="194" x2="780" y2="194" stroke="#eee" stroke-width="1" filter="url(#sk)"/>
+  <text x="40" y="218" font-size="13" font-weight="bold" fill="#2b2b2b">DP 推演：dp[i] = w[0:i] 能否由 preWords 拼成</text>
+
+  <!-- Table header: dp[0]..dp[11] -->
+  <g filter="url(#sk)">
+    <rect x="80" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="130" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="180" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="230" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="280" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="330" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="380" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="430" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="480" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="530" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="580" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+    <rect x="630" y="228" width="50" height="24" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="3"/>
+  </g>
+  <g font-size="9" fill="#888" text-anchor="middle">
+    <text x="105" y="244">dp[0]</text>
+    <text x="155" y="244">dp[1]</text>
+    <text x="205" y="244">dp[2]</text>
+    <text x="255" y="244">dp[3]</text>
+    <text x="305" y="244">dp[4]</text>
+    <text x="355" y="244">dp[5]</text>
+    <text x="405" y="244">dp[6]</text>
+    <text x="455" y="244">dp[7]</text>
+    <text x="505" y="244">dp[8]</text>
+    <text x="555" y="244">dp[9]</text>
+    <text x="605" y="244">dp[10]</text>
+    <text x="655" y="244">dp[11]</text>
+  </g>
+
+  <!-- DP values: T at 0,4,7,11; F elsewhere -->
+  <g filter="url(#sk)">
+    <rect x="80" y="252" width="50" height="26" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5" rx="3"/>
+    <rect x="130" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="180" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="230" y="252" width="50" height="26" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5" rx="3"/>
+    <rect x="280" y="252" width="50" height="26" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5" rx="3"/>
+    <rect x="330" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="380" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="430" y="252" width="50" height="26" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5" rx="3"/>
+    <rect x="480" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="530" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="580" y="252" width="50" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3"/>
+    <rect x="630" y="252" width="50" height="26" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2" rx="3"/>
+  </g>
+  <g font-size="12" font-weight="bold" text-anchor="middle">
+    <text x="105" y="270" fill="#2e6e2e">T</text>
+    <text x="155" y="270" fill="#a03040">F</text>
+    <text x="205" y="270" fill="#a03040">F</text>
+    <text x="255" y="270" fill="#2e6e2e">T</text>
+    <text x="305" y="270" fill="#2e6e2e">T</text>
+    <text x="355" y="270" fill="#a03040">F</text>
+    <text x="405" y="270" fill="#a03040">F</text>
+    <text x="455" y="270" fill="#2e6e2e">T</text>
+    <text x="505" y="270" fill="#a03040">F</text>
+    <text x="555" y="270" fill="#a03040">F</text>
+    <text x="605" y="270" fill="#a03040">F</text>
+    <text x="655" y="270" fill="#2e6e2e">T</text>
+  </g>
+
+  <!-- Arrows: dp[0]→dp[3] (cat), dp[0]→dp[4] (cats), dp[4]→dp[7] (dog), dp[7]→dp[11] (cats) -->
+  <path d="M 105 280 Q 105 304 255 280" stroke="#2e8b57" stroke-width="1.2" fill="none" stroke-dasharray="3,2" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="170" y="300" text-anchor="middle" font-size="9" fill="#2e6e2e">dp[0]=T + "cat" ✓</text>
+
+  <path d="M 105 286 Q 105 322 305 286" stroke="#2e8b57" stroke-width="1.2" fill="none" stroke-dasharray="3,2" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="200" y="320" text-anchor="middle" font-size="9" fill="#2e6e2e">dp[0]=T + "cats" ✓</text>
+
+  <path d="M 305 328 Q 305 360 455 328" stroke="#2e8b57" stroke-width="1.2" fill="none" stroke-dasharray="3,2" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="380" y="358" text-anchor="middle" font-size="9" fill="#2e6e2e">dp[4]=T + "dog" ✓</text>
+
+  <path d="M 455 334 Q 455 388 655 334" stroke="#2e8b57" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="555" y="386" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">dp[7]=T + "cats" ✓</text>
+
+  <!-- Conclusion -->
+  <line x1="40" y1="404" x2="780" y2="404" stroke="#eee" stroke-width="1" filter="url(#sk)"/>
+  <g filter="url(#sk)">
+    <rect x="120" y="418" width="580" height="34" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.5"/>
+  </g>
+  <text x="410" y="440" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">dp[11] = true → "catsdogcats" 由 ≥2 个更短词拼成 → 是连接词 ✓</text>
+</svg>

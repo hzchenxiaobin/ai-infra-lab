@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrY" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">DFS/BFS 可达性判定流程</text>
+
+  <!-- Step 1: Start (oval) -->
+  <rect x="200" y="44" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="17" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#333">起点 0 入队 / 递归</text>
+  <line x1="280" y1="78" x2="280" y2="98" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: mark visited (rect) -->
+  <rect x="190" y="100" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="12" fill="#333">标记 visited[u] = true</text>
+  <line x1="280" y1="134" x2="280" y2="154" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: for each key (rect) -->
+  <rect x="160" y="156" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="173" text-anchor="middle" font-size="12" fill="#333">遍历 rooms[u] 的每把钥匙 v</text>
+  <text x="280" y="189" text-anchor="middle" font-size="11" fill="#666">（即 u 的每条出边 u→v）</text>
+  <line x1="280" y1="196" x2="280" y2="216" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: visited[v]? -->
+  <path d="M 280 218 L 372 258 L 280 298 L 188 258 Z" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="255" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">visited[v]</text>
+  <text x="280" y="271" text-anchor="middle" font-size="11" fill="#666">已访问?</text>
+
+  <!-- Yes branch (right): skip -->
+  <line x1="372" y1="258" x2="438" y2="258" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="250" text-anchor="middle" font-size="10" fill="#4a7a3a">是</text>
+  <rect x="438" y="240" width="100" height="36" fill="#f5f5f5" stroke="#999" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="488" y="257" text-anchor="middle" font-size="11" fill="#555">跳过 v</text>
+  <text x="488" y="270" text-anchor="middle" font-size="10" fill="#888">（已访问/环）</text>
+
+  <!-- No branch (down): recurse/enqueue -->
+  <line x1="280" y1="298" x2="280" y2="316" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="310" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <rect x="170" y="318" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="335" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">DFS: 递归 dfs(v)</text>
+  <text x="280" y="350" text-anchor="middle" font-size="11" fill="#666">BFS: v 入队，cnt++</text>
+
+  <!-- loop back arrows (dashed orange) to "遍历" box -->
+  <!-- from skip box up to top-right of 遍历 box -->
+  <path d="M 488 240 Q 488 140 404 150 L 400 160" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arrY)" filter="url(#rough2)" opacity="0.85"/>
+  <!-- from dfs box left around to top-left of 遍历 box -->
+  <path d="M 170 338 Q 90 338 90 176 L 158 176" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arrY)" filter="url(#rough2)" opacity="0.85"/>
+  <text x="80" y="258" text-anchor="middle" font-size="10" fill="#d6a040" transform="rotate(-90 80 258)">处理下一把钥匙</text>
+
+  <!-- Final: traversal done -> count check -->
+  <line x1="488" y1="276" x2="488" y2="360" stroke="#666" stroke-width="1.5" stroke-dasharray="3 3" filter="url(#rough2)" opacity="0.6"/>
+  <rect x="350" y="362" width="210" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="455" y="380" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历结束</text>
+  <text x="455" y="397" text-anchor="middle" font-size="11" fill="#666">cnt == n ? 返回 true : false</text>
+  <line x1="455" y1="406" x2="455" y2="0" stroke="none"/>
+</svg>

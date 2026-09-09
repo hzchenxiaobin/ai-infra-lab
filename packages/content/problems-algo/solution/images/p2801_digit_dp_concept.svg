@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：数位 DP + 差分，统计 [low, high] 内的步进数字</text>
+
+  <!-- ===== Section 1: Stepping number definition ===== -->
+  <text x="30" y="52" font-size="11.5" fill="#666" font-weight="bold">步进数字：相邻数位之差的绝对值恰好为 1，无前导 0</text>
+
+  <!-- valid examples -->
+  <g font-size="12" fill="#4a7a3a" font-weight="bold">
+    <rect x="30" y="62" width="38" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="49" y="80" text-anchor="middle">123</text>
+    <rect x="74" y="62" width="38" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="93" y="80" text-anchor="middle">321</text>
+    <rect x="118" y="62" width="38" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="137" y="80" text-anchor="middle">98</text>
+  </g>
+  <text x="166" y="80" font-size="10.5" fill="#4a7a3a">✓ 相邻差=1</text>
+
+  <!-- invalid examples -->
+  <g font-size="12" fill="#b85450" font-weight="bold">
+    <rect x="30" y="94" width="38" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="49" y="112" text-anchor="middle">135</text>
+    <rect x="74" y="94" width="38" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="93" y="112" text-anchor="middle">11</text>
+  </g>
+  <text x="120" y="112" font-size="10.5" fill="#b85450">✗ 差≠1</text>
+
+  <!-- arrow to difference -->
+  <path d="M280 108 L280 138" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Section 2: Difference idea ===== -->
+  <rect x="30" y="144" width="500" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="164" font-size="11.5" fill="#333" font-weight="bold">差分思想：区间 [low, high] = count(≤ high) − count(≤ low − 1)</text>
+  <text x="40" y="184" font-size="11" fill="#555">只需实现 count(≤ x)：统计 [1, x] 内的步进数字数目，再对 low 做字符串减 1</text>
+
+  <!-- ===== Section 3: Two-part split ===== -->
+  <text x="30" y="222" font-size="11.5" fill="#666" font-weight="bold">count(≤ s) 拆为两部分：</text>
+
+  <!-- Part A box -->
+  <rect x="30" y="232" width="240" height="92" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="252" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">Part A：位数 &lt; len(s) 的步进数</text>
+  <text x="42" y="272" font-size="11" fill="#333">dp[L][d] = 长度 L、首位为 d 的步进序列数</text>
+  <text x="42" y="290" font-size="11" fill="#555">  dp[1][d] = 1</text>
+  <text x="42" y="306" font-size="11" fill="#555">  dp[L][d] = dp[L−1][d−1] + dp[L−1][d+1]</text>
+  <text x="42" y="320" font-size="11" fill="#333">求和：Σ dp[L][d]，d=1..9（首位非 0）</text>
+
+  <!-- Part B box -->
+  <rect x="290" y="232" width="240" height="92" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="252" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">Part B：位数 = len(s) 且 ≤ s</text>
+  <text x="302" y="272" font-size="11" fill="#333">逐位扫描 s，维护 prev（上一位）</text>
+  <text x="302" y="290" font-size="11" fill="#555">  枚举 d &lt; s[i] 且 |d−prev|=1</text>
+  <text x="302" y="306" font-size="11" fill="#555">  → 剩余自由填，贡献 dp[n−i][d]</text>
+  <text x="302" y="320" font-size="11" fill="#333">s 本身是步进数则 +1（tight 到底）</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="342" width="500" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="362" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">关键：位数高达 100（数值达 10^100），无法枚举数值</text>
+  <text x="280" y="380" text-anchor="middle" font-size="11" fill="#555">但步进数字总数有限 → 按「位数 × 末位」做 DP 预处理，再逐位收紧上界</text>
+  <text x="280" y="396" text-anchor="middle" font-size="10.5" fill="#888">单数字 dp[L][d] 的状态空间仅 100×10 = 1000</text>
+</svg>

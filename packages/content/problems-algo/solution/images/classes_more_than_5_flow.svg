@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">执行流程：FROM → GROUP BY class → COUNT(DISTINCT) → HAVING ≥5 → SELECT</text>
+
+  <!-- Step 1: FROM Courses -->
+  <rect x="60" y="48" width="440" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="67" font-size="10" fill="#b85450" font-weight="bold">① FROM</text>
+  <text x="130" y="67" font-size="10" fill="#333">Courses —— 数据源：10 行（含 1 行重复），无主键</text>
+
+  <path d="M280 80 L280 96" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: GROUP BY class -->
+  <rect x="60" y="98" width="440" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="117" font-size="10" fill="#b85450" font-weight="bold">② GROUP BY</text>
+  <text x="160" y="117" font-size="10" fill="#333">class —— 按「课程名」分桶：Math 6 行 / English 1 / Biology 1 / Computer 1</text>
+
+  <path d="M280 130 L280 146" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 3: COUNT(DISTINCT student) -->
+  <rect x="60" y="148" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="167" font-size="10" fill="#b85450" font-weight="bold">③ 聚合</text>
+  <text x="130" y="167" font-size="10" fill="#d6a040" font-weight="bold">COUNT(DISTINCT student) —— 每桶去重数学生：Math=6 / 其余=1</text>
+
+  <path d="M280 180 L280 196" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 4: HAVING >= 5 -->
+  <rect x="60" y="198" width="440" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="217" font-size="10" fill="#b85450" font-weight="bold">④ HAVING</text>
+  <text x="140" y="217" font-size="10" fill="#b85450" font-weight="bold">COUNT(DISTINCT student) ≥ 5 —— 仅留 Math（6 ≥ 5 ✓），其余丢弃</text>
+
+  <path d="M280 230 L280 246" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 5: SELECT class -->
+  <rect x="60" y="248" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="267" font-size="10" fill="#b85450" font-weight="bold">⑤ SELECT</text>
+  <text x="140" y="267" font-size="10" fill="#333">class —— 直接输出分组键，无需子查诔回表</text>
+
+  <path d="M280 280 L280 302" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="180" y="306" width="200" height="60" fill="#fff8e1" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="326" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">最终输出</text>
+  <rect x="240" y="332" width="80" height="24" fill="#fff" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">Math</text>
+
+  <!-- Side note: execution order -->
+  <rect x="60" y="372" width="440" height="40" fill="none" stroke="none"/>
+  <text x="280" y="388" text-anchor="middle" font-size="9" fill="#888">逻辑执行顺序：FROM → GROUP BY → HAVING → SELECT（HAVING 在聚合后、SELECT 前）</text>
+  <text x="280" y="402" text-anchor="middle" font-size="9" fill="#888">与 570 对比：570 需子查询 + 外层 WHERE IN 回表取 name；596 直接 SELECT 分组键 class，单层搞定</text>
+</svg>

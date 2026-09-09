@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：前缀指针 l 从左累加，后缀指针 r 从总和递减</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">处理 nums[i] 时 l=prefix[i]，r=suffix[i]，取 max(l, r)</text>
+
+  <!-- ===== Array nums = [4,3,-2,5] ===== -->
+  <text x="28" y="74" font-size="10.5" fill="#666">nums</text>
+  <text x="90" y="66" text-anchor="middle" font-size="9" fill="#888">0</text>
+  <text x="150" y="66" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="210" y="66" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="270" y="66" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <rect x="70" y="70" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="90" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">4</text>
+  <rect x="130" y="70" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="90" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <rect x="190" y="70" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="90" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">-2</text>
+  <rect x="250" y="70" width="40" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="90" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">5</text>
+
+  <!-- index i marker (focus on i=1) -->
+  <rect x="128" y="58" width="84" height="54" fill="none" stroke="#d6a040" stroke-width="2" stroke-dasharray="4 3" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="68" font-size="10" fill="#d6a040" font-weight="bold">下标 i=1</text>
+  <text x="310" y="82" font-size="9.5" fill="#888">前 2 个 / 后 3 个</text>
+
+  <!-- ===== Prefix sums row (blue, growing from left) ===== -->
+  <text x="28" y="128" font-size="10.5" fill="#666">prefix[i]</text>
+  <text x="90" y="120" text-anchor="middle" font-size="9" fill="#446688">0</text>
+  <text x="150" y="120" text-anchor="middle" font-size="9" fill="#446688">1</text>
+  <text x="210" y="120" text-anchor="middle" font-size="9" fill="#446688">2</text>
+  <text x="270" y="120" text-anchor="middle" font-size="9" fill="#446688">3</text>
+  <rect x="70" y="124" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="142" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">4</text>
+  <rect x="130" y="124" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="142" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">7</text>
+  <rect x="190" y="124" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="142" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">5</text>
+  <rect x="250" y="124" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="142" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">10</text>
+  <!-- l pointer arrow -->
+  <path d="M 30 137 L 66 137" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="32" y="160" font-size="10" fill="#446688" font-weight="bold">l += nums[i]</text>
+  <text x="32" y="173" font-size="9" fill="#888">从左累加</text>
+
+  <!-- ===== Suffix sums row (green, from total decreasing) ===== -->
+  <text x="28" y="200" font-size="10.5" fill="#666">suffix[i]</text>
+  <text x="90" y="192" text-anchor="middle" font-size="9" fill="#4a7a3a">0</text>
+  <text x="150" y="192" text-anchor="middle" font-size="9" fill="#4a7a3a">1</text>
+  <text x="210" y="192" text-anchor="middle" font-size="9" fill="#4a7a3a">2</text>
+  <text x="270" y="192" text-anchor="middle" font-size="9" fill="#4a7a3a">3</text>
+  <rect x="70" y="196" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">10</text>
+  <rect x="130" y="196" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">6</text>
+  <rect x="190" y="196" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">3</text>
+  <rect x="250" y="196" width="40" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="214" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">5</text>
+  <!-- r pointer arrow (from right, total=10 init) -->
+  <path d="M 314 209 L 294 209" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="318" y="213" font-size="10" fill="#4a7a3a" font-weight="bold">r = total</text>
+  <text x="318" y="226" font-size="9" fill="#888">r -= nums[i]</text>
+
+  <!-- ===== max(l, r) at each index ===== -->
+  <text x="28" y="252" font-size="10.5" fill="#666">score(i)</text>
+  <rect x="70" y="240" width="40" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="90" y="257" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">10</text>
+  <rect x="130" y="240" width="40" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="257" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">7</text>
+  <rect x="190" y="240" width="40" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="257" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+  <rect x="250" y="240" width="40" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="257" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">10</text>
+  <text x="310" y="257" font-size="10" fill="#d6a040" font-weight="bold">= max(l, r)</text>
+
+  <!-- vertical connectors for i=1 (highlighted) -->
+  <line x1="150" y1="150" x2="150" y2="196" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <line x1="150" y1="222" x2="150" y2="240" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2" filter="url(#rough2)"/>
+
+  <!-- ===== Recurrence boxes ===== -->
+  <text x="28" y="290" font-size="11" fill="#444" font-weight="bold">递推关系</text>
+  <rect x="40" y="298" width="225" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="152" y="318" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">prefix[i] = prefix[i-1] + nums[i]</text>
+  <text x="152" y="336" text-anchor="middle" font-size="10.5" fill="#446688">l 游标：从左累加，O(1) 递推</text>
+
+  <rect x="280" y="298" width="225" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="392" y="318" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">suffix[i] = suffix[i+1] - nums[i]?</text>
+  <text x="392" y="336" text-anchor="middle" font-size="10.5" fill="#4a7a3a">r 游标：r=total 起，逐个减 nums[i]</text>
+
+  <!-- ===== Footer ===== -->
+  <rect x="40" y="360" width="465" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="272" y="381" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">答案 = max_i max(prefix[i], suffix[i]) = max(最大前缀和, 最大后缀和)</text>
+</svg>

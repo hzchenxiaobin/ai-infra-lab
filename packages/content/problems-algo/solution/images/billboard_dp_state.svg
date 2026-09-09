@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">DP 状态设计：以高度差 diff 为键</text>
+
+  <!-- 状态定义框 -->
+  <rect x="30" y="42" width="520" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="64" font-size="12" fill="#446688" font-weight="bold">dp[diff] = 高支架的最大和（ taller ），其中 diff = taller − shorter</text>
+  <text x="50" y="82" font-size="11" fill="#555">shorter = taller − diff；目标：dp[0]（diff=0 时 taller=shorter=广告牌高度）</text>
+
+  <!-- 当前状态示意 -->
+  <text x="40" y="116" font-size="12" fill="#888" font-weight="bold">当前状态 (diff, taller)：</text>
+
+  <!-- taller 支架（蓝）-->
+  <rect x="120" y="120" width="50" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="145" y="166" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">T</text>
+  <text x="145" y="210" text-anchor="middle" font-size="10" fill="#446688">taller</text>
+
+  <!-- shorter 支架（浅蓝）-->
+  <rect x="220" y="150" width="50" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="180" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">S</text>
+  <text x="245" y="210" text-anchor="middle" font-size="10" fill="#446688">shorter</text>
+
+  <!-- diff 标注 -->
+  <path d="M 170 120 L 270 120 L 270 150" stroke="#b85450" stroke-width="1.3" fill="none" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="220" y="114" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">diff = T − S</text>
+
+  <!-- 三种选择 -->
+  <text x="40" y="248" font-size="12" fill="#888" font-weight="bold">对每根钢筋 r，三种选择：</text>
+
+  <!-- 选择1：不用 -->
+  <rect x="30" y="258" width="160" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="278" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">① 不用 r</text>
+  <text x="110" y="298" text-anchor="middle" font-size="11" fill="#555">diff 不变</text>
+  <text x="110" y="316" text-anchor="middle" font-size="11" fill="#555">taller 不变</text>
+
+  <!-- 选择2：放高侧 -->
+  <rect x="210" y="258" width="160" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="278" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">② 放高侧</text>
+  <text x="290" y="298" text-anchor="middle" font-size="11" fill="#555">diff → diff + r</text>
+  <text x="290" y="316" text-anchor="middle" font-size="11" fill="#555">taller → taller + r</text>
+
+  <!-- 选择3：放低侧 -->
+  <rect x="390" y="258" width="160" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="278" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ 放低侧</text>
+  <text x="470" y="298" text-anchor="middle" font-size="11" fill="#555">低侧 S+r 可能超 T</text>
+  <text x="470" y="316" text-anchor="middle" font-size="11" fill="#555">需分两种子情况 ↓</text>
+
+  <!-- 选择3展开 -->
+  <text x="40" y="350" font-size="12" fill="#4a7a3a" font-weight="bold">选择③展开（放低侧，new_shorter = S + r = T − diff + r）：</text>
+
+  <!-- 子情况A：r ≤ diff -->
+  <rect x="30" y="360" width="250" height="66" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="380" font-size="11.5" fill="#4a7a3a" font-weight="bold">r ≤ diff（低侧仍未超过高侧）</text>
+  <text x="50" y="398" font-size="11" fill="#555">new_diff = diff − r，new_taller = T</text>
+  <text x="50" y="416" font-size="11" fill="#555">→ 更新 dp[diff − r] = max(…, T)</text>
+
+  <!-- 子情况B：r > diff -->
+  <rect x="300" y="360" width="250" height="66" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="380" font-size="11.5" fill="#b85450" font-weight="bold">r &gt; diff（低侧反超高侧）</text>
+  <text x="320" y="398" font-size="11" fill="#555">new_diff = r − diff，new_taller = T − diff + r</text>
+  <text x="320" y="416" font-size="11" fill="#555">→ 更新 dp[r − diff] = max(…, T − diff + r)</text>
+</svg>

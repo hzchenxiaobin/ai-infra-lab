@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)" font-weight="bold">示例1 演算：[{id:1},{id:1},{id:2}]，fn=item=&gt;item.id</text>
+
+  <!-- 表头 -->
+  <rect x="30" y="44" width="540" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <g font-size="12" fill="#446688" filter="url(#rough2)" font-weight="bold">
+    <text x="75" y="65" text-anchor="middle">步</text>
+    <text x="170" y="65" text-anchor="middle">当前 item</text>
+    <text x="285" y="65" text-anchor="middle">key = fn(item)</text>
+    <text x="470" y="65" text-anchor="middle">result 状态</text>
+  </g>
+
+  <!-- 列分隔 -->
+  <g stroke="#cccccc" stroke-width="1" filter="url(#rough2)">
+    <line x1="110" y1="44" x2="110" y2="360"/>
+    <line x1="230" y1="44" x2="230" y2="360"/>
+    <line x1="340" y1="44" x2="340" y2="360"/>
+  </g>
+
+  <!-- 行1 -->
+  <rect x="30" y="80" width="540" height="50" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="75" y="110" text-anchor="middle" font-weight="bold">1</text>
+    <text x="170" y="110" text-anchor="middle">{ "id": "1" }</text>
+    <text x="285" y="110" text-anchor="middle" fill="#d6a040" font-weight="bold">"1"</text>
+    <text x="355" y="100">"1": [ {id:1} ]</text>
+    <text x="355" y="118" fill="#888">（key 不存在 → 建 [] 再 push）</text>
+  </g>
+
+  <!-- 行2 -->
+  <rect x="30" y="134" width="540" height="50" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="75" y="164" text-anchor="middle" font-weight="bold">2</text>
+    <text x="170" y="164" text-anchor="middle">{ "id": "1" }</text>
+    <text x="285" y="164" text-anchor="middle" fill="#d6a040" font-weight="bold">"1"</text>
+    <text x="355" y="154">"1": [ {id:1}, {id:1} ]</text>
+    <text x="355" y="172" fill="#888">（key 已存在 → 复用旧桶 push）</text>
+  </g>
+
+  <!-- 行3 -->
+  <rect x="30" y="188" width="540" height="50" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="75" y="218" text-anchor="middle" font-weight="bold">3</text>
+    <text x="170" y="218" text-anchor="middle">{ "id": "2" }</text>
+    <text x="285" y="218" text-anchor="middle" fill="#b85450" font-weight="bold">"2"</text>
+    <text x="355" y="208">"1": [ {id:1}, {id:1} ]</text>
+    <text x="355" y="226">"2": [ {id:2} ]</text>
+  </g>
+
+  <!-- 结果 -->
+  <rect x="30" y="250" width="540" height="60" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="48" y="272" font-size="12" fill="#d6a040" filter="url(#rough2)" font-weight="bold">最终 return res：</text>
+  <text x="48" y="292" font-size="12" fill="#333" filter="url(#rough2)">{ "1": [ {id:1}, {id:1} ],  "2": [ {id:2} ] } —— 两项同键并进一桶，顺序与原数组一致</text>
+
+  <!-- 要点 -->
+  <rect x="30" y="324" width="540" height="58" rx="8" fill="#fff" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="300" y="346" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)" font-weight="bold">fn 只决定「键怎么取」，桶内顺序由遍历顺序决定</text>
+  <text x="300" y="366" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">因此严格按 array 顺序遍历，push 即可保序，无需排序或额外去重</text>
+</svg>

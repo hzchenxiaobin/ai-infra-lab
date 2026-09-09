@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">按行直接收集：遍历每个下标，算出它属于哪一行</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="80" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: 若 numRows=1 直接返回 s</text>
+
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init -->
+  <rect x="170" y="104" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="122" text-anchor="middle" font-size="11" fill="#333">cycle = 2·numRows − 2</text>
+  <text x="270" y="138" text-anchor="middle" font-size="11" fill="#333">建 numRows 个空行 rows[]</text>
+
+  <path d="M 270 144 L 270 162" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: i < n? -->
+  <polygon points="270,166 360,210 270,254 180,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="206" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="270" y="222" text-anchor="middle" font-size="11" fill="#666">(遍历下标)</text>
+
+  <!-- No -> end -->
+  <path d="M 360 210 L 450 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="402" y="202" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="480" cy="210" rx="54" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="480" y="214" text-anchor="middle" font-size="11" fill="#333">拼接返回</text>
+
+  <!-- Yes down -->
+  <path d="M 270 254 L 270 272" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="268" font-size="11" fill="#82b366">是</text>
+
+  <!-- Compute row index -->
+  <rect x="120" y="276" width="300" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="294" text-anchor="middle" font-size="11" fill="#333">r = i % cycle</text>
+  <text x="270" y="312" text-anchor="middle" font-size="11" fill="#555">若 r &gt; numRows−1：r = cycle − r（折返）</text>
+
+  <path d="M 270 324 L 270 342" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Append -->
+  <rect x="150" y="346" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="364" text-anchor="middle" font-size="11" fill="#333">rows[r].append(s[i])</text>
+  <text x="270" y="380" text-anchor="middle" font-size="11" fill="#555">i++ 继续循环</text>
+
+  <!-- loop back -->
+  <path d="M 150 366 L 60 366 L 60 210 L 180 210" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="290" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 60 290)">回到判断</text>
+
+  <!-- summary -->
+  <text x="270" y="424" text-anchor="middle" font-size="11" fill="#888">关键：i % cycle 得锯齿位置，超过 numRows−1 时折返 → 中间行天然收两个字符</text>
+</svg>

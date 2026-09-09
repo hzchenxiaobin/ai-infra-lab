@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：枚举分界点 i，左段留 n 个最小，右段留 n 个最大</text>
+
+  <!-- Array label -->
+  <text x="40" y="52" font-size="11" fill="#888">nums（长度 3n），删除恰好 n 个，剩下 2n 按「前 n / 后 n」分两段</text>
+
+  <!-- ===== The 3n array as cells ===== -->
+  <!-- left zone: nums[0..i] -->
+  <text x="40" y="80" font-size="11" fill="#446688" font-weight="bold">左段 nums[0..i]（留 n 个最小的 → sumfirst）</text>
+
+  <!-- cells 0..2 (left part, before boundary) -->
+  <rect x="50" y="90" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="72" y="113" text-anchor="middle" font-size="12" fill="#333">7</text>
+
+  <rect x="98" y="90" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="113" text-anchor="middle" font-size="12" fill="#333">9</text>
+
+  <rect x="146" y="90" width="44" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="168" y="113" text-anchor="middle" font-size="12" fill="#333">5</text>
+
+  <!-- boundary marker i -->
+  <line x1="194" y1="84" x2="194" y2="160" stroke="#b85450" stroke-width="2" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <rect x="172" y="64" width="48" height="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="196" y="77" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">分界 i</text>
+
+  <!-- right zone: nums[i+1..3n-1] -->
+  <text x="210" y="80" font-size="11" fill="#4a7a3a" font-weight="bold">右段 nums[i+1..3n-1]（留 n 个最大的 → sumsecond）</text>
+
+  <rect x="210" y="90" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="232" y="113" text-anchor="middle" font-size="12" fill="#333">8</text>
+
+  <rect x="258" y="90" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="113" text-anchor="middle" font-size="12" fill="#333">1</text>
+
+  <rect x="306" y="90" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="328" y="113" text-anchor="middle" font-size="12" fill="#333">3</text>
+
+  <!-- arrow down -->
+  <path d="M 175 136 L 175 160" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 280 136 L 280 160" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Two heaps ===== -->
+  <!-- Left: max-heap of size n, keep n smallest -->
+  <rect x="80" y="166" width="190" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="175" y="184" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">大根堆（容量 n）</text>
+  <text x="175" y="200" text-anchor="middle" font-size="10.5" fill="#666">维护左段 n 个最小值</text>
+  <text x="175" y="216" text-anchor="middle" font-size="10.5" fill="#666">堆顶 = 当前最大的「入选」</text>
+  <text x="175" y="232" text-anchor="middle" font-size="10" fill="#d6a040">新元素更小？挤出堆顶</text>
+
+  <!-- Right: min-heap of size n, keep n largest -->
+  <rect x="300" y="166" width="190" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="395" y="184" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">小根堆（容量 n）</text>
+  <text x="395" y="200" text-anchor="middle" font-size="10.5" fill="#666">维护右段 n 个最大值</text>
+  <text x="395" y="216" text-anchor="middle" font-size="10.5" fill="#666">堆顶 = 当前最小的「入选」</text>
+  <text x="395" y="232" text-anchor="middle" font-size="10" fill="#d6a040">新元素更大？挤出堆顶</text>
+
+  <!-- arrow down to result -->
+  <path d="M 175 240 L 175 262" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 395 240 L 395 262" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Result boxes ===== -->
+  <rect x="80" y="268" width="190" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="175" y="286" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">sumfirst（左段最小和）</text>
+  <text x="175" y="304" text-anchor="middle" font-size="12" fill="#333">越小越好 ↓</text>
+
+  <rect x="300" y="268" width="190" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="286" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">sumsecond（右段最大和）</text>
+  <text x="395" y="304" text-anchor="middle" font-size="12" fill="#333">越大越好 ↑</text>
+
+  <!-- diff formula -->
+  <rect x="150" y="328" width="260" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">目标：min (sumfirst − sumsecond)</text>
+  <text x="280" y="365" text-anchor="middle" font-size="10.5" fill="#888">枚举所有合法分界点 i ∈ [n−1, 2n−1]</text>
+
+  <!-- constraints note -->
+  <rect x="60" y="384" width="460" height="28" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="402" text-anchor="middle" font-size="10.5" fill="#888">i 的合法范围：左段至少 n 个（i ≥ n−1）、右段至少 n 个（i ≤ 2n−1）</text>
+</svg>

@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="440" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：值域 [0,100] → 频次数组 + 前缀和 → O(n+k) 查表</text>
+  <text x="320" y="46" text-anchor="middle" font-size="11" fill="#888">nums[i] ∈ [0,100]，值域极小 ⇒ 用 count[] 把暴力 O(n²) 计数变成 O(n+k) 查表</text>
+
+  <!-- ====== Row 1: original array ====== -->
+  <text x="120" y="84" text-anchor="end" font-size="12" fill="#446688" font-weight="bold">原数组</text>
+  <text x="120" y="98" text-anchor="end" font-size="10" fill="#888">nums</text>
+  <g font-size="16">
+    <rect x="200" y="66" width="50" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="225" y="92" text-anchor="middle" fill="#446688" font-weight="bold">8</text>
+    <rect x="252" y="66" width="50" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="277" y="92" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="304" y="66" width="50" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="329" y="92" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="356" y="66" width="50" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="381" y="92" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="408" y="66" width="50" height="40" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="433" y="92" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+  </g>
+  <g font-size="9" fill="#aaa">
+    <text x="225" y="62" text-anchor="middle">i=0</text>
+    <text x="277" y="62" text-anchor="middle">i=1</text>
+    <text x="329" y="62" text-anchor="middle">i=2</text>
+    <text x="381" y="62" text-anchor="middle">i=3</text>
+    <text x="433" y="62" text-anchor="middle">i=4</text>
+  </g>
+
+  <!-- arrow down 1 -->
+  <path d="M 320 112 L 320 132" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="330" y="126" font-size="10" fill="#666">① 统计频次 count[v]++</text>
+
+  <!-- ====== Row 2: frequency array ====== -->
+  <!-- value labels -->
+  <g font-size="9" fill="#888">
+    <text x="146" y="142" text-anchor="middle">v=0</text>
+    <text x="190" y="142" text-anchor="middle">1</text>
+    <text x="234" y="142" text-anchor="middle">2</text>
+    <text x="278" y="142" text-anchor="middle">3</text>
+    <text x="322" y="142" text-anchor="middle">4</text>
+    <text x="366" y="142" text-anchor="middle">5</text>
+    <text x="410" y="142" text-anchor="middle">6</text>
+    <text x="454" y="142" text-anchor="middle">7</text>
+    <text x="498" y="142" text-anchor="middle">8</text>
+  </g>
+  <text x="110" y="162" text-anchor="end" font-size="12" fill="#d6a040" font-weight="bold">count</text>
+  <g font-size="15">
+    <rect x="124" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="146" y="171" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="168" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="190" y="171" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+    <rect x="212" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="234" y="171" text-anchor="middle" fill="#d6a040" font-weight="bold">2</text>
+    <rect x="256" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="278" y="171" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+    <rect x="300" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="322" y="171" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="344" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="366" y="171" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="388" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="410" y="171" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="432" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="454" y="171" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="476" y="146" width="44" height="38" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="498" y="171" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+  </g>
+
+  <!-- arrow down 2 -->
+  <path d="M 320 192 L 320 212" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="330" y="206" font-size="10" fill="#666">② 前缀和 smaller[v]=Σcount[0..v−1]</text>
+
+  <!-- ====== Row 3: prefix sum array ====== -->
+  <g font-size="9" fill="#888">
+    <text x="146" y="222" text-anchor="middle">v=0</text>
+    <text x="190" y="222" text-anchor="middle">1</text>
+    <text x="234" y="222" text-anchor="middle">2</text>
+    <text x="278" y="222" text-anchor="middle">3</text>
+    <text x="322" y="222" text-anchor="middle">4</text>
+    <text x="366" y="222" text-anchor="middle">5</text>
+    <text x="410" y="222" text-anchor="middle">6</text>
+    <text x="454" y="222" text-anchor="middle">7</text>
+    <text x="498" y="222" text-anchor="middle">8</text>
+  </g>
+  <text x="110" y="242" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold">smaller</text>
+  <g font-size="15">
+    <rect x="124" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="146" y="251" text-anchor="middle" fill="#aaa">0</text>
+    <rect x="168" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="190" y="251" text-anchor="middle" fill="#b85450" font-weight="bold">0</text>
+    <rect x="212" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="234" y="251" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <rect x="256" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="278" y="251" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+    <rect x="300" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="322" y="251" text-anchor="middle" fill="#aaa">4</text>
+    <rect x="344" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="366" y="251" text-anchor="middle" fill="#aaa">4</text>
+    <rect x="388" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="410" y="251" text-anchor="middle" fill="#aaa">4</text>
+    <rect x="432" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="454" y="251" text-anchor="middle" fill="#aaa">4</text>
+    <rect x="476" y="226" width="44" height="38" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="498" y="251" text-anchor="middle" fill="#b85450" font-weight="bold">4</text>
+  </g>
+
+  <!-- mapping arrows: nums values -> smaller cells -->
+  <!-- 8 -> smaller[8] -->
+  <path d="M 225 106 C 225 118 498 214 498 226" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="3 2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 1 -> smaller[1] -->
+  <path d="M 277 106 C 277 118 190 214 190 226" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="3 2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 2 -> smaller[2] -->
+  <path d="M 329 106 C 329 118 234 214 234 226" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="3 2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <!-- 3 -> smaller[3] -->
+  <path d="M 433 106 C 433 118 278 214 278 226" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="3 2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- arrow down 3 -->
+  <path d="M 320 272 L 320 292" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="330" y="286" font-size="10" fill="#666">③ 查表 answer[i] = smaller[nums[i]]</text>
+
+  <!-- ====== Row 4: answer array ====== -->
+  <text x="120" y="318" text-anchor="end" font-size="12" fill="#4a7a3a" font-weight="bold">答案</text>
+  <text x="120" y="332" text-anchor="end" font-size="10" fill="#888">answer</text>
+  <g font-size="16">
+    <rect x="200" y="300" width="50" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="225" y="326" text-anchor="middle" fill="#4a7a3a" font-weight="bold">4</text>
+    <rect x="252" y="300" width="50" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="277" y="326" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="304" y="300" width="50" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="329" y="326" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="356" y="300" width="50" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="381" y="326" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="408" y="300" width="50" height="40" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="433" y="326" text-anchor="middle" fill="#4a7a3a" font-weight="bold">3</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="40" y="360" width="560" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="320" y="382" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">值域 [0,100] 固定且小 → 频次数组把 O(n²) 暴力计数压缩为 O(n+k) 查表</text>
+  <text x="320" y="400" text-anchor="middle" font-size="11" fill="#666">smaller[v] = 比 v 小的元素个数 = count[0]+count[1]+…+count[v−1]</text>
+  <text x="320" y="416" text-anchor="middle" font-size="10" fill="#888">answer[i] = smaller[nums[i]]，一步 O(1) 查表，无需逐个比较</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建树 → 求子树大小 → 逐点算分数 → 取最大计数</text>
+
+  <!-- 步骤 1 -->
+  <rect x="180" y="50" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 建 children 邻接表</text>
+  <text x="280" y="86" text-anchor="middle" font-size="10" fill="#666">遍历 parents，children[p].push(i)</text>
+
+  <line x1="280" y1="96" x2="280" y2="116" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 2 -->
+  <rect x="150" y="118" width="260" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="140" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② DFS 求 size[i]（子树大小）</text>
+  <text x="280" y="158" text-anchor="middle" font-size="10" fill="#4a7a3a">size[i] = 1 + Σ size[child]；递归返回时累加</text>
+
+  <line x1="280" y1="172" x2="280" y2="192" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 3: 循环 -->
+  <rect x="120" y="194" width="320" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="216" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 对每个节点 i 算分数 score</text>
+  <text x="280" y="234" text-anchor="middle" font-size="10" fill="#555">score = ∏ size[每个孩子]</text>
+  <text x="280" y="248" text-anchor="middle" font-size="10" fill="#d6a040">若 i ≠ 根：score *= (n − size[i])   ← 上方剩余部分</text>
+
+  <line x1="280" y1="256" x2="280" y2="276" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 4: 决策菱形 -->
+  <polygon points="280,278 380,318 280,358 180,318" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="314" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">score &gt; max ?</text>
+  <text x="280" y="330" text-anchor="middle" font-size="10" fill="#555">更新 max / 计数</text>
+
+  <!-- 是 -->
+  <line x1="380" y1="318" x2="430" y2="318" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="312" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="430" y="300" width="108" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="484" y="318" text-anchor="middle" font-size="10" fill="#333">max = score</text>
+  <text x="484" y="332" text-anchor="middle" font-size="10" fill="#333">count = 1</text>
+
+  <!-- 等于 -->
+  <line x1="280" y1="358" x2="280" y2="380" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="374" font-size="10" fill="#888">== max</text>
+  <rect x="214" y="382" width="132" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="402" text-anchor="middle" font-size="11" fill="#333">count++ ；返回 count</text>
+
+  <!-- 提示框 -->
+  <rect x="20" y="194" width="86" height="60" fill="#fafafa" stroke="#ccc" stroke-width="1" stroke-dasharray="3 2" rx="6" filter="url(#rough2)"/>
+  <text x="62" y="214" text-anchor="middle" font-size="9" fill="#888">⚠️ 溢出</text>
+  <text x="62" y="230" text-anchor="middle" font-size="9" fill="#888">score 用</text>
+  <text x="62" y="244" text-anchor="middle" font-size="9" fill="#888">long long</text>
+</svg>

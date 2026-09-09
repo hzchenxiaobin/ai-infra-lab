@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：[1,2,3,4,5] 逐轮重连</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">左脊 1→2→4，三轮迭代后 4 成新根</text>
+
+  <!-- 表头 -->
+  <rect x="20" y="58" width="540" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="55" y="73" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">轮次</text>
+  <text x="135" y="73" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">cur（当前节点）</text>
+  <text x="275" y="73" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">重连：cur.left / cur.right</text>
+  <text x="470" y="73" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">推进后 prev / prev_right</text>
+
+  <!-- 第 1 轮 -->
+  <line x1="20" y1="82" x2="560" y2="82" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="55" y="120" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">①</text>
+  <g font-size="10">
+    <circle cx="120" cy="116" r="13" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="120" y="120" text-anchor="middle" fill="#b85450" font-weight="bold">1</text>
+    <text x="148" y="120" font-size="9" fill="#888">next=2, old_right=3</text>
+  </g>
+  <text x="275" y="112" text-anchor="middle" font-size="10" fill="#444">1.left ← null（prev_right 初值）</text>
+  <text x="275" y="128" text-anchor="middle" font-size="10" fill="#444">1.right ← null（prev 初值）</text>
+  <text x="470" y="120" text-anchor="middle" font-size="10" fill="#4a7a3a">prev=1, prev_right=3</text>
+
+  <!-- 第 2 轮 -->
+  <line x1="20" y1="142" x2="560" y2="142" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="55" y="184" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">②</text>
+  <g font-size="10">
+    <circle cx="120" cy="180" r="13" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="120" y="184" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+    <text x="148" y="184" font-size="9" fill="#888">next=4, old_right=5</text>
+  </g>
+  <text x="275" y="176" text-anchor="middle" font-size="10" fill="#444">2.left ← 3（prev_right）</text>
+  <text x="275" y="192" text-anchor="middle" font-size="10" fill="#444">2.right ← 1（prev）</text>
+  <text x="470" y="184" text-anchor="middle" font-size="10" fill="#4a7a3a">prev=2, prev_right=5</text>
+
+  <!-- 第 3 轮 -->
+  <line x1="20" y1="206" x2="560" y2="206" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="55" y="248" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③</text>
+  <g font-size="10">
+    <circle cx="120" cy="244" r="13" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="120" y="248" text-anchor="middle" fill="#b85450" font-weight="bold">4</text>
+    <text x="148" y="248" font-size="9" fill="#888">next=null, old_right=null</text>
+  </g>
+  <text x="275" y="240" text-anchor="middle" font-size="10" fill="#444">4.left ← 5（prev_right）</text>
+  <text x="275" y="256" text-anchor="middle" font-size="10" fill="#444">4.right ← 2（prev）</text>
+  <text x="470" y="248" text-anchor="middle" font-size="10" fill="#4a7a3a">prev=4, prev_right=null</text>
+
+  <!-- 结束 -->
+  <line x1="20" y1="270" x2="560" y2="270" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="55" y="292" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">结束</text>
+  <text x="135" y="292" text-anchor="middle" font-size="10" fill="#888">cur=null → 退出循环</text>
+  <text x="275" y="292" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">return prev = 4 ✓</text>
+
+  <!-- 最终树快照 -->
+  <rect x="20" y="312" width="540" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="332" font-size="10" fill="#4a7a3a" font-weight="bold">最终树：</text>
+  <g font-size="10">
+    <circle cx="100" cy="336" r="12" fill="#fff" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="100" y="340" text-anchor="middle" fill="#4a7a3a" font-weight="bold">4</text>
+    <circle cx="70" cy="360" r="10" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="70" y="363" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">5</text>
+    <circle cx="130" cy="360" r="10" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="130" y="363" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">2</text>
+    <line x1="92" y1="346" x2="76" y2="352" stroke="#4a7a3a" stroke-width="1.1" filter="url(#rough2)"/>
+    <line x1="108" y1="346" x2="124" y2="352" stroke="#4a7a3a" stroke-width="1.1" filter="url(#rough2)"/>
+    <circle cx="155" cy="360" r="9" fill="#fff" stroke="#888" stroke-width="1.1" filter="url(#rough2)"/>
+    <text x="155" y="363" text-anchor="middle" font-size="8" fill="#888">3</text>
+    <circle cx="180" cy="360" r="9" fill="#fff" stroke="#888" stroke-width="1.1" filter="url(#rough2)"/>
+    <text x="180" y="363" text-anchor="middle" font-size="8" fill="#888">1</text>
+    <line x1="138" y1="364" x2="148" y2="364" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+    <line x1="160" y1="364" x2="172" y2="364" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+  </g>
+  <text x="290" y="345" font-size="10" fill="#444">4.left=5, 4.right=2, 2.left=3, 2.right=1</text>
+  <text x="290" y="360" font-size="9" fill="#888">原右子(3,5)变新左子，原根(1,2)变新右子 ✓</text>
+</svg>

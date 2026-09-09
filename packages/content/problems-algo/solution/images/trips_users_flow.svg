@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN → 过滤 → 分组 → 聚合 → 取整</text>
+
+  <!-- Step 1: FROM Trips -->
+  <rect x="180" y="46" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">① FROM Trips t</text>
+  <text x="280" y="74" text-anchor="middle" font-size="8" fill="#888">行程表：client_id, driver_id, status, request_at</text>
+
+  <path d="M280 82 L280 96" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: JOIN Users AS uc -->
+  <rect x="140" y="98" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">② JOIN Users AS uc ON t.client_id = uc.users_id</text>
+  <text x="280" y="126" text-anchor="middle" font-size="8" fill="#888">关联客户端 → 获取 uc.banned 字段</text>
+
+  <path d="M280 134 L280 148" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN Users AS ud -->
+  <rect x="140" y="150" width="280" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="164" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">③ JOIN Users AS ud ON t.driver_id = ud.users_id</text>
+  <text x="280" y="178" text-anchor="middle" font-size="8" fill="#888">关联司机端 → 获取 ud.banned 字段</text>
+
+  <path d="M280 186 L280 200" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 4: WHERE filter (diamond) -->
+  <polygon points="280,202 400,238 280,274 160,238" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="232" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">④ WHERE</text>
+  <text x="280" y="246" text-anchor="middle" font-size="8" fill="#333">uc.banned='No'</text>
+  <text x="280" y="258" text-anchor="middle" font-size="8" fill="#333">AND ud.banned='No'</text>
+  <text x="280" y="270" text-anchor="middle" font-size="8" fill="#333">AND date BETWEEN ...</text>
+
+  <!-- Side annotation: excluded trips -->
+  <path d="M400 238 L440 238" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="442" y="226" width="100" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="492" y="240" text-anchor="middle" font-size="8" fill="#b85450">排除被封行程</text>
+  <text x="492" y="250" text-anchor="middle" font-size="8" fill="#b85450">(client 或 driver)</text>
+
+  <path d="M280 276 L280 290" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: GROUP BY -->
+  <rect x="160" y="292" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="306" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">⑤ GROUP BY t.request_at</text>
+  <text x="280" y="320" text-anchor="middle" font-size="8" fill="#888">按日期分组 → 每天一组</text>
+
+  <path d="M280 328 L280 342" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 6: SELECT AVG(CASE...) -->
+  <rect x="100" y="344" width="360" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="360" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">⑥ SELECT request_at AS Day,</text>
+  <text x="280" y="376" text-anchor="middle" font-size="9" fill="#333">ROUND(AVG(CASE WHEN status LIKE 'cancelled%' THEN 1 ELSE 0 END), 2)</text>
+
+  <path d="M280 386 L280 400" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="180" y="402" width="200" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="418" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">输出结果</text>
+  <text x="280" y="434" text-anchor="middle" font-size="9" fill="#333">Day | Cancellation Rate</text>
+
+  <!-- Right side: AVG trick annotation -->
+  <rect x="420" y="344" width="130" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="360" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">AVG(CASE) 技巧</text>
+  <text x="485" y="374" text-anchor="middle" font-size="8" fill="#333">cancelled → 1</text>
+  <text x="485" y="386" text-anchor="middle" font-size="8" fill="#333">completed → 0</text>
+  <text x="485" y="398" text-anchor="middle" font-size="8" fill="#b85450">AVG = 取消数/总数</text>
+</svg>

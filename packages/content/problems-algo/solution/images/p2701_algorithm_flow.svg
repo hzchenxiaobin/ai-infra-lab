@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L8,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="340" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333" filter="url(#rough2)">
+    算法流程：四层 CTE 逐层推进
+  </text>
+
+  <!-- Step 1: CTE (LAG) -->
+  <rect x="80" y="40" width="400" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">① CTE — LAG() 窗口函数</text>
+  <text x="280" y="78" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">PARTITION BY customer_id ORDER BY transaction_date</text>
+  <text x="280" y="91" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">→ 每行带上 prev_date、prev_amount</text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M280,96 L280,110" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: Flagged (CASE) -->
+  <rect x="80" y="112" width="400" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="12" font-weight="bold" fill="#d6a040" filter="url(#rough2)">② Flagged — CASE WHEN 标记断点</text>
+  <text x="280" y="150" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">DATEDIFF=1 且 amount>prev → 0（延续）</text>
+  <text x="280" y="163" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">否则 → 1（断点：新岛起点）</text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M280,168 L280,182" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: Grouped (SUM) -->
+  <rect x="80" y="184" width="400" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="204" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">③ Grouped — SUM(is_break) OVER</text>
+  <text x="280" y="222" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">前缀和生成 group_id</text>
+  <text x="280" y="235" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">同岛行共享同一 group_id</text>
+
+  <!-- Arrow 3→4 -->
+  <path d="M280,240 L280,254" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: Final SELECT -->
+  <rect x="80" y="256" width="400" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#b85450" filter="url(#rough2)">④ Final — GROUP BY + HAVING</text>
+  <text x="280" y="294" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">GROUP BY customer_id, group_id</text>
+  <text x="280" y="307" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">HAVING COUNT(*) ≥ 3 → MIN/MAX(date)</text>
+
+  <!-- Side annotation -->
+  <text x="500" y="70" font-size="9" fill="#446688" filter="url(#rough2)">取前一行</text>
+  <text x="500" y="142" font-size="9" fill="#d6a040" filter="url(#rough2)">二条件</text>
+  <text x="500" y="214" font-size="9" fill="#4a7a3a" filter="url(#rough2)">分组</text>
+  <text x="500" y="286" font-size="9" fill="#b85450" filter="url(#rough2)">过滤≥3</text>
+</svg>

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="420" fill="#fafafa"/>
+
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">示例演算：6 个定长窗口逐个判定</text>
+  <text x="310" y="42" text-anchor="middle" font-size="11" fill="#888">arr=[2,2,2,2,5,5,5,8], k=3, threshold=4 → target=12</text>
+
+  <!-- ===== header row ===== -->
+  <g font-size="11">
+    <rect x="50" y="58" width="40" height="28" rx="4" fill="#f0f0f0" stroke="#999" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="70" y="77" text-anchor="middle" fill="#555" font-weight="bold">i</text>
+    <rect x="92" y="58" width="148" height="28" rx="4" fill="#f0f0f0" stroke="#999" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="166" y="77" text-anchor="middle" fill="#555" font-weight="bold">窗口 (k=3)</text>
+    <rect x="242" y="58" width="118" height="28" rx="4" fill="#f0f0f0" stroke="#999" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="301" y="77" text-anchor="middle" fill="#555" font-weight="bold">sum (Δ)</text>
+    <rect x="362" y="58" width="90" height="28" rx="4" fill="#f0f0f0" stroke="#999" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="407" y="77" text-anchor="middle" fill="#555" font-weight="bold">sum≥12?</text>
+    <rect x="454" y="58" width="60" height="28" rx="4" fill="#f0f0f0" stroke="#999" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="484" y="77" text-anchor="middle" fill="#555" font-weight="bold">ans</text>
+  </g>
+
+  <!-- ===== data rows: helper macro inlined ===== -->
+  <!-- row 0: i=0 [2,2,2] sum=8 ✗ ans=0 -->
+  <g font-size="11">
+    <rect x="50" y="90" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="70" y="110" text-anchor="middle" fill="#446688" font-weight="bold">0</text>
+    <!-- window cells -->
+    <rect x="98" y="92" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="119" y="110" text-anchor="middle" fill="#333">2</text>
+    <rect x="142" y="92" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="163" y="110" text-anchor="middle" fill="#333">2</text>
+    <rect x="186" y="92" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="207" y="110" text-anchor="middle" fill="#333">2</text>
+    <rect x="242" y="90" width="118" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="301" y="110" text-anchor="middle" fill="#333">8 (首窗)</text>
+    <rect x="362" y="90" width="90" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="407" y="110" text-anchor="middle" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="454" y="90" width="60" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="484" y="110" text-anchor="middle" fill="#333">0</text>
+  </g>
+
+  <!-- row 1: i=1 [2,2,2] sum=8 (-2+2) ✗ ans=0 -->
+  <g font-size="11">
+    <rect x="50" y="122" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="70" y="142" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <rect x="98" y="124" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="119" y="142" text-anchor="middle" fill="#333">2</text>
+    <rect x="142" y="124" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="163" y="142" text-anchor="middle" fill="#333">2</text>
+    <rect x="186" y="124" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="207" y="142" text-anchor="middle" fill="#333">2</text>
+    <rect x="242" y="122" width="118" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="301" y="142" text-anchor="middle" fill="#333">8 (−2+2)</text>
+    <rect x="362" y="122" width="90" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="407" y="142" text-anchor="middle" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="454" y="122" width="60" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="484" y="142" text-anchor="middle" fill="#333">0</text>
+  </g>
+
+  <!-- row 2: i=2 [2,2,5] sum=9 (-2+5) ✗ ans=0 -->
+  <g font-size="11">
+    <rect x="50" y="154" width="40" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="70" y="174" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="98" y="156" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="119" y="174" text-anchor="middle" fill="#333">2</text>
+    <rect x="142" y="156" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="163" y="174" text-anchor="middle" fill="#333">2</text>
+    <rect x="186" y="156" width="42" height="26" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="207" y="174" text-anchor="middle" fill="#333">5</text>
+    <rect x="242" y="154" width="118" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="301" y="174" text-anchor="middle" fill="#333">9 (−2+5)</text>
+    <rect x="362" y="154" width="90" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="407" y="174" text-anchor="middle" fill="#b85450" font-weight="bold">✗</text>
+    <rect x="454" y="154" width="60" height="30" rx="4" fill="#ffffff" stroke="#999" stroke-width="1.2" filter="url(#rough2)"/>
+    <text x="484" y="174" text-anchor="middle" fill="#333">0</text>
+  </g>
+
+  <!-- row 3: i=3 [2,5,5] sum=12 (-2+5) ✓ ans=1  (HIT) -->
+  <g font-size="11">
+    <rect x="50" y="186" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="70" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">3</text>
+    <rect x="98" y="188" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="119" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+    <rect x="142" y="188" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="163" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="186" y="188" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="207" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="242" y="186" width="118" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="301" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">12 (−2+5)</text>
+    <rect x="362" y="186" width="90" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="407" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="454" y="186" width="60" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="484" y="206" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+  </g>
+
+  <!-- row 4: i=4 [5,5,5] sum=15 (-2+5) ✓ ans=2 -->
+  <g font-size="11">
+    <rect x="50" y="218" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="70" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">4</text>
+    <rect x="98" y="220" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="119" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="142" y="220" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="163" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="186" y="220" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="207" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="242" y="218" width="118" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="301" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">15 (−2+5)</text>
+    <rect x="362" y="218" width="90" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="407" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="454" y="218" width="60" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="484" y="238" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+  </g>
+
+  <!-- row 5: i=5 [5,5,8] sum=18 (-5+8) ✓ ans=3 -->
+  <g font-size="11">
+    <rect x="50" y="250" width="40" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="70" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="98" y="252" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="119" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="142" y="252" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="163" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">5</text>
+    <rect x="186" y="252" width="42" height="26" rx="4" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="207" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">8</text>
+    <rect x="242" y="250" width="118" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="301" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">18 (−5+8)</text>
+    <rect x="362" y="250" width="90" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="407" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+    <rect x="454" y="250" width="60" height="30" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="484" y="270" text-anchor="middle" fill="#4a7a3a" font-weight="bold">3</text>
+  </g>
+
+  <!-- arrow down to answer -->
+  <path d="M 484 280 L 484 300" stroke="#4a7a3a" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== final answer box ===== -->
+  <rect x="130" y="304" width="360" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="310" y="330" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">最终 ans = 3  ✓  (3 个窗口满足)</text>
+
+  <!-- bottom note -->
+  <text x="310" y="368" text-anchor="middle" font-size="10" fill="#888">Δ = 本次平移相对上一窗口的净变化：sum_new = sum_old − arr[i] + arr[i+k]</text>
+  <text x="310" y="384" text-anchor="middle" font-size="10" fill="#888">i=1 时 −2+2=0，和不变（出去与进来同值抵消）</text>
+  <text x="310" y="400" text-anchor="middle" font-size="10" fill="#888">绿格=满足（sum≥12），红格=不满足；共 n−k+1=6 个窗口</text>
+</svg>

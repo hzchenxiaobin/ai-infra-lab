@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 410"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="560" height="410" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：可达串 = 含全部字母至少一次的子序列 → 逐位贪心</text>
+  <text x="280" y="41" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">示例 s = "aaccb"：操作「删出现 ≥2 次的字母一次」的本质刻画</text>
+
+  <!-- ============ 上区左：删除操作示意 ============ -->
+  <g filter="url(#rough2)" font-size="12" text-anchor="middle">
+    <rect x="38"  y="56" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="72"  y="56" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="106" y="56" width="34" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="140" y="56" width="34" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" stroke-dasharray="4 3"/>
+    <rect x="174" y="56" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="55"  y="77" fill="#33506b">a</text>
+    <text x="89"  y="77" fill="#33506b">a</text>
+    <text x="123" y="77" fill="#2f5d24">c</text>
+    <text x="157" y="77" fill="#8a6d1a">c</text>
+    <text x="191" y="77" fill="#33506b">b</text>
+    <text x="55"  y="102" font-size="9.5" fill="#999">0</text>
+    <text x="89"  y="102" font-size="9.5" fill="#999">1</text>
+    <text x="123" y="102" font-size="9.5" fill="#999">2</text>
+    <text x="157" y="102" font-size="9.5" fill="#999">3</text>
+    <text x="191" y="102" font-size="9.5" fill="#999">4</text>
+  </g>
+  <g filter="url(#rough2)">
+    <path d="M 157 50 L 152 42 M 157 50 L 163 43" stroke="#b85450" stroke-width="2.2" fill="none"/>
+    <text x="157" y="36" text-anchor="middle" font-size="10.5" fill="#b85450">删一个 c（出现 ≥2 次才能删）</text>
+    <path d="M 226 72 L 258 72" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="280" y="76" text-anchor="middle" font-size="12.5" fill="#2f5d24" font-weight="bold">→ "aacb"</text>
+  </g>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <!-- ============ 上区右：刻画公式 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="316" y="52" width="224" height="70" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="428" y="73" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">可达 ⟺ t 是 s 的子序列</text>
+    <text x="428" y="91" text-anchor="middle" font-size="12" fill="#2f5d24" font-weight="bold">且 s 的每个字母在 t 中 ≥ 1 次</text>
+    <text x="428" y="109" text-anchor="middle" font-size="10" fill="#4a7a3a">删 x 前 x 有 ≥2 个 → 删后仍 ≥1 个，永不清零</text>
+  </g>
+
+  <!-- ============ 中区：逐位贪心四步 ============ -->
+  <text x="280" y="146" text-anchor="middle" font-size="12.5" fill="#444" font-weight="bold" filter="url(#rough2)">逐位贪心：每步取 a..z 中「安全」的最小字母（safe = 选它之后缺席字母仍补得回）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="30" y="162" width="118" height="88" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="89" y="183" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold">步1：选 a@0</text>
+    <text x="89" y="201" text-anchor="middle" font-size="10.5" fill="#33506b">t = "a"，cur = 1</text>
+    <text x="89" y="218" text-anchor="middle" font-size="10" fill="#4a7a3a">safe✓ b、c 在 0 之后</text>
+    <text x="89" y="234" text-anchor="middle" font-size="10" fill="#4a7a3a">都还有出现</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="166" y="162" width="118" height="88" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="225" y="183" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold">步2：再选 a@1</text>
+    <text x="225" y="201" text-anchor="middle" font-size="10.5" fill="#33506b">t = "aa"，cur = 2</text>
+    <text x="225" y="218" text-anchor="middle" font-size="10" fill="#4a7a3a">a 已满足仍可选！</text>
+    <text x="225" y="234" text-anchor="middle" font-size="10" fill="#4a7a3a">"aa…" &lt; "ab…"</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="302" y="162" width="118" height="88" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="361" y="183" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold">步3：选 c@2</text>
+    <text x="361" y="201" text-anchor="middle" font-size="10.5" fill="#2f5d24">t = "aac"，cur = 3</text>
+    <text x="361" y="218" text-anchor="middle" font-size="10" fill="#4a7a3a">b@4 不 safe：</text>
+    <text x="361" y="234" text-anchor="middle" font-size="10" fill="#4a7a3a">选 b@4 则 c 补不回</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="438" y="162" width="102" height="88" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="489" y="183" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold">步4：选 b@4</text>
+    <text x="489" y="201" text-anchor="middle" font-size="10.5" fill="#2f5d24">t = "aacb"</text>
+    <text x="489" y="218" text-anchor="middle" font-size="10" fill="#4a7a3a">need 空 → 停！</text>
+    <text x="489" y="234" text-anchor="middle" font-size="10" fill="#4a7a3a">追加只会更大</text>
+  </g>
+  <g filter="url(#rough2)">
+    <path d="M 148 206 L 164 206" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+    <path d="M 284 206 L 300 206" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+    <path d="M 420 206 L 436 206" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- ============ 底区：safe 判据 + 与 316 对比 ============ -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="268" width="288" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="174" y="289" text-anchor="middle" font-size="11.5" fill="#8a6d1a" font-weight="bold">safe 判据（O(26) 一发入魂）</text>
+    <text x="174" y="308" text-anchor="middle" font-size="11" fill="#8a6d1a">选 c@p 安全 ⟺ 尚未满足的字母 x（x≠c）</text>
+    <text x="174" y="326" text-anchor="middle" font-size="11" fill="#8a6d1a">都满足 last[x] &gt; p（最后出现还在窗口右边）</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="338" y="268" width="202" height="72" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="439" y="289" text-anchor="middle" font-size="11.5" fill="#8a3030" font-weight="bold">和 316 去除重复字母的差异</text>
+    <text x="439" y="308" text-anchor="middle" font-size="10.5" fill="#8a3030">"abab"：本题留重复 → "aab"</text>
+    <text x="439" y="326" text-anchor="middle" font-size="10.5" fill="#8a3030">316 每字母恰好一次 → "ab"</text>
+  </g>
+
+  <text x="280" y="366" text-anchor="middle" font-size="11.5" fill="#666" filter="url(#rough2)">安全的一步 = 字母尽量小 + 位置尽量早（给后面留最大的补齐空间），两者都不吃亏</text>
+  <text x="280" y="388" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">（重复字符值得保留是本题与「去重型单调栈」的分水岭：aa &lt; ab）</text>
+</svg>

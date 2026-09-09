@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">执行流程：单表一趟扫描，行内求和 + 双极值聚合 + 相减</text>
+
+  <rect x="120" y="44" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="69" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① FROM Scores：单表，无 JOIN，无 GROUP BY（整表即一组）</text>
+
+  <path d="M 280 84 L 280 100" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="102" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="121" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② 逐行求值：total = assignment1 + assignment2 + assignment3</text>
+  <text x="280" y="139" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">聚合函数的参数可以是任意行内表达式，无需先物化 total 列</text>
+
+  <path d="M 220 146 Q 220 156 220 164" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 420 146 Q 420 156 420 164" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="166" width="200" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="220" y="188" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">③a MAX(total)</text>
+  <text x="220" y="208" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">= 230</text>
+
+  <rect x="320" y="166" width="200" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="188" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③b MIN(total)</text>
+  <text x="420" y="208" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">= 119</text>
+
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">同一趟</text>
+
+  <path d="M 220 218 Q 230 232 262 244" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 420 218 Q 410 232 298 244" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="246" width="320" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="265" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">④ MAX − MIN 相减：230 − 119</text>
+  <text x="280" y="283" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">空表时 MAX/MIN 均为 NULL，差也为 NULL</text>
+
+  <path d="M 280 290 L 280 306" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="308" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="328" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑤ AS difference_in_score</text>
+  <text x="280" y="344" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">输出单行单列：111</text>
+
+  <rect x="30" y="360" width="500" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="374" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">对比暴力：两个 ORDER BY … LIMIT 1 子查询——排序 O(n log n)、表达式写两遍；</text>
+  <text x="280" y="388" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">极值只依赖两个标量，不依赖次序，一趟 O(n) 聚合直取</text>
+</svg>

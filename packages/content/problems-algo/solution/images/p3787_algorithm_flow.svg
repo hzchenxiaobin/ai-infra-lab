@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">流程：建图 → 两次 BFS → 并集扫描（总 O(n)）</text>
+
+  <!-- ① 建图 -->
+  <g filter="url(#rough2)">
+    <rect x="78" y="38" width="214" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="185" y="58" text-anchor="middle" font-size="11" fill="#33506b">① 建邻接表 g（无向）</text>
+  </g>
+  <path d="M 185 68 L 185 79" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② BFS① -->
+  <g filter="url(#rough2)">
+    <rect x="78" y="82" width="214" height="42" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="185" y="100" text-anchor="middle" font-size="10.5" fill="#33506b">② BFS① 从任意点 0 出发求 d₀</text>
+    <text x="185" y="116" text-anchor="middle" font-size="10.5" fill="#33506b">mx₀ = max(d₀)</text>
+  </g>
+  <path d="M 185 124 L 185 135" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- cand_start -->
+  <g filter="url(#rough2)">
+    <rect x="78" y="138" width="214" height="42" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="185" y="156" text-anchor="middle" font-size="10" fill="#8a6d1f">cand_start = { i | d₀[i] = mx₀ }</text>
+    <text x="185" y="172" text-anchor="middle" font-size="9" fill="#8a6d1f">（并列最远点全收，个个是端点）</text>
+  </g>
+  <path d="M 185 180 L 185 191" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ BFS② -->
+  <g filter="url(#rough2)">
+    <rect x="78" y="194" width="214" height="42" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="185" y="212" text-anchor="middle" font-size="10.5" fill="#33506b">③ 任取 A，BFS② 出发求 d<tspan font-size="8" dy="2">A</tspan></text>
+    <text x="185" y="228" text-anchor="middle" font-size="10.5" fill="#33506b">mx<tspan font-size="8" dy="2">A</tspan><tspan dy="-2"> = max(d</tspan><tspan font-size="8" dy="2">A</tspan><tspan dy="-2">)（恰为直径 D）</tspan></text>
+  </g>
+  <path d="M 185 236 L 185 245" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 侧注 -->
+  <text x="300" y="212" font-size="9" fill="#999" filter="url(#rough2)">任取 A，结论不变</text>
+
+  <!-- ④ 判定菱形 -->
+  <g filter="url(#rough2)">
+    <polygon points="185,247 292,284 185,321 78,284" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="185" y="273" text-anchor="middle" font-size="10" fill="#8a6d1f">④ 扫描 i = 0 … n−1</text>
+    <text x="185" y="288" text-anchor="middle" font-size="10" fill="#8a6d1f">d₀[i] = mx₀ 或</text>
+    <text x="185" y="303" text-anchor="middle" font-size="10" fill="#8a6d1f">d<tspan font-size="8" dy="2">A</tspan><tspan dy="-2">[i] = mx</tspan><tspan font-size="8" dy="2">A</tspan><tspan dy="-2"> ？</tspan></text>
+  </g>
+
+  <!-- 是 → 收入 ans -->
+  <text x="313" y="277" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 292 284 L 344 284" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="348" y="266" width="110" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="403" y="289" text-anchor="middle" font-size="11" fill="#2f5d24" font-weight="bold">收入 ans</text>
+  </g>
+
+  <!-- 回到菱形继续扫描 -->
+  <path d="M 401 266 C 401 232, 305 224, 245 268" stroke="#4a7a3a" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+  <text x="452" y="230" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">下一个 i</text>
+  <text x="452" y="242" text-anchor="middle" font-size="8.5" fill="#999" filter="url(#rough2)">（否 → 跳过该 i）</text>
+
+  <!-- 扫描完毕 → 返回 -->
+  <path d="M 185 321 L 185 333" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="197" y="331" font-size="9" fill="#777" filter="url(#rough2)">扫描完毕</text>
+  <g filter="url(#rough2)">
+    <rect x="110" y="336" width="150" height="22" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="185" y="351" text-anchor="middle" font-size="10.5" fill="#2f5d24">返回 ans（升序）</text>
+  </g>
+
+  <!-- 复杂度备注 -->
+  <g filter="url(#rough2)">
+    <rect x="346" y="316" width="160" height="40" rx="8" fill="#ffffff" stroke="#999" stroke-width="1.2" stroke-dasharray="5 3"/>
+    <text x="426" y="333" text-anchor="middle" font-size="9.5" fill="#666">时间 O(n) · 空间 O(n)</text>
+    <text x="426" y="347" text-anchor="middle" font-size="9" fill="#888">两次 BFS 各扫全图一遍</text>
+  </g>
+</svg>

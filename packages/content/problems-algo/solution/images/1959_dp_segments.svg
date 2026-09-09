@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">划分型 DP：k 次调整 = k+1 段，每段取最大值</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">段内容量 = max(段内元素)，浪费 = max×len − sum</text>
+
+  <!-- ===== nums array with segments ===== -->
+  <text x="30" y="76" font-size="11" fill="#446688" font-weight="bold">nums = [10, 20, 15, 30, 20]，k=2 → 3 段</text>
+
+  <g font-size="11" fill="#333">
+    <!-- segment 1: [10,20,15] -->
+    <rect x="30" y="84" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="52" y="104" text-anchor="middle">10</text>
+    <text x="52" y="78" text-anchor="middle" font-size="8" fill="#888">[0]</text>
+
+    <rect x="78" y="84" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="100" y="104" text-anchor="middle">20</text>
+    <text x="100" y="78" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+    <rect x="126" y="84" width="44" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="148" y="104" text-anchor="middle">15</text>
+    <text x="148" y="78" text-anchor="middle" font-size="8" fill="#888">[2]</text>
+
+    <!-- segment 2: [30] -->
+    <rect x="174" y="84" width="44" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="196" y="104" text-anchor="middle" fill="#4a7a3a" font-weight="bold">30</text>
+    <text x="196" y="78" text-anchor="middle" font-size="8" fill="#4a7a3a">[3]</text>
+
+    <!-- segment 3: [20] -->
+    <rect x="222" y="84" width="44" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+    <text x="244" y="104" text-anchor="middle" fill="#d6a040" font-weight="bold">20</text>
+    <text x="244" y="78" text-anchor="middle" font-size="8" fill="#d6a040">[4]</text>
+
+    <!-- segment brackets -->
+    <path d="M 28 124 L 28 130 L 172 130 L 172 124" stroke="#446688" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+    <text x="100" y="144" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">段1 [0..2] max=20</text>
+
+    <path d="M 172 124 L 172 130 L 220 130 L 220 124" stroke="#4a7a3a" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+    <text x="196" y="144" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">段2 [3..3] max=30</text>
+
+    <path d="M 220 124 L 220 130 L 268 130 L 268 124" stroke="#d6a040" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+    <text x="244" y="144" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">段3 [4..4] max=20</text>
+
+    <!-- resize markers -->
+    <text x="172" y="160" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">↑调整1</text>
+    <text x="220" y="160" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">↑调整2</text>
+  </g>
+
+  <!-- ===== cost formula ===== -->
+  <rect x="30" y="180" width="280" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">段 [l..r] 的最小浪费</text>
+  <text x="170" y="222" text-anchor="middle" font-size="12" fill="#333">cost(l, r) = max(nums[l..r]) × len − sum</text>
+  <text x="170" y="240" text-anchor="middle" font-size="10" fill="#888">段长 × 段内最大值 − 段内元素之和</text>
+
+  <!-- ===== DP transition ===== -->
+  <rect x="330" y="180" width="190" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="425" y="200" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">DP 转移</text>
+  <text x="425" y="220" text-anchor="middle" font-size="10" fill="#333">dp[i][j] = min</text>
+  <text x="425" y="236" text-anchor="middle" font-size="10" fill="#333">dp[m][j-1] + cost(m, i-1)</text>
+
+  <!-- ===== segment cost breakdown ===== -->
+  <text x="30" y="276" font-size="11" fill="#446688" font-weight="bold">每段浪费计算（示例方案）</text>
+
+  <g font-size="10" fill="#333">
+    <rect x="30" y="284" width="150" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="105" y="301" text-anchor="middle" fill="#446688">段1: 20×3−45 = 15</text>
+
+    <rect x="190" y="284" width="150" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="265" y="301" text-anchor="middle" fill="#4a7a3a">段2: 30×1−30 = 0</text>
+
+    <rect x="350" y="284" width="150" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+    <text x="425" y="301" text-anchor="middle" fill="#d6a040">段3: 20×1−20 = 0</text>
+  </g>
+
+  <!-- total -->
+  <rect x="170" y="324" width="200" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="346" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">总浪费 = 15 + 0 + 0 = 15</text>
+
+  <!-- key insight box -->
+  <rect x="30" y="370" width="480" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="386" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">关键洞察：k 次调整 = k+1 段，初始大小免费（不计调整次数）</text>
+</svg>

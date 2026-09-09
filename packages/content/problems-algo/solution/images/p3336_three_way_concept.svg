@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 390"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a07830"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="390" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：每个元素面前的三岔路 —— 历史只需记 (g1, g2)</text>
+  <text x="260" y="42" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">一个下标只走一条路 ⇒ 「不相交」自动成立，无需任何检查</text>
+
+  <!-- 源头：元素 + 当前状态 -->
+  <rect x="36" y="148" width="124" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="98" y="172" text-anchor="middle" font-size="11.5" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">新元素 x 到来</text>
+  <text x="98" y="192" text-anchor="middle" font-size="11" fill="#8a6a20" filter="url(#rough2)">当前状态 (g1, g2)</text>
+
+  <!-- 三条岔路箭头 -->
+  <path d="M 160 162 C 200 146, 208 112, 244 102" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 160 179 L 244 179" fill="none" stroke="#a07830" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 160 196 C 200 212, 208 248, 244 258" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 分支①：入 seq1 -->
+  <rect x="250" y="76" width="248" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="374" y="96" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 入 seq1</text>
+  <text x="374" y="116" text-anchor="middle" font-size="11" fill="#33506b" filter="url(#rough2)">(g1, g2) → (gcd(g1,x), g2)</text>
+
+  <!-- 分支③：都不进 -->
+  <rect x="250" y="155" width="248" height="52" fill="#f0f0f0" stroke="#888" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="374" y="175" text-anchor="middle" font-size="11.5" fill="#555" font-weight="bold" filter="url(#rough2)">③ 都不进</text>
+  <text x="374" y="195" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">(g1, g2) → (g1, g2) 原样保留</text>
+
+  <!-- 分支②：入 seq2 -->
+  <rect x="250" y="234" width="248" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="374" y="254" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">② 入 seq2</text>
+  <text x="374" y="274" text-anchor="middle" font-size="11" fill="#2f5d24" filter="url(#rough2)">(g1, g2) → (g1, gcd(g2,x))</text>
+
+  <!-- 底部备注 -->
+  <rect x="20" y="304" width="480" height="74" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="34" y="324" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">💡 三个关键不变式</text>
+  <text x="34" y="343" font-size="10.5" fill="#555" filter="url(#rough2)">· 0 = 空序列：gcd(0, x) = x，「空 → 装入首元素」零特判</text>
+  <text x="34" y="361" font-size="10.5" fill="#555" filter="url(#rough2)">· 答案 = Σ dp[g][g]（g ≥ 1）：对角线 = 两序列 gcd 相等</text>
+  <text x="34" y="379" font-size="10.5" fill="#555" filter="url(#rough2)">· 陷阱：先数 f[g] 再 C(f[g],2) ✗ —— [1,1] 给 3 ≠ 2，不相交把两序列耦合</text>
+</svg>

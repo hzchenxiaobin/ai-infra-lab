@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#999999"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="30" text-anchor="middle" font-size="17" fill="#333" filter="url(#rough2)">一条 SQL 的执行流水线</text>
+
+  <!-- step 1 -->
+  <rect x="40" y="48" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="73" text-anchor="middle" font-size="13" fill="#2a3a55" filter="url(#rough2)">① JOIN：books ⋈ reading_sessions</text>
+  <path d="M 190 88 L 190 104" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <rect x="40" y="106" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="131" text-anchor="middle" font-size="13" fill="#2a3a55" filter="url(#rough2)">② GROUP BY book_id（一本书一组）</text>
+  <path d="M 190 146 L 190 162" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 3 -->
+  <rect x="40" y="164" width="300" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="186" text-anchor="middle" font-size="12.5" fill="#2a4a20" filter="url(#rough2)">③ 聚合：COUNT(*)、MAX、MIN、</text>
+  <text x="190" y="206" text-anchor="middle" font-size="12.5" fill="#2a4a20" filter="url(#rough2)">SUM(rating ≥ 4 OR rating ≤ 2)</text>
+  <path d="M 190 220 L 190 236" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 4: HAVING -->
+  <rect x="40" y="238" width="300" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="259" text-anchor="middle" font-size="12.5" fill="#6a4a10" filter="url(#rough2)">④ HAVING 三重过滤：</text>
+  <text x="190" y="277" text-anchor="middle" font-size="12.5" fill="#6a4a10" filter="url(#rough2)">次数 ≥ 5；max ≥ 4 且 min ≤ 2；</text>
+  <text x="190" y="295" text-anchor="middle" font-size="12.5" fill="#6a4a10" filter="url(#rough2)">极端数 ÷ 总数 ≥ 0.6</text>
+  <path d="M 340 268 L 384 268" stroke="#999999" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="386" y="248" width="118" height="42" fill="#eeeeee" stroke="#999999" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="445" y="266" text-anchor="middle" font-size="12" fill="#777" filter="url(#rough2)">任一条件不满足</text>
+  <text x="445" y="283" text-anchor="middle" font-size="12" fill="#777" filter="url(#rough2)">→ 整组淘汰</text>
+  <path d="M 190 302 L 190 316" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- step 5 -->
+  <rect x="40" y="318" width="440" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="342" text-anchor="middle" font-size="12.5" fill="#7a2a26" filter="url(#rough2)">⑤ ROUND(score, 2) → ORDER BY score 降序, title 降序 → 输出 7 列</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：不展开，直接在 RLE 上做逐段乘法</text>
+
+  <!-- ===== Section 1: RLE encoding illustration ===== -->
+  <text x="50" y="52" font-size="12" fill="#555" font-weight="bold">行程编码（RLE）：连续重复段 → [值, 次数]</text>
+
+  <!-- raw array nums -->
+  <text x="50" y="78" font-size="11" fill="#888">nums =</text>
+  <rect x="92" y="60" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="111" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="130" y="60" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="149" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="168" y="60" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="187" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <rect x="206" y="60" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="225" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="244" y="60" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="263" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="282" y="60" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="301" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="320" y="60" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="339" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <rect x="358" y="60" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="377" y="80" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+
+  <!-- brace for three 1s -->
+  <path d="M 92 96 Q 111 104 130 96" stroke="#446688" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 96 Q 149 104 168 96" stroke="#446688" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 96 L 130 106" stroke="#446688" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <text x="130" y="120" text-anchor="middle" font-size="11" fill="#446688">3 个 1</text>
+
+  <!-- brace for five 2s -->
+  <path d="M 206 96 Q 282 108 358 96" stroke="#4a7a3a" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 282 96 L 282 106" stroke="#4a7a3a" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <text x="282" y="120" text-anchor="middle" font-size="11" fill="#4a7a3a">5 个 2</text>
+
+  <!-- arrow down to encoded -->
+  <path d="M 225 132 L 225 148" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- encoded array -->
+  <text x="50" y="170" font-size="11" fill="#888">encoded =</text>
+  <rect x="120" y="152" width="80" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="160" y="174" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">[1, 3]</text>
+  <rect x="220" y="152" width="80" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="174" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">[2, 5]</text>
+
+  <!-- ===== Section 2: Product on RLE ===== -->
+  <rect x="30" y="200" width="500" height="180" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="224" font-size="12" fill="#d6a040" font-weight="bold">关键洞察：两段 RLE 对齐时，逐段乘法可合并</text>
+
+  <!-- encoded1 segment -->
+  <text x="50" y="250" font-size="11" fill="#888">enc1[i]</text>
+  <rect x="100" y="234" width="90" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="145" y="254" text-anchor="middle" font-size="12" fill="#333">v₁, f₁</text>
+
+  <!-- encoded2 segment -->
+  <text x="50" y="284" font-size="11" fill="#888">enc2[j]</text>
+  <rect x="100" y="268" width="90" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="145" y="288" text-anchor="middle" font-size="12" fill="#333">v₂, f₂</text>
+
+  <!-- arrow -->
+  <path d="M 200 261 L 230 261" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- product result -->
+  <text x="240" y="252" font-size="11" fill="#888">乘积段</text>
+  <rect x="240" y="256" width="120" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="276" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">v₁×v₂, min(f₁,f₂)</text>
+
+  <!-- explanation -->
+  <text x="240" y="306" font-size="11" fill="#555">• f = min(f₁, f₂)：两段重叠的最短长度</text>
+  <text x="240" y="322" font-size="11" fill="#555">• v = v₁ × v₂：逐元素乘积相同（段内值恒定）</text>
+  <text x="240" y="338" font-size="11" fill="#555">• 谁的 freq 先耗尽谁前进，另一段剩余留待下轮</text>
+  <text x="240" y="360" font-size="11" fill="#b85450" font-weight="bold">→ 相邻同值段再合并，保证结果最短</text>
+</svg>

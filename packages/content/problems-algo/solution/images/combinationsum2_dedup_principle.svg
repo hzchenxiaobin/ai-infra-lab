@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="560" viewBox="0 0 880 560" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arred" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="880" height="560" fill="#fdfcf7"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">组合总和 II：同层去重原理</text>
+  <path d="M 280 44 Q 440 52 600 44" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="440" y="64" text-anchor="middle" font-size="12" fill="#888">candidates = [1,1,2,5,6,7,10]  target = 8   —— 排序后两个 1 相邻</text>
+
+  <!-- ===== LEFT: 不去重 ===== -->
+  <g filter="url(#sk2)"><rect x="40" y="86" width="380" height="412" rx="10" fill="#fff5f5" stroke="#b85450" stroke-width="1.4" stroke-dasharray="6 3"/></g>
+  <text x="230" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#b03a3a">① 不去重：同层两个 1 都展开</text>
+
+  <text x="230" y="138" text-anchor="middle" font-size="11" fill="#666">同一层 for 循环：分别选 idx0=1、idx1=1</text>
+
+  <!-- root -->
+  <g filter="url(#sk)"><rect x="195" y="150" width="70" height="30" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="230" y="170" text-anchor="middle" font-size="12" fill="#2b6e9e" font-weight="bold">rem=8 []</text>
+
+  <!-- left child: pick idx0=1 -->
+  <path d="M 215 180 L 120 214" stroke="#4a8e4a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="70" y="214" width="100" height="34" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="120" y="236" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">选 idx0=1</text>
+
+  <!-- right child: pick idx1=1 -->
+  <path d="M 245 180 L 340 214" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arred)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="290" y="214" width="100" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/></g>
+  <text x="340" y="236" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold">选 idx1=1</text>
+
+  <!-- subtrees produce same combos -->
+  <text x="120" y="270" text-anchor="middle" font-size="10" fill="#2e6e2e">子树含 [1,2,5]、[1,7]…</text>
+  <text x="340" y="270" text-anchor="middle" font-size="10" fill="#b03a3a">子树含 [1,2,5]、[1,7]…</text>
+
+  <g filter="url(#sk)"><rect x="70" y="284" width="100" height="26" rx="5" fill="#fff" stroke="#4a8e4a" stroke-width="1"/></g>
+  <text x="120" y="301" text-anchor="middle" font-size="10" fill="#2e6e2e">[1,2,5] ✓</text>
+  <g filter="url(#sk)"><rect x="290" y="284" width="100" height="26" rx="5" fill="#fff" stroke="#b85450" stroke-width="1"/></g>
+  <text x="340" y="301" text-anchor="middle" font-size="10" fill="#b03a3a">[1,2,5] ✓</text>
+
+  <!-- = sign -->
+  <text x="230" y="300" text-anchor="middle" font-size="20" fill="#b03a3a" font-weight="bold">=</text>
+
+  <g filter="url(#sk2)"><rect x="60" y="332" width="340" height="146" rx="8" fill="#fff" stroke="#b85450" stroke-width="1.2"/></g>
+  <text x="230" y="356" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a">结果：[1,2,5] 出现两次 ✗</text>
+  <text x="80" y="382" font-size="11" fill="#444">• 两个 1 后续可选的池子完全相同</text>
+  <text x="80" y="402" font-size="11" fill="#444">  （都是 idx2.. 末尾的 [2,5,6,7,10]）</text>
+  <text x="80" y="424" font-size="11" fill="#444">• 以“值 1”开头的组合被生成两遍</text>
+  <text x="80" y="446" font-size="11" fill="#b03a3a" font-weight="bold">→ 解集出现重复组合，不符合题意</text>
+
+  <!-- ===== RIGHT: 去重 ===== -->
+  <g filter="url(#sk2)"><rect x="460" y="86" width="380" height="412" rx="10" fill="#f4faf4" stroke="#4a8e4a" stroke-width="1.4" stroke-dasharray="6 3"/></g>
+  <text x="650" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">② 排序 + 同层去重：跳过相邻相同</text>
+
+  <text x="650" y="138" text-anchor="middle" font-size="11" fill="#666">同一层只让第一个 1 展开，第二个 1 跳过</text>
+
+  <g filter="url(#sk)"><rect x="615" y="150" width="70" height="30" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="650" y="170" text-anchor="middle" font-size="12" fill="#2b6e9e" font-weight="bold">rem=8 []</text>
+
+  <path d="M 635 180 L 540 214" stroke="#4a8e4a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="490" y="214" width="100" height="34" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="540" y="236" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">选 idx0=1</text>
+
+  <path d="M 665 180 L 760 214" stroke="#999" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="710" y="214" width="100" height="34" rx="6" fill="#f0f0f0" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3"/></g>
+  <text x="760" y="234" text-anchor="middle" font-size="10" fill="#888">idx1=1</text>
+  <text x="760" y="246" text-anchor="middle" font-size="10" fill="#b03a3a" font-weight="bold">跳过 ✗</text>
+
+  <text x="540" y="270" text-anchor="middle" font-size="10" fill="#2e6e2e">仅此一棵子树展开</text>
+  <g filter="url(#sk)"><rect x="490" y="284" width="100" height="26" rx="5" fill="#fff" stroke="#4a8e4a" stroke-width="1"/></g>
+  <text x="540" y="301" text-anchor="middle" font-size="10" fill="#2e6e2e">[1,2,5] ✓</text>
+
+  <g filter="url(#sk2)"><rect x="480" y="332" width="340" height="146" rx="8" fill="#fff" stroke="#4a8e4a" stroke-width="1.2"/></g>
+  <text x="650" y="356" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">结果：每个组合只出现一次 ✓</text>
+  <text x="500" y="382" font-size="11" fill="#444">• 同层跳过相邻重复值</text>
+  <text x="500" y="402" font-size="11" fill="#444">• “选 1”这一支只被探索一次</text>
+  <text x="500" y="424" font-size="11" fill="#444">• 仍允许向下一层再选第二个 1</text>
+  <text x="500" y="446" font-size="11" fill="#2e6e2e" font-weight="bold">→ 合法组合 [1,1,6] 仍能生成</text>
+
+  <!-- ===== key formula ===== -->
+  <g filter="url(#sk)"><rect x="120" y="516" width="640" height="34" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="440" y="538" text-anchor="middle" font-size="13" fill="#2b6e9e" font-weight="bold" font-family="monospace">if (i &gt; start &amp;&amp; candidates[i] == candidates[i-1]) continue;   // 同层去重</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 570" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrRed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="570" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">执行流程：一趟聚合 → 整除 → 取模 → 分支兜底 → 合并排序</text>
+
+  <rect x="170" y="38" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 扫描 Inventory（单表）</text>
+
+  <path d="M 280 72 L 280 86" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="110" y="90" width="340" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="110" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② 一趟条件聚合，攒 4 个统计量</text>
+  <text x="280" y="128" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">p_cnt, p_area = SUM(IF(type='prime_eligible', sq, 0))；n_cnt, n_area 同理</text>
+
+  <path d="M 280 138 L 280 154" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="140" y="158" width="280" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="178" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ prime 件数 = p_cnt × ⌊500 000 / p_area⌋</text>
+  <text x="280" y="194" text-anchor="middle" font-size="9" fill="#6a8f5e" filter="url(#rough2)">p_area = 0 时件数记 0</text>
+
+  <path d="M 280 202 L 280 218" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="140" y="222" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="242" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">④ 余量 remain = 500 000 mod p_area</text>
+  <text x="280" y="258" text-anchor="middle" font-size="9" fill="#8a6d1a" filter="url(#rough2)">p_area = 0 时 remain = 500 000（prime 不占空间）</text>
+
+  <path d="M 280 266 L 280 282" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="280,286 400,326 280,366 160,326" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="331" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">n_area = 0 ?</text>
+
+  <path d="M 400 326 L 428 326" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="412" y="318" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="432" y="308" width="112" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="324" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">not_prime 件数 = 0</text>
+  <text x="488" y="338" text-anchor="middle" font-size="8" fill="#b85450" filter="url(#rough2)">（题目要求输出 0）</text>
+
+  <path d="M 280 366 L 280 382" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="292" y="378" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <rect x="140" y="386" width="280" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="406" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">⑤ not_prime 件数 = n_cnt × ⌊remain / n_area⌋</text>
+  <text x="280" y="422" text-anchor="middle" font-size="9" fill="#6a8f5e" filter="url(#rough2)">整除向下取整：塞不下一整套就一整套都不塞</text>
+
+  <path d="M 280 430 L 280 446" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 488 344 Q 488 400 424 452" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+
+  <rect x="130" y="450" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="470" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">⑥ UNION ALL 固定两行 + ORDER BY item_count DESC</text>
+  <text x="280" y="486" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">两行 item_type 必不同 → UNION ALL 即可，无需去重</text>
+
+  <path d="M 280 494 L 280 510" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="170" y="514" width="220" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="530" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">输出（件数降序）</text>
+  <text x="280" y="544" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">prime_eligible 5400 ｜ not_prime 8</text>
+</svg>

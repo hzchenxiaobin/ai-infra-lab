@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2724f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arr2724g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">两条实现路径：直观比较器 vs Schwartzian 变换</text>
+
+  <!-- Left: Path A -->
+  <text x="120" y="62" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">路径 A：直观比较器</text>
+
+  <rect x="34" y="74" width="172" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="94" text-anchor="middle" font-size="10" fill="#333">arr.sort((a,b) =&gt;</text>
+  <text x="120" y="110" text-anchor="middle" font-size="10" fill="#333">  fn(a) - fn(b))</text>
+
+  <path d="M120,124 L120,148" stroke="#446688" stroke-width="1.6" marker-end="url(#arr2724f)" filter="url(#rough2)"/>
+
+  <rect x="34" y="152" width="172" height="40" fill="#fafafa" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="170" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">fn 调用 ≈ 2·n·log n 次</text>
+  <text x="120" y="184" text-anchor="middle" font-size="10" fill="#888">每次比较都重算 fn</text>
+
+  <rect x="34" y="204" width="172" height="40" fill="#fafafa" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="120" y="222" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">原地修改 arr</text>
+  <text x="120" y="236" text-anchor="middle" font-size="10" fill="#888">sort 返回同一引用</text>
+
+  <!-- Right: Path B -->
+  <text x="430" y="62" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">路径 B：Schwartzian 变换</text>
+
+  <rect x="344" y="74" width="172" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="94" text-anchor="middle" font-size="10" fill="#333">.map(x =&gt; [fn(x), x])   ① decorate</text>
+
+  <path d="M430,108 L430,128" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr2724g)" filter="url(#rough2)"/>
+
+  <rect x="344" y="132" width="172" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="152" text-anchor="middle" font-size="10" fill="#333">.sort((p,q) =&gt; p[0]-q[0])  ② sort</text>
+
+  <path d="M430,166 L430,186" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr2724g)" filter="url(#rough2)"/>
+
+  <rect x="344" y="190" width="172" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="210" text-anchor="middle" font-size="10" fill="#333">.map(p =&gt; p[1])   ③ undecorate</text>
+
+  <rect x="344" y="232" width="172" height="40" fill="#fafafa" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="250" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">fn 调用 = n 次</text>
+  <text x="430" y="264" text-anchor="middle" font-size="10" fill="#888">键只算一次，排序只比键</text>
+
+  <!-- Bottom: decision -->
+  <rect x="80" y="300" width="400" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="324" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">如何选？</text>
+  <text x="280" y="344" text-anchor="middle" font-size="11" fill="#333">fn 廉价（如 x =&gt; x）→ 路径 A 一行即可</text>
+  <text x="280" y="362" text-anchor="middle" font-size="11" fill="#333">fn 昂贵 / n 大 / 不想改原数组 → 路径 B</text>
+</svg>

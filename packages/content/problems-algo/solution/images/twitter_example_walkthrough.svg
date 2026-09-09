@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="17" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="900" height="580" fill="#fdfcf7"/>
+  <text x="450" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">示例演算：推文 → 关注 → 时间线</text>
+  <path d="M 290 46 Q 450 54 610 46" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="450" y="72" text-anchor="middle" font-size="11" fill="#888">user 1 发推 A、user 2 发推 B、user 3 发推 C → user 1 关注 user 2 和 3 → user 1 看 feed</text>
+
+  <!-- ===== Step 1: postTweet ===== -->
+  <g filter="url(#sk)"><rect x="40" y="86" width="820" height="130" rx="10" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="60" y="108" font-size="13" font-weight="bold" fill="#2b6e9e">步骤 1：三人各发推文</text>
+
+  <g font-size="11">
+    <!-- operation -->
+    <g filter="url(#sk)"><rect x="56" y="118" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="146" y="137" text-anchor="middle" fill="#333">postTweet(1, A) → t=1</text>
+
+    <g filter="url(#sk)"><rect x="246" y="118" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="336" y="137" text-anchor="middle" fill="#333">postTweet(2, B) → t=2</text>
+
+    <g filter="url(#sk)"><rect x="436" y="118" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="526" y="137" text-anchor="middle" fill="#333">postTweet(1, D) → t=3</text>
+
+    <g filter="url(#sk)"><rect x="626" y="118" width="220" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="736" y="137" text-anchor="middle" fill="#333">postTweet(3, E) → t=4</text>
+  </g>
+
+  <!-- state after step 1 -->
+  <g font-size="10.5">
+    <text x="60" y="164" font-weight="bold" fill="#2b6e9e">userTweets:</text>
+    <g filter="url(#sk)"><rect x="148" y="152" width="64" height="22" rx="3" fill="#eaf6ee" stroke="#4a8e4a"/></g>
+    <text x="180" y="168" text-anchor="middle">1: [(1,A)(3,D)]</text>
+    <g filter="url(#sk)"><rect x="220" y="152" width="60" height="22" rx="3" fill="#eaf6ee" stroke="#4a8e4a"/></g>
+    <text x="250" y="168" text-anchor="middle">2: [(2,B)]</text>
+    <g filter="url(#sk)"><rect x="288" y="152" width="64" height="22" rx="3" fill="#eaf6ee" stroke="#4a8e4a"/></g>
+    <text x="320" y="168" text-anchor="middle">3: [(4,E)]</text>
+    <text x="380" y="168" fill="#888">time = 4</text>
+    <text x="500" y="164" font-weight="bold" fill="#7a5415">following:</text>
+    <text x="568" y="164" fill="#555">1: {}  2: {}  3: {}</text>
+    <text x="700" y="164" fill="#888" font-size="9.5">（还没人关注谁）</text>
+    <text x="60" y="196" fill="#888" font-size="10">→ getNewsFeed(1) 此时只有自己的推文：[D, A]</text>
+  </g>
+
+  <!-- ===== Step 2: follow ===== -->
+  <g filter="url(#sk)"><rect x="40" y="226" width="820" height="80" rx="10" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="60" y="248" font-size="13" font-weight="bold" fill="#7a5415">步骤 2：user 1 关注 user 2 和 user 3</text>
+
+  <g font-size="11">
+    <g filter="url(#sk)"><rect x="56" y="258" width="160" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="136" y="277" text-anchor="middle" fill="#333">follow(1, 2)</text>
+    <g filter="url(#sk)"><rect x="226" y="258" width="160" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="306" y="277" text-anchor="middle" fill="#333">follow(1, 3)</text>
+    <text x="420" y="277" fill="#555" font-weight="bold" fill="#7a5415">following[1] = {2, 3}</text>
+  </g>
+  <text x="60" y="298" font-size="10" fill="#888">→ user 1 的信息流现在包含 user 1 + user 2 + user 3 的推文</text>
+
+  <!-- ===== Step 3: more tweets ===== -->
+  <g filter="url(#sk)"><rect x="40" y="316" width="820" height="76" rx="10" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="60" y="338" font-size="13" font-weight="bold" fill="#2b6e9e">步骤 3：继续发推</text>
+
+  <g font-size="11">
+    <g filter="url(#sk)"><rect x="56" y="348" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="146" y="367" text-anchor="middle" fill="#333">postTweet(3, H) → t=5</text>
+    <g filter="url(#sk)"><rect x="246" y="348" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="336" y="367" text-anchor="middle" fill="#333">postTweet(2, F) → t=6</text>
+    <g filter="url(#sk)"><rect x="436" y="348" width="180" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="526" y="367" text-anchor="middle" fill="#333">postTweet(1, G) → t=7</text>
+    <g filter="url(#sk)"><rect x="626" y="348" width="220" height="28" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="736" y="367" text-anchor="middle" fill="#333">postTweet(3, I) → t=8</text>
+  </g>
+  <text x="60" y="386" font-size="10" fill="#888">→ userTweets: 1:[(1,A)(3,D)(7,G)]  2:[(2,B)(6,F)]  3:[(4,E)(5,H)(8,I)]  time=8</text>
+
+  <!-- ===== Step 4: getNewsFeed ===== -->
+  <g filter="url(#sk)"><rect x="40" y="402" width="820" height="150" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="60" y="424" font-size="13" font-weight="bold" fill="#b03a3a">步骤 4：getNewsFeed(1) — 堆归并过程</text>
+
+  <g font-size="10.5">
+    <!-- table header -->
+    <g filter="url(#sk)"><rect x="56" y="434" width="100" height="24" rx="3" fill="#fff" stroke="#bbb"/></g>
+    <text x="106" y="451" text-anchor="middle" font-weight="bold" fill="#555">轮次</text>
+    <g filter="url(#sk)"><rect x="156" y="434" width="100" height="24" rx="3" fill="#fff" stroke="#bbb"/></g>
+    <text x="206" y="451" text-anchor="middle" font-weight="bold" fill="#555">堆顶(最大)</text>
+    <g filter="url(#sk)"><rect x="256" y="434" width="140" height="24" rx="3" fill="#fff" stroke="#bbb"/></g>
+    <text x="326" y="451" text-anchor="middle" font-weight="bold" fill="#555">出列推文</text>
+    <g filter="url(#sk)"><rect x="396" y="434" width="440" height="24" rx="3" fill="#fff" stroke="#bbb"/></g>
+    <text x="616" y="451" text-anchor="middle" font-weight="bold" fill="#555">该用户下一条入堆</text>
+
+    <!-- rows -->
+    <g fill="#333">
+      <g filter="url(#sk)"><rect x="56" y="458" width="100" height="20" rx="3" fill="#fce4ec" stroke="#b85450"/></g>
+      <text x="106" y="472" text-anchor="middle" fill="#b03a3a">1</text>
+      <text x="206" y="472" text-anchor="middle">t=8</text>
+      <text x="326" y="472" text-anchor="middle" font-weight="bold">I (user3)</text>
+      <text x="616" y="472" text-anchor="middle" fill="#888">user3 idx→(5,H) 入堆</text>
+
+      <g filter="url(#sk)"><rect x="56" y="478" width="100" height="20" rx="3" fill="#fce4ec" stroke="#b85450"/></g>
+      <text x="106" y="492" text-anchor="middle" fill="#b03a3a">2</text>
+      <text x="206" y="492" text-anchor="middle">t=7</text>
+      <text x="326" y="492" text-anchor="middle" font-weight="bold">G (user1)</text>
+      <text x="616" y="492" text-anchor="middle" fill="#888">user1 idx→(3,D) 入堆</text>
+
+      <g filter="url(#sk)"><rect x="56" y="498" width="100" height="20" rx="3" fill="#fce4ec" stroke="#b85450"/></g>
+      <text x="106" y="512" text-anchor="middle" fill="#b03a3a">3</text>
+      <text x="206" y="512" text-anchor="middle">t=6</text>
+      <text x="326" y="512" text-anchor="middle" font-weight="bold">F (user2)</text>
+      <text x="616" y="512" text-anchor="middle" fill="#888">user2 idx→(2,B) 入堆</text>
+
+      <g filter="url(#sk)"><rect x="56" y="518" width="100" height="20" rx="3" fill="#fff" stroke="#bbb"/></g>
+      <text x="106" y="532" text-anchor="middle">4</text>
+      <text x="206" y="532" text-anchor="middle">t=5</text>
+      <text x="326" y="532" text-anchor="middle">H (user3)</text>
+      <text x="616" y="532" text-anchor="middle" fill="#888">user3 idx→(4,E) 入堆</text>
+
+      <g filter="url(#sk)"><rect x="56" y="538" width="100" height="12" rx="3" fill="#fff" stroke="#bbb" stroke-dasharray="2 2"/></g>
+      <text x="106" y="548" text-anchor="middle" font-size="9" fill="#aaa">...</text>
+      <text x="326" y="548" text-anchor="middle" font-size="9.5" fill="#aaa">D, E, B, A ...</text>
+    </g>
+  </g>
+
+  <text x="450" y="568" text-anchor="middle" font-size="11" fill="#b03a3a" font-weight="bold">结果 = [I, G, F, H, D, E, B, A]（8 条，不足 10）</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="400" viewBox="0 0 760 400" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.4"/>
+    </filter>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="760" height="400" fill="#fdfcf7"/>
+  <text x="380" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">删除子数组的最大得分：无重复元素的最大和子数组</text>
+  <path d="M 230 42 Q 380 50 530 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="380" y="64" text-anchor="middle" font-size="12" fill="#666">子数组元素必须互不相同 → 求元素互异的最大和连续子数组</text>
+
+  <!-- ===== Top: original array with duplicate marked ===== -->
+  <text x="60" y="100" font-size="14" font-weight="bold" fill="#2b6e9e">原数组：nums = [4, 2, 4, 5, 6]</text>
+  <text x="60" y="118" font-size="11" fill="#888">两个 4 重复，不能同时出现在子数组中</text>
+
+  <!-- index header -->
+  <g font-size="9" fill="#999" text-anchor="middle">
+    <text x="120" y="138">0</text><text x="200" y="138">1</text><text x="280" y="138">2</text><text x="360" y="138">3</text><text x="440" y="138">4</text>
+  </g>
+
+  <!-- cell 0: 4 (duplicate, red) -->
+  <g filter="url(#sk2)"><rect x="80" y="146" width="80" height="46" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="120" y="176" text-anchor="middle" font-size="16" fill="#a03a3a" font-weight="bold">4</text>
+  <text x="120" y="206" text-anchor="middle" font-size="10" fill="#b85450">重复</text>
+
+  <!-- cell 1: 2 (ok) -->
+  <g filter="url(#sk2)"><rect x="160" y="146" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="200" y="176" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">2</text>
+
+  <!-- cell 2: 4 (duplicate, red) -->
+  <g filter="url(#sk2)"><rect x="240" y="146" width="80" height="46" rx="5" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="280" y="176" text-anchor="middle" font-size="16" fill="#a03a3a" font-weight="bold">4</text>
+  <text x="280" y="206" text-anchor="middle" font-size="10" fill="#b85450">重复</text>
+
+  <!-- cell 3: 5 (ok) -->
+  <g filter="url(#sk2)"><rect x="320" y="146" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="360" y="176" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">5</text>
+
+  <!-- cell 4: 6 (ok) -->
+  <g filter="url(#sk2)"><rect x="400" y="146" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2"/></g>
+  <text x="440" y="176" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">6</text>
+
+  <!-- duplicate arc between cell 0 and cell 2 -->
+  <path d="M 120 214 Q 200 244 280 214" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="200" y="240" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">值 4 重复 → 必须舍弃其一</text>
+
+  <!-- arrow down -->
+  <path d="M 380 256 L 380 280" stroke="#3a3a3a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="392" y="274" font-size="11" fill="#3a3a3a">滑动窗口</text>
+
+  <!-- ===== Bottom: optimal subarray ===== -->
+  <text x="60" y="306" font-size="14" font-weight="bold" fill="#4a7a3a">最优子数组：[2, 4, 5, 6]，元素互异，和最大</text>
+
+  <!-- cell 0: 4 (gray, excluded) -->
+  <g filter="url(#sk2)"><rect x="80" y="316" width="80" height="46" rx="5" fill="#f4f4f4" stroke="#ccc" stroke-width="1"/></g>
+  <text x="120" y="346" text-anchor="middle" font-size="16" fill="#aaa">4</text>
+  <text x="120" y="376" text-anchor="middle" font-size="10" fill="#aaa">舍弃</text>
+
+  <!-- cell 1: 2 (kept, green) -->
+  <g filter="url(#sk2)"><rect x="160" y="316" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2.5"/></g>
+  <text x="200" y="346" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">2</text>
+
+  <!-- cell 2: 4 (kept, green) -->
+  <g filter="url(#sk2)"><rect x="240" y="316" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2.5"/></g>
+  <text x="280" y="346" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">4</text>
+
+  <!-- cell 3: 5 (kept, green) -->
+  <g filter="url(#sk2)"><rect x="320" y="316" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2.5"/></g>
+  <text x="360" y="346" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">5</text>
+
+  <!-- cell 4: 6 (kept, green) -->
+  <g filter="url(#sk2)"><rect x="400" y="316" width="80" height="46" rx="5" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="2.5"/></g>
+  <text x="440" y="346" text-anchor="middle" font-size="16" fill="#2e5e2e" font-weight="bold">6</text>
+
+  <!-- bracket: optimal subarray -->
+  <path d="M 160 366 L 160 372 L 480 372 L 480 366" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+
+  <!-- answer box -->
+  <g filter="url(#sk2)"><rect x="540" y="320" width="180" height="44" rx="8" fill="#fff8e1" stroke="#c98a2b" stroke-width="1.6"/></g>
+  <text x="630" y="340" text-anchor="middle" font-size="11" fill="#7a5415">2 + 4 + 5 + 6</text>
+  <text x="630" y="358" text-anchor="middle" font-size="13" fill="#7a5415" font-weight="bold">最大得分 = 17</text>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 620"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="620" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：切半 → 枚举子集分组 → 排序 → k 配对二分</text>
+
+  <!-- Step 1: split -->
+  <rect x="140" y="48" width="280" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">① 切半</text>
+  <text x="280" y="84" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">A = nums[0..n−1]，B = nums[n..2n−1]，S = Σnums</text>
+  <path d="M 280 94 L 280 112" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: enumerate subsets (two parallel boxes) -->
+  <rect x="40" y="118" width="220" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="138" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② 枚举 A 子集</text>
+  <text x="150" y="156" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">mask: 0..2^n−1</text>
+  <text x="150" y="172" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">k=popcount(mask)</text>
+
+  <rect x="300" y="118" width="220" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="138" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 枚举 B 子集</text>
+  <text x="410" y="156" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">mask: 0..2^n−1</text>
+  <text x="410" y="172" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">k=popcount(mask)</text>
+  <path d="M 150 184 L 150 202" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 410 184 L 410 202" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: group by size + push sums -->
+  <rect x="40" y="208" width="220" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="228" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">③ sumsA[k].push(和)</text>
+  <text x="150" y="246" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">按 k 分到 n+1 个桶</text>
+  <text x="150" y="262" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">共 2^n 个子集和</text>
+
+  <rect x="300" y="208" width="220" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="228" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ sumsB[k].push(和)</text>
+  <text x="410" y="246" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">按 k 分到 n+1 个桶</text>
+  <text x="410" y="262" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">共 2^n 个子集和</text>
+  <path d="M 150 274 L 150 292" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 410 274 L 410 292" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: sort sumsB -->
+  <rect x="120" y="298" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="316" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">④ 对每个 sumsB[k] 排序（k=0..n）</text>
+  <text x="280" y="330" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">供后续二分查找 lower_bound</text>
+  <path d="M 280 340 L 280 358" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: loop k -->
+  <rect x="120" y="364" width="320" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="382" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">⑤ 枚举 k = 0 .. n</text>
+  <text x="280" y="396" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">cand = sumsB[n−k]（B 取 n−k 个）</text>
+  <path d="M 280 406 L 280 424" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 6: loop s1 + binary search (decision diamond) -->
+  <polygon points="280,430 400,470 280,510 160,470" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="460" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">遍历 s1 ∈ sumsA[k]</text>
+  <text x="280" y="476" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">target = S/2 − s1</text>
+  <text x="280" y="490" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">二分 cand 找最近 s2</text>
+  <path d="M 280 510 L 280 528" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 7: update ans -->
+  <rect x="120" y="534" width="320" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="552" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold" filter="url(#rough2)">⑥ ans = min(ans, |2(s1+s2) − S|)</text>
+  <text x="280" y="566" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">检查 lower_bound 命中位及其前一位</text>
+  <path d="M 280 576 L 280 594" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="200" y="598" width="160" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="612" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">返回 ans</text>
+</svg>

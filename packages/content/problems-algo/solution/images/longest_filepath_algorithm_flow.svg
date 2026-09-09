@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 530" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="530" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：逐行解析，数组维护各层路径长度</text>
+
+  <!-- Start -->
+  <rect x="180" y="36" width="180" height="26" rx="13" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">开始：path_len=[], max_len=0</text>
+  <path d="M 270 62 L 270 76" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Split by \n -->
+  <rect x="185" y="78" width="170" height="24" rx="6" fill="#fafafa" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="270" y="95" text-anchor="middle" font-size="11" fill="#333">input.split('\n') → lines</text>
+  <path d="M 270 102 L 270 116" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Take next line -->
+  <rect x="200" y="118" width="140" height="24" rx="6" fill="#fafafa" stroke="#666" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="270" y="135" text-anchor="middle" font-size="11" fill="#333">取下一行 line</text>
+  <path d="M 270 142 L 270 156" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Count \t -->
+  <rect x="160" y="158" width="220" height="38" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="175" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">数前导 \t 个数 → depth</text>
+  <text x="270" y="190" text-anchor="middle" font-size="10" fill="#555">name = line 去掉前导 \t</text>
+  <path d="M 270 196 L 270 210" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Compute cur_len -->
+  <rect x="115" y="212" width="310" height="46" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="229" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">计算 cur_len</text>
+  <text x="270" y="244" text-anchor="middle" font-size="10" fill="#333">d=0: cur_len = len(name)</text>
+  <text x="270" y="256" text-anchor="middle" font-size="10" fill="#333">d&gt;0: cur_len = path_len[d-1] + 1 + len(name)</text>
+  <path d="M 270 258 L 270 272" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Store path_len[depth] -->
+  <rect x="170" y="274" width="200" height="24" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="270" y="291" text-anchor="middle" font-size="11" fill="#4a7a3a">path_len[depth] = cur_len</text>
+  <path d="M 270 298 L 270 312" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: is file? -->
+  <polygon points="270,314 340,344 270,374 200,344" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="342" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">name 含 '.'?</text>
+  <text x="270" y="358" text-anchor="middle" font-size="9" fill="#888">是文件?</text>
+
+  <!-- Yes: update max -->
+  <path d="M 200 344 L 120 344 L 120 370" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="158" y="336" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="55" y="372" width="130" height="24" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="120" y="389" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">max_len = max(max, cur)</text>
+
+  <!-- No: skip -->
+  <path d="M 340 344 L 420 344 L 420 370" stroke="#888" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="380" y="336" text-anchor="middle" font-size="10" fill="#888">否</text>
+  <rect x="375" y="372" width="90" height="24" rx="6" fill="#fafafa" stroke="#888" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="420" y="389" text-anchor="middle" font-size="10" fill="#888">跳过</text>
+
+  <!-- converge -->
+  <path d="M 120 396 L 120 412 L 420 412" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 420 396 L 420 412" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 412 L 270 422" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: more lines? -->
+  <polygon points="270,424 330,448 270,472 210,448" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="452" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">还有行?</text>
+
+  <!-- Yes: loop back -->
+  <path d="M 330 448 L 510 448 L 510 130 L 342 130" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="522" y="290" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" transform="rotate(90 522 290)">是 → 取下一行</text>
+
+  <!-- No: return max_len -->
+  <path d="M 270 472 L 270 486" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="205" y="488" width="130" height="24" rx="12" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="505" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否 → 返回 max_len</text>
+</svg>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">执行流程：累计求和 → 双阈值过滤 → AVG</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="50" width="540" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="74" font-size="11.5" fill="#333" font-weight="bold">① 计算 N 与双向累计</text>
+  <text x="60" y="94" font-size="10.5" fill="#555">• N = (SELECT SUM(frequency) FROM Numbers)   ← 总出现次数</text>
+  <text x="60" y="110" font-size="10.5" fill="#555">• a1 = SUM(frequency) OVER (ORDER BY num)        ← 升序累计</text>
+  <text x="60" y="126" font-size="10.5" fill="#555">• a2 = SUM(frequency) OVER (ORDER BY num DESC)   ← 降序累计</text>
+
+  <path d="M310 124 L310 144" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="148" width="540" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="172" font-size="11.5" fill="#333" font-weight="bold">② 过滤：保留同时满足两条阈值的行</text>
+  <text x="60" y="192" font-size="10.5" fill="#555">WHERE a1 &gt;= N/2 AND a2 &gt;= N/2</text>
+  <text x="60" y="206" font-size="10" fill="#b85450">→ 「≤ num 的次数 ≥ 一半」且「≥ num 的次数 ≥ 一半」</text>
+
+  <path d="M310 210 L310 230" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="40" y="234" width="540" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="258" font-size="11.5" fill="#333" font-weight="bold">③ 聚合输出：AVG(num) AS median</text>
+  <text x="60" y="278" font-size="10.5" fill="#555">• 奇数个 → 唯一一行，AVG = 该 num</text>
+  <text x="60" y="292" font-size="10.5" fill="#555">• 偶数个 → 两行，AVG = (num₁ + num₂)/2</text>
+
+  <path d="M310 296 L310 316" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="220" y="320" width="180" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="338" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">median</text>
+  <text x="310" y="356" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">0.000</text>
+
+  <!-- note -->
+  <rect x="40" y="384" width="540" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="406" font-size="10.5" fill="#555">💡 关键：中位数的定义对升/降对称——「不超过中位数的个数 ≥ 半数」</text>
+  <text x="60" y="424" font-size="10.5" fill="#555">   且「不小于中位数的个数 ≥ 半数」。双向累计各做一次，取交集即可。</text>
+  <text x="60" y="440" font-size="10.5" fill="#4a7a3a">   无需真正展开 N 个元素，只在压缩表（≤ n 行）上算两次累计，高效。</text>
+</svg>

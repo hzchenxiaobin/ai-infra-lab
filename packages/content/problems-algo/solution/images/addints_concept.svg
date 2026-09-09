@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：加法是 CPU 单周期原生指令</text>
+
+  <!-- ===== Top: the equation num1 + num2 = sum ===== -->
+  <text x="44" y="70" font-size="12.5" fill="#446688" font-weight="bold">num1</text>
+  <rect x="80" y="50" width="70" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="74" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">12</text>
+
+  <text x="166" y="74" text-anchor="middle" font-size="18" fill="#b85450" font-weight="bold">+</text>
+
+  <text x="196" y="70" font-size="12.5" fill="#446688" font-weight="bold">num2</text>
+  <rect x="232" y="50" width="70" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="267" y="74" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">5</text>
+
+  <text x="322" y="74" text-anchor="middle" font-size="18" fill="#4a7a3a" font-weight="bold">=</text>
+
+  <rect x="340" y="50" width="70" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="74" text-anchor="middle" font-size="15" fill="#4a7a3a" font-weight="bold">17</text>
+  <text x="424" y="74" font-size="11" fill="#4a7a3a" font-weight="bold">sum</text>
+
+  <!-- arrow down to CPU -->
+  <path d="M 200 92 Q 200 104 200 114" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="236" y="108" font-size="10.5" fill="#888">一条 ADD 指令</text>
+
+  <!-- ===== CPU ALU box ===== -->
+  <rect x="70" y="118" width="340" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="240" y="138" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">CPU · ALU 加法单元（全加器级联）</text>
+
+  <!-- full adder chain -->
+  <rect x="92" y="150" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="115" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">FA</text>
+  <rect x="148" y="150" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="171" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">FA</text>
+  <rect x="204" y="150" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="227" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">FA</text>
+  <text x="262" y="170" font-size="13" fill="#888" font-weight="bold">···</text>
+  <rect x="284" y="150" width="46" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="307" y="170" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">FA</text>
+  <text x="342" y="170" font-size="10.5" fill="#888">k 位并行</text>
+
+  <!-- clock tag -->
+  <rect x="430" y="150" width="80" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="170" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">单周期 ✓</text>
+
+  <!-- ===== contrast: naive increment loop ===== -->
+  <rect x="70" y="214" width="380" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="234" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">误区：以为 a + b = 把 b 个 1 逐次自增到 a</text>
+
+  <!-- naive loop visual -->
+  <rect x="92" y="246" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="107" y="264" text-anchor="middle" font-size="10" fill="#b85450">+1</text>
+  <rect x="128" y="246" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="143" y="264" text-anchor="middle" font-size="10" fill="#b85450">+1</text>
+  <rect x="164" y="246" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="179" y="264" text-anchor="middle" font-size="10" fill="#b85450">+1</text>
+  <text x="206" y="264" font-size="13" fill="#888" font-weight="bold">···</text>
+  <rect x="228" y="246" width="30" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="243" y="264" text-anchor="middle" font-size="10" fill="#b85450">+1</text>
+  <text x="270" y="264" font-size="11" fill="#b85450" font-weight="bold">循环 |b| 次 → O(|b|)</text>
+  <text x="470" y="264" font-size="11" fill="#b85450" font-weight="bold">慢！✗</text>
+
+  <!-- arrow from ALU to result box -->
+  <path d="M 240 192 Q 240 300 240 312" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== bottom: three key takeaways ===== -->
+  <rect x="40" y="316" width="460" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="338" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">① + → ADD 指令，单周期出结果（O(1)）</text>
+
+  <rect x="40" y="358" width="460" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="380" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">② 补码统一正负，无需分类（示例 2 通吃）</text>
+
+  <rect x="40" y="400" width="460" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="420" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 范围 [-100,100] 无溢出；放大到 int 边界才需考虑</text>
+</svg>

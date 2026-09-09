@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：正反两趟方向 DP + 枚举删除位</text>
+
+  <!-- 第一行：两个 DP -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="42" width="240" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="146" y="63" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold">① 正向一趟：up[i] / down[i]</text>
+    <text x="146" y="80" text-anchor="middle" font-size="9.5" fill="#33506b">以 i 结尾、最后一步升/降的最长交替段</text>
+    <text x="146" y="93" text-anchor="middle" font-size="9" fill="#66788c">升 ⟹ up[i]=down[i−1]+1；相等断链置 1</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="294" y="42" width="240" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="414" y="63" text-anchor="middle" font-size="11.5" fill="#33506b" font-weight="bold">② 反向一趟：sup[i] / sdown[i]</text>
+    <text x="414" y="80" text-anchor="middle" font-size="9.5" fill="#33506b">以 i 开头、第一步升/降的最长交替段</text>
+    <text x="414" y="93" text-anchor="middle" font-size="9" fill="#66788c">降 ⟹ sdown[i]=sup[i+1]+1；相等断链置 1</text>
+  </g>
+
+  <!-- 汇合箭头 -->
+  <path d="M 146 104 L 146 122" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 414 104 L 414 122" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 不删答案 -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="126" width="320" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="280" y="148" text-anchor="middle" font-size="11.5" fill="#2f5d24" font-weight="bold">③ 不删（或删了但不跨缺口）：ans = max(up[i], down[i])</text>
+  </g>
+
+  <path d="M 280 164 L 280 184" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <g filter="url(#rough2)">
+    <polygon points="280,188 400,222 280,256 160,222" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="216" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">④ 枚举删除位 r ∈ [1, n−2]</text>
+    <text x="280" y="232" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold">nums[r−1] ? nums[r+1]</text>
+  </g>
+
+  <!-- 分支标签 -->
+  <text x="128" y="272" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">&lt;（升）</text>
+  <text x="280" y="276" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">=（不可焊，跳过）</text>
+  <text x="432" y="272" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">&gt;（降）</text>
+
+  <!-- 分支箭头 -->
+  <path d="M 205 246 C 170 258, 150 268, 146 284" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 355 246 C 390 258, 410 268, 414 284" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 分支候选框 -->
+  <g filter="url(#rough2)">
+    <rect x="36" y="288" width="220" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="146" y="306" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold">候选 = down[r−1] + sdown[r+1]</text>
+    <text x="146" y="322" text-anchor="middle" font-size="9.5" fill="#66788c">方向序列 ↓↑↓</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="304" y="288" width="220" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="414" y="306" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold">候选 = up[r−1] + sup[r+1]</text>
+    <text x="414" y="322" text-anchor="middle" font-size="9.5" fill="#66788c">方向序列 ↑↓↑</text>
+  </g>
+
+  <!-- 汇合 -->
+  <path d="M 146 336 L 200 354" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 414 336 L 360 354" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 最终框 -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="358" width="260" height="32" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="280" y="379" text-anchor="middle" font-size="11.5" fill="#8f3a34" font-weight="bold">⑤ ans = max(ans, 候选)，返回 ans</text>
+  </g>
+</svg>

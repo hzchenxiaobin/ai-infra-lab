@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：骑士 8 种 L 形走法 + 概率 DP 逐层扩散</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">每步等概率 1/8 选一个方向，离板概率自然丢弃 → k 步后板上概率之和</text>
+
+  <!-- ============ 左：5x5 棋盘 + 骑士 8 走法 ============ -->
+  <text x="150" y="68" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">5×5 棋盘：从中心出发的 8 种 L 形走法</text>
+
+  <!-- grid 5x5, cell=38, origin (60,78) -->
+  <g filter="url(#rough2)">
+    <!-- rows 0..4, cols 0..4 -->
+    <rect x="60"  y="78"  width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="98"  y="78"  width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="136" y="78"  width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="174" y="78"  width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="212" y="78"  width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+
+    <rect x="60"  y="116" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="98"  y="116" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="136" y="116" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="174" y="116" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="212" y="116" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+
+    <rect x="60"  y="154" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="98"  y="154" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <!-- center cell (2,2) -->
+    <rect x="136" y="154" width="38" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2.5"/>
+    <rect x="174" y="154" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="212" y="154" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+
+    <rect x="60"  y="192" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="98"  y="192" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="136" y="192" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="174" y="192" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="212" y="192" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+
+    <rect x="60"  y="230" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="98"  y="230" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="136" y="230" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+    <rect x="174" y="230" width="38" height="38" fill="#ffffff" stroke="#bbb" stroke-width="1"/>
+    <rect x="212" y="230" width="38" height="38" fill="#f6f6f6" stroke="#bbb" stroke-width="1"/>
+  </g>
+
+  <!-- highlight 8 destination cells (dr,dc): center (2,2) at x=155,y=173 -->
+  <!-- (0,3) -> col3 x=174, row0 y=78 ; (0,1) -> x=98 y=78 -->
+  <!-- (4,3) -> x=174 y=230 ; (4,1) -> x=98 y=230 -->
+  <!-- (1,4) -> x=212 y=116 ; (1,0) -> x=60 y=116 -->
+  <!-- (3,4) -> x=212 y=192 ; (3,0) -> x=60 y=192 -->
+  <g filter="url(#rough2)">
+    <rect x="174" y="78"  width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="98"  y="78"  width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="174" y="230" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="98"  y="230" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="212" y="116" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="60"  y="116" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="212" y="192" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="60"  y="192" width="38" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+  </g>
+
+  <!-- 8 arrows from center (155,173) to each destination center -->
+  <g stroke="#b85450" stroke-width="1.8" fill="none" filter="url(#rough2)">
+    <line x1="155" y1="173" x2="193" y2="97"  marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="117" y2="97"  marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="193" y2="249" marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="117" y2="249" marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="231" y2="135" marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="79"  y2="135" marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="231" y2="211" marker-end="url(#arr)"/>
+    <line x1="155" y1="173" x2="79"  y2="211" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- knight marker on center -->
+  <circle cx="155" cy="173" r="11" fill="#b85450" stroke="#7a2a26" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="155" y="177" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">马</text>
+
+  <text x="155" y="288" text-anchor="middle" font-size="10.5" fill="#888">(±2, ±1) 与 (±1, ±2) 共 8 个方向</text>
+  <text x="155" y="304" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">每方向概率 1/8，落点离板则丢弃</text>
+
+  <!-- ============ 右：DP 状态转移 ============ -->
+  <rect x="280" y="78" width="280" height="86" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="296" y="100" font-size="12" fill="#446688" font-weight="bold">① 状态定义</text>
+  <text x="296" y="120" font-size="11.5" fill="#333">dp[s][r][c] = 走 s 步后恰在 (r,c) 的概率</text>
+  <text x="296" y="140" font-size="11.5" fill="#333">dp[0][row][col] = 1 （起点概率 1）</text>
+  <text x="296" y="156" font-size="10" fill="#888">其余格子初值 0</text>
+
+  <rect x="280" y="176" width="280" height="92" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="296" y="198" font-size="12" fill="#d6a040" font-weight="bold">② 状态转移</text>
+  <text x="296" y="218" font-size="11" fill="#333" font-family="monospace">for (dr,dc) in 8_dirs:</text>
+  <text x="312" y="234" font-size="11" fill="#333" font-family="monospace">nr=r+dr, nc=c+dc</text>
+  <text x="312" y="250" font-size="11" fill="#4a7a3a" font-family="monospace">if 在板上: dp[s+1][nr][nc] += dp[s][r][c]/8</text>
+  <text x="312" y="262" font-size="10" fill="#b85450" font-family="monospace">else: 离板概率丢弃（不累加）</text>
+
+  <rect x="280" y="278" width="280" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="296" y="300" font-size="12" fill="#4a7a3a" font-weight="bold">③ 答案</text>
+  <text x="296" y="320" font-size="11.5" fill="#333">k 步后板上概率之和 =</text>
+  <text x="312" y="336" font-size="11.5" fill="#4a7a3a" font-family="monospace" font-weight="bold">Σ dp[k][r][c]，(r,c) 遍历全板</text>
+
+  <rect x="280" y="350" width="280" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="372" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">滚动数组：只保留上一步 dp，空间 O(n²)</text>
+</svg>

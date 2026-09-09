@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">Warnsdorff + 回溯 算法流程</text>
+
+  <!-- Step boxes (left column) -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="50" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6"/>
+    <text x="170" y="74" text-anchor="middle" font-size="12" fill="#333">① 起点 grid[r][c] = 0，step = 1</text>
+
+    <rect x="60" y="110" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6"/>
+    <text x="170" y="134" text-anchor="middle" font-size="12" fill="#333">② 列出当前位置的合法未访问邻居</text>
+
+    <rect x="60" y="170" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="170" y="188" text-anchor="middle" font-size="12" fill="#333">③ 对每个邻居算「出度」</text>
+    <text x="170" y="202" text-anchor="middle" font-size="11" fill="#555">= 其未访问邻居数</text>
+
+    <rect x="60" y="230" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="170" y="254" text-anchor="middle" font-size="12" fill="#333">④ 按出度升序排序（小者优先）</text>
+  </g>
+
+  <!-- decision diamond: step == m*n? -->
+  <g filter="url(#rough2)">
+    <path d="M 380 120 L 470 165 L 380 210 L 290 165 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="380" y="158" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">step == m×n ?</text>
+    <text x="380" y="176" text-anchor="middle" font-size="10" fill="#888">全部走完</text>
+  </g>
+
+  <!-- success box -->
+  <rect x="320" y="250" width="150" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="274" text-anchor="middle" font-size="12" fill="#335" font-weight="bold" filter="url(#rough2)">✓ 返回 grid</text>
+
+  <!-- loop box: 依次尝试邻居 -->
+  <rect x="60" y="300" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="324" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑤ 依次尝试排序后的邻居递归</text>
+
+  <!-- fail / backtrack box -->
+  <rect x="60" y="360" width="220" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="378" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑥ 全部失败 → 回溯</text>
+  <text x="170" y="394" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">撤销 grid 标记，返回 false</text>
+
+  <!-- arrows -->
+  <g stroke="#888" stroke-width="1.4" fill="none" filter="url(#rough2)">
+    <path d="M 170 90 L 170 108"  marker-end="url(#arr)"/>
+    <path d="M 170 150 L 170 168" marker-end="url(#arr)"/>
+    <path d="M 170 210 L 170 228" marker-end="url(#arr)"/>
+    <path d="M 280 250 L 380 165"  marker-end="url(#arr)"/>
+    <path d="M 380 120 L 280 150"  marker-end="url(#arr)"/>
+    <path d="M 380 210 L 395 248" marker-end="url(#arr)" stroke="#4a7a3a" stroke-width="2"/>
+    <path d="M 170 270 L 170 298" marker-end="url(#arr)"/>
+    <path d="M 170 340 L 170 358" marker-end="url(#arr)"/>
+    <path d="M 60 382 L 30 382 L 30 70 L 58 70" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- labels on arrows -->
+  <text x="312" y="180" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <text x="296" y="146" font-size="10" fill="#888" filter="url(#rough2)">否</text>
+  <text x="402" y="232" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">成功</text>
+  <text x="34" y="225" font-size="10" fill="#b85450" filter="url(#rough2)">回溯重来</text>
+
+  <text x="280" y="438" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">Warnsdorff 让每步都先消化“出度最小”的格子，绝大多数棋盘无需真正回溯即可一次走通</text>
+</svg>

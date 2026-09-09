@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：建 Trie → 逐起点下行松弛 dp</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">哈希表写法同构：外层同为枚举，查词换成 best[L][hash]</text>
+
+  <!-- ============ 左：主流程 ============ -->
+  <rect x="36" y="54" width="264" height="34" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="168" y="75" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">① 建 Trie：words 全部插入</text>
+
+  <path d="M 168 88 L 168 98" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <rect x="36" y="100" width="264" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="168" y="121" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">重复单词只留最小 cost，终点记 (len, cost)</text>
+
+  <path d="M 168 134 L 168 144" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <rect x="36" y="146" width="264" height="30" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="168" y="165" text-anchor="middle" font-size="10.5" fill="#33506b" filter="url(#rough2)">② dp[0] = 0，dp[1..n] = ∞；j ← 0</text>
+
+  <path d="M 168 176 L 168 186" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <!-- 判断菱形：dp[j] 可达？ -->
+  <polygon points="168,188 216,212 168,236 120,212" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="168" y="216" text-anchor="middle" font-size="10" fill="#8c3a36" filter="url(#rough2)">dp[j] &lt; ∞ ?</text>
+
+  <!-- 否：右侧跳过 -->
+  <path d="M 216 212 L 268 212" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="240" y="204" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">否</text>
+  <rect x="272" y="198" width="72" height="28" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="308" y="216" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">跳过（剪枝）</text>
+
+  <!-- 是：向下 -->
+  <path d="M 168 236 L 168 246" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="178" y="244" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">是</text>
+
+  <rect x="36" y="248" width="264" height="48" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="168" y="266" text-anchor="middle" font-size="10.5" fill="#a07830" filter="url(#rough2)">③ 从 root 起，逐字符 target[i] 下行（i = j..n−1）</text>
+  <text x="168" y="282" text-anchor="middle" font-size="10.5" fill="#a07830" filter="url(#rough2)">边断提前终止；遇单词终点 v：松弛</text>
+  <text x="168" y="291" text-anchor="middle" font-size="10.5" fill="#a07830" filter="url(#rough2)">dp[i+1] = min(dp[i+1], dp[j] + cost[v])</text>
+
+  <!-- j 循环回环 -->
+  <path d="M 36 272 L 18 272 L 18 161 L 32 161" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="18" y="148" font-size="9" fill="#2f5d24" filter="url(#rough2)">j ← j+1</text>
+
+  <!-- 终点判断 -->
+  <path d="M 168 296 L 168 306" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+
+  <polygon points="168,308 214,330 168,352 122,330" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="168" y="334" text-anchor="middle" font-size="10" fill="#8c3a36" filter="url(#rough2)">dp[n] &lt; ∞ ?</text>
+
+  <path d="M 214 330 L 248 330" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="230" y="322" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">否</text>
+  <rect x="252" y="316" width="40" height="28" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="272" y="334" text-anchor="middle" font-size="10.5" fill="#8c3a36" filter="url(#rough2)">−1</text>
+
+  <path d="M 122 330 L 96 330" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="108" y="322" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">是</text>
+  <rect x="52" y="316" width="40" height="28" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="72" y="334" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">dp[n]</text>
+
+  <!-- ============ 右：旁注 ============ -->
+  <rect x="336" y="54" width="158" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="415" y="74" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">一次下行同时判定所有</text>
+  <text x="415" y="88" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">以 j 开头的单词，均摊</text>
+  <text x="415" y="100" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">O(Σ + n·maxL)</text>
+
+  <rect x="336" y="114" width="158" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="415" y="134" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">dp[j]=∞ 的起点直接跳过：</text>
+  <text x="415" y="148" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">前缀都拼不出来，下行</text>
+  <text x="415" y="160" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">只会白费功夫</text>
+
+  <rect x="336" y="174" width="158" height="64" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="415" y="194" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">哈希表版同流程：</text>
+  <text x="415" y="208" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">枚举 i 与出现过的长度 L，</text>
+  <text x="415" y="222" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">查 best[target[i−L..i)]，</text>
+  <text x="415" y="234" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">k 种长度 ≤ √(2Σ)</text>
+
+  <rect x="336" y="246" width="158" height="76" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="415" y="266" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">⚠️ 规模放大到 5×10⁴ 会退化：</text>
+  <text x="415" y="281" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">target=单词="aaa⋯a" 时逐起点</text>
+  <text x="415" y="295" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">走到链尾，O(n²)；届时换</text>
+  <text x="415" y="309" text-anchor="middle" font-size="9.5" fill="#8c3a36" filter="url(#rough2)">AC 自动机 / 滚动哈希（3213）</text>
+</svg>

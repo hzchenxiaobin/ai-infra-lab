@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arro" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="380" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：get→resolve / set→setAt / 收尾 buildObj</text>
+
+  <!-- Lane 1: 读取 resolve -->
+  <rect x="20" y="52" width="200" height="270" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="72" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 读取 resolve(path)</text>
+  <rect x="36" y="88" width="168" height="30" fill="#fff" stroke="#446688" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="107" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">沿 path 走覆盖树</text>
+  <rect x="36" y="128" width="168" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="146" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">遇 val 节点 →</text>
+  <text x="120" y="162" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">钻进 value 取剩余</text>
+  <rect x="36" y="182" width="168" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="200" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">某层无覆盖 →</text>
+  <text x="120" y="216" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">回退原对象取值</text>
+  <rect x="36" y="236" width="168" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="254" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">耗尽于 obj 节点 →</text>
+  <text x="120" y="270" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">返回原引用（拦截）</text>
+  <rect x="36" y="290" width="168" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="120" y="306" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">对象→下一层代理 / 标量→直返</text>
+
+  <!-- Lane 2: 写入 setAt -->
+  <rect x="230" y="52" width="200" height="270" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="72" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">② 写入 setAt(path, v)</text>
+  <rect x="246" y="88" width="168" height="30" fill="#fff" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="107" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">逐层 get-or-create obj 节点</text>
+  <rect x="246" y="128" width="168" height="44" fill="#fff" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="146" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">到父级后：</text>
+  <text x="330" y="162" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">叶子置 val 节点(value=v)</text>
+  <rect x="246" y="182" width="168" height="44" fill="#fff" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="200" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">途中撞见 val 节点 →</text>
+  <text x="330" y="216" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">就地改其 value 对象</text>
+  <rect x="246" y="236" width="168" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="254" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">原对象始终零写入</text>
+  <text x="330" y="270" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">只往覆盖树登记</text>
+  <rect x="246" y="290" width="168" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="306" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">新增键也只产生一个 val 叶</text>
+
+  <!-- Lane 3: 收尾 buildObj -->
+  <rect x="440" y="52" width="200" height="270" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="540" y="72" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ 收尾 buildObj(root,[])</text>
+  <rect x="456" y="88" width="168" height="30" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="540" y="107" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">浅拷贝原对象 path 处</text>
+  <rect x="456" y="128" width="168" height="44" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="540" y="146" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">遍历 props：</text>
+  <text x="540" y="162" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">val 子→直接赋值</text>
+  <rect x="456" y="182" width="168" height="44" fill="#fff" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="540" y="200" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">obj 子→递归重建</text>
+  <text x="540" y="216" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">（沿被改路径克隆）</text>
+  <rect x="456" y="236" width="168" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="540" y="254" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">不在 props 的键 →</text>
+  <text x="540" y="270" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">沿用浅拷贝里的原引用</text>
+  <rect x="456" y="290" width="168" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="540" y="306" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">无覆盖时 root.props 空 → 直返 obj</text>
+
+  <!-- arrows between lanes -->
+  <path d="M 220 110 L 230 110" stroke="#d6a040" stroke-width="1.6" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <path d="M 430 130 L 440 130" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="225" y="102" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">写</text>
+  <text x="435" y="122" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">重建</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="338" width="620" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="358" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">三段解耦：登记（不碰原对象）→ 读写经代理 → 收尾按需克隆，达成 copy-on-write + 结构共享</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：定序 → 统计 → 周期判重 → 四重过滤 → 连表排序</text>
+
+  <!-- Step 1 -->
+  <rect x="130" y="36" width="300" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="54" text-anchor="middle" font-size="10" fill="#333">① FROM study_sessions（全部学习记录）</text>
+  <text x="445" y="54" font-size="8.5" fill="#888">n 行</text>
+
+  <path d="M280 64 L280 78" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="90" y="82" width="380" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="100" text-anchor="middle" font-size="9" fill="#333">② ordered：ROW_NUMBER() 定序 rn ＋ LEAD(session_date) 取 next_date</text>
+  <text x="280" y="116" text-anchor="middle" font-size="9" fill="#333">PARTITION BY student_id ORDER BY session_date, session_id</text>
+
+  <path d="M280 128 L280 142" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="90" y="146" width="380" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="163" text-anchor="middle" font-size="9" fill="#333">③ stats：GROUP BY student_id ⇒</text>
+  <text x="280" y="177" text-anchor="middle" font-size="9" fill="#333">n = COUNT(*)、k = COUNT(DISTINCT subject)</text>
+  <text x="280" y="191" text-anchor="middle" font-size="9" fill="#333">total = SUM(hours)、max_gap = MAX(DATEDIFF(next_date, session_date))</text>
+
+  <path d="M280 198 L280 212" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="90" y="216" width="380" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="234" text-anchor="middle" font-size="9" fill="#333">④ broken（周期判重）：按 (rn − 1) % k 分组</text>
+  <text x="280" y="250" text-anchor="middle" font-size="9" fill="#333">HAVING COUNT(DISTINCT subject) &gt; 1 ⇒ 周期破坏者</text>
+
+  <path d="M280 262 L280 276" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: diamond -->
+  <polygon points="280,276 462,313 280,350 98,313" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="309" text-anchor="middle" font-size="9.5" fill="#333" font-weight="bold">k ≥ 3 且 n ≥ 2k</text>
+  <text x="280" y="325" text-anchor="middle" font-size="9" fill="#333">且 max_gap ≤ 2 且不在 broken？</text>
+
+  <path d="M462 313 L505 313" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="478" y="306" font-size="9" fill="#b85450" font-weight="bold">否</text>
+  <text x="508" y="328" font-size="8.5" fill="#b85450">淘汰</text>
+
+  <path d="M280 350 L280 364" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="292" y="362" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Step 6 -->
+  <rect x="100" y="368" width="360" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="9" fill="#333">⑥ JOIN students 取 student_name、major</text>
+  <text x="280" y="400" text-anchor="middle" font-size="9" fill="#333">输出 cycle_length = k、total_study_hours</text>
+
+  <path d="M280 408 L280 420" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 7 -->
+  <rect x="130" y="424" width="300" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="442" text-anchor="middle" font-size="10" fill="#333">⑦ ORDER BY cycle_length DESC, total_study_hours DESC</text>
+
+  <!-- Bottom annotation -->
+  <text x="280" y="464" text-anchor="middle" font-size="9" fill="#555">示例幸存：Bob(k=4, 26.0h) → Alice(k=3, 15.0h)；Carol k=2、David 间隔 4 天出局</text>
+</svg>

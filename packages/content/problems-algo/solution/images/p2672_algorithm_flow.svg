@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="8" orient="auto">
+      <path d="M0,0 L5,8 L10,0 Z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#333" filter="url(#rough2)">算法流程：每次查询的「撤旧 + 染新 + 记 ans」</text>
+
+  <!-- start -->
+  <g filter="url(#rough2)">
+    <rect x="210" y="52" width="140" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="16"/>
+    <text x="280" y="74" text-anchor="middle" font-size="13" font-weight="bold" fill="#446688">取查询 [i, c]</text>
+  </g>
+  <line x1="280" y1="86" x2="280" y2="108" stroke="#555" stroke-width="1.6" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- old -->
+  <g filter="url(#rough2)">
+    <rect x="200" y="112" width="160" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6"/>
+    <text x="280" y="134" text-anchor="middle" font-size="13" fill="#a07020">old = colors[i]</text>
+  </g>
+  <line x1="280" y1="146" x2="280" y2="168" stroke="#555" stroke-width="1.6" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <g filter="url(#rough2)">
+    <polygon points="280,172 360,212 280,252 200,212" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="280" y="208" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">old != 0 ?</text>
+    <text x="280" y="224" text-anchor="middle" font-size="10" fill="#7a4040">(0 = 未染色，不计数)</text>
+  </g>
+
+  <!-- yes branch: retract old contribution -->
+  <text x="395" y="206" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <line x1="360" y1="212" x2="392" y2="212" stroke="#555" stroke-width="1.6" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="392" y="180" width="150" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="467" y="202" text-anchor="middle" font-size="11" fill="#333">左邻==old ? ans−1</text>
+    <text x="467" y="220" text-anchor="middle" font-size="11" fill="#333">右邻==old ? ans−1</text>
+    <text x="467" y="238" text-anchor="middle" font-size="10" fill="#4a7a3a">撤销旧色贡献</text>
+  </g>
+
+  <!-- no branch: skip -->
+  <text x="180" y="206" text-anchor="middle" font-size="11" font-weight="bold" fill="#888" filter="url(#rough2)">否</text>
+  <line x1="200" y1="212" x2="150" y2="212" stroke="#555" stroke-width="1.6" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="18" y="196" width="132" height="32" fill="#f3f3f3" stroke="#aaa" stroke-width="1.5" rx="6"/>
+    <text x="84" y="218" text-anchor="middle" font-size="11" fill="#888">跳过撤销（无旧贡献）</text>
+  </g>
+  <!-- both branches merge down -->
+  <path d="M467 244 C 467 272, 320 270, 280 288" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M84 228 C 84 272, 240 270, 280 288" stroke="#555" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- set color -->
+  <g filter="url(#rough2)">
+    <rect x="200" y="292" width="160" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6"/>
+    <text x="280" y="314" text-anchor="middle" font-size="13" font-weight="bold" fill="#a07020">colors[i] = c</text>
+  </g>
+  <line x1="280" y1="326" x2="280" y2="344" stroke="#555" stroke-width="1.6" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- add new contribution -->
+  <g filter="url(#rough2)">
+    <rect x="180" y="348" width="200" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="280" y="368" text-anchor="middle" font-size="11" fill="#333">左邻==c ? ans+1 ; 右邻==c ? ans+1</text>
+    <text x="280" y="386" text-anchor="middle" font-size="10" fill="#4a7a3a">累加新色贡献后，记录 ans 到答案数组</text>
+  </g>
+
+  <!-- loop back hint -->
+  <text x="470" y="370" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">→ 处理下一条查询</text>
+  <path d="M380 371 C 430 371, 440 66, 350 66" stroke="#446688" stroke-width="1.6" stroke-dasharray="4 3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+</svg>

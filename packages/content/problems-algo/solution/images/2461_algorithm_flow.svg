@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：定长滑窗 + freq 表判重</text>
+
+  <!-- Box 1: init -->
+  <rect x="150" y="38" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="56" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">初始化首窗口 [0, k−1]</text>
+  <text x="280" y="72" text-anchor="middle" font-size="10.5" fill="#555">建 freq 表、求窗口 sum</text>
+
+  <!-- arrow down -->
+  <path d="M 280 84 L 280 100" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond A: freq.size()==k? -->
+  <path d="M 280 104 L 372 138 L 280 172 L 188 138 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="135" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">freq.size()</text>
+  <text x="280" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">== k ?</text>
+
+  <!-- yes branch: right to update ans box -->
+  <path d="M 372 138 L 410 138" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="388" y="132" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="412" y="122" width="132" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="478" y="143" text-anchor="middle" font-size="11" fill="#333">ans = max(ans, sum)</text>
+
+  <!-- from update-ans box down then left to merge -->
+  <path d="M 478 156 L 478 196 L 280 196" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- no branch: down -->
+  <path d="M 280 172 L 280 196" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="188" font-size="9.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- merge → arrow down to Diamond B -->
+  <path d="M 280 200 L 280 216" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond B: right < n-1? -->
+  <path d="M 280 220 L 360 252 L 280 284 L 200 252 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="249" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">right &lt; n−1 ?</text>
+  <text x="280" y="264" text-anchor="middle" font-size="10" fill="#888">还能右移</text>
+
+  <!-- yes branch: right to shift box -->
+  <path d="M 360 252 L 400 252" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="380" y="246" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="402" y="232" width="142" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="473" y="250" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">滑窗右移一步</text>
+  <text x="473" y="266" text-anchor="middle" font-size="10" fill="#555">左出：freq−− / sum−=</text>
+
+  <!-- loop back: from shift box top → up → far right? use left route: up then left across top -->
+  <path d="M 473 232 L 473 96 L 188 96 L 188 138" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="90" text-anchor="middle" font-size="9.5" fill="#4a7a3a">回到 freq 判定（循环）</text>
+
+  <!-- no branch: down to return -->
+  <path d="M 280 284 L 280 304" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="300" font-size="9.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- return box -->
+  <rect x="180" y="308" width="200" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">返回 ans（初值 0）</text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：长表 → 两个条件并行检测 → UNION 取名输出</text>
+
+  <!-- ===== Top: Medals long table box ===== -->
+  <rect x="200" y="44" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="62" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Medals 长表</text>
+  <text x="320" y="76" text-anchor="middle" font-size="9" fill="#666">(contest_id, user_id, medal)</text>
+
+  <!-- split arrows from Medals to two condition boxes -->
+  <path d="M 320 84 L 320 104 L 160 104 L 160 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 320 104 L 480 104 L 480 128" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Left: Condition 1 box ===== -->
+  <rect x="20" y="130" width="280" height="118" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="150" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">条件 ① 三场连续 + 奖牌三色齐全</text>
+  <text x="30" y="170" font-size="9" fill="#444">自连接三份长表 m1, m2, m3：</text>
+  <text x="30" y="186" font-size="9" fill="#444">  m2.contest_id = m1.contest_id + 1</text>
+  <text x="30" y="202" font-size="9" fill="#444">  m3.contest_id = m1.contest_id + 2</text>
+  <text x="30" y="218" font-size="9" fill="#444">且三枚奖牌两两不同（金/银/铜各一）</text>
+  <text x="30" y="234" font-size="9" fill="#4a7a3a" font-weight="bold">⇒ 任意顺序皆可，只要求三色齐全</text>
+
+  <!-- ===== Right: Condition 2 box ===== -->
+  <rect x="340" y="130" width="280" height="118" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="150" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">条件 ② 金牌数 ≥ 3</text>
+  <text x="350" y="170" font-size="9" fill="#444">WHERE medal = 'gold'</text>
+  <text x="350" y="186" font-size="9" fill="#444">GROUP BY user_id</text>
+  <text x="350" y="202" font-size="9" fill="#444">HAVING COUNT(*) &gt;= 3</text>
+  <text x="350" y="222" font-size="9" fill="#b85450" font-weight="bold">⇒ 金牌场次无需连续</text>
+  <text x="350" y="238" font-size="9" fill="#666">（条件 ① ② 满足其一即可）</text>
+
+  <!-- arrows from two conditions down to UNION -->
+  <path d="M 160 248 L 160 268 L 320 268 L 320 286" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 480 248 L 480 268 L 320 268" stroke="#666" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== UNION box ===== -->
+  <rect x="240" y="288" width="160" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="310" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">UNION 去重候选 user_id</text>
+
+  <!-- arrow to JOIN -->
+  <path d="M 320 322 L 320 340" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== JOIN Users box ===== -->
+  <rect x="210" y="342" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="364" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">JOIN Users 取 name</text>
+
+  <!-- arrow to output -->
+  <path d="M 320 376 L 320 394" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Output box ===== -->
+  <rect x="230" y="396" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="414" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">输出 user_id, name</text>
+  <text x="320" y="428" text-anchor="middle" font-size="9" fill="#666">ORDER BY user_id</text>
+</svg>

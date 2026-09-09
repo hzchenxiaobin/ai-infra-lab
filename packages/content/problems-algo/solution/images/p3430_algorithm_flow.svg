@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#778899"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="20" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：max / min 两侧各两趟单调栈 → Δ 公式计数 → 累加</text>
+
+  <g filter="url(#rough2)">
+    <rect x="205" y="32" width="110" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="12"/>
+    <text x="260" y="48" text-anchor="middle" font-size="11" font-weight="bold" fill="#2f5d24">输入 nums, k</text>
+    <path d="M 260 56 L 260 68" stroke="#778899" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <rect x="90" y="70" width="340" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="260" y="88" text-anchor="middle" font-size="10.5" fill="#33506b">① for side ∈ { 最大值侧, 最小值侧 }（流程相同，弹栈条件镜像）</text>
+    <path d="M 260 98 L 260 110" stroke="#778899" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <rect x="30" y="112" width="460" height="150" fill="none" stroke="#999" stroke-width="1.2" stroke-dasharray="7 5" rx="10"/>
+    <text x="260" y="130" text-anchor="middle" font-size="11" font-weight="bold" fill="#33506b">② 单调栈两轮扫描：左→右求 prev[i]，右→左求 next[i]</text>
+
+    <polygon points="150,150 150,206 98,178 202,178" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/>
+    <text x="150" y="182" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8a6d1f">栈顶挡住 nums[i]?</text>
+
+    <path d="M 98 178 L 90 178" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="94" y="171" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#b85450">是</text>
+    <rect x="32" y="162" width="56" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8"/>
+    <text x="60" y="182" text-anchor="middle" font-size="10" fill="#8f3a35">弹出</text>
+    <path d="M 60 194 V 216 H 150 V 212" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <path d="M 202 178 L 220 178" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="211" y="171" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#4a7a3a">否</text>
+    <rect x="224" y="156" width="256" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8"/>
+    <text x="352" y="173" text-anchor="middle" font-size="10" font-weight="bold" fill="#2f5d24">prev[i] = 栈顶（栈空取 −1）</text>
+    <text x="352" y="190" text-anchor="middle" font-size="9.5" fill="#4a6a3f">然后 i 入栈，继续扫下一个 i</text>
+
+    <path d="M 352 200 L 352 222" stroke="#778899" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <rect x="60" y="224" width="400" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="260" y="242" text-anchor="middle" font-size="10.5" fill="#33506b">右→左完全同理：next[i] = 栈顶（栈空取 n）</text>
+
+    <path d="M 260 262 L 260 272" stroke="#778899" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <rect x="40" y="274" width="440" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8"/>
+    <text x="260" y="289" text-anchor="middle" font-size="10.5" fill="#8a6d1f">③ 逐 i：a = i−prev[i]，b = next[i]−i</text>
+    <text x="260" y="304" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8a6d1f">cnt = Δ(min(b−1,k−1), k) − Δ(min(b−1,k−a−1), k−a)；ans += nums[i]·cnt</text>
+
+    <path d="M 260 310 L 260 320" stroke="#778899" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <rect x="80" y="322" width="360" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8"/>
+    <text x="260" y="341" text-anchor="middle" font-size="11" font-weight="bold" fill="#8f3a35">④ 两侧累加完毕，返回 ans（long long，可为负，不取模！）</text>
+  </g>
+</svg>

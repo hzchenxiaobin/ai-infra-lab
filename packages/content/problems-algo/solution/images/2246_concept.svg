@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心：树形 DP — 每个节点取子树最长两条「异字链」拼路径</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#888">s[child] ≠ s[node] 才能延伸链；路径穿过节点 = 1 + 链₁ + 链₂</text>
+
+  <!-- Tree edges -->
+  <!-- 0→1: highlighted green (on longest path) -->
+  <path d="M 260 70 L 160 140" stroke="#4a7a3a" stroke-width="2.5" fill="none" filter="url(#rough2)"/>
+  <!-- 0→2: blocked red dashed (a==a) -->
+  <path d="M 260 70 L 360 140" stroke="#b85450" stroke-width="1.5" stroke-dasharray="5,3" fill="none" filter="url(#rough2)"/>
+  <!-- 1→3: highlighted green (on longest path) -->
+  <path d="M 160 140 L 95 210" stroke="#4a7a3a" stroke-width="2.5" fill="none" filter="url(#rough2)"/>
+  <!-- 1→4: blocked red dashed (b==b) -->
+  <path d="M 160 140 L 230 210" stroke="#b85450" stroke-width="1.5" stroke-dasharray="5,3" fill="none" filter="url(#rough2)"/>
+  <!-- 2→5: normal gray -->
+  <path d="M 360 140 L 360 210" stroke="#999" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- Edge annotations -->
+  <text x="195" y="100" font-size="9.5" fill="#4a7a3a" font-weight="bold">b≠a ✓</text>
+  <text x="318" y="100" font-size="9.5" fill="#b85450" font-weight="bold">a==a ✗</text>
+  <text x="105" y="178" font-size="9.5" fill="#4a7a3a" font-weight="bold">c≠b ✓</text>
+  <text x="208" y="178" font-size="9.5" fill="#b85450" font-weight="bold">b==b ✗</text>
+
+  <!-- Nodes -->
+  <!-- Node 0(a) - on path -->
+  <circle cx="260" cy="70" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="260" y="75" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+  <text x="260" y="59" text-anchor="middle" font-size="8.5" fill="#888">0</text>
+
+  <!-- Node 1(b) - on path -->
+  <circle cx="160" cy="140" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="160" y="145" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">b</text>
+  <text x="160" y="129" text-anchor="middle" font-size="8.5" fill="#888">1</text>
+
+  <!-- Node 2(a) - blocked -->
+  <circle cx="360" cy="140" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="360" y="145" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+  <text x="360" y="129" text-anchor="middle" font-size="8.5" fill="#888">2</text>
+
+  <!-- Node 3(c) - on path (start) -->
+  <circle cx="95" cy="210" r="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="95" y="215" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">c</text>
+  <text x="95" y="199" text-anchor="middle" font-size="8.5" fill="#888">3</text>
+
+  <!-- Node 4(b) - blocked -->
+  <circle cx="230" cy="210" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="215" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">b</text>
+  <text x="230" y="199" text-anchor="middle" font-size="8.5" fill="#888">4</text>
+
+  <!-- Node 5(e) - normal -->
+  <circle cx="360" cy="210" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="360" y="215" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">e</text>
+  <text x="360" y="199" text-anchor="middle" font-size="8.5" fill="#888">5</text>
+
+  <!-- Chain return annotations -->
+  <text x="95" y="244" text-anchor="middle" font-size="9.5" fill="#4a7a3a">ret=1</text>
+  <text x="230" y="244" text-anchor="middle" font-size="9.5" fill="#b85450">ret=1 (阻)</text>
+  <text x="360" y="244" text-anchor="middle" font-size="9.5" fill="#446688">ret=2</text>
+  <text x="125" y="140" text-anchor="end" font-size="9.5" fill="#4a7a3a">ret=2</text>
+  <text x="395" y="140" text-anchor="start" font-size="9.5" fill="#b85450">ret=2 (阻)</text>
+
+  <!-- Explanation box -->
+  <rect x="40" y="262" width="440" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="282" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">最长路径 3→1→0：c, b, a（相邻字符均不同）→ 长度 = 3</text>
+  <text x="260" y="300" text-anchor="middle" font-size="10.5" fill="#555">节点 0 处：子1链=2(b≠a✓), 子2链=2(a==a✗阻断) → 1+2+0=3</text>
+
+  <!-- Footer -->
+  <text x="260" y="336" text-anchor="middle" font-size="10" fill="#888">绿色=路径节点 | 红色虚线=同字阻断边 | 类比 124/543/687：后序传递最长链</text>
+</svg>

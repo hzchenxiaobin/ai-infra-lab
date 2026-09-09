@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="30" y="20" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：建「区间加 + min/max」线段树，滑动 l 查最右 0、弹出首现做区间加</text>
+
+  <!-- 侧注：查 0 原理 -->
+  <rect x="380" y="38" width="164" height="64" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="462" y="56" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">查最右 0 的原理</text>
+  <text x="462" y="72" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">节点含 0 ⟺ min ≤ 0 ≤ max</text>
+  <text x="462" y="88" text-anchor="middle" font-size="9.5" fill="#2f5d24" filter="url(#rough2)">右儿子含 0 则先下钻右儿子</text>
+
+  <!-- A: 预处理 -->
+  <rect x="90" y="38" width="250" height="34" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="59" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">预处理 nxt[i]：右侧下一个同值位置（无则 n）</text>
+  <line x1="215" y1="72" x2="215" y2="90" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B: 建树 -->
+  <rect x="90" y="94" width="250" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="112" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">扫 r 构造初始阶梯 D(0, r)</text>
+  <text x="215" y="130" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">据此建懒线段树（区间加 + min/max）</text>
+  <line x1="215" y1="138" x2="215" y2="152" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- C: 循环头 -->
+  <rect x="140" y="154" width="150" height="28" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="172" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">for l = 0 … n−1</text>
+  <line x1="215" y1="182" x2="215" y2="198" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D: 查询菱形 -->
+  <polygon points="215,202 312,240 215,278 118,240" fill="#fafafa" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="234" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">查询 [l, n−1] 内</text>
+  <text x="215" y="252" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">最右的 D = 0？</text>
+
+  <!-- 有 → E 结算 -->
+  <text x="322" y="232" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">有</text>
+  <path d="M 312 240 L 342 240" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="346" y="216" width="178" height="48" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="435" y="234" text-anchor="middle" font-size="10.5" fill="#2f5d24" filter="url(#rough2)">ans = max(ans, r − l + 1)</text>
+  <text x="435" y="252" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">（r 即最右零点）</text>
+
+  <!-- E 汇回 F -->
+  <path d="M 435 264 L 435 324 L 344 324" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 无 → F 区间加 -->
+  <text x="222" y="292" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">无</text>
+  <line x1="215" y1="278" x2="215" y2="302" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="90" y="304" width="250" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="322" text-anchor="middle" font-size="10" fill="#33506b" font-weight="bold" filter="url(#rough2)">弹出 nums[l]：首现移至 nxt[l]</text>
+  <text x="215" y="340" text-anchor="middle" font-size="10" fill="#33506b" filter="url(#rough2)">区间 [0, nxt[l]−1] 整体加 −sign</text>
+
+  <!-- 循环回边 -->
+  <path d="M 90 326 L 48 326 L 48 168 L 136 168" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="20" y="252" font-size="9" fill="#8a6d1f" filter="url(#rough2)">l+1</text>
+
+  <!-- 出口 -->
+  <line x1="215" y1="348" x2="215" y2="372" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="226" y="366" font-size="9.5" fill="#666" filter="url(#rough2)">l = n</text>
+
+  <!-- G: 返回 -->
+  <rect x="110" y="376" width="210" height="36" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="215" y="398" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">返回 ans（可能为 0）</text>
+</svg>

@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="460" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：求每人首次订单 → 判即时 → 算比例</text>
+
+  <!-- ===== Left: Delivery table (raw) ===== -->
+  <text x="105" y="54" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Delivery 表（7 行原始数据）</text>
+  <!-- header -->
+  <rect x="15" y="60" width="180" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="33" y="75" font-size="7.5" fill="#446688" font-weight="bold">cust</text>
+  <text x="70" y="75" font-size="7.5" fill="#446688" font-weight="bold">order</text>
+  <text x="115" y="75" font-size="7" fill="#446688" font-weight="bold">pref_del</text>
+  <text x="168" y="75" font-size="7" fill="#446688" font-weight="bold">即时?</text>
+  <line x1="50" y1="60" x2="50" y2="82" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="90" y1="60" x2="90" y2="82" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="140" y1="60" x2="140" y2="82" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- row 1: cust1, 08-01, 08-02, scheduled - FIRST for cust1 -->
+  <rect x="15" y="82" width="180" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="94" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="70" y="94" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-01</text>
+  <text x="115" y="94" text-anchor="middle" font-size="7" fill="#888">08-02</text>
+  <text x="168" y="94" text-anchor="middle" font-size="8" fill="#888">✗</text>
+  <line x1="50" y1="82" x2="50" y2="98" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="90" y1="82" x2="90" y2="98" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="140" y1="82" x2="140" y2="98" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="200" y="94" font-size="7" fill="#4a7a3a" font-weight="bold">← 首次</text>
+
+  <!-- row 2: cust2, 08-02, 08-02, immediate - FIRST for cust2 -->
+  <rect x="15" y="98" width="180" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="110" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="70" y="110" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-02</text>
+  <text x="115" y="110" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-02</text>
+  <text x="168" y="110" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">✓</text>
+  <line x1="50" y1="98" x2="50" y2="114" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="90" y1="98" x2="90" y2="114" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="140" y1="98" x2="140" y2="114" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="200" y="110" font-size="7" fill="#4a7a3a" font-weight="bold">← 首次</text>
+
+  <!-- row 3: cust1, 08-11, 08-12, scheduled - NOT first -->
+  <rect x="15" y="114" width="180" height="16" fill="#f5f5f5" stroke="#888" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="126" text-anchor="middle" font-size="8" fill="#888">1</text>
+  <text x="70" y="126" text-anchor="middle" font-size="7" fill="#888">08-11</text>
+  <text x="115" y="126" text-anchor="middle" font-size="7" fill="#888">08-12</text>
+  <text x="168" y="126" text-anchor="middle" font-size="8" fill="#888">✗</text>
+  <line x1="50" y1="114" x2="50" y2="130" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="90" y1="114" x2="90" y2="130" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="140" y1="114" x2="140" y2="130" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 4: cust3, 08-24, 08-24, immediate - NOT first -->
+  <rect x="15" y="130" width="180" height="16" fill="#f5f5f5" stroke="#888" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="142" text-anchor="middle" font-size="8" fill="#888">3</text>
+  <text x="70" y="142" text-anchor="middle" font-size="7" fill="#888">08-24</text>
+  <text x="115" y="142" text-anchor="middle" font-size="7" fill="#888">08-24</text>
+  <text x="168" y="142" text-anchor="middle" font-size="8" fill="#888">✓</text>
+  <line x1="50" y1="130" x2="50" y2="146" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="90" y1="130" x2="90" y2="146" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="140" y1="130" x2="140" y2="146" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 5: cust3, 08-21, 08-22, scheduled - FIRST for cust3 -->
+  <rect x="15" y="146" width="180" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="158" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="70" y="158" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-21</text>
+  <text x="115" y="158" text-anchor="middle" font-size="7" fill="#888">08-22</text>
+  <text x="168" y="158" text-anchor="middle" font-size="8" fill="#888">✗</text>
+  <line x1="50" y1="146" x2="50" y2="162" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="90" y1="146" x2="90" y2="162" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="140" y1="146" x2="140" y2="162" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="200" y="158" font-size="7" fill="#4a7a3a" font-weight="bold">← 首次</text>
+
+  <!-- row 6: cust2, 08-11, 08-13, scheduled - NOT first -->
+  <rect x="15" y="162" width="180" height="16" fill="#f5f5f5" stroke="#888" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="174" text-anchor="middle" font-size="8" fill="#888">2</text>
+  <text x="70" y="174" text-anchor="middle" font-size="7" fill="#888">08-11</text>
+  <text x="115" y="174" text-anchor="middle" font-size="7" fill="#888">08-13</text>
+  <text x="168" y="174" text-anchor="middle" font-size="8" fill="#888">✗</text>
+  <line x1="50" y1="162" x2="50" y2="178" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="90" y1="162" x2="90" y2="178" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+  <line x1="140" y1="162" x2="140" y2="178" stroke="#888" stroke-width="0.5" filter="url(#rough2)"/>
+
+  <!-- row 7: cust4, 08-09, 08-09, immediate - FIRST for cust4 -->
+  <rect x="15" y="178" width="180" height="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="2" filter="url(#rough2)"/>
+  <text x="33" y="190" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">4</text>
+  <text x="70" y="190" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-09</text>
+  <text x="115" y="190" text-anchor="middle" font-size="7" fill="#4a7a3a" font-weight="bold">08-09</text>
+  <text x="168" y="190" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">✓</text>
+  <line x1="50" y1="178" x2="50" y2="194" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="90" y1="178" x2="90" y2="194" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="140" y1="178" x2="140" y2="194" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="200" y="190" font-size="7" fill="#4a7a3a" font-weight="bold">← 首次</text>
+
+  <!-- arrow from Delivery to first orders -->
+  <path d="M225 140 L268 140" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="246" y="133" text-anchor="middle" font-size="7.5" fill="#d6a040" font-weight="bold">MIN(order_date)</text>
+  <text x="246" y="152" text-anchor="middle" font-size="7" fill="#d6a040">GROUP BY cust</text>
+
+  <!-- ===== Middle: First orders per customer ===== -->
+  <text x="345" y="54" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">首次订单（4 行，每人 1 行）</text>
+  <rect x="270" y="60" width="150" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="295" y="75" font-size="7.5" fill="#4a7a3a" font-weight="bold">cust</text>
+  <text x="335" y="75" font-size="7" fill="#4a7a3a" font-weight="bold">order</text>
+  <text x="383" y="75" font-size="6.5" fill="#4a7a3a" font-weight="bold">即时?</text>
+  <line x1="312" y1="60" x2="312" y2="82" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+  <line x1="358" y1="60" x2="358" y2="82" stroke="#4a7a3a" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <!-- first order 1: cust1, 08-01, scheduled -->
+  <rect x="270" y="82" width="150" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="295" y="96" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="335" y="96" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">08-01</text>
+  <text x="383" y="96" text-anchor="middle" font-size="9" fill="#888">✗</text>
+  <line x1="312" y1="82" x2="312" y2="102" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="358" y1="82" x2="358" y2="102" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- first order 2: cust2, 08-02, immediate -->
+  <rect x="270" y="102" width="150" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="295" y="116" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="335" y="116" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">08-02</text>
+  <text x="383" y="116" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <line x1="312" y1="102" x2="312" y2="122" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="358" y1="102" x2="358" y2="122" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- first order 3: cust3, 08-21, scheduled -->
+  <rect x="270" y="122" width="150" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="295" y="136" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">3</text>
+  <text x="335" y="136" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">08-21</text>
+  <text x="383" y="136" text-anchor="middle" font-size="9" fill="#888">✗</text>
+  <line x1="312" y1="122" x2="312" y2="142" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="358" y1="122" x2="358" y2="142" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- first order 4: cust4, 08-09, immediate -->
+  <rect x="270" y="142" width="150" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="295" y="156" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">4</text>
+  <text x="335" y="156" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">08-09</text>
+  <text x="383" y="156" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">✓</text>
+  <line x1="312" y1="142" x2="312" y2="162" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+  <line x1="358" y1="142" x2="358" y2="162" stroke="#4a7a3a" stroke-width="0.6" filter="url(#rough2)"/>
+
+  <!-- arrow from first orders to result -->
+  <path d="M428 122 L468 122" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="448" y="115" text-anchor="middle" font-size="7.5" fill="#b85450" font-weight="bold">AVG(即时)</text>
+  <text x="448" y="134" text-anchor="middle" font-size="7" fill="#b85450">× 100</text>
+
+  <!-- ===== Right: Result ===== -->
+  <text x="530" y="54" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">最终结果</text>
+  <rect x="470" y="60" width="120" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="530" y="75" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">immediate_percentage</text>
+
+  <rect x="470" y="82" width="120" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="530" y="103" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">50.00</text>
+
+  <!-- calculation box -->
+  <rect x="470" y="120" width="120" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="530" y="135" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">2 / 4 × 100</text>
+  <text x="530" y="150" text-anchor="middle" font-size="8" fill="#d6a040">= 50.00%</text>
+  <text x="530" y="162" text-anchor="middle" font-size="7" fill="#888">即时 2 / 首次 4</text>
+
+  <!-- ===== Bottom: Key insights ===== -->
+  <rect x="15" y="215" width="575" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="302" y="235" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">关键洞察</text>
+
+  <text x="35" y="255" font-size="9.5" fill="#333">• <tspan fill="#4a7a3a" font-weight="bold">首次订单</tspan>：每位顾客 order_date 最早的订单，用 <tspan fill="#d6a040" font-weight="bold">MIN(order_date) + GROUP BY customer_id</tspan> 求出</text>
+  <text x="35" y="273" font-size="9.5" fill="#333">• <tspan fill="#b85450" font-weight="bold">即时订单</tspan>：order_date = customer_pref_delivery_date（下单日 = 期望配送日），否则为计划订单</text>
+  <text x="35" y="291" font-size="9.5" fill="#333">• <tspan fill="#d6a040" font-weight="bold">比例计算</tspan>：在首次订单中统计即时比例 = AVG(order_date = pref_delivery_date) × 100，保留两位小数</text>
+  <text x="35" y="309" font-size="9.5" fill="#333">• <tspan fill="#888">灰色行</tspan> = 非首次订单被丢弃；<tspan fill="#4a7a3a">绿色行</tspan> = 首次订单；✓ = 即时，✗ = 计划</text>
+
+  <!-- SQL snippet at bottom -->
+  <rect x="15" y="350" width="575" height="60" fill="#f5f5f5" stroke="#888" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="30" y="370" font-size="9" fill="#446688" font-family="monospace">SELECT ROUND(AVG(order_date = customer_pref_delivery_date) * 100, 2)</text>
+  <text x="30" y="384" font-size="9" fill="#446688" font-family="monospace">    AS immediate_percentage</text>
+  <text x="30" y="398" font-size="9" fill="#446688" font-family="monospace">FROM Delivery JOIN (SELECT customer_id, MIN(order_date) ... GROUP BY customer_id) f</text>
+</svg>

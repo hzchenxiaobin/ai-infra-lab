@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建哈希集合 → 逐工件查全挖</text>
+
+  <!-- Step 1: build hash set -->
+  <rect x="40" y="50" width="200" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="74" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 建挖掘格哈希集合</text>
+  <text x="140" y="92" text-anchor="middle" font-size="11" fill="#555">for [r,c] in dig: dug.add(r*n+c)</text>
+
+  <!-- arrow down -->
+  <path d="M 140 110 L 140 134" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: iterate artifacts -->
+  <rect x="40" y="138" width="200" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="162" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 遍历每个工件 [r1,c1,r2,c2]</text>
+  <text x="140" y="180" text-anchor="middle" font-size="11" fill="#555">ans = 0</text>
+
+  <!-- arrow right to inner loop -->
+  <path d="M 244 166 L 282 166" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: inner loop over artifact cells (diamond) -->
+  <polygon points="360,120 440,166 360,212 280,166" fill="#fff" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="360" y="158" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">遍历工件矩形</text>
+  <text x="360" y="174" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">每格 (r,c)</text>
+  <text x="360" y="190" text-anchor="middle" font-size="10" fill="#888">r1≤r≤r2, c1≤c≤c2</text>
+
+  <!-- arrow down to check -->
+  <path d="M 360 216 L 360 240" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: check membership (diamond) -->
+  <polygon points="360,244 450,290 360,336 270,290" fill="#fff" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="360" y="284" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">(r,c) ∈ dug ?</text>
+  <text x="360" y="300" text-anchor="middle" font-size="10" fill="#888">r*n+c 查哈希</text>
+
+  <!-- No branch: artifact not fully dug -->
+  <path d="M 270 290 L 200 290" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="232" y="282" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="60" y="272" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="290" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">该工件不可提取</text>
+  <text x="130" y="304" text-anchor="middle" font-size="10" fill="#b85450">break，查下一工件</text>
+
+  <!-- Yes branch: continue to next cell -->
+  <path d="M 360 336 L 360 360" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="376" y="350" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- all cells checked? -->
+  <polygon points="360,364 440,392 360,420 280,392" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="360" y="388" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">全部查完?</text>
+  <text x="360" y="402" text-anchor="middle" font-size="10" fill="#4a7a3a">是 → ans++ ✓</text>
+
+  <!-- loop back arrow from "all checked? yes" up to artifact iteration -->
+  <path d="M 440 392 Q 500 392 500 166 L 244 166" stroke="#446688" stroke-width="1.6" stroke-dasharray="4,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="506" y="280" font-size="10" fill="#888" transform="rotate(0 506 280)">下一工件</text>
+
+  <!-- return -->
+  <rect x="40" y="372" width="150" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="395" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">返回 ans</text>
+  <path d="M 190 390 L 270 390" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" stroke-dasharray="0"/>
+</svg>

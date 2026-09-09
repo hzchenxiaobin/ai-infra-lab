@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：逐行更新高度 → 排序 → 扫描取最大面积
+  </text>
+
+  <!-- ① init -->
+  <rect x="160" y="44" width="220" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="68" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 初始化 heights=[0]*n, ans=0</text>
+
+  <!-- arrow 1->2 -->
+  <path d="M270,82 L270,98" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② row loop -->
+  <rect x="160" y="100" width="220" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="124" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② 遍历每行 i = 0 … m-1</text>
+
+  <!-- arrow 2->3 -->
+  <path d="M270,138 L270,154" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ update heights -->
+  <rect x="120" y="156" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="174" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ 更新高度</text>
+  <text x="270" y="190" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">matrix[i][j]==1 ? heights[j]+1 : 0</text>
+
+  <!-- arrow 3->4 -->
+  <path d="M270,200 L270,216" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ sort -->
+  <rect x="160" y="218" width="220" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="242" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">④ 拷贝并降序排序 sorted_h</text>
+
+  <!-- arrow 4->5 -->
+  <path d="M270,256 L270,272" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ scan -->
+  <rect x="90" y="274" width="360" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="293" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑤ 扫描 j=0…n-1</text>
+  <text x="270" y="309" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">若 sorted_h[j]==0 则 break；否则 ans=max(ans, h[j]×(j+1))</text>
+
+  <!-- arrow 5->6 -->
+  <path d="M270,322 L270,338" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ return -->
+  <rect x="190" y="340" width="160" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="364" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">⑥ 返回 ans</text>
+
+  <!-- loop-back arrow: from ⑤ right side up to ② right side -->
+  <path d="M450,298 L478,298 L478,119 L380,119" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="492" y="210" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)" transform="rotate(-90 492 210)">
+    下一行
+  </text>
+
+  <!-- bottom note -->
+  <rect x="40" y="392" width="460" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="410" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">
+    heights 跨行复用保持原列序；每行只拷一份排序，不破坏列对应关系
+  </text>
+  <text x="270" y="424" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    蓝=数据流 / 红=控制流 / 绿=循环回边
+  </text>
+</svg>

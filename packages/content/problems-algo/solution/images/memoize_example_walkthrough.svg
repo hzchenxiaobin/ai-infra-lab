@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 320"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="580" height="320" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">示例1 演算：sum 记忆化（参数顺序敏感）</text>
+
+  <!-- header -->
+  <rect x="20" y="44" width="540" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <g font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">
+    <text x="40" y="64" text-anchor="middle">#</text>
+    <text x="125" y="64" text-anchor="middle">action</text>
+    <text x="230" y="64" text-anchor="middle">return</text>
+    <text x="315" y="64" text-anchor="middle">callCount</text>
+    <text x="460" y="64" text-anchor="middle">cache 状态</text>
+  </g>
+
+  <!-- separators -->
+  <g stroke="#cccccc" stroke-width="1" filter="url(#rough2)">
+    <line x1="60" y1="44" x2="60" y2="262"/>
+    <line x1="190" y1="44" x2="190" y2="262"/>
+    <line x1="270" y1="44" x2="270" y2="262"/>
+    <line x1="360" y1="44" x2="360" y2="262"/>
+  </g>
+
+  <!-- row1 call(2,2) miss -->
+  <rect x="20" y="78" width="540" height="36" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="40" y="100" text-anchor="middle">1</text>
+    <text x="70" y="100">call(2, 2)</text>
+    <text x="230" y="100" text-anchor="middle" fill="#d6a040" font-weight="bold">4 ·未命中</text>
+    <text x="315" y="100" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+    <text x="370" y="100">[2,2] → 4（新增）</text>
+  </g>
+
+  <!-- row2 call(2,2) hit -->
+  <rect x="20" y="114" width="540" height="36" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="40" y="136" text-anchor="middle">2</text>
+    <text x="70" y="136">call(2, 2)</text>
+    <text x="230" y="136" text-anchor="middle" fill="#4a7a3a" font-weight="bold">4 ·命中✓</text>
+    <text x="315" y="136" text-anchor="middle" fill="#888">1（不变）</text>
+    <text x="370" y="136" fill="#888">[2,2] → 4（不变）</text>
+  </g>
+
+  <!-- row3 getCallCount -->
+  <rect x="20" y="150" width="540" height="36" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="40" y="172" text-anchor="middle">3</text>
+    <text x="70" y="172">getCallCount</text>
+    <text x="230" y="172" text-anchor="middle" fill="#888">—</text>
+    <text x="315" y="172" text-anchor="middle" font-weight="bold">1</text>
+    <text x="370" y="172" fill="#888">（同上）</text>
+  </g>
+
+  <!-- row4 call(1,2) miss -->
+  <rect x="20" y="186" width="540" height="36" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="40" y="208" text-anchor="middle">4</text>
+    <text x="70" y="208">call(1, 2)</text>
+    <text x="230" y="208" text-anchor="middle" fill="#d6a040" font-weight="bold">3 ·未命中</text>
+    <text x="315" y="208" text-anchor="middle" fill="#d6a040" font-weight="bold">2</text>
+    <text x="370" y="208">[2,2]→4, [1,2]→3（新增）</text>
+  </g>
+
+  <!-- row5 getCallCount -->
+  <rect x="20" y="222" width="540" height="36" rx="3" fill="#ffffff" stroke="#dddddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="12" fill="#333" filter="url(#rough2)">
+    <text x="40" y="244" text-anchor="middle">5</text>
+    <text x="70" y="244">getCallCount</text>
+    <text x="230" y="244" text-anchor="middle" fill="#888">—</text>
+    <text x="315" y="244" text-anchor="middle" font-weight="bold">2</text>
+    <text x="370" y="244" fill="#888">（同上）</text>
+  </g>
+
+  <!-- conclusion -->
+  <rect x="20" y="270" width="540" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="36" y="290" font-size="11.5" fill="#333" filter="url(#rough2)">关键：第 2 次 call(2,2) 命中缓存 → 不调 fn → callCount 不增；</text>
+  <text x="36" y="304" font-size="11.5" fill="#333" filter="url(#rough2)">　call(1,2) 参数序列与 (2,2) 不同 → 新键 → 未命中 → 调用 fn。</text>
+</svg>

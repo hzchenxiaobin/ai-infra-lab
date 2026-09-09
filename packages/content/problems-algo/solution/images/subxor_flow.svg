@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：预处理值→端点映射 + 每查询 O(1) 查表</text>
+
+  <!-- ===== Left: Preprocess box ===== -->
+  <rect x="24" y="46" width="262" height="306" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="68" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">① 预处理（扫 s 一次）</text>
+
+  <!-- init -->
+  <text x="38" y="92" font-size="11" fill="#333">mp = {}    // 值 → [left, right]</text>
+
+  <!-- decision diamond: s[i]=='0'? -->
+  <polygon points="155,108 215,138 155,168 95,138" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="155" y="134" text-anchor="middle" font-size="11" fill="#444">s[i] == '0' ?</text>
+  <text x="155" y="150" text-anchor="middle" font-size="11" fill="#444"></text>
+
+  <!-- YES branch (left): record 0 -->
+  <text x="58" y="134" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 95 138 L 50 138 L 50 178" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="34" y="180" width="100" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="84" y="198" text-anchor="middle" font-size="10" fill="#333">mp.setdefault(0,[i,i])</text>
+  <text x="84" y="212" text-anchor="middle" font-size="9.5" fill="#888">值 0 的最左端点</text>
+
+  <!-- NO branch (right): extend 30 bits -->
+  <text x="252" y="134" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否(='1')</text>
+  <path d="M 215 138 L 260 138 L 260 178" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="190" y="180" width="86" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="233" y="198" text-anchor="middle" font-size="10" fill="#333">val = 0</text>
+  <text x="233" y="212" text-anchor="middle" font-size="9.5" fill="#888">规范二进制起点</text>
+
+  <!-- extend loop box -->
+  <path d="M 233 220 L 233 236" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="238" width="170" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="235" y="256" text-anchor="middle" font-size="10" fill="#333">for j in [i, min(n, i+30))</text>
+  <text x="235" y="270" text-anchor="middle" font-size="10" fill="#333">val = val*2 + (s[j]=='1')</text>
+  <text x="235" y="282" text-anchor="middle" font-size="9.5" fill="#888">mp.setdefault(val,[i,j])</text>
+
+  <!-- loop back arrow up to diamond area (next i) -->
+  <path d="M 235 288 L 235 300 L 60 300 L 60 138 L 92 138" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="80" y="316" font-size="9.5" fill="#888">下一 i（首次写入即最左，不覆盖）</text>
+
+  <text x="38" y="340" font-size="10" fill="#4a7a3a" font-weight="bold">复杂度：O(30·n)</text>
+
+  <!-- ===== Right: Query box ===== -->
+  <rect x="300" y="46" width="256" height="306" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="428" y="68" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">② 回答每个查询 O(1)</text>
+
+  <!-- step1: target -->
+  <rect x="316" y="86" width="224" height="44" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="428" y="104" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">target = first ^ second</text>
+  <text x="428" y="120" text-anchor="middle" font-size="9.5" fill="#888">异或化简：双参数 → 单值</text>
+
+  <!-- arrow down -->
+  <path d="M 428 130 L 428 146" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision: target in mp? -->
+  <polygon points="428,150 500,186 428,222 356,186" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="428" y="182" text-anchor="middle" font-size="11" fill="#444">target ∈ mp ?</text>
+  <text x="428" y="196" text-anchor="middle" font-size="11" fill="#444"></text>
+
+  <!-- YES (down-left): [l,r] -->
+  <text x="345" y="180" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 392 186 L 340 186 L 340 250" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="316" y="252" width="100" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="366" y="270" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">ans = [l, r]</text>
+  <text x="366" y="284" text-anchor="middle" font-size="9.5" fill="#888">bin(target) 最左出现</text>
+
+  <!-- NO (down-right): [-1,-1] -->
+  <text x="512" y="180" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 464 186 L 520 186 L 520 250" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="450" y="252" width="100" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="270" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">ans = [-1,-1]</text>
+  <text x="500" y="284" text-anchor="middle" font-size="9.5" fill="#888">bin(target) 未出现</text>
+
+  <text x="316" y="318" font-size="10" fill="#4a7a3a" font-weight="bold">复杂度：O(q) 次查表</text>
+  <text x="316" y="334" font-size="9.5" fill="#888">总计 O(30n + q)</text>
+</svg>

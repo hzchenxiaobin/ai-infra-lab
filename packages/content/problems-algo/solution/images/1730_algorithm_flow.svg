@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrGray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#999"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：单源 BFS 求到食物的最短步数
+  </text>
+
+  <!-- Step 1: find start -->
+  <rect x="140" y="50" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="72" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">遍历网格，找到 '*' 位置 (si, sj)</text>
+  <path d="M250,84 L250,96" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: enqueue + mark -->
+  <rect x="140" y="98" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="120" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">入队 (si, sj)，grid[si][sj] 置 'X' 标记</text>
+  <path d="M250,132 L250,144" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop check diamond -->
+  <polygon points="250,146 330,182 250,218 170,182" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="250" y="180" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">queue 空?</text>
+  <text x="250" y="196" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">(无路可走)</text>
+
+  <!-- Yes branch → return -1 -->
+  <path d="M330,182 L392,182" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="352" y="176" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">是</text>
+  <rect x="396" y="166" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="188" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">return -1</text>
+
+  <!-- No branch down -->
+  <path d="M250,218 L250,232" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="264" y="228" font-size="10" fill="#446688" filter="url(#rough2)">否</text>
+
+  <!-- Step 4: steps++ and process layer -->
+  <rect x="130" y="234" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="256" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">steps++，处理当前层 len(queue) 个节点</text>
+  <path d="M250,268 L250,280" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: pop and neighbors -->
+  <rect x="120" y="282" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="250" y="304" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">pop (i, j)，枚举四方向邻居 (ni, nj)</text>
+  <path d="M250,316 L250,328" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: invalid? -->
+  <polygon points="250,330 340,364 250,398 160,364" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="250" y="362" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">越界 或</text>
+  <text x="250" y="378" text-anchor="middle" font-size="11" fill="#5a4a1a" filter="url(#rough2)">grid='X' ?</text>
+
+  <!-- Yes → skip (loop back to neighbor enum) -->
+  <path d="M340,364 L408,364 L408,299 L384,299" stroke="#999" stroke-width="1.4" fill="none" marker-end="url(#arrGray)" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="362" y="358" text-anchor="middle" font-size="10" fill="#999" filter="url(#rough2)">是</text>
+  <text x="416" y="335" font-size="9" fill="#999" filter="url(#rough2)">跳过</text>
+
+  <!-- No → next decision -->
+  <path d="M250,398 L250,410" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="264" y="408" font-size="10" fill="#446688" filter="url(#rough2)">否</text>
+
+  <!-- Decision 2: is food? -->
+  <polygon points="250,412 330,442 250,472 170,442" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="250" y="440" text-anchor="middle" font-size="11" fill="#2e6e2e" filter="url(#rough2)">grid = '#' ?</text>
+  <text x="250" y="456" text-anchor="middle" font-size="9" fill="#4a8e4a" filter="url(#rough2)">(找到食物)</text>
+
+  <!-- Yes → return steps -->
+  <path d="M330,442 L392,442" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="352" y="436" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="396" y="426" width="120" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="456" y="448" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold" filter="url(#rough2)">return steps</text>
+
+  <!-- No → mark + enqueue -->
+  <path d="M250,472 L250,482" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="264" y="480" font-size="10" fill="#446688" filter="url(#rough2)">否</text>
+  <rect x="140" y="484" width="220" height="0" fill="none"/>
+
+  <!-- mark + enqueue node (placed at bottom, loops back) -->
+  <rect x="120" y="478" width="260" height="0" fill="none"/>
+
+  <!-- Loop back: from "否" of food decision, mark+enqueue then back to queue空? -->
+  <!-- We draw the mark+enqueue box to the left, then arrow up to queue空? diamond -->
+  <rect x="40" y="426" width="110" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="448" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">标记 'X' + 入队</text>
+  <path d="M170,442 L150,442" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop back arrow: from mark box up to queue空? diamond left side -->
+  <path d="M95,426 L95,182 L170,182" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="5 3" filter="url(#rough2)"/>
+  <text x="50" y="300" font-size="9" fill="#888" filter="url(#rough2)">继续</text>
+  <text x="50" y="314" font-size="9" fill="#888" filter="url(#rough2)">下一层</text>
+</svg>

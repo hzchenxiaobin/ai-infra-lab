@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">算法流程：行扫描 + 列计数器 + 行内滚动累加</text>
+
+  <!-- 右上注解框 -->
+  <rect x="340" y="36" width="172" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="426" y="54" text-anchor="middle" font-size="11" font-weight="bold" fill="#333" filter="url(#rough2)">每个格子 O(1)</text>
+  <text x="426" y="70" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">时间 O(mn)，空间 O(n)</text>
+  <text x="426" y="84" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">免建二维前缀和表</text>
+
+  <!-- 主流程 -->
+  <rect x="120" y="38" width="200" height="28" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="57" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">初始化：ans=0；colX/colY=0</text>
+  <path d="M220,66 L220,78" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="82" width="200" height="30" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="101" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">外层行 i = 0…m−1（sx = sy = 0）</text>
+  <path d="M220,112 L220,124" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="128" width="200" height="26" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="145" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">内层列 j = 0…n−1</text>
+  <path d="M220,154 L220,166" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="170" width="200" height="46" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="186" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">grid[i][j] == 'X' → colX[j]++</text>
+  <text x="220" y="200" text-anchor="middle" font-size="10" fill="#333" filter="url(#rough2)">grid[i][j] == 'Y' → colY[j]++</text>
+  <text x="220" y="214" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">grid[i][j] == '.' → 跳过</text>
+  <path d="M220,216 L220,228" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="232" width="200" height="38" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="248" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">sx += colX[j]；sy += colY[j]</text>
+  <text x="220" y="262" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">（= 子矩阵 (0,0)…(i,j) 的 X/Y 总数）</text>
+  <path d="M220,270 L220,282" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判定菱形 -->
+  <polygon points="220,282 292,308 220,334 148,308" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="220" y="305" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">sx == sy</text>
+  <text x="220" y="319" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">且 sx &gt; 0 ?</text>
+
+  <!-- 是 → ans++ -->
+  <path d="M292,308 L326,308" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="309" y="299" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="330" y="294" width="110" height="28" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="385" y="312" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">ans++（下一 j）</text>
+
+  <!-- 是分支回到 j 循环 -->
+  <path d="M385,294 L385,141 L324,141" stroke="#888" stroke-width="1.4" stroke-dasharray="5 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="210" text-anchor="start" font-size="9" fill="#888" filter="url(#rough2)">回到 j 循环</text>
+
+  <!-- 否 → 不计数 -->
+  <path d="M148,308 L130,308" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="139" y="299" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="16" y="294" width="112" height="28" rx="6" fill="#fff" stroke="#999" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="72" y="312" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">不计数（下一 j）</text>
+  <path d="M72,294 L72,141 L116,141" stroke="#888" stroke-width="1.4" stroke-dasharray="5 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="66" y="210" text-anchor="end" font-size="9" fill="#888" filter="url(#rough2)">回到 j 循环</text>
+
+  <text x="220" y="352" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">j 扫完 → i++；全部行列扫完 → 返回 ans</text>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 432" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="432" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">矩阵置零算法流程（4 阶段 · O(1) 空间）</text>
+
+  <!-- Start -->
+  <rect x="240" y="36" width="80" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="13" filter="url(#rough2)"/>
+  <text x="280" y="54" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">开始</text>
+
+  <!-- arrow start -> rowA -->
+  <path d="M 280 62 L 280 78" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Row A : two pre-check boxes (green) -->
+  <rect x="36" y="80" width="232" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="100" font-size="12" fill="#4a7a3a" font-weight="bold">① 预检第一行</text>
+  <text x="48" y="117" font-size="10.5" fill="#555">扫描 matrix[0][j]，遇 0</text>
+  <text x="48" y="128" font-size="10.5" fill="#555">→ firstRowZero = true</text>
+
+  <rect x="292" y="80" width="232" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="304" y="100" font-size="12" fill="#4a7a3a" font-weight="bold">② 预检第一列</text>
+  <text x="304" y="117" font-size="10.5" fill="#555">扫描 matrix[i][0]，遇 0</text>
+  <text x="304" y="128" font-size="10.5" fill="#555">→ firstColZero = true</text>
+
+  <!-- arrow rowA -> rowB -->
+  <path d="M 280 132 L 280 148" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Row B : mark internal (orange) -->
+  <rect x="66" y="150" width="428" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="170" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 标记内部区域（读原始值打标）</text>
+  <text x="280" y="187" text-anchor="middle" font-size="10.5" fill="#555" font-family="'Consolas','Segoe UI',monospace">for i=1..m-1,  j=1..n-1:</text>
+  <text x="280" y="203" text-anchor="middle" font-size="10.5" fill="#555" font-family="'Consolas','Segoe UI',monospace">if matrix[i][j]==0:  matrix[i][0]=0;  matrix[0][j]=0</text>
+
+  <!-- arrow rowB -> rowC -->
+  <path d="M 280 212 L 280 228" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Row C : clear internal (red/pink) -->
+  <rect x="66" y="230" width="428" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="250" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ 按标记清零内部（读标记值置 0）</text>
+  <text x="280" y="267" text-anchor="middle" font-size="10.5" fill="#555" font-family="'Consolas','Segoe UI',monospace">for i=1..m-1,  j=1..n-1:</text>
+  <text x="280" y="283" text-anchor="middle" font-size="10.5" fill="#555" font-family="'Consolas','Segoe UI',monospace">if matrix[i][0]==0 || matrix[0][j]==0:  matrix[i][j]=0</text>
+
+  <!-- arrow rowC -> rowD -->
+  <path d="M 280 292 L 280 308" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Row D : finalize first row/col (blue) -->
+  <rect x="36" y="310" width="232" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="330" font-size="12" fill="#446688" font-weight="bold">⑤ 收尾第一行</text>
+  <text x="48" y="347" font-size="10.5" fill="#555">if firstRowZero:</text>
+  <text x="48" y="358" font-size="10.5" fill="#555">第一行 matrix[0][*] 全置 0</text>
+
+  <rect x="292" y="310" width="232" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="304" y="330" font-size="12" fill="#446688" font-weight="bold">⑥ 收尾第一列</text>
+  <text x="304" y="347" font-size="10.5" fill="#555">if firstColZero:</text>
+  <text x="304" y="358" font-size="10.5" fill="#555">第一列 matrix[*][0] 全置 0</text>
+
+  <!-- arrow rowD -> end -->
+  <path d="M 280 362 L 280 378" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- End -->
+  <rect x="240" y="380" width="80" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="13" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">完成</text>
+
+  <!-- side note: order matters -->
+  <text x="498" y="200" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">先标记</text>
+  <text x="498" y="252" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">后清零</text>
+  <path d="M 498 208 L 498 224" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <text x="510" y="335" font-size="9.5" fill="#446688" font-weight="bold">⑤⑥ 必须放最后</text>
+  <text x="510" y="348" font-size="9.5" fill="#446688">首行首列存着标记</text>
+</svg>

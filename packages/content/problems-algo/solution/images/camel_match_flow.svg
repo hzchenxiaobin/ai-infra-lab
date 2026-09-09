@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：双指针扫描 + 大写字母闸门</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">对每个 query 执行 match(query, pattern)，j 跟踪 pattern 指针</text>
+
+  <g filter="url(#rough2)">
+
+    <!-- Start -->
+    <ellipse cx="280" cy="76" rx="50" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="280" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">j = 0</text>
+
+    <!-- arrow down to loop entry -->
+    <path d="M 280 96 L 280 116" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+    <!-- Loop box: for each c in query -->
+    <rect x="200" y="118" width="160" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6"/>
+    <text x="280" y="140" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">for c in query:</text>
+
+    <!-- arrow down to decision A -->
+    <path d="M 280 154 L 280 174" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+    <!-- Decision A: c == pattern[j]? (diamond) -->
+    <polygon points="280,176 372,216 280,256 188,216" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="280" y="212" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">j&lt;|p| 且</text>
+    <text x="280" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">c == p[j]?</text>
+
+    <!-- Yes branch: right → j++ -->
+    <path d="M 372 216 L 420 216" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)"/>
+    <text x="392" y="210" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+    <rect x="420" y="198" width="80" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6"/>
+    <text x="460" y="220" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">j++</text>
+
+    <!-- j++ loops back up to loop box -->
+    <path d="M 460 198 L 460 136 L 360 136" stroke="#4a7a3a" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)"/>
+
+    <!-- No branch: down to decision B -->
+    <path d="M 280 256 L 280 278" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)"/>
+    <text x="296" y="272" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+    <!-- Decision B: c is upper? (diamond) -->
+    <polygon points="280,280 364,316 280,352 196,316" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="280" y="320" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">c 是大写?</text>
+
+    <!-- Yes → return false (right) -->
+    <path d="M 364 316 L 430 316" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)"/>
+    <text x="396" y="310" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+    <rect x="430" y="298" width="96" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6"/>
+    <text x="478" y="320" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return false</text>
+
+    <!-- No → skip lowercase, loop back (left) -->
+    <path d="M 196 316 L 130 316" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <text x="162" y="310" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">否</text>
+    <rect x="50" y="298" width="80" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="90" y="320" text-anchor="middle" font-size="11" fill="#446688">跳过小写</text>
+    <!-- skip loops back up to loop box -->
+    <path d="M 90 298 L 90 136 L 200 136" stroke="#446688" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+    <!-- after loop: arrow down from loop box left side -->
+    <path d="M 200 136 L 60 136 L 60 372" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <text x="48" y="250" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 48 250)">循环结束</text>
+
+    <!-- Final decision: j == |pattern|? -->
+    <polygon points="60,374 150,402 60,402 60,374" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <polygon points="60,374 150,388 150,402 60,402" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <polygon points="60,374 150,388 60,402" fill="none" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="92" y="394" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">j==|p|?</text>
+
+    <!-- true / false outputs -->
+    <path d="M 60 402 L 60 402" stroke="#d6a040" stroke-width="1.4" fill="none"/>
+
+  </g>
+
+  <!-- final results text boxes -->
+  <g filter="url(#rough2)" font-size="11">
+    <rect x="170" y="380" width="80" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6"/>
+    <text x="210" y="398" text-anchor="middle" fill="#4a7a3a" font-weight="bold">是→true</text>
+    <path d="M 150 388 L 170 392" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)"/>
+
+    <rect x="170" y="344" width="80" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6"/>
+    <text x="210" y="362" text-anchor="middle" fill="#b85450" font-weight="bold">否→false</text>
+    <path d="M 150 388 L 170 358" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)"/>
+  </g>
+
+  <text x="280" y="416" text-anchor="middle" font-size="10" fill="#888">菱形=判断｜矩形=动作｜虚线=循环回边｜两个失败点：多余大写 / pattern 未匹配完</text>
+</svg>

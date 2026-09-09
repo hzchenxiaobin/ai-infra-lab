@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="500" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold">算法流程：Andrew 单调链（排序 + 下凸包 + 上凸包 + 合并）</text>
+
+  <!-- Step 1: Sort -->
+  <rect x="40" y="48" width="460" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="73" r="13" fill="#446688" filter="url(#rough2)"/>
+  <text x="62" y="78" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">1</text>
+  <text x="86" y="68" font-size="12" fill="#446688" font-weight="bold">按 (x, y) 字典序排序</text>
+  <text x="86" y="86" font-size="10.5" fill="#555">sort(points)：先按 x 升序，x 相同按 y 升序 → 得到从左到右、从下到上的有序点列</text>
+
+  <path d="M 270 100 L 270 116" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Lower hull -->
+  <rect x="40" y="120" width="460" height="66" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="148" r="13" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="62" y="153" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">2</text>
+  <text x="86" y="140" font-size="12" fill="#4a7a3a" font-weight="bold">构建下凸包（lower，从左到右扫描）</text>
+  <text x="86" y="158" font-size="10.5" fill="#555">for i = 0 to n−1：</text>
+  <text x="86" y="172" font-size="10.5" fill="#555">  while len(stack)≥2 且 cross(stack[−2], stack[−1], p[i]) &lt; 0：stack.pop()  // 右转则弹出</text>
+  <text x="86" y="182" font-size="9.5" fill="#888">  stack.append(p[i])  // 共线(cross=0)与左转(cross&gt;0)均保留</text>
+
+  <path d="M 270 188 L 270 204" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: while loop detail -->
+  <polygon points="270,210 390,256 270,302 150,256" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="250" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">cross &lt; 0？</text>
+  <text x="270" y="268" text-anchor="middle" font-size="9.5" fill="#888">（右转 = 不在凸包上）</text>
+  <text x="270" y="282" text-anchor="middle" font-size="9.5" fill="#888">while 循环判定</text>
+
+  <!-- Yes: pop, loop back -->
+  <text x="282" y="318" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+  <path d="M 270 304 L 270 322" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="120" y="322" width="300" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="345" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">弹出 stack.pop()，回到菱形重新判定</text>
+  <path d="M 120 340 Q 80 340 80 256 Q 80 256 150 256" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="84" y="300" font-size="9" fill="#666" font-style="italic">重新检查</text>
+
+  <!-- No: push -->
+  <text x="402" y="252" font-size="10.5" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M 390 256 L 432 256" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="432" y="240" width="88" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="476" y="263" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">push p[i]</text>
+
+  <!-- loop back from push to next i -->
+  <path d="M 476 240 Q 476 200 430 200 Q 430 148 390 148" stroke="#666" stroke-width="1.3" fill="none" stroke-dasharray="3 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="190" font-size="9" fill="#888" font-style="italic">下一个 i</text>
+
+  <!-- Step 3: Upper hull -->
+  <path d="M 270 362 L 270 378" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="378" width="460" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="403" r="13" fill="#4a7a3a" filter="url(#rough2)"/>
+  <text x="62" y="408" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">3</text>
+  <text x="86" y="398" font-size="12" fill="#4a7a3a" font-weight="bold">构建上凸包（upper，从右到左反向扫描）</text>
+  <text x="86" y="416" font-size="10.5" fill="#555">for i = n−1 downto 0：同样 while cross &lt; 0 则 pop，然后 push（逻辑与下凸包完全相同）</text>
+
+  <path d="M 270 430 L 270 446" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Merge -->
+  <rect x="40" y="448" width="460" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <circle cx="62" cy="469" r="13" fill="#d6a040" filter="url(#rough2)"/>
+  <text x="62" y="474" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">4</text>
+  <text x="86" y="466" font-size="12" fill="#d6a040" font-weight="bold">合并 lower + upper，去重后返回</text>
+  <text x="86" y="482" font-size="10.5" fill="#555">两端点（最左、最右点）在两段各出现一次，用 set 去重即得最终围栏点集</text>
+</svg>

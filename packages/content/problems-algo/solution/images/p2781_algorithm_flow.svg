@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrF" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrFg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrFo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrFr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：哈希集合存禁忌词 → 遍历 right → 查右端 10 子串 → 命中则跳 left → 更新答案</text>
+
+  <!-- Step 1: Build hash set -->
+  <rect x="60" y="50" width="440" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="72" font-size="12" fill="#446688" font-weight="bold">① 建哈希集合</text>
+  <text x="80" y="89" font-size="11" fill="#555">ban = set(forbidden)  →  O(1) 查找任意禁忌词</text>
+
+  <!-- arrow down -->
+  <path d="M280,102 L280,118" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Initialize -->
+  <rect x="60" y="122" width="440" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="144" font-size="12" fill="#4a7a3a" font-weight="bold">② 初始化</text>
+  <text x="80" y="161" font-size="11" fill="#555">left = 0, ans = 0,  right 从 0 遍历到 n-1</text>
+
+  <!-- arrow down -->
+  <path d="M280,174 L280,190" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Check substrings ending at right -->
+  <rect x="60" y="194" width="440" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="216" font-size="12" fill="#d6a040" font-weight="bold">③ 检查以 right 结尾的子串</text>
+  <text x="80" y="233" font-size="11" fill="#555">for len = 1 to min(10, right - left + 1):</text>
+  <text x="100" y="248" font-size="11" fill="#555">sub = word[right-len+1 .. right];  若 sub ∈ ban → left = max(left, right-len+2)</text>
+
+  <!-- arrow down -->
+  <path d="M280,258 L280,274" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Decision diamond -->
+  <polygon points="280,278 360,312 280,346 200,312" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="308" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">命中禁忌词?</text>
+  <text x="280" y="322" text-anchor="middle" font-size="10" fill="#b85450">(内层循环中)</text>
+
+  <!-- Yes branch: left jumps -->
+  <text x="400" y="308" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <path d="M360,312 L418,312" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrFr)" filter="url(#rough2)"/>
+  <rect x="425" y="296" width="110" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="480" y="312" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">left 跳过禁忌词起点</text>
+  <text x="480" y="325" text-anchor="middle" font-size="10" fill="#b85450">left ← right-len+2</text>
+
+  <!-- No branch: continue -->
+  <text x="140" y="308" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <path d="M200,312 L142,312" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrFg)" filter="url(#rough2)"/>
+  <rect x="40" y="296" width="100" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="90" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">该子串合法</text>
+  <text x="90" y="325" text-anchor="middle" font-size="10" fill="#4a7a3a">继续查下一个 len</text>
+
+  <!-- arrows from both branches down to step 5 -->
+  <path d="M280,348 L280,370" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrF)" filter="url(#rough2)"/>
+
+  <!-- Step 5: Update answer -->
+  <rect x="60" y="374" width="440" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="396" font-size="12" fill="#446688" font-weight="bold">④ 更新答案 & 右移 right</text>
+  <text x="80" y="413" font-size="11" fill="#555">ans = max(ans, right - left + 1);  right++  → 回到 ③</text>
+
+  <!-- loop back arrow: from step 5 right side back up to step 3 right side -->
+  <path d="M505,398 L535,398 L535,224 L505,224" fill="none" stroke="#d6a040" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#arrFo)" filter="url(#rough2)"/>
+  <text x="540" y="312" font-size="10" fill="#d6a040" font-weight="bold" transform="rotate(90, 540, 312)">right 循环</text>
+</svg>

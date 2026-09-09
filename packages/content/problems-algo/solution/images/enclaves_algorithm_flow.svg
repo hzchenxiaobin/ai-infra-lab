@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：先沉掉边界连通陆地，再数剩余 1</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">阶段一（沉岛）从四条边的 1 出发 DFS；阶段二（计数）整盘数 1</text>
+
+  <g filter="url(#rough2)" font-size="11">
+    <!-- 1. Start -->
+    <rect x="180" y="60" width="180" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="270" y="78" text-anchor="middle" fill="#446688" font-weight="bold">阶段一：沉岛</text>
+    <text x="270" y="92" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">遍历四条边上的格子</text>
+
+    <path d="M 270 100 L 270 116" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 2. border 1? diamond -->
+    <polygon points="270,118 390,158 270,198 150,158" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="270" y="154" text-anchor="middle" fill="#d6a040" font-weight="bold">该边格 == 1 ?</text>
+    <text x="270" y="170" text-anchor="middle" fill="#d6a040" font-size="10">(上/下/左/右四条边)</text>
+
+    <!-- No -> next border cell (loop) -->
+    <path d="M 390 158 L 450 158" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="420" y="150" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">否</text>
+    <rect x="450" y="140" width="78" height="36" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="6"/>
+    <text x="489" y="158" text-anchor="middle" fill="#666" font-size="10">看下一个边格</text>
+    <text x="489" y="170" text-anchor="middle" fill="#666" font-size="9">（继续遍历边）</text>
+
+    <!-- Yes -> down -->
+    <path d="M 270 198 L 270 214" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="282" y="210" font-size="10" fill="#666" font-weight="bold">是</text>
+
+    <!-- 3. DFS sink -->
+    <rect x="120" y="216" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8"/>
+    <text x="270" y="234" text-anchor="middle" fill="#4a7a3a" font-weight="bold">DFS：把连通的 1 沉为 0</text>
+    <text x="270" y="250" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">grid[i][j]=0; 递归上下左右（非 1 停止）</text>
+
+    <!-- loop back to border traversal -->
+    <path d="M 120 238 L 70 238 L 70 158 L 150 158" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arrG)"/>
+    <text x="58" y="200" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" transform="rotate(-90 58 200)">回到边界遍历</text>
+
+    <path d="M 270 260 L 270 280" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="300" y="276" font-size="10" fill="#666">边界遍历完</text>
+
+    <!-- 4. phase two: scan -->
+    <rect x="150" y="282" width="240" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <text x="270" y="300" text-anchor="middle" fill="#446688" font-weight="bold">阶段二：遍历整个网格</text>
+    <text x="270" y="314" text-anchor="middle" fill="#555" font-family="monospace" font-size="10">for i, j: if grid[i][j] == 1</text>
+
+    <path d="M 270 320 L 270 336" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+
+    <!-- 5. classify: two-way -->
+    <!-- == 1 -> ans++ -->
+    <path d="M 220 344 L 120 360" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrR)"/>
+    <text x="150" y="350" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">== 1</text>
+    <rect x="60" y="356" width="120" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6"/>
+    <text x="120" y="378" text-anchor="middle" fill="#b85450" font-weight="bold">飞地 → ans++</text>
+
+    <!-- != 1 -> skip -->
+    <path d="M 320 344 L 420 360" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)"/>
+    <text x="390" y="350" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">!= 1</text>
+    <rect x="360" y="356" width="120" height="34" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="6"/>
+    <text x="420" y="378" text-anchor="middle" fill="#666" font-weight="bold">跳过</text>
+  </g>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="470" fill="#fafafa"/>
+
+  <text x="310" y="24" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">算法流程：滚动数组 + 沿倍数方向枚举松弛</text>
+
+  <!-- ① 初始化 -->
+  <rect x="30" y="44" width="210" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="62" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">① 初始化：dp[·] = INF</text>
+  <text x="135" y="80" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">dp[nums[0]] = 0（首位锁死）</text>
+
+  <path d="M 135,88 L 135,106" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 位置循环 -->
+  <rect x="30" y="110" width="210" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="128" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">② 位置循环 i = 1…n−1：</text>
+  <text x="135" y="146" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">x = nums[i]，ndp[·] = INF</text>
+
+  <path d="M 135,154 L 135,172" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ 枚举前驱值 -->
+  <rect x="30" y="176" width="210" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="194" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">③ 枚举前驱值 pre（整除基）</text>
+  <text x="135" y="212" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">dp[pre] &lt; INF 才有效</text>
+
+  <path d="M 135,220 L 135,238" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 计算首个候选 -->
+  <rect x="30" y="242" width="210" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="260" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">④ cur = ⌈x / pre⌉ · pre</text>
+  <text x="135" y="278" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">（≥ x 的最小 pre 倍数）</text>
+
+  <path d="M 135,286 L 135,292" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑤ cur ≤ 100 ? -->
+  <polygon points="135,292 53,318 135,344 217,318" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="135" y="322" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">⑤ cur ≤ 100 ?</text>
+
+  <path d="M 135,344 L 135,364" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="143" y="358" font-size="10.5" fill="#666" filter="url(#rough2)">是</text>
+
+  <!-- ⑥ 松弛 -->
+  <rect x="35" y="368" width="200" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="135" y="390" text-anchor="middle" font-size="11.5" fill="#446688" filter="url(#rough2)">⑥ 松弛 ndp[cur]，cur += pre</text>
+
+  <!-- ⑥ → ⑤ 回环：下一个倍数 -->
+  <path d="M 35,386 L 22,386 L 22,318 L 50,318" stroke="#446688" stroke-width="1.3" stroke-dasharray="6 4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="16" y="356" transform="rotate(-90 16 356)" font-size="10" fill="#446688" filter="url(#rough2)">下一个倍数</text>
+
+  <!-- ⑤ 否 → ⑦ -->
+  <path d="M 217,318 L 254,318" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="235" y="310" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">否</text>
+
+  <!-- ⑦ pre 用完 ? -->
+  <polygon points="340,292 258,318 340,344 422,318" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="340" y="322" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">⑦ pre 用完 ?</text>
+
+  <!-- ⑦ 是 → ③ 回环：下一个 pre -->
+  <path d="M 340,292 L 340,198 L 244,198" stroke="#446688" stroke-width="1.3" stroke-dasharray="6 4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="352" y="245" font-size="10.5" fill="#446688" filter="url(#rough2)">下一个 pre</text>
+
+  <!-- ⑦ 否 → ⑧ -->
+  <path d="M 340,344 L 340,368" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="348" y="360" font-size="10.5" fill="#666" filter="url(#rough2)">否</text>
+
+  <!-- ⑧ i < n ? -->
+  <polygon points="340,372 258,396 340,420 422,396" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="340" y="400" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">⑧ i &lt; n ?</text>
+
+  <!-- ⑧ 否 → ⑨ -->
+  <path d="M 422,396 L 458,396" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="388" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">否</text>
+
+  <!-- ⑨ 返回 -->
+  <rect x="462" y="378" width="150" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="537" y="400" text-anchor="middle" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">⑨ 返回 min(dp)</text>
+
+  <!-- ⑧ 是 → ② 回环：滚动 dp，下一个 i -->
+  <path d="M 340,420 L 340,446 L 10,446 L 10,132 L 26,132" stroke="#446688" stroke-width="1.3" stroke-dasharray="6 4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="175" y="440" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">dp = ndp（滚动），下一个 i</text>
+
+  <!-- 要点注释 -->
+  <rect x="430" y="44" width="170" height="170" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <g filter="url(#rough2)" font-size="10.5" fill="#d6a040" text-anchor="middle">
+    <text x="515" y="66" font-size="13" font-weight="bold">要点</text>
+    <text x="515" y="88">· 值域 V = 2·max(nums)</text>
+    <text x="515" y="104">  = 100，交换论证</text>
+    <text x="515" y="120">  ⇒ 最优解不越界</text>
+    <text x="515" y="140">· 沿倍数方向枚举：</text>
+    <text x="515" y="156">  Σ⌊100/pre⌋ ≈ 482/层</text>
+    <text x="515" y="172">  （调和级数；反向</text>
+    <text x="515" y="188">  枚举约数 O(V√V)）</text>
+    <text x="515" y="208">· INF 剪枝跳过无效前驱</text>
+  </g>
+
+  <text x="310" y="462" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">每层约 V·ln V ≈ 482 次松弛，总计 n·V·ln V ≈ 5×10⁴，毫秒级</text>
+</svg>

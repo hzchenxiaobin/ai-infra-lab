@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心 + 大顶堆：路过先「记账」，缺油取「最大」</text>
+
+  <!-- ===== Road ===== -->
+  <text x="40" y="62" font-size="12" fill="#888">公路:</text>
+  <line x1="60" y1="120" x2="500" y2="120" stroke="#888" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Start -->
+  <circle cx="60" cy="120" r="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="60" y="142" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">起点 0</text>
+
+  <!-- Station 1: pos 10, fuel 60 -->
+  <rect x="116" y="84" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="136" y="100" text-anchor="middle" font-size="10" fill="#333">站10</text>
+  <text x="136" y="114" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">油60</text>
+  <line x1="136" y1="118" x2="136" y2="120" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Station 2: pos 20, fuel 30 -->
+  <rect x="188" y="84" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="208" y="100" text-anchor="middle" font-size="10" fill="#333">站20</text>
+  <text x="208" y="114" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">油30</text>
+  <line x1="208" y1="118" x2="208" y2="120" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Station 3: pos 30, fuel 30 -->
+  <rect x="260" y="84" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="100" text-anchor="middle" font-size="10" fill="#333">站30</text>
+  <text x="280" y="114" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">油30</text>
+  <line x1="280" y1="118" x2="280" y2="120" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Station 4: pos 60, fuel 40 -->
+  <rect x="360" y="84" width="40" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="100" text-anchor="middle" font-size="10" fill="#333">站60</text>
+  <text x="380" y="114" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">油40</text>
+  <line x1="380" y1="118" x2="380" y2="120" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Target -->
+  <circle cx="488" cy="120" r="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="488" y="142" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">终点 100</text>
+
+  <!-- distance hint -->
+  <text x="380" y="74" text-anchor="middle" font-size="9" fill="#999">沿路向东 →</text>
+
+  <!-- ===== Current fuel tank ===== -->
+  <rect x="40" y="168" width="240" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="188" font-size="12" fill="#333" font-weight="bold">当前油箱 cur</text>
+  <rect x="60" y="196" width="200" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <rect x="62" y="198" width="120" height="18" fill="#a8d8a8" stroke="none" rx="3" filter="url(#rough2)"/>
+  <text x="160" y="212" font-size="10" fill="#2a5a2a">cur 升（每英里耗 1）</text>
+
+  <!-- arrow: road -> tank (consume) -->
+  <path d="M 200 150 L 200 166" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="208" y="162" font-size="9" fill="#888">行驶耗油</text>
+
+  <!-- ===== Max-heap of passed stations ===== -->
+  <rect x="312" y="168" width="208" height="100" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="416" y="188" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">路过的加油站（大顶堆）</text>
+
+  <!-- heap nodes: max on top -->
+  <rect x="392" y="198" width="48" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="416" y="213" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">60</text>
+  <rect x="344" y="232" width="44" height="20" fill="#fff" stroke="#d6a040" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="366" y="246" text-anchor="middle" font-size="10" fill="#666">40</text>
+  <rect x="448" y="232" width="44" height="20" fill="#fff" stroke="#d6a040" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="470" y="246" text-anchor="middle" font-size="10" fill="#666">30</text>
+  <text x="416" y="262" text-anchor="middle" font-size="9" fill="#999">堆顶 = 最大可补油量</text>
+
+  <!-- arrow: station -> heap (push, deferred) -->
+  <path d="M 380 118 C 380 140 416 150 416 196" stroke="#446688" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="430" y="158" font-size="10" fill="#446688">① 路过即「记账」</text>
+  <text x="430" y="172" font-size="10" fill="#446688">（不立即决定加油）</text>
+
+  <!-- arrow: heap -> tank (pop max when stuck) -->
+  <path d="M 392 209 L 286 209" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="332" y="202" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">② 缺油时取最大</text>
+
+  <!-- ===== Greedy rationale box ===== -->
+  <rect x="40" y="288" width="480" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="310" font-size="12" fill="#333" font-weight="bold">为什么「缺油时取最大」最优？</text>
+  <text x="60" y="330" font-size="11" fill="#444">每次加油都消耗 1 次停靠名额。要让「最少次数停靠」走完全程，</text>
+  <text x="60" y="346" font-size="11" fill="#444">每次加油应补进尽量多的油 → 延伸尽量远的里程 → 总能覆盖后续缺口。</text>
+  <text x="60" y="364" font-size="11" fill="#b85450">交换论证：若某次取了较小的 a 而非最大的 b，把 b 留到之后用不会更差，</text>
+  <text x="60" y="378" font-size="11" fill="#b85450">所以「取最大」支配所有方案 → 贪心最优。</text>
+</svg>

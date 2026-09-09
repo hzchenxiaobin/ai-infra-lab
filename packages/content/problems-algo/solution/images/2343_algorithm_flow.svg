@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：按 trim 递增逐位稳定分桶，沿途回答查询</text>
+
+  <!-- B1 start -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="40" width="300" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="17"/>
+    <text x="280" y="62" text-anchor="middle" font-size="11.5" fill="#333">开始：按 trim 分组查询 buckets[t] ← [(查询号, k)]</text>
+  </g>
+  <path d="M 280 74 L 280 90" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B2 init order -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="92" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="280" y="114" text-anchor="middle" font-size="11.5" fill="#333">order ← [0, 1, …, n−1]（初始下标序）</text>
+  </g>
+  <path d="M 280 126 L 280 140" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D1 diamond -->
+  <g filter="url(#rough2)">
+    <path d="M 280 142 L 352 168 L 280 194 L 208 168 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="280" y="166" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">trim ≤ max_trim ?</text>
+    <text x="280" y="180" text-anchor="middle" font-size="9.5" fill="#888">逐位推进</text>
+  </g>
+
+  <!-- no -> B7 end -->
+  <path d="M 352 168 L 372 168" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="362" y="160" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <g filter="url(#rough2)">
+    <rect x="372" y="150" width="168" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="17"/>
+    <text x="456" y="172" text-anchor="middle" font-size="11.5" fill="#333">返回 ans</text>
+  </g>
+
+  <!-- yes down -->
+  <path d="M 280 194 L 280 212" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="208" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- B3 pos + buckets -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="214" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="280" y="236" text-anchor="middle" font-size="11.5" fill="#333">pos = L − trim；建 10 个空桶（0–9）</text>
+  </g>
+  <path d="M 280 248 L 280 262" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B4 stable bucketing (key, orange) -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="264" width="300" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="6"/>
+    <text x="280" y="284" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">遍历 order 中各 idx</text>
+    <text x="280" y="300" text-anchor="middle" font-size="10.5" fill="#555">按 d = nums[idx][pos] 入桶 d（原序遍历 ⇒ 稳定）</text>
+  </g>
+  <path d="M 280 312 L 280 326" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B5 collect -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="328" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="280" y="350" text-anchor="middle" font-size="11.5" fill="#333">顺序收集 10 个桶 → 更新 order</text>
+  </g>
+  <path d="M 280 362 L 280 374" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B6 answer queries -->
+  <g filter="url(#rough2)">
+    <rect x="130" y="376" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="280" y="392" text-anchor="middle" font-size="11.5" fill="#333">对本 trim 的每个查询 (查询号, k)：</text>
+    <text x="280" y="408" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">ans[查询号] = order[k − 1]</text>
+  </g>
+
+  <!-- loop back -->
+  <path d="M 130 396 L 56 396 L 56 168 L 208 168" stroke="#4a7a3a" stroke-width="1.8" fill="none" stroke-dasharray="5 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="64" y="288" font-size="10" fill="#4a7a3a" font-weight="bold">trim ← trim + 1</text>
+  <text x="64" y="302" font-size="9.5" fill="#888">复用 order</text>
+</svg>

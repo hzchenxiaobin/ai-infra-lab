@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：一次遍历 + 滚动计数</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#888">leftZeros=0，rightOnes=sum(nums)；i 从 0 到 n，每步算分后增量更新</text>
+
+  <!-- Step 1: init -->
+  <rect x="40" y="60" width="180" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="80" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① 初始化</text>
+  <text x="130" y="97" text-anchor="middle" font-size="10.5" fill="#555">leftZeros=0, rightOnes=sum</text>
+
+  <!-- Step 2: loop i = 0..n -->
+  <rect x="250" y="60" width="230" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="365" y="80" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② for i in 0..n</text>
+  <text x="365" y="97" text-anchor="middle" font-size="10.5" fill="#555">共 n+1 个切点</text>
+
+  <!-- arrow 1 -> 2 -->
+  <path d="M 220 83 L 250 83" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: compute score -->
+  <polygon points="260,130 380,130 420,175 380,220 260,220 220,175" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="320" y="170" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">score = leftZeros</text>
+  <text x="320" y="186" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">+ rightOnes</text>
+  <text x="320" y="202" text-anchor="middle" font-size="10" fill="#555">与 best 比较</text>
+
+  <!-- arrow from loop to decision -->
+  <path d="M 365 106 L 365 130" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- left branch: score > best -->
+  <rect x="40" y="148" width="150" height="54" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="168" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">score &gt; best</text>
+  <text x="115" y="184" text-anchor="middle" font-size="10" fill="#555">best = score</text>
+  <text x="115" y="197" text-anchor="middle" font-size="10" fill="#555">ans = [i]</text>
+  <path d="M 220 165 L 190 170" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- right branch: score == best -->
+  <rect x="450" y="148" width="50" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="475" y="170" text-anchor="middle" font-size="9.5" fill="#333" font-weight="bold">== best</text>
+  <text x="475" y="186" text-anchor="middle" font-size="9.5" fill="#555">ans.append(i)</text>
+  <path d="M 420 165 L 450 170" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: update counters (after computing score, before next i) -->
+  <rect x="170" y="240" width="300" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="320" y="260" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ 更新计数器（为下个切点准备）</text>
+  <text x="320" y="277" text-anchor="middle" font-size="10.5" fill="#555">nums[i]==0 → leftZeros += 1</text>
+  <text x="320" y="291" text-anchor="middle" font-size="10.5" fill="#555">nums[i]==1 → rightOnes −= 1</text>
+
+  <!-- arrow decision -> update -->
+  <path d="M 320 220 L 320 240" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop back arrow -->
+  <path d="M 470 268 Q 500 268 500 175 Q 500 83 365 83" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="500" y="130" text-anchor="end" font-size="9.5" fill="#888">i++ 回到②</text>
+
+  <!-- Step 4: return -->
+  <rect x="40" y="240" width="110" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="95" y="262" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ 返回 ans</text>
+  <text x="95" y="278" text-anchor="middle" font-size="10" fill="#555">所有最高分</text>
+  <text x="95" y="290" text-anchor="middle" font-size="10" fill="#555">下标集合</text>
+  <path d="M 220 168 L 150 240" stroke="#666" stroke-width="1.5" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="225" font-size="9.5" fill="#888">i&gt;n 退出</text>
+
+  <!-- footer -->
+  <text x="260" y="326" text-anchor="middle" font-size="10.5" fill="#888">单趟循环 n+1 次，每次 O(1)：算分、比 best、更新两计数器</text>
+  <text x="260" y="344" text-anchor="middle" font-size="10" fill="#aaa">无需前缀和数组，两变量滚动即够；右移时 nums[i] 恰好跨过切线</text>
+</svg>

@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 0 0 L 7 3.5 L 0 7 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path d="M 0 0 L 7 3.5 L 0 7 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">示例演算：str1="abac", str2="cab" → SCS="cabac"</text>
+
+  <!-- ===== dp table: 6 rows x 5 cols, cell 44x30, origin (56,66) ===== -->
+  <text x="36" y="58" font-size="11" fill="#888" font-weight="bold">dp 表（行=str1, 列=str2）</text>
+
+  <!-- table outer border -->
+  <rect x="56" y="66" width="220" height="180" fill="none" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+
+  <!-- col separators: 56, 100, 144, 188, 232, 276 -->
+  <line x1="100" y1="66" x2="100" y2="246" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="144" y1="66" x2="144" y2="246" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="188" y1="66" x2="188" y2="246" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="232" y1="66" x2="232" y2="246" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- row separators: 66, 96, 126, 156, 186, 216, 246 -->
+  <line x1="56" y1="96" x2="276" y2="96" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="56" y1="126" x2="276" y2="126" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="56" y1="156" x2="276" y2="156" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="56" y1="186" x2="276" y2="186" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="56" y1="216" x2="276" y2="216" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- header row/col background -->
+  <rect x="56" y="66" width="220" height="30" fill="#e8f0fe" filter="url(#rough2)"/>
+  <rect x="56" y="66" width="44" height="180" fill="#e8f0fe" filter="url(#rough2)"/>
+
+  <!-- col headers: corner, "", "c", "a", "b" at centers 78,122,166,210,254 -->
+  <text x="78" y="85" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">i＼j</text>
+  <text x="122" y="85" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">""</text>
+  <text x="166" y="85" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">c</text>
+  <text x="210" y="85" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+  <text x="254" y="85" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">b</text>
+
+  <!-- row headers: "", "a", "b", "a", "c" at center y 111,141,171,201,231 -->
+  <text x="78" y="115" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">""</text>
+  <text x="78" y="145" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+  <text x="78" y="175" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">b</text>
+  <text x="78" y="205" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a</text>
+  <text x="78" y="235" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">c</text>
+
+  <!-- ===== highlight path cells ===== -->
+  <!-- (0,1) orange: exit cell, center (166,111) -->
+  <rect x="144" y="96" width="44" height="30" fill="#fff8e1" opacity="0.7" filter="url(#rough2)"/>
+  <!-- (1,2) green: match 'a', center (210,141) -->
+  <rect x="188" y="126" width="44" height="30" fill="#e6f4ea" opacity="0.7" filter="url(#rough2)"/>
+  <!-- (2,3) green: match 'b', center (254,171) -->
+  <rect x="232" y="156" width="44" height="30" fill="#e6f4ea" opacity="0.7" filter="url(#rough2)"/>
+  <!-- (3,3) blue: up, output 'a', center (254,201) -->
+  <rect x="232" y="186" width="44" height="30" fill="#e8f0fe" opacity="0.7" filter="url(#rough2)"/>
+  <!-- (4,3) blue: start, up, output 'c', center (254,231) -->
+  <rect x="232" y="216" width="44" height="30" fill="#e8f0fe" opacity="0.7" filter="url(#rough2)"/>
+
+  <!-- ===== dp values ===== -->
+  <!-- Row dp[0] (y=111): 0 0 0 0 -->
+  <text x="122" y="115" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="166" y="115" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">0</text>
+  <text x="210" y="115" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="254" y="115" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+
+  <!-- Row dp[1] (y=141): 0 0 1 1 -->
+  <text x="122" y="145" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="166" y="145" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="210" y="145" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="254" y="145" text-anchor="middle" font-size="11" fill="#999">1</text>
+
+  <!-- Row dp[2] (y=171): 0 0 1 2 -->
+  <text x="122" y="175" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="166" y="175" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="210" y="175" text-anchor="middle" font-size="11" fill="#999">1</text>
+  <text x="254" y="175" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">2</text>
+
+  <!-- Row dp[3] (y=201): 0 0 1 2 -->
+  <text x="122" y="205" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="166" y="205" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="210" y="205" text-anchor="middle" font-size="11" fill="#999">1</text>
+  <text x="254" y="205" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">2</text>
+
+  <!-- Row dp[4] (y=231): 0 1 1 2 -->
+  <text x="122" y="235" text-anchor="middle" font-size="11" fill="#bbb">0</text>
+  <text x="166" y="235" text-anchor="middle" font-size="11" fill="#999">1</text>
+  <text x="210" y="235" text-anchor="middle" font-size="11" fill="#999">1</text>
+  <text x="254" y="235" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">2</text>
+
+  <!-- ===== backtracking arrows ===== -->
+  <!-- (4,3)→(3,3): up, output 'c' -->
+  <path d="M 254 216 L 254 192" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <!-- (3,3)→(2,3): up, output 'a' -->
+  <path d="M 254 186 L 254 162" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <!-- (2,3)→(1,2): diagonal, match 'b' -->
+  <path d="M 244 156 L 220 132" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <!-- (1,2)→(0,1): diagonal, match 'a' -->
+  <path d="M 200 126 L 176 102" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+
+  <!-- ===== step annotations (right side, x=300+) ===== -->
+  <text x="308" y="58" font-size="11" fill="#888" font-weight="bold">回溯步骤（从右下→左上）</text>
+
+  <rect x="300" y="68" width="248" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="86" font-size="10" fill="#333">①(4,3) c≠b, dp↑≥dp← → 输出 </text>
+  <text x="490" y="86" font-size="10" fill="#446688" font-weight="bold">c</text>
+
+  <rect x="300" y="100" width="248" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="118" font-size="10" fill="#333">②(3,3) a≠b, dp↑≥dp← → 输出 </text>
+  <text x="490" y="118" font-size="10" fill="#446688" font-weight="bold">a</text>
+
+  <rect x="300" y="132" width="248" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="150" font-size="10" fill="#333">③(2,3) b=b 匹配 → 输出 </text>
+  <text x="438" y="150" font-size="10" fill="#4a7a3a" font-weight="bold">b</text>
+
+  <rect x="300" y="164" width="248" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="182" font-size="10" fill="#333">④(1,2) a=a 匹配 → 输出 </text>
+  <text x="438" y="182" font-size="10" fill="#4a7a3a" font-weight="bold">a</text>
+
+  <rect x="300" y="196" width="248" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="308" y="214" font-size="10" fill="#333">⑤i=0 退出 → 补 str2 前缀 </text>
+  <text x="470" y="214" font-size="10" fill="#d6a040" font-weight="bold">c</text>
+
+  <!-- ===== output sequence ===== -->
+  <text x="36" y="276" font-size="11" fill="#888" font-weight="bold">输出序列（回溯顺序）→ 逆序得 SCS</text>
+
+  <!-- output boxes: c(blue) a(blue) b(green) a(green) c(orange) -->
+  <rect x="40" y="286" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="58" y="305" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+  <rect x="80" y="286" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="98" y="305" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+  <rect x="120" y="286" width="36" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="138" y="305" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b</text>
+  <rect x="160" y="286" width="36" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="305" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">a</text>
+  <rect x="200" y="286" width="36" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="218" y="305" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">c</text>
+
+  <!-- reverse arrow -->
+  <text x="252" y="304" font-size="16" fill="#666" font-weight="bold">⇄</text>
+  <text x="252" y="322" text-anchor="middle" font-size="9" fill="#888">逆序</text>
+
+  <!-- result -->
+  <rect x="280" y="286" width="220" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="305" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">SCS = "cabac"</text>
+
+  <!-- summary note -->
+  <rect x="30" y="346" width="500" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="364" text-anchor="middle" font-size="11" fill="#555">回溯从 dp[m][n] 走到 dp[0][0]，输出顺序为逆序 → 反转即得 SCS</text>
+  <text x="280" y="380" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">绿色=匹配(对角↖) · 蓝色=str1独有(向上↑) · 橙色=str2独有(向左←)</text>
+</svg>

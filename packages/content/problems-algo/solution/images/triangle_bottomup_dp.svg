@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">自底向上 DP：每个格子 = min(下方两子) + 自身</text>
+
+  <!-- Row below (already computed dp): [7,6,10]  centers 210, 260, 310 -->
+  <text x="70" y="118" font-size="11" fill="#888">已算好的下一行 dp:</text>
+  <rect x="188" y="100" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="123" text-anchor="middle" font-size="14" fill="#333">7</text>
+  <rect x="238" y="100" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="123" text-anchor="middle" font-size="14" fill="#333">6</text>
+  <rect x="288" y="100" width="44" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="123" text-anchor="middle" font-size="14" fill="#333">10</text>
+
+  <!-- Arrows from current cell to two children below -->
+  <path d="M 235 178 L 210 138" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 235 178 L 260 138" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="170" y="160" font-size="10" fill="#4a7a3a">dp[j]</text>
+  <text x="278" y="160" font-size="10" fill="#4a7a3a">dp[j+1]</text>
+
+  <!-- Current cell being computed: triangle[i][j] = 3, center 235 -->
+  <text x="70" y="200" font-size="11" fill="#888">当前格 triangle[i][j]:</text>
+  <rect x="213" y="180" width="44" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="235" y="203" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">3</text>
+
+  <!-- Result cell: new dp[j] = min(7,6)+3 = 9 -->
+  <text x="70" y="278" font-size="11" fill="#888">更新后 dp[j]:</text>
+  <rect x="213" y="260" width="44" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="235" y="283" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">9</text>
+  <path d="M 235 218 L 235 256" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Formula box -->
+  <rect x="320" y="180" width="170" height="90" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="405" y="204" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">转移方程</text>
+  <text x="405" y="226" text-anchor="middle" font-size="11" fill="#444">dp[j] =</text>
+  <text x="405" y="244" text-anchor="middle" font-size="11" fill="#444">min(dp[j], dp[j+1])</text>
+  <text x="405" y="262" text-anchor="middle" font-size="11" fill="#444">+ triangle[i][j]</text>
+
+  <!-- Summary -->
+  <rect x="40" y="312" width="440" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="332" text-anchor="middle" font-size="11" fill="#444">从倒数第二行向上扫到顶：每个格子都有「两个子」，无需特判边界</text>
+  <text x="260" y="346" text-anchor="middle" font-size="11" fill="#888">dp[0] 即为答案；可原地复用一维数组，空间 O(n)</text>
+</svg>

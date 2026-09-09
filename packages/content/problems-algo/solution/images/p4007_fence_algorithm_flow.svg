@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="17" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">算法流程：枚举值对 (x, y)，把配对贡献直接累加到 h = x + y</text>
+
+  <!-- 主流程 -->
+  <rect x="52" y="38" width="256" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="54" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">① 统计频次 cnt</text>
+  <text x="180" y="69" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">提取去重值表 vals（D ≤ 1000）</text>
+
+  <path d="M 180 78 L 180 96" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="52" y="98" width="256" height="32" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="118" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">② ans ← max(cnt[v])：只用单块的栅栏</text>
+
+  <path d="M 180 130 L 180 148" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="52" y="150" width="256" height="60" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="180" y="168" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6d1f" filter="url(#rough2)">③ 枚举值对（i &lt; j）</text>
+  <text x="180" y="184" text-anchor="middle" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">P[x+y] += min(cnt[x], cnt[y])</text>
+  <text x="180" y="199" text-anchor="middle" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">同值：cnt[x] ≥ 2 时 P[2x] += cnt[x]//2</text>
+
+  <path d="M 180 210 L 180 226" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="52" y="228" width="256" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="180" y="250" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">④ 对每个 h：ans ← max(ans, cnt.get(h,0) + P[h])</text>
+
+  <path d="M 180 264 L 180 278" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="52" y="280" width="256" height="30" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="180" y="300" text-anchor="middle" font-size="11" font-weight="bold" fill="#2f5527" filter="url(#rough2)">⑤ 返回 ans</text>
+
+  <!-- 侧注 1：枚举反转 -->
+  <path d="M 310 176 L 334 178" stroke="#b85450" stroke-width="1.2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <rect x="336" y="146" width="172" height="94" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="422" y="162" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450" filter="url(#rough2)">枚举反转（快 1000 倍）</text>
+  <text x="422" y="178" text-anchor="middle" font-size="8.5" fill="#7a3a36" filter="url(#rough2)">不逐个枚举 h 再扫值表</text>
+  <text x="422" y="192" text-anchor="middle" font-size="8.5" fill="#7a3a36" filter="url(#rough2)">（最坏 O(n²·D) ≈ 5×10⁸）</text>
+  <text x="422" y="206" text-anchor="middle" font-size="8.5" fill="#7a3a36" filter="url(#rough2)">而是枚举「两端都存在」的值对</text>
+  <text x="422" y="220" text-anchor="middle" font-size="8.5" fill="#7a3a36" filter="url(#rough2)">贡献直接累加到 h = x + y</text>
+  <text x="422" y="234" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#b85450" filter="url(#rough2)">→ O(D²) ≈ 5×10⁵</text>
+
+  <!-- 侧注 2：完备性 -->
+  <path d="M 310 246 L 334 262" stroke="#446688" stroke-width="1.2" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <rect x="336" y="252" width="172" height="84" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="422" y="268" text-anchor="middle" font-size="10" font-weight="bold" fill="#446688" filter="url(#rough2)">完备性（不重不漏）</text>
+  <text x="422" y="284" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">宽度 &gt; 0 的 h 必是某块木板</text>
+  <text x="422" y="298" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">的高度，或两块木板之和</text>
+  <text x="422" y="312" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">—— 步骤②④ 恰好覆盖全部候选</text>
+
+  <text x="180" y="334" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">时间 O(D²)｜空间 O(D²) 个哈希键｜D = 不同高度数 ≤ n ≤ 1000</text>
+</svg>

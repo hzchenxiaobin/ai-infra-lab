@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="24" text-anchor="middle" font-size="13.5" fill="#444" font-weight="bold">核心：Orders 行级日期 → WEEKDAY() 提取星期 → 条件聚合透视成 7 列</text>
+  <text x="310" y="42" text-anchor="middle" font-size="10.5" fill="#888">每行订单有 order_date，WEEKDAY() 映射到 0-6，再用 SUM(CASE WHEN) 行转列</text>
+
+  <!-- ===== Items table (top-left) ===== -->
+  <text x="90" y="62" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">Items</text>
+  <rect x="28" y="68" width="124" height="22" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="83" text-anchor="middle" font-size="10" fill="#333">item_id</text>
+  <text x="105" y="83" text-anchor="middle" font-size="10" fill="#333">item_name</text>
+  <rect x="28" y="90" width="124" height="20" rx="3" fill="#fff" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="50" y="104" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">1</text>
+  <text x="105" y="104" text-anchor="middle" font-size="9.5" fill="#333">Alg Book</text>
+  <rect x="28" y="110" width="124" height="20" rx="3" fill="#fff" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="50" y="124" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">3</text>
+  <text x="105" y="124" text-anchor="middle" font-size="9.5" fill="#333">SmartPhone</text>
+  <rect x="28" y="130" width="34" height="20" rx="3" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="45" y="144" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">cat</text>
+  <text x="80" y="144" font-size="9" fill="#888">Book / Phone ...</text>
+
+  <!-- ===== Orders table (top-right) ===== -->
+  <text x="430" y="62" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">Orders</text>
+  <rect x="340" y="68" width="220" height="22" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="365" y="83" text-anchor="middle" font-size="9.5" fill="#333">order_id</text>
+  <text x="425" y="83" text-anchor="middle" font-size="9.5" fill="#333">order_date</text>
+  <text x="485" y="83" text-anchor="middle" font-size="9.5" fill="#333">item_id</text>
+  <text x="535" y="83" text-anchor="middle" font-size="9.5" fill="#333">qty</text>
+  <rect x="340" y="90" width="220" height="20" rx="3" fill="#fff" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="365" y="104" text-anchor="middle" font-size="10" fill="#333">1</text>
+  <text x="425" y="104" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">06-01</text>
+  <text x="485" y="104" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">1</text>
+  <text x="535" y="104" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">10</text>
+  <rect x="340" y="110" width="220" height="20" rx="3" fill="#fff" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="365" y="124" text-anchor="middle" font-size="10" fill="#333">4</text>
+  <text x="425" y="124" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">06-03</text>
+  <text x="485" y="124" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">3</text>
+  <text x="535" y="124" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">5</text>
+  <text x="450" y="142" text-anchor="middle" font-size="11" fill="#aaa">⋮</text>
+
+  <!-- JOIN arrow -->
+  <path d="M 152 110 Q 250 110 340 110" stroke="#446688" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="246" y="104" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">LEFT JOIN (item_id)</text>
+
+  <!-- ===== After JOIN: category + date + qty ===== -->
+  <text x="310" y="172" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">JOIN 后：每行获得 (category, order_date, quantity)</text>
+  <rect x="150" y="180" width="320" height="22" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="210" y="195" text-anchor="middle" font-size="10" fill="#333">item_category</text>
+  <text x="310" y="195" text-anchor="middle" font-size="10" fill="#333">order_date</text>
+  <text x="410" y="195" text-anchor="middle" font-size="10" fill="#333">quantity</text>
+  <rect x="150" y="202" width="320" height="20" rx="3" fill="#fff" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="210" y="216" text-anchor="middle" font-size="10" fill="#333">Book</text>
+  <text x="310" y="216" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">06-01</text>
+  <text x="410" y="216" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">10</text>
+  <rect x="150" y="222" width="320" height="20" rx="3" fill="#fff" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="210" y="236" text-anchor="middle" font-size="10" fill="#333">Phone</text>
+  <text x="310" y="236" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">06-03</text>
+  <text x="410" y="236" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">5</text>
+
+  <!-- arrow down -->
+  <path d="M 310 242 L 310 254" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== WEEKDAY() mapping ===== -->
+  <rect x="60" y="256" width="500" height="44" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="310" y="276" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">WEEKDAY(order_date) → 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun</text>
+  <text x="310" y="292" text-anchor="middle" font-size="10" fill="#888">06-01→0(Mon)  06-03→2(Wed)  06-05→4(Fri)  06-14→6(Sun) ...</text>
+
+  <!-- arrow down -->
+  <path d="M 310 300 L 310 312" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Pivot: SUM(CASE WHEN) ===== -->
+  <rect x="40" y="314" width="540" height="36" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="310" y="338" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">SUM(CASE WHEN weekday=0 THEN qty ELSE 0) × 7 → 行转列透视</text>
+
+  <!-- arrow down -->
+  <path d="M 310 350 L 310 362" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Result matrix ===== -->
+  <text x="310" y="378" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">结果：CATEGORY × 7 天 矩阵</text>
+  <rect x="80" y="386" width="460" height="20" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="120" y="400" text-anchor="middle" font-size="9.5" fill="#333">CATEGORY</text>
+  <text x="180" y="400" text-anchor="middle" font-size="9" fill="#333">Mon</text>
+  <text x="230" y="400" text-anchor="middle" font-size="9" fill="#333">Tue</text>
+  <text x="280" y="400" text-anchor="middle" font-size="9" fill="#333">Wed</text>
+  <text x="330" y="400" text-anchor="middle" font-size="9" fill="#333">Thu</text>
+  <text x="380" y="400" text-anchor="middle" font-size="9" fill="#333">Fri</text>
+  <text x="430" y="400" text-anchor="middle" font-size="9" fill="#333">Sat</text>
+  <text x="480" y="400" text-anchor="middle" font-size="9" fill="#333">Sun</text>
+  <rect x="80" y="406" width="460" height="18" rx="3" fill="#fff" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="120" y="418" text-anchor="middle" font-size="9.5" fill="#333">Book</text>
+  <text x="180" y="418" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">20</text>
+  <text x="230" y="418" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">5</text>
+  <text x="280" y="418" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="330" y="418" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="380" y="418" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">10</text>
+  <text x="430" y="418" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="480" y="418" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <rect x="80" y="424" width="460" height="14" rx="3" fill="#fff" stroke="#446688" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="120" y="434" text-anchor="middle" font-size="9.5" fill="#333">Phone</text>
+  <text x="180" y="434" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="480" y="434" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">10</text>
+  <text x="430" y="434" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+</svg>

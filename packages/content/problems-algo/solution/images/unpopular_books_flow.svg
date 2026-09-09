@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="500" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">SQL 逻辑流程：ON 过滤 + WHERE 可售 + HAVING 销量</text>
+
+  <!-- Step 1: FROM + LEFT JOIN ... ON -->
+  <text x="30" y="52" font-size="11" fill="#888">① FROM Books LEFT JOIN Orders ON …（含 dispatch_date 过滤）</text>
+  <rect x="40" y="60" width="520" height="66" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="82" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">FROM Books b LEFT JOIN Orders o</text>
+  <text x="300" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ON b.book_id = o.book_id</text>
+  <text x="300" y="117" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">AND o.dispatch_date &gt; '2018-06-23'</text>
+
+  <path d="M 300 128 L 300 146" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE available_from -->
+  <text x="30" y="160" font-size="11" fill="#888">② WHERE 排除「可售不足 1 月」的书（行级过滤）</text>
+  <rect x="40" y="168" width="520" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="190" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">WHERE b.available_from &lt;= '2019-05-23'</text>
+  <text x="300" y="208" text-anchor="middle" font-size="10.5" fill="#555">今天 = 2019-06-23，减 1 月 = 2019-05-23</text>
+  <text x="300" y="220" text-anchor="middle" font-size="10" fill="#b85450">→ book 3（06-10）、book 4（06-01）可售不足 1 月，排除</text>
+
+  <path d="M 300 226 L 300 244" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <text x="30" y="258" font-size="11" fill="#888">③ GROUP BY book_id, name — 每本书一组</text>
+  <rect x="40" y="266" width="520" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="288" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">GROUP BY b.book_id, b.name</text>
+  <text x="300" y="304" text-anchor="middle" font-size="10.5" fill="#555">组内 SUM(o.quantity) 汇总过去一年销量（无订单组为 NULL）</text>
+
+  <path d="M 300 312 L 300 330" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: HAVING -->
+  <text x="30" y="344" font-size="11" fill="#888">④ HAVING 组级过滤：销量 &lt; 10（NULL 视作 0）</text>
+  <rect x="40" y="352" width="520" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="374" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">HAVING IFNULL(SUM(o.quantity), 0) &lt; 10</text>
+  <text x="300" y="392" text-anchor="middle" font-size="10.5" fill="#555">IFNULL 把无订单组的 NULL → 0，0 &lt; 10 命中</text>
+  <text x="300" y="404" text-anchor="middle" font-size="10" fill="#4a7a3a">→ book 1 (3)、book 2 (0)、book 5 (0) 通过；无 ≥10 者</text>
+
+  <path d="M 300 410 L 300 428" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="312" y="424" font-size="10" fill="#888">输出</text>
+
+  <!-- Result -->
+  <rect x="40" y="432" width="520" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="451" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">SELECT book_id, name → 结果 {1, 2, 5}</text>
+
+  <!-- ON vs WHERE callout -->
+  <rect x="30" y="470" width="540" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="486" font-size="10.5" fill="#555" font-weight="bold">⚠ dispatch_date 必须放 ON 不能放 WHERE，否则 LEFT JOIN 退化为 INNER JOIN</text>
+</svg>

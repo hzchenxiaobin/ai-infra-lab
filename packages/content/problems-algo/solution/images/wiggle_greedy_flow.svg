@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+  <text x="270" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心流程：跟踪 prevDiff 符号，数方向反转次数</text>
+
+  <!-- ===== state variables ===== -->
+  <text x="30" y="62" font-size="12" fill="#446688" font-weight="bold">① 两个状态变量</text>
+
+  <rect x="50" y="78" width="120" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="98" text-anchor="middle" font-size="10" fill="#888">prevDiff</text>
+  <text x="110" y="116" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">上一段差符号</text>
+
+  <text x="185" y="103" font-size="11" fill="#888">初始 0</text>
+
+  <rect x="240" y="78" width="100" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="98" text-anchor="middle" font-size="10" fill="#888">count</text>
+  <text x="290" y="116" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">峰谷计数</text>
+
+  <text x="355" y="103" font-size="11" fill="#888">初始 1（首个元素）</text>
+
+  <!-- divider -->
+  <path d="M 30 140 L 510 140" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== three branches ===== -->
+  <text x="30" y="168" font-size="12" fill="#446688" font-weight="bold">② 遍历 diff = nums[i] − nums[i−1]，分三种情况</text>
+
+  <!-- Case 1: diff > 0 && prevDiff <= 0 -> turn up -->
+  <rect x="30" y="184" width="155" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="107" y="204" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">diff &gt; 0</text>
+  <text x="107" y="220" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">且 prevDiff ≤ 0</text>
+  <text x="107" y="240" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">↑ 转上升</text>
+  <text x="107" y="252" text-anchor="middle" font-size="10" fill="#4a7a3a">count++, prevDiff = +</text>
+
+  <!-- Case 2: diff < 0 && prevDiff >= 0 -> turn down -->
+  <rect x="200" y="184" width="155" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="277" y="204" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">diff &lt; 0</text>
+  <text x="277" y="220" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">且 prevDiff ≥ 0</text>
+  <text x="277" y="240" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">↓ 转下降</text>
+  <text x="277" y="252" text-anchor="middle" font-size="10" fill="#b85450">count++, prevDiff = −</text>
+
+  <!-- Case 3: same sign or zero -> skip -->
+  <rect x="370" y="184" width="140" height="74" fill="#f5f5f5" stroke="#aaa" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="204" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">同号 / diff=0</text>
+  <text x="440" y="220" text-anchor="middle" font-size="10.5" fill="#888">(方向未变)</text>
+  <text x="440" y="240" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold">跳过</text>
+  <text x="440" y="252" text-anchor="middle" font-size="10" fill="#888">prevDiff 不变</text>
+
+  <!-- divider -->
+  <path d="M 30 274 L 510 274" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== key insight ===== -->
+  <text x="30" y="302" font-size="12" fill="#b85450" font-weight="bold">③ 关键：只在「方向反转」时计数，单调段只更新 prevDiff 的极端值</text>
+
+  <!-- mini illustration: up run 5,10,13,15 -->
+  <text x="30" y="328" font-size="10.5" fill="#555">例：上升段 5 → 10 → 13 → 15（diff 均为正，prevDiff 已为 +）</text>
+
+  <g filter="url(#rough2)">
+    <rect x="40" y="338" width="42" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+    <rect x="92" y="338" width="42" height="30" fill="#eee" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,3" rx="4"/>
+    <rect x="144" y="338" width="42" height="30" fill="#eee" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3,3" rx="4"/>
+    <rect x="196" y="338" width="42" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4"/>
+  </g>
+  <text x="61" y="358" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">5</text>
+  <text x="113" y="358" text-anchor="middle" font-size="12" fill="#aaa">10</text>
+  <text x="165" y="358" text-anchor="middle" font-size="12" fill="#aaa">13</text>
+  <text x="217" y="358" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">15</text>
+
+  <text x="255" y="358" font-size="10.5" fill="#555">10、13 同号跳过，只留峰 15</text>
+
+  <rect x="370" y="332" width="140" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="440" y="350" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">方向反转才 count++</text>
+  <text x="440" y="366" text-anchor="middle" font-size="10" fill="#555">返回 count 即最长长度</text>
+</svg>

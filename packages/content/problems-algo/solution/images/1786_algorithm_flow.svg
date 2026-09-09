@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrDown" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">两阶段算法：Dijkstra 求 dist + 升序 DP 数路径</text>
+
+  <!-- ===== Phase 1: Dijkstra ===== -->
+  <rect x="20" y="48" width="520" height="120" fill="none" stroke="#446688" stroke-width="1" stroke-dasharray="6 4" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="68" font-size="12" fill="#446688" font-weight="bold">阶段一：Dijkstra 从节点 n 求最短路 dist[]</text>
+
+  <!-- Box 1: Build graph -->
+  <rect x="35" y="82" width="140" height="68" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="105" y="102" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">建无向邻接表</text>
+  <text x="105" y="120" text-anchor="middle" font-size="9" fill="#666">graph[u] = {(v,w)}</text>
+  <text x="105" y="136" text-anchor="middle" font-size="9" fill="#666">双向加边</text>
+
+  <!-- Arrow 1→2 -->
+  <path d="M 178 116 L 195 116" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 2: Dijkstra loop -->
+  <rect x="200" y="82" width="180" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="100" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">Dijkstra 主循环</text>
+  <text x="290" y="117" text-anchor="middle" font-size="9" fill="#666">dist[n]=0, 其余=∞</text>
+  <text x="290" y="131" text-anchor="middle" font-size="9" fill="#666">弹出最小 (d,u)</text>
+  <text x="290" y="145" text-anchor="middle" font-size="9" fill="#666">松弛: d+w &lt; dist[v]?</text>
+
+  <!-- Arrow 2→3 -->
+  <path d="M 383 116 L 400 116" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 3: dist done -->
+  <rect x="405" y="82" width="120" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="104" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dist[] 完成</text>
+  <text x="465" y="122" text-anchor="middle" font-size="9" fill="#666">各节点到 n</text>
+  <text x="465" y="136" text-anchor="middle" font-size="9" fill="#666">的最短距离</text>
+
+  <!-- ===== Arrow down between phases ===== -->
+  <path d="M 280 172 L 280 200" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrDown)" filter="url(#rough2)"/>
+  <text x="300" y="190" font-size="10" fill="#b85450" font-weight="bold">dist 诱导隐式 DAG</text>
+
+  <!-- ===== Phase 2: DP ===== -->
+  <rect x="20" y="208" width="520" height="120" fill="none" stroke="#b85450" stroke-width="1" stroke-dasharray="6 4" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="228" font-size="12" fill="#b85450" font-weight="bold">阶段二：按 dist 升序（拓扑序）DP 数路径</text>
+
+  <!-- Box 4: Sort by dist -->
+  <rect x="35" y="242" width="140" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="105" y="262" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">按 dist 升序排序</text>
+  <text x="105" y="280" text-anchor="middle" font-size="9" fill="#666">= DAG 拓扑序</text>
+  <text x="105" y="296" text-anchor="middle" font-size="9" fill="#666">小 dist 先处理</text>
+
+  <!-- Arrow 4→5 -->
+  <path d="M 178 276 L 195 276" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 5: DP loop -->
+  <rect x="200" y="242" width="180" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="260" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">DP 主循环</text>
+  <text x="290" y="277" text-anchor="middle" font-size="9" fill="#666">dp[n]=1（基准）</text>
+  <text x="290" y="291" text-anchor="middle" font-size="9" fill="#666">遍历 u 的邻居 v：</text>
+  <text x="290" y="305" text-anchor="middle" font-size="9" fill="#666">dist[v]&lt;dist[u]? dp[u]+=dp[v]</text>
+
+  <!-- Arrow 5→6 -->
+  <path d="M 383 276 L 400 276" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 6: Return dp[1] -->
+  <rect x="405" y="242" width="120" height="68" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="266" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 dp[1]</text>
+  <text x="465" y="284" text-anchor="middle" font-size="9" fill="#666">受限路径数</text>
+  <text x="465" y="300" text-anchor="middle" font-size="9" fill="#666">mod 10⁹+7</text>
+
+  <!-- ===== Footer ===== -->
+  <text x="280" y="358" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">核心：dist 严格递减 → 隐式无环 → 升序即拓扑序 → 一次遍历完成 DP</text>
+  <text x="280" y="376" text-anchor="middle" font-size="9" fill="#aaa">时间 O(E log V)，空间 O(V+E)</text>
+</svg>

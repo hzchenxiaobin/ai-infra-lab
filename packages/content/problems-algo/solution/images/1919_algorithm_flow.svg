@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 三步走（计数法判定集合相等）</text>
+
+  <!-- Step 1: input tables -->
+  <rect x="30" y="46" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="70" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输入：Listens + Friendship</text>
+
+  <rect x="290" y="46" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="400" y="62" text-anchor="middle" font-size="11" fill="#333">Listens(user_id, song_id, day)</text>
+  <text x="400" y="78" text-anchor="middle" font-size="11" fill="#333">Friendship(user1_id, user2_id)</text>
+
+  <path d="M 140 90 L 140 112" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: CTE user_day_songs -->
+  <rect x="30" y="118" width="480" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="138" font-size="12" fill="#4a7a3a" font-weight="bold">① CTE user_day_songs</text>
+  <text x="40" y="156" font-size="11" fill="#333">SELECT user_id, day, COUNT(DISTINCT song_id) AS cnt</text>
+  <text x="40" y="170" font-size="11" fill="#333">FROM Listens GROUP BY user_id, day;</text>
+  <text x="430" y="156" font-size="10.5" fill="#888">→ 每人每天的歌数</text>
+
+  <path d="M 270 180 L 270 202" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: CTE common -->
+  <rect x="30" y="208" width="480" height="74" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="228" font-size="12" fill="#d6a040" font-weight="bold">② CTE common（只留两人同天同歌的行）</text>
+  <text x="40" y="246" font-size="11" fill="#333">FROM Friendship f JOIN Listens l1 ON l1.user_id=f.user1_id</text>
+  <text x="40" y="260" font-size="11" fill="#333">JOIN Listens l2 ON l2.user_id=f.user2_id AND l2.day=l1.day AND l2.song_id=l1.song_id</text>
+  <text x="40" y="274" font-size="11" fill="#333">GROUP BY f.user1_id, f.user2_id, l1.day → common_cnt = COUNT(DISTINCT l1.song_id)</text>
+
+  <path d="M 270 286 L 270 308" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 4: join + equality check -->
+  <rect x="30" y="314" width="480" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="334" font-size="12" fill="#b85450" font-weight="bold">③ JOIN 三表 + 集合相等判定</text>
+  <text x="40" y="352" font-size="11" fill="#333">common c JOIN user_day_songs u1 (user1) JOIN user_day_songs u2 (user2)</text>
+  <text x="40" y="366" font-size="11" fill="#333">WHERE c.common_cnt = u1.cnt AND c.common_cnt = u2.cnt</text>
+  <text x="40" y="380" font-size="11" fill="#b85450" font-weight="bold">→ 公共数 = 各自数 ⟺ 两集合完全相同</text>
+
+  <path d="M 270 392 L 270 412" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="120" y="418" width="300" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="439" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">输出 DISTINCT (user1_id, user2_id) → (1, 2)</text>
+</svg>

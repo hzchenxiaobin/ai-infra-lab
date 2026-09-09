@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心关键：失败段整体跳过，起点直接跳到 t+1</text>
+
+  <!-- diff row -->
+  <text x="30" y="74" font-size="11" fill="#888">diff:</text>
+  <rect x="60" y="58" width="78" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="99" y="79" text-anchor="middle" font-size="12" fill="#333">−2</text>
+  <rect x="142" y="58" width="78" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="181" y="79" text-anchor="middle" font-size="12" fill="#333">−2</text>
+  <rect x="224" y="58" width="78" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="263" y="79" text-anchor="middle" font-size="12" fill="#333">−2</text>
+  <rect x="306" y="58" width="78" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="345" y="79" text-anchor="middle" font-size="12" fill="#333">+3</text>
+  <rect x="388" y="58" width="78" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="427" y="79" text-anchor="middle" font-size="12" fill="#333">+3</text>
+
+  <!-- indices -->
+  <text x="99" y="104" text-anchor="middle" font-size="9.5" fill="#aaa">0</text>
+  <text x="181" y="104" text-anchor="middle" font-size="9.5" fill="#aaa">1</text>
+  <text x="263" y="104" text-anchor="middle" font-size="9.5" fill="#aaa">2</text>
+  <text x="345" y="104" text-anchor="middle" font-size="9.5" fill="#aaa">3</text>
+  <text x="427" y="104" text-anchor="middle" font-size="9.5" fill="#aaa">4</text>
+
+  <!-- failed segment bracket [s=0 .. t=2] -->
+  <rect x="56" y="50" width="254" height="48" fill="none" stroke="#b85450" stroke-width="2.2" stroke-dasharray="5 3" rx="8" filter="url(#rough2)"/>
+  <text x="183" y="44" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">起点 s=0 出发，到 t=2 油量累加 &lt; 0</text>
+
+  <!-- start s pointer -->
+  <path d="M 99 120 L 99 100" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="99" y="134" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">s=0</text>
+
+  <!-- jump arrow from s to t+1=3 -->
+  <path d="M 99 150 Q 99 186 345 186 Q 345 160 345 140" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="150" y="172" width="170" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="235" y="190" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">[s..t] 全部作废 → 新起点 t+1</text>
+
+  <!-- new start pointer at 3 -->
+  <path d="M 345 120 L 345 100" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="345" y="134" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">start=3</text>
+
+  <!-- reasoning box -->
+  <rect x="40" y="214" width="480" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="238" font-size="12" fill="#446688" font-weight="bold">为什么 [s..t] 任一点作起点都到不了 t+1？</text>
+  <text x="60" y="260" font-size="11" fill="#333">从 s 出发能顺利抵达区间内任意 k，说明 Σ diff[s..k−1] ≥ 0。</text>
+  <text x="60" y="280" font-size="11" fill="#333">于是 Σ diff[k..t] = Σ diff[s..t] − Σ diff[s..k−1] ≤ Σ diff[s..t] &lt; 0。</text>
+  <text x="60" y="300" font-size="11" fill="#b85450" font-weight="bold">→ 从 k 出发同样在 t 处断油，可整体跳过。</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="326" width="480" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="350" text-anchor="middle" font-size="11.5" fill="#333">每个元素最多被扫描一次 → 一次遍历 O(n) 得到唯一起点</text>
+</svg>

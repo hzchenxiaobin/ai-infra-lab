@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">滑动窗口算法流程（freq 哈希表 + 种类计数 distinct）</text>
+
+  <!-- Start node -->
+  <ellipse cx="270" cy="62" rx="92" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">开始: left=0, max_len=0, freq=∅, distinct=0</text>
+
+  <!-- arrow down -->
+  <path d="M 270 82 L 270 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: right < n? -->
+  <polygon points="270,104 360,150 270,196 180,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333">right &lt; n ?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">(遍历每个字符)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 360 150 L 452 150" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="400" y="142" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="488" cy="150" rx="48" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="488" y="154" text-anchor="middle" font-size="12" fill="#333">返回 max_len</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 196 L 270 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="210" font-size="11" fill="#82b366">是</text>
+
+  <!-- Add s[right] -->
+  <rect x="140" y="218" width="260" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="237" text-anchor="middle" font-size="11" fill="#333">c = s[right];  freq[c]++</text>
+  <text x="270" y="254" text-anchor="middle" font-size="11" fill="#333">if (freq[c] == 1)  distinct++</text>
+
+  <!-- arrow down -->
+  <path d="M 270 266 L 270 284" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: distinct > k? -->
+  <polygon points="270,288 360,334 270,380 180,334" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="330" text-anchor="middle" font-size="12" fill="#333">distinct &gt; k ?</text>
+  <text x="270" y="346" text-anchor="middle" font-size="11" fill="#666">(种类超限?)</text>
+
+  <!-- Yes (over limit) -> shrink, loop back -->
+  <path d="M 360 334 L 410 334" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="385" y="326" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="410" y="312" width="120" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="330" text-anchor="middle" font-size="11" fill="#333">d = s[left++]</text>
+  <text x="470" y="346" text-anchor="middle" font-size="10" fill="#555">freq[d]--; 归 0 则 distinct--</text>
+  <!-- loop back from shrink box to diamond -->
+  <path d="M 470 312 L 470 270 L 360 270 L 360 288" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="478" y="294" font-size="10" fill="#888">继续收缩</text>
+
+  <!-- No branch down -> update max -->
+  <path d="M 270 380 L 270 398" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="394" font-size="11" fill="#82b366">否</text>
+  <rect x="140" y="402" width="260" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="421" text-anchor="middle" font-size="11" fill="#333">max_len = max(max_len, right − left + 1)</text>
+
+  <!-- loop back arrow: from update box back up to top diamond (right++) -->
+  <path d="M 140 417 L 60 417 L 60 150 L 180 150" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="60" y="284" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 60 284)">right++ 继续外层循环</text>
+
+  <!-- summary note -->
+  <text x="300" y="421" font-size="10" fill="#888">⇦ right 与 left 各至多移动 n 次</text>
+</svg>

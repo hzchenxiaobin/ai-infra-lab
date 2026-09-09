@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrb" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：arr[k] + arr[i] = arr[j] → dp[i][j] = dp[k][i] + 1</text>
+
+  <!-- three value boxes: k, i, j -->
+  <rect x="50" y="60" width="64" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="82" y="84" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">arr[k]</text>
+  <text x="82" y="116" text-anchor="middle" font-size="10" fill="#888">下标 k &lt; i</text>
+
+  <text x="130" y="84" text-anchor="middle" font-size="16" fill="#d6a040" font-weight="bold">+</text>
+
+  <rect x="150" y="60" width="64" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="182" y="84" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">arr[i]</text>
+  <text x="182" y="116" text-anchor="middle" font-size="10" fill="#888">下标 i &lt; j</text>
+
+  <text x="230" y="84" text-anchor="middle" font-size="16" fill="#d6a040" font-weight="bold">=</text>
+
+  <rect x="250" y="60" width="64" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="6" filter="url(#rough2)"/>
+  <text x="282" y="84" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">arr[j]</text>
+  <text x="282" y="116" text-anchor="middle" font-size="10" fill="#888">下标 j（当前）</text>
+
+  <!-- hashmap lookup arrow -->
+  <rect x="350" y="56" width="160" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="76" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">哈希表 idx[value]</text>
+  <text x="430" y="92" text-anchor="middle" font-size="10" fill="#888">target = arr[j] − arr[i]</text>
+  <path d="M 314 80 L 348 80" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="330" y="72" text-anchor="middle" font-size="9" fill="#888">查 k</text>
+
+  <!-- dp boxes below -->
+  <rect x="50" y="150" width="120" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="170" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">dp[k][i]</text>
+  <text x="110" y="186" text-anchor="middle" font-size="10" fill="#888">以 arr[k],arr[i] 结尾</text>
+
+  <path d="M 170 172 L 210 172" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="190" y="164" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">+1</text>
+
+  <rect x="210" y="150" width="140" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="170" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">dp[i][j]</text>
+  <text x="280" y="186" text-anchor="middle" font-size="10" fill="#888">以 arr[i],arr[j] 结尾</text>
+
+  <!-- recurrence box -->
+  <rect x="40" y="214" width="460" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="238" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">dp[i][j] = dp[k][i] + 1 （找到了前驱 k）</text>
+  <text x="270" y="258" text-anchor="middle" font-size="10" fill="#888">否则 dp[i][j] = 2（仅两元素，还未成斐波那契式）</text>
+
+  <!-- key insight notes -->
+  <rect x="40" y="282" width="460" height="104" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="304" font-size="11" fill="#4a7a3a" font-weight="bold">三个关键点：</text>
+  <text x="60" y="324" font-size="11" fill="#444">① arr 严格递增 → target = arr[j] − arr[i] &lt; arr[i] 时才有合法 k</text>
+  <text x="60" y="344" font-size="11" fill="#444">② 哈希表 value→index，O(1) 反查 arr[k] 的下标</text>
+  <text x="60" y="364" font-size="11" fill="#444">③ 状态用「最后两个下标」(i, j) 编码，承接斐波那契递推 x+y=z</text>
+</svg>

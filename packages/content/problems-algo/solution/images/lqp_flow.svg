@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="470" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">SQL 逻辑执行流程：FROM → WHERE → SELECT → ORDER BY</text>
+
+  <!-- ===== Step 1: FROM ===== -->
+  <rect x="170" y="50" width="280" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="185" y="68" font-size="10" fill="#446688" font-weight="bold">① FROM Problems</text>
+  <text x="185" y="82" font-size="9" fill="#555">读取整张表（6 行）</text>
+
+  <path d="M310 92 L310 104" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- mini table preview after FROM -->
+  <rect x="380" y="50" width="200" height="40" fill="#fafafa" stroke="#999" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="390" y="64" font-size="8" fill="#999">problem_id | likes | dislikes</text>
+  <text x="390" y="78" font-size="8" fill="#999">6,11,1,7,13,10 ...</text>
+
+  <!-- ===== Step 2: WHERE ===== -->
+  <rect x="130" y="108" width="360" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="126" font-size="10" fill="#b85450" font-weight="bold">② WHERE 喜欢率 &lt; 60%（逐行过滤）</text>
+  <text x="145" y="142" font-size="9" fill="#555">写法 A（浮点除法，MySQL 默认）：</text>
+  <text x="155" y="154" font-size="9" fill="#333">likes / (likes + dislikes) &lt; 0.6</text>
+  <text x="145" y="170" font-size="9" fill="#d6a040" font-weight="bold">写法 B（交叉相乘，免浮点/免除零）：</text>
+  <text x="155" y="180" font-size="9" fill="#333" font-weight="bold">2 * likes &lt; 3 * dislikes</text>
+
+  <!-- arrow -->
+  <path d="M310 184 L310 196" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- filtered out annotation -->
+  <rect x="430" y="108" width="150" height="74" fill="#fafafa" stroke="#999" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="124" font-size="8.5" fill="#999">被过滤掉（合格）：</text>
+  <text x="440" y="138" font-size="9" fill="#4a7a3a" font-weight="bold">P1 (61.7%)</text>
+  <text x="440" y="152" font-size="9" fill="#4a7a3a" font-weight="bold">P6 (75.2%)</text>
+  <text x="440" y="170" font-size="8" fill="#999">↑ 喜欢率 ≥ 60%</text>
+
+  <!-- ===== Step 3: SELECT ===== -->
+  <rect x="170" y="200" width="280" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="185" y="218" font-size="10" fill="#4a7a3a" font-weight="bold">③ SELECT problem_id</text>
+  <text x="185" y="234" font-size="9" fill="#555">只投影 problem_id 列（丢弃 likes/dislikes）</text>
+
+  <path d="M310 246 L310 258" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: ORDER BY ===== -->
+  <rect x="170" y="262" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="185" y="280" font-size="10" fill="#d6a040" font-weight="bold">④ ORDER BY problem_id ASC</text>
+  <text x="185" y="296" font-size="9" fill="#555">按 problem_id 升序排序输出</text>
+
+  <path d="M310 308 L310 322" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== Result table ===== -->
+  <rect x="200" y="326" width="220" height="120" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="346" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出结果</text>
+  <line x1="220" y1="352" x2="400" y2="352" stroke="#b85450" stroke-width="0.8" filter="url(#rough2)"/>
+
+  <text x="240" y="370" font-size="9.5" fill="#333" font-weight="bold">problem_id</text>
+  <line x1="220" y1="376" x2="400" y2="376" stroke="#999" stroke-width="0.6" filter="url(#rough2)"/>
+  <text x="240" y="392" font-size="10" fill="#b85450" font-weight="bold">7</text>
+  <text x="240" y="406" font-size="10" fill="#b85450" font-weight="bold">10</text>
+  <text x="240" y="420" font-size="10" fill="#b85450" font-weight="bold">11</text>
+  <text x="240" y="434" font-size="10" fill="#b85450" font-weight="bold">13</text>
+
+  <!-- right side note -->
+  <rect x="440" y="326" width="150" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="346" font-size="10" fill="#446688" font-weight="bold">关键点</text>
+  <text x="455" y="362" font-size="8.5" fill="#555">· 严格小于 (&lt;)</text>
+  <text x="455" y="378" font-size="8.5" fill="#555">  等于 60% 不算低质量</text>
+  <text x="455" y="394" font-size="8.5" fill="#555">· 升序排列</text>
+  <text x="455" y="410" font-size="8.5" fill="#555">· 交叉相乘免除零</text>
+  <text x="455" y="426" font-size="8.5" fill="#555">  避免 likes+dislikes</text>
+  <text x="455" y="438" font-size="8.5" fill="#555">  = 0 时除零错误</text>
+</svg>

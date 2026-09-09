@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">二分答案：搜索最小可行上限 limit</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">jobs=[1,2,4,7,8], k=2 → 答案在 [max=8, sum=22] 之间</text>
+
+  <!-- Number line -->
+  <line x1="50" y1="100" x2="490" y2="100" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+
+  <!-- Left bound: max(jobs) = 8 -->
+  <line x1="50" y1="92" x2="50" y2="108" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="50" y="122" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">8</text>
+  <text x="50" y="136" text-anchor="middle" font-size="9" fill="#446688">max(jobs)</text>
+
+  <!-- Right bound: sum(jobs) = 22 -->
+  <line x1="490" y1="92" x2="490" y2="108" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="490" y="122" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">22</text>
+  <text x="490" y="136" text-anchor="middle" font-size="9" fill="#446688">sum(jobs)</text>
+
+  <!-- Step 1: mid=15, range [8,22] -->
+  <rect x="50" y="150" width="440" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)" opacity="0.5"/>
+  <text x="270" y="166" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">mid=15 → check ✓ 可行 → right=15</text>
+
+  <!-- Step 2: mid=11, range [8,15] -->
+  <rect x="50" y="180" width="264" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)" opacity="0.5"/>
+  <text x="182" y="196" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">mid=11 → check ✓ 可行 → right=11</text>
+
+  <!-- Step 3: mid=9, range [8,11] -->
+  <rect x="50" y="210" width="132" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)" opacity="0.5"/>
+  <text x="116" y="226" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">mid=9 → ✗ → left=10</text>
+
+  <!-- Step 4: mid=10, range [10,11] -->
+  <rect x="116" y="240" width="66" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)" opacity="0.5"/>
+  <text x="149" y="256" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">mid=10 → ✗ → left=11</text>
+
+  <!-- Result marker -->
+  <line x1="182" y1="92" x2="182" y2="275" stroke="#4a7a3a" stroke-width="2" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <circle cx="182" cy="100" r="6" fill="#4a7a3a" stroke="#fff" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="200" y="278" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">答案 = 11</text>
+
+  <!-- Check function box -->
+  <rect x="40" y="298" width="460" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="318" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">check(limit): 能否把所有 jobs 分给 k 个工人，每人总时长 ≤ limit？</text>
+  <text x="270" y="336" text-anchor="middle" font-size="10" fill="#666">→ DFS 回溯逐个分配 job[idx] 给某个工人，超限即剪枝</text>
+  <text x="270" y="352" text-anchor="middle" font-size="10" fill="#666">→ 单调性：limit 越大越容易可行 → 二分适用</text>
+</svg>

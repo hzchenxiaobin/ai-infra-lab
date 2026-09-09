@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：放置阻挡 → 每警卫四向射线 → 数 0</text>
+  <text x="270" y="42" text-anchor="middle" font-size="10.5" fill="#888">主循环遍历警卫，内层按方向逐步走，遇 ≥2 即停</text>
+
+  <!-- Step 1: init grid -->
+  <rect x="170" y="58" width="200" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="83" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① g[m][n] 全置 0</text>
+  <path d="M 270 98 L 270 116" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: mark guards & walls as 2 -->
+  <rect x="150" y="118" width="240" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="138" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② 警卫、墙位置均置 g = 2</text>
+  <text x="270" y="154" text-anchor="middle" font-size="9.5" fill="#888">两者同为「阻挡」值，统一处理</text>
+  <path d="M 270 164 L 270 182" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: for each guard (loop box) -->
+  <rect x="150" y="184" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="209" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ for 每个警卫 (i, j)</text>
+  <path d="M 270 224 L 270 242" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: for each of 4 directions -->
+  <rect x="150" y="244" width="240" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="269" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">④ for 4 方向 (上/下/左/右)</text>
+  <path d="M 270 284 L 270 302" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: in bounds & g[next] < 2 ? -->
+  <polygon points="270,304 390,344 270,384 150,344" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="338" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">next 在界内</text>
+  <text x="270" y="354" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">且 g[next] &lt; 2 ?</text>
+  <path d="M 390 344 L 430 344" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="398" y="338" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <text x="436" y="338" font-size="9.5" fill="#666">遇墙/警卫</text>
+  <text x="436" y="351" font-size="9.5" fill="#666">或越界 → 停</text>
+  <text x="436" y="364" font-size="9.5" fill="#b85450">本方向 break</text>
+
+  <!-- Yes: mark and advance -->
+  <path d="M 270 384 L 270 398" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="284" y="394" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="150" y="400" width="240" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="420" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">step 到 next，g[next] = 1</text>
+  <text x="270" y="434" text-anchor="middle" font-size="9.5" fill="#888">标记保卫，继续走同方向</text>
+  <!-- loop back arrow from mark box to diamond (left side) -->
+  <path d="M 150 420 Q 110 420 110 382 Q 110 344 150 344" fill="none" stroke="#666" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="86" y="386" font-size="9" fill="#666">继续下一步</text>
+
+  <!-- Step 5: count zeros -->
+  <path d="M 430 344 L 470 344 L 470 416 L 470 416" stroke="#666" stroke-width="1.8" fill="none"/>
+  <rect x="380" y="400" width="140" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="420" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">⑤ 数 g == 0</text>
+  <text x="450" y="436" text-anchor="middle" font-size="9.5" fill="#888">即未保卫空格数</text>
+
+  <!-- left side note: amortized complexity -->
+  <rect x="20" y="244" width="118" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="79" y="262" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">摊还分析</text>
+  <text x="79" y="278" text-anchor="middle" font-size="9" fill="#666">每行/列被</text>
+  <text x="79" y="290" text-anchor="middle" font-size="9" fill="#666">阻挡物分段</text>
+  <text x="79" y="302" text-anchor="middle" font-size="9" fill="#666">每段至多走 2 次</text>
+  <text x="79" y="316" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">合计 O(m·n)</text>
+
+  <!-- footer -->
+  <rect x="20" y="448" width="500" height="0" fill="none"/>
+</svg>

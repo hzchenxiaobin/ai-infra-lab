@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrGray" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">DP 转移：处理一顶帽子 = 0-1 背包一步</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">mask 从大到小遍历，保证这顶帽子至多走一步</text>
+
+  <!-- ===== Top: dp array (4 masks, n=2) ===== -->
+  <g>
+    <text x="60" y="78" font-size="11" fill="#666" font-weight="bold" filter="url(#rough2)">dp[mask]</text>
+    <!-- mask labels -->
+    <rect x="110" y="62" width="70" height="34" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+    <text x="145" y="78" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">mask=11</text>
+    <text x="145" y="91" text-anchor="middle" font-size="9" fill="#aaa" filter="url(#rough2)">(两人都有)</text>
+
+    <rect x="190" y="62" width="70" height="34" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+    <text x="225" y="78" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">mask=10</text>
+    <text x="225" y="91" text-anchor="middle" font-size="9" fill="#aaa" filter="url(#rough2)">(仅人1)</text>
+
+    <rect x="270" y="62" width="70" height="34" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+    <text x="305" y="78" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">mask=01</text>
+    <text x="305" y="91" text-anchor="middle" font-size="9" fill="#aaa" filter="url(#rough2)">(仅人0)</text>
+
+    <rect x="350" y="62" width="70" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+    <text x="385" y="78" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">mask=00</text>
+    <text x="385" y="91" text-anchor="middle" font-size="9" fill="#aaa" filter="url(#rough2)">(空集)</text>
+
+    <!-- reverse iteration arrow -->
+    <path d="M 410 100 L 130 100" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+    <text x="270" y="115" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">倒序：大 mask → 小 mask</text>
+  </g>
+
+  <!-- ===== Middle: current hat processing ===== -->
+  <g>
+    <rect x="60" y="132" width="120" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+    <text x="120" y="150" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">处理帽 h</text>
+    <text x="120" y="164" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">hatToPeople[h]=[p1,p2…]</text>
+
+    <!-- choice 1: skip -->
+    <rect x="210" y="132" width="140" height="40" fill="#f6f6f6" stroke="#888" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="280" y="150" text-anchor="middle" font-size="11" fill="#555" font-weight="bold" filter="url(#rough2)">选择 A：不给任何人</text>
+    <text x="280" y="164" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">dp[mask] 保留旧值</text>
+    <path d="M 180 152 L 208 152" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arrGray)" filter="url(#rough2)"/>
+
+    <!-- choice 2: assign to p -->
+    <rect x="370" y="132" width="140" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+    <text x="440" y="150" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">选择 B：给人 p</text>
+    <text x="440" y="164" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">p∉mask 时</text>
+    <path d="M 180 152 L 368 152" stroke="#d6a040" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- ===== Bottom: transition formula ===== -->
+  <g>
+    <rect x="40" y="196" width="460" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="270" y="216" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">转移方程（选择 B）</text>
+    <text x="270" y="234" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">dp[mask | (1&lt;&lt;p)]  +=  dp[mask]</text>
+    <text x="270" y="248" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">小 mask 把值推给大 mask；大 mask 本轮已结算 → 不会再当源</text>
+  </g>
+
+  <!-- ===== Why reverse: chain prevention ===== -->
+  <g>
+    <rect x="40" y="268" width="460" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+    <text x="270" y="288" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">⚠ 倒序防链：避免一顶帽子传给多人</text>
+    <text x="270" y="306" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">若正序(小→大)：00 →01 →11，帽 h 沿链用了两次 ✗</text>
+    <text x="270" y="322" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">倒序(大→小)：11先结算，01 后处理时推给 11（已结算，不再当源）✓</text>
+    <text x="270" y="342" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">= 一维 0-1 背包「体积倒序」的位运算版</text>
+    <text x="270" y="356" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">mask|(1&lt;&lt;p) &gt; mask，大 mask 先处理即可</text>
+  </g>
+</svg>

@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="620" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="310" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：word = "aeiaaioaaaaeiiiiouuuooaauuaeiu"</text>
+  <text x="310" y="42" text-anchor="middle" font-size="11" fill="#888">追踪 right 扫描，distinct 到 5 后每续接一个 u 都刷新 ans ⇒ 13</text>
+
+  <!-- ===== Table ===== -->
+  <!-- columns: right (x=40,w=70 -> 40..110), char (x=110,w=70 -> 110..180), 事件 (x=180,w=270 -> 180..450), distinct (x=450,w=80 -> 450..530), ans (x=530,w=70 -> 530..600) -->
+
+  <!-- header background -->
+  <rect x="40" y="54" width="560" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="75" y="73" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">right</text>
+  <text x="145" y="73" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">char</text>
+  <text x="315" y="73" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">事件</text>
+  <text x="490" y="73" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">distinct</text>
+  <text x="565" y="73" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ans</text>
+
+  <!-- column dividers (light) -->
+  <line x1="110" y1="54" x2="110" y2="452" stroke="#ddd" stroke-width="1"/>
+  <line x1="180" y1="54" x2="180" y2="452" stroke="#ddd" stroke-width="1"/>
+  <line x1="450" y1="54" x2="450" y2="452" stroke="#ddd" stroke-width="1"/>
+  <line x1="530" y1="54" x2="530" y2="452" stroke="#ddd" stroke-width="1"/>
+
+  <!-- ===== Rows (15 rows, height 26, start y=86) ===== -->
+  <!-- Row 0: right=0, a, init -->
+  <text x="75" y="103" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <text x="145" y="103" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="188" y="103" font-size="11" fill="#666">初始化 left=0</text>
+  <text x="490" y="103" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="565" y="103" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 1: right=1, e, ↑ -->
+  <text x="75" y="129" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="145" y="129" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">e</text>
+  <text x="188" y="129" font-size="11" fill="#4a7a3a">↑ e &gt; a，distinct++</text>
+  <text x="490" y="129" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="565" y="129" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 2: right=2, i, ↑ -->
+  <text x="75" y="155" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="145" y="155" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i</text>
+  <text x="188" y="155" font-size="11" fill="#4a7a3a">↑ i &gt; e，distinct++</text>
+  <text x="490" y="155" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="565" y="155" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 3: right=3, a, reset (pink) -->
+  <rect x="40" y="160" width="560" height="26" fill="#fce4ec" opacity="0.5" filter="url(#rough2)"/>
+  <text x="75" y="177" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="145" y="177" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="188" y="177" font-size="11" fill="#b85450" font-weight="bold">↓ a &lt; i，重置 left=3, distinct=1</text>
+  <text x="490" y="177" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="565" y="177" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 4: right=4–6, a,a,i,o -->
+  <text x="75" y="203" text-anchor="middle" font-size="11" fill="#333">4–6</text>
+  <text x="145" y="203" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a,a,i,o</text>
+  <text x="188" y="203" font-size="11" fill="#4a7a3a">↑ 段内升至 3 种（a,i,o）</text>
+  <text x="490" y="203" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="565" y="203" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 5: right=7, a, reset (pink) — start of beautiful -->
+  <rect x="40" y="208" width="560" height="26" fill="#fce4ec" opacity="0.5" filter="url(#rough2)"/>
+  <text x="75" y="225" text-anchor="middle" font-size="11" fill="#333">7</text>
+  <text x="145" y="225" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a</text>
+  <text x="188" y="225" font-size="11" fill="#b85450" font-weight="bold">↓ a &lt; o，重置 left=7 ★ 段首</text>
+  <text x="490" y="225" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="565" y="225" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 6: right=8–10, a,a,a -->
+  <text x="75" y="251" text-anchor="middle" font-size="11" fill="#333">8–10</text>
+  <text x="145" y="251" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">a,a,a</text>
+  <text x="188" y="251" font-size="11" fill="#888">= 相等，distinct 不变</text>
+  <text x="490" y="251" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="565" y="251" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 7: right=11, e -->
+  <text x="75" y="277" text-anchor="middle" font-size="11" fill="#333">11</text>
+  <text x="145" y="277" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">e</text>
+  <text x="188" y="277" font-size="11" fill="#4a7a3a">↑ e &gt; a，distinct++</text>
+  <text x="490" y="277" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="565" y="277" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 8: right=12, i -->
+  <text x="75" y="303" text-anchor="middle" font-size="11" fill="#333">12</text>
+  <text x="145" y="303" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i</text>
+  <text x="188" y="303" font-size="11" fill="#4a7a3a">↑ i &gt; e，distinct++</text>
+  <text x="490" y="303" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="565" y="303" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 9: right=13–15, i,i,i -->
+  <text x="75" y="329" text-anchor="middle" font-size="11" fill="#333">13–15</text>
+  <text x="145" y="329" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">i,i,i</text>
+  <text x="188" y="329" font-size="11" fill="#888">= 相等，distinct 不变</text>
+  <text x="490" y="329" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="565" y="329" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 10: right=16, o -->
+  <text x="75" y="355" text-anchor="middle" font-size="11" fill="#333">16</text>
+  <text x="145" y="355" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">o</text>
+  <text x="188" y="355" font-size="11" fill="#4a7a3a">↑ o &gt; i，distinct++</text>
+  <text x="490" y="355" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <text x="565" y="355" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <!-- Row 11: right=17, u, distinct=5 ans=11 (green) -->
+  <rect x="40" y="360" width="560" height="26" fill="#e6f4ea" opacity="0.6" filter="url(#rough2)"/>
+  <text x="75" y="377" text-anchor="middle" font-size="11" fill="#333">17</text>
+  <text x="145" y="377" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">u</text>
+  <text x="188" y="377" font-size="11" fill="#4a7a3a" font-weight="bold">↑ u &gt; o，凑齐 5 元音！</text>
+  <text x="490" y="377" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">5</text>
+  <text x="565" y="377" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">11</text>
+
+  <!-- Row 12: right=18, u, ans=12 (green) -->
+  <rect x="40" y="386" width="560" height="26" fill="#e6f4ea" opacity="0.6" filter="url(#rough2)"/>
+  <text x="75" y="403" text-anchor="middle" font-size="11" fill="#333">18</text>
+  <text x="145" y="403" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">u</text>
+  <text x="188" y="403" font-size="11" fill="#4a7a3a">= 续接，ans 更新</text>
+  <text x="490" y="403" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <text x="565" y="403" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">12</text>
+
+  <!-- Row 13: right=19, u, ans=13 (green highlighted) -->
+  <rect x="40" y="412" width="560" height="26" fill="#e6f4ea" opacity="0.85" filter="url(#rough2)"/>
+  <text x="75" y="429" text-anchor="middle" font-size="11" fill="#333">19</text>
+  <text x="145" y="429" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">u</text>
+  <text x="188" y="429" font-size="11" fill="#4a7a3a" font-weight="bold">= 续接，ans 更新 ✓ 最终</text>
+  <text x="490" y="429" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <text x="565" y="429" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">13</text>
+
+  <!-- Row 14: right=20, o, reset (pink) -->
+  <rect x="40" y="438" width="560" height="26" fill="#fce4ec" opacity="0.5" filter="url(#rough2)"/>
+  <text x="75" y="455" text-anchor="middle" font-size="11" fill="#333">20</text>
+  <text x="145" y="455" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">o</text>
+  <text x="188" y="455" font-size="11" fill="#b85450" font-weight="bold">↓ o &lt; u，重置（美丽段终止）</text>
+  <text x="490" y="455" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1</text>
+  <text x="565" y="455" text-anchor="middle" font-size="11" fill="#333">13</text>
+
+  <!-- bottom note -->
+  <text x="310" y="474" text-anchor="middle" font-size="10" fill="#888">美丽段 [left=7, right=19] = "aaaaeiiiiouuu"，长度 13；之后遇到下降即终止</text>
+</svg>

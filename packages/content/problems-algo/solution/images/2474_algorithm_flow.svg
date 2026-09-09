@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：LAG 取前驱 → 统计违反 → HAVING 过滤</text>
+  <text x="280" y="42" text-anchor="middle" font-size="10.5" fill="#888">一趟窗口函数 + 一次分组聚合，O(n log n)</text>
+
+  <!-- Box 1: input -->
+  <rect x="80" y="58" width="400" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="78" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">输入 Orders(order_id, customer_id, order_date, price)</text>
+  <text x="280" y="94" text-anchor="middle" font-size="9.5" fill="#777">每位客户若干行购买记录</text>
+
+  <path d="M 280 104 L 280 122" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 2: LAG window -->
+  <rect x="50" y="126" width="460" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 窗口函数取前驱价格</text>
+  <text x="280" y="164" text-anchor="middle" font-size="9.8" fill="#555" font-family="monospace">LAG(price) OVER (PARTITION BY customer_id ORDER BY order_date, order_id)</text>
+  <text x="280" y="178" text-anchor="middle" font-size="9.5" fill="#777">新增 prev_price 列；各分区首行 prev_price = NULL（无前驱，天然不违反）</text>
+
+  <path d="M 280 186 L 280 204" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 3: per-row violation flag -->
+  <rect x="80" y="208" width="400" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 逐行判定是否违反</text>
+  <text x="280" y="246" text-anchor="middle" font-size="9.8" fill="#555" font-family="monospace">violation = (prev_price IS NOT NULL) AND (price &lt;= prev_price)</text>
+
+  <path d="M 280 260 L 280 278" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 4: group + sum -->
+  <rect x="80" y="282" width="400" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 按 customer_id 分组，统计违反次数</text>
+  <text x="280" y="320" text-anchor="middle" font-size="9.8" fill="#555" font-family="monospace">SELECT customer_id, SUM(violation) AS bad</text>
+  <text x="280" y="334" text-anchor="middle" font-size="9.5" fill="#777">bad = 0 ⇔ 该客户价格全程严格递增</text>
+
+  <path d="M 280 342 L 280 360" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 5: HAVING + output -->
+  <rect x="80" y="364" width="400" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="384" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ HAVING bad = 0 → 严格递增客户</text>
+  <text x="280" y="402" text-anchor="middle" font-size="9.8" fill="#555" font-family="monospace">HAVING SUM(violation) = 0  ORDER BY customer_id</text>
+
+  <path d="M 280 416 L 280 432" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 6: output -->
+  <rect x="160" y="436" width="240" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="457" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">输出 customer_id 升序列</text>
+</svg>

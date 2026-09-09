@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">
+    算法流程：并查集建分量 → 频率匹配算距离
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="48" width="220" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="68" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 并查集合并</text>
+  <text x="50" y="84" font-size="10" fill="#555" filter="url(#rough2)">parent[i] = i（n 个下标各自为根）</text>
+  <text x="50" y="98" font-size="10" fill="#555" filter="url(#rough2)">for [a,b] in allowedSwaps: union(a,b)</text>
+
+  <!-- arrow -->
+  <path d="M150,108 L150,128" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="132" width="220" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="152" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 按根分组</text>
+  <text x="50" y="168" font-size="10" fill="#555" filter="url(#rough2)">groups[root].append(i)</text>
+  <text x="50" y="182" font-size="10" fill="#555" filter="url(#rough2)">每个 root → 一个连通分量 C</text>
+
+  <!-- arrow -->
+  <path d="M150,192 L150,212" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="40" y="216" width="220" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="236" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ 频率统计</text>
+  <text x="50" y="252" font-size="10" fill="#555" filter="url(#rough2)">src_cnt[v] = #{i∈C : source[i]=v}</text>
+  <text x="50" y="266" font-size="10" fill="#555" filter="url(#rough2)">tgt_cnt[v] = #{i∈C : target[i]=v}</text>
+
+  <!-- arrow -->
+  <path d="M150,276 L150,296" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="40" y="300" width="220" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="320" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 累加最小汉明距离</text>
+  <text x="50" y="336" font-size="10" fill="#555" filter="url(#rough2)">match += Σ min(src_cnt[v], tgt_cnt[v])</text>
+  <text x="50" y="350" font-size="10" fill="#555" filter="url(#rough2)">return n − match</text>
+
+  <!-- Right side: formula box -->
+  <rect x="300" y="60" width="230" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="84" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">距离公式</text>
+  <text x="415" y="108" text-anchor="middle" font-size="11" fill="#5a5a3a" filter="url(#rough2)">分量 C 的贡献：</text>
+  <text x="415" y="128" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">d(C) = |C| − Σ min(s_v, t_v)</text>
+  <text x="415" y="148" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">s_v = source 中值 v 的次数</text>
+  <text x="415" y="164" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">t_v = target 中值 v 的次数</text>
+
+  <!-- Right side: complexity box -->
+  <rect x="300" y="200" width="230" height="76" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="222" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">复杂度</text>
+  <text x="415" y="242" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">时间 O((n+m)·α(n))</text>
+  <text x="415" y="260" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">空间 O(n)</text>
+
+  <!-- Right side: key insight -->
+  <rect x="300" y="296" width="230" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="415" y="318" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">关键不变量</text>
+  <text x="415" y="338" text-anchor="middle" font-size="10" fill="#5a5a3a" filter="url(#rough2)">连通分量内 source 值</text>
+  <text x="415" y="354" text-anchor="middle" font-size="10" fill="#5a5a3a" filter="url(#rough2)">构成可任意排列的多重集</text>
+  <text x="415" y="368" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">→ 只需比较多重集频率</text>
+</svg>

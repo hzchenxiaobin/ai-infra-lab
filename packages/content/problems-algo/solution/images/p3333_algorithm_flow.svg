@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="20" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：分组 → 早退判定 → 前缀和 DP → 补集相减</text>
+
+  <!-- 复杂度注记 -->
+  <text x="460" y="46" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">时间 O(n + k²)</text>
+  <text x="460" y="60" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">空间 O(n + k)</text>
+
+  <!-- ① 分组 -->
+  <rect x="140" y="32" width="240" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="49" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 扫描 word，切出 m 个连续段</text>
+  <text x="260" y="65" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">total = ∏ cᵢ (mod p)</text>
+
+  <path d="M 260 74 L 260 86" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 判断菱形 -->
+  <polygon points="260,88 348,124 260,160 172,124" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="129" text-anchor="middle" font-size="11" fill="#a05a20" font-weight="bold" filter="url(#rough2)">m ≥ k ?</text>
+
+  <!-- 是：早退 -->
+  <path d="M 348 124 L 364 124" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="354" y="114" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="366" y="100" width="146" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="439" y="119" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">return total</text>
+  <text x="439" y="134" text-anchor="middle" font-size="8" fill="#2f5d24" filter="url(#rough2)">每段至少留 1 个 ⇒ 长度 ≥ m ≥ k</text>
+  <text x="439" y="145" text-anchor="middle" font-size="8" fill="#2f5d24" filter="url(#rough2)">所有方案都合法，无需 DP</text>
+
+  <!-- 否：继续 -->
+  <path d="M 260 160 L 260 172" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="272" y="170" font-size="9" fill="#888" filter="url(#rough2)">否（此时 m &lt; k ≤ 2000）</text>
+
+  <!-- ② 初始化 -->
+  <rect x="150" y="174" width="220" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="197" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">② f = [1, 0, …, 0]，下标 0…k−1</text>
+
+  <path d="M 260 210 L 260 220" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ③ DP 循环 -->
+  <rect x="90" y="222" width="340" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="241" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">③ 对每段 c：先算前缀和 g</text>
+  <text x="260" y="257" text-anchor="middle" font-size="9" fill="#33506b" filter="url(#rough2)">f[j] ← g[j] − g[max(0, j−c)] (mod p)</text>
+  <text x="260" y="269" text-anchor="middle" font-size="7.5" fill="#888" filter="url(#rough2)">c 可先截断为 min(c, k)</text>
+
+  <path d="M 260 274 L 260 284" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ④ 求和 -->
+  <rect x="140" y="286" width="240" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="307" text-anchor="middle" font-size="9.5" fill="#33506b" filter="url(#rough2)">④ bad = f[0] + f[1] + … + f[k−1]</text>
+
+  <path d="M 260 318 L 260 328" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ⑤ 返回 -->
+  <rect x="140" y="330" width="240" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="347" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">⑤ return (total − bad + p) mod p</text>
+
+  <!-- 左下注记 -->
+  <text x="16" y="290" font-size="8" fill="#888" filter="url(#rough2)">早退不只是优化：</text>
+  <text x="16" y="302" font-size="8" fill="#888" filter="url(#rough2)">没有它，m·k 最大</text>
+  <text x="16" y="314" font-size="8" fill="#888" filter="url(#rough2)">5×10⁵×2000＝10⁹，</text>
+  <text x="16" y="326" font-size="8" fill="#888" filter="url(#rough2)">DP 直接超时</text>
+</svg>

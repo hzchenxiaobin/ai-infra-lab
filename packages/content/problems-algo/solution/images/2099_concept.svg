@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：解耦「选择」与「排列」—— 和只看选了哪些元素</text>
+
+  <!-- ① 暴力耦合 -->
+  <rect x="30" y="42" width="500" height="138" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="5 3" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="62" font-size="12.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">① 暴力：枚举所有 k 元子集（耦合，指数级）</text>
+
+  <rect x="48" y="74" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="68" y="95" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <rect x="90" y="74" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="95" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">4</text>
+  <rect x="132" y="74" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="152" y="95" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <rect x="174" y="74" width="40" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="95" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">3</text>
+  <text x="118" y="64" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">nums, k=2</text>
+
+  <path d="M 226 90 L 264 90" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrr)" fill="none" filter="url(#rough2)"/>
+  <text x="245" y="84" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">C(n,k)</text>
+
+  <rect x="270" y="74" width="120" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="330" y="88" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">枚举子集</text>
+  <text x="330" y="100" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">+ 求和取最大</text>
+
+  <path d="M 396 90 L 434 90" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="440" y="74" width="78" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="479" y="95" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">最大和子序列</text>
+
+  <text x="48" y="128" font-size="10.5" fill="#b85450" filter="url(#rough2)">⚠️ C(1000,500) ≈ 10^299，指数爆炸</text>
+  <text x="48" y="146" font-size="10.5" fill="#b85450" filter="url(#rough2)">根因：「选哪些」与「怎么排」耦合在一起枚举</text>
+  <text x="48" y="164" font-size="10.5" fill="#b85450" filter="url(#rough2)">但子序列的和 = 所选元素之和，与顺序无关 → 可解耦</text>
+
+  <!-- ② 解耦两阶段 -->
+  <rect x="30" y="194" width="500" height="210" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="48" y="214" font-size="12.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 解耦：选 k 个最大值 → 按下标还原（两阶段独立）</text>
+
+  <!-- 阶段① 选择 -->
+  <rect x="48" y="228" width="222" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="159" y="246" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">阶段① 选择：按值降序取前 k</text>
+  <rect x="60" y="256" width="44" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="82" y="271" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">(4,1)</text>
+  <rect x="108" y="256" width="44" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="130" y="271" text-anchor="middle" font-size="9.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">(3,0)</text>
+  <rect x="156" y="256" width="44" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3 2" rx="3" filter="url(#rough2)"/>
+  <text x="178" y="271" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">(3,2)</text>
+  <rect x="204" y="256" width="44" height="22" fill="#fafafa" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3 2" rx="3" filter="url(#rough2)"/>
+  <text x="226" y="271" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">(3,3)</text>
+  <text x="159" y="296" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">取前 k=2 → (4,1),(3,0)</text>
+
+  <path d="M 274 268 L 312 268" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)" fill="none" filter="url(#rough2)"/>
+
+  <!-- 阶段② 还原 -->
+  <rect x="318" y="228" width="200" height="80" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="418" y="246" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">阶段② 还原：按下标升序</text>
+  <rect x="332" y="256" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="354" y="271" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">(3,0)</text>
+  <rect x="380" y="256" width="44" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+  <text x="402" y="271" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold" filter="url(#rough2)">(4,1)</text>
+  <path d="M 432 267 L 460 267" stroke="#d6a040" stroke-width="1.6" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <rect x="464" y="256" width="44" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="486" y="271" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">[3,4]</text>
+  <text x="418" y="296" text-anchor="middle" font-size="9.5" fill="#d6a040" filter="url(#rough2)">按 index 升序 → 取 value</text>
+
+  <rect x="48" y="320" width="474" height="24" fill="#fafafa" stroke="#aaa" stroke-width="1.2" stroke-dasharray="4 3" rx="6" filter="url(#rough2)"/>
+  <text x="285" y="337" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">和 = 所选元素之和，与顺序无关 → 选择按值，排列按下标</text>
+
+  <text x="48" y="364" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">✓ 选择：值降序取前 k，O(n log n)</text>
+  <text x="48" y="382" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">✓ 还原：下标升序排 k 个，O(k log k)</text>
+  <text x="48" y="400" font-size="10.5" fill="#b85450" font-style="italic" filter="url(#rough2)">并列值任选其一即可（同值对和无影响），题目允许任意答案</text>
+</svg>

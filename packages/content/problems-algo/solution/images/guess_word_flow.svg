@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">猜词算法流程：min-max 选词 + 消除过滤 + 循环</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="52" rx="120" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="56" text-anchor="middle" font-size="12" fill="#333">开始: cand = [0..n−1]</text>
+  <path d="M 280 70 L 280 82" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Precompute match matrix -->
+  <rect x="100" y="84" width="360" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="106" text-anchor="middle" font-size="12" fill="#333">预计算 matchM[i][j] = 位置匹配数</text>
+  <path d="M 280 118 L 280 130" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Pick min-max -->
+  <rect x="70" y="132" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="152" text-anchor="middle" font-size="12" fill="#333">min-max：对每个 cand w 按 matchM[w][c] 分桶</text>
+  <text x="280" y="168" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">选使最大桶最小的 w = best</text>
+  <path d="M 280 176 L 280 188" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Guess -->
+  <rect x="120" y="190" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="212" text-anchor="middle" font-size="12" fill="#333">m = master.guess(words[best])</text>
+  <path d="M 280 224 L 280 236" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: m == 6? -->
+  <polygon points="280,238 380,278 280,318 180,278" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="274" text-anchor="middle" font-size="12" fill="#333">m == 6 ?</text>
+  <text x="280" y="292" text-anchor="middle" font-size="10" fill="#888">（猜中 secret）</text>
+
+  <!-- Yes -> return -->
+  <path d="M 380 278 L 468 278" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="420" y="270" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="430" y="262" width="104" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="482" y="284" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return ✓</text>
+
+  <!-- No -> down to filter -->
+  <path d="M 280 318 L 280 330" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="326" font-size="11" fill="#b85450">否</text>
+
+  <!-- Filter candidates -->
+  <rect x="70" y="332" width="420" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="352" text-anchor="middle" font-size="12" fill="#333">cand ← { c : matchM[best][c] == m }</text>
+  <text x="280" y="368" text-anchor="middle" font-size="11" fill="#4a7a3a">保留同桶候选，其余消除</text>
+
+  <!-- Loop back arrow: from filter bottom, right and up to pick min-max -->
+  <path d="M 490 354 L 540 354 L 540 154 L 490 154" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="552" y="254" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 552 254)">下一轮（≤ 10 次）</text>
+
+  <!-- Bottom note -->
+  <rect x="60" y="392" width="440" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="414" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">为什么 10 次够？</text>
+  <text x="280" y="432" text-anchor="middle" font-size="11" fill="#666">每次分 ≤ 7 桶 → minimax 使最大桶最小 → 约 n/7 收缩</text>
+  <text x="280" y="448" text-anchor="middle" font-size="11" fill="#666">100 → ~15 → ~3 → 1，3 步收敛，10 次绰绰有余</text>
+</svg>

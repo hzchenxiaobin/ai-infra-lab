@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 410" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="410" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：指数按十进位分解 + 快速幂</text>
+
+  <!-- ===== Top: b as digit array ===== -->
+  <text x="44" y="62" font-size="12.5" fill="#446688" font-weight="bold">指数 b（数组）</text>
+  <rect x="170" y="48" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="190" y="70" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">d₀</text>
+  <rect x="216" y="48" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="236" y="70" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">d₁</text>
+  <rect x="262" y="48" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="282" y="70" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">d₂</text>
+  <text x="316" y="70" font-size="13" fill="#888">…  …</text>
+  <rect x="356" y="48" width="40" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="376" y="70" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">dₙ₋₁</text>
+
+  <!-- arrow down -->
+  <path d="M 268 84 Q 268 96 268 106" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="100" font-size="10.5" fill="#888">十进制合成</text>
+
+  <!-- ===== Middle: recurrence b' = 10*b + d ===== -->
+  <rect x="40" y="112" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="137" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">b&#39; = 10 × b_prev + d    →    a^b&#39; = (a^b_prev)^10 × a^d</text>
+
+  <!-- arrow down -->
+  <path d="M 280 156 Q 280 168 280 178" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Two split boxes: res^10 and a^d ===== -->
+  <text x="150" y="200" font-size="11.5" fill="#d6a040" font-weight="bold">已处理部分的「10 倍升幂」</text>
+  <rect x="80" y="208" width="170" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="165" y="230" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">res = pow(res, 10, 1337)</text>
+  <text x="165" y="248" text-anchor="middle" font-size="10.5" fill="#888">(a^b_prev)^10 mod 1337</text>
+
+  <text x="420" y="200" font-size="11.5" fill="#4a7a3a" font-weight="bold">新一位数字的贡献</text>
+  <rect x="340" y="208" width="170" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="230" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">mul = pow(a, d, 1337)</text>
+  <text x="425" y="248" text-anchor="middle" font-size="10.5" fill="#888">a^d mod 1337，d ∈ [0,9]</text>
+
+  <!-- merge arrows -->
+  <path d="M 165 262 Q 165 274 250 280" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M 425 262 Q 425 274 340 280" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Merge: multiply and mod ===== -->
+  <rect x="120" y="284" width="320" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="309" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">res = (res × mul) mod 1337</text>
+
+  <!-- arrow down -->
+  <path d="M 280 328 Q 280 338 280 348" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Bottom invariant ===== -->
+  <rect x="40" y="352" width="480" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="372" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">循环不变量：处理完 d₀..dᵢ 后，res ≡ a^(前 i+1 位)  (mod 1337)</text>
+  <text x="280" y="388" text-anchor="middle" font-size="11" fill="#4a7a3a">初始 res=1（即 a^0），逐位「升幂 × 加幂」递推</text>
+</svg>

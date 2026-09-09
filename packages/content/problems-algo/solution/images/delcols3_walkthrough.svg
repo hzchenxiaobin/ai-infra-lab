@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：strs = ["babca","bbazb"] 的 dp 表</text>
+
+  <!-- ===== Matrix ===== -->
+  <text x="40" y="50" font-size="11" fill="#888" font-weight="bold">矩阵（行0/行1 各列字符）：</text>
+
+  <!-- col headers -->
+  <text x="120" y="68" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">列0</text>
+  <text x="180" y="68" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">列1</text>
+  <text x="240" y="68" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">列2</text>
+  <text x="300" y="68" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">列3</text>
+  <text x="360" y="68" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">列4</text>
+
+  <!-- row 0 -->
+  <text x="78" y="90" text-anchor="end" font-size="10" fill="#888">行0</text>
+  <rect x="98" y="74" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="92" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">b</text>
+  <rect x="158" y="74" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="180" y="92" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">a</text>
+  <rect x="218" y="74" width="44" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="92" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">b</text>
+  <rect x="278" y="74" width="44" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="92" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">c</text>
+  <rect x="338" y="74" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="92" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">a</text>
+
+  <!-- row 1 -->
+  <text x="78" y="116" text-anchor="end" font-size="10" fill="#888">行1</text>
+  <rect x="98" y="100" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="118" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">b</text>
+  <rect x="158" y="100" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="180" y="118" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">b</text>
+  <rect x="218" y="100" width="44" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="240" y="118" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">a</text>
+  <rect x="278" y="100" width="44" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="118" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">z</text>
+  <rect x="338" y="100" width="44" height="26" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="118" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">b</text>
+
+  <!-- separator -->
+  <path d="M 40 138 L 520 138" stroke="#e0e0e0" stroke-width="1" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- ===== dp table ===== -->
+  <text x="40" y="158" font-size="11" fill="#888" font-weight="bold">逐列求 dp[j] = 1 + max{dp[i] : i&lt;j, le(i,j)}：</text>
+
+  <!-- table header -->
+  <rect x="40" y="166" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="181" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">列 j</text>
+  <rect x="100" y="166" width="100" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="181" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">字符 (行0,行1)</text>
+  <rect x="200" y="166" width="200" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="181" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">前驱候选（le 成立者）</text>
+  <rect x="400" y="166" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="181" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">dp[j]</text>
+  <rect x="460" y="166" width="60" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="181" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">best</text>
+
+  <!-- row j=0 -->
+  <rect x="40" y="190" width="60" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="206" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">0</text>
+  <rect x="100" y="190" width="100" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="206" text-anchor="middle" font-size="11" fill="#555">(b, b)</text>
+  <rect x="200" y="190" width="200" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="206" text-anchor="middle" font-size="10" fill="#888">无（单列起点）</text>
+  <rect x="400" y="190" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="206" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+  <rect x="460" y="190" width="60" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="206" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <!-- row j=1 -->
+  <rect x="40" y="216" width="60" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="232" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">1</text>
+  <rect x="100" y="216" width="100" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="232" text-anchor="middle" font-size="11" fill="#555">(a, b)</text>
+  <rect x="200" y="216" width="200" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="232" text-anchor="middle" font-size="10" fill="#b85450">i=0: b≤a? ✗</text>
+  <rect x="400" y="216" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="232" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+  <rect x="460" y="216" width="60" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="232" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <!-- row j=2 -->
+  <rect x="40" y="242" width="60" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="258" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">2</text>
+  <rect x="100" y="242" width="100" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="258" text-anchor="middle" font-size="11" fill="#555">(b, a)</text>
+  <rect x="200" y="242" width="200" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="258" text-anchor="middle" font-size="10" fill="#b85450">i=0,1 均 b≤a/a≤a ✗</text>
+  <rect x="400" y="242" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+  <rect x="460" y="242" width="60" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="258" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">1</text>
+
+  <!-- row j=3 -->
+  <rect x="40" y="268" width="60" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="284" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">3</text>
+  <rect x="100" y="268" width="100" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="284" text-anchor="middle" font-size="11" fill="#555">(c, z)</text>
+  <rect x="200" y="268" width="200" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="284" text-anchor="middle" font-size="10" fill="#4a7a3a">i=0,1,2 全 ✓ → max(1,1,1)+1</text>
+  <rect x="400" y="268" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="284" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">2</text>
+  <rect x="460" y="268" width="60" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="284" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">2</text>
+
+  <!-- row j=4 -->
+  <rect x="40" y="294" width="60" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="310" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">4</text>
+  <rect x="100" y="294" width="100" height="24" fill="#f5f5f5" stroke="#bbb" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="310" text-anchor="middle" font-size="11" fill="#555">(a, b)</text>
+  <rect x="200" y="294" width="200" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="300" y="310" text-anchor="middle" font-size="10" fill="#4a7a3a">仅 i=1 ✓（a≤a,b≤b）→ dp[1]+1</text>
+  <rect x="400" y="294" width="60" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="430" y="310" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">2</text>
+  <rect x="460" y="294" width="60" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="490" y="310" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">2</text>
+
+  <!-- separator -->
+  <path d="M 40 330 L 520 330" stroke="#e0e0e0" stroke-width="1" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+
+  <!-- ===== kept chain visualization ===== -->
+  <text x="40" y="350" font-size="11" fill="#888" font-weight="bold">最优保留链（dp=2，结束于列3 或列4）：</text>
+
+  <!-- col2 -> col3 chain -->
+  <rect x="120" y="362" width="50" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="145" y="378" text-anchor="middle" font-size="10" fill="#888">列2</text>
+  <text x="145" y="394" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">(b,a)</text>
+
+  <path d="M 172 382 L 208 382" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="190" y="374" text-anchor="middle" font-size="9" fill="#4a7a3a">le ✓</text>
+
+  <rect x="210" y="362" width="50" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="235" y="378" text-anchor="middle" font-size="10" fill="#888">列3</text>
+  <text x="235" y="394" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">(c,z)</text>
+
+  <text x="290" y="388" font-size="11" fill="#555">→ 行0 "bc"，行1 "az"，均非降</text>
+
+  <!-- ===== Answer ===== -->
+  <rect x="60" y="424" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="444" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">best = 2 → 答案 = m − best = 5 − 2 = 3</text>
+
+  <text x="280" y="476" text-anchor="middle" font-size="10" fill="#888">删除第 0、1、4 列，保留第 2、3 列</text>
+</svg>

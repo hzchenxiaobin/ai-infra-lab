@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">右下角 DP：以 (i,j) 为右下角的最大正方形边长</text>
+
+  <!-- 左上 邻居 -->
+  <rect x="110" y="72" width="90" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="155" y="96" text-anchor="middle" font-size="11.5" fill="#333">左上 (i−1,j−1)</text>
+  <text x="155" y="118" text-anchor="middle" font-size="15" fill="#4a7a3a" font-weight="bold">dp = 1</text>
+
+  <!-- 上 邻居 -->
+  <rect x="230" y="72" width="90" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="275" y="96" text-anchor="middle" font-size="11.5" fill="#333">上 (i−1,j)</text>
+  <text x="275" y="118" text-anchor="middle" font-size="15" fill="#446688" font-weight="bold">dp = 1</text>
+
+  <!-- 左 邻居 -->
+  <rect x="110" y="170" width="90" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="155" y="194" text-anchor="middle" font-size="11.5" fill="#333">左 (i,j−1)</text>
+  <text x="155" y="216" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">dp = 1</text>
+
+  <!-- 当前 (i,j) -->
+  <rect x="230" y="170" width="90" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="2.6" rx="4" filter="url(#rough2)"/>
+  <text x="275" y="194" text-anchor="middle" font-size="11.5" fill="#333">当前 (i,j)</text>
+  <text x="275" y="216" text-anchor="middle" font-size="15" fill="#d6a040" font-weight="bold">dp = 2</text>
+
+  <!-- arrows into (i,j) -->
+  <!-- 上 -> 当前 -->
+  <path d="M 275 132 L 275 168" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <!-- 左 -> 当前 -->
+  <path d="M 200 200 L 228 200" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <!-- 左上 -> 当前 (diagonal) -->
+  <path d="M 200 132 L 230 168" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 右侧 木桶直觉 -->
+  <rect x="370" y="72" width="160" height="158" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="450" y="100" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">木桶效应</text>
+  <text x="450" y="126" text-anchor="middle" font-size="11.5" fill="#333">三根绳子（上/左/左上）</text>
+  <text x="450" y="144" text-anchor="middle" font-size="11.5" fill="#333">拉住同一块「窗帘」,</text>
+  <text x="450" y="162" text-anchor="middle" font-size="11.5" fill="#333">最短的那根先断 →</text>
+  <text x="450" y="184" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">取 min 限制边长</text>
+  <text x="450" y="206" text-anchor="middle" font-size="11.5" fill="#333">再补 (i,j) 自身 → +1</text>
+
+  <!-- 状态转移 box -->
+  <rect x="40" y="276" width="480" height="78" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">状态转移（matrix[i][j] == '1' 且 i,j &gt; 0 时）：</text>
+  <text x="280" y="328" text-anchor="middle" font-size="15" fill="#b85450" font-weight="bold">dp[i][j] = min(dp[i−1][j], dp[i][j−1], dp[i−1][j−1]) + 1</text>
+  <text x="280" y="348" text-anchor="middle" font-size="10.5" fill="#888">三个方向都达标，边长才能 +1；否则被最弱的邻居「卡」住</text>
+</svg>

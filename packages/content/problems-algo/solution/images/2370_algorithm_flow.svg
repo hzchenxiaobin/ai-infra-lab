@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：单遍扫描 s，维护 26 槽 dp 表</text>
+
+  <!-- 1. Start box -->
+  <rect x="140" y="40" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="64" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">初始化 dp[0..25] = 0,  ans = 0</text>
+  <path d="M 270 80 L 270 100" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2. Decision diamond: 还有字符? -->
+  <polygon points="270,105 360,150 270,195 180,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">还有字符 s_i ?</text>
+  <text x="270" y="162" text-anchor="middle" font-size="11" fill="#666">（从左到右扫描 s）</text>
+
+  <!-- No branch -> return ans -->
+  <path d="M 360 150 L 470 150" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="378" y="142" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="470" y="130" width="60" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="500" y="148" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">返回</text>
+  <text x="500" y="162" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">ans</text>
+
+  <!-- Yes branch downward -->
+  <path d="M 270 195 L 270 220" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="214" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- 3. ci box -->
+  <rect x="120" y="225" width="300" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="248" text-anchor="middle" font-size="12" fill="#333">ci = s_i − 'a'   （末字符编码 ∈ [0,25]）</text>
+  <path d="M 270 261 L 270 275" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4. lo/hi box -->
+  <rect x="80" y="280" width="380" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="303" text-anchor="middle" font-size="12" fill="#333">lo = max(0, ci−k)， hi = min(25, ci+k)   （两端夹断）</text>
+  <path d="M 270 316 L 270 330" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 5. best box (emphasized) -->
+  <rect x="70" y="335" width="400" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="360" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">best = max(dp[lo … hi])   ← 读“旧” dp（s_i 之前的状态）</text>
+  <path d="M 270 375 L 270 388" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 6. dp[ci] = best+1 -->
+  <rect x="80" y="393" width="380" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="416" text-anchor="middle" font-size="12" fill="#333">dp[ci] = best + 1 ； ans = max(ans, dp[ci])</text>
+
+  <!-- loop back arrow from ans box left side up to diamond left -->
+  <path d="M 80 411 L 40 411 L 40 150 L 180 150" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="48" y="280" font-size="11" fill="#888" font-weight="bold">处理下一字符</text>
+
+  <!-- footer note -->
+  <text x="270" y="455" text-anchor="middle" font-size="11" fill="#888">每字符 O(2k+1) ≤ O(51)，扫完即得 ans；空间仅 26 槽 dp + 常数</text>
+</svg>

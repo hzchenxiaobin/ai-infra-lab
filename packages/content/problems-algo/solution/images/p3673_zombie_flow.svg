@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="30" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">算法流程：单表分组 → 聚合 → HAVING 四重过滤 → 排序</text>
+
+  <!-- A: FROM -->
+  <rect x="150" y="48" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="70" text-anchor="middle" font-size="12.5" fill="#2a3a55" filter="url(#rough2)">FROM app_events（n 行事件）</text>
+
+  <path d="M 260 82 L 260 102" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- B: GROUP BY -->
+  <rect x="150" y="106" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="128" text-anchor="middle" font-size="12.5" fill="#2a3a55" filter="url(#rough2)">GROUP BY session_id, user_id（一组一会话）</text>
+
+  <path d="M 260 140 L 260 160" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- C: aggregate -->
+  <rect x="56" y="164" width="408" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="184" text-anchor="middle" font-size="12" fill="#2a4a20" filter="url(#rough2)">组内聚合四件套（行全保留，不预过滤）</text>
+  <rect x="65" y="190" width="90" height="24" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="110" y="207" text-anchor="middle" font-size="10.5" fill="#2a4a20" filter="url(#rough2)">时长 MAX−MIN</text>
+  <rect x="165" y="190" width="90" height="24" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="210" y="207" text-anchor="middle" font-size="10.5" fill="#2a4a20" filter="url(#rough2)">scroll 计数</text>
+  <rect x="265" y="190" width="90" height="24" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="310" y="207" text-anchor="middle" font-size="10.5" fill="#2a4a20" filter="url(#rough2)">click 计数</text>
+  <rect x="365" y="190" width="90" height="24" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="207" text-anchor="middle" font-size="10.5" fill="#2a4a20" filter="url(#rough2)">purchase 计数</text>
+
+  <path d="M 260 220 L 260 238" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- D: HAVING diamond -->
+  <polygon points="260,240 428,272 260,304 92,272" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="268" text-anchor="middle" font-size="12" fill="#6a5010" filter="url(#rough2)">HAVING：四条件同时成立？</text>
+  <text x="260" y="288" text-anchor="middle" font-size="10" fill="#8a6a20" filter="url(#rough2)">&gt;30分 AND ≥5滚 AND 点击×5&lt;滚 AND 零购买</text>
+
+  <!-- no branch -->
+  <path d="M 428 272 L 456 272" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="460" y="258" width="50" height="28" fill="#f2f2f2" stroke="#999999" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="276" text-anchor="middle" font-size="11" fill="#777" filter="url(#rough2)">丢弃</text>
+  <text x="442" y="264" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <!-- yes branch -->
+  <path d="M 260 304 L 260 322" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="274" y="318" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <!-- E: output -->
+  <rect x="120" y="326" width="280" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="346" text-anchor="middle" font-size="12.5" fill="#2a3a55" filter="url(#rough2)">ORDER BY scroll_count DESC, session_id ASC</text>
+</svg>

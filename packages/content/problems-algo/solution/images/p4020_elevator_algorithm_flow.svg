@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <g filter="url(#rough2)">
+    <text x="260" y="16" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">算法流程：单趟扫描，累加相邻楼层差的绝对值</text>
+
+    <!-- step 1 -->
+    <rect x="105" y="30" width="190" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="200" y="54" text-anchor="middle" font-size="10.5" fill="#333">① cur = 0，ans = 0，i = 0</text>
+
+    <path d="M 200 70 L 200 88" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+
+    <!-- diamond -->
+    <polygon points="200,92 292,130 200,168 108,130" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <text x="200" y="127" text-anchor="middle" font-size="11" fill="#333">还有未处理的</text>
+    <text x="200" y="142" text-anchor="middle" font-size="11" fill="#333">请求？（i &lt; m）</text>
+
+    <!-- yes: down to process box -->
+    <path d="M 200 168 L 200 190" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="210" y="184" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+    <rect x="105" y="194" width="190" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="200" y="214" text-anchor="middle" font-size="10" fill="#333">② r = requests[i]，i++</text>
+    <text x="200" y="232" text-anchor="middle" font-size="10" fill="#333">③ ans += |cur − r|；cur ← r</text>
+
+    <!-- loop back -->
+    <path d="M 105 220 H 55 V 130 H 104" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)"/>
+    <text x="47" y="180" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" transform="rotate(-90 47 180)">取下一个请求</text>
+
+    <!-- no: right to return box -->
+    <path d="M 292 130 L 320 130" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" fill="none"/>
+    <text x="298" y="122" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+    <rect x="323" y="106" width="177" height="48" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="411" y="126" text-anchor="middle" font-size="10.5" fill="#2f5527" font-weight="bold">④ 返回 ans</text>
+    <text x="411" y="143" text-anchor="middle" font-size="9" fill="#2f5527">（处理全部请求的总秒数）</text>
+
+    <!-- right: complexity -->
+    <rect x="323" y="180" width="177" height="66" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="411" y="198" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a6d1f">复杂度</text>
+    <text x="411" y="216" text-anchor="middle" font-size="9.5" fill="#7a5c1a">时间 O(m)：每个请求一次减法、</text>
+    <text x="411" y="230" text-anchor="middle" font-size="9.5" fill="#7a5c1a">一次取绝对值、一次加法</text>
+    <text x="411" y="244" text-anchor="middle" font-size="9.5" fill="#7a5c1a">空间 O(1)：仅 cur / ans / i</text>
+
+    <!-- bottom: pitfalls -->
+    <rect x="60" y="272" width="440" height="112" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="280" y="292" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">三个免踩的坑</text>
+    <text x="78" y="312" font-size="9.5" fill="#8a3a35">① 「电梯已在请求楼层」：|cur − r| = 0 自动成立，不需要 if 特判（示例 2 的 [2,0,0] 末尾即此情形）</text>
+    <text x="78" y="330" font-size="9.5" fill="#8a3a35">② 参数 n 只保证 0 ≤ requests[i] ≤ n−1，计算中完全用不到——别把它塞进公式</text>
+    <text x="78" y="348" font-size="9.5" fill="#8a3a35">③ 不必逐秒模拟（while 未到达就 t++），楼层差本身就是这段的耗时，一步到位</text>
+    <text x="78" y="366" font-size="9.5" fill="#8a3a35">④ 答案上界 99 × 100 = 9900 秒，int 绰绰有余</text>
+  </g>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#aaa"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">核心观察：a == b ⟺ a ⊕ b == 0 ⟺ arr[i..k] 整段异或为 0</text>
+  <text x="280" y="48" text-anchor="middle" font-size="11" fill="#888">arr = [2, 3, 1]，取 i=0, k=2：2⊕3⊕1 = 0 ⇒ 任意切分点 j 都使 a == b</text>
+
+  <!-- ===== Row A: j=1 ===== -->
+  <text x="44" y="102" font-size="11" fill="#446688" font-weight="bold">j=1</text>
+  <!-- j split marker (red triangle) above split x=240 -->
+  <path d="M 240 60 L 234 70 L 246 70 Z" fill="#b85450" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="180" y="80" width="60" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="240" y="80" width="60" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <rect x="300" y="80" width="60" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+  </g>
+  <text x="210" y="102" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <text x="270" y="102" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <text x="330" y="102" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <text x="380" y="102" font-size="10" fill="#446688">a = 2，b = 3⊕1 = 2  ✓</text>
+
+  <!-- ===== Row B: j=2 ===== -->
+  <text x="44" y="172" font-size="11" fill="#446688" font-weight="bold">j=2</text>
+  <path d="M 300 130 L 294 140 L 306 140 Z" fill="#b85450" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="180" y="150" width="60" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="240" y="150" width="60" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <rect x="300" y="150" width="60" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+  </g>
+  <text x="210" y="172" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">2</text>
+  <text x="270" y="172" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">3</text>
+  <text x="330" y="172" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">1</text>
+  <text x="380" y="172" font-size="10" fill="#446688">a = 2⊕3 = 1，b = 1  ✓</text>
+
+  <!-- ===== i / k brackets under row B ===== -->
+  <path d="M 180 198 L 180 206 L 360 206 L 360 198" stroke="#d6a040" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="186" y="222" font-size="10" fill="#d6a040" font-weight="bold">i=0</text>
+  <text x="338" y="222" font-size="10" fill="#d6a040" font-weight="bold">k=2</text>
+  <text x="270" y="222" text-anchor="middle" font-size="10" fill="#888">整段 ⊕ = 0</text>
+
+  <!-- ===== formula box ===== -->
+  <rect x="60" y="250" width="440" height="126" fill="#fffdf3" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="274" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">关键推导</text>
+  <text x="78" y="298" font-size="11" fill="#446688">a ⊕ b = (arr[i]⊕…⊕arr[j−1]) ⊕ (arr[j]⊕…⊕arr[k])</text>
+  <text x="78" y="316" font-size="11" fill="#446688">       = arr[i] ⊕ arr[i+1] ⊕ … ⊕ arr[k]   （异或结合律，两段拼回整段）</text>
+  <text x="78" y="340" font-size="11" fill="#b85450" font-weight="bold">∴ a == b  ⟺  a ⊕ b == 0  ⟺  arr[i..k] 整段异或为 0</text>
+  <text x="78" y="362" font-size="11" fill="#4a7a3a" font-weight="bold">⇒ 固定 (i,k) 整段为 0 时，j ∈ {i+1,…,k} 共 (k−i) 个 ⇒ 贡献 (k−i) 个三元组</text>
+
+  <!-- legend -->
+  <rect x="430" y="250" width="70" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="465" y="264" text-anchor="middle" font-size="9" fill="#446688">a 段(蓝)</text>
+  <rect x="430" y="274" width="70" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="465" y="288" text-anchor="middle" font-size="9" fill="#4a7a3a">b 段(绿)</text>
+</svg>

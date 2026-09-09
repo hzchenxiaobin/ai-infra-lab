@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：状态压缩 DP 递推</text>
+
+  <!-- Step 1: Build graph -->
+  <rect x="40" y="44" width="200" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="64" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 建邻接表 g</text>
+  <text x="140" y="80" text-anchor="middle" font-size="10" fill="#555">highways → g[a].push(b,cost)</text>
+
+  <!-- arrow down -->
+  <path d="M 140 90 L 140 104" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Init -->
+  <rect x="40" y="108" width="200" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="128" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 初始化</text>
+  <text x="140" y="144" text-anchor="middle" font-size="10" fill="#555">f[1&lt;&lt;i][i] = 0，其余 = −∞</text>
+
+  <!-- arrow down -->
+  <path d="M 140 154 L 140 168" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: DP transition (main) -->
+  <rect x="30" y="172" width="220" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="192" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 枚举 mask (递增)</text>
+  <text x="140" y="208" text-anchor="middle" font-size="10" fill="#555">for j in mask:</text>
+  <text x="140" y="222" text-anchor="middle" font-size="10" fill="#555">  for (h,cost) in g[j]:</text>
+  <text x="140" y="236" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">    f[mask][j] = max(f[mask][j],</text>
+  <text x="140" y="248" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">                    f[mask^bit_j][h]+cost)</text>
+
+  <!-- arrow down -->
+  <path d="M 140 250 L 140 264" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Collect answer -->
+  <rect x="40" y="268" width="200" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="288" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ 收集答案</text>
+  <text x="140" y="304" text-anchor="middle" font-size="10" fill="#555">popcount(mask)==k+1 时取 max</text>
+
+  <!-- ===== Right: Transition diagram ===== -->
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#888">状态转移示意</text>
+
+  <!-- predecessor state -->
+  <rect x="300" y="72" width="180" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="92" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">前驱状态</text>
+  <text x="390" y="108" text-anchor="middle" font-size="11" fill="#555">f[mask \ {j}][h]</text>
+  <text x="390" y="122" text-anchor="middle" font-size="10" fill="#888">已访问 mask 去掉 j，末站 h</text>
+
+  <!-- arrow down with +cost(h,j) -->
+  <path d="M 390 128 L 390 162" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="350" y="134" width="80" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="149" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">+ cost(h, j)</text>
+
+  <!-- current state -->
+  <rect x="300" y="168" width="180" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="188" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">当前状态</text>
+  <text x="390" y="204" text-anchor="middle" font-size="11" fill="#555">f[mask][j]</text>
+  <text x="390" y="218" text-anchor="middle" font-size="10" fill="#888">已访问 mask，末站 j</text>
+
+  <!-- condition box -->
+  <rect x="300" y="240" width="180" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="258" text-anchor="middle" font-size="10" fill="#555">条件: h 是 j 的邻居</text>
+  <text x="390" y="272" text-anchor="middle" font-size="10" fill="#555">且 h ∈ mask (已访问)</text>
+  <text x="390" y="288" text-anchor="middle" font-size="10" fill="#b85450">枚举所有合法 h 取 max</text>
+
+  <!-- early exit note -->
+  <rect x="300" y="306" width="180" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="322" text-anchor="middle" font-size="10" fill="#444">⚠ 若 k ≥ n，直接返回 −1</text>
+  <text x="390" y="336" text-anchor="middle" font-size="10" fill="#888">最多 n 个城市 → 最多 n−1 条路</text>
+</svg>

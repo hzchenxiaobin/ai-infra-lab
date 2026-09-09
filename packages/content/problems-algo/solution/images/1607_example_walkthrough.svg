@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：逐卖家判定 2020 年是否有销售</text>
+
+  <!-- ===== Orders (all) table ===== -->
+  <text x="40" y="52" font-size="10" fill="#888">Orders（全部 6 笔，按 seller_id 分组视角）</text>
+  <rect x="30" y="58" width="270" height="200" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="74" font-size="9" fill="#446688" font-weight="bold">oid   date        sid  年份</text>
+  <line x1="30" y1="80" x2="300" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- s3 orders -->
+  <rect x="32" y="84" width="266" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.4"/>
+  <text x="40" y="98" font-size="9" fill="#4a7a3a">o4   2020-07-03  3    2020 ✓</text>
+  <text x="40" y="114" font-size="9" fill="#4a7a3a">o6   2020-10-21  3    2020 ✓</text>
+
+  <!-- s4 orders -->
+  <rect x="32" y="126" width="266" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.4"/>
+  <text x="40" y="140" font-size="9" fill="#4a7a3a">o2   2020-05-25  4    2020 ✓</text>
+
+  <!-- s5 orders (mixed years) -->
+  <rect x="32" y="150" width="266" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="40" y="164" font-size="9" fill="#4a7a3a">o1   2020-03-01  5    2020 ✓</text>
+  <text x="40" y="180" font-size="9" fill="#b85450" text-decoration="line-through">o3   2019-12-01  5    2019 ✗</text>
+  <text x="40" y="196" font-size="9" fill="#4a7a3a">o5   2020-11-15  5    2020 ✓</text>
+
+  <!-- s6 no orders -->
+  <rect x="32" y="210" width="266" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="40" y="224" font-size="9" fill="#b85450" font-weight="bold">（无任何订单）</text>
+
+  <text x="40" y="250" font-size="8" fill="#888">o3 划线/橙框：2019 订单不参与 2020 匹配</text>
+
+  <!-- ===== Per-seller judgment ===== -->
+  <text x="370" y="52" font-size="10" fill="#888">逐卖家判定（LEFT JOIN 仅 2020 订单 → IS NULL?）</text>
+
+  <!-- s3 Daniel -->
+  <rect x="360" y="58" width="250" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="370" y="76" font-size="10" fill="#4a7a3a" font-weight="bold">s3 Daniel</text>
+  <text x="470" y="76" font-size="9" fill="#666">匹配 o4,o6 → oid 非 NULL</text>
+  <text x="370" y="92" font-size="9" fill="#b85450">→ 2020 有销售，不入选 ✗</text>
+
+  <!-- s4 Grace -->
+  <rect x="360" y="104" width="250" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="370" y="122" font-size="10" fill="#4a7a3a" font-weight="bold">s4 Grace</text>
+  <text x="470" y="122" font-size="9" fill="#666">匹配 o2 → oid 非 NULL</text>
+  <text x="370" y="138" font-size="9" fill="#b85450">→ 2020 有销售，不入选 ✗</text>
+
+  <!-- s5 Evelyn (key case) -->
+  <rect x="360" y="150" width="250" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="370" y="168" font-size="10" fill="#d6a040" font-weight="bold">s5 Evelyn ⚠️</text>
+  <text x="470" y="168" font-size="9" fill="#666">o3 是 2019 不参与匹配</text>
+  <text x="370" y="184" font-size="9" fill="#666">匹配 o1,o5 → oid 非 NULL</text>
+  <text x="370" y="200" font-size="9" fill="#b85450">→ 2020 仍有销售，不入选 ✗</text>
+
+  <!-- s6 Henry (result) -->
+  <rect x="360" y="214" width="250" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="6" filter="url(#rough2)"/>
+  <text x="370" y="232" font-size="10" fill="#b85450" font-weight="bold">s6 Henry ✓</text>
+  <text x="470" y="232" font-size="9" fill="#666">无任何订单 → oid = NULL</text>
+  <text x="370" y="250" font-size="9" fill="#b85450" font-weight="bold">→ IS NULL 命中，入选！</text>
+
+  <!-- arrow from judgment to result -->
+  <path d="M 485 264 L 485 286" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Result ===== -->
+  <rect x="380" y="290" width="210" height="56" fill="#fff" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="485" y="308" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">ORDER BY seller_name ASC</text>
+  <line x1="390" y1="314" x2="580" y2="314" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="485" y="332" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">seller_name</text>
+  <text x="485" y="338" text-anchor="middle" font-size="0" fill="#fff">.</text>
+  <text x="430" y="338" font-size="11" fill="#446688">Henry</text>
+
+  <!-- ===== Key insight note ===== -->
+  <rect x="30" y="290" width="330" height="110" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="310" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">判定对象：2020 年的销售集合（非全部销售）</text>
+  <line x1="50" y1="318" x2="340" y2="318" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <text x="40" y="334" font-size="9" fill="#666">• Henry：从未有订单 → 2020 无销售 → 入选</text>
+  <text x="40" y="350" font-size="9" fill="#666">• Evelyn：2019 有 o3，但 2020 也有 o1/o5 → 不入选</text>
+  <text x="40" y="366" font-size="9" fill="#666">• "2020 无销售" 含两类卖家：</text>
+  <text x="40" y="380" font-size="9" fill="#888">  ① 从未有任何订单；② 有订单但全在其他年份</text>
+  <text x="40" y="394" font-size="9" fill="#888">  本例仅出现第①类（Henry）</text>
+
+  <!-- ===== Bottom legend ===== -->
+  <rect x="30" y="410" width="560" height="40" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="426" font-size="9" fill="#4a7a3a">绿：2020 有销售（匹配，不入选）</text>
+  <text x="220" y="426" font-size="9" fill="#b85450">红：2020 无销售（IS NULL，入选）</text>
+  <text x="400" y="426" font-size="9" fill="#d6a040">橙：跨年份混合（关键辨析点）</text>
+  <text x="40" y="442" font-size="8" fill="#888">ON 的 YEAR() 条件让 o3(2019) 不参与匹配，是 s5 判定正确的关键</text>
+</svg>

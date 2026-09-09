@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">三种解法演进：相关子查询 → 先聚合再回连 → 窗口函数</text>
+
+  <!-- Lane 1 相关子查询 -->
+  <rect x="24" y="48" width="472" height="76" fill="#ffffff" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="68" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">① 相关子查询（暴力）</text>
+  <text x="36" y="88" font-size="8.5" fill="#555" filter="url(#rough2)">WHERE workload &gt; (SELECT AVG(...) WHERE team = 本行.team)</text>
+  <text x="36" y="107" font-size="9" fill="#8f3a36" filter="url(#rough2)">外层每行都把「我团队的均值」现场重算一遍 —— 同组均值重复计算 n 次</text>
+  <rect x="424" y="56" width="60" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="454" y="71" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">O(n²)</text>
+
+  <path d="M 60 126 L 60 134" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Lane 2 CTE -->
+  <rect x="24" y="136" width="472" height="76" fill="#ffffff" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="156" font-size="10.5" fill="#446688" font-weight="bold" filter="url(#rough2)">② CTE 先聚合、再回连（本题推荐）</text>
+  <text x="36" y="176" font-size="8.5" fill="#555" filter="url(#rough2)">WITH T AS (… GROUP BY team) SELECT … JOIN T USING(team) WHERE …</text>
+  <text x="36" y="195" font-size="9" fill="#446688" filter="url(#rough2)">均值物化成 g 行小表只算一次；回连按 team 点查 —— 两趟扫描，老库也能写</text>
+  <rect x="424" y="144" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="454" y="159" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">O(n)</text>
+
+  <path d="M 60 214 L 60 222" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Lane 3 窗口函数 -->
+  <rect x="24" y="224" width="472" height="76" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="244" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">③ 窗口函数一趟扫描</text>
+  <text x="36" y="264" font-size="8.5" fill="#555" filter="url(#rough2)">AVG(workload) OVER (PARTITION BY team) AS avg_workload</text>
+  <text x="36" y="283" font-size="9" fill="#2f5d24" filter="url(#rough2)">组均值直接广播回每一行，免回连；外层 WHERE 见不到窗口 → 包一层派生表</text>
+  <rect x="424" y="232" width="60" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="454" y="247" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">O(n)</text>
+
+  <!-- 底部注记 -->
+  <rect x="24" y="312" width="472" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="328" text-anchor="middle" font-size="8.5" fill="#7a5a10" filter="url(#rough2)">💡 选型：老库（MySQL 5.7 及以下）只有 ② 能写；MySQL 8+ / PG 用 ③ 更简洁</text>
+  <text x="260" y="344" text-anchor="middle" font-size="8.5" fill="#7a5a10" filter="url(#rough2)">Snowflake / BigQuery / DuckDB 支持 QUALIFY，连派生表都能省掉</text>
+</svg>

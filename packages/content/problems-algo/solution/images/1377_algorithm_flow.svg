@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="460" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">DFS 概率传播流程：dfs(u, parent, time, prob)</text>
+  <text x="320" y="46" text-anchor="middle" font-size="11" fill="#888">按 cnt（未访问邻居数）分三态：到点 / 卡住 / 分发</text>
+
+  <!-- ===== Entry ===== -->
+  <rect x="250" y="62" width="140" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="320" y="84" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">dfs(u, parent, time, prob)</text>
+
+  <line x1="320" y1="96" x2="320" y2="114" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision A: time == t? ===== -->
+  <polygon points="320,116 410,156 320,196 230,156" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="320" y="152" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">time == t ?</text>
+  <text x="320" y="168" text-anchor="middle" font-size="10" fill="#888">（到点判定）</text>
+
+  <!-- A yes branch -->
+  <line x1="410" y1="156" x2="470" y2="156" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="150" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="470" y="134" width="150" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="545" y="156" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">情形 A</text>
+  <text x="545" y="172" text-anchor="middle" font-size="10" fill="#444">u==target ? prob : 0</text>
+
+  <!-- A no branch -->
+  <line x1="320" y1="196" x2="320" y2="216" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="338" y="210" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== Compute cnt ===== -->
+  <rect x="220" y="218" width="200" height="34" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="320" y="240" text-anchor="middle" font-size="11" fill="#444" font-family="monospace">cnt = 邻居中 ≠ parent 的个数</text>
+
+  <line x1="320" y1="252" x2="320" y2="270" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Decision B: cnt == 0? ===== -->
+  <polygon points="320,272 410,312 320,352 230,312" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="320" y="308" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">cnt == 0 ?</text>
+  <text x="320" y="324" text-anchor="middle" font-size="10" fill="#888">（卡住判定）</text>
+
+  <!-- B yes branch -->
+  <line x1="410" y1="312" x2="470" y2="312" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="470" y="290" width="150" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="545" y="312" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">情形 B（卡住）</text>
+  <text x="545" y="328" text-anchor="middle" font-size="10" fill="#444">u==target ? prob : 0</text>
+
+  <!-- B no branch -->
+  <line x1="320" y1="352" x2="320" y2="372" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="338" y="366" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- ===== State C: distribute ===== -->
+  <rect x="190" y="374" width="260" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="320" y="392" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">情形 C：分发（cnt &gt; 0）</text>
+  <text x="320" y="408" text-anchor="middle" font-size="10" fill="#444" font-family="monospace">sum dfs(v, u, time+1, prob/cnt)</text>
+
+  <!-- loop back arrow from C to entry (left side) -->
+  <path d="M 190 394 Q 70 394 70 200 Q 70 79 250 79" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="58" y="300" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">对每个</text>
+  <text x="58" y="314" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">未访问</text>
+  <text x="58" y="328" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">邻居 v</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="426" width="580" height="26" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="320" y="444" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">入口 dfs(1,-1,0,1.0)；三态互斥全覆盖，递归至 time==t 或卡住即返回</text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：去重 → 行号 → 减日期得分组键 → 分组计数 → 取名 → 排序</text>
+
+  <!-- ===== step 1: Logins (raw, with dup) ===== -->
+  <rect x="210" y="46" width="180" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="63" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">Logins 表（含重复行）</text>
+  <text x="300" y="77" text-anchor="middle" font-size="9" fill="#888">同一天可登录多次</text>
+  <path d="M300,86 L300,100" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 2: DISTINCT dedupe ===== -->
+  <rect x="200" y="104" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="123" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">SELECT DISTINCT id, login_date</text>
+  <text x="300" y="138" text-anchor="middle" font-size="9.5" fill="#446688">去重：同日多次登录只算 1 天</text>
+  <path d="M300,148 L300,162" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 3: ROW_NUMBER ===== -->
+  <rect x="170" y="166" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="185" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ROW_NUMBER() OVER (PARTITION BY id</text>
+  <text x="300" y="200" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">ORDER BY login_date)  →  rn</text>
+  <path d="M300,210 L300,224" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 4: DATE_SUB -> g ===== -->
+  <rect x="150" y="228" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="247" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">DATE_SUB(login_date, INTERVAL rn DAY)  AS g</text>
+  <text x="300" y="262" text-anchor="middle" font-size="9.5" fill="#d6a040">连续日同 g、跳天 g 变（核心分组键）</text>
+  <path d="M300,272 L300,286" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 5: GROUP BY + HAVING ===== -->
+  <rect x="120" y="290" width="360" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="309" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">GROUP BY id, g   HAVING COUNT(*) ≥ 5</text>
+  <text x="300" y="324" text-anchor="middle" font-size="9.5" fill="#4a7a3a">筛出「连续 ≥ 5 天」的段；COUNT 数的是去重后天数</text>
+  <path d="M300,334 L300,348" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 6: JOIN Accounts + DISTINCT ===== -->
+  <rect x="140" y="352" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="371" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">JOIN Accounts 取 name   +   DISTINCT id, name</text>
+  <text x="300" y="386" text-anchor="middle" font-size="9.5" fill="#446688">DISTINCT：同一用户可能有多段都 ≥5 天，去重保留一行</text>
+  <path d="M300,396 L300,410" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== step 7: ORDER BY id -> output ===== -->
+  <rect x="200" y="414" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="431" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">ORDER BY id  →  输出 (id, name)</text>
+  <text x="300" y="445" text-anchor="middle" font-size="9" fill="#4a7a3a">活跃用户列表</text>
+
+  <!-- ===== side annotations ===== -->
+  <text x="486" y="130" font-size="9.5" fill="#888">① 去重</text>
+  <text x="486" y="190" font-size="9.5" fill="#888">② 编号</text>
+  <text x="486" y="252" font-size="9.5" fill="#888">③ 造键</text>
+  <text x="486" y="314" font-size="9.5" fill="#888">④ 筛段</text>
+  <text x="486" y="376" font-size="9.5" fill="#888">⑤ 取名</text>
+  <text x="486" y="436" font-size="9.5" fill="#888">⑥ 排序</text>
+
+  <text x="60" y="460" font-size="9" fill="#888">关键：把「连续天数」转化为「同组行数」——连续段因 date 与 rn 同步增长而 g 不变，COUNT 即段长。</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">两种解法流程对比（均封装于 CREATE FUNCTION）</text>
+
+  <!-- Left column: LIMIT OFFSET -->
+  <rect x="30" y="46" width="250" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 A：DISTINCT + LIMIT OFFSET</text>
+
+  <rect x="30" y="86" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="104" text-anchor="middle" font-size="10" fill="#b85450">① SET N = N − 1（预计算偏移）</text>
+  <text x="155" y="120" text-anchor="middle" font-size="9" fill="#888">OFFSET 在存储函数内可用局部变量</text>
+
+  <path d="M155 130 L155 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="30" y="150" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="168" text-anchor="middle" font-size="10" fill="#333">② SELECT DISTINCT salary</text>
+  <text x="155" y="184" text-anchor="middle" font-size="10" fill="#333">ORDER BY salary DESC</text>
+
+  <path d="M155 194 L155 210" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="30" y="214" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="232" text-anchor="middle" font-size="10" fill="#333">③ LIMIT 1 OFFSET N</text>
+  <text x="155" y="248" text-anchor="middle" font-size="10" fill="#b85450">取第 N 个（空则返回空集）</text>
+
+  <path d="M155 258 L155 274" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <rect x="30" y="278" width="250" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="296" text-anchor="middle" font-size="10" fill="#333">④ 外层 SELECT ( 子查询 )</text>
+  <text x="155" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">空集 → NULL 行（关键包装）</text>
+
+  <rect x="30" y="336" width="250" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="354" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">优点 / 缺点</text>
+  <text x="155" y="370" text-anchor="middle" font-size="9.5" fill="#333">最简洁，176 解法 B 的直接泛化</text>
+  <text x="155" y="382" text-anchor="middle" font-size="9.5" fill="#333">需 SET 预计算 + 外包装</text>
+
+  <!-- Right column: DENSE_RANK -->
+  <rect x="300" y="46" width="250" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">解法 B：DENSE_RANK 窗口函数</text>
+
+  <rect x="300" y="86" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="104" text-anchor="middle" font-size="10" fill="#333">① DENSE_RANK() OVER</text>
+  <text x="425" y="120" text-anchor="middle" font-size="10" fill="#333">(ORDER BY salary DESC) AS rk</text>
+
+  <path d="M425 130 L425 146" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="300" y="150" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="168" text-anchor="middle" font-size="10" fill="#333">② 同薪同号，下一名不跳号</text>
+  <text x="425" y="184" text-anchor="middle" font-size="9" fill="#888">[200,200,100] → 1,1,2</text>
+
+  <path d="M425 194 L425 210" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="300" y="214" width="250" height="42" fill="#fff" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="232" text-anchor="middle" font-size="10" fill="#333">③ WHERE rk = N</text>
+  <text x="425" y="248" text-anchor="middle" font-size="10" fill="#b85450">取第 N 名（无则空集）</text>
+
+  <path d="M425 258 L425 274" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <rect x="300" y="278" width="250" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="296" text-anchor="middle" font-size="10" fill="#333">④ SELECT DISTINCT + 外包装</text>
+  <text x="425" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">空集 → NULL 行</text>
+
+  <rect x="300" y="336" width="250" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="354" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">优点 / 缺点</text>
+  <text x="425" y="370" text-anchor="middle" font-size="9.5" fill="#333">显式表达「并列名次」语义</text>
+  <text x="425" y="382" text-anchor="middle" font-size="9.5" fill="#333">子查询嵌套深，写法略繁</text>
+
+  <!-- VS divider -->
+  <text x="290" y="100" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">VS</text>
+</svg>

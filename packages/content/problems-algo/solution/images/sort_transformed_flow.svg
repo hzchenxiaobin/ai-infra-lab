@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 9 4 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="380" height="520" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="190" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">有序转化数组 · 算法流程</text>
+
+  <!-- Start oval -->
+  <ellipse cx="190" cy="58" rx="52" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="63" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">开始</text>
+
+  <!-- arrow down -->
+  <path d="M 190 80 L 190 100" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init: compute f for all nums -->
+  <rect x="70" y="104" width="240" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="124" text-anchor="middle" font-size="12" fill="#333">预处理：fv[i] = a·nums[i]² + b·nums[i] + c</text>
+  <text x="190" y="140" text-anchor="middle" font-size="11" fill="#666">left = 0, right = n − 1</text>
+
+  <!-- arrow down -->
+  <path d="M 190 154 L 190 176" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: a > 0 ? -->
+  <polygon points="190,180 280,230 190,280 100,230" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="226" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">a &gt; 0 ?</text>
+  <text x="190" y="242" text-anchor="middle" font-size="10" fill="#666">（开口方向）</text>
+
+  <!-- ========= YES branch (a > 0): back-fill ========= -->
+  <path d="M 280 230 L 340 230 L 340 300" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="222" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="256" y="304" width="168" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="340" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">从后往前填</text>
+  <text x="340" y="340" text-anchor="middle" font-size="11" fill="#333">pos = n−1, 递减</text>
+  <text x="340" y="356" text-anchor="middle" font-size="11" fill="#b85450">取 fv[left], fv[right] 较大者</text>
+
+  <!-- ========= NO branch (a <= 0): front-fill ========= -->
+  <path d="M 100 230 L 40 230 L 40 300" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="64" y="222" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <rect x="-44" y="304" width="168" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="324" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">从前往后填</text>
+  <text x="40" y="340" text-anchor="middle" font-size="11" fill="#333">pos = 0, 递增</text>
+  <text x="40" y="356" text-anchor="middle" font-size="11" fill="#4a7a3a">取 fv[left], fv[right] 较小者</text>
+
+  <!-- Merge: both branches go to "compare & fill" loop -->
+  <path d="M 340 370 L 340 400 L 190 400" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 40 370 L 40 400 L 190 400" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop condition -->
+  <polygon points="190,404 270,440 190,476 110,440" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="436" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">left ≤ right ?</text>
+  <text x="190" y="452" text-anchor="middle" font-size="10" fill="#666">（还有未处理元素）</text>
+
+  <!-- Yes: loop back up to compare (dashed) -->
+  <path d="M 270 440 L 340 440 L 340 260 L 340 304" stroke="#666" stroke-width="1.5" fill="none"
+        stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="352" y="380" font-size="10" fill="#888" transform="rotate(90 352 380)">回循环：选较大/较小 → res[pos] → 移动指针 → pos+/−</text>
+
+  <!-- No: end -->
+  <path d="M 110 440 L 40 440 L 40 500 L 142 500" stroke="#666" stroke-width="1.6" fill="none"
+        stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="58" y="432" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- End oval -->
+  <ellipse cx="190" cy="500" rx="56" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="505" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">结束（返回 res）</text>
+</svg>

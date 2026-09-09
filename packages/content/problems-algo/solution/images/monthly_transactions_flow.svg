@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="520" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法执行流程：FROM → 派生 month → GROUP BY → 条件聚合 → SELECT</text>
+
+  <!-- Step 1: FROM -->
+  <rect x="160" y="50" width="240" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="70" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① FROM Transactions</text>
+  <text x="280" y="86" text-anchor="middle" font-size="9" fill="#666">读取交易表全部行</text>
+
+  <path d="M280 96 L280 116" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 2: DATE_FORMAT -->
+  <rect x="120" y="120" width="320" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="142" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 派生 month 列</text>
+  <text x="280" y="160" text-anchor="middle" font-size="9.5" fill="#333" font-family="'Comic Sans MS', monospace">DATE_FORMAT(trans_date, '%Y-%m') AS month</text>
+  <text x="280" y="172" text-anchor="middle" font-size="8.5" fill="#888">2018-12-18 → "2018-12"</text>
+
+  <path d="M280 180 L280 200" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY -->
+  <rect x="140" y="204" width="280" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="226" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ GROUP BY month, country</text>
+  <text x="280" y="244" text-anchor="middle" font-size="9" fill="#666">按「年-月 × 国家」二维分组</text>
+  <text x="280" y="256" text-anchor="middle" font-size="8.5" fill="#888">同一月同一国家的交易并入一组</text>
+
+  <path d="M280 264 L280 284" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Conditional Aggregation -->
+  <rect x="60" y="288" width="440" height="86" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="310" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">④ 条件聚合（SELECT 阶段，每组算 4 个指标）</text>
+
+  <rect x="78" y="318" width="195" height="24" fill="#fff" stroke="#bbb" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="334" text-anchor="middle" font-size="8.5" fill="#446688">COUNT(*) → trans_count</text>
+
+  <rect x="287" y="318" width="195" height="24" fill="#fff" stroke="#bbb" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="384" y="334" text-anchor="middle" font-size="8.5" fill="#446688">SUM(amount) → trans_total_amount</text>
+
+  <rect x="78" y="346" width="195" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="362" text-anchor="middle" font-size="7.8" fill="#4a7a3a">SUM(IF(state='approved',1,0))</text>
+
+  <rect x="287" y="346" width="195" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="4" filter="url(#rough2)"/>
+  <text x="384" y="362" text-anchor="middle" font-size="7.8" fill="#4a7a3a">SUM(IF(state='approved',amount,0))</text>
+
+  <path d="M280 378 L280 398" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: Output -->
+  <rect x="80" y="402" width="400" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="424" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑤ 输出结果</text>
+  <text x="280" y="442" text-anchor="middle" font-size="8.5" fill="#666">month, country, trans_count, approved_count,</text>
+  <text x="280" y="452" text-anchor="middle" font-size="8.5" fill="#666">trans_total_amount, approved_total_amount</text>
+
+  <!-- note box -->
+  <rect x="40" y="468" width="480" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="486" text-anchor="middle" font-size="9" fill="#d6a040">💡 SQL 子句执行顺序：FROM → WHERE → GROUP BY → HAVING → SELECT(聚合) → ORDER BY</text>
+  <text x="280" y="502" text-anchor="middle" font-size="9" fill="#d6a040">month 派生列在 SELECT 阶段命名，但 GROUP BY 可直接引用该表达式或别名</text>
+</svg>

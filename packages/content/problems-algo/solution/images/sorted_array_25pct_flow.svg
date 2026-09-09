@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#555"/>
+    </marker>
+    <marker id="arrr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：取三个四分位点 → 二分求频次 → 判定</text>
+
+  <!-- Step 1: 预处理 -->
+  <rect x="40" y="44" width="480" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="64" font-size="12" fill="#b85450" font-weight="bold">步骤 1：计算阈值与候选位置</text>
+  <text x="60" y="82" font-size="11" fill="#444">n = len(arr)，threshold = n / 4，候选下标 = {n/4, n/2, 3n/4}</text>
+
+  <path d="M 280 98 L 280 118" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: 遍历候选 -->
+  <rect x="40" y="122" width="480" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="142" font-size="12" fill="#446688" font-weight="bold">步骤 2：对每个候选下标 i，取 candidate = arr[i]</text>
+  <text x="60" y="160" font-size="11" fill="#444">三个候选互不相同（保证恰好一个 &gt; 25%），逐一检查即可</text>
+
+  <path d="M 280 176 L 280 196" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: 二分 -->
+  <rect x="40" y="200" width="480" height="100" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="220" font-size="12" fill="#446688" font-weight="bold">步骤 3：二分查找 candidate 的左右边界</text>
+  <text x="60" y="240" font-size="11" fill="#444" font-family="monospace">left  = lower_bound(arr, candidate)    // 首个 &gt;= candidate 的位置</text>
+  <text x="60" y="258" font-size="11" fill="#444" font-family="monospace">right = upper_bound(arr, candidate) - 1 // 末尾 == candidate 的位置</text>
+  <text x="60" y="278" font-size="11" fill="#444" font-family="monospace">count = right - left + 1</text>
+  <text x="60" y="294" font-size="10" fill="#888">数组有序 → 相同元素连续 → 二分两端 O(log n) 即得频次</text>
+
+  <path d="M 280 302 L 280 322" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: 判定 -->
+  <rect x="100" y="326" width="360" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="346" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">步骤 4：count &gt; threshold？</text>
+  <text x="280" y="364" text-anchor="middle" font-size="11" fill="#444">是 → 返回 candidate；否 → 检查下一个候选</text>
+
+  <!-- Yes branch -->
+  <path d="M 460 352 L 500 352 L 500 392" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="476" y="376" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="430" y="396" width="140" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="416" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">return candidate</text>
+
+  <!-- No branch (loop back) -->
+  <path d="M 100 352 L 60 352 L 60 148 L 40 148" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="44" y="250" font-size="10" fill="#4a7a3a" font-weight="bold">否，下一个</text>
+</svg>

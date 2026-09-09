@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrC" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：双堆分工 —— 空闲堆管「编号最小」，占用堆管「结束最早」</text>
+
+  <!-- Left: idle heap -->
+  <text x="120" y="66" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">空闲堆 idle（小顶堆·按编号）</text>
+  <rect x="70" y="78" width="100" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="96" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">房间 0 ← 堆顶</text>
+  <rect x="78" y="110" width="84" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="126" text-anchor="middle" font-size="11" fill="#555">房间 1</text>
+  <rect x="86" y="138" width="68" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="152" text-anchor="middle" font-size="10.5" fill="#777">房间 2</text>
+  <text x="120" y="180" text-anchor="middle" font-size="10.5" fill="#446688">取最小号 → 规则①</text>
+
+  <!-- arrow idle -> used (assign) -->
+  <path d="M 178 100 Q 230 80 286 100" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="232" y="78" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">分配会议</text>
+
+  <!-- Middle: used heap -->
+  <text x="370" y="66" text-anchor="middle" font-size="12.5" fill="#d6a040" font-weight="bold">占用堆 used（小顶堆·按结束时间）</text>
+  <rect x="320" y="78" width="100" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="370" y="96" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">(end=5, 房间1) ← 堆顶</text>
+  <rect x="328" y="110" width="84" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="370" y="126" text-anchor="middle" font-size="11" fill="#555">(end=10, 房间0)</text>
+  <text x="370" y="152" text-anchor="middle" font-size="10.5" fill="#d6a040">无空闲时取最早结束 → 规则②</text>
+
+  <!-- arrow used -> idle (release) -->
+  <path d="M 316 100 Q 260 150 182 112" stroke="#888" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrC)" filter="url(#rough2)"/>
+  <text x="262" y="166" text-anchor="middle" font-size="10" fill="#888">会议结束·归还空闲堆</text>
+
+  <!-- Decision box: two cases -->
+  <text x="280" y="200" text-anchor="middle" font-size="12.5" fill="#555" font-weight="bold">对每个会议 (s, e)，先释放 used 中 end ≤ s 的房间回 idle，再分两种情况：</text>
+
+  <!-- Case A -->
+  <rect x="40" y="216" width="230" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="238" font-size="12" fill="#4a7a3a" font-weight="bold">情况 A：idle 非空</text>
+  <text x="56" y="258" font-size="11" fill="#4a7a3a">取堆顶房间 r，按原时间 [s,e) 召开</text>
+  <text x="56" y="276" font-size="11" fill="#4a7a3a">push (e, r) 进 used，cnt[r]++</text>
+  <text x="56" y="290" font-size="10.5" fill="#888">→ 有空房，正常开会</text>
+
+  <!-- Case B -->
+  <rect x="290" y="216" width="230" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="306" y="238" font-size="12" fill="#b85450" font-weight="bold">情况 B：idle 为空</text>
+  <text x="306" y="258" font-size="11" fill="#b85450">弹 used 最早结束房间 (end, r)</text>
+  <text x="306" y="276" font-size="11" fill="#b85450">延期召开 [end, end+(e−s))，cnt[r]++</text>
+  <text x="306" y="290" font-size="10.5" fill="#888">→ 无空房，顺延到最早腾出的房间</text>
+
+  <!-- key insight box -->
+  <rect x="40" y="312" width="480" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="334" font-size="12" fill="#446688" font-weight="bold">💡 为什么两个堆就够了？</text>
+  <text x="56" y="352" font-size="11" fill="#446688">idle 堆保证「取到编号最小的空闲房间」（满足规则①）；used 堆保证「最早腾出的房间先被复用」</text>
+  <text x="56" y="370" font-size="11" fill="#446688">按 start 升序处理会议，自然满足规则③「开始更早的会议优先」——后到者只能等前面安排完</text>
+</svg>

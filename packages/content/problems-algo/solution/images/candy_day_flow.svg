@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    算法流程：预处理前缀和 → 逐查询区间相交判定
+  </text>
+
+  <!-- ===== Step 1: prefix sum ===== -->
+  <rect x="60" y="48" width="440" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">
+    ① 预处理前缀和 s[0..n]
+  </text>
+  <text x="280" y="86" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">
+    s[0]=0;  s[i+1] = s[i] + candiesCount[i]
+  </text>
+  <text x="280" y="103" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">
+    ⚠️ 用 long long：总和可达 10^10，溢出 32 位
+  </text>
+
+  <!-- arrow down -->
+  <path d="M280,116 L280,134" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: loop over queries ===== -->
+  <rect x="60" y="138" width="440" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="158" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">
+    ② 遍历每个查询 q = [t, day, mx]
+  </text>
+  <text x="280" y="174" text-anchor="middle" font-size="10" fill="#666" filter="url(#rough2)">
+    每个 O(1) 判定，共 q 个查询
+  </text>
+
+  <!-- arrow down -->
+  <path d="M280,186 L280,204" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: compute least & most ===== -->
+  <rect x="60" y="208" width="440" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="228" text-anchor="middle" font-size="12" fill="#5a4a1a" filter="url(#rough2)">
+    ③ 计算日累积区间端点
+  </text>
+  <text x="280" y="246" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">
+    least = day                    （进入当天前最少已吃）
+  </text>
+  <text x="280" y="263" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">
+    most  = 1LL × (day+1) × mx   （当天结束最多已吃）
+  </text>
+
+  <!-- arrow down to decision -->
+  <path d="M280,276 L280,294" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: decision diamond ===== -->
+  <polygon points="280,296 410,344 280,392 150,344" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="336" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">
+    least &lt; s[t+1]
+  </text>
+  <text x="280" y="352" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">
+    且
+  </text>
+  <text x="280" y="368" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">
+    most &gt; s[t]  ?
+  </text>
+
+  <!-- arrow right (yes) -->
+  <path d="M410,344 L470,344" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="440,338" font-size="10" fill="#4a7a3a" filter="url(#rough2)"></text>
+  <text x="442" y="338" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">是</text>
+  <rect x="472" y="328" width="64" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="504" y="349" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">true</text>
+
+  <!-- arrow left (no) -->
+  <path d="M150,344 L90,344" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="338" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">否</text>
+  <rect x="28" y="328" width="60" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="58" y="349" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">false</text>
+
+  <!-- ===== Bottom note ===== -->
+  <rect x="60" y="410" width="440" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="427" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">
+    返回 answer 数组
+  </text>
+  <text x="280" y="442" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">
+    时间 O(n+q)  /  空间 O(n)
+  </text>
+
+</svg>

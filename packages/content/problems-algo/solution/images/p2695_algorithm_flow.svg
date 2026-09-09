@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：构造存数组，+ 与 String() 触发两个隐式钩子</text>
+
+  <!-- Step 1: constructor -->
+  <rect x="40" y="50" width="520" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="74" font-size="12" fill="#446688" font-weight="bold">① new ArrayWrapper(nums)</text>
+  <text x="60" y="94" font-size="11" fill="#333">把入参数组存到实例字段：this.nums = nums</text>
+
+  <path d="M 300 108 L 300 132" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: branch point -->
+  <rect x="40" y="136" width="520" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="162" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">②  对象被使用时，JS 引擎按「上下文」自动选钩子</text>
+
+  <!-- left branch: + -->
+  <path d="M 180 176 L 180 200" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="40" y="204" width="280" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="226" font-size="12" fill="#b85450" font-weight="bold">obj1 + obj2 （数值上下文）</text>
+  <text x="60" y="244" font-size="11" fill="#333">引擎对两边各调一次 valueOf()</text>
+  <text x="60" y="258" font-size="11" fill="#888">return this.nums.reduce((a,b)=&gt;a+b, 0)</text>
+
+  <!-- right branch: String -->
+  <path d="M 420 176 L 420 200" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="280" y="204" width="280" height="58" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="226" font-size="12" fill="#b85450" font-weight="bold">String(obj) （字符串上下文）</text>
+  <text x="300" y="244" font-size="11" fill="#333">引擎调一次 toString()</text>
+  <text x="300" y="258" font-size="11" fill="#888">return "[" + this.nums.join(",") + "]"</text>
+
+  <path d="M 180 262 L 180 286" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 420 262 L 420 286" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- results -->
+  <rect x="40" y="290" width="280" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="180" y="320" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">两数组元素总和 = 10</text>
+
+  <rect x="280" y="290" width="280" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="320" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">"[23,98,42,70]"</text>
+
+  <!-- footer -->
+  <text x="300" y="366" text-anchor="middle" font-size="11" fill="#888">💡 钩子是对「对象 → 原始值」转换的协议：valueOf 管数字、toString 管字符串</text>
+  <text x="300" y="384" text-anchor="middle" font-size="11" fill="#888">reduce 求和 + join 拼串 即覆盖全部约束，无额外分支</text>
+</svg>

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">火星词典算法流程：提边 → 拓扑排序 → 判环</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="50" rx="50" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="54" text-anchor="middle" font-size="12" fill="#333">开始</text>
+  <path d="M 280 66 L 280 78" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 1: collect chars -->
+  <rect x="130" y="82" width="300" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="100" text-anchor="middle" font-size="12" fill="#333">① 收集所有出现过的字符为节点，入度初始化为 0</text>
+  <path d="M 280 110 L 280 122" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: iterate word pairs -->
+  <rect x="100" y="126" width="360" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="142" text-anchor="middle" font-size="12" fill="#333">② 遍历相邻词对 (a, b)</text>
+  <text x="280" y="156" text-anchor="middle" font-size="11" fill="#666">从左到右找首个不同位置 j</text>
+  <path d="M 280 162 L 280 174" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 1: prefix violation? -->
+  <polygon points="280,176 390,200 280,224 170,200" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="11" fill="#333">a 以 b 为前缀</text>
+  <text x="280" y="210" text-anchor="middle" font-size="11" fill="#333">且 a 更长?</text>
+  <!-- Yes -> right -->
+  <path d="M 390 200 L 428 200" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="409" y="193" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <ellipse cx="490" cy="200" rx="58" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="490" y="204" text-anchor="middle" font-size="11" fill="#333">返回 ""（非法）</text>
+  <!-- No -> down -->
+  <path d="M 280 224 L 280 240" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="236" font-size="11" fill="#82b366">否</text>
+
+  <!-- Decision 2: j < min(len)? -->
+  <polygon points="280,242 380,264 280,286 180,264" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="268" text-anchor="middle" font-size="11" fill="#333">j &lt; min(len)?</text>
+  <!-- No -> right -->
+  <path d="M 380 264 L 418 264" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="399" y="257" text-anchor="middle" font-size="11" fill="#888">否</text>
+  <rect x="420" y="252" width="110" height="24" fill="#f5f5f5" stroke="#aaa" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="268" text-anchor="middle" font-size="10" fill="#888">无偏序，跳过</text>
+  <!-- Yes -> down -->
+  <path d="M 280 286 L 280 298" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="295" font-size="11" fill="#82b366">是</text>
+
+  <!-- Add edge -->
+  <rect x="150" y="300" width="260" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="318" text-anchor="middle" font-size="12" fill="#333">建边 a[j] → b[j]，indegree[b[j]]++</text>
+
+  <!-- Loop back to step 2 -->
+  <path d="M 150 314 L 60 314 L 60 144 L 100 144" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="230" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 50 230)">对每对相邻词重复 ②</text>
+
+  <!-- arrow to Kahn -->
+  <path d="M 280 328 L 280 340" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="350" y="338" font-size="10" fill="#888">（遍历完所有词对）</text>
+
+  <!-- Step 3: Kahn BFS -->
+  <rect x="100" y="344" width="360" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="360" text-anchor="middle" font-size="12" fill="#333">③ Kahn BFS：入度 0 入队 → 出队追加 result</text>
+  <text x="280" y="376" text-anchor="middle" font-size="11" fill="#666">→ 邻点入度 −1，归零则入队</text>
+  <path d="M 280 384 L 280 394" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision 3: result == node count? -->
+  <polygon points="280,396 390,418 280,440 170,418" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="414" text-anchor="middle" font-size="11" fill="#333">result.length</text>
+  <text x="280" y="428" text-anchor="middle" font-size="11" fill="#333">== 节点数?</text>
+  <!-- Yes -> right -->
+  <path d="M 390 418 L 428 418" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="409" y="411" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <ellipse cx="492" cy="418" rx="55" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="492" y="422" text-anchor="middle" font-size="11" fill="#333">返回 result</text>
+  <!-- No -> down -->
+  <path d="M 280 440 L 280 450" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="293" y="448" font-size="10" fill="#b85450">否</text>
+  <ellipse cx="280" cy="464" rx="62" ry="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="468" text-anchor="middle" font-size="11" fill="#333">返回 ""（有环）</text>
+</svg>

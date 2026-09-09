@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：9 方向偏移枚举 + 越界跳过</text>
+
+  <!-- ① create ans -->
+  <rect x="150" y="50" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 创建 ans 矩阵（与 img 同尺寸）</text>
+  <text x="424" y="72" font-size="10" fill="#b85450">⚠ 不能原地</text>
+
+  <path d="M 280 86 L 280 98" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② for each (i,j) -->
+  <rect x="150" y="100" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 遍历每个格子 (i, j) ∈ [0,m)×[0,n)</text>
+
+  <path d="M 280 136 L 280 148" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ init + enumerate dirs -->
+  <rect x="150" y="150" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="172" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ sum=0, count=0；枚举 (di,dj)∈{−1,0,1}²</text>
+
+  <path d="M 280 186 L 280 196" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond: 越界? -->
+  <polygon points="280,198 340,228 280,258 220,228" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="225" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">ni=i+di</text>
+  <text x="280" y="238" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">nj=j+dj 越界?</text>
+
+  <!-- yes branch: right -->
+  <path d="M 340 228 L 372 228" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="356" y="220" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="378" y="214" width="96" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="426" y="232" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">跳过 continue</text>
+
+  <!-- yes loop back to ③ -->
+  <path d="M 426 214 L 426 167 L 412 167" stroke="#b85450" stroke-width="1.4" stroke-dasharray="5,3" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="440" y="192" font-size="9" fill="#b85450">↻ 下一方向</text>
+
+  <!-- no branch: down -->
+  <path d="M 280 258 L 280 270" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="292" y="268" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- ④ accumulate -->
+  <rect x="150" y="272" width="260" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="294" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ sum += img[ni][nj]；count++</text>
+
+  <!-- ④ loop back to ③ (left dashed) -->
+  <path d="M 150 289 L 120 289 L 120 167 L 148 167" stroke="#4a7a3a" stroke-width="1.4" stroke-dasharray="5,3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="92" y="230" font-size="9" fill="#4a7a3a" font-weight="bold">↻ 下一方向</text>
+
+  <!-- fall through to ⑤ (after 9 dirs) -->
+  <path d="M 280 308 L 280 320" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="318" font-size="9" fill="#888">9 方向完</text>
+
+  <!-- ⑤ assign -->
+  <rect x="150" y="322" width="260" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="344" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑤ ans[i][j] = sum ÷ count（整数除法）</text>
+
+  <!-- ⑤ loop back to ② (right dashed) -->
+  <path d="M 410 339 L 470 339 L 470 117 L 412 117" stroke="#446688" stroke-width="1.4" stroke-dasharray="5,3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="482" y="230" font-size="9" fill="#446688" font-weight="bold">↻ 下一格</text>
+
+  <path d="M 280 358 L 280 370" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ⑥ return -->
+  <rect x="150" y="372" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="394" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑥ 全部遍历完，返回 ans</text>
+
+  <!-- right note: 9 directions mini grid -->
+  <rect x="418" y="372" width="120" height="50" fill="#fafafa" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2" rx="6" filter="url(#rough2)"/>
+  <text x="478" y="388" text-anchor="middle" font-size="9" fill="#888">9 方向 = {−1,0,1}²</text>
+  <text x="455" y="404" text-anchor="middle" font-size="9" fill="#aaa">−</text>
+  <text x="478" y="404" text-anchor="middle" font-size="9" fill="#aaa">0</text>
+  <text x="501" y="404" text-anchor="middle" font-size="9" fill="#aaa">+</text>
+  <text x="478" y="416" text-anchor="middle" font-size="9" fill="#888">3×3 含自身</text>
+</svg>

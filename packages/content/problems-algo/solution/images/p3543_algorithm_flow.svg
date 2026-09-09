@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="13.5" fill="#333" font-weight="bold" filter="url(#rough2)">分层 DP：k 轮「全体边各松弛一次」，免拓扑序</text>
+
+  <!-- 主流程 -->
+  <rect x="40" y="36" width="250" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="51" text-anchor="middle" font-size="10" font-weight="bold" fill="#446688" filter="url(#rough2)">初始化：dp[v] = {0}（bit 0 = 1）</text>
+  <text x="165" y="66" text-anchor="middle" font-size="10" fill="#446688" filter="url(#rough2)">mask = 2^t − 1（保留和 &lt; t）</text>
+
+  <path d="M 165 76 L 165 88" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="65" y="90" width="200" height="26" rx="13" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="107" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#7a6020" filter="url(#rough2)">重复 k 轮（每轮恰好 +1 条边）</text>
+
+  <path d="M 165 116 L 165 126" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="55" y="128" width="220" height="106" rx="8" fill="#fffdf6" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="5 4" filter="url(#rough2)"/>
+
+  <rect x="68" y="138" width="194" height="22" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="165" y="153" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">① nxt[v] ← 0（新层清零）</text>
+
+  <rect x="68" y="166" width="194" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="180" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#446688" filter="url(#rough2)">② 每条边 (u, v, w)：</text>
+  <text x="165" y="194" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#446688" filter="url(#rough2)">nxt[v] |= (dp[u] &lt;&lt; w) &amp; mask</text>
+
+  <rect x="68" y="208" width="194" height="22" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="165" y="223" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">③ dp ← nxt（整层替换）</text>
+
+  <path d="M 165 234 L 165 244" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="165,246 236,275 165,304 94,275" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="272" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450" filter="url(#rough2)">k 轮做完？</text>
+  <text x="165" y="287" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">（j = k）</text>
+
+  <path d="M 94 275 C 40 275, 40 103, 62 103" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="52" y="192" font-size="9" font-weight="bold" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <path d="M 165 304 L 165 316" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="174" y="313" font-size="9" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">是</text>
+
+  <rect x="40" y="318" width="250" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="165" y="333" text-anchor="middle" font-size="10" font-weight="bold" fill="#2f5527" filter="url(#rough2)">ans = 所有 dp[v] 的最高置位</text>
+  <text x="165" y="347" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">全 0 ⇒ 返回 −1</text>
+
+  <!-- 右列注释 -->
+  <rect x="300" y="36" width="205" height="58" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="402" y="54" text-anchor="middle" font-size="10" font-weight="bold" fill="#446688" filter="url(#rough2)">第 j 轮结束时</text>
+  <text x="402" y="70" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">dp[v] = 恰好 j 条边、以 v 结尾</text>
+  <text x="402" y="84" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">且和 &lt; t 的全部可达和</text>
+
+  <rect x="300" y="102" width="205" height="66" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="402" y="120" text-anchor="middle" font-size="10" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">为什么不用拓扑序？</text>
+  <text x="402" y="136" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">一轮只读旧层 dp、只写新层 nxt</text>
+  <text x="402" y="150" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">第 j+1 层完全由第 j 层推出</text>
+  <text x="402" y="163" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">（同 Bellman-Ford「恰好 k 步」）</text>
+
+  <rect x="300" y="176" width="205" height="58" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="402" y="194" text-anchor="middle" font-size="10" font-weight="bold" fill="#7a6020" filter="url(#rough2)">DAG 的两个免检好处</text>
+  <text x="402" y="210" text-anchor="middle" font-size="9" fill="#7a6020" filter="url(#rough2)">① 无环 ⇒ 走 k 步必为简单路径</text>
+  <text x="402" y="224" text-anchor="middle" font-size="9" fill="#7a6020" filter="url(#rough2)">② k &gt; n−1 ⇒ 层自动变空 → −1</text>
+
+  <rect x="300" y="242" width="205" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="402" y="258" text-anchor="middle" font-size="10" font-weight="bold" fill="#446688" filter="url(#rough2)">k = 0 的边界</text>
+  <text x="402" y="273" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">不进循环，dp[v] = {0}</text>
+  <text x="402" y="286" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">0 &lt; t（t ≥ 1）⇒ 答案 0</text>
+
+  <rect x="300" y="300" width="205" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="402" y="316" text-anchor="middle" font-size="10" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">复杂度</text>
+  <text x="402" y="332" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">O(k·E·t / 64)，空间 O(n·t / 64)</text>
+</svg>

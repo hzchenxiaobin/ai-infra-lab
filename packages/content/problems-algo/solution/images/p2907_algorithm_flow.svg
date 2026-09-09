@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：枚举中间 j → 左右各扫一遍 → 拼候选答案</text>
+
+  <!-- 步骤1 -->
+  <rect x="155" y="38" width="250" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="60" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① ans = −1</text>
+
+  <path d="M 280 72 L 280 88" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrf)" filter="url(#rough2)"/>
+
+  <!-- 步骤2：主循环容器 -->
+  <rect x="60" y="90" width="440" height="200" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② for j = 1 … n−2（枚举中间元素）</text>
+
+  <rect x="84" y="122" width="392" height="46" fill="#ffffff" stroke="#aaa" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="140" text-anchor="middle" font-size="11" fill="#333">left = 0；for i = 0 … j−1：</text>
+  <text x="280" y="158" text-anchor="middle" font-size="11" fill="#555">prices[i] &lt; prices[j] → left = max(left, profits[i])</text>
+
+  <rect x="84" y="176" width="392" height="46" fill="#ffffff" stroke="#aaa" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="194" text-anchor="middle" font-size="11" fill="#333">right = 0；for k = j+1 … n−1：</text>
+  <text x="280" y="212" text-anchor="middle" font-size="11" fill="#555">prices[k] &gt; prices[j] → right = max(right, profits[k])</text>
+
+  <rect x="84" y="230" width="392" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="250" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">left &gt; 0 且 right &gt; 0 ？</text>
+  <text x="280" y="268" text-anchor="middle" font-size="10" fill="#555">是 → ans = max(ans, left + profits[j] + right)；否 → 跳过这个 j</text>
+
+  <!-- 循环回边 -->
+  <path d="M 500 200 C 526 200, 526 112, 502 112" fill="none" stroke="#d6a040" stroke-width="2" marker-end="url(#arro)" filter="url(#rough2)"/>
+  <text x="527" y="160" text-anchor="middle" font-size="10" fill="#d6a040">下</text>
+  <text x="527" y="172" text-anchor="middle" font-size="10" fill="#d6a040">一</text>
+  <text x="527" y="184" text-anchor="middle" font-size="10" fill="#d6a040">个</text>
+  <text x="527" y="196" text-anchor="middle" font-size="10" fill="#d6a040">j</text>
+
+  <path d="M 280 290 L 280 308" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrf)" filter="url(#rough2)"/>
+
+  <!-- 步骤3 -->
+  <rect x="130" y="310" width="300" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="330" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 返回 ans</text>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#555">（始终没更新过就仍是 −1）</text>
+
+  <!-- 侧注 -->
+  <rect x="40" y="378" width="480" height="76" fill="#ffffff" stroke="#446688" stroke-width="1.5" stroke-dasharray="6 4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">为什么固定中间元素？</text>
+  <text x="280" y="416" text-anchor="middle" font-size="11" fill="#555">左条件 prices[i] &lt; prices[j]、右条件 prices[k] &gt; prices[j] 都只依赖 prices[j]，</text>
+  <text x="280" y="432" text-anchor="middle" font-size="11" fill="#555">固定 j 后两侧彻底解耦，各自线性扫一遍；固定 i 或 k 都剩二维耦合</text>
+  <text x="280" y="448" text-anchor="middle" font-size="11" fill="#555">两侧 argmax 分居 j 左右（i′ &lt; j &lt; k′），拼出的候选天然合法</text>
+</svg>

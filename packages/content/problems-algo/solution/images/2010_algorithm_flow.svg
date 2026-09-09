@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="420" fill="#fafafa"/>
+
+  <text x="320" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：CTE s（高级累计）→ CTE j（初级累计+偏移）→ UNION 输出 id</text>
+
+  <!-- ===== CTE s ===== -->
+  <rect x="40" y="48" width="260" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="68" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">CTE s（高级累计前缀和）</text>
+  <text x="55" y="88" font-size="9.5" fill="#335">SELECT employee_id,</text>
+  <text x="55" y="103" font-size="9.5" fill="#335">  SUM(salary) OVER (ORDER BY salary) AS cur</text>
+  <text x="55" y="118" font-size="9.5" fill="#335">FROM Candidates</text>
+  <text x="55" y="133" font-size="9.5" fill="#335">WHERE experience = 'Senior'</text>
+  <rect x="55" y="140" width="230" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="153" text-anchor="middle" font-size="8.8" fill="#a87020">salary 唯一 → 无需 ROWS，默认 RANGE 即可</text>
+
+  <!-- arrow s -> spent -->
+  <path d="M170 168 L170 188" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== offset box ===== -->
+  <rect x="40" y="192" width="260" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="210" text-anchor="middle" font-size="10.5" fill="#a87020" font-weight="bold">高级实际花费 = 偏移量</text>
+  <text x="55" y="226" font-size="9" fill="#555">IFNULL((SELECT MAX(cur)</text>
+  <text x="55" y="240" font-size="9" fill="#555">  FROM s WHERE cur &lt;= 70000), 0)</text>
+
+  <!-- arrow offset -> j -->
+  <path d="M170 248 L170 268" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ===== CTE j ===== -->
+  <rect x="40" y="272" width="260" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="170" y="292" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">CTE j（初级累计 = 偏移 + 前缀和）</text>
+  <text x="55" y="312" font-size="9.5" fill="#335">SELECT employee_id,</text>
+  <text x="55" y="327" font-size="9.5" fill="#335">  &lt;偏移&gt; + SUM(salary) OVER (ORDER BY salary) AS cur</text>
+  <text x="55" y="342" font-size="9.5" fill="#335">FROM Candidates</text>
+  <text x="55" y="357" font-size="9.5" fill="#335">WHERE experience = 'Junior'</text>
+  <rect x="55" y="364" width="230" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="170" y="377" text-anchor="middle" font-size="8.8" fill="#a87020">初级预算 = 70000 − 高级花费</text>
+
+  <!-- ===== Right: SELECT id ===== -->
+  <rect x="360" y="80" width="240" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="100" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">SELECT ① 高级被雇 id</text>
+  <text x="375" y="118" font-size="9.5" fill="#335">SELECT employee_id</text>
+  <text x="375" y="133" font-size="9.5" fill="#335">FROM s</text>
+  <text x="375" y="148" font-size="9.5" fill="#335">WHERE cur &lt;= 70000</text>
+
+  <rect x="360" y="280" width="240" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="300" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">SELECT ② 初级被雇 id</text>
+  <text x="375" y="318" font-size="9.5" fill="#335">SELECT employee_id</text>
+  <text x="375" y="333" font-size="9.5" fill="#335">FROM j</text>
+  <text x="375" y="348" font-size="9.5" fill="#335">WHERE cur &lt;= 70000</text>
+
+  <!-- arrows from CTEs to SELECTs -->
+  <path d="M300 108 L358 120" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M300 332 L358 320" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== UNION ===== -->
+  <rect x="380" y="180" width="200" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">UNION 合并</text>
+  <text x="395" y="218" font-size="9.5" fill="#555">两段 SELECT 用 UNION</text>
+  <text x="395" y="233" font-size="9.5" fill="#555">（id 唯一，UNION ALL 亦可）</text>
+  <text x="395" y="250" font-size="9" fill="#777">→ 返回被雇 employee_id 清单</text>
+
+  <path d="M480 160 L480 178" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M480 262 L480 280" stroke="#b85450" stroke-width="1.3" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== bottom note ===== -->
+  <rect x="40" y="400" width="560" height="14" fill="none"/>
+  <text x="320" y="411" text-anchor="middle" font-size="9" fill="#888">对比 2004：把 COUNT(employee_id) 换成 SELECT employee_id，其余骨架（CTE s → 偏移 → CTE j）完全相同</text>
+</svg>

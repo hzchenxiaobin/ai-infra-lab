@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">后序 DFS 流程：自底向上算 gain，途中用拐弯路径更新 ans</text>
+
+  <!-- Start -->
+  <rect x="200" y="46" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">调用 dfs(node, ans)</text>
+  <path d="M 280 80 L 280 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: node == null? -->
+  <polygon points="280,100 400,150 280,200 160,150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="146" text-anchor="middle" font-size="12" fill="#333">node == null?</text>
+  <text x="280" y="162" text-anchor="middle" font-size="10" fill="#888">(空子树)</text>
+
+  <!-- Yes branch -->
+  <path d="M 160 150 L 80 150 L 80 186" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="118" y="142" text-anchor="middle" font-size="11" fill="#82b366" font-weight="bold">是</text>
+  <rect x="36" y="190" width="120" height="30" fill="#f5f5f5" stroke="#bbb" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="96" y="210" text-anchor="middle" font-size="11" fill="#888">return 0</text>
+
+  <!-- No branch -->
+  <path d="M 400 150 L 470 150 L 470 196" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="436" y="142" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Step 1: left_gain -->
+  <rect x="350" y="200" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="222" text-anchor="middle" font-size="11" fill="#333">left_gain = max(0, dfs(node.left))</text>
+  <path d="M 470 234 L 470 250" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: right_gain -->
+  <rect x="350" y="254" width="240" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="276" text-anchor="middle" font-size="11" fill="#333">right_gain = max(0, dfs(node.right))</text>
+  <path d="M 470 288 L 470 304" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: update ans (highlight) -->
+  <rect x="320" y="308" width="300" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="326" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 拐弯路径更新全局答案</text>
+  <text x="470" y="342" text-anchor="middle" font-size="11" fill="#333">ans = max(ans, node.val + left_gain + right_gain)</text>
+  <path d="M 470 348 L 470 364" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: return gain -->
+  <rect x="320" y="368" width="300" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="386" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ 返回向下贡献（只选一侧）</text>
+  <text x="470" y="402" text-anchor="middle" font-size="11" fill="#333">return node.val + max(left_gain, right_gain)</text>
+
+  <!-- annotation left -->
+  <path d="M 320 328 L 230 328" stroke="#b85450" stroke-width="1.2" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="46" y="324" font-size="10" fill="#b85450">拐弯路径不可向上延伸</text>
+  <text x="46" y="338" font-size="10" fill="#b85450">只用于更新 ans</text>
+
+  <path d="M 320 388 L 230 388" stroke="#4a7a3a" stroke-width="1.2" fill="none" stroke-dasharray="3,3" filter="url(#rough2)"/>
+  <text x="46" y="384" font-size="10" fill="#4a7a3a">单链贡献可继续向上</text>
+  <text x="46" y="398" font-size="10" fill="#4a7a3a">供父节点拼接</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="446" width="480" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="468" font-size="11" fill="#444" font-weight="bold">后序 DFS 通用范式：</text>
+  <text x="60" y="486" font-size="11" fill="#555">① 先递归左右子树拿到子问题结果（left_gain / right_gain）</text>
+  <text x="60" y="502" font-size="11" fill="#555">② 再用左右结果在当前节点决策：更新全局答案 + 计算自身返回值</text>
+  <text x="60" y="516" font-size="10" fill="#888">关键想清楚：父节点需要子节点提供什么信息？→ 那就是 dfs 的返回值</text>
+</svg>

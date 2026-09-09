@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：numCourses=4, 依赖 0→1, 0→2, 1→3, 2→3</text>
+  <text x="300" y="42" text-anchor="middle" font-size="11" fill="#888">初始入度: 0:0  1:1  2:1  3:2  →  入度 0 的只有 0</text>
+
+  <!-- Header -->
+  <text x="40" y="72" font-size="12" fill="#444" font-weight="bold">步骤</text>
+  <text x="110" y="72" font-size="12" fill="#444" font-weight="bold">取出u</text>
+  <text x="180" y="72" font-size="12" fill="#444" font-weight="bold">删边</text>
+  <text x="290" y="72" font-size="12" fill="#444" font-weight="bold">入度变化</text>
+  <text x="440" y="72" font-size="12" fill="#444" font-weight="bold">队列</text>
+  <text x="540" y="72" font-size="12" fill="#444" font-weight="bold">count</text>
+  <line x1="30" y1="80" x2="580" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Row 1: initial -->
+  <text x="40" y="104" font-size="11" fill="#888">初始</text>
+  <text x="110" y="104" font-size="11" fill="#999">—</text>
+  <text x="180" y="104" font-size="11" fill="#999">—</text>
+  <text x="290" y="104" font-size="11" fill="#333">0:0 1:1 2:1 3:2</text>
+  <text x="440" y="104" font-size="11" fill="#4a7a3a" font-weight="bold">[0]</text>
+  <text x="540" y="104" font-size="11" fill="#333">0</text>
+
+  <!-- Row 2: pop 0 -->
+  <text x="40" y="128" font-size="11" fill="#333">1</text>
+  <text x="110" y="128" font-size="11" fill="#333" font-weight="bold">0</text>
+  <text x="180" y="128" font-size="11" fill="#b85450">0→1, 0→2</text>
+  <text x="290" y="128" font-size="11" fill="#333">1:0  2:0  (3:2)</text>
+  <text x="440" y="128" font-size="11" fill="#4a7a3a" font-weight="bold">[1,2]</text>
+  <text x="540" y="128" font-size="11" fill="#333">1</text>
+
+  <!-- Row 3: pop 1 -->
+  <text x="40" y="152" font-size="11" fill="#333">2</text>
+  <text x="110" y="152" font-size="11" fill="#333" font-weight="bold">1</text>
+  <text x="180" y="152" font-size="11" fill="#b85450">1→3</text>
+  <text x="290" y="152" font-size="11" fill="#333">3:1</text>
+  <text x="440" y="152" font-size="11" fill="#4a7a3a" font-weight="bold">[2]</text>
+  <text x="540" y="152" font-size="11" fill="#333">2</text>
+
+  <!-- Row 4: pop 2 -->
+  <text x="40" y="176" font-size="11" fill="#333">3</text>
+  <text x="110" y="176" font-size="11" fill="#333" font-weight="bold">2</text>
+  <text x="180" y="176" font-size="11" fill="#b85450">2→3</text>
+  <text x="290" y="176" font-size="11" fill="#333">3:0</text>
+  <text x="440" y="176" font-size="11" fill="#4a7a3a" font-weight="bold">[3]</text>
+  <text x="540" y="176" font-size="11" fill="#333">3</text>
+
+  <!-- Row 5: pop 3 -->
+  <text x="40" y="200" font-size="11" fill="#333">4</text>
+  <text x="110" y="200" font-size="11" fill="#333" font-weight="bold">3</text>
+  <text x="180" y="200" font-size="11" fill="#999">— (无出边)</text>
+  <text x="290" y="200" font-size="11" fill="#999">—</text>
+  <text x="440" y="200" font-size="11" fill="#999">[]</text>
+  <text x="540" y="200" font-size="11" fill="#333" font-weight="bold">4</text>
+
+  <!-- Result box -->
+  <rect x="60" y="226" width="480" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="248" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">count = 4 = numCourses → 全部剥完，无环，返回 true</text>
+  <text x="300" y="265" text-anchor="middle" font-size="11" fill="#888">若中途队列空了但 count &lt; n，说明剩下的点互相依赖成环</text>
+
+  <!-- Cycle mini example -->
+  <rect x="60" y="290" width="480" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="310" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">环的例子: 0→1→2→1（1 与 2 互相依赖）</text>
+  <text x="300" y="328" text-anchor="middle" font-size="11" fill="#555">剥掉 0 后，1、2 入度均 ≥1，队列变空 → count=1 &lt; n → false</text>
+  <text x="300" y="344" text-anchor="middle" font-size="11" fill="#888">要点：只要 count 没到 n 就提前结束，必然存在环</text>
+
+  <!-- legend -->
+  <rect x="80" y="372" width="14" height="14" fill="#4a7a3a" rx="2" filter="url(#rough2)"/>
+  <text x="100" y="383" font-size="11" fill="#555">入队</text>
+  <rect x="170" y="372" width="14" height="14" fill="#b85450" rx="2" filter="url(#rough2)"/>
+  <text x="190" y="383" font-size="11" fill="#555">删边</text>
+  <text x="280" y="383" font-size="11" fill="#888">出队顺序 0,1,2,3 即一个合法拓扑序</text>
+</svg>

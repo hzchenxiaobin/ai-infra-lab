@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">核心：用栈模拟「边读边删」—— 每次入栈后检查栈顶是否匹配 part</text>
+  <text x="300" y="44" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">s = "daabcbaabcbc", part = "abc" —— 入栈 d a a b c 后栈顶命中 "abc"</text>
+
+  <!-- ===== Step 1: push chars one by one ===== -->
+  <text x="44" y="80" font-size="11" fill="#555" font-weight="bold" filter="url(#rough2)">① 逐字符入栈</text>
+
+  <!-- Stack frames: d, a, a, b, c growing -->
+  <g filter="url(#rough2)" font-size="14" text-anchor="middle">
+    <!-- d -->
+    <rect x="150" y="96" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="170" y="118" fill="#446688" font-weight="bold">d</text>
+    <!-- a -->
+    <rect x="190" y="96" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="210" y="118" fill="#446688" font-weight="bold">a</text>
+    <!-- a -->
+    <rect x="230" y="96" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="250" y="118" fill="#446688" font-weight="bold">a</text>
+    <!-- b -->
+    <rect x="270" y="96" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="290" y="118" fill="#446688" font-weight="bold">b</text>
+    <!-- c (just pushed, highlighted) -->
+    <rect x="310" y="96" width="40" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="4"/>
+    <text x="330" y="118" fill="#d6a040" font-weight="bold">c</text>
+  </g>
+  <!-- arrow showing push direction -->
+  <path d="M 330 70 L 330 92" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="338" y="66" font-size="10.5" fill="#d6a040" font-weight="bold" filter="url(#rough2)">push 'c'</text>
+
+  <!-- ===== Step 2: check top against part ===== -->
+  <text x="44" y="160" font-size="11" fill="#555" font-weight="bold" filter="url(#rough2)">② 检查栈顶 m=3 位</text>
+  <!-- bracket over last 3 chars: a b c -->
+  <path d="M 230 142 Q 230 154 240 154 L 340 154 Q 350 154 350 142" stroke="#d6a040" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <text x="290" y="172" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">栈顶 3 位 = "abc" ?</text>
+
+  <!-- part box -->
+  <g filter="url(#rough2)" font-size="13" text-anchor="middle">
+    <rect x="200" y="186" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="220" y="206" fill="#4a7a3a" font-weight="bold">a</text>
+    <rect x="240" y="186" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="260" y="206" fill="#4a7a3a" font-weight="bold">b</text>
+    <rect x="280" y="186" width="40" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="300" y="206" fill="#4a7a3a" font-weight="bold">c</text>
+  </g>
+  <text x="360" y="206" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">part = "abc" ✓ 匹配</text>
+
+  <!-- compare arrow -->
+  <path d="M 290 178 L 290 162" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: pop m chars ===== -->
+  <text x="44" y="244" font-size="11" fill="#555" font-weight="bold" filter="url(#rough2)">③ 弹出 m=3 个字符</text>
+  <g filter="url(#rough2)" font-size="14" text-anchor="middle">
+    <!-- remaining: d, a -->
+    <rect x="150" y="250" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="170" y="272" fill="#446688" font-weight="bold">d</text>
+    <rect x="190" y="250" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="210" y="272" fill="#446688" font-weight="bold">a</text>
+    <!-- popped: a, b, c (faded) -->
+    <rect x="230" y="250" width="40" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" rx="4"/>
+    <text x="250" y="272" fill="#b85450" font-weight="bold" opacity="0.6">a</text>
+    <rect x="270" y="250" width="40" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" rx="4"/>
+    <text x="290" y="272" fill="#b85450" font-weight="bold" opacity="0.6">b</text>
+    <rect x="310" y="250" width="40" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3,2" rx="4"/>
+    <text x="330" y="272" fill="#b85450" font-weight="bold" opacity="0.6">c</text>
+  </g>
+  <!-- pop arrow -->
+  <path d="M 330 286 L 330 308" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="338" y="304" font-size="10.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">pop ×3</text>
+
+  <!-- ===== Result after one removal ===== -->
+  <text x="44" y="320" font-size="11" fill="#555" font-weight="bold" filter="url(#rough2)">④ 栈现状 = "da"</text>
+  <g filter="url(#rough2)" font-size="14" text-anchor="middle">
+    <rect x="170" y="326" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="190" y="348" fill="#446688" font-weight="bold">d</text>
+    <rect x="210" y="326" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4"/>
+    <text x="230" y="348" fill="#446688" font-weight="bold">a</text>
+  </g>
+  <text x="270" y="348" font-size="10.5" fill="#888" filter="url(#rough2)">← 继续读入后续字符…</text>
+
+  <!-- Divider -->
+  <line x1="60" y1="378" x2="540" y2="378" stroke="#ddd" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- Why stack works -->
+  <text x="300" y="398" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold" filter="url(#rough2)">为什么栈能正确处理「嵌套删除」？</text>
+
+  <rect x="50" y="408" width="500" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="425" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">删除后栈顶可能与「之前已入栈的字符」重新拼成 part</text>
+  <text x="300" y="443" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">—— 栈天然保留历史，每次入栈后即时复查，等价于「左优先」删除</text>
+</svg>

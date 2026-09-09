@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">回溯流程：逐颜色枚举分给盒子1的数量 aᵢ</text>
+
+  <!-- Start -->
+  <rect x="210" y="46" width="140" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="67" text-anchor="middle" font-size="12" fill="#333">dfs(color=0, cnt1=0, d1=0, d2=0)</text>
+
+  <path d="M 280 80 L 280 96" stroke="#888" stroke-width="1.5" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <!-- Decision: color < k? -->
+  <polygon points="280,100 380,140 280,180 180,140" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="136" text-anchor="middle" font-size="11" fill="#444">color == k ?</text>
+  <text x="280" y="152" text-anchor="middle" font-size="11" fill="#444">且 cnt1 == n ?</text>
+
+  <!-- Yes branch: record -->
+  <path d="M 380 140 L 430 140 L 430 160" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="395" y="134" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="370" y="160" width="170" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="180" text-anchor="middle" font-size="11" fill="#333">total += ways</text>
+  <text x="455" y="196" text-anchor="middle" font-size="11" fill="#333">若 d1 == d2:</text>
+  <text x="455" y="210" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">favorable += ways</text>
+
+  <!-- No branch: loop over a -->
+  <path d="M 180 140 L 100 140 L 100 160" stroke="#888" stroke-width="1.5" marker-end="url(#arr2)" filter="url(#rough2)"/>
+  <text x="135" y="134" font-size="10" fill="#888" font-weight="bold">否</text>
+  <rect x="30" y="160" width="170" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="115" y="180" text-anchor="middle" font-size="11" fill="#333">for a in 0..balls[color]:</text>
+  <text x="115" y="196" text-anchor="middle" font-size="10" fill="#666">cnt1 + a &gt; n 则剪枝</text>
+  <text x="115" y="210" text-anchor="middle" font-size="10" fill="#666">更新 d1, d2, ways</text>
+
+  <!-- recurse arrow -->
+  <path d="M 115 218 L 115 248 L 280 248 L 280 96" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr2)" fill="none" filter="url(#rough2)"/>
+  <text x="180" y="244" font-size="10" fill="#888">dfs(color+1, ...)</text>
+
+  <!-- state tracking box -->
+  <rect x="30" y="270" width="500" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="292" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">递归参数说明</text>
+  <text x="50" y="312" font-size="11" fill="#666">• color：当前处理到第几种颜色（0..k−1）</text>
+  <text x="50" y="330" font-size="11" fill="#666">• cnt1：盒子1已分配的球数（需 == n 才合法）</text>
+  <text x="50" y="348" font-size="11" fill="#666">• d1 / d2：盒子1 / 盒子2 的颜色种类数（aᵢ&gt;0 则 d1+1，剩余&gt;0 则 d2+1）</text>
+  <text x="300" y="330" font-size="11" fill="#666">• ways：累计 ∏ C(balls[i], aᵢ)</text>
+  <text x="300" y="348" font-size="11" fill="#666">• 最终 = favorable / total</text>
+</svg>

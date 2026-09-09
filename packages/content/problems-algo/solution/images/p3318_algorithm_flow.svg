@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="20" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：滑窗增量 + 每窗重选 top-x</text>
+
+  <!-- ① 初始化 -->
+  <rect x="86" y="36" width="240" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="206" y="50" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">① 初始化：前 k 个元素入窗，建立 cnt</text>
+  <text x="206" y="63" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">只做一次，O(k)</text>
+
+  <path d="M 206 68 L 206 84" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ② 收集候选 -->
+  <rect x="66" y="86" width="280" height="36" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="206" y="100" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">② 收集候选：扫值域 1..50</text>
+  <text x="206" y="114" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">cnt[v] &gt; 0 的 (freq, v) 进候选列表</text>
+
+  <path d="M 206 122 L 206 138" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ③ 排序 -->
+  <rect x="66" y="140" width="280" height="36" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="206" y="154" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">③ 排序：按 (freq, v) 字典序降序</text>
+  <text x="206" y="168" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">sort + greater / sorted(reverse=True)，零特判</text>
+
+  <path d="M 206 176 L 206 192" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ④ 选择求和 -->
+  <rect x="56" y="194" width="300" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="206" y="209" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">④ 取前 min(x, 候选数) 个，累加 freq × v</text>
+  <text x="206" y="224" text-anchor="middle" font-size="8.5" fill="#4a7a3a" filter="url(#rough2)">cand[:x] 天然覆盖「种类不足 x 取全部」→ answer[i]</text>
+
+  <!-- 循环回边：④ → 增量 → ② -->
+  <path d="M 356 214 L 396 214" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="376" y="206" text-anchor="middle" font-size="8.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">下一窗口</text>
+
+  <rect x="398" y="128" width="106" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="451" y="144" text-anchor="middle" font-size="9.5" fill="#a07830" font-weight="bold" filter="url(#rough2)">增量更新</text>
+  <text x="451" y="158" text-anchor="middle" font-size="8.5" fill="#7a5a20" filter="url(#rough2)">cnt[出] −−</text>
+  <text x="451" y="172" text-anchor="middle" font-size="8.5" fill="#7a5a20" filter="url(#rough2)">cnt[进] ＋＋</text>
+
+  <path d="M 396 214 L 451 214 L 451 196" stroke="#4a7a3a" stroke-width="1.8" fill="none" filter="url(#rough2)"/>
+  <path d="M 451 128 L 451 112 L 352 112 L 348 106" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="451" y="206" text-anchor="middle" font-size="8" fill="#4a7a3a" filter="url(#rough2)">i ＋ 1</text>
+
+  <!-- 退出：窗口枚举完毕 -->
+  <path d="M 206 234 L 206 256" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="216" y="249" font-size="8.5" fill="#888" filter="url(#rough2)">n − k + 1 个窗口全部处理完</text>
+
+  <rect x="106" y="258" width="200" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="206" y="272" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold" filter="url(#rough2)">⑤ 返回 answer</text>
+  <text x="206" y="286" text-anchor="middle" font-size="8.5" fill="#446688" filter="url(#rough2)">长度 n − k + 1</text>
+
+  <!-- 底部说明 -->
+  <rect x="26" y="304" width="466" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="259" y="321" text-anchor="middle" font-size="10" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">本题（n ≤ 50）：每窗重选 top-x 足够过</text>
+  <text x="259" y="338" text-anchor="middle" font-size="9.5" fill="#8a3a34" filter="url(#rough2)">数据放大到 10⁵（3321 版本 II）：重选这步爆炸 → 双重集合把排名也增量化</text>
+</svg>

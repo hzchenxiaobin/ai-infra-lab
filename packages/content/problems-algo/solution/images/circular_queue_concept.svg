@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="480" viewBox="0 0 920 480" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <filter id="sk2" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#3a3a3a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="480" fill="#fafafa"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">循环队列：数组“首尾相接”成环</text>
+  <path d="M 300 42 Q 460 50 620 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="460" y="68" text-anchor="middle" font-size="12" fill="#666">固定数组 + 两个游标 front/rear：到末尾再进就绕回开头，复用已出队的空位</text>
+
+  <!-- ===== 左：线性数组（朴素，会浪费空间） ===== -->
+  <text x="150" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a2828">朴素线性数组（不复用）</text>
+  <text x="150" y="122" text-anchor="middle" font-size="10" fill="#888">出队后前面的格子浪费</text>
+  <g filter="url(#sk)">
+    <rect x="40" y="140" width="220" height="34" rx="3" fill="none" stroke="#b85450" stroke-width="1.4"/>
+    <rect x="40" y="140" width="40" height="34" rx="3" fill="#fce4ec" stroke="#b85450"/>
+    <rect x="80" y="140" width="40" height="34" rx="3" fill="#fce4ec" stroke="#b85450"/>
+    <rect x="120" y="140" width="40" height="34" rx="3" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="160" y="140" width="40" height="34" rx="3" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="200" y="140" width="40" height="34" rx="3" fill="#e8f0fe" stroke="#446688"/>
+    <rect x="240" y="140" width="20" height="34" rx="3" fill="#fff" stroke="#b85450"/>
+  </g>
+  <text x="60" y="162" text-anchor="middle" font-size="12" fill="#999" font-weight="bold">✗</text>
+  <text x="100" y="162" text-anchor="middle" font-size="12" fill="#999" font-weight="bold">✗</text>
+  <text x="140" y="162" text-anchor="middle" font-size="11" fill="#333">a</text>
+  <text x="180" y="162" text-anchor="middle" font-size="11" fill="#333">b</text>
+  <text x="220" y="162" text-anchor="middle" font-size="11" fill="#333">c</text>
+  <text x="40" y="192" font-size="10" fill="#b85450">已出队 → 空着，没人用</text>
+  <text x="150" y="218" text-anchor="middle" font-size="10" fill="#7a2828">front 一直右移，右侧放不下就要搬整段</text>
+
+  <!-- ===== 右：环形数组（复用空位） ===== -->
+  <text x="640" y="104" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e6e2e">循环数组（首尾相接）</text>
+  <text x="640" y="122" text-anchor="middle" font-size="10" fill="#888">rear 到末尾绕回 index 0</text>
+
+  <!-- 环：用 6 个圆角格子围一圈 -->
+  <g filter="url(#sk2)">
+    <!-- 顶部三格 -->
+    <rect x="560" y="140" width="48" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="616" y="140" width="48" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="672" y="140" width="48" height="34" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <!-- 右侧格 -->
+    <rect x="728" y="186" width="48" height="34" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8"/>
+    <!-- 底部三格（从右到左排） -->
+    <rect x="672" y="232" width="48" height="34" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+    <rect x="616" y="232" width="48" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="560" y="232" width="48" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <!-- 左侧格 -->
+    <rect x="512" y="186" width="48" height="34" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+
+  <!-- 格内文字（按数组下标 0..5 排：左上=0, 顶中=1, 顶右=2, 右侧=3, 底右=4, 底中=5, 底左=6？这里用 6 格容量=6） -->
+  <text x="536" y="208" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">0</text>
+  <text x="584" y="162" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <text x="640" y="162" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <text x="696" y="162" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <text x="752" y="208" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold">rear→</text>
+  <text x="696" y="254" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">front</text>
+  <text x="640" y="254" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <text x="584" y="254" text-anchor="middle" font-size="11" fill="#333">5</text>
+
+  <!-- front 指针说明 -->
+  <text x="696" y="280" text-anchor="middle" font-size="10" fill="#4a7a3a">队首（下一个出队）</text>
+
+  <!-- 环绕箭头：从 rear 顺时针绕一圈回 front -->
+  <path d="M 776 186 Q 820 180 820 210 Q 820 260 720 266 Q 660 270 640 266"
+        stroke="#4a7a3a" stroke-width="1.8" fill="none" stroke-dasharray="5 3" marker-end="url(#arG)" filter="url(#sk2)"/>
+  <text x="828" y="200" font-size="10" fill="#4a7a3a" font-weight="bold">绕回</text>
+  <text x="828" y="216" font-size="10" fill="#4a7a3a" font-weight="bold">开头</text>
+
+  <!-- rear 入队箭头 -->
+  <path d="M 820 140 L 776 158" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk2)"/>
+  <text x="800" y="132" font-size="10" fill="#d6a040" font-weight="bold">enQueue</text>
+
+  <!-- ===== 底部：判空 / 判满 两种约定 ===== -->
+  <text x="80" y="262" font-size="13" font-weight="bold" fill="#2b2b2b">两种判满约定（选其一）：</text>
+
+  <g filter="url(#sk)">
+    <rect x="60" y="278" width="380" height="92" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+  </g>
+  <text x="76" y="300" font-size="12" font-weight="bold" fill="#2b6e9e">方案 A：牺牲一个槽位（k+1 数组）</text>
+  <text x="76" y="320" font-size="11" fill="#444">空：front == rear</text>
+  <text x="76" y="338" font-size="11" fill="#444">满：(rear + 1) % cap == front</text>
+  <text x="76" y="356" font-size="10" fill="#7a5415">实际容量 = k，数组长度 = k + 1（多一格不放数据）</text>
+
+  <g filter="url(#sk)">
+    <rect x="470" y="278" width="380" height="92" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+  </g>
+  <text x="486" y="300" font-size="12" font-weight="bold" fill="#2e6e2e">方案 B：count 计数（本文采用）</text>
+  <text x="486" y="320" font-size="11" fill="#444">空：count == 0</text>
+  <text x="486" y="338" font-size="11" fill="#444">满：count == capacity</text>
+  <text x="486" y="356" font-size="10" fill="#7a5415">数组长度 = k，无浪费；判空判满都用一个整数</text>
+
+  <!-- 底部结论 -->
+  <g filter="url(#sk)">
+    <rect x="60" y="392" width="790" height="64" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/>
+  </g>
+  <text x="460" y="416" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b2b2b">核心：环形 = “下标取模” (i + 1) % cap</text>
+  <text x="460" y="436" text-anchor="middle" font-size="11" fill="#444">front 指向队首元素；rear 指向“下一个待插入位置”</text>
+  <text x="460" y="452" text-anchor="middle" font-size="11" fill="#4a7a3a">enQueue 写 rear 处再前进；deQueue 前进 front；都做 +1 取模</text>
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">执行流程：LEFT JOIN 全员 → WHERE 筛 bonus&lt;1000 或 NULL</text>
+
+  <!-- Step 1: FROM Employee -->
+  <rect x="60" y="48" width="440" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="67" font-size="10" fill="#b85450" font-weight="bold">① FROM</text>
+  <text x="130" y="67" font-size="10" fill="#333">Employee e —— 左表/基准表，4 行员工</text>
+
+  <path d="M280 80 L280 96" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: LEFT JOIN Bonus -->
+  <rect x="60" y="98" width="440" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="117" font-size="10" fill="#b85450" font-weight="bold">② LEFT JOIN</text>
+  <text x="170" y="117" font-size="10" fill="#333">Bonus b ON e.empId = b.empId —— 无奖金填 NULL</text>
+
+  <path d="M280 130 L280 146" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 3: WHERE filter -->
+  <rect x="60" y="148" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="167" font-size="10" fill="#b85450" font-weight="bold">③ WHERE</text>
+  <text x="130" y="167" font-size="10" fill="#d6a040" font-weight="bold">b.bonus &lt; 1000 OR b.bonus IS NULL</text>
+
+  <path d="M280 180 L280 196" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Step 4: SELECT -->
+  <rect x="60" y="198" width="440" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="217" font-size="10" fill="#b85450" font-weight="bold">④ SELECT</text>
+  <text x="140" y="217" font-size="10" fill="#333">e.name, b.bonus —— 输出姓名 + 奖金</text>
+
+  <path d="M280 230 L280 254" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Result -->
+  <rect x="120" y="258" width="320" height="100" fill="#fff8e1" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="278" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">最终输出（3 行）</text>
+  <rect x="180" y="286" width="200" height="24" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="302" font-size="10" fill="#333">Brad</text>
+  <text x="310" y="302" font-size="10" fill="#b85450" font-weight="bold">NULL</text>
+  <rect x="180" y="310" width="200" height="24" fill="#fff" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="326" font-size="10" fill="#333">John</text>
+  <text x="310" y="326" font-size="10" fill="#b85450" font-weight="bold">NULL</text>
+  <rect x="180" y="334" width="200" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="349" font-size="10" fill="#333">Dan</text>
+  <text x="310" y="349" font-size="10" fill="#4a7a3a" font-weight="bold">500</text>
+
+  <!-- Pitfall warning -->
+  <rect x="60" y="372" width="440" height="68" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="392" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">⚠️ 陷阱：不能只写 WHERE bonus &lt; 1000</text>
+  <text x="280" y="410" text-anchor="middle" font-size="9.5" fill="#333">NULL &lt; 1000 结果是 UNKNOWN（非 TRUE），会被过滤掉</text>
+  <text x="280" y="426" text-anchor="middle" font-size="9.5" fill="#333">→ Brad/John 这类无奖金员工会丢失，必须 OR bonus IS NULL</text>
+</svg>

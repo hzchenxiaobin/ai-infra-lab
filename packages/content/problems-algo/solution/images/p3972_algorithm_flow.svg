@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：前缀和 + 余数分桶，逐 j 枚举数位区间二分计数</text>
+
+  <!-- ===== left main flow ===== -->
+  <rect x="40" y="40" width="240" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="58" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① 输入 nums, x</text>
+  <text x="160" y="72" text-anchor="middle" font-size="9" fill="#888">元素全正，1 ≤ x ≤ 9</text>
+  <path d="M 160 78 L 160 90" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="40" y="94" width="240" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="112" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">② 前缀和 P[0..n]</text>
+  <text x="160" y="126" text-anchor="middle" font-size="9" fill="#888">P[0] = 0，元素全正 ⇒ 严格递增</text>
+  <path d="M 160 132 L 160 144" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="40" y="148" width="240" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="166" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">③ 按 P[i] mod 10 入桶 V₀…V₉</text>
+  <text x="160" y="180" text-anchor="middle" font-size="9" fill="#888">P 递增 ⇒ 桶内自动有序，可二分</text>
+  <path d="M 160 186 L 160 198" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="40" y="202" width="240" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="224" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">④ 枚举右端 j = 1…n（p 从 0 起）</text>
+  <path d="M 160 238 L 160 266" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <polygon points="160,270 226,302 160,334 94,302" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="160" y="306" text-anchor="middle" font-size="10.5" fill="#a87020" font-weight="bold">L = x·10ᵖ ≤ P[j] ?</text>
+  <path d="M 160 334 L 160 346" fill="none" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="172" y="344" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <rect x="40" y="350" width="240" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="368" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">⑥ 在桶 Vᵣ 中二分计数</text>
+  <text x="160" y="384" text-anchor="middle" font-size="9" fill="#555">r = (P[j]−x) mod 10，R = (x+1)·10ᵖ−1</text>
+  <text x="160" y="396" text-anchor="middle" font-size="9" fill="#555">ans += #{P[i] ∈ [max(0,P[j]−R), P[j]−L]}</text>
+
+  <!-- p+1 loopback -->
+  <path d="M 40 376 L 20 376 L 20 302 L 88 302" fill="none" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="26" y="296" font-size="9.5" fill="#446688" font-weight="bold">p+1</text>
+
+  <!-- p exhausted -> j loop -->
+  <path d="M 226 302 L 292 302 L 292 414 L 166 414" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="248" y="294" font-size="10.5" fill="#b85450" font-weight="bold">否（p 用尽）</text>
+
+  <polygon points="160,414 220,446 160,478 100,446" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="160" y="450" text-anchor="middle" font-size="11" fill="#a87020" font-weight="bold">j &lt; n ?</text>
+
+  <!-- j+1 loopback -->
+  <path d="M 220 446 L 310 446 L 310 224 L 284 224" fill="none" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="256" y="466" font-size="10.5" fill="#4a7a3a" font-weight="bold">是：j+1</text>
+
+  <path d="M 160 478 L 160 490" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="172" y="488" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <rect x="80" y="494" width="160" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="160" y="516" text-anchor="middle" font-size="12.5" fill="#2f5e23" font-weight="bold">⑦ 返回 ans</text>
+
+  <!-- ===== right panels ===== -->
+  <rect x="330" y="40" width="202" height="72" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="344" y="60" font-size="11.5" fill="#446688" font-weight="bold">复杂度</text>
+  <text x="344" y="78" font-size="9.5" fill="#444">时间 O(15·n·log n)：每 j 至多 15 区间</text>
+  <text x="344" y="94" font-size="9.5" fill="#444">n = 10⁵ ≈ 2.5×10⁷ 次比较；空间 O(n)</text>
+
+  <rect x="330" y="124" width="202" height="100" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="344" y="144" font-size="11.5" fill="#a87020" font-weight="bold">关键不变量</text>
+  <text x="344" y="162" font-size="9.5" fill="#444">hi = P[j] − L &lt; P[j]</text>
+  <text x="344" y="178" font-size="9.5" fill="#444">⇒ 命中的 P[i] 必在 P[j] 左侧</text>
+  <text x="344" y="194" font-size="9.5" fill="#444">i &lt; j 自动成立，免判下标顺序</text>
+  <text x="344" y="212" font-size="9.5" fill="#444">P[0] = 0 也在桶 V₀（空前缀）</text>
+
+  <rect x="330" y="236" width="202" height="124" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="344" y="256" font-size="11" fill="#2f5e23" font-weight="bold">示例：nums=[1,100,1], x=1</text>
+  <text x="344" y="274" font-size="9.5" fill="#444">P = 0, 1, 101, 102</text>
+  <text x="344" y="292" font-size="9.5" fill="#444">j=1: V₀∩[0,0] → 0 ⇒ +1（和 1）</text>
+  <text x="344" y="310" font-size="9.5" fill="#444">j=2: V₀∩[0,1] → 0 ⇒ +1（和 101）</text>
+  <text x="344" y="328" font-size="9.5" fill="#444">j=3: V₁∩[101,101] → 101 ⇒ +1（和 1）</text>
+  <text x="344" y="346" font-size="9.5" fill="#444">j=3: V₁∩[0,2] → 1 ⇒ +1（和 101）</text>
+
+  <rect x="330" y="372" width="202" height="112" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="344" y="392" font-size="11.5" fill="#8a3a36" font-weight="bold">边界提醒</text>
+  <text x="344" y="410" font-size="9.5" fill="#444">P[j] &lt; x·10ᵖ ⇒ 该 j 的 p 枚举终止</text>
+  <text x="344" y="426" font-size="9.5" fill="#444">lo = max(0, P[j]−R)，截到最小前缀和 0</text>
+  <text x="344" y="442" font-size="9.5" fill="#444">C++：(P[j]−x)%10 可为负，+10 再 %10</text>
+  <text x="344" y="458" font-size="9.5" fill="#444">ans 用 long long 累加更稳妥</text>
+
+  <text x="280" y="532" text-anchor="middle" font-size="10" fill="#8899aa">标签呼应：前缀和（有序差值对）+ 哈希（余数分桶）+ 滑动窗口（区间计数思想）</text>
+</svg>

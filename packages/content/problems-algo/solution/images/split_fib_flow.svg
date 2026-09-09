@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 600" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="600" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">拆分斐波那契序列：枚举前两数 + 贪心验证 + 值域剪枝</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="58" rx="130" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333">开始: n = len(num), MAX = 2³¹−1</text>
+  <path d="M 280 78 L 280 92" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Enumerate i -->
+  <rect x="100" y="94" width="360" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="118" text-anchor="middle" font-size="12" fill="#333">枚举 i = 1 … min(10, n−1)（第一个数长度）</text>
+  <path d="M 280 134 L 280 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Enumerate j -->
+  <rect x="100" y="150" width="360" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="174" text-anchor="middle" font-size="12" fill="#333">枚举 j = 1 … min(10, n−i−1)（第二个数长度）</text>
+  <path d="M 280 190 L 280 206" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: leading zero check -->
+  <polygon points="280,208 432,258 280,308 128,258" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="250" text-anchor="middle" font-size="11" fill="#333">i &gt; 1 且 num[0]=='0'</text>
+  <text x="280" y="268" text-anchor="middle" font-size="11" fill="#333">或 j &gt; 1 且 num[i]=='0' ?</text>
+  <text x="280" y="286" text-anchor="middle" font-size="10" fill="#888">（前导零非法）</text>
+
+  <!-- Yes -> skip (next j) -->
+  <path d="M 128 258 L 64 258" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="96" y="250" text-anchor="middle" font-size="11" fill="#b85450">是</text>
+  <rect x="20" y="242" width="44" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="42" y="262" text-anchor="middle" font-size="10" fill="#333">跳过</text>
+
+  <!-- No -> down -->
+  <path d="M 280 308 L 280 324" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="318" font-size="11" fill="#82b366">否</text>
+
+  <!-- Process: extract a, b, idx = i+j -->
+  <rect x="80" y="326" width="400" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="11" fill="#333">x = num[0:i],  y = num[i:i+j]（long long）</text>
+  <text x="280" y="364" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">idx = i + j,  path = [x, y]</text>
+  <path d="M 280 372 L 280 386" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond: idx < n ? -->
+  <polygon points="280,388 400,428 280,468 160,428" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="424" text-anchor="middle" font-size="12" fill="#333">idx &lt; n ?</text>
+  <text x="280" y="442" text-anchor="middle" font-size="10" fill="#888">（还有字符待匹配）</text>
+
+  <!-- No (idx == n) -> check length & return -->
+  <path d="M 400 428 L 488 428" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="420" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <rect x="430" y="444" width="118" height="52" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="489" y="464" text-anchor="middle" font-size="10" fill="#333">len(path) ≥ 3 ?</text>
+  <text x="489" y="482" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">return path ✓</text>
+  <path d="M 489 428 L 489 444" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Yes -> compute z, overflow & match -->
+  <path d="M 280 468 L 280 488" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="482" font-size="11" fill="#82b366">是</text>
+  <rect x="40" y="490" width="480" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="510" text-anchor="middle" font-size="11" fill="#333">z = x + y；若 z &gt; MAX → 该组失败 break</text>
+  <text x="280" y="526" text-anchor="middle" font-size="11" fill="#333">num[idx:] 前缀 == str(z) ? 是→idx+=len, x=y, y=z, path.append(z) ; 否→break</text>
+
+  <!-- loop back arrow from the compute box to the idx<n diamond -->
+  <path d="M 280 534 L 280 540 L 548 540 L 548 428 L 400 428" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="534" y="484" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 534 484)">下一轮验证</text>
+
+  <!-- loop back: next (i,j) from break -->
+  <path d="M 40 512 L 28 512 L 28 150 L 100 150" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="12" y="330" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 12 330)">尝试下一组 (i, j)</text>
+
+  <!-- exhausted all (i,j) -> return [] -->
+  <path d="M 100 114 L 60 114 L 60 58 L 150 58" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="44" y="86" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 44 86)">i 遍历完</text>
+  <rect x="118" y="44" width="64" height="30" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="150" y="64" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">return []</text>
+</svg>

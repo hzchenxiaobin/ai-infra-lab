@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="460" fill="#fafafa"/>
+
+  <text x="380" y="28" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">核心观察：非严格递增 → 用 upper_bound（第一个 &gt; x）</text>
+  <text x="380" y="48" text-anchor="middle" font-size="11" fill="#888">同一输入 obstacles = [2, 2, 2]，两种二分策略的对比</text>
+
+  <!-- ===== Left: 300 严格递增 lower_bound ===== -->
+  <rect x="30" y="66" width="330" height="340" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="195" y="88" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">300 LIS（严格递增）</text>
+  <text x="195" y="104" text-anchor="middle" font-size="10" fill="#b85450">lower_bound：第一个 ≥ x → 替换</text>
+
+  <!-- input row -->
+  <text x="50" y="128" font-size="10" fill="#555">输入：</text>
+  <g font-size="11">
+    <rect x="90" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="107" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="128" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="145" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="166" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="183" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+  </g>
+
+  <!-- step 1 -->
+  <text x="50" y="166" font-size="10" fill="#555">x=2：</text>
+  <text x="90" y="166" font-size="10" fill="#888">tails=[] → </text>
+  <rect x="170" y="154" width="34" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="187" y="170" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="215" y="166" font-size="10" fill="#4a7a3a">追加，ans=1</text>
+
+  <!-- step 2 -->
+  <text x="50" y="200" font-size="10" fill="#555">x=2：</text>
+  <rect x="90" y="188" width="34" height="24" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="107" y="204" text-anchor="middle" fill="#888" font-weight="bold">2</text>
+  <text x="130" y="200" font-size="10" fill="#b85450">lower_bound 找到 2(≥2)</text>
+  <path d="M 130 196 L 124 196" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="268" y="200" font-size="10" fill="#c98a2b">→ 替换，ans=1</text>
+
+  <!-- step 3 -->
+  <text x="50" y="234" font-size="10" fill="#555">x=2：</text>
+  <rect x="90" y="222" width="34" height="24" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="107" y="238" text-anchor="middle" fill="#888" font-weight="bold">2</text>
+  <text x="130" y="234" font-size="10" fill="#b85450">lower_bound 找到 2(≥2)</text>
+  <path d="M 130 230 L 124 230" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="268" y="234" font-size="10" fill="#c98a2b">→ 替换，ans=1</text>
+
+  <!-- result -->
+  <rect x="50" y="262" width="290" height="50" rx="6" fill="#fff" stroke="#b85450" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="65" y="282" font-size="11" fill="#b85450" font-weight="bold">tails 最终 = [2]</text>
+  <text x="65" y="300" font-size="11" fill="#b85450">ans = [1, 1, 1]  ← 相同值不能并存</text>
+
+  <!-- reason -->
+  <text x="50" y="334" font-size="10" fill="#888">原因：严格递增要求 &lt; ，</text>
+  <text x="50" y="350" font-size="10" fill="#888">2 不能接在 2 后面，</text>
+  <text x="50" y="366" font-size="10" fill="#888">故相同值只替换不追加。</text>
+  <text x="50" y="390" font-size="10" fill="#b85450" font-weight="bold">→ lower_bound（≥）</text>
+
+  <!-- ===== Right: 1964 非严格递增 upper_bound ===== -->
+  <rect x="400" y="66" width="330" height="340" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="565" y="88" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">1964 障碍赛跑（非严格递增）</text>
+  <text x="565" y="104" text-anchor="middle" font-size="10" fill="#4a7a3a">upper_bound：第一个 &gt; x → 替换；无则追加</text>
+
+  <!-- input row -->
+  <text x="420" y="128" font-size="10" fill="#555">输入：</text>
+  <g font-size="11">
+    <rect x="460" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="477" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="498" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="515" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <rect x="536" y="116" width="34" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+    <text x="553" y="132" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+  </g>
+
+  <!-- step 1 -->
+  <text x="420" y="166" font-size="10" fill="#555">x=2：</text>
+  <text x="460" y="166" font-size="10" fill="#888">tails=[] → </text>
+  <rect x="540" y="154" width="34" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="557" y="170" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="585" y="166" font-size="10" fill="#4a7a3a">追加，ans=1</text>
+
+  <!-- step 2 -->
+  <text x="420" y="200" font-size="10" fill="#555">x=2：</text>
+  <rect x="460" y="188" width="34" height="24" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="477" y="204" text-anchor="middle" fill="#888" font-weight="bold">2</text>
+  <text x="500" y="200" font-size="10" fill="#4a7a3a">upper_bound 找 &gt;2 → 无</text>
+  <text x="640" y="200" font-size="10" fill="#4a7a3a">→ 追加，ans=2</text>
+
+  <!-- step 2 tails -->
+  <rect x="460" y="216" width="34" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="477" y="231" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+  <rect x="498" y="216" width="34" height="22" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="515" y="231" text-anchor="middle" fill="#4a7a3a" font-weight="bold">2</text>
+
+  <!-- step 3 -->
+  <text x="420" y="260" font-size="10" fill="#555">x=2：</text>
+  <rect x="460" y="248" width="34" height="24" rx="4" fill="#f6f6f6" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="477" y="264" text-anchor="middle" fill="#888" font-weight="bold">2</text>
+  <text x="500" y="260" font-size="10" fill="#4a7a3a">upper_bound 找 &gt;2 → 无</text>
+  <text x="640" y="260" font-size="10" fill="#4a7a3a">→ 追加，ans=3</text>
+
+  <!-- result -->
+  <rect x="420" y="282" width="290" height="50" rx="6" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <text x="435" y="302" font-size="11" fill="#4a7a3a" font-weight="bold">tails 最终 = [2, 2, 2]</text>
+  <text x="435" y="320" font-size="11" fill="#4a7a3a">ans = [1, 2, 3]  ← 相同值可接在后面</text>
+
+  <!-- reason -->
+  <text x="420" y="354" font-size="10" fill="#888">原因：非严格递增允许 ≤ ，</text>
+  <text x="420" y="370" font-size="10" fill="#888">2 可以接在 2 后面，</text>
+  <text x="420" y="386" font-size="10" fill="#888">故相同值追加不替换。</text>
+  <text x="420" y="390" font-size="10" fill="#4a7a3a" font-weight="bold"> </text>
+  <text x="420" y="406" font-size="10" fill="#4a7a3a" font-weight="bold">→ upper_bound（&gt;）</text>
+
+  <!-- ===== Bottom summary ===== -->
+  <rect x="30" y="418" width="700" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="380" y="439" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">口诀：严格递增用 lower_bound（≥），非严格递增用 upper_bound（&gt;）——只差一个等号！</text>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 500" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.7"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="620" height="500" fill="#fdfcf7"/>
+
+  <text x="310" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">DFS 判环流程：区分树边 / 父边 / 回边</text>
+
+  <!-- (1) Start ellipse -->
+  <g filter="url(#sk)"><ellipse cx="310" cy="62" rx="120" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="310" y="66" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">对每个未访问 (i,j) 启动 DFS</text>
+
+  <!-- arrow 1->2 -->
+  <path d="M 310 82 L 310 96" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- (2) process rect: mark visited -->
+  <g filter="url(#sk)"><rect x="250" y="98" width="120" height="38" rx="6" fill="#fffdf7" stroke="#5a5a5a" stroke-width="1.5"/></g>
+  <text x="310" y="122" text-anchor="middle" font-size="12" fill="#333">visited[i][j] = true</text>
+
+  <!-- arrow 2->3 -->
+  <path d="M 310 136 L 310 152" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- (3) decision: more neighbors? -->
+  <g filter="url(#sk)"><polygon points="310,154 410,200 310,246 210,200" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="310" y="196" text-anchor="middle" font-size="11" fill="#333">还有未扫的</text>
+  <text x="310" y="210" text-anchor="middle" font-size="11" fill="#333">同值邻居?</text>
+
+  <!-- 3 No -> 3a return false -->
+  <path d="M 410 200 L 460 200" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="435" y="194" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">否</text>
+  <g filter="url(#sk)"><rect x="462" y="180" width="130" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/></g>
+  <text x="527" y="198" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">返回 false</text>
+  <text x="527" y="212" text-anchor="middle" font-size="10" fill="#5a7a4a">（本连通块无环）</text>
+
+  <!-- 3 Yes -> 4 -->
+  <path d="M 310 246 L 310 262" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="324" y="256" font-size="10" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- (4) take neighbor -->
+  <g filter="url(#sk)"><rect x="240" y="264" width="140" height="38" rx="6" fill="#fffdf7" stroke="#5a5a5a" stroke-width="1.5"/></g>
+  <text x="310" y="288" text-anchor="middle" font-size="12" fill="#333">取同值邻居 (n_i, n_j)</text>
+
+  <!-- arrow 4->5 -->
+  <path d="M 310 302 L 310 316" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- (5) decision: visited? -->
+  <g filter="url(#sk)"><polygon points="310,318 400,360 310,402 220,360" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="310" y="358" text-anchor="middle" font-size="11" fill="#333">visited[n_i,n_j]?</text>
+
+  <!-- 5 No (left) -> 6 recurse -->
+  <path d="M 220 360 L 168 360" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="196" y="354" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">否</text>
+  <g filter="url(#sk)"><rect x="40" y="340" width="128" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="104" y="358" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">树边</text>
+  <text x="104" y="372" text-anchor="middle" font-size="10" fill="#555">递归 dfs(n_i,n_j,i,j)</text>
+
+  <!-- 6 -> 6a: return true? -->
+  <path d="M 104 380 L 104 412" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><polygon points="104,414 168,442 104,470 40,442" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="104" y="440" text-anchor="middle" font-size="10" fill="#333">递归返回</text>
+  <text x="104" y="452" text-anchor="middle" font-size="10" fill="#333">true?</text>
+
+  <!-- 6a Yes -> return true (down-right to terminal) -->
+  <path d="M 168 442 L 268 442" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="218" y="436" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- 6a No -> loop back to 3 (up around left) -->
+  <path d="M 40 442 L 18 442 L 18 200 L 210 200" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="30" y="320" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">否·继续扫</text>
+
+  <!-- 5 Yes (right) -> 5a: is parent? -->
+  <path d="M 400 360 L 452 360" stroke="#5a5a5a" stroke-width="1.6" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="426" y="354" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <g filter="url(#sk)"><polygon points="510,330 568,360 510,390 452,360" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="510" y="357" text-anchor="middle" font-size="10" fill="#333">(n_i,n_j)</text>
+  <text x="510" y="369" text-anchor="middle" font-size="10" fill="#333">= 父?</text>
+
+  <!-- 5a Yes (up) -> loop back to 3 -->
+  <path d="M 510 330 L 510 232 L 410 200" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="524" y="280" font-size="10" fill="#4a7a3a" font-weight="bold">是·跳过</text>
+
+  <!-- 5a No (down) -> return true (back edge) -->
+  <path d="M 510 390 L 510 442 L 352 442" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="500" y="416" text-anchor="end" font-size="10" fill="#b85450" font-weight="bold">否·回边</text>
+
+  <!-- terminal: return true -->
+  <g filter="url(#sk)"><rect x="268" y="424" width="84" height="36" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/></g>
+  <text x="310" y="447" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">返回 true</text>
+
+  <!-- legend bottom-right -->
+  <g filter="url(#sk)"><rect x="462" y="424" width="130" height="62" rx="6" fill="#fffdf7" stroke="#bbb" stroke-width="1"/></g>
+  <text x="470" y="440" font-size="9" fill="#555" font-weight="bold">三类邻边：</text>
+  <text x="470" y="454" font-size="9" fill="#446688">蓝=树边(未访问)</text>
+  <text x="470" y="468" font-size="9" fill="#4a7a3a">绿=父边(跳过)</text>
+  <text x="470" y="482" font-size="9" fill="#b85450">红=回边(→环)</text>
+</svg>

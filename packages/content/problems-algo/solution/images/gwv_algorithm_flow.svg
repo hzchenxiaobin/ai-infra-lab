@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrY" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：BFS 分层 → 收集目标层 → 统计频率 → 排序输出</text>
+
+  <!-- Step 1: BFS init -->
+  <rect x="180" y="44" width="160" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="65" text-anchor="middle" font-size="11.5" fill="#333">① visited[id]=true, id 入队, dist=0</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 80 L 260 96" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: decision diamond dist == level? -->
+  <path d="M 260 100 L 340 140 L 260 180 L 180 140 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="136" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">dist == level ?</text>
+  <text x="260" y="152" text-anchor="middle" font-size="9.5" fill="#888">(队列非空时)</text>
+
+  <!-- YES branch (right) -->
+  <path d="M 340 140 L 380 140" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrY)" filter="url(#rough2)"/>
+  <text x="356" y="134" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- NO branch (down) -->
+  <path d="M 260 180 L 260 214" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrN)" filter="url(#rough2)"/>
+  <text x="276" y="200" font-size="10" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- YES: collect target & break -->
+  <rect x="380" y="122" width="130" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="445" y="144" text-anchor="middle" font-size="10.5" fill="#333">target = 队列元素</text>
+  <text x="445" y="156" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">break</text>
+
+  <!-- Arrow from collect down to count freq -->
+  <path d="M 445 158 L 445 200 L 260 200 L 260 244" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- NO: expand one layer -->
+  <rect x="160" y="216" width="200" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="234" text-anchor="middle" font-size="10.5" fill="#333">扩展一层：pop u, 遍历 friends[u]</text>
+  <text x="260" y="248" text-anchor="middle" font-size="10.5" fill="#333">未访问邻居 → visited+入队</text>
+
+  <!-- Arrow: after expand, dist++ and loop back to diamond -->
+  <path d="M 160 236 L 110 236 L 110 140 L 180 140" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="80" y="178" width="60" height="22" fill="#fafafa" stroke="#aaa" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="193" text-anchor="middle" font-size="10" fill="#666">dist++</text>
+  <text x="110" y="160" text-anchor="middle" font-size="9" fill="#888">回到判定</text>
+
+  <!-- Step 3: count freq -->
+  <rect x="150" y="246" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="264" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 统计频率</text>
+  <text x="260" y="278" text-anchor="middle" font-size="10.5" fill="#555">遍历 target 好友的 watchedVideos → freq[v]++</text>
+
+  <!-- Arrow down -->
+  <path d="M 260 286 L 260 302" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: sort -->
+  <rect x="150" y="304" width="220" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="322" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 排序输出</text>
+  <text x="260" y="336" text-anchor="middle" font-size="10.5" fill="#555">按 (频率升序, 视频名升序) 双关键字排序</text>
+
+  <!-- Arrow down to output -->
+  <path d="M 260 344 L 260 360" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="190" y="362" width="140" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="382" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">返回 ans</text>
+</svg>

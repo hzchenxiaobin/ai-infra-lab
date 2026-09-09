@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14.5" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：预处理一次，update / query 各 O(log n)</text>
+
+  <!-- ===================== 预处理行 ===================== -->
+  <g filter="url(#rough2)">
+    <rect x="22" y="44" width="160" height="52" rx="6" fill="#f5f5f5" stroke="#888" stroke-width="1.5"/>
+    <rect x="200" y="44" width="160" height="52" rx="6" fill="#f5f5f5" stroke="#888" stroke-width="1.5"/>
+    <rect x="378" y="44" width="160" height="52" rx="6" fill="#f5f5f5" stroke="#888" stroke-width="1.5"/>
+  </g>
+  <g filter="url(#rough2)" text-anchor="middle">
+    <text x="102" y="65" font-size="11" fill="#555" font-weight="bold">① BFS 定根（0 号）</text>
+    <text x="102" y="82" font-size="9.5" fill="#777">parent / depth / base[]（根前缀 ⊕）</text>
+    <text x="280" y="65" font-size="11" fill="#555" font-weight="bold">② 迭代 DFS 欧拉序</text>
+    <text x="280" y="82" font-size="9.5" fill="#777">tin / tout：子树 = 连续区间</text>
+    <text x="458" y="65" font-size="11" fill="#555" font-weight="bold">③ 倍增表 up[k][u]</text>
+    <text x="458" y="82" font-size="9.5" fill="#777">（根指向自身作哨兵）</text>
+  </g>
+  <g filter="url(#rough2)">
+    <path d="M 184 70 L 198 70" stroke="#d6a040" stroke-width="2" marker-end="url(#arr)"/>
+    <path d="M 362 70 L 376 70" stroke="#d6a040" stroke-width="2" marker-end="url(#arr)"/>
+    <path d="M 280 96 L 280 112" stroke="#d6a040" stroke-width="2" marker-end="url(#arr)"/>
+    <path d="M 280 112 L 150 112" stroke="#d6a040" stroke-width="2"/>
+    <path d="M 280 112 L 410 112" stroke="#d6a040" stroke-width="2"/>
+    <path d="M 150 112 L 150 128" stroke="#446688" stroke-width="2" marker-end="url(#arrb)"/>
+    <path d="M 410 112 L 410 128" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrg)"/>
+  </g>
+
+  <!-- ===================== 分支标题 ===================== -->
+  <g filter="url(#rough2)">
+    <rect x="60" y="130" width="180" height="30" rx="15" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <rect x="320" y="130" width="180" height="30" rx="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2"/>
+  </g>
+  <g filter="url(#rough2)" text-anchor="middle" font-size="11.5" font-weight="bold">
+    <text x="150" y="149" fill="#33506b">「update u c」点更新</text>
+    <text x="410" y="149" fill="#2f5d24">「query u v」路径查询</text>
+  </g>
+
+  <!-- ===================== 左链：update ===================== -->
+  <g filter="url(#rough2)">
+    <rect x="45" y="178" width="210" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="45" y="234" width="210" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="45" y="290" width="210" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+  <g filter="url(#rough2)" text-anchor="middle">
+    <text x="150" y="196" font-size="10.5" fill="#33506b" font-weight="bold">d = mask[旧] ⊕ mask[新]</text>
+    <text x="150" y="210" font-size="9" fill="#557">（d = 0 则无事可做，直接跳过）</text>
+    <text x="150" y="252" font-size="10.5" fill="#33506b" font-weight="bold">BIT 区间异或子树 [tin[u], tout[u]]</text>
+    <text x="150" y="266" font-size="9" fill="#557">add(tin[u], d) ＋ add(tout[u]+1, d)（差分对冲）</text>
+    <text x="150" y="310" font-size="10.5" fill="#33506b" font-weight="bold">cur[u] ⊕= d</text>
+    <text x="150" y="324" font-size="9" fill="#557">（记录节点当前字符掩码，供查询取 lca 用）</text>
+  </g>
+  <g filter="url(#rough2)">
+    <path d="M 150 218 L 150 232" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)"/>
+    <path d="M 150 274 L 150 288" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)"/>
+    <path d="M 150 330 L 150 344" stroke="#446688" stroke-width="1.8" marker-end="url(#arrb)"/>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="75" y="346" width="150" height="26" rx="13" fill="#ffffff" stroke="#446688" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="150" y="363" text-anchor="middle" font-size="10" fill="#33506b">（无输出，静默生效）</text>
+  </g>
+
+  <!-- ===================== 右链：query ===================== -->
+  <g filter="url(#rough2)">
+    <rect x="305" y="178" width="210" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="305" y="234" width="210" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <rect x="305" y="290" width="210" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <g filter="url(#rough2)" text-anchor="middle">
+    <text x="410" y="196" font-size="10.5" fill="#2f5d24" font-weight="bold">l = LCA(u, v)</text>
+    <text x="410" y="210" font-size="9" fill="#477">倍增上跳，先拉平深度再齐跳</text>
+    <text x="410" y="252" font-size="10.5" fill="#2f5d24" font-weight="bold">pre[x] = base[x] ⊕ BIT前缀(tin[x])</text>
+    <text x="410" y="266" font-size="9" fill="#477">m = pre[u] ⊕ pre[v] ⊕ cur[l]</text>
+    <text x="410" y="310" font-size="10.5" fill="#2f5d24" font-weight="bold">m &amp; (m−1) == 0 ?</text>
+    <text x="410" y="324" font-size="9" fill="#477">（掩码至多 1 个 1 ⇔ 可排成回文）</text>
+  </g>
+  <g filter="url(#rough2)">
+    <path d="M 410 218 L 410 232" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)"/>
+    <path d="M 410 274 L 410 288" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)"/>
+    <path d="M 410 330 L 410 344" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrg)"/>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="335" y="346" width="150" height="26" rx="13" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="410" y="363" text-anchor="middle" font-size="10" fill="#2f5d24" font-weight="bold">true / false → answer</text>
+  </g>
+
+  <!-- ===================== 底部要点 ===================== -->
+  <g filter="url(#rough2)">
+    <rect x="28" y="386" width="504" height="42" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="280" y="403" text-anchor="middle" font-size="11" fill="#a07020" font-weight="bold">关键衔接：pre[x]（实时）= base[x] ⊕ BIT 前缀异或(tin[x])</text>
+    <text x="280" y="420" text-anchor="middle" font-size="9.5" fill="#a07020">更新只动 BIT 差分，查询时才"折叠"成实时前缀 —— 区间异或改、单点查的树状数组</text>
+  </g>
+</svg>

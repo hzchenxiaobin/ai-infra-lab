@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">区间 DP 核心概念：一刀分成两段，各自独立</text>
+
+  <!-- 顶棍：pos = [0, 1, 3, 4, 5, 7] -->
+  <rect x="80" y="70" width="400" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+  <text x="280" y="88" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">整根棍子  pos[0]=0  →  pos[5]=7   (长度 7)</text>
+
+  <!-- 位置刻度 -->
+  <line x1="80" y1="62" x2="80" y2="70" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="137" y1="62" x2="137" y2="70" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="251" y1="62" x2="251" y2="70" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <line x1="327" y1="62" x2="327" y2="70" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="403" y1="62" x2="403" y2="70" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+  <line x1="480" y1="62" x2="480" y2="70" stroke="#446688" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <text x="80" y="56" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">0</text>
+  <text x="137" y="56" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">1</text>
+  <text x="251" y="54" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">3 (切)</text>
+  <text x="327" y="56" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">4</text>
+  <text x="403" y="56" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">5</text>
+  <text x="480" y="56" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">7</text>
+
+  <!-- 第一刀：在位置3切开 -->
+  <path d="M251 68 L251 50" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)" marker-end="url(#arrR)"/>
+  <text x="251" y="44" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">第一刀：成本 = 棍长 7</text>
+
+  <!-- 左段 [0,2] : pos 0..3 -->
+  <rect x="90" y="160" width="150" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="165" y="176" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">左段 [i,k]  0→3  长度 3</text>
+
+  <!-- 右段 [2,5] : pos 3..7 -->
+  <rect x="320" y="160" width="150" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="3" filter="url(#rough2)"/>
+  <text x="395" y="176" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">右段 [k,j]  3→7  长度 4</text>
+
+  <!-- 分叉箭头 -->
+  <path d="M251 100 Q 165 130 165 158" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#rough2)" marker-end="url(#arr)"/>
+  <path d="M251 100 Q 395 130 395 158" stroke="#d6a040" stroke-width="1.4" fill="none" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- 左段继续切 -->
+  <line x1="137" y1="152" x2="137" y2="184" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="165" y="205" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">切位置1，成本 3</text>
+  <rect x="95" y="225" width="70" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="130" y="239" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">0→1</text>
+  <rect x="175" y="225" width="60" height="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="205" y="239" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">1→3</text>
+
+  <!-- 右段继续切 -->
+  <line x1="403" y1="152" x2="403" y2="184" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="395" y="205" text-anchor="middle" font-size="11" fill="#d6a040" filter="url(#rough2)">切位置5，成本 4</text>
+  <rect x="325" y="225" width="70" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="360" y="239" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">3→5</text>
+  <rect x="405" y="225" width="60" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="435" y="239" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">5→7</text>
+
+  <!-- 3→5 再切位置4 -->
+  <text x="360" y="270" text-anchor="middle" font-size="11" fill="#d6a040" filter="url(#rough2)">切位置4，成本 2</text>
+
+  <!-- 公式框 -->
+  <rect x="70" y="300" width="420" height="78" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="324" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">dp[i][j] = min ( pos[j]-pos[i] + dp[i][k] + dp[k][j] )</text>
+  <text x="280" y="346" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">枚举 i &lt; k &lt; j 的每个切点 k；左右子区间独立</text>
+  <text x="280" y="365" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">边界 dp[i][i+1]=0（相邻无切点）  答案 dp[0][m-1]</text>
+</svg>

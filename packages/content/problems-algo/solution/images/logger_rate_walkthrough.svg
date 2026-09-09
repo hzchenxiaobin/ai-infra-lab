@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="520" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：6 次调用，追踪 map 状态与返回值</text>
+  <text x="310" y="44" text-anchor="middle" font-size="11" fill="#888">重点看 ④⑤ 的边界差异：ts=10 拒绝，ts=11 通过</text>
+
+  <!-- ===== 表头 ===== -->
+  <text x="36" y="78" font-size="11" fill="#888" font-weight="bold">步骤</text>
+  <text x="92" y="78" font-size="11" fill="#888" font-weight="bold">调用 (ts, msg)</text>
+  <text x="220" y="78" font-size="11" fill="#888" font-weight="bold">ts − last</text>
+  <text x="300" y="78" font-size="11" fill="#888" font-weight="bold">map 状态</text>
+  <text x="510" y="78" font-size="11" fill="#888" font-weight="bold">返回</text>
+
+  <line x1="20" y1="84" x2="600" y2="84" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ===== ① (1, "foo") ===== -->
+  <text x="44" y="112" font-size="12" fill="#333" font-weight="bold">①</text>
+  <rect x="86" y="98" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="114" text-anchor="middle" font-size="11" fill="#333">(1, "foo")</text>
+  <text x="240" y="114" font-size="11" fill="#888">—（首次）</text>
+  <rect x="296" y="98" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="114" text-anchor="middle" font-size="10" fill="#333">foo→1</text>
+  <text x="520" y="114" font-size="12" fill="#4a7a3a" font-weight="bold">true</text>
+
+  <!-- ===== ② (2, "bar") ===== -->
+  <text x="44" y="148" font-size="12" fill="#333" font-weight="bold">②</text>
+  <rect x="86" y="134" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="150" text-anchor="middle" font-size="11" fill="#333">(2, "bar")</text>
+  <text x="240" y="150" font-size="11" fill="#888">—（首次）</text>
+  <rect x="296" y="134" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="150" text-anchor="middle" font-size="10" fill="#333">foo→1</text>
+  <rect x="350" y="134" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="150" text-anchor="middle" font-size="10" fill="#333">bar→2</text>
+  <text x="520" y="150" font-size="12" fill="#4a7a3a" font-weight="bold">true</text>
+
+  <!-- ===== ③ (3, "foo") ===== -->
+  <text x="44" y="184" font-size="12" fill="#333" font-weight="bold">③</text>
+  <rect x="86" y="170" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="186" text-anchor="middle" font-size="11" fill="#333">(3, "foo")</text>
+  <rect x="226" y="170" width="50" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="251" y="186" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">2 &lt; 10</text>
+  <rect x="296" y="170" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="186" text-anchor="middle" font-size="10" fill="#333">foo→1</text>
+  <rect x="350" y="170" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="186" text-anchor="middle" font-size="10" fill="#333">bar→2</text>
+  <text x="520" y="186" font-size="12" fill="#b85450" font-weight="bold">false</text>
+
+  <!-- ===== ④ (10, "foo") — 边界：拒绝 ===== -->
+  <text x="44" y="220" font-size="12" fill="#333" font-weight="bold">④</text>
+  <rect x="86" y="206" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="222" text-anchor="middle" font-size="11" fill="#333">(10, "foo")</text>
+  <rect x="226" y="206" width="50" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="251" y="222" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">9 &lt; 10</text>
+  <rect x="296" y="206" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="222" text-anchor="middle" font-size="10" fill="#333">foo→1</text>
+  <rect x="350" y="206" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="222" text-anchor="middle" font-size="10" fill="#333">bar→2</text>
+  <text x="520" y="222" font-size="12" fill="#b85450" font-weight="bold">false</text>
+
+  <!-- ④ 边界标注 -->
+  <rect x="200" y="200" width="90" height="36" fill="none" stroke="#b85450" stroke-width="1.3" stroke-dasharray="4,3" rx="4" filter="url(#rough2)"/>
+  <text x="245" y="252" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">↑ 差 1 秒，仍拒绝</text>
+
+  <!-- 步骤④⑤分隔线 -->
+  <line x1="20" y1="262" x2="600" y2="262" stroke="#bbb" stroke-width="1" stroke-dasharray="2,3" filter="url(#rough2)"/>
+  <text x="310" y="276" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">↓ 下一步恰好满 10 秒</text>
+
+  <!-- ===== ⑤ (11, "foo") — 边界：通过 ===== -->
+  <text x="44" y="304" font-size="12" fill="#333" font-weight="bold">⑤</text>
+  <rect x="86" y="290" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="306" text-anchor="middle" font-size="11" fill="#333">(11, "foo")</text>
+  <rect x="226" y="290" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="251" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">10 ≥ 10</text>
+  <rect x="296" y="290" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="306" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">foo→11</text>
+  <rect x="350" y="290" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="306" text-anchor="middle" font-size="10" fill="#333">bar→2</text>
+  <text x="520" y="306" font-size="12" fill="#4a7a3a" font-weight="bold">true</text>
+
+  <!-- ⑤ 更新箭头 -->
+  <line x1="321" y1="316" x2="321" y2="330" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="345" y="328" font-size="9" fill="#4a7a3a" font-weight="bold">更新</text>
+
+  <!-- ===== ⑥ (12, "bar") ===== -->
+  <text x="44" y="362" font-size="12" fill="#333" font-weight="bold">⑥</text>
+  <rect x="86" y="348" width="110" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="141" y="364" text-anchor="middle" font-size="11" fill="#333">(12, "bar")</text>
+  <rect x="226" y="348" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="251" y="364" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">10 ≥ 10</text>
+  <rect x="296" y="348" width="50" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="321" y="364" text-anchor="middle" font-size="10" fill="#333">foo→11</text>
+  <rect x="350" y="348" width="50" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="375" y="364" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">bar→12</text>
+  <text x="520" y="364" font-size="12" fill="#4a7a3a" font-weight="bold">true</text>
+
+  <line x1="375" y1="374" x2="375" y2="388" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="399" y="386" font-size="9" fill="#4a7a3a" font-weight="bold">更新</text>
+
+  <!-- ===== 时间轴可视化 ===== -->
+  <text x="40" y="418" font-size="12" fill="#444" font-weight="bold">"foo" 的时间轴（last=1，禁止区间 [1, 11)）：</text>
+
+  <line x1="80" y1="448" x2="540" y2="448" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+
+  <!-- 刻度点 -->
+  <text x="100" y="440" font-size="10" fill="#b85450" font-weight="bold">1</text>
+  <line x1="104" y1="442" x2="104" y2="454" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="104" y="466" text-anchor="middle" font-size="9" fill="#b85450">①打印</text>
+
+  <text x="230" y="440" font-size="10" fill="#888">10</text>
+  <line x1="234" y1="442" x2="234" y2="454" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+  <text x="234" y="466" text-anchor="middle" font-size="9" fill="#b85450">④拒绝</text>
+
+  <text x="310" y="440" font-size="10" fill="#4a7a3a" font-weight="bold">11</text>
+  <line x1="314" y1="442" x2="314" y2="454" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="314" y="466" text-anchor="middle" font-size="9" fill="#4a7a3a">⑤打印</text>
+
+  <!-- 禁止区间标注 -->
+  <rect x="104" y="436" width="210" height="8" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="2" filter="url(#rough2)"/>
+  <text x="209" y="432" text-anchor="middle" font-size="9" fill="#b85450">禁止区间 [1, 11)：ts=3、ts=10 均在此区间内 → 拒绝</text>
+
+  <!-- ===== 关键提示 ===== -->
+  <rect x="30" y="482" width="570" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+  <text x="44" y="500" font-size="10" fill="#4a7a3a" font-weight="bold">关键：ts − last = 10 时通过（≥ 10），ts − last = 9 时拒绝（&lt; 10）——边界是「左闭右开」[last, last+10)</text>
+</svg>

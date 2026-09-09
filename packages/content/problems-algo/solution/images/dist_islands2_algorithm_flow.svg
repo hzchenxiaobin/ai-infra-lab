@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 480"
+     font-family="'Comic Sans MS','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+  <rect width="680" height="480" fill="#fafafa"/>
+
+  <text x="340" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">算法流程：扫描 + DFS 收集坐标 + 8 变换归一化 + 集合去重</text>
+  <path d="M 170 42 Q 340 50 510 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- main flow column (left) -->
+  <!-- start -->
+  <g filter="url(#rough2)"><rect x="120" y="62" width="180" height="36" rx="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="210" y="85" text-anchor="middle" font-size="13" fill="#2b4a66" font-weight="bold">开始：shapes = ∅</text>
+  <path d="M 210 98 L 210 116" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- loop -->
+  <g filter="url(#rough2)"><rect x="110" y="118" width="200" height="36" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.5"/></g>
+  <text x="210" y="141" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">行优先遍历每个 (i, j)</text>
+  <path d="M 210 154 L 210 172" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- decision -->
+  <g filter="url(#rough2)"><polygon points="210,174 295,214 210,254 125,214" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/></g>
+  <text x="210" y="211" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">grid[i][j]</text>
+  <text x="210" y="228" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">== 1 ?</text>
+
+  <!-- No branch -->
+  <path d="M 295 214 L 345 214" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="318" y="208" text-anchor="middle" font-size="11" fill="#888" font-weight="bold">否</text>
+  <g filter="url(#rough2)"><rect x="347" y="198" width="80" height="32" rx="6" fill="#f5f5f5" stroke="#bbb" stroke-width="1.3"/></g>
+  <text x="387" y="218" text-anchor="middle" font-size="12" fill="#666">跳过</text>
+  <path d="M 387 230 Q 387 260 300 248" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Yes branch -->
+  <path d="M 210 254 L 210 274" stroke="#b85450" stroke-width="1.7" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="221" y="268" font-size="11" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- DFS call -->
+  <g filter="url(#rough2)"><rect x="100" y="276" width="220" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="210" y="295" text-anchor="middle" font-size="12" fill="#2e5a26" font-weight="bold">cells = []</text>
+  <text x="210" y="312" text-anchor="middle" font-size="12" fill="#2e5a26" font-weight="bold">dfs(i, j, cells)  // 收集坐标</text>
+  <path d="M 210 320 L 210 338" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- normalize -->
+  <g filter="url(#rough2)"><rect x="90" y="340" width="240" height="44" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/></g>
+  <text x="210" y="359" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">canon = normalize(cells)</text>
+  <text x="210" y="376" text-anchor="middle" font-size="11" fill="#7a5415">8 变换 → 排序 → 取最小</text>
+  <path d="M 210 384 L 210 402" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- insert -->
+  <g filter="url(#rough2)"><rect x="100" y="404" width="220" height="36" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="210" y="427" text-anchor="middle" font-size="12" fill="#2b4a66" font-weight="bold">shapes.insert(canon)</text>
+  <path d="M 210 440 L 210 452" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- end -->
+  <g filter="url(#rough2)"><rect x="430" y="436" width="180" height="36" rx="18" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/></g>
+  <text x="520" y="459" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">return shapes.size()</text>
+  <path d="M 320 422 Q 380 422 430 454" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="370" y="416" text-anchor="middle" font-size="10" fill="#aaa">遍历结束</text>
+
+  <!-- loop back arrow -->
+  <path d="M 100 422 Q 50 422 50 136 L 110 136" stroke="#9e9e9e" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="38" y="280" font-size="10" fill="#aaa">下一格</text>
+
+  <!-- ===== right: normalize detail box ===== -->
+  <g filter="url(#rough2)">
+    <rect x="440" y="62" width="220" height="354" rx="10" fill="#fffdf3" stroke="#d6a040" stroke-dasharray="5 3" stroke-width="1.5"/>
+  </g>
+  <text x="456" y="86" font-size="13" font-weight="bold" fill="#7a5415">normalize(cells)</text>
+  <path d="M 456 94 Q 550 100 644 94" stroke="#d6a040" stroke-width="1.2" fill="none" filter="url(#rough2)"/>
+
+  <!-- step 1 -->
+  <g filter="url(#rough2)"><rect x="456" y="106" width="180" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/></g>
+  <text x="466" y="123" font-size="11" fill="#2b4a66" font-weight="bold">① 施加 8 种变换</text>
+  <text x="466" y="138" font-size="10" fill="#666">(x,y)→(±x,±y) 及 (±y,±x)</text>
+
+  <path d="M 546 146 L 546 158" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <g filter="url(#rough2)"><rect x="456" y="160" width="180" height="48" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/></g>
+  <text x="466" y="177" font-size="11" fill="#2b4a66" font-weight="bold">② 每组排序 + 平移归一</text>
+  <text x="466" y="192" font-size="10" fill="#666">sort(cells)</text>
+  <text x="466" y="204" font-size="10" fill="#666">各点 −= cells[0]</text>
+
+  <path d="M 546 208 L 546 220" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 3 -->
+  <g filter="url(#rough2)"><rect x="456" y="222" width="180" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/></g>
+  <text x="466" y="239" font-size="11" fill="#2b4a66" font-weight="bold">③ 8 组再排序</text>
+  <text x="466" y="254" font-size="10" fill="#666">sort(shapes[0..7])</text>
+
+  <path d="M 546 262 L 546 274" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 4 -->
+  <g filter="url(#rough2)"><rect x="456" y="276" width="180" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/></g>
+  <text x="466" y="293" font-size="11" fill="#b85450" font-weight="bold">④ 返回字典序最小</text>
+  <text x="466" y="308" font-size="10" fill="#b85450">return shapes[0]</text>
+
+  <!-- key insight -->
+  <g filter="url(#rough2)"><rect x="456" y="332" width="180" height="72" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="3 2"/></g>
+  <text x="466" y="350" font-size="11" fill="#7a5415" font-weight="bold">关键不变量：</text>
+  <text x="466" y="366" font-size="10" fill="#666">同一 D₄ 等价类的两座岛</text>
+  <text x="466" y="380" font-size="10" fill="#666">→ 8 组变换形状相同</text>
+  <text x="466" y="394" font-size="10" fill="#666">→ 排序取最小必相等</text>
+</svg>

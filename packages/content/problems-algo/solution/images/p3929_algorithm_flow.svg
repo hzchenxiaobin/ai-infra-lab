@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 410"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="410" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">总流程：外层二分惩罚 λ，内层 CHT 单调队列跑 1D DP</text>
+
+  <!-- ① 预处理 -->
+  <rect x="150" y="34" width="220" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="51" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">① 预处理前缀和 P[0..n]</text>
+  <text x="260" y="66" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">×2 单位制 V(s) = s·(s+1)，避免 ½</text>
+  <path d="M 260 74 L 260 94" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ② 二分 -->
+  <rect x="140" y="96" width="240" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="113" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">② 二分 λ ∈ [0, P&#8345;·(P&#8345;+1)]</text>
+  <text x="260" y="128" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">目标：最大 λ 使段数 cnt ≥ k</text>
+  <path d="M 260 136 L 260 156" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ③ check -->
+  <rect x="100" y="158" width="320" height="78" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="176" text-anchor="middle" font-size="11.5" font-weight="600" fill="#7a5a10" filter="url(#rough2)">③ check(λ)：1D DP + 单调队列 CHT</text>
+  <text x="260" y="193" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">dp[i] = P[i]²+P[i]+λ + min&#8342;{ −2P[j]·P[i] + dp[j]+P[j]²−P[j] }</text>
+  <text x="260" y="210" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">斜率 −2P[j] 严格递减入队尾；查询点 P[i] 严格递增弹队首</text>
+  <text x="260" y="227" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">值并列时取「更多段」⇒ cnt 精确</text>
+  <path d="M 260 236 L 260 251" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ④ 判定 -->
+  <polygon points="260,255 335,289 260,323 185,289" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="294" text-anchor="middle" font-size="12.5" fill="#8a3a34" filter="url(#rough2)">cnt ≥ k ?</text>
+
+  <path d="M 335 289 L 398 289" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="368" y="280" text-anchor="middle" font-size="10.5" fill="#4a7a3a" filter="url(#rough2)">是：lo = mid</text>
+  <path d="M 405 295 C 475 295 475 118 384 118" fill="none" stroke="#4a7a3a" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <path d="M 185 289 L 122 289" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="152" y="280" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">否：hi = mid−1</text>
+  <path d="M 115 283 C 35 283 35 118 136 118" fill="none" stroke="#b85450" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <path d="M 260 323 L 260 343" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="272" y="338" font-size="10" fill="#666" filter="url(#rough2)">lo = hi = λ* 收敛</text>
+
+  <!-- ⑤ 输出 -->
+  <rect x="140" y="347" width="240" height="40" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="365" text-anchor="middle" font-size="11.5" fill="#2d5a1e" filter="url(#rough2)">④ 答案 = ( A(λ*) − λ*·k ) / 2</text>
+  <text x="260" y="380" text-anchor="middle" font-size="10" fill="#557" filter="url(#rough2)">×2 单位还原 ½</text>
+
+  <text x="260" y="400" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">每次 check 均摊 O(n) × 二分 O(log P&#8345;²) ≈ 60 轮 ⟹ 总 O(n·log V)</text>
+</svg>

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="470" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心思路：先求每年最小值，再 JOIN 回原表取全部行</text>
+
+  <!-- Step 1: 原始表 Sales -->
+  <text x="30" y="56" font-size="11.5" fill="#888">① 原始表 Sales（一个产品可跨多年，同年可多条）</text>
+  <rect x="30" y="64" width="540" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">sale_id</text>
+  <text x="200" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">product_id</text>
+  <text x="310" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">year</text>
+  <text x="430" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">quantity</text>
+  <text x="530" y="84" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">price</text>
+  <text x="300" y="104" text-anchor="middle" font-size="10.5" fill="#888">PK = (sale_id, year)，同一 product 同一年可有多条</text>
+
+  <path d="M 300 116 L 300 136" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: 子查询求 MIN(year) -->
+  <text x="30" y="150" font-size="11.5" fill="#888">② 子查询：GROUP BY product_id，求 MIN(year) 得每个产品最早年份</text>
+  <rect x="40" y="158" width="520" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="180" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">SELECT product_id, MIN(year) AS first_year</text>
+  <text x="300" y="196" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">FROM Sales GROUP BY product_id</text>
+  <text x="300" y="210" text-anchor="middle" font-size="10.5" fill="#555">产出 (product_id, first_year) 二元组集合 m</text>
+
+  <path d="M 300 210 L 300 230" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN 回原表 -->
+  <text x="30" y="244" font-size="11.5" fill="#888">③ JOIN 回 Sales：ON product_id 相同 AND year = first_year</text>
+  <rect x="40" y="252" width="520" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="274" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">JOIN m ON s.product_id = m.product_id</text>
+  <text x="300" y="290" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">AND s.year = m.first_year</text>
+  <text x="300" y="304" text-anchor="middle" font-size="10.5" fill="#555">同年多条全部命中 → 取该产品首年的所有销售条目</text>
+
+  <path d="M 300 304 L 300 324" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="310" y="319" font-size="10" fill="#888">输出</text>
+
+  <!-- Result -->
+  <rect x="40" y="328" width="520" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="350" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">SELECT product_id, first_year, quantity, price</text>
+  <text x="300" y="368" text-anchor="middle" font-size="10.5" fill="#555">结果 = 每个产品首年的全部销售条目（同年多条全保留）</text>
+
+  <!-- Key insight box -->
+  <rect x="30" y="392" width="540" height="66" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="412" font-size="11" fill="#555" font-weight="bold">💡 为什么要 JOIN 回原表？</text>
+  <text x="50" y="428" font-size="10.5" fill="#888">子查询只产出 (product_id, first_year)，丢失了 quantity / price 等明细列。</text>
+  <text x="50" y="442" font-size="10.5" fill="#888">且同年可能有多条销售记录，必须回表才能把首年的全部条目取出来。</text>
+  <text x="50" y="456" font-size="10.5" fill="#888">MIN(year) 只给「哪一年」，JOIN 负责把「那一年所有行」拉回来。</text>
+</svg>

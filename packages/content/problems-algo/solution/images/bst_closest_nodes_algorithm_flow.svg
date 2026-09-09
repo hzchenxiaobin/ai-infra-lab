@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：中序收集 → 逐查询二分</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">先一次性把 BST 摊平成有序数组，再把每个 query 交给二分</text>
+
+  <!-- Step 1: inorder -->
+  <rect x="40" y="64" width="200" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="84" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 中序遍历 BST</text>
+  <text x="140" y="100" text-anchor="middle" font-size="10" fill="#555">DFS：左 → 取值 → 右</text>
+  <path d="M 140 112 L 140 138" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: sorted array -->
+  <rect x="40" y="142" width="200" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="162" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 得到有序数组 a</text>
+  <text x="140" y="178" text-anchor="middle" font-size="10" fill="#555">a = [1,2,4,6,9,14,15]</text>
+  <path d="M 140 190 L 140 214" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: loop over queries -->
+  <rect x="40" y="218" width="200" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="238" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 对每个 query q 循环</text>
+  <text x="140" y="254" text-anchor="middle" font-size="10" fill="#555">共 n 次，每次二分</text>
+
+  <!-- branch to two binary searches -->
+  <path d="M 140 266 L 140 286" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision: lower_bound / upper_bound -->
+  <polygon points="140,288 250,330 140,372 30,330" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="140" y="324" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">在 a 上二分</text>
+  <text x="140" y="340" text-anchor="middle" font-size="9" fill="#555">lower_bound(q) / upper_bound(q)</text>
+
+  <!-- right column: detail boxes -->
+  <!-- maxi box -->
+  <rect x="300" y="70" width="210" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="90" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">maxi = ≥q 的最小值</text>
+  <text x="405" y="106" text-anchor="middle" font-size="10" fill="#555">lo = lower_bound(a, q)</text>
+  <text x="405" y="120" text-anchor="middle" font-size="10" fill="#555">lo &lt; n ? a[lo] : −1</text>
+
+  <!-- mini box -->
+  <rect x="300" y="150" width="210" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="170" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">mini = ≤q 的最大值</text>
+  <text x="405" y="186" text-anchor="middle" font-size="10" fill="#555">hi = upper_bound(a, q)</text>
+  <text x="405" y="200" text-anchor="middle" font-size="10" fill="#555">hi &gt; 0 ? a[hi−1] : −1</text>
+
+  <!-- assemble answer -->
+  <rect x="300" y="230" width="210" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="250" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">④ answer[i] = [mini, maxi]</text>
+  <text x="405" y="266" text-anchor="middle" font-size="10" fill="#555">注意先 mini 后 maxi</text>
+
+  <!-- return -->
+  <rect x="300" y="298" width="210" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="318" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">⑤ 返回 answer</text>
+  <text x="405" y="334" text-anchor="middle" font-size="10" fill="#555">长度 = len(queries)</text>
+
+  <!-- connecting arrows left→right -->
+  <path d="M 250 98 L 300 98" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 250 178 L 300 178" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 250 253 L 300 253" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 405 276 L 405 296" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

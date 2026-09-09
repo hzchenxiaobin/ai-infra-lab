@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：一趟扫描，滑动三元组判定临界点</text>
+
+  <!-- Start oval -->
+  <ellipse cx="270" cy="50" rx="44" ry="15" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="54" text-anchor="middle" font-size="12" fill="#333">开始</text>
+
+  <path d="M 270 65 L 270 78" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init: pos=1, prev=head.val, curr=head.next, first=-1, prevIdx=-1, minGap=INF -->
+  <rect x="120" y="78" width="300" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="92" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">pos←1, prev←head.val, curr←head.next</text>
+  <text x="270" y="106" text-anchor="middle" font-size="10.5" fill="#555">first←-1, prevIdx←-1, minGap←∞</text>
+
+  <path d="M 270 112 L 270 124" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond 1: curr.next == null ? -->
+  <path d="M 198,148 L 270,124 L 342,148 L 270,172 Z" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="152" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">curr.next</text>
+  <text x="270" y="166" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">== null ?</text>
+
+  <!-- Yes (right) to output -->
+  <path d="M 342 148 L 388 148" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="362" y="142" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+
+  <!-- Output rect -->
+  <rect x="388" y="134" width="130" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="453" y="152" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">first == -1 ?</text>
+  <text x="453" y="168" text-anchor="middle" font-size="10" fill="#555">是 → [-1, -1]</text>
+  <text x="453" y="182" text-anchor="middle" font-size="10" fill="#555">否 → [minGap, pos-first-1]</text>
+
+  <!-- No (down) to critical check -->
+  <path d="M 270 172 L 270 188" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="184" font-size="10.5" fill="#4a7a3a" font-weight="bold">否</text>
+
+  <!-- Diamond 2: is critical? (curr > prev & curr > next) OR (curr < prev & curr < next) -->
+  <path d="M 170,216 L 270,188 L 370,216 L 270,244 Z" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="210" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">curr 是极大或极小?</text>
+  <text x="270" y="224" text-anchor="middle" font-size="9.5" fill="#666">(curr&gt;prev &amp; curr&gt;next)</text>
+  <text x="270" y="237" text-anchor="middle" font-size="9.5" fill="#666">|(curr&lt;prev &amp; curr&lt;next)</text>
+
+  <!-- Yes (right): record critical point -->
+  <path d="M 370 216 L 408 216" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="388" y="210" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Record rect -->
+  <rect x="408" y="196" width="118" height="84" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="467" y="212" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">记录临界点</text>
+  <text x="416" y="228" font-size="9.5" fill="#555">first==-1 ? first←pos</text>
+  <text x="416" y="242" font-size="9.5" fill="#555">: minGap = min(</text>
+  <text x="424" y="255" font-size="9.5" fill="#555">minGap, pos-prevIdx)</text>
+  <text x="416" y="269" font-size="9.5" fill="#555">prevIdx ← pos</text>
+
+  <!-- No (left): skip to advance -->
+  <path d="M 170 216 L 134 216" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="152" y="210" text-anchor="middle" font-size="10.5" fill="#888" font-weight="bold">否</text>
+
+  <!-- Merge: advance pointers -->
+  <rect x="100" y="280" width="340" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="296" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">推进三元组：prev←curr.val, curr←curr.next, pos++</text>
+  <text x="270" y="312" text-anchor="middle" font-size="10" fill="#888">（始终维护 prev / curr / next = curr.next 三元组）</text>
+
+  <!-- arrows from record and skip into advance -->
+  <path d="M 467 280 L 467 270 L 440 270 L 440 280" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 134 224 L 134 280" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop back arrow: from advance up to diamond1 -->
+  <path d="M 270 280 L 270 264 L 270 244" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="262" font-size="9.5" fill="#888">回循环</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="340" width="460" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="358" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">一趟扫描的三个不变量</text>
+  <text x="270" y="374" text-anchor="middle" font-size="10.5" fill="#555">① 只维护 prev/curr 两值即可判临界 ② minGap 只需相邻差 ③ maxGap = pos−first 即首末差</text>
+</svg>

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto">
+      <path d="M0,0 L7,4.5 L0,9 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto">
+      <path d="M0,0 L7,4.5 L0,9 Z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="460" fill="#fafafa"/>
+
+  <text x="290" y="28" text-anchor="middle" font-size="18" fill="#333" filter="url(#rough2)">归并分治：统计跨段数对</text>
+
+  <!-- Box 1: split by index -->
+  <rect x="70" y="46" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="71" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">① 按 index 二分 [l, m] / [m+1, r]：左半下标全 &lt; 右半</text>
+
+  <!-- index bar: 6 cells, left 3 blue, right 3 orange -->
+  <g filter="url(#rough2)">
+    <rect x="150" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="170" y="114" text-anchor="middle" font-size="13" fill="#333">a</text>
+    <rect x="194" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="214" y="114" text-anchor="middle" font-size="13" fill="#333">b</text>
+    <rect x="238" y="96" width="40" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4"/>
+    <text x="258" y="114" text-anchor="middle" font-size="13" fill="#333">c</text>
+    <path d="M283 92 L283 128" stroke="#b85450" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <rect x="290" y="96" width="40" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="310" y="114" text-anchor="middle" font-size="13" fill="#333">d</text>
+    <rect x="334" y="96" width="40" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="354" y="114" text-anchor="middle" font-size="13" fill="#333">e</text>
+    <rect x="378" y="96" width="40" height="26" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="398" y="114" text-anchor="middle" font-size="13" fill="#333">f</text>
+    <text x="214" y="142" text-anchor="middle" font-size="12" fill="#446688">左半 [l,m]</text>
+    <text x="366" y="142" text-anchor="middle" font-size="12" fill="#d6a040">右半 [m+1,r]</text>
+  </g>
+
+  <!-- arrow to box 2 -->
+  <path d="M290 156 L290 174" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 2: recurse -->
+  <rect x="70" y="178" width="440" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="203" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">② 递归左右两半：各自统计内部 i &lt; j 的数对</text>
+
+  <!-- arrow to box 3 -->
+  <path d="M290 220 L290 238" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 3: cross counting two-pointer -->
+  <rect x="40" y="242" width="500" height="96" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="264" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">③ 跨段计数（双指针，关键步骤）</text>
+  <!-- left sorted row (green) -->
+  <g filter="url(#rough2)">
+    <rect x="120" y="276" width="38" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4"/>
+    <text x="139" y="292" text-anchor="middle" font-size="12" fill="#333">0</text>
+    <rect x="160" y="276" width="38" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4"/>
+    <text x="179" y="292" text-anchor="middle" font-size="12" fill="#333">1</text>
+    <rect x="200" y="276" width="38" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4"/>
+    <text x="219" y="292" text-anchor="middle" font-size="12" fill="#333">3</text>
+    <text x="179" y="316" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">左半升序，指针 p</text>
+    <!-- pointer p arrow -->
+    <path d="M139 272 L139 266" stroke="#4a7a3a" stroke-width="1.4" marker-end="url(#arrG)"/>
+  </g>
+  <!-- right sorted row (orange) -->
+  <g filter="url(#rough2)">
+    <rect x="350" y="276" width="38" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="369" y="292" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <rect x="390" y="276" width="38" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="409" y="292" text-anchor="middle" font-size="12" fill="#333">4</text>
+    <rect x="430" y="276" width="38" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4"/>
+    <text x="449" y="292" text-anchor="middle" font-size="12" fill="#333">5</text>
+    <text x="409" y="316" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">右半升序遍历 j</text>
+    <!-- pointer j arrow -->
+    <path d="M369 272 L369 266" stroke="#d6a040" stroke-width="1.4" marker-end="url(#arr)"/>
+  </g>
+  <!-- middle inequality -->
+  <text x="284" y="292" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">b[p] ≤ b[j]+diff ?</text>
+
+  <!-- arrow to box 4 -->
+  <path d="M290 340 L290 358" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box 4: merge -->
+  <rect x="70" y="362" width="440" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="387" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">④ 归并合并为升序段（标准 merge，不改计数）</text>
+
+  <!-- result -->
+  <rect x="120" y="416" width="340" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="2.0" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="440" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold" filter="url(#rough2)">返回 left + right + cross</text>
+</svg>

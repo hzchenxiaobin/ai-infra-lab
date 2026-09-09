@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 580" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="580" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">双层循环 DP 流程（枚举前驱 j，维护 dp[i][d]）</text>
+
+  <!-- Start node -->
+  <ellipse cx="280" cy="62" rx="170" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#333">开始: dp = [n 个空哈希表], ans = 0</text>
+
+  <!-- arrow down -->
+  <path d="M 280 82 L 280 100" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init i -->
+  <rect x="180" y="104" width="200" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="12" fill="#333">i = 0</text>
+
+  <!-- arrow down -->
+  <path d="M 280 134 L 280 152" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: i < n? -->
+  <polygon points="280,156 380,196 280,236 180,196" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="192" text-anchor="middle" font-size="12" fill="#333">i &lt; n ?</text>
+  <text x="280" y="208" text-anchor="middle" font-size="11" fill="#666">(还有元素)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 380 196 L 472 196" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="426" y="188" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+  <ellipse cx="506" cy="196" rx="44" ry="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="506" y="200" text-anchor="middle" font-size="12" fill="#333">返回 ans</text>
+
+  <!-- Yes branch down -->
+  <path d="M 280 236 L 280 254" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="250" font-size="11" fill="#82b366">是</text>
+
+  <!-- Init j -->
+  <rect x="180" y="258" width="200" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="278" text-anchor="middle" font-size="12" fill="#333">j = 0</text>
+
+  <!-- arrow down -->
+  <path d="M 280 288 L 280 306" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: j < i? -->
+  <polygon points="280,310 380,348 280,386 180,348" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="345" text-anchor="middle" font-size="12" fill="#333">j &lt; i ?</text>
+  <text x="280" y="361" text-anchor="middle" font-size="11" fill="#666">(枚举前驱)</text>
+
+  <!-- No branch -> i++ -->
+  <path d="M 380 348 L 430 348 L 430 470 L 340 470" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="340" text-anchor="middle" font-size="11" fill="#b85450">否</text>
+
+  <!-- Yes branch down -->
+  <path d="M 280 386 L 280 404" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="292" y="400" font-size="11" fill="#82b366">是</text>
+
+  <!-- compute d -->
+  <rect x="110" y="408" width="340" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="428" text-anchor="middle" font-size="12" fill="#333">d = nums[i] − nums[j]</text>
+
+  <!-- arrow down -->
+  <path d="M 280 438 L 280 450" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- update dp and ans -->
+  <rect x="70" y="454" width="420" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="476" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">dp[i][d] = max(dp[i][d], dp[j].get(d,1)+1); ans = max(ans, dp[i][d])</text>
+
+  <!-- arrow down to j++ -->
+  <path d="M 140 470 L 90 470 L 90 348 L 180 348" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- j++ node -->
+  <rect x="60" y="490" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="509" text-anchor="middle" font-size="12" fill="#333">j = j + 1</text>
+
+  <!-- loop back j++ to j<i decision -->
+  <path d="M 120 490 L 120 348" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- i++ node -->
+  <rect x="280" y="492" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="511" text-anchor="middle" font-size="12" fill="#333">i = i + 1</text>
+
+  <!-- loop back i++ to i<n decision -->
+  <path d="M 400 506 L 530 506 L 530 196 L 380 196" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- annotations -->
+  <text x="64" y="536" font-size="10" fill="#888">内层循环 j ∈ [0, i)</text>
+  <text x="290" y="536" font-size="10" fill="#888">外层循环 i ∈ [0, n)</text>
+
+  <rect x="40" y="548" width="480" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="565" text-anchor="middle" font-size="10.5" fill="#444">每对 (j, i) 产生一个公差 d，dp[i][d] 尝试接上 dp[j][d] 的链 + 1</text>
+</svg>

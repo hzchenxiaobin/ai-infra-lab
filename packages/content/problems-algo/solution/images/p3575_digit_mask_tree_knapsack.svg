@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">核心观察：数值 → 数位掩码，好子集 = 互斥掩码的树上背包</text>
+
+  <!-- 左：示例 4 的树 -->
+  <text x="30" y="54" font-size="11.5" font-weight="bold" fill="#446688" filter="url(#rough2)">示例 4：vals = [3, 22, 5]</text>
+  <text x="30" y="70" font-size="10" fill="#777" filter="url(#rough2)">par = [-1, 0, 1]，链 0 → 1 → 2</text>
+
+  <!-- node 0 -->
+  <circle cx="72" cy="104" r="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="72" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">3</text>
+  <text x="30" y="98" font-size="10" fill="#777" filter="url(#rough2)">节点0</text>
+  <path d="M72,128 L72,148" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 1：数位重复，无效 -->
+  <circle cx="72" cy="172" r="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="72" y="177" text-anchor="middle" font-size="13" font-weight="bold" fill="#333" filter="url(#rough2)">22</text>
+  <text x="30" y="166" font-size="10" fill="#777" filter="url(#rough2)">节点1</text>
+  <path d="M72,196 L72,216" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- node 2 -->
+  <circle cx="72" cy="240" r="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="72" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">5</text>
+  <text x="30" y="234" font-size="10" fill="#777" filter="url(#rough2)">节点2</text>
+
+  <!-- 每个节点的掩码 -->
+  <text x="106" y="100" font-size="11" fill="#446688" filter="url(#rough2)">mask = {3} ✓</text>
+  <text x="106" y="168" font-size="11" font-weight="bold" fill="#b85450" filter="url(#rough2)">✗ 数位 2 重复</text>
+  <text x="106" y="184" font-size="10" fill="#b85450" filter="url(#rough2)">掩码无效，永不可选</text>
+  <text x="106" y="236" font-size="11" fill="#4a7a3a" filter="url(#rough2)">mask = {5} ✓</text>
+  <text x="106" y="252" font-size="10" fill="#777" filter="url(#rough2)">十进制数位 → 10 位掩码</text>
+
+  <!-- 右：dp 自底向上演化 -->
+  <rect x="240" y="42" width="256" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="368" y="63" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">dp[2] = {∅:0, {5}:5}（叶子：自身入包）</text>
+  <text x="368" y="82" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">maxScore[2] = 5</text>
+
+  <path d="M368,98 L368,112" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="240" y="112" width="256" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="368" y="133" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">dp[1]：自身 22 无效 → {∅:0} ⊗ dp[2]</text>
+  <text x="368" y="152" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450" filter="url(#rough2)">dp[1] = {∅:0, {5}:5}，maxScore[1] = 5</text>
+
+  <path d="M368,168 L368,182" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="240" y="182" width="256" height="72" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="368" y="203" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">dp[0] = {∅:0, {3}:3} ⊗ dp[1]</text>
+  <text x="368" y="221" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">{3} 与 {5} 按位与为 0 → 可并成 {3,5}</text>
+  <text x="368" y="242" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#446688" filter="url(#rough2)">dp[0] = {∅:0, {3}:3, {5}:5, {3,5}:8}</text>
+
+  <path d="M368,254 L368,268" stroke="#446688" stroke-width="1.5" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <rect x="240" y="268" width="256" height="40" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="368" y="293" text-anchor="middle" font-size="12" font-weight="bold" fill="#333" filter="url(#rough2)">maxScore[0] = 8，Σ = 8+5+5 = 18 ✓</text>
+
+  <!-- 底部洞察 -->
+  <rect x="30" y="322" width="466" height="66" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="263" y="343" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#333" filter="url(#rough2)">好子集 ⟺ 所有成员 mask 两两按位与为 0；数位只有 0~9 ⇒ mask 至多 2¹⁰ = 1024 种</text>
+  <text x="263" y="362" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">子树独立 ⇒ 树上背包：自身是第一件物品，子节点 dp 逐个「不相交合并」上抛</text>
+  <text x="263" y="380" text-anchor="middle" font-size="10.5" fill="#d6a040" filter="url(#rough2)">空集 ∅:0 恒在 dp 里——子树可能没有任何合法节点</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：标记布尔掩码 → 扫描插入标签</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">O(n·m·L) 标记 + O(n) 拼接；可用 Trie / AC 自动机优化匹配阶段</text>
+
+  <g font-size="10" fill="#333">
+    <!-- Step 1: mark -->
+    <rect x="40" y="64" width="440" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="84" font-size="12" fill="#446688" font-weight="bold">① 标记 bold[] —— 遍历每个位置 × 每个关键词</text>
+    <text x="54" y="104" font-family="monospace" font-size="10" fill="#555">bold = [False] * n</text>
+    <text x="54" y="120" font-family="monospace" font-size="10" fill="#555">for i in range(n):</text>
+    <text x="70" y="136" font-family="monospace" font-size="10" fill="#4a7a3a">for w in words: if s.startswith(w, i): mark bold[i..i+len(w)-1] = True</text>
+
+    <path d="M 260 146 L 260 160" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 2: scan -->
+    <rect x="40" y="164" width="440" height="112" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="184" font-size="12" fill="#d6a040" font-weight="bold">② 扫描 s，按 bold 状态插入 &lt;b&gt;/&lt;/b&gt;</text>
+    <text x="54" y="204" font-family="monospace" font-size="10" fill="#555">i = 0; res = []</text>
+    <text x="54" y="220" font-family="monospace" font-size="10" fill="#555">while i &lt; n:</text>
+    <text x="70" y="236" font-family="monospace" font-size="10" fill="#4a7a3a">if bold[i]: res += "&lt;b&gt;"</text>
+    <text x="70" y="252" font-family="monospace" font-size="10" fill="#4a7a3a">  while i&lt;n and bold[i]: res += s[i]; i += 1</text>
+    <text x="70" y="268" font-family="monospace" font-size="10" fill="#4a7a3a">  res += "&lt;/b&gt;"</text>
+    <text x="210" y="268" font-family="monospace" font-size="10" fill="#446688">else: res += s[i]; i += 1</text>
+
+    <path d="M 260 278 L 260 292" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- Step 3: return -->
+    <rect x="40" y="296" width="440" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="54" y="316" font-size="12" fill="#4a7a3a" font-weight="bold">③ 返回 "".join(res)</text>
+    <text x="54" y="334" font-size="9" fill="#888">F→T 跳变处插 &lt;b&gt;，连续 T 段结束处插 &lt;/b&gt;；一段连续 true = 一对标签</text>
+
+    <!-- complexity -->
+    <rect x="40" y="356" width="440" height="36" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+    <text x="260" y="374" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">朴素时间 O(n·m·L)  ·  空间 O(n)</text>
+    <text x="260" y="388" text-anchor="middle" font-size="10" fill="#888">n=len(s)≤1000，m=len(words)≤500，L=max 词长≤10 → 朴素约 5×10⁶，可行</text>
+
+    <!-- key insight -->
+    <rect x="40" y="400" width="440" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="260" y="418" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">关键：掩码把"重叠/相邻合并"降为"找连续 true 段"</text>
+    <text x="260" y="430" text-anchor="middle" font-size="10" fill="#888">与 616 同构，等价于 56 题区间合并的"拍平"版</text>
+  </g>
+</svg>

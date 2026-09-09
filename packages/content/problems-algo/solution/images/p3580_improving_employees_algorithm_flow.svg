@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：窗口编号 → 截最近 3 行 → 条件聚合透视 → 递增判定 → 连名排序</text>
+
+  <!-- Step 1 -->
+  <rect x="130" y="36" width="300" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="54" text-anchor="middle" font-size="10" fill="#333">① FROM performance_reviews</text>
+  <text x="445" y="54" font-size="8.5" fill="#888">全部评估行</text>
+
+  <path d="M280 64 L280 76" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="100" y="80" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="98" text-anchor="middle" font-size="9" fill="#333">② ROW_NUMBER() OVER (PARTITION BY employee_id</text>
+  <text x="280" y="114" text-anchor="middle" font-size="9" fill="#333">ORDER BY review_date DESC) AS rn；COUNT(*) OVER(...) AS cnt</text>
+
+  <path d="M280 126 L280 138" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="130" y="142" width="300" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="160" text-anchor="middle" font-size="10" fill="#333">③ WHERE cnt &gt;= 3 AND rn &lt;= 3</text>
+  <text x="445" y="160" font-size="8.5" fill="#b85450">不足 3 次者出局</text>
+
+  <path d="M280 170 L280 182" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="100" y="186" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="204" text-anchor="middle" font-size="9" fill="#333">④ GROUP BY employee_id + 条件聚合（行转列）</text>
+  <text x="280" y="220" text-anchor="middle" font-size="9" fill="#333">MAX(CASE WHEN rn = 1/2/3 THEN rating END) → 三个评分</text>
+
+  <path d="M280 232 L280 244" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: diamond -->
+  <polygon points="280,244 455,277 280,310 105,277" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="273" text-anchor="middle" font-size="9.5" fill="#333" font-weight="bold">r_earliest &lt; r_mid &lt; r_latest ?</text>
+  <text x="280" y="289" text-anchor="middle" font-size="8.5" fill="#888">（最近 3 次严格递增吗？）</text>
+
+  <path d="M455 277 L500 277" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="470" y="270" font-size="9" fill="#b85450" font-weight="bold">否</text>
+  <text x="502" y="294" text-anchor="middle" font-size="8.5" fill="#b85450">淘汰</text>
+
+  <path d="M280 310 L280 324" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="292" y="322" font-size="9" fill="#4a7a3a" font-weight="bold">是</text>
+
+  <!-- Step 6 -->
+  <rect x="100" y="328" width="360" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="346" text-anchor="middle" font-size="9" fill="#333">⑥ JOIN employees 取 name</text>
+  <text x="280" y="362" text-anchor="middle" font-size="9" fill="#333">improvement_score = r_latest − r_earliest</text>
+
+  <path d="M280 374 L280 386" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Step 7 -->
+  <rect x="130" y="390" width="300" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="408" text-anchor="middle" font-size="10" fill="#333">⑦ ORDER BY improvement_score DESC, name ASC</text>
+
+  <!-- Bottom annotation -->
+  <text x="280" y="432" text-anchor="middle" font-size="9" fill="#555">示例：Bob(3)、Alice(2)、Carol(2) 入选；David 平台期、Emma 次数不足被淘汰</text>
+</svg>

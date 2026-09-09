@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 548"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="548" fill="#fafafa"/>
+
+  <text x="280" y="20" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">流程：计数 → 分桶 → 选桶 → 收集（一次 O(n) + 三趟 O(26)）</text>
+
+  <!-- start -->
+  <ellipse cx="300" cy="44" rx="36" ry="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="48" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">开始</text>
+
+  <path d="M 300,58 L 300,68" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- box1: count chars -->
+  <rect x="140" y="72" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="93" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">聚合①：扫描 s 一遍，cnt[c]++（26 个计数器，O(n)）</text>
+
+  <path d="M 300,106 L 300,116" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- box2: group by freq -->
+  <rect x="140" y="120" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="141" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">聚合②：遍历 26 个字母，group[cnt[i]]++（频率→组大小）</text>
+
+  <path d="M 300,154 L 300,164" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- box3: select best -->
+  <rect x="140" y="168" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="189" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">选桶：遍历 group，bestK = (组大小, k) 双关键字最大者</text>
+
+  <path d="M 300,202 L 300,212" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- box4: init collect -->
+  <rect x="140" y="216" width="320" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="235" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">收集初始化：res = ""，i = 0</text>
+
+  <path d="M 300,246 L 300,256" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond1: i < 26 ? -->
+  <polygon points="300,260 372,292 300,324 228,292" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="296" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">i &lt; 26 ?</text>
+
+  <!-- no branch: to end -->
+  <text x="382" y="285" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <path d="M 372,292 L 526,292 L 526,430 L 534,430" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- yes branch -->
+  <text x="310" y="336" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 300,324 L 300,336" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond2: cnt[i] == bestK ? -->
+  <polygon points="300,340 392,374 300,408 208,374" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="378" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">cnt[i] == bestK ?</text>
+
+  <!-- yes: append -->
+  <text x="196" y="367" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是</text>
+  <path d="M 208,374 L 172,374" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="32" y="356" width="140" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="102" y="378" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">res += 'a' + i</text>
+
+  <!-- no: skip -->
+  <text x="398" y="367" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">否</text>
+  <path d="M 392,374 L 402,374" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="406" y="356" width="116" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="464" y="378" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">跳过字母 i</text>
+
+  <!-- both branches converge to i++ -->
+  <path d="M 102,392 L 102,448 L 229,448" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 464,392 L 464,448 L 371,448" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="233" y="430" width="134" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="452" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">i++，继续</text>
+
+  <!-- loop back to diamond1 -->
+  <path d="M 300,466 L 300,478 L 190,478 L 190,292 L 224,292" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="200" y="472" font-size="9.5" fill="#888" filter="url(#rough2)">回到「i &lt; 26 ?」</text>
+
+  <!-- end -->
+  <ellipse cx="478" cy="430" rx="50" ry="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="478" y="434" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">返回 res</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="492" width="436" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="32" y="510" font-size="10.5" fill="#333" filter="url(#rough2)">计数 O(n) 一次 + 分桶 / 选桶 / 收集各一趟 O(26) → 总时间 O(n)</text>
+  <text x="32" y="528" font-size="10.5" fill="#333" filter="url(#rough2)">非空桶 ≤ 26：每个字母恰贡献一个频率 → 聚合②值域天然有界，无排序无堆</text>
+</svg>

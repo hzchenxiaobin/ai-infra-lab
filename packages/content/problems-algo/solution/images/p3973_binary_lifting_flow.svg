@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#667"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" filter="url(#rough2)">算法流程：倍增三表预处理 ＋ 查询闭式</text>
+
+  <!-- 左列：预处理 -->
+  <text x="133" y="46" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">预处理 O(n log n)</text>
+
+  <rect x="22" y="54" width="222" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="133" y="72" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d4a66" filter="url(#rough2)">① 建树 ＋ BFS（迭代防爆栈）</text>
+  <text x="133" y="87" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">根出发求 depth[]；up[0][v]＝parent[v]</text>
+  <text x="133" y="100" text-anchor="middle" font-size="9" fill="#556" filter="url(#rough2)">根的 up 指向自身（越界跳转钳到根）</text>
+
+  <path d="M133,106 L133,118" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="22" y="122" width="222" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="133" y="140" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d4a66" filter="url(#rough2)">② 逐条父边算两个因子（mod p）</text>
+  <text x="133" y="155" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">tf[v]＝r＋b＋w（门总数 → T 因子）</text>
+  <text x="133" y="168" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">df[v]＝r＋b−w（保持−切换 → Δ 因子）</text>
+
+  <path d="M133,178 L133,190" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="22" y="194" width="222" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="133" y="212" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d5a24" filter="url(#rough2)">③ 倍增三表 up / sp / sd（j＝1..LOG）</text>
+  <text x="133" y="227" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">up[j][v]＝up[j−1][up[j−1][v]]</text>
+  <text x="133" y="240" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">sp[j][v]＝sp[j−1][v]·sp[j−1][up[j−1][v]]</text>
+  <text x="133" y="253" text-anchor="middle" font-size="9" fill="#556" filter="url(#rough2)">sd 同式；钳到根的步因子视作 1（无害）</text>
+
+  <rect x="22" y="264" width="222" height="38" fill="#f5f5f5" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="133" y="279" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">LOG ≈ 17 层；门数可达 10⁹ ⟹ 因子先取模</text>
+  <text x="133" y="293" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">df 的负数要 (…%p＋p)%p 归一到 [0,p)</text>
+
+  <rect x="22" y="310" width="222" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="133" y="325" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">⚠️ 为什么不前缀积＋逆元？</text>
+  <text x="133" y="339" text-anchor="middle" font-size="9" fill="#b85450" filter="url(#rough2)">因子可能 ≡ 0 (mod p)，0 无逆元</text>
+
+  <!-- 右列：单次查询 -->
+  <text x="387" y="46" text-anchor="middle" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">每次查询 O(log n)</text>
+
+  <rect x="276" y="54" width="226" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="71" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d4a66" filter="url(#rough2)">① 对齐深度（顺手累乘！）</text>
+  <text x="389" y="85" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">深的一方按 diff 的二进制位逐段跳</text>
+  <text x="389" y="96" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">每跳 2^j：T ×＝ sp[j][x]，Δ ×＝ sd[j][x]</text>
+
+  <path d="M389,100 L389,110" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="276" y="114" width="226" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="131" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d4a66" filter="url(#rough2)">② 联合上跳找 LCA（u ≠ v 时）</text>
+  <text x="389" y="145" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">j 自高位向下：up[j][u]≠up[j][v] ⇒</text>
+  <text x="389" y="156" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">双方同时跳 2^j，各自累乘自己的表</text>
+
+  <path d="M389,160 L389,170" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="276" y="174" width="226" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="191" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d4a66" filter="url(#rough2)">③ 补最后一步（若 u ≠ v）</text>
+  <text x="389" y="205" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">u、v 已是 LCA 的两个孩子：</text>
+  <text x="389" y="216" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">各再乘一条 sp[0][·] / sd[0][·] 到达 LCA</text>
+
+  <path d="M389,220 L389,230" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="276" y="234" width="226" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="252" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2d5a24" filter="url(#rough2)">④ 闭式出单查询答案</text>
+  <text x="389" y="267" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">cur＝(Tᵤ·Tᵥ ＋ Δᵤ·Δᵥ)·2⁻¹ mod p</text>
+  <text x="389" y="279" text-anchor="middle" font-size="9" fill="#556" filter="url(#rough2)">（2⁻¹＝(p＋1)/2＝500000004）</text>
+
+  <path d="M389,284 L389,294" stroke="#667" stroke-width="1.5" fill="none" marker-end="url(#arr2)" filter="url(#rough2)"/>
+
+  <rect x="276" y="298" width="226" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="389" y="316" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#333" filter="url(#rough2)">⑤ ans ⊕＝ cur</text>
+  <text x="389" y="331" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">异或的是「模后整数」；u＝v 或互为祖先时</text>
+  <text x="389" y="343" text-anchor="middle" font-size="9" fill="#555" filter="url(#rough2)">空路径方 T＝1、Δ＝±1，公式自动正确</text>
+</svg>

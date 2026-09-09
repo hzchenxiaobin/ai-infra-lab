@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">区间 DP 填充流程（按长度递增）</text>
+
+  <!-- Step 1 -->
+  <rect x="40" y="50" width="460" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="72" font-size="13" fill="#446688" filter="url(#rough2)">① 预处理</text>
+  <text x="55" y="92" font-size="11" fill="#444" filter="url(#rough2)">pos = sorted([0, n] + cuts)，m = len(pos)</text>
+  <text x="300" y="92" font-size="11" fill="#888" filter="url(#rough2)">压缩到 m ≤ 102</text>
+
+  <path d="M270 108 L270 128" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- Step 2 -->
+  <rect x="40" y="130" width="460" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="152" font-size="13" fill="#4a7a3a" filter="url(#rough2)">② 初始化边界</text>
+  <text x="55" y="172" font-size="11" fill="#444" filter="url(#rough2)">dp[i][i+1] = 0  （相邻位置中间无切点）</text>
+
+  <path d="M270 188 L270 208" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- Step 3 主循环 -->
+  <rect x="40" y="210" width="460" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="232" font-size="13" fill="#d6a040" filter="url(#rough2)">③ 三重循环（len → i → k）</text>
+  <text x="55" y="252" font-size="11" fill="#444" filter="url(#rough2)">for len = 2 .. m:               // 区间长度递增</text>
+  <text x="55" y="270" font-size="11" fill="#444" filter="url(#rough2)">  for i = 0 .. m-len:           // 左端点</text>
+  <text x="55" y="288" font-size="11" fill="#444" filter="url(#rough2)">    j = i + len - 1</text>
+  <text x="55" y="306" font-size="11" fill="#444" filter="url(#rough2)">    for k = i+1 .. j-1:         // 枚举第一刀位置</text>
+  <text x="55" y="324" font-size="11" fill="#b85450" filter="url(#rough2)">      dp[i][j] = min(pos[j]-pos[i] + dp[i][k] + dp[k][j])</text>
+
+  <path d="M270 332 L270 352" stroke="#446688" stroke-width="1.4" filter="url(#rough2)" marker-end="url(#arr)"/>
+
+  <!-- Step 4 -->
+  <rect x="40" y="354" width="460" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="55" y="376" font-size="13" fill="#b85450" filter="url(#rough2)">④ 返回 dp[0][m-1]</text>
+  <text x="55" y="392" font-size="11" fill="#666" filter="url(#rough2)">整根棍子 0→n 的最小切割总成本</text>
+
+  <!-- 依赖说明 -->
+  <rect x="40" y="412" width="460" height="38" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="4 3" rx="4" filter="url(#rough2)"/>
+  <text x="270" y="435" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">dp[i][j] 只依赖更短的 [i,k] 与 [k,j]，按长度递增保证依赖就绪</text>
+</svg>

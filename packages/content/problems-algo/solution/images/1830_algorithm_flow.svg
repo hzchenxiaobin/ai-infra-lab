@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：逐位枚举更小字符 + 增量多项式系数</text>
+
+  <!-- Step 1: Precompute -->
+  <rect x="30" y="46" width="540" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="66" font-size="12" fill="#446688" font-weight="bold">① 预处理</text>
+  <text x="50" y="84" font-size="11" fill="#444">fact[0..n], inv_fact[0..n], inv[1..n]（模 1e9+7）；统计 cnt[26]</text>
+
+  <path d="M 300 98 L 300 110" stroke="#888" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Initial M -->
+  <rect x="30" y="114" width="540" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="134" font-size="12" fill="#4a7a3a" font-weight="bold">② 初始化多项式系数</text>
+  <text x="50" y="152" font-size="12" fill="#444">M = fact[n] × ∏ inv_fact[cnt[ch]]   （rem = n）</text>
+
+  <path d="M 300 166 L 300 178" stroke="#888" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Main loop -->
+  <rect x="30" y="182" width="540" height="200" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="202" font-size="12" fill="#d6a040" font-weight="bold">③ 逐位 i = 0 → n−1</text>
+
+  <!-- inner: for each c < s[i] -->
+  <rect x="50" y="214" width="500" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="70" y="234" font-size="11" fill="#b85450" font-weight="bold">对每个 c &lt; s[i] 且 cnt[c] &gt; 0：</text>
+  <text x="70" y="252" font-size="12" fill="#444">M_c = M × cnt[c] × inv[rem] % MOD</text>
+  <text x="300" y="252" font-size="11" fill="#888">→ ans = (ans + M_c) % MOD</text>
+
+  <!-- inner: update M -->
+  <rect x="50" y="274" width="500" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="70" y="294" font-size="11" fill="#446688" font-weight="bold">放置 s[i]，更新 M：</text>
+  <text x="70" y="312" font-size="12" fill="#444">M = M × cnt[s[i]] × inv[rem] % MOD</text>
+  <text x="300" y="312" font-size="11" fill="#888">→ cnt[s[i]]−−; rem−−</text>
+
+  <!-- formula note -->
+  <text x="300" y="346" text-anchor="middle" font-size="10" fill="#888">核心：M_c / M = cnt[c] / rem（放 c 后剩余排列数与当前之比）</text>
+  <text x="300" y="362" text-anchor="middle" font-size="10" fill="#888">除法 → 乘 inv[rem]，全程模运算，无精度问题</text>
+
+  <path d="M 300 384 L 300 396" stroke="#888" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Return -->
+  <rect x="30" y="400" width="540" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="420" font-size="12" fill="#4a7a3a" font-weight="bold">④ 返回 ans</text>
+  <text x="50" y="436" font-size="11" fill="#444">ans 即字典序严格小于 s 的不同排列数 = 操作次数</text>
+
+  <!-- loop arrow back -->
+  <path d="M 540 280 Q 570 280 570 230 Q 570 200 540 200" stroke="#d6a040" stroke-width="1.2" fill="none" stroke-dasharray="3,3" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="576" y="240" font-size="9" fill="#d6a040">i++</text>
+</svg>

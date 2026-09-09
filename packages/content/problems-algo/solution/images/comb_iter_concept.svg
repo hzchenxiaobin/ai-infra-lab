@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="540" height="380" fill="#fdfcf7"/>
+
+  <text x="270" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">组合迭代器：C(n,k) 个组合按字典序枚举</text>
+  <path d="M 150 36 Q 270 44 390 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- characters -->
+  <text x="40" y="76" font-size="12" font-weight="bold" fill="#666">characters：</text>
+  <g filter="url(#sk)"><rect x="120" y="60" width="36" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="138" y="79" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">a</text>
+  <g filter="url(#sk)"><rect x="160" y="60" width="36" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="178" y="79" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">b</text>
+  <g filter="url(#sk)"><rect x="200" y="60" width="36" height="28" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="218" y="79" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">c</text>
+  <text x="250" y="79" font-size="11" fill="#888">n = 3, k = 2 → C(3,2) = 3 个组合</text>
+
+  <!-- combinations in lex order -->
+  <text x="40" y="128" font-size="12" font-weight="bold" fill="#666">字典序组合：</text>
+
+  <g filter="url(#sk)"><rect x="120" y="112" width="50" height="30" rx="4" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="145" y="132" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e6e2e">ab</text>
+  <text x="100" y="132" font-size="10" fill="#888">①</text>
+
+  <g filter="url(#sk)"><rect x="190" y="112" width="50" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="215" y="132" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">ac</text>
+  <text x="170" y="132" font-size="10" fill="#888">②</text>
+
+  <g filter="url(#sk)"><rect x="260" y="112" width="50" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/></g>
+  <text x="285" y="132" text-anchor="middle" font-size="13" font-weight="bold" fill="#b85450">bc</text>
+  <text x="240" y="132" font-size="10" fill="#888">③</text>
+
+  <!-- iterator pointer -->
+  <path d="M 145 148 L 145 168" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <g filter="url(#sk)"><rect x="100" y="168" width="90" height="26" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/></g>
+  <text x="145" y="186" text-anchor="middle" font-size="11" font-weight="bold" fill="#b85450">next() 指针</text>
+  <text x="330" y="132" font-size="10" fill="#888">每次 next() 取一个，hasNext() 判是否还有</text>
+
+  <!-- two approaches -->
+  <g filter="url(#sk)"><rect x="40" y="220" width="220" height="130" rx="10" fill="#f4f9fd" stroke="#446688" stroke-width="1.5"/></g>
+  <text x="150" y="244" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b6e9e">方法一：预生成（推荐）</text>
+  <text x="55" y="266" font-size="11" fill="#444">· 构造时回溯生成全部 C(n,k) 个</text>
+  <text x="55" y="284" font-size="11" fill="#444">· 存入 vector，维护下标 idx</text>
+  <text x="55" y="306" font-size="11" fill="#4a8e4a">· next() → O(1)：返回 vec[idx++]</text>
+  <text x="55" y="324" font-size="11" fill="#4a8e4a">· hasNext() → O(1)：idx &lt; size?</text>
+  <text x="55" y="342" font-size="10" fill="#888">n≤15 时 C(15,7)=6435，预存无压力</text>
+
+  <g filter="url(#sk)"><rect x="280" y="220" width="220" height="130" rx="10" fill="#fffdf3" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="390" y="244" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5415">方法二：按需递增（进阶）</text>
+  <text x="295" y="266" font-size="11" fill="#444">· 维护下标数组 [0,1,…,k−1]</text>
+  <text x="295" y="284" font-size="11" fill="#444">· next() 生成当前串后推进下标</text>
+  <text x="295" y="306" font-size="11" fill="#d6a040">· 推进：找最右可增位，+1 后</text>
+  <text x="312" y="324" font-size="11" fill="#d6a040">  右侧逐位 = 前位+1</text>
+  <text x="295" y="342" font-size="10" fill="#888">不预存，O(k) 每次，空间 O(k)</text>
+
+  <path d="M 260 215 L 260 200" stroke="#bbb" stroke-width="1" stroke-dasharray="3 2" fill="none" filter="url(#sk)"/>
+</svg>

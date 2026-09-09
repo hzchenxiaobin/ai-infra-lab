@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2753b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arr2753r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：找开门 P → 走 k 步沿途关门 → 最后记下 = n</text>
+
+  <!-- Step 1 -->
+  <rect x="120" y="44" width="320" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 找一扇开着的门 P</text>
+  <text x="280" y="80" text-anchor="middle" font-size="10" fill="#446688">while !isDoorOpen(): moveRight()</text>
+  <text x="280" y="94" text-anchor="middle" font-size="10" fill="#888">停在 P，不关门</text>
+
+  <!-- arrow 1->2 -->
+  <path d="M280,102 L280,124" stroke="#446688" stroke-width="2" marker-end="url(#arr2753b)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="120" y="126" width="320" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="143" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">② 向右走 k 步</text>
+  <text x="280" y="159" text-anchor="middle" font-size="10" fill="#d6a040">for i = 1 .. k: moveRight()</text>
+
+  <!-- arrow 2->diamond -->
+  <path d="M280,168 L280,188" stroke="#446688" stroke-width="2" marker-end="url(#arr2753b)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="280,188 372,236 280,284 188,236" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="232" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">当前门</text>
+  <text x="280" y="246" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">开着?</text>
+
+  <!-- YES branch: record & close, loop back to step2 right side -->
+  <rect x="376" y="214" width="130" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="441" y="231" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">ans = i</text>
+  <text x="441" y="246" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">closeDoor()</text>
+  <path d="M372,236 L374,236" stroke="#b85450" stroke-width="2" marker-end="url(#arr2753r)" filter="url(#rough2)"/>
+  <!-- loop back up to step2 right edge -->
+  <path d="M506,236 L528,236 L528,147 L440,147" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arr2753r)" filter="url(#rough2)"/>
+  <text x="500" y="200" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">是·关掉</text>
+
+  <!-- NO branch: loop back to step2 left side -->
+  <path d="M188,236 L150,236 L150,147 L120,147" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr2753b)" filter="url(#rough2)"/>
+  <text x="128" y="200" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">否·跳过</text>
+
+  <!-- exit: k steps done -->
+  <path d="M280,284 L280,306" stroke="#d6a040" stroke-width="2" marker-end="url(#arr2753b)" filter="url(#rough2)"/>
+  <text x="296" y="298" text-anchor="start" font-size="10" fill="#d6a040" font-weight="bold">走完 k 步</text>
+
+  <!-- Step 3 -->
+  <rect x="120" y="308" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="325" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">③ return ans = n</text>
+  <text x="280" y="341" text-anchor="middle" font-size="10" fill="#4a7a3a">最后一次记下的 i 即为房屋数</text>
+
+  <!-- bottom note -->
+  <rect x="60" y="362" width="440" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="376" text-anchor="middle" font-size="10" fill="#d6a040">P 走满一圈(第 n 步)回归时被记下；关 P 后全场皆闭，</text>
+  <text x="280" y="388" text-anchor="middle" font-size="10" fill="#d6a040">余下 k−n 步遇不到开门 ⇒ ans 不再更新，停在 n</text>
+</svg>

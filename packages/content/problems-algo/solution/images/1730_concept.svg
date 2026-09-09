@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">
+    核心观察：单源 BFS 逐层扩散，首达 # 即最短步数
+  </text>
+  <text x="280" y="44" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    示例 1：从 * 出发，第 3 层碰到食物 #
+  </text>
+
+  <!-- ===== Grid (left) ===== -->
+  <g filter="url(#rough2)">
+    <!-- Row 0: all X -->
+    <rect x="40" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="84" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="128" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="172" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="216" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="260" y="60" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <!-- Row 1: X * O O O X -->
+    <rect x="40" y="104" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="84" y="104" width="44" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="3"/>
+    <rect x="128" y="104" width="44" height="44" fill="#fff8e1" stroke="#d6a040" rx="3"/>
+    <rect x="172" y="104" width="44" height="44" fill="#e8f0fe" stroke="#446688" rx="3"/>
+    <rect x="216" y="104" width="44" height="44" fill="#eaf6ee" stroke="#4a8e4a" rx="3"/>
+    <rect x="260" y="104" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <!-- Row 2: X O O # O X -->
+    <rect x="40" y="148" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="84" y="148" width="44" height="44" fill="#fff8e1" stroke="#d6a040" rx="3"/>
+    <rect x="128" y="148" width="44" height="44" fill="#e8f0fe" stroke="#446688" rx="3"/>
+    <rect x="172" y="148" width="44" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4" rx="3"/>
+    <rect x="216" y="148" width="44" height="44" fill="#fff" stroke="#bbb" rx="3"/>
+    <rect x="260" y="148" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <!-- Row 3: all X -->
+    <rect x="40" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="84" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="128" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="172" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="216" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+    <rect x="260" y="192" width="44" height="44" fill="#f0f0f0" stroke="#bbb" rx="3"/>
+  </g>
+
+  <!-- cell content labels -->
+  <g font-size="14" filter="url(#rough2)">
+    <!-- Row 0 -->
+    <text x="62" y="88" text-anchor="middle" fill="#999">X</text>
+    <text x="106" y="88" text-anchor="middle" fill="#999">X</text>
+    <text x="150" y="88" text-anchor="middle" fill="#999">X</text>
+    <text x="194" y="88" text-anchor="middle" fill="#999">X</text>
+    <text x="238" y="88" text-anchor="middle" fill="#999">X</text>
+    <text x="282" y="88" text-anchor="middle" fill="#999">X</text>
+    <!-- Row 1 -->
+    <text x="62" y="132" text-anchor="middle" fill="#999">X</text>
+    <text x="106" y="132" text-anchor="middle" fill="#b03a3a" font-weight="bold">*</text>
+    <text x="150" y="132" text-anchor="middle" fill="#7a5415">O</text>
+    <text x="194" y="132" text-anchor="middle" fill="#446688">O</text>
+    <text x="238" y="132" text-anchor="middle" fill="#4a8e4a">O</text>
+    <text x="282" y="132" text-anchor="middle" fill="#999">X</text>
+    <!-- Row 2 -->
+    <text x="62" y="176" text-anchor="middle" fill="#999">X</text>
+    <text x="106" y="176" text-anchor="middle" fill="#7a5415">O</text>
+    <text x="150" y="176" text-anchor="middle" fill="#446688">O</text>
+    <text x="194" y="176" text-anchor="middle" fill="#2e6e2e" font-weight="bold">#</text>
+    <text x="238" y="176" text-anchor="middle" fill="#bbb">O</text>
+    <text x="282" y="176" text-anchor="middle" fill="#999">X</text>
+    <!-- Row 3 -->
+    <text x="62" y="220" text-anchor="middle" fill="#999">X</text>
+    <text x="106" y="220" text-anchor="middle" fill="#999">X</text>
+    <text x="150" y="220" text-anchor="middle" fill="#999">X</text>
+    <text x="194" y="220" text-anchor="middle" fill="#999">X</text>
+    <text x="238" y="220" text-anchor="middle" fill="#999">X</text>
+    <text x="282" y="220" text-anchor="middle" fill="#999">X</text>
+  </g>
+
+  <!-- distance labels (small, top-right corner of reached cells) -->
+  <g font-size="9" fill="#888" filter="url(#rough2)">
+    <text x="122" y="116">0</text>
+    <text x="166" y="116">1</text>
+    <text x="122" y="160">1</text>
+    <text x="210" y="116">2</text>
+    <text x="166" y="160">2</text>
+    <text x="254" y="116">3</text>
+    <text x="210" y="160">3</text>
+  </g>
+
+  <!-- wave arrows: dist0 -> dist1 -->
+  <path d="M 118,126 L 138,126" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 106,140 L 106,156" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- food highlight: arrow pointing to # -->
+  <path d="M 318,170 Q 330,170 336,170" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Right panel: insights ===== -->
+  <rect x="330" y="60" width="210" height="176" fill="#fffdf3" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="82" text-anchor="middle" font-size="12" font-weight="bold" fill="#5a4a1a" filter="url(#rough2)">关键洞察</text>
+  <g font-size="11" fill="#444" filter="url(#rough2)">
+    <text x="346" y="106">① 单源 BFS：从 * 入队</text>
+    <text x="346" y="126">② 每层 = 1 步（四邻居扩散）</text>
+    <text x="346" y="146">③ 首次遇到 # 即最短步数</text>
+    <text x="346" y="166">④ O 标记为 X 原地判重</text>
+    <text x="346" y="186">⑤ 队列空仍未碰到 → −1</text>
+  </g>
+  <rect x="346" y="200" width="178" height="28" fill="#eaf6ee" stroke="#4a8e4a" rx="6" filter="url(#rough2)"/>
+  <text x="435" y="218" text-anchor="middle" font-size="11" fill="#2e6e2e" filter="url(#rough2)">第 3 层碰到 # → 答案 3</text>
+
+  <!-- ===== Legend ===== -->
+  <text x="40" y="262" font-size="11" fill="#888" filter="url(#rough2)">图例：</text>
+  <g font-size="10" filter="url(#rough2)">
+    <rect x="80" y="252" width="18" height="14" fill="#fce4ec" stroke="#b85450" rx="2"/>
+    <text x="104" y="263" fill="#444">* 起点</text>
+    <rect x="150" y="252" width="18" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="2"/>
+    <text x="174" y="263" fill="#444"># 食物</text>
+    <rect x="220" y="252" width="18" height="14" fill="#fff8e1" stroke="#d6a040" rx="2"/>
+    <text x="244" y="263" fill="#444">dist 1</text>
+    <rect x="286" y="252" width="18" height="14" fill="#e8f0fe" stroke="#446688" rx="2"/>
+    <text x="310" y="263" fill="#444">dist 2</text>
+    <rect x="346" y="252" width="18" height="14" fill="#eaf6ee" stroke="#4a8e4a" rx="2"/>
+    <text x="370" y="263" fill="#444">dist 3</text>
+    <rect x="412" y="252" width="18" height="14" fill="#f0f0f0" stroke="#bbb" rx="2"/>
+    <text x="436" y="263" fill="#444">X 障碍</text>
+  </g>
+
+  <!-- ===== Insight box ===== -->
+  <rect x="40" y="300" width="500" height="80" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="324" text-anchor="middle" font-size="12" font-weight="bold" fill="#446688" filter="url(#rough2)">
+    BFS 在无权图上天然求最短路径
+  </text>
+  <text x="290" y="346" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">
+    每个格子首次被访问时的层数 = 从 * 到该格的最短步数
+  </text>
+  <text x="290" y="366" text-anchor="middle" font-size="11" fill="#555" filter="url(#rough2)">
+    故「首个 # 被弹出」时的步数即为答案 —— 无需 DFS 枚举所有路径
+  </text>
+</svg>

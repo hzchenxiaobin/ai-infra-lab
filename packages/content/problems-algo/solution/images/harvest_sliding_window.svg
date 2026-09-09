@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrL" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto">
+      <path d="M8,0 L0,4 L8,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">滑动窗口：代价单调，双指针维护</text>
+
+  <!-- Window highlight (semi-transparent) -->
+  <rect x="100" y="80" width="300" height="130" fill="#e8f0fe" fill-opacity="0.4" stroke="#446688" stroke-width="1.5" stroke-dasharray="6,3" rx="6" filter="url(#rough2)"/>
+
+  <!-- Window bracket labels -->
+  <text x="100" y="76" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">l</text>
+  <text x="400" y="76" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">r</text>
+
+  <!-- Fruit bars inside and outside window -->
+  <!-- Fruit at pos 1 (outside, left) -->
+  <rect x="56" y="168" width="14" height="22" fill="#ccc" fill-opacity="0.5" stroke="#999" stroke-width="1.5" rx="2" filter="url(#rough)"/>
+  <text x="63" y="200" text-anchor="middle" font-size="9" fill="#999">pos1</text>
+
+  <!-- Fruit at pos 2 (l, inside window) -->
+  <rect x="100" y="140" width="14" height="50" fill="#b85450" fill-opacity="0.65" stroke="#8a3a36" stroke-width="2" rx="2" filter="url(#rough)"/>
+  <text x="107" y="200" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">L</text>
+
+  <!-- Fruit at pos 4 (inside) -->
+  <rect x="180" y="155" width="14" height="35" fill="#6c8ebf" fill-opacity="0.65" stroke="#446688" stroke-width="2" rx="2" filter="url(#rough)"/>
+
+  <!-- startPos marker (no fruit, just a position) -->
+  <path d="M 260 135 L 252 125 L 268 125 Z" fill="#d6a040" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <path d="M 260 125 L 260 190" stroke="#d6a040" stroke-width="2" stroke-dasharray="4,3" fill="none" filter="url(#rough2)"/>
+  <text x="260" y="118" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">startPos</text>
+
+  <!-- Fruit at pos 6 (inside) -->
+  <rect x="320" y="150" width="14" height="40" fill="#6c8ebf" fill-opacity="0.65" stroke="#446688" stroke-width="2" rx="2" filter="url(#rough)"/>
+
+  <!-- Fruit at pos 7 (r, inside window) -->
+  <rect x="386" y="145" width="14" height="45" fill="#4a7a3a" fill-opacity="0.65" stroke="#3a5a2a" stroke-width="2" rx="2" filter="url(#rough)"/>
+  <text x="393" y="200" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">R</text>
+
+  <!-- Fruit at pos 9 (outside, right) -->
+  <rect x="446" y="160" width="14" height="30" fill="#ccc" fill-opacity="0.5" stroke="#999" stroke-width="1.5" rx="2" filter="url(#rough)"/>
+  <text x="453" y="200" text-anchor="middle" font-size="9" fill="#999">pos9</text>
+
+  <!-- Number line -->
+  <path d="M 30 210 Q 260 208 490 210" stroke="#999" stroke-width="2.5" fill="none" filter="url(#rough)"/>
+
+  <!-- Distance a: startPos - L -->
+  <path d="M 107 230 L 258 230" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" marker-start="url(#arrL)" filter="url(#rough2)"/>
+  <text x="180" y="246" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">a = startPos − L</text>
+
+  <!-- Distance b: R - startPos -->
+  <path d="M 262 230 L 393 230" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrR)" marker-start="url(#arrL)" filter="url(#rough2)"/>
+  <text x="330" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">b = R − startPos</text>
+
+  <!-- Cost formula box -->
+  <rect x="60" y="270" width="400" height="72" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="292" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">cost(l, r) = min(2a + b,  a + 2b)</text>
+  <text x="260" y="312" text-anchor="middle" font-size="11" fill="#666">r 右移 → b 增大 → cost 不减 → l 只需单调右移</text>
+  <text x="260" y="330" text-anchor="middle" font-size="11" fill="#666">窗口内水果和 = prefix[r+1] − prefix[l]  (O(1))</text>
+</svg>

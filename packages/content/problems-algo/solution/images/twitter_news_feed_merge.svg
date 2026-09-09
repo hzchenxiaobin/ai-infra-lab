@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="560" viewBox="0 0 860 560" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="ard" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+  <rect width="860" height="560" fill="#fdfcf7"/>
+  <text x="430" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">getNewsFeed：最大堆做 K 路归并</text>
+  <path d="M 270 46 Q 430 54 590 46" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="430" y="72" text-anchor="middle" font-size="11.5" fill="#888">用户 1 关注了用户 2 和用户 3，取三者推文中最新的 10 条</text>
+
+  <!-- ===== Three user tweet lists ===== -->
+  <g font-size="11">
+    <!-- user 1 -->
+    <text x="60" y="100" font-weight="bold" fill="#2b6e9e">user 1 的推文</text>
+    <g fill="#555">
+      <g filter="url(#sk)"><rect x="50" y="110" width="50" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb"/></g>
+      <text x="75" y="128" text-anchor="middle">(1,A)</text>
+      <g filter="url(#sk)"><rect x="100" y="110" width="50" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb"/></g>
+      <text x="125" y="128" text-anchor="middle">(4,D)</text>
+      <g filter="url(#sk)"><rect x="150" y="110" width="50" height="28" rx="4" fill="#fef6e6" stroke="#c98a2b" stroke-width="2"/></g>
+      <text x="175" y="128" text-anchor="middle" fill="#7a5415" font-weight="bold">(7,G)</text>
+    </g>
+    <text x="215" y="128" font-size="9.5" fill="#c98a2b">↑ ptr1</text>
+
+    <!-- user 2 -->
+    <text x="60" y="160" font-weight="bold" fill="#2b6e9e">user 2 的推文</text>
+    <g fill="#555">
+      <g filter="url(#sk)"><rect x="50" y="170" width="50" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb"/></g>
+      <text x="75" y="188" text-anchor="middle">(2,B)</text>
+      <g filter="url(#sk)"><rect x="100" y="170" width="50" height="28" rx="4" fill="#fef6e6" stroke="#c98a2b" stroke-width="2"/></g>
+      <text x="125" y="188" text-anchor="middle" fill="#7a5415" font-weight="bold">(6,F)</text>
+    </g>
+    <text x="165" y="188" font-size="9.5" fill="#c98a2b">↑ ptr2</text>
+
+    <!-- user 3 -->
+    <text x="60" y="220" font-weight="bold" fill="#2b6e9e">user 3 的推文</text>
+    <g fill="#555">
+      <g filter="url(#sk)"><rect x="50" y="230" width="50" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb"/></g>
+      <text x="75" y="248" text-anchor="middle">(3,E)</text>
+      <g filter="url(#sk)"><rect x="100" y="230" width="50" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb"/></g>
+      <text x="125" y="248" text-anchor="middle">(5,H)</text>
+      <g filter="url(#sk)"><rect x="150" y="230" width="50" height="28" rx="4" fill="#fef6e6" stroke="#c98a2b" stroke-width="2"/></g>
+      <text x="175" y="248" text-anchor="middle" fill="#7a5415" font-weight="bold">(8,I)</text>
+    </g>
+    <text x="215" y="248" font-size="9.5" fill="#c98a2b">↑ ptr3</text>
+  </g>
+
+  <!-- ===== Arrows to heap ===== -->
+  <path d="M 175 142 Q 280 200 340 266" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#ard)" stroke-dasharray="4 2" filter="url(#sk)"/>
+  <path d="M 125 202 Q 260 240 340 272" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#ard)" stroke-dasharray="4 2" filter="url(#sk)"/>
+  <path d="M 175 262 Q 280 280 340 280" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#ard)" stroke-dasharray="4 2" filter="url(#sk)"/>
+
+  <!-- ===== Max Heap ===== -->
+  <g filter="url(#sk)"><rect x="340" y="210" width="200" height="200" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/></g>
+  <text x="440" y="234" text-anchor="middle" font-size="14" font-weight="bold" fill="#b03a3a">最大堆（按 time 排序）</text>
+  <text x="440" y="250" text-anchor="middle" font-size="10" fill="#888">堆顶 = 当前最大的 time</text>
+
+  <!-- heap nodes (tree-like) -->
+  <g font-size="11">
+    <!-- root -->
+    <g filter="url(#sk)"><ellipse cx="440" cy="284" rx="42" ry="20" fill="#fef6e6" stroke="#c98a2b" stroke-width="2"/></g>
+    <text x="440" y="289" text-anchor="middle" font-weight="bold" fill="#7a5415">(8,I)</text>
+    <!-- left child -->
+    <g filter="url(#sk)"><ellipse cx="386" cy="340" rx="36" ry="18" fill="#fff" stroke="#4a8edb" stroke-width="1.2"/></g>
+    <text x="386" y="345" text-anchor="middle" fill="#2b6e9e">(7,G)</text>
+    <!-- right child -->
+    <g filter="url(#sk)"><ellipse cx="494" cy="340" rx="36" ry="18" fill="#fff" stroke="#4a8edb" stroke-width="1.2"/></g>
+    <text x="494" y="345" text-anchor="middle" fill="#2b6e9e">(6,F)</text>
+    <!-- lines -->
+    <path d="M 420 298 L 392 324" stroke="#bbb" stroke-width="1" filter="url(#sk)"/>
+    <path d="M 460 298 L 488 324" stroke="#bbb" stroke-width="1" filter="url(#sk)"/>
+  </g>
+  <text x="440" y="384" text-anchor="middle" font-size="10" fill="#888">初始：各用户最新推文入堆</text>
+  <text x="440" y="398" text-anchor="middle" font-size="10" fill="#888">堆大小 ≤ 关注人数 + 1</text>
+
+  <!-- ===== Arrow to output ===== -->
+  <path d="M 540 284 Q 600 284 640 284" stroke="#5a5a5a" stroke-width="2" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="590" y="276" text-anchor="middle" font-size="10" fill="#5a5a5a">出堆</text>
+
+  <!-- ===== Output ===== -->
+  <g filter="url(#sk)"><rect x="640" y="170" width="190" height="280" rx="10" fill="#eaf6ee" stroke="#4a7a3a" stroke-width="1.6"/></g>
+  <text x="735" y="194" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">newsFeed 结果</text>
+  <text x="735" y="210" text-anchor="middle" font-size="10" fill="#888">从新到旧，最多 10 条</text>
+
+  <g font-size="11.5">
+    <g filter="url(#sk)"><rect x="664" y="222" width="142" height="26" rx="4" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.5"/></g>
+    <text x="735" y="240" text-anchor="middle" fill="#7a5415" font-weight="bold">1. I (time=8)</text>
+    <g filter="url(#sk)"><rect x="664" y="252" width="142" height="26" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="735" y="270" text-anchor="middle" fill="#555">2. G (time=7)</text>
+    <g filter="url(#sk)"><rect x="664" y="282" width="142" height="26" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="735" y="300" text-anchor="middle" fill="#555">3. F (time=6)</text>
+    <g filter="url(#sk)"><rect x="664" y="312" width="142" height="26" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="735" y="330" text-anchor="middle" fill="#555">4. H (time=5)</text>
+    <g filter="url(#sk)"><rect x="664" y="342" width="142" height="26" rx="4" fill="#fff" stroke="#bbb"/></g>
+    <text x="735" y="360" text-anchor="middle" fill="#555">5. D (time=4)</text>
+    <g filter="url(#sk)"><rect x="664" y="372" width="142" height="26" rx="4" fill="#fff" stroke="#bbb" stroke-dasharray="3 2"/></g>
+    <text x="735" y="390" text-anchor="middle" fill="#aaa">6. E (time=3)</text>
+    <g filter="url(#sk)"><rect x="664" y="402" width="142" height="26" rx="4" fill="#fff" stroke="#bbb" stroke-dasharray="3 2"/></g>
+    <text x="735" y="420" text-anchor="middle" fill="#aaa">7. B (time=2)</text>
+    <text x="735" y="442" text-anchor="middle" font-size="9.5" fill="#aaa">... 依此类推</text>
+  </g>
+
+  <!-- ===== Bottom annotation ===== -->
+  <g filter="url(#sk)"><rect x="120" y="470" width="620" height="62" rx="8" fill="#fff" stroke="#ddd" stroke-width="1" stroke-dasharray="4 3"/></g>
+  <text x="430" y="492" text-anchor="middle" font-size="11.5" fill="#555" font-weight="bold">关键：每次出堆一条，就把该用户的下一条入堆 → 始终只在堆里放每路当前最大</text>
+  <text x="430" y="510" text-anchor="middle" font-size="10.5" fill="#888">每路最多取 10 条 → 堆操作 ≤ 10 次 → 总时间 O(10 · log F) ≈ O(log F)，F 为关注人数</text>
+  <text x="430" y="526" text-anchor="middle" font-size="10" fill="#888">对比暴力：把所有推文收集后排序 O(N log N)，N 为推文总数，远慢于堆归并</text>
+</svg>

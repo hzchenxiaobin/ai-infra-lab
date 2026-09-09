@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：三路 UNION ALL → 分组求和 → 透支判定</text>
+
+  <!-- Step 1: build delta stream -->
+  <rect x="100" y="48" width="360" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="68" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 构造 (user_id, credit_delta) 流水</text>
+  <text x="280" y="86" text-anchor="middle" font-size="10" fill="#666">SELECT paid_by, −amount FROM Transactions</text>
+  <text x="280" y="100" text-anchor="middle" font-size="10" fill="#666">UNION ALL SELECT paid_to, +amount  /  UNION ALL SELECT user_id, credit FROM Users</text>
+
+  <path d="M 280 112 L 280 130" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+
+  <!-- Step 2: JOIN Users for user_name -->
+  <rect x="120" y="132" width="320" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="152" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② JOIN Users 取 user_name</text>
+  <text x="280" y="170" text-anchor="middle" font-size="10" fill="#666">t JOIN Users u ON t.user_id = u.user_id</text>
+
+  <path d="M 280 182 L 280 200" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+
+  <!-- Step 3: GROUP BY + SUM -->
+  <rect x="110" y="202" width="340" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="222" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">③ GROUP BY user_id  +  SUM(credit)</text>
+  <text x="280" y="240" text-anchor="middle" font-size="10" fill="#666">把同一用户的多条 delta 折叠求和</text>
+  <text x="280" y="252" text-anchor="middle" font-size="9" fill="#999">初始额度 + 收入 − 支出 = 当前余额</text>
+
+  <path d="M 280 258 L 280 276" stroke="#666" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+
+  <!-- Step 4: IF decision (diamond) -->
+  <polygon points="280,278 380,318 280,358 180,318" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="314" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">SUM(credit) &lt; 0 ?</text>
+  <text x="280" y="330" text-anchor="middle" font-size="9" fill="#666">余额是否透支</text>
+
+  <!-- Yes branch -->
+  <path d="M 180 318 L 130 318 L 130 360" stroke="#b85450" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+  <text x="150" y="312" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">Yes</text>
+  <rect x="76" y="362" width="108" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="383" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">'Yes'</text>
+
+  <!-- No branch -->
+  <path d="M 380 318 L 430 318 L 430 360" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)" fill="none"/>
+  <text x="410" y="312" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">No</text>
+  <rect x="376" y="362" width="108" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="383" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">'No'</text>
+
+  <!-- Output table header -->
+  <path d="M 280 358 L 280 392" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)" fill="none" stroke-dasharray="3 2"/>
+
+  <rect x="120" y="404" width="320" height="22" fill="#446688" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">user_id</text>
+  <text x="240" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">user_name</text>
+  <text x="320" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">credit</text>
+  <text x="412" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">breached</text>
+
+  <!-- Bottom note -->
+  <text x="280" y="448" text-anchor="middle" font-size="10" fill="#666">JOIN 用于补 user_name；UNION ALL 用于合并额度变动（不去重）</text>
+</svg>

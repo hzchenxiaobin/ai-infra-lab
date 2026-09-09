@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#888" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a" filter="url(#rough2)"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#d6a040" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">播放列表 DP：位置 i 的两种选择</text>
+
+  <!-- ===== Transition 1: Add new song ===== -->
+  <text x="30" y="56" font-size="12" fill="#4a7a3a" font-weight="bold">选择一：放一首新歌（j−1 → j）</text>
+
+  <!-- Left state: playlist len i-1, j-1 songs -->
+  <rect x="30" y="66" width="150" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="84" text-anchor="middle" font-size="11" fill="#333">长度 i−1，已用 j−1 首歌</text>
+  <text x="105" y="102" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dp[i−1][j−1]</text>
+
+  <!-- Arrow with multiplier -->
+  <path d="M 185 90 L 285 90" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="200" y="70" width="70" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="235" y="84" text-anchor="middle" font-size="11" fill="#b8860b" font-weight="bold">× (n−j+1)</text>
+
+  <!-- Right state: playlist len i, j songs -->
+  <rect x="290" y="66" width="150" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="365" y="84" text-anchor="middle" font-size="11" fill="#333">长度 i，已用 j 首歌</text>
+  <text x="365" y="102" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dp[i][j]</text>
+
+  <text x="465" y="90" font-size="10" fill="#888">还有 n−j+1</text>
+  <text x="465" y="104" font-size="10" fill="#888">首新歌可选</text>
+
+  <!-- ===== Transition 2: Replay old song ===== -->
+  <text x="30" y="148" font-size="12" fill="#d6a040" font-weight="bold">选择二：重放旧歌（j → j）</text>
+
+  <!-- Left state: playlist len i-1, j songs -->
+  <rect x="30" y="158" width="150" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="105" y="176" text-anchor="middle" font-size="11" fill="#333">长度 i−1，已用 j 首歌</text>
+  <text x="105" y="194" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">dp[i−1][j]</text>
+
+  <!-- Arrow with multiplier -->
+  <path d="M 185 182 L 285 182" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <rect x="200" y="162" width="70" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="235" y="176" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">× max(j−k,0)</text>
+
+  <!-- Right state: same j -->
+  <rect x="290" y="158" width="150" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="365" y="176" text-anchor="middle" font-size="11" fill="#333">长度 i，已用 j 首歌</text>
+  <text x="365" y="194" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">dp[i][j]</text>
+
+  <text x="465" y="182" font-size="10" fill="#888">仅 j−k 首</text>
+  <text x="465" y="196" font-size="10" fill="#888">旧歌可重放</text>
+
+  <!-- ===== k-blocked window illustration ===== -->
+  <text x="30" y="232" font-size="12" fill="#b85450" font-weight="bold">关键：最近 k 首歌被「封锁」，不能立即重放</text>
+
+  <!-- Playlist slots -->
+  <rect x="40" y="244" width="38" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="59" y="264" text-anchor="middle" font-size="10" fill="#333">…</text>
+
+  <!-- Blocked window: last k positions -->
+  <rect x="82" y="244" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="101" y="264" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">i−k</text>
+  <rect x="124" y="244" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="143" y="264" text-anchor="middle" font-size="10" fill="#b85450">…</text>
+  <rect x="166" y="244" width="38" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="185" y="264" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">i−1</text>
+
+  <!-- Current position i -->
+  <rect x="210" y="244" width="38" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="229" y="264" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">i</text>
+
+  <!-- Bracket over blocked window -->
+  <path d="M 82 280 L 82 288 L 204 288 L 204 280" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="143" y="302" text-anchor="middle" font-size="10" fill="#b85450">k 个位置，互不相同 → 封锁 k 首歌</text>
+
+  <text x="260" y="264" font-size="10" fill="#888">→ 可重放 j−k 首（j&gt;k 时）</text>
+
+  <!-- ===== Recurrence formula ===== -->
+  <rect x="40" y="316" width="480" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="338" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">dp[i][j] = dp[i−1][j−1]·(n−j+1) + dp[i−1][j]·max(j−k, 0)</text>
+  <text x="280" y="356" text-anchor="middle" font-size="10" fill="#888">答案 = dp[goal][n]，边界 dp[0][0] = 1</text>
+</svg>

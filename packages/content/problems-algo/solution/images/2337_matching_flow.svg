@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrY" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrN" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">双指针匹配流程：i 走 start，j 走 target</text>
+
+  <!-- Start node -->
+  <rect x="220" y="44" width="120" height="34" rx="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">i = 0, j = 0</text>
+
+  <path d="M 280 78 L 280 100" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Skip blanks -->
+  <rect x="170" y="102" width="220" height="44" rx="6" fill="#ffffff" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="120" text-anchor="middle" font-size="11.5" fill="#444">跳过 start[i]=='_' 与 target[j]=='_'</text>
+  <text x="280" y="136" text-anchor="middle" font-size="10.5" fill="#888">（i、j 各自前进到下一个片段）</text>
+
+  <path d="M 280 146 L 280 168" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: both ended? -->
+  <path d="M 280 170 L 360 210 L 280 250 L 200 210 Z" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="206" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">两者同时到末尾？</text>
+  <text x="280" y="222" text-anchor="middle" font-size="10.5" fill="#888">（片段数相等）</text>
+
+  <!-- Yes -> true -->
+  <path d="M 200 210 L 90 210" stroke="#4a7a3a" stroke-width="1.6" marker-end="url(#arrY)" fill="none" filter="url(#rough2)"/>
+  <text x="96" y="202" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <rect x="20" y="192" width="64" height="36" rx="16" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="52" y="215" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">true</text>
+
+  <!-- No -> down to checks -->
+  <path d="M 280 250 L 280 272" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrN)" fill="none" filter="url(#rough2)"/>
+  <text x="288" y="266" font-size="11" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Check 1: identity -->
+  <rect x="150" y="274" width="260" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="296" text-anchor="middle" font-size="11.5" fill="#b85450">start[i] != target[j]  ?  → false</text>
+
+  <path d="M 280 308 L 280 324" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Check 2: L position -->
+  <rect x="120" y="326" width="320" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="348" text-anchor="middle" font-size="11.5" fill="#b85450">L 且 i &lt; j ?（L 不能向右）→ false</text>
+
+  <path d="M 280 360 L 280 376" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Check 3: R position -->
+  <rect x="120" y="378" width="320" height="34" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="400" text-anchor="middle" font-size="11.5" fill="#b85450">R 且 i &gt; j ?（R 不能向左）→ false</text>
+
+  <path d="M 280 412 L 280 428" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- advance -->
+  <rect x="200" y="430" width="160" height="24" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="446" text-anchor="middle" font-size="11.5" fill="#446688" font-weight="bold">i++, j++，回到顶部</text>
+</svg>

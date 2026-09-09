@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：求因子 → 统计 GCD 频次 → 枚举因子对</text>
+
+  <!-- Step 1: find divisors -->
+  <rect x="160" y="42" width="220" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">① 求 k 的所有因子（O(√k)）</text>
+
+  <path d="M 270 80 L 270 98" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: compute gcd freq -->
+  <rect x="140" y="98" width="260" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="122" text-anchor="middle" font-size="12" fill="#333">② 遍历 nums，统计 freq[gcd(x, k)]</text>
+
+  <path d="M 270 136 L 270 154" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: enumerate pairs -->
+  <rect x="140" y="154" width="260" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="178" text-anchor="middle" font-size="12" fill="#333">③ 枚举因子对 (d₁ ≤ d₂)，O(d(k)²)</text>
+
+  <path d="M 270 192 L 270 210" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond: d1*d2 % k == 0 ? -->
+  <polygon points="270,210 380,250 270,290 160,250" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="246" text-anchor="middle" font-size="11.5" fill="#333">d₁ × d₂ % k == 0 ?</text>
+  <text x="270" y="262" text-anchor="middle" font-size="10.5" fill="#888">(乘积能被 k 整除?)</text>
+
+  <!-- No → skip -->
+  <path d="M 380 250 L 440 250" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="436" y="236" width="86" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="479" y="255" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">跳过</text>
+
+  <!-- Yes ↓ -->
+  <path d="M 270 290 L 270 308" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="304" font-size="10.5" fill="#4a7a3a">是 ↓</text>
+
+  <!-- Decision: d1 == d2 ? -->
+  <polygon points="270,308 370,338 270,368 170,338" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="335" text-anchor="middle" font-size="11" fill="#333">d₁ == d₂ ?</text>
+  <text x="270" y="350" text-anchor="middle" font-size="10" fill="#888">(同因子?)</text>
+
+  <!-- Left: d1 == d2 -->
+  <path d="M 170 338 L 110 338" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="20" y="322" width="90" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="65" y="338" text-anchor="middle" font-size="10" fill="#333">ans +=</text>
+  <text x="65" y="350" text-anchor="middle" font-size="9.5" fill="#446688">C(freq,2)</text>
+  <text x="65" y="370" text-anchor="middle" font-size="9" fill="#888">c(c−1)/2</text>
+
+  <!-- Right: d1 != d2 -->
+  <path d="M 370 338 L 430 338" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="430" y="322" width="90" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="475" y="338" text-anchor="middle" font-size="10" fill="#333">ans +=</text>
+  <text x="475" y="350" text-anchor="middle" font-size="9.5" fill="#446688">freq[d₁]·freq[d₂]</text>
+
+  <!-- Loop back to step 3 -->
+  <path d="M 520 338 L 520 173 L 400 173" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <path d="M 20 338 L 20 173 L 140 173" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="50" y="166" font-size="9.5" fill="#888">下一对</text>
+
+  <!-- Bottom: return -->
+  <rect x="200" y="392" width="140" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="414" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return ans</text>
+
+  <!-- Complexity note -->
+  <rect x="380" y="386" width="150" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="455" y="404" text-anchor="middle" font-size="10" fill="#a87020" font-weight="bold">复杂度</text>
+  <text x="455" y="418" text-anchor="middle" font-size="9.5" fill="#555">O(n·log k + d(k)²)</text>
+</svg>

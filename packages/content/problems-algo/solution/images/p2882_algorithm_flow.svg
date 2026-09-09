@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="430" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">drop_duplicates 扫描流程：首次见则留，再犯则弃</text>
+
+  <!-- Step 1: input -->
+  <rect x="190" y="44" width="180" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="67" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">输入 customers DataFrame</text>
+
+  <path d="M 280 80 L 280 100" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: subset -->
+  <rect x="170" y="104" width="220" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">设定判重键</text>
+  <text x="280" y="142" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">subset=['email']</text>
+  <text x="400" y="130" font-size="10" fill="#b85450" filter="url(#rough2)">← 不传则「整行相同」才判重</text>
+
+  <path d="M 280 152 L 280 174" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="280,178 382,218 280,258 178,218" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="214" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">该 email 见过吗？</text>
+  <text x="280" y="232" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">（查哈希表）</text>
+
+  <!-- Branch: no (first) -->
+  <text x="400" y="210" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">否 · 首次</text>
+  <path d="M 382 218 L 428 218" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="432" y="196" width="112" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="488" y="214" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">保留该行</text>
+  <text x="488" y="232" text-anchor="middle" font-size="10" fill="#4a7a3a" filter="url(#rough2)">email 入哈希表</text>
+
+  <!-- Branch: yes (duplicate) -->
+  <text x="292" y="276" font-size="11" fill="#b85450" filter="url(#rough2)">是 · 重复</text>
+  <path d="M 280 258 L 280 280" fill="none" stroke="#b85450" stroke-width="2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="190" y="284" width="180" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="302" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">丢弃该行</text>
+  <text x="280" y="320" text-anchor="middle" font-size="10" fill="#b85450" filter="url(#rough2)">（keep='first' 的语义）</text>
+
+  <!-- Converge to output -->
+  <path d="M 488 240 L 488 348" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 280 328 L 280 348" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="90" y="352" width="400" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="372" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">输出新 DataFrame：保持首次出现顺序（稳定）</text>
+  <text x="290" y="390" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">行索引保留原标签（0,1,2,3,5）</text>
+</svg>

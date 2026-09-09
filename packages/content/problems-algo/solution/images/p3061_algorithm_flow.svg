@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 510" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="510" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：FROM → 双向 MAX 窗口 → CTE 对齐 → LEAST 求差 → SUM 收总</text>
+
+  <!-- Step 1 -->
+  <rect x="180" y="40" width="300" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="196" y="60" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">① FROM Heights</text>
+  <text x="196" y="78" font-size="10" fill="#666" filter="url(#rough2)">读取全部 (id, height) 行 —— 示例 12 行</text>
+
+  <path d="M 290 88 L 186 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 370 88 L 474 116" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2a -->
+  <rect x="40" y="120" width="280" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="144" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">②a MAX(height) OVER (ORDER BY id) AS l</text>
+  <text x="56" y="164" font-size="10" fill="#666" filter="url(#rough2)">从左向右累积前缀最大（含当前行）</text>
+
+  <!-- Step 2b -->
+  <rect x="340" y="120" width="280" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="356" y="144" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">②b MAX(height) OVER (ORDER BY id DESC) AS r</text>
+  <text x="356" y="164" font-size="10" fill="#666" filter="url(#rough2)">从右向左累积后缀最大（含当前行）</text>
+
+  <path d="M 186 180 L 290 206" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 474 180 L 370 206" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3 -->
+  <rect x="180" y="210" width="300" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="196" y="230" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">③ WITH T AS (SELECT id, height, l, r …)</text>
+  <text x="196" y="248" font-size="10" fill="#666" filter="url(#rough2)">CTE 物化：每行同时携带 height / l / r</text>
+
+  <path d="M 330 256 L 330 276" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="180" y="278" width="300" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="196" y="298" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">④ LEAST(l, r) − height</text>
+  <text x="196" y="316" font-size="10" fill="#666" filter="url(#rough2)">逐行接水：l、r 含当前行 ⇒ 恒 ≥ 0，无需兜底</text>
+
+  <path d="M 330 324 L 330 344" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="180" y="346" width="300" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="196" y="366" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">⑤ SUM(LEAST(l, r) − height)</text>
+  <text x="196" y="384" font-size="10" fill="#666" filter="url(#rough2)">聚合为一行，别名 total_trapped_water</text>
+
+  <path d="M 330 392 L 330 412" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="180" y="414" width="300" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="330" y="440" text-anchor="middle" font-size="12.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">输出：total_trapped_water = 6</text>
+
+  <!-- Key points -->
+  <rect x="30" y="468" width="600" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="46" y="482" font-size="10" fill="#333" filter="url(#rough2)">① id 为主键 ⇒ ORDER BY id 帧内无并列行，RANGE ≡ ROWS；两个窗口可共享同一次排序</text>
+  <text x="46" y="496" font-size="10" fill="#333" filter="url(#rough2)">② 相关子查询版逐行求两侧最大为 O(n²)；窗口函数版一趟扫描 O(n)，主键聚簇序还可免排序</text>
+</svg>

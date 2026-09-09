@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="20" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">核心观察：按「上一步怎么走」分状态，转移是连续列窗口</text>
+
+  <!-- 面板一：状态机 -->
+  <rect x="15" y="32" width="490" height="168" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="50" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">① 一维状态机：只记「上一步是上行还是平移」</text>
+
+  <rect x="60" y="62" width="160" height="36" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="140" y="80" text-anchor="middle" font-size="12.5" fill="#4a7a3a" filter="url(#rough2)">dp0[r−1][c']</text>
+  <text x="140" y="93" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">上一行的 dp0</text>
+
+  <rect x="252" y="58" width="246" height="48" rx="6" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="262" y="72" font-size="9" fill="#333" filter="url(#rough2)">上行：1+Δc² ≤ d² ⇒ |Δc| ≤ D=⌊√(d²−1)⌋</text>
+  <text x="262" y="85" font-size="9" fill="#333" filter="url(#rough2)">平移：|Δc| ≤ d 且 Δc≠0（禁原地踏步）</text>
+  <text x="262" y="98" font-size="9" fill="#b85450" filter="url(#rough2)">dp1 无自环：平移后下一步必须上行</text>
+
+  <rect x="40" y="140" width="130" height="42" rx="8" fill="#ffffff" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="105" y="158" text-anchor="middle" font-size="12.5" fill="#446688" filter="url(#rough2)">dp0[r][c]</text>
+  <text x="105" y="172" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">上一步 = 上行 / 起点</text>
+
+  <rect x="250" y="140" width="130" height="42" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="315" y="158" text-anchor="middle" font-size="12.5" fill="#d6a040" filter="url(#rough2)">dp1[r][c]</text>
+  <text x="315" y="172" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">上一步 = 平移</text>
+
+  <path d="M 105 137 L 138 102" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="76" y="122" font-size="10" fill="#4a7a3a" filter="url(#rough2)">上行</text>
+
+  <path d="M 315 137 C 280 120, 240 108, 208 101" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="352" y="124" font-size="10" fill="#4a7a3a" filter="url(#rough2)">必须上行</text>
+
+  <path d="M 172 160 L 246 160" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="209" y="152" font-size="10" fill="#d6a040" filter="url(#rough2)">平移</text>
+
+  <text x="30" y="192" font-size="9.5" fill="#333" filter="url(#rough2)">起点：dp0[n−1][c] = 1（可用格）；答案 = Σ ( dp0[0][c] + dp1[0][c] )——到达第 0 行后仍允许一步收尾平移</text>
+
+  <!-- 面板二：列窗口 + 前缀和 -->
+  <rect x="15" y="208" width="490" height="144" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="226" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">② 两种转移的目标列都是连续区间 → 前缀和 O(1) 拿下</text>
+
+  <text x="235" y="241" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">c'</text>
+
+  <rect x="48" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="65" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">0</text>
+  <rect x="82" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="99" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="116" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="133" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="150" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="167" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">3</text>
+  <rect x="184" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="201" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">4</text>
+  <rect x="218" y="244" width="34" height="30" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="235" y="264" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">5</text>
+  <rect x="252" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="269" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">6</text>
+  <rect x="286" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="303" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">7</text>
+  <rect x="320" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="337" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">8</text>
+  <rect x="354" y="244" width="34" height="30" rx="3" fill="#ffffff" stroke="#666" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="371" y="264" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">9</text>
+
+  <text x="415" y="263" font-size="10" fill="#999" filter="url(#rough2)">… c=m−1</text>
+
+  <path d="M 150 286 L 150 280 M 150 286 L 320 286 M 320 286 L 320 280" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="235" y="300" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">上行窗口 [c'−D, c'+D]：Σ(dp0+dp1)，含 c'（Δc=0 时距离=1 也合法）</text>
+
+  <path d="M 116 312 L 116 306 M 116 312 L 356 312 M 356 312 L 356 306" fill="none" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="236" y="326" text-anchor="middle" font-size="9" fill="#d6a040" filter="url(#rough2)">平移窗口 [c'−d, c'+d]：Σdp0 − dp0[c']（窗口含自己，减掉防原地踏步）</text>
+
+  <text x="30" y="346" font-size="10" fill="#333" filter="url(#rough2)">pre 为当前行 dp 的一趟前缀和 ⇒ 任意窗口和 = pre[hi+1] − pre[lo]，每格转移 O(1)</text>
+</svg>

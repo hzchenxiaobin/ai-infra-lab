@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 生成 12 月 → 左连接两路统计 → COALESCE 补零</text>
+
+  <!-- Step 1: CTE months -->
+  <rect x="180" y="44" width="240" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="62" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① CTE months：生成 1→12</text>
+  <text x="300" y="78" text-anchor="middle" font-size="9" fill="#446688">WITH RECURSIVE months AS (1 UNION ALL month+1)</text>
+
+  <path d="M300 88 L300 104" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- 分叉点 -->
+  <circle cx="300" cy="108" r="4" fill="#446688" filter="url(#rough2)"/>
+
+  <!-- 左路：active_drivers -->
+  <path d="M300 112 L150 112 L150 132" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <rect x="40" y="134" width="220" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="154" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② active_drivers（左路）</text>
+  <text x="50" y="172" font-size="9" fill="#446688">LEFT JOIN Drivers d</text>
+  <text x="50" y="186" font-size="9" fill="#446688">ON YEAR(d.join_date)&lt;2020</text>
+  <text x="50" y="200" font-size="9" fill="#446688">OR (YEAR=2020 AND MONTH≤m)</text>
+
+  <!-- 右路：accepted_rides -->
+  <path d="M300 112 L450 112 L450 132" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="340" y="134" width="220" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="450" y="154" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ accepted_rides（右路）</text>
+  <text x="350" y="172" font-size="9" fill="#b85450">AcceptedRides ar</text>
+  <text x="350" y="186" font-size="9" fill="#b85450">JOIN Rides r ON ar.ride_id=r.ride_id</text>
+  <text x="350" y="200" font-size="9" fill="#b85450">WHERE YEAR(r.requested_at)=2020</text>
+
+  <!-- 两路汇合 -->
+  <path d="M150 206 L150 246" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M450 206 L450 246" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- GROUP BY 说明（右路下方） -->
+  <rect x="340" y="210" width="220" height="20" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="450" y="224" text-anchor="middle" font-size="9" fill="#d6a040">GROUP BY MONTH(r.requested_at)</text>
+
+  <!-- 汇合点 -->
+  <circle cx="300" cy="250" r="4" fill="#d6a040" filter="url(#rough2)"/>
+  <path d="M150 246 L300 250" stroke="#446688" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M450 246 L300 250" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <path d="M300 254 L300 270" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 4: LEFT JOIN + COALESCE -->
+  <rect x="120" y="272" width="360" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="292" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ LEFT JOIN 两路 + COALESCE 补零</text>
+  <text x="300" y="310" text-anchor="middle" font-size="9" fill="#d6a040">months LEFT JOIN active ON month</text>
+  <text x="300" y="322" text-anchor="middle" font-size="9" fill="#d6a040">LEFT JOIN accepted ON month → COALESCE(…, 0)</text>
+
+  <path d="M300 330 L300 346" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- Step 5: ORDER BY -->
+  <rect x="180" y="348" width="240" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="366" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">⑤ ORDER BY month ASC</text>
+  <text x="300" y="382" text-anchor="middle" font-size="9" fill="#4a7a3a">按月份升序输出 12 行结果</text>
+
+  <path d="M300 392 L300 406" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- 输出 -->
+  <rect x="140" y="408" width="320" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="428" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">输出结果（12 行）</text>
+  <text x="160" y="446" font-size="9" fill="#333">month | active_drivers | accepted_rides</text>
+  <text x="160" y="458" font-size="9" fill="#888">  1    |       2         |       0       </text>
+
+  <!-- 左路标签 -->
+  <text x="150" y="126" text-anchor="middle" font-size="8.5" fill="#446688" font-weight="bold">左路</text>
+  <text x="450" y="126" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">右路</text>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：双层循环 + 前缀和滚动累加</text>
+
+  <!-- ① init -->
+  <rect x="160" y="44" width="220" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333">① 初始化 prev[0] = 1（前 0 字符 0 段，1 种）</text>
+  <path d="M 270 80 L 270 96" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ② outer j loop -->
+  <rect x="90" y="98" width="360" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="120" text-anchor="middle" font-size="12" fill="#333">② for j = 1 … k：cur 全置 0，run = 0，p = 0</text>
+  <path d="M 270 134 L 270 150" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ③ inner i loop: extend prefix sum -->
+  <rect x="40" y="152" width="460" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="171" text-anchor="middle" font-size="11.5" fill="#333">③ for i = 1 … n：</text>
+  <text x="270" y="187" text-anchor="middle" font-size="11" fill="#555">while p ≤ i−L 且 s[p] 质数：run += prev[p]，p++</text>
+  <path d="M 270 194 L 270 210" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="270,212 384,252 270,292 156,252" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="248" text-anchor="middle" font-size="11.5" fill="#333">s[i−1] 非质数？</text>
+  <text x="270" y="264" text-anchor="middle" font-size="10.5" fill="#888">（段尾合法）</text>
+
+  <!-- yes branch (left) -->
+  <text x="146" y="246" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 156 252 L 110 252 L 110 300" stroke="#4a7a3a" stroke-width="1.4" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+  <rect x="30" y="304" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="130" y="324" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">cur[i] = run</text>
+  <text x="130" y="338" text-anchor="middle" font-size="9.5" fill="#4a7a3a">累加到的合法起点数</text>
+
+  <!-- no branch (right) -->
+  <text x="392" y="246" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 384 252 L 430 252 L 430 300" stroke="#b85450" stroke-width="1.4" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <rect x="310" y="304" width="200" height="40" fill="#f0f0f0" stroke="#999" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="324" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">cur[i] = 0</text>
+  <text x="410" y="338" text-anchor="middle" font-size="9.5" fill="#888">段尾不合法，无方案</text>
+
+  <!-- merge to loop-back + exit -->
+  <path d="M 130 346 L 130 366" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 410 346 L 410 366" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 130 366 L 410 366" stroke="#666" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 366 L 270 384" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- inner loop-back (dashed, right side) -->
+  <path d="M 410 366 L 500 366 L 500 172 L 504 172" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="506" y="270" text-anchor="middle" font-size="9" fill="#888">i &lt; n</text>
+  <text x="506" y="282" text-anchor="middle" font-size="9" fill="#888">i++ 回 ③</text>
+
+  <!-- ⑤ prev=cur + outer loop-back -->
+  <rect x="110" y="386" width="320" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="408" text-anchor="middle" font-size="12" fill="#333">④ prev = cur（一维滚动）；j &lt; k 则 j++ 回 ②</text>
+  <!-- outer loop-back (dashed, far right) -->
+  <path d="M 430 403 L 520 403 L 520 115 L 454 115" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="524" y="258" font-size="9" fill="#888" transform="rotate(90 524 258)">j &lt; k 回 ②</text>
+
+  <path d="M 270 422 L 270 438" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- return -->
+  <rect x="160" y="440" width="220" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="14" filter="url(#rough2)"/>
+  <text x="270" y="462" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">⑤ return prev[n]</text>
+</svg>

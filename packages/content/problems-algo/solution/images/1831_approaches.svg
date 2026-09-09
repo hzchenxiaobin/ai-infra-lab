@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="330" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">三种解法对比：JOIN+IN / 窗口函数 RANK / LEFT JOIN 自连接</text>
+
+  <!-- ===== Approach A: JOIN + IN (recommended) ===== -->
+  <rect x="30" y="48" width="190" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="125" y="63" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">解法 A：JOIN + IN 子查询 ✓</text>
+
+  <rect x="30" y="74" width="190" height="100" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="90" font-size="8" fill="#446688">SELECT transaction_id</text>
+  <text x="40" y="104" font-size="8" fill="#446688">FROM Transactions</text>
+  <text x="40" y="118" font-size="8" fill="#b85450">WHERE (DATE(day),amount)</text>
+  <text x="40" y="130" font-size="8" fill="#b85450">  IN (SELECT DATE(day),</text>
+  <text x="40" y="142" font-size="8" fill="#b85450">      MAX(amount)</text>
+  <text x="40" y="154" font-size="8" fill="#b85450">  FROM Transactions</text>
+  <text x="40" y="166" font-size="8" fill="#b85450">  GROUP BY DATE(day))</text>
+
+  <rect x="30" y="180" width="190" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="6" filter="url(#rough2)" opacity="0.6"/>
+  <text x="40" y="196" font-size="9" fill="#4a7a3a" font-weight="bold">特点：</text>
+  <text x="40" y="210" font-size="8" fill="#666">• 元组 IN 双键匹配</text>
+  <text x="40" y="222" font-size="8" fill="#666">• 并列天然全保留</text>
+  <text x="40" y="234" font-size="8" fill="#666">• 语义最直观，通用</text>
+
+  <!-- ===== Approach B: RANK window function ===== -->
+  <rect x="235" y="48" width="190" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="330" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">解法 B：窗口函数 RANK()</text>
+
+  <rect x="235" y="74" width="190" height="100" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="245" y="90" font-size="8" fill="#446688">SELECT transaction_id</text>
+  <text x="245" y="104" font-size="8" fill="#446688">FROM (</text>
+  <text x="245" y="118" font-size="8" fill="#446688">  SELECT transaction_id,</text>
+  <text x="245" y="130" font-size="8" fill="#446688">    RANK() OVER(</text>
+  <text x="245" y="142" font-size="8" fill="#446688">      PARTITION BY DATE(day)</text>
+  <text x="245" y="154" font-size="8" fill="#446688">      ORDER BY amount DESC) rk</text>
+  <text x="245" y="166" font-size="8" fill="#446688">  FROM Transactions) t</text>
+
+  <rect x="235" y="180" width="190" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="6" filter="url(#rough2)" opacity="0.6"/>
+  <text x="245" y="196" font-size="9" fill="#446688" font-weight="bold">特点：</text>
+  <text x="245" y="210" font-size="8" fill="#666">• 分区排序一次完成</text>
+  <text x="245" y="222" font-size="8" fill="#666">• RANK 同值同秩=1</text>
+  <text x="245" y="234" font-size="8" fill="#666">• 不用 MAX()！→ 进阶解</text>
+
+  <!-- ===== Approach C: LEFT JOIN self-join ===== -->
+  <rect x="440" y="48" width="190" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="535" y="63" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">解法 C：LEFT JOIN 自连接</text>
+
+  <rect x="440" y="74" width="190" height="100" fill="#fff" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="90" font-size="8" fill="#446688">SELECT t1.transaction_id</text>
+  <text x="450" y="104" font-size="8" fill="#446688">FROM Transactions t1</text>
+  <text x="450" y="118" font-size="8" fill="#446688">LEFT JOIN Transactions t2</text>
+  <text x="450" y="130" font-size="8" fill="#d6a040">  ON DATE(t1.day)=DATE(t2.day)</text>
+  <text x="450" y="142" font-size="8" fill="#d6a040"> AND t1.amount &lt; t2.amount</text>
+  <text x="450" y="154" font-size="8" fill="#446688">WHERE t2.transaction_id</text>
+  <text x="450" y="166" font-size="8" fill="#446688">  IS NULL</text>
+
+  <rect x="440" y="180" width="190" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)" opacity="0.6"/>
+  <text x="450" y="196" font-size="9" fill="#d6a040" font-weight="bold">特点：</text>
+  <text x="450" y="210" font-size="8" fill="#666">• "无更大=最大"反连接</text>
+  <text x="450" y="222" font-size="8" fill="#666">• 不用 MAX()！→ 进阶解</text>
+  <text x="450" y="234" font-size="8" fill="#666">• O(n²)，备用方案</text>
+
+  <!-- ===== Comparison table ===== -->
+  <text x="330" y="262" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">维度对比</text>
+
+  <!-- Header row -->
+  <rect x="30" y="272" width="130" height="24" fill="#446688" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="288" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">维度</text>
+  <rect x="160" y="272" width="155" height="24" fill="#4a7a3a" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="237" y="288" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">A: JOIN+IN ✓</text>
+  <rect x="315" y="272" width="155" height="24" fill="#446688" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="392" y="288" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">B: RANK()</text>
+  <rect x="470" y="272" width="160" height="24" fill="#d6a040" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="550" y="288" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">C: LEFT JOIN 自连</text>
+
+  <!-- Row: 思路 -->
+  <rect x="30" y="296" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="95" y="314" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">核心思路</text>
+  <rect x="160" y="296" width="155" height="28" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="237" y="314" text-anchor="middle" font-size="8" fill="#666">先算每天MAX再IN筛</text>
+  <rect x="315" y="296" width="155" height="28" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="392" y="314" text-anchor="middle" font-size="8" fill="#666">组内排名，取rk=1</text>
+  <rect x="470" y="296" width="160" height="28" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="550" y="314" text-anchor="middle" font-size="8" fill="#666">无更大者=最大</text>
+
+  <!-- Row: 并列 -->
+  <rect x="30" y="324" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="95" y="342" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">并列处理</text>
+  <rect x="160" y="324" width="155" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="237" y="342" text-anchor="middle" font-size="8" fill="#4a7a3a">✓ 都等于MAX</text>
+  <rect x="315" y="324" width="155" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="392" y="342" text-anchor="middle" font-size="8" fill="#4a7a3a">✓ RANK同秩=1</text>
+  <rect x="470" y="324" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="550" y="342" text-anchor="middle" font-size="8" fill="#4a7a3a">✓ 无更大都保留</text>
+
+  <!-- Row: 用MAX() -->
+  <rect x="30" y="352" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="95" y="370" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">进阶: 不用MAX?</text>
+  <rect x="160" y="352" width="155" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="237" y="370" text-anchor="middle" font-size="8" fill="#b85450">✗ 用了 MAX()</text>
+  <rect x="315" y="352" width="155" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="392" y="370" text-anchor="middle" font-size="8" fill="#4a7a3a">✓ 不用 MAX()</text>
+  <rect x="470" y="352" width="160" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="550" y="370" text-anchor="middle" font-size="8" fill="#4a7a3a">✓ 不用 MAX()</text>
+
+  <!-- Row: 复杂度 -->
+  <rect x="30" y="380" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="95" y="398" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">时间复杂度</text>
+  <rect x="160" y="380" width="155" height="28" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="237" y="398" text-anchor="middle" font-size="8" fill="#666">O(n log n)</text>
+  <rect x="315" y="380" width="155" height="28" fill="#fff" stroke="#ccc" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="392" y="398" text-anchor="middle" font-size="8" fill="#666">O(n log n)</text>
+  <rect x="470" y="380" width="160" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="550" y="398" text-anchor="middle" font-size="8" fill="#b85450">O(n²) 无索引</text>
+
+  <!-- Row: 推荐度 -->
+  <rect x="30" y="408" width="130" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="95" y="426" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">推荐度</text>
+  <rect x="160" y="408" width="155" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="237" y="426" text-anchor="middle" font-size="8" fill="#4a7a3a" font-weight="bold">★ 首选</text>
+  <rect x="315" y="408" width="155" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="3" filter="url(#rough2)"/>
+  <text x="392" y="426" text-anchor="middle" font-size="8" fill="#446688">进阶解首选</text>
+  <rect x="470" y="408" width="160" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="550" y="426" text-anchor="middle" font-size="8" fill="#d6a040">仅备用</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="440" width="600" height="14" fill="none" stroke="none"/>
+  <text x="330" y="452" text-anchor="middle" font-size="9" fill="#888">A/B/C 三者语义等价，核心都是"把组级 MAX 回填到行级"——A 用聚合+IN，B 用排名，C 用反连接</text>
+</svg>

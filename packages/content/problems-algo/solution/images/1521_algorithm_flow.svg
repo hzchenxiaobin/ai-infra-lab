@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 580" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="580" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：滚动候选集合 S_r</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">S_r = {arr[r]} ∪ { v &amp; arr[r] : v ∈ S_{r-1} }，对每个 v 更新 |v−target|</text>
+
+  <!-- ===== 开始 ===== -->
+  <ellipse cx="270" cy="78" rx="56" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="82" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">开始</text>
+  <path d="M 270 96 L 270 110" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 初始化 ===== -->
+  <rect x="170" y="112" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="132" text-anchor="middle" font-size="12" fill="#333">ans = +∞，prev = ∅</text>
+  <text x="270" y="148" text-anchor="middle" font-size="10" fill="#888">prev 保存上一轮 S_{r-1}，至多 21 个值</text>
+  <path d="M 270 156 L 270 168" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 循环入口 ===== -->
+  <polygon points="270,170 380,210 270,250 160,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="206" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">r = 0 → n−1 ?</text>
+  <text x="270" y="222" text-anchor="middle" font-size="10" fill="#888">遍历右端点</text>
+  <!-- 是 → 右侧继续；否 → 底部返回 -->
+  <path d="M 380 210 L 430 210 L 430 510 L 350 510" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="392" y="204" font-size="10" fill="#888">否</text>
+  <path d="M 270 250 L 270 262" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="262" font-size="10" fill="#888">是</text>
+
+  <!-- ===== cur = {x} ===== -->
+  <rect x="170" y="264" width="200" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="282" text-anchor="middle" font-size="12" fill="#333">x = arr[r]</text>
+  <text x="270" y="298" text-anchor="middle" font-size="11" fill="#333">cur = { x }   ← 子数组 [r, r]</text>
+  <path d="M 270 304 L 270 316" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 扩展 cur ===== -->
+  <rect x="120" y="318" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="338" text-anchor="middle" font-size="11" fill="#333">对每个 v ∈ prev：cur.insert( v &amp; x )</text>
+  <text x="270" y="354" text-anchor="middle" font-size="10" fill="#888">← 子数组 [l, r] = [l, r−1] &amp; x；集合自动去重</text>
+  <path d="M 270 362 L 270 374" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 更新 ans ===== -->
+  <rect x="120" y="376" width="300" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="396" text-anchor="middle" font-size="11" fill="#333">对每个 v ∈ cur：ans = min(ans, |v − target|)</text>
+  <text x="270" y="412" text-anchor="middle" font-size="10" fill="#888">用所有候选值更新答案</text>
+  <path d="M 270 420 L 270 432" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== 判断 ans==0 ===== -->
+  <polygon points="270,434 360,468 270,502 180,468" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="464" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">ans == 0 ?</text>
+  <text x="270" y="480" text-anchor="middle" font-size="9" fill="#888">命中 target</text>
+  <!-- 是 → 左侧提前返回 -->
+  <path d="M 180 468 L 80 468 L 80 510" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="120" y="462" font-size="10" fill="#b85450" font-weight="bold">是</text>
+  <rect x="30" y="512" width="100" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="80" y="534" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">return 0</text>
+  <!-- 否 → 继续：prev = cur，回到循环 -->
+  <path d="M 270 502 L 270 524" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="278" y="516" font-size="10" fill="#888">否</text>
+
+  <!-- prev = cur -->
+  <rect x="200" y="526" width="140" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="547" text-anchor="middle" font-size="11" fill="#333">prev = cur</text>
+  <!-- 回到循环入口：左侧上行 -->
+  <path d="M 200 543 L 60 543 L 60 210 L 160 210" stroke="#666" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="70" y="380" font-size="9" fill="#888" transform="rotate(-90 70 380)">下一轮 r</text>
+
+  <!-- ===== 返回 ans ===== -->
+  <rect x="290" y="492" width="120" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="350" y="514" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">return ans</text>
+  <path d="M 350 510 L 350 510" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

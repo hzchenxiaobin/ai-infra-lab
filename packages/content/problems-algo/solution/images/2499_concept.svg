@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr_c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arr_g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：坏位置内部配对 + 主导值溢出向好位置借值</text>
+
+  <!-- ===== positions 0..4 as circles (example 2) ===== -->
+  <!-- x = 70,150,230,310,390 ; y=150 -->
+  <g filter="url(#rough2)">
+    <!-- pos0 good, unused -->
+    <circle cx="70" cy="150" r="19" fill="#f0f0f0" stroke="#bbb" stroke-width="1.2"/>
+    <text x="70" y="146" text-anchor="middle" font-size="12" fill="#999">0</text>
+    <text x="70" y="160" text-anchor="middle" font-size="9" fill="#999">好</text>
+
+    <!-- pos1 bad v=2 -->
+    <circle cx="150" cy="150" r="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/>
+    <text x="150" y="146" text-anchor="middle" font-size="13" fill="#7a4a10" font-weight="bold">1</text>
+    <text x="150" y="162" text-anchor="middle" font-size="9" fill="#7a4a10">v=2</text>
+
+    <!-- pos2 bad v=2 -->
+    <circle cx="230" cy="150" r="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/>
+    <text x="230" y="146" text-anchor="middle" font-size="13" fill="#7a4a10" font-weight="bold">2</text>
+    <text x="230" y="162" text-anchor="middle" font-size="9" fill="#7a4a10">v=2</text>
+
+    <!-- pos3 good (partner) -->
+    <circle cx="310" cy="150" r="20" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2"/>
+    <text x="310" y="146" text-anchor="middle" font-size="13" fill="#2f5a22" font-weight="bold">3</text>
+    <text x="310" y="162" text-anchor="middle" font-size="9" fill="#2f5a22">好</text>
+
+    <!-- pos4 bad v=3 -->
+    <circle cx="390" cy="150" r="20" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2"/>
+    <text x="390" y="146" text-anchor="middle" font-size="13" fill="#7a4a10" font-weight="bold">4</text>
+    <text x="390" y="162" text-anchor="middle" font-size="9" fill="#7a4a10">v=3</text>
+  </g>
+
+  <!-- swap arc pos1 <-> pos4 : within B, different values -->
+  <g filter="url(#rough2)">
+    <path d="M150,130 Q270,72 390,130" fill="none" stroke="#b85450" stroke-width="2.4" marker-end="url(#arr_c)"/>
+    <text x="270" y="64" text-anchor="middle" font-size="11" fill="#b85450">内部配对 1↔4（值 2 ≠ 3）代价 5</text>
+  </g>
+
+  <!-- swap arc pos2 <-> pos3 : overflow to good partner -->
+  <g filter="url(#rough2)">
+    <path d="M230,170 Q270,214 310,170" fill="none" stroke="#4a7a3a" stroke-width="2.4" marker-end="url(#arr_g)"/>
+    <text x="270" y="228" text-anchor="middle" font-size="11" fill="#4a7a3a">溢出借值 2↔3（好位置值 1 ≠ 2）代价 5</text>
+  </g>
+
+  <!-- ===== right: analysis panel ===== -->
+  <g filter="url(#rough2)" font-size="12" fill="#333">
+    <rect x="425" y="96" width="120" height="118" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.8"/>
+    <text x="437" y="118" font-size="12" fill="#446688" font-weight="bold">主导值分析</text>
+    <text x="437" y="140">坏位置 m = 3</text>
+    <text x="437" y="158">取值 {2:2, 3:1}</text>
+    <text x="437" y="176">maxFreq = 2，d=2</text>
+    <text x="437" y="196" font-size="11" fill="#b85450">2·2 = 4 &gt; 3</text>
+    <text x="437" y="210" font-size="11" fill="#b85450">overflow = 1</text>
+  </g>
+
+  <!-- ===== bottom: formula ===== -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="270" width="480" height="108" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.8"/>
+    <text x="56" y="294" font-size="13" fill="#b85450" font-weight="bold">代价 = Σ坏下标 + Σ（最小的 overflow 个「合法好下标」）</text>
+    <text x="56" y="316" font-size="13" fill="#333">　　 = (1 + 2 + 4) + (3) = 7 + 3 = 10</text>
+    <text x="56" y="338" font-size="11" fill="#666">合法好位置 j：nums1[j]≠d 且 nums2[j]≠d（借来的值能修复 d、且 j 自身仍好）</text>
+    <text x="56" y="356" font-size="11" fill="#666">无主导时（2·maxFreq ≤ m）代价 = Σ坏下标：内部两两配对，奇数个由下标 0 免费救场</text>
+    <text x="56" y="372" font-size="11" fill="#b85450">合法好位置不足 overflow 个 → 返回 −1</text>
+  </g>
+</svg>

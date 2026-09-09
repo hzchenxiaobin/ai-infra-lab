@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：轨迹固定且非递增 → 贪心取 k 个最大轨迹值即最优</text>
+
+  <!-- ① 单元素轨迹 -->
+  <text x="30" y="48" font-size="12" fill="#d6a040" font-weight="bold">① 单元素 e 的轨迹：与「何时取」无关，恒为 (t₀, t₁, t₂, …)</text>
+
+  <rect x="30" y="58" width="64" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="62" y="78" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold">10</text>
+  <path d="M 96 73 L 118 73" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="120" y="58" width="52" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="146" y="78" text-anchor="middle" font-size="12.5" fill="#446688">4</text>
+  <path d="M 174 73 L 196 73" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="198" y="58" width="52" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="78" text-anchor="middle" font-size="12.5" fill="#446688">2</text>
+  <path d="M 252 73 L 274 73" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="276" y="58" width="52" height="30" fill="#f3f3f3" stroke="#999" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="302" y="78" text-anchor="middle" font-size="12.5" fill="#888">1</text>
+  <path d="M 330 73 L 352 73" stroke="#999" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="354" y="58" width="52" height="30" fill="#f3f3f3" stroke="#999" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="78" text-anchor="middle" font-size="12.5" fill="#888">1</text>
+  <text x="414" y="78" font-size="11" fill="#888">…</text>
+
+  <text x="30" y="106" font-size="10.5" fill="#666">t₀ = e；t_{i+1} = ⌈tᵢ / 3⌉；序列非递增，落到 1 后恒为 1</text>
+
+  <!-- ② 关键洞察 -->
+  <rect x="30" y="120" width="500" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="40" y="140" font-size="12" fill="#4a7a3a" font-weight="bold">② 总分 = Σₑ (元素 e 的轨迹前缀和，长度 cₑ)，其中 Σcₑ = k</text>
+  <text x="40" y="160" font-size="11" fill="#333">轨迹值与何时取无关 → 问题化为「选 k 个最大轨迹值」</text>
+  <text x="40" y="180" font-size="11" fill="#333">非递增 ⇒ 若选 tᵢ(e)，则 t₀..tᵢ₋₁(e) ≥ tᵢ(e) 也在前 k 大中 → 前缀约束自动满足</text>
+
+  <!-- ③ 大顶堆 -->
+  <text x="30" y="220" font-size="12" fill="#d6a040" font-weight="bold">③ 大顶堆：每步「取最大可用」=「取最大剩余轨迹值」，恰好等价于上式</text>
+
+  <!-- 堆 -->
+  <rect x="60" y="232" width="64" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="252" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">max</text>
+  <rect x="40" y="266" width="52" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="66" y="284" text-anchor="middle" font-size="11" fill="#446688">…</text>
+  <rect x="96" y="266" width="52" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="122" y="284" text-anchor="middle" font-size="11" fill="#446688">…</text>
+  <text x="92" y="306" text-anchor="middle" font-size="10" fill="#888">大顶堆 O(n)</text>
+
+  <!-- pop -->
+  <path d="M 124 247 L 210 247" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="160" y="240" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">pop v</text>
+
+  <rect x="214" y="232" width="86" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="257" y="252" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">score += v</text>
+
+  <!-- push back -->
+  <path d="M 300 247 L 376 247" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="338" y="240" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">push ⌈v/3⌉</text>
+
+  <rect x="380" y="232" width="60" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="252" text-anchor="middle" font-size="11" fill="#4a7a3a">回堆</text>
+
+  <!-- loop -->
+  <path d="M 410 262 C 470 320 200 340 92 296" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="330" y="336" text-anchor="middle" font-size="11" fill="#888">循环 k 次（v=1 时 push 1，堆不空）</text>
+
+  <!-- 结果 -->
+  <rect x="214" y="352" width="226" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="327" y="372" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">return score（long long，可达 k·10⁹）</text>
+
+  <rect x="30" y="384" width="500" height="12" fill="none" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)" stroke-dasharray="3,2"/>
+</svg>

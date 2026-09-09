@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：uniq（窗口不同值之和）随窗口两端单调变化</text>
+
+  <!-- 数组格子 -->
+  <g filter="url(#rough2)">
+    <rect x="110" y="44" width="46" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="162" y="44" width="46" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="214" y="44" width="46" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="266" y="44" width="46" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="133" y="65" text-anchor="middle" font-size="12" fill="#33506b">2</text>
+    <text x="185" y="65" text-anchor="middle" font-size="12" fill="#33506b">2</text>
+    <text x="237" y="65" text-anchor="middle" font-size="12" fill="#33506b">3</text>
+    <text x="289" y="65" text-anchor="middle" font-size="12" fill="#8a6d1f">1</text>
+    <text x="133" y="92" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold">L(i=0)</text>
+    <text x="185" y="92" text-anchor="middle" font-size="9.5" fill="#888">i=1</text>
+    <text x="237" y="92" text-anchor="middle" font-size="9.5" fill="#8a3a34" font-weight="bold">R(i=2)</text>
+    <text x="289" y="92" text-anchor="middle" font-size="9.5" fill="#8a6d1f">扩右候选</text>
+  </g>
+  <rect x="104" y="36" width="162" height="52" rx="10" fill="none" stroke="#b85450" stroke-width="2" stroke-dasharray="7 5" filter="url(#rough2)"/>
+  <text x="255" y="113" text-anchor="middle" font-size="10.5" fill="#8a3a34" filter="url(#rough2)">窗口 [2,2,3]：cnt = {2: 2次, 3: 1次} → 不同值 {2,3}，uniq = 2+3 = 5 ≥ k=4</text>
+
+  <!-- 三个翻转案例 -->
+  <g filter="url(#rough2)">
+    <rect x="12" y="132" width="152" height="96" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="88" y="152" text-anchor="middle" font-size="10.5" fill="#33506b" font-weight="bold">① 扩右：加入 3</text>
+    <text x="88" y="170" text-anchor="middle" font-size="9.5" fill="#33506b">cnt[3]：0 → 1 翻转</text>
+    <text x="88" y="187" text-anchor="middle" font-size="9.5" fill="#33506b">uniq：2 → 5（+3）</text>
+    <text x="88" y="204" text-anchor="middle" font-size="9" fill="#33506b">首次进窗才加贡献</text>
+    <text x="88" y="221" text-anchor="middle" font-size="9.5" fill="#33506b" font-weight="bold">⇒ 扩右 uniq 不减</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="184" y="132" width="152" height="96" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="260" y="152" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold">② 缩左：移出首个 2</text>
+    <text x="260" y="170" text-anchor="middle" font-size="9.5" fill="#2f5d24">cnt[2]：2 → 1 未翻转</text>
+    <text x="260" y="187" text-anchor="middle" font-size="9.5" fill="#2f5d24">uniq：5 → 5（不变）</text>
+    <text x="260" y="204" text-anchor="middle" font-size="9" fill="#2f5d24">2 仍在窗，贡献保留</text>
+    <text x="260" y="221" text-anchor="middle" font-size="9.5" fill="#2f5d24" font-weight="bold">⇒ 重复值不扰动 uniq</text>
+  </g>
+  <g filter="url(#rough2)">
+    <rect x="356" y="132" width="152" height="96" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+    <text x="432" y="152" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">③ 再缩左：移出 2</text>
+    <text x="432" y="170" text-anchor="middle" font-size="9.5" fill="#8a6d1f">cnt[2]：1 → 0 翻转</text>
+    <text x="432" y="187" text-anchor="middle" font-size="9.5" fill="#8a6d1f">uniq：5 → 3（−2）</text>
+    <text x="432" y="204" text-anchor="middle" font-size="9" fill="#8a6d1f">值彻底离开才减贡献</text>
+    <text x="432" y="221" text-anchor="middle" font-size="9.5" fill="#8a6d1f" font-weight="bold">⇒ 缩左 uniq 不增</text>
+  </g>
+
+  <!-- 结论框 -->
+  <g filter="url(#rough2)">
+    <rect x="26" y="248" width="468" height="94" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6"/>
+    <text x="260" y="271" text-anchor="middle" font-size="11.5" fill="#8a3a34" font-weight="bold">单调性支柱：nums[i] ≥ 1 全为正数</text>
+    <text x="260" y="291" text-anchor="middle" font-size="10.5" fill="#8a3a34">扩右端 uniq 单调不减 ＋ 缩左端 uniq 单调不增</text>
+    <text x="260" y="311" text-anchor="middle" font-size="10.5" fill="#8a3a34">⇒ 与 209「长度最小的子数组」同款条件，双指针 O(n)</text>
+    <text x="260" y="331" text-anchor="middle" font-size="10.5" fill="#8a3a34">无解判定：整个数组的不同值之和 &lt; k 时返回 −1</text>
+  </g>
+</svg>

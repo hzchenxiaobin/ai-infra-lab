@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 330" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="330" fill="#fafafa"/>
+
+  <text x="330" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">流程：CTE 排序取序号 → JOIN 取容量 → CASE 切状态 → 排序输出</text>
+
+  <g font-size="12" font-weight="bold">
+    <rect x="60" y="44" width="540" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="68" text-anchor="middle" fill="#333">① CTE: ROW_NUMBER() OVER (PARTITION BY flight_id ORDER BY booking_time) AS rn</text>
+
+    <rect x="60" y="98" width="540" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="122" text-anchor="middle" fill="#333">② JOIN Flights f ON f.flight_id = r.flight_id（取 capacity）</text>
+
+    <rect x="60" y="152" width="540" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="176" text-anchor="middle" fill="#333">③ CASE WHEN rn ≤ f.capacity THEN 'Confirmed' ELSE 'Waitlist' AS status</text>
+
+    <rect x="60" y="206" width="540" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="230" text-anchor="middle" fill="#333">④ SELECT passenger_id, flight_id, status</text>
+
+    <rect x="60" y="260" width="540" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.7" rx="6" filter="url(#rough2)"/>
+    <text x="330" y="284" text-anchor="middle" fill="#333">⑤ ORDER BY flight_id, passenger_id → 输出</text>
+  </g>
+
+  <g fill="none" stroke="#446688" stroke-width="1.7" marker-end="url(#arrB)" filter="url(#rough2)">
+    <path d="M330,82 L330,98"/>
+    <path d="M330,136 L330,152"/>
+    <path d="M330,190 L330,206"/>
+    <path d="M330,244 L330,260"/>
+  </g>
+
+  <text x="610" y="68" font-size="11" fill="#446688" font-weight="bold">窗口函数</text>
+  <text x="610" y="122" font-size="11" fill="#446688" font-weight="bold">取容量</text>
+  <text x="610" y="176" font-size="11" fill="#4a7a3a" font-weight="bold">阈值切分</text>
+  <text x="610" y="230" font-size="11" fill="#4a7a3a" font-weight="bold">逐旅客</text>
+  <text x="610" y="284" font-size="11" fill="#d6a040" font-weight="bold">排序输出</text>
+</svg>

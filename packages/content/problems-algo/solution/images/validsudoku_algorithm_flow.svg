@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">一次遍历 + 三维哈希判重流程</text>
+
+  <!-- Init -->
+  <rect x="110" y="38" width="320" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="58" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">初始化</text>
+  <text x="270" y="76" text-anchor="middle" font-size="11" fill="#555">rows[9][9]、cols[9][9]、boxes[9][9] 全置 false</text>
+
+  <path d="M 270 88 L 270 104" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop diamond: i,j 遍历完? -->
+  <polygon points="270,108 392,152 270,196 148,152" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="148" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">81 格遍历完?</text>
+  <text x="270" y="166" text-anchor="middle" font-size="10.5" fill="#777">i,j 推进到边界?</text>
+
+  <!-- No -> down -->
+  <path d="M 270 196 L 270 214" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="286" y="210" font-size="11" fill="#82b366" font-weight="bold">No</text>
+
+  <!-- Yes -> return true -->
+  <path d="M 392 152 L 470 152 L 470 392" stroke="#82b366" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="412" y="144" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+  <rect x="370" y="392" width="200" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="470" y="412" text-anchor="middle" font-size="12.5" fill="#4a7a3a" font-weight="bold">return true</text>
+  <text x="470" y="430" text-anchor="middle" font-size="10.5" fill="#4a7a3a">全程无冲突，数独有效</text>
+
+  <!-- check: board[i][j] == '.' ? -->
+  <polygon points="270,218 402,262 270,306 138,262" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="270" y="256" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">board[i][j] == '.' ?</text>
+  <text x="270" y="274" text-anchor="middle" font-size="10" fill="#d6a040">空格跳过？</text>
+
+  <!-- Yes -> skip, advance next cell -->
+  <path d="M 402 262 L 470 262 L 470 350 L 270 350" stroke="#888" stroke-width="1.6" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="424" y="254" font-size="11" fill="#888" font-weight="bold">Yes</text>
+  <rect x="330" y="332" width="120" height="36" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="390" y="350" text-anchor="middle" font-size="10.5" fill="#888">跳过，下一格</text>
+
+  <!-- No -> compute d, b -->
+  <path d="M 270 306 L 270 322" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="286" y="318" font-size="11" fill="#b85450" font-weight="bold">No</text>
+
+  <rect x="90" y="326" width="200" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="190" y="344" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">d = digit − 1</text>
+  <text x="190" y="360" text-anchor="middle" font-size="10.5" fill="#446688">b = (i÷3)×3 + (j÷3)</text>
+
+  <path d="M 190 370 L 190 388" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- conflict diamond -->
+  <polygon points="190,392 312,430 190,468 68,430" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="190" y="426" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">rows[i][d] 或</text>
+  <text x="190" y="442" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">cols[j][d] 或 boxes[b][d]?</text>
+  <text x="190" y="458" text-anchor="middle" font-size="9.5" fill="#b85450">已出现过？</text>
+
+  <!-- Yes conflict -> return false -->
+  <path d="M 68 430 L 36 430 L 36 392" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="48" y="422" font-size="11" fill="#b85450" font-weight="bold">Yes</text>
+  <rect x="14" y="346" width="44" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="36" y="365" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">return</text>
+  <text x="36" y="378" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">false</text>
+
+  <!-- No conflict -> mark true, next cell -->
+  <path d="M 312 430 L 390 430 L 390 350" stroke="#82b366" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="330" y="422" font-size="11" fill="#82b366" font-weight="bold">No</text>
+  <text x="396" y="376" font-size="9.5" fill="#82b366">三表置 true</text>
+
+  <!-- loop back to top -->
+  <path d="M 470 350 L 470 130 L 270 130" stroke="#888" stroke-width="0" fill="none"/>
+</svg>

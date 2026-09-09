@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">拓扑序 + 祖先集合传播 流程</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="58" rx="150" ry="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="62" text-anchor="middle" font-size="12" fill="#333">开始: 建正向邻接表 + 入度数组</text>
+
+  <path d="M 280 78 L 280 96" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Init ancestors + queue -->
+  <rect x="150" y="100" width="260" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="118" text-anchor="middle" font-size="12" fill="#333">ancestors[i] = ∅ (空集合)</text>
+  <text x="280" y="134" text-anchor="middle" font-size="12" fill="#333">入度=0 的节点入队 (Kahn)</text>
+
+  <path d="M 280 144 L 280 162" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: queue empty? -->
+  <polygon points="280,166 360,206 280,246 200,206" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="202" text-anchor="middle" font-size="12" fill="#333">队列为空?</text>
+  <text x="280" y="218" text-anchor="middle" font-size="10" fill="#888">(拓扑完成)</text>
+
+  <!-- Yes branch right -> sort & return -->
+  <path d="M 360 206 L 432 206" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="396" y="198" text-anchor="middle" font-size="11" fill="#82b366">是</text>
+  <rect x="420" y="188" width="120" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="206" text-anchor="middle" font-size="11" fill="#333">各集合升序排序</text>
+  <text x="480" y="219" text-anchor="middle" font-size="11" fill="#333">返回 answer</text>
+
+  <!-- No branch down -->
+  <path d="M 280 246 L 280 266" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="294" y="262" font-size="11" fill="#b85450">否</text>
+
+  <!-- Pop u -->
+  <rect x="190" y="270" width="180" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="291" text-anchor="middle" font-size="12" fill="#333">出队 u (拓扑序处理)</text>
+
+  <path d="M 280 302 L 280 318" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Propagate -->
+  <rect x="120" y="322" width="320" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="342" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">遍历 u 的后继 v (边 u→v):</text>
+  <text x="280" y="360" text-anchor="middle" font-size="12" fill="#333">ancestors[v] ← ancestors[v] ∪ ancestors[u] ∪ {u}</text>
+  <text x="280" y="374" text-anchor="middle" font-size="10" fill="#888">∪ 用 bitset/set, O(n/64) 或 O(|set|)</text>
+
+  <!-- Decrement indegree + enqueue -->
+  <path d="M 280 378 L 280 392" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="394" width="260" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="415" text-anchor="middle" font-size="11" fill="#333">indegree[v]−−; 若归 0 则 v 入队</text>
+
+  <!-- loop back -->
+  <path d="M 150 410 L 60 410 L 60 206 L 200 206" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="308" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 50 308)">继续下一轮</text>
+</svg>

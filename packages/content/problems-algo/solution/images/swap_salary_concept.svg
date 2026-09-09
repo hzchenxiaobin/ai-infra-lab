@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 7 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 7 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心：逐行读取当前值 → CASE 映射 → 原地翻转 m ↔ f</text>
+
+  <!-- Left panel: BEFORE table -->
+  <text x="95" y="52" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">更新前</text>
+
+  <rect x="30" y="62" width="130" height="130" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="95" y="78" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">id name sex</text>
+  <line x1="30" y1="84" x2="160" y2="84" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="50" y="100" font-size="11" fill="#333">1  A   </text>
+  <text x="120" y="100" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">m</text>
+  <text x="50" y="118" font-size="11" fill="#333">2  B   </text>
+  <text x="120" y="118" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f</text>
+  <text x="50" y="136" font-size="11" fill="#333">3  C   </text>
+  <text x="120" y="136" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">m</text>
+  <text x="50" y="154" font-size="11" fill="#333">4  D   </text>
+  <text x="120" y="154" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f</text>
+
+  <!-- Middle: swap arrows -->
+  <text x="260" y="52" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">逐行翻转</text>
+
+  <path d="M 170 100 L 350 100" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="260" y="94" text-anchor="middle" font-size="10" fill="#446688">m → f</text>
+
+  <path d="M 350 118 L 170 118" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="260" y="112" text-anchor="middle" font-size="10" fill="#b85450">f → m</text>
+
+  <path d="M 170 136 L 350 136" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="260" y="130" text-anchor="middle" font-size="10" fill="#446688">m → f</text>
+
+  <path d="M 350 154 L 170 154" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="260" y="148" text-anchor="middle" font-size="10" fill="#b85450">f → m</text>
+
+  <!-- Right panel: AFTER table -->
+  <text x="425" y="52" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">更新后</text>
+
+  <rect x="360" y="62" width="130" height="130" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="425" y="78" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">id name sex</text>
+  <line x1="360" y1="84" x2="490" y2="84" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="380" y="100" font-size="11" fill="#333">1  A   </text>
+  <text x="450" y="100" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f</text>
+  <text x="380" y="118" font-size="11" fill="#333">2  B   </text>
+  <text x="450" y="118" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">m</text>
+  <text x="380" y="136" font-size="11" fill="#333">3  C   </text>
+  <text x="450" y="136" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">f</text>
+  <text x="380" y="154" font-size="11" fill="#333">4  D   </text>
+  <text x="450" y="154" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">m</text>
+
+  <!-- Bottom: why naive two-step fails -->
+  <rect x="30" y="210" width="460" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="230" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⚠ 为什么不能用两条 UPDATE？</text>
+  <text x="260" y="248" text-anchor="middle" font-size="10" fill="#444">UPDATE ... SET sex='f' → 全表变 f，m 信息已丢失</text>
+  <text x="260" y="263" text-anchor="middle" font-size="10" fill="#444">第二条 SET sex='m' 无从区分哪些原来是 m</text>
+
+  <!-- Bottom: CASE per-row atomic -->
+  <rect x="30" y="284" width="460" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="304" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">✓ CASE WHEN 逐行求值：读当前行 sex → 映射 → 写回</text>
+  <text x="260" y="322" text-anchor="middle" font-size="10" fill="#444">每行基于自身旧值计算新值，旧值在 CASE 求值时未被覆盖</text>
+  <text x="260" y="336" text-anchor="middle" font-size="10" fill="#888">单条 UPDATE 原子完成，无需临时表</text>
+</svg>

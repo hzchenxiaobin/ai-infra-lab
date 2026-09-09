@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGrn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：k 路归并 + 小顶堆，堆顶为区间左端、堆内最大为右端</text>
+
+  <!-- k lists -->
+  <text x="40" y="62" font-size="12" fill="#888">k 个有序列表（各取首元素入堆）：</text>
+
+  <!-- list 0 -->
+  <text x="40" y="86" font-size="10" fill="#4a7a3a" font-weight="bold">L0→</text>
+  <rect x="78" y="72" width="34" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="90" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">4</text>
+  <rect x="112" y="72" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="129" y="90" text-anchor="middle" font-size="11" fill="#333">10</text>
+  <rect x="146" y="72" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="163" y="90" text-anchor="middle" font-size="11" fill="#333">15</text>
+  <rect x="180" y="72" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="197" y="90" text-anchor="middle" font-size="11" fill="#333">24</text>
+  <rect x="214" y="72" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="231" y="90" text-anchor="middle" font-size="11" fill="#333">26</text>
+
+  <!-- list 1 -->
+  <text x="40" y="116" font-size="10" fill="#4a7a3a" font-weight="bold">L1→</text>
+  <rect x="78" y="102" width="34" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="120" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <rect x="112" y="102" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="129" y="120" text-anchor="middle" font-size="11" fill="#333">9</text>
+  <rect x="146" y="102" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="163" y="120" text-anchor="middle" font-size="11" fill="#333">12</text>
+  <rect x="180" y="102" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="197" y="120" text-anchor="middle" font-size="11" fill="#333">20</text>
+
+  <!-- list 2 -->
+  <text x="40" y="146" font-size="10" fill="#4a7a3a" font-weight="bold">L2→</text>
+  <rect x="78" y="132" width="34" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="95" y="150" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">5</text>
+  <rect x="112" y="132" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="129" y="150" text-anchor="middle" font-size="11" fill="#333">18</text>
+  <rect x="146" y="132" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="163" y="150" text-anchor="middle" font-size="11" fill="#333">22</text>
+  <rect x="180" y="132" width="34" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="197" y="150" text-anchor="middle" font-size="11" fill="#333">30</text>
+
+  <!-- arrow lists -> heap -->
+  <path d="M 260 118 L 300 118" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="10" fill="#446688">首元素</text>
+  <text x="280" y="130" text-anchor="middle" font-size="10" fill="#446688">入堆</text>
+
+  <!-- min-heap -->
+  <text x="430" y="62" text-anchor="middle" font-size="12" fill="#888">小顶堆（每路当前指针）</text>
+
+  <ellipse cx="430" cy="92" rx="26" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="430" y="97" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">0</text>
+  <ellipse cx="386" cy="140" rx="24" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="386" y="145" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <ellipse cx="474" cy="140" rx="24" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="474" y="145" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <path d="M 418 106 L 396 126" stroke="#888" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+  <path d="M 442 106 L 464 126" stroke="#888" stroke-width="1.3" fill="none" filter="url(#rough2)"/>
+
+  <text x="430" y="172" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">堆顶 = 当前左端 a</text>
+
+  <!-- currentMax tracker -->
+  <rect x="350" y="188" width="160" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="208" text-anchor="middle" font-size="11" fill="#333">currentMax = 5（右端 b）</text>
+
+  <!-- range bar -->
+  <text x="40" y="240" font-size="12" fill="#555" font-weight="bold">当前区间 [a, b] = [0, 5]：</text>
+  <rect x="78" y="248" width="200" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <rect x="78" y="248" width="2" height="22" fill="#d6a040" filter="url(#rough2)"/>
+  <rect x="276" y="248" width="2" height="22" fill="#b85450" filter="url(#rough2)"/>
+  <text x="95" y="264" font-size="10" fill="#d6a040" font-weight="bold">a=0</text>
+  <text x="245" y="264" font-size="10" fill="#b85450" font-weight="bold">b=5</text>
+
+  <!-- pop arrow -->
+  <path d="M 430 218 L 430 244" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="445" y="234" font-size="10" fill="#b85450" font-weight="bold">弹左端</text>
+
+  <!-- step boxes -->
+  <rect x="300" y="278" width="260" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="298" text-anchor="middle" font-size="11" fill="#333">① 弹堆顶 a，更新最优区间</text>
+
+  <path d="M 430 312 L 430 326" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="300" y="328" width="260" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="430" y="348" text-anchor="middle" font-size="11" fill="#333">② 同路后移一位入堆，刷新 max</text>
+
+  <!-- loop back -->
+  <path d="M 300 343 L 286 343 L 286 293 L 300 293" stroke="#b85450" stroke-width="1.4" stroke-dasharray="5,3" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="262" y="320" font-size="10" fill="#b85450" font-weight="bold">循环</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="372" width="500" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="290" y="388" text-anchor="middle" font-size="11" fill="#446688">堆大小恒为 k，每弹一次左端右移；当某路耗尽即停 → O(N log k)</text>
+</svg>

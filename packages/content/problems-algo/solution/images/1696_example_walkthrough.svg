@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="480" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：nums = [1, −1, −2, 4, −7, 3], k = 2</text>
+  <text x="310" y="46" text-anchor="middle" font-size="11" fill="#888">关注步骤 3（连续弹 2 个）与步骤 5（队头未过期的判定）</text>
+
+  <!-- table header -->
+  <g font-size="9" fill="#444" font-weight="bold">
+    <rect x="20" y="56" width="24" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="32" y="69" text-anchor="middle">步</text>
+    <rect x="44" y="56" width="24" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="56" y="69" text-anchor="middle">i</text>
+    <rect x="68" y="56" width="40" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="88" y="69" text-anchor="middle">nums[i]</text>
+    <rect x="108" y="56" width="150" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="183" y="69" text-anchor="middle">deque（下标:dp）</text>
+    <rect x="258" y="56" width="270" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="393" y="69" text-anchor="middle">动作</text>
+    <rect x="528" y="56" width="46" height="18" fill="#f6f6f6" stroke="#ccc" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+    <text x="551" y="69" text-anchor="middle">dp[i]</text>
+  </g>
+
+  <!-- rows -->
+  <g font-size="9" fill="#333">
+    <!-- step 0 -->
+    <rect x="20" y="76" width="24" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="91" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="44" y="76" width="24" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="91" text-anchor="middle" fill="#4a7a3a" font-weight="bold">0</text>
+    <rect x="68" y="76" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="91" text-anchor="middle">1</text>
+    <rect x="108" y="76" width="150" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="91" text-anchor="middle">[ ] → [0:1]</text>
+    <rect x="258" y="76" width="270" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="91" text-anchor="middle" fill="#4a7a3a">起点；dp[0]=nums[0]=1；入队0</text>
+    <rect x="528" y="76" width="46" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="91" text-anchor="middle" fill="#d6a040" font-weight="bold">1</text>
+
+    <!-- step 1 -->
+    <rect x="20" y="98" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="113" text-anchor="middle">1</text>
+    <rect x="44" y="98" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="113" text-anchor="middle">1</text>
+    <rect x="68" y="98" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="113" text-anchor="middle">−1</text>
+    <rect x="108" y="98" width="150" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="113" text-anchor="middle">[0:1] → [0:1, 1:0]</text>
+    <rect x="258" y="98" width="270" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="113" text-anchor="middle" fill="#d6a040">best=dp[0]=1；dp[1]=−1+1=0；1&gt;0不弹；入队1</text>
+    <rect x="528" y="98" width="46" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="113" text-anchor="middle" fill="#d6a040">0</text>
+
+    <!-- step 2 -->
+    <rect x="20" y="120" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="135" text-anchor="middle">2</text>
+    <rect x="44" y="120" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="135" text-anchor="middle">2</text>
+    <rect x="68" y="120" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="135" text-anchor="middle">−2</text>
+    <rect x="108" y="120" width="150" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="135" text-anchor="middle">[0:1,1:0] → [0:1,1:0,2:−1]</text>
+    <rect x="258" y="120" width="270" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="135" text-anchor="middle" fill="#d6a040">best=dp[0]=1；dp[2]=−2+1=−1；0&gt;−1不弹；入队2</text>
+    <rect x="528" y="120" width="46" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="135" text-anchor="middle" fill="#d6a040">−1</text>
+
+    <!-- step 3 (key!) -->
+    <rect x="20" y="142" width="24" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="157" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+    <rect x="44" y="142" width="24" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="157" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+    <rect x="68" y="142" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="157" text-anchor="middle" fill="#446688" font-weight="bold">4</text>
+    <rect x="108" y="142" width="150" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="157" text-anchor="middle" fill="#b85450" font-weight="bold">[0:1,1:0,2:−1] → [3:4]</text>
+    <rect x="258" y="142" width="270" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="157" text-anchor="middle" fill="#b85450" font-weight="bold">过期0；best=dp[1]=0；dp[3]=4；弹2,1；入队3</text>
+    <rect x="528" y="142" width="46" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="157" text-anchor="middle" fill="#b85450" font-weight="bold">4</text>
+
+    <!-- step 4 -->
+    <rect x="20" y="164" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="179" text-anchor="middle">4</text>
+    <rect x="44" y="164" width="24" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="179" text-anchor="middle">4</text>
+    <rect x="68" y="164" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="179" text-anchor="middle">−7</text>
+    <rect x="108" y="164" width="150" height="22" fill="#fff" stroke="#eee" stroke-width="0.4" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="179" text-anchor="middle">[3:4] → [3:4, 4:−3]</text>
+    <rect x="258" y="164" width="270" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="179" text-anchor="middle" fill="#d6a040">best=dp[3]=4；dp[4]=−7+4=−3；4&gt;−3不弹；入队4</text>
+    <rect x="528" y="164" width="46" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="179" text-anchor="middle" fill="#d6a040">−3</text>
+
+    <!-- step 5 (key!) -->
+    <rect x="20" y="186" width="24" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="32" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">5</text>
+    <rect x="44" y="186" width="24" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="56" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">5</text>
+    <rect x="68" y="186" width="40" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="0.5" rx="1" filter="url(#rough2)"/>
+    <text x="88" y="201" text-anchor="middle" fill="#446688" font-weight="bold">3</text>
+    <rect x="108" y="186" width="150" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="183" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">[3:4,4:−3] → [5:7]</text>
+    <rect x="258" y="186" width="270" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="393" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">best=dp[3]=4(未过期)；dp[5]=7；弹4,3；入队5</text>
+    <rect x="528" y="186" width="46" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="0.8" rx="1" filter="url(#rough2)"/>
+    <text x="551" y="201" text-anchor="middle" fill="#b85450" font-weight="bold">7</text>
+  </g>
+
+  <!-- ===== Final result ===== -->
+  <line x1="20" y1="216" x2="600" y2="216" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="30" y="232" width="560" height="96" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="254" text-anchor="middle" font-size="13" fill="#444" font-weight="bold">最终结果：dp[5] = 7（跳跃路径 0 → 3 → 5）</text>
+  <text x="310" y="274" text-anchor="middle" font-size="10" fill="#555">步骤 3（dp[3]=4 入队）连续弹掉 2:−1 和 1:0——它们更小且更早，永不可能是窗口最大</text>
+  <text x="310" y="290" text-anchor="middle" font-size="10" fill="#555">步骤 5：队头 3 满足 3 ≥ 5−2=3，未过期（过期条件是 &lt; i−k，3 ≮ 3）</text>
+  <text x="310" y="306" text-anchor="middle" font-size="10" fill="#555">best 取 dp[3]=4 而非 dp[4]=−3——队头即窗口最大，O(1) 查询</text>
+
+  <!-- ===== dp array summary ===== -->
+  <text x="30" y="346" font-size="10" fill="#446688" font-weight="bold">dp 数组：[1, 0, −1, 4, −3, 7]，答案 = dp[n−1] = dp[5] = 7</text>
+  <g font-size="11">
+    <rect x="30" y="356" width="48" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+    <text x="54" y="375" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <rect x="82" y="356" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="106" y="375" text-anchor="middle" fill="#888">0</text>
+    <rect x="134" y="356" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="158" y="375" text-anchor="middle" fill="#888">−1</text>
+    <rect x="186" y="356" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="210" y="375" text-anchor="middle" fill="#888">4</text>
+    <rect x="238" y="356" width="48" height="28" rx="4" fill="#fff" stroke="#eee" stroke-width="1" filter="url(#rough2)"/>
+    <text x="262" y="375" text-anchor="middle" fill="#888">−3</text>
+    <rect x="290" y="356" width="48" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="314" y="375" text-anchor="middle" fill="#b85450" font-weight="bold">7</text>
+  </g>
+  <text x="350" y="375" font-size="10" fill="#b85450">← dp[n−1] 即答案（终点固定）</text>
+
+  <!-- ===== Path visualization ===== -->
+  <text x="30" y="404" font-size="10" fill="#446688" font-weight="bold">跳跃路径 0 → 3 → 5（跨过 −1,−2,−7 的坑，在 4 和 3 上得分）</text>
+  <g font-size="10">
+    <rect x="30" y="414" width="40" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="50" y="430" text-anchor="middle" fill="#4a7a3a" font-weight="bold">1</text>
+    <text x="78" y="428" font-size="9" fill="#888">0</text>
+    <path d="M 74 426 L 110 426" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <text x="92" y="420" font-size="8" fill="#b85450">跳3步</text>
+    <rect x="114" y="414" width="40" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="134" y="430" text-anchor="middle" fill="#b85450" font-weight="bold">4</text>
+    <text x="162" y="428" font-size="9" fill="#888">3</text>
+    <path d="M 158 426 L 194 426" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+    <text x="176" y="420" font-size="8" fill="#b85450">跳2步</text>
+    <rect x="198" y="414" width="40" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+    <text x="218" y="430" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+    <text x="246" y="428" font-size="9" fill="#888">5</text>
+    <text x="260" y="430" font-size="10" fill="#4a7a3a" font-weight="bold">= 1+4+3 = 7 ✓</text>
+  </g>
+
+  <!-- ===== Key insight ===== -->
+  <rect x="30" y="448" width="560" height="24" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="310" y="464" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">关键：队头 = 窗口内 dp 最大值，O(1) 查询；弹尾去掉"更小且更早"的永不合格者</text>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="400" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">层平均值：每层只留 sum 与 count，sum / count = 均值</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">与 102 收集整层列表不同，637 只需累加和与计数 → 算除法</text>
+
+  <!-- ===== Tree ===== -->
+  <text x="30" y="74" font-size="11" fill="#446688" font-weight="bold">二叉树 [3,9,20,null,null,15,7]</text>
+  <g font-size="11">
+    <!-- L0 root -->
+    <circle cx="130" cy="100" r="18" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+    <text x="130" y="105" text-anchor="middle" fill="#b85450" font-weight="bold">3</text>
+    <!-- L1 -->
+    <circle cx="80" cy="160" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="80" y="165" text-anchor="middle" fill="#446688" font-weight="bold">9</text>
+    <circle cx="190" cy="160" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="190" y="165" text-anchor="middle" fill="#446688" font-weight="bold">20</text>
+    <line x1="118" y1="112" x2="90" y2="148" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <line x1="142" y1="112" x2="178" y2="148" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <!-- L2 -->
+    <circle cx="155" cy="220" r="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="155" y="225" text-anchor="middle" fill="#d6a040" font-weight="bold">15</text>
+    <circle cx="225" cy="220" r="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+    <text x="225" y="225" text-anchor="middle" fill="#d6a040" font-weight="bold">7</text>
+    <line x1="182" y1="172" x2="158" y2="208" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+    <line x1="198" y1="172" x2="222" y2="208" stroke="#888" stroke-width="1" filter="url(#rough2)"/>
+
+    <!-- layer labels -->
+    <text x="18" y="105" font-size="9" fill="#b85450" font-weight="bold">L0</text>
+    <text x="18" y="165" font-size="9" fill="#446688" font-weight="bold">L1</text>
+    <text x="18" y="225" font-size="9" fill="#d6a040" font-weight="bold">L2</text>
+  </g>
+
+  <!-- arrow to summaries -->
+  <path d="M 260 160 L 296 160" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Per-level sum/count/avg ===== -->
+  <text x="300" y="74" font-size="11" fill="#444" font-weight="bold">每层：sum / count = 均值</text>
+  <g font-size="10">
+    <!-- L0 -->
+    <rect x="300" y="86" width="210" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="310" y="106" fill="#b85450">L0: sum=3 , count=1 → 3.00000</text>
+    <!-- L1 -->
+    <rect x="300" y="128" width="210" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="310" y="148" fill="#446688">L1: sum=29, count=2 → 14.50000</text>
+    <!-- L2 -->
+    <rect x="300" y="170" width="210" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="310" y="190" fill="#d6a040">L2: sum=22, count=2 → 11.00000</text>
+  </g>
+
+  <!-- result -->
+  <rect x="300" y="214" width="210" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="405" y="236" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">result = [3.0, 14.5, 11.0]</text>
+
+  <!-- ===== Overflow warning ===== -->
+  <rect x="40" y="270" width="470" height="76" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="292" font-size="12" fill="#b85450" font-weight="bold">⚠️ 关键陷阱：sum 会溢出 32 位 int</text>
+  <text x="60" y="310" font-size="10" fill="#555">约束：节点数 ≤ 10⁴，每个值可达 2³¹−1 ≈ 2.1×10⁹</text>
+  <text x="60" y="326" font-size="10" fill="#555">一层最坏 ≈ 5000 个节点 → sum 可达 10¹³，远超 INT_MAX（2.1×10⁹）</text>
+  <text x="60" y="342" font-family="monospace" font-size="10" fill="#333">对策：累加用 long long / double，切勿用 int 求和</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="356" width="470" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="275" y="376" text-anchor="middle" font-size="10" fill="#555">与 102 的唯一差别：把 level.push(val) 换成 sum += val；最后 sum / size 入结果</text>
+</svg>

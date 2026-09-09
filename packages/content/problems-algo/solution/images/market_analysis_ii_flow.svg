@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：窗口函数编号 → 取第 2 单 → 连表取品牌 → 全保留判定</text>
+
+  <!-- Step 0: Input -->
+  <rect x="150" y="42" width="260" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Orders（每位卖家若干售出订单）</text>
+
+  <path d="M280 76 L280 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 1: ROW_NUMBER -->
+  <rect x="50" y="94" width="460" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="114" font-size="10" fill="#4a7a3a" font-weight="bold">① ROW_NUMBER() OVER (PARTITION BY seller_id ORDER BY order_date) AS rn</text>
+  <text x="70" y="130" font-size="9" fill="#4a7a3a">按 seller_id 分组、按 order_date 升序，给每条订单编号 rn = 1,2,3…</text>
+  <text x="70" y="142" font-size="8.5" fill="#888">⚠ 保证条件：每位卖家每日至多售 1 件 → 同组 order_date 无并列，rn 唯一确定</text>
+
+  <path d="M280 150 L280 166" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: WHERE rn=2 -->
+  <rect x="90" y="168" width="380" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="110" y="188" font-size="10" fill="#d6a040" font-weight="bold">② WHERE rn = 2</text>
+  <text x="110" y="202" font-size="9" fill="#d6a040">只保留每位卖家的第 2 单（售出 &lt; 2 件的卖家在此被自然丢弃）</text>
+
+  <path d="M280 212 L280 228" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: JOIN Items -->
+  <rect x="70" y="230" width="420" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="250" font-size="10" fill="#d6a040" font-weight="bold">③ JOIN Items ON item_id = item_id</text>
+  <text x="90" y="264" font-size="9" fill="#d6a040">拿到第 2 件商品的 item_brand（得到中间集 seller_id ↔ brand）</text>
+
+  <path d="M280 274 L280 290" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: LEFT JOIN Users -->
+  <rect x="50" y="292" width="460" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="312" font-size="10" fill="#b85450" font-weight="bold">④ FROM Users u LEFT JOIN 中间集 s ON u.user_id = s.seller_id</text>
+  <text x="70" y="326" font-size="9" fill="#b85450">以 Users 为左表：售出 &lt; 2 件的用户 s.* 为 NULL，仍保留在结果中</text>
+
+  <path d="M280 342 L280 358" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: IF compare -->
+  <rect x="60" y="360" width="440" height="50" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="380" font-size="10" fill="#b85450" font-weight="bold">⑤ IF(s.item_brand = u.favorite_brand, 'yes', 'no') AS 2nd_item_fav_brand</text>
+  <text x="80" y="394" font-size="9" fill="#b85450">brand = fav → 'yes'；brand ≠ fav 或 brand 为 NULL → 'no'（NULL=x 恒为 NULL 即假）</text>
+
+  <path d="M280 410 L280 424" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="120" y="426" width="320" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="446" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">输出：每位 seller_id → yes / no</text>
+</svg>

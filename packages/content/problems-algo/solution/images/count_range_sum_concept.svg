@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="460" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心：前缀和 + 归并排序，把「区间和落区间」化为「数对差落区间」</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">S(i,j)=pref[j+1]−pref[i] → 数对 (l,r), l&lt;r, 满足 lower ≤ pref[r]−pref[l] ≤ upper</text>
+
+  <!-- ===== nums array ===== -->
+  <text x="40" y="76" font-size="11" fill="#446688" font-weight="bold">原数组 nums（示例：[-2, 5, -1]，lower=-2, upper=2）</text>
+
+  <text x="92" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">0</text>
+  <text x="148" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">1</text>
+  <text x="204" y="94" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">2</text>
+
+  <rect x="72" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="119" text-anchor="middle" font-size="11" fill="#333">−2</text>
+  <rect x="128" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="148" y="119" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <rect x="184" y="100" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="204" y="119" text-anchor="middle" font-size="11" fill="#333">−1</text>
+
+  <!-- Arrow down: prefix sum -->
+  <path d="M 148 134 L 148 150" stroke="#666" stroke-width="1.3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="220" y="146" font-size="10" fill="#888">pref[0]=0, pref[i+1]=pref[i]+nums[i]</text>
+
+  <!-- ===== prefix array ===== -->
+  <text x="40" y="168" font-size="11" fill="#446688" font-weight="bold">前缀和 pref（长度 n+1，多一个 pref[0]=0 哨兵）</text>
+
+  <text x="74" y="186" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">0</text>
+  <text x="124" y="186" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">1</text>
+  <text x="174" y="186" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">2</text>
+  <text x="224" y="186" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">3</text>
+
+  <rect x="54" y="192" width="40" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="74" y="211" text-anchor="middle" font-size="11" fill="#333">0</text>
+  <rect x="104" y="192" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="124" y="211" text-anchor="middle" font-size="11" fill="#333">−2</text>
+  <rect x="154" y="192" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="174" y="211" text-anchor="middle" font-size="11" fill="#333">3</text>
+  <rect x="204" y="192" width="40" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="224" y="211" text-anchor="middle" font-size="11" fill="#333">2</text>
+
+  <!-- Transformation rule box -->
+  <rect x="280" y="174" width="280" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="196" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">区间和计数 ⟺ 数对差计数</text>
+  <text x="420" y="214" text-anchor="middle" font-size="10" fill="#888">S(i,j) = pref[j+1] − pref[i]</text>
+  <text x="420" y="228" text-anchor="middle" font-size="10" fill="#888">令 l=i, r=j+1 (l&lt;r)：lower ≤ pref[r]−pref[l] ≤ upper</text>
+
+  <!-- ===== Merge sort two-pointer concept ===== -->
+  <text x="40" y="252" font-size="11" fill="#446688" font-weight="bold">归并合并阶段：左半（已排序） 与 右半（已排序）</text>
+  <text x="40" y="266" font-size="10" fill="#888">分治保证：左半任意下标 &lt; 右半任意下标 → 配对天然满足 l &lt; r，无需记原下标</text>
+
+  <!-- Left half sorted -->
+  <rect x="60" y="284" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="85" y="304" text-anchor="middle" font-size="11" fill="#333">−2</text>
+  <rect x="114" y="284" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="139" y="304" text-anchor="middle" font-size="11" fill="#333">0</text>
+
+  <text x="172" y="302" font-size="14" fill="#888">|</text>
+
+  <!-- Right half sorted -->
+  <rect x="190" y="284" width="50" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="304" text-anchor="middle" font-size="11" fill="#333">2</text>
+  <rect x="244" y="284" width="50" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="269" y="304" text-anchor="middle" font-size="11" fill="#333">3</text>
+
+  <!-- p1, p2 pointers -->
+  <path d="M 85 276 L 85 282" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="85" y="272" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">p1</text>
+  <path d="M 139 276 L 139 282" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="139" y="272" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">p2</text>
+
+  <text x="190" y="272" font-size="10" fill="#b85450" font-weight="bold">r=2</text>
+  <path d="M 215 276 L 215 282" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- Valid range bracket -->
+  <path d="M 85 322 L 85 330 L 139 330 L 139 322" stroke="#d6a040" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="112" y="344" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">有效区间 [p1,p2)</text>
+
+  <!-- Rule for r -->
+  <rect x="310" y="280" width="250" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="300" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">对每个 r（右半，值递增）：</text>
+  <text x="435" y="316" text-anchor="middle" font-size="10" fill="#888">需 pref[r]−upper ≤ pref[l] ≤ pref[r]−lower</text>
+  <text x="435" y="332" text-anchor="middle" font-size="10" fill="#888">p1 首个 ≥ 下界，p2 首个 &gt; 上界 → cnt += p2−p1</text>
+
+  <!-- Bottom notes -->
+  <text x="20" y="372" font-size="10" fill="#888">💡 两半各自递归排序后已有序 → pref[l] 升序，满足条件的 l 必为连续段，双指针 O(n) 扫完一对半</text>
+  <text x="20" y="390" font-size="10" fill="#888">💡 r 递增 → pref[r]−upper 与 pref[r]−lower 同步递增 → p1、p2 只前进不回退，均摊 O(n) 每层</text>
+  <text x="20" y="408" font-size="10" fill="#888">⚠️ 计数必须在合并写回前完成（合并会破坏两半的有序分段结构）</text>
+  <text x="20" y="426" font-size="10" fill="#888">⚠️ 用 long long 存前缀和：n·max|nums[i]| 可达 ~10^14，int 必溢出</text>
+  <text x="20" y="444" font-size="10" fill="#888">💡 pref[0]=0 哨兵保证「整段前缀和 = pref[r]−pref[0]」也被纳入配对，无需特判</text>
+</svg>

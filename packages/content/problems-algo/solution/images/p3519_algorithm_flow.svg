@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="500" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold" filter="url(#rough2)">count_le(s) 流程（[0, s] 内 b 进制非递减的个数）</text>
+
+  <!-- Start -->
+  <rect x="200" y="38" width="160" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="14" filter="url(#rough2)"/>
+  <text x="280" y="57" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">输入字符串 s、基数 b</text>
+
+  <path d="M280 66 L280 80" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: s=="0"? -->
+  <polygon points="280,84 360,114 280,144 200,114" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="112" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">s == "0" ?</text>
+  <text x="280" y="126" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">(l−1 可能退化为 0)</text>
+
+  <path d="M200 114 L160 114" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="166" y="108" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">是</text>
+  <rect x="46" y="100" width="112" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="102" y="119" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">return 1（只有 0）</text>
+
+  <path d="M280 144 L280 158" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="288" y="154" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">否</text>
+
+  <!-- Box A: base conversion -->
+  <rect x="140" y="162" width="280" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="180" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">s 转 b 进制数位 d[0..m−1]</text>
+  <text x="280" y="196" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">高精度反复除 b：每除一次，余数剥出一位（低位先行）</text>
+
+  <path d="M280 208 L280 222" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box B: short lengths -->
+  <rect x="110" y="226" width="340" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="244" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">res = 1（数字 0）+ Σ C(k+b−2, k)，k = 1..m−1</text>
+  <text x="280" y="260" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">短位数正数：k 位、首位 ≥ 1，同一个隔板法闭式</text>
+
+  <path d="M280 272 L280 286" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop box -->
+  <rect x="90" y="290" width="380" height="128" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="308" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">逐位扫描 i = 0 .. m−1（prev 初值 0，t = m−1−i）</text>
+
+  <rect x="106" y="318" width="210" height="52" fill="#fff" stroke="#bbb" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="211" y="334" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">自由分支：枚举 x ∈ [lo, d[i])</text>
+  <text x="211" y="348" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">lo = 1（i=0）/ prev（i&gt;0）</text>
+  <text x="211" y="362" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">res += C(t+b−1−x, t)</text>
+
+  <path d="M316 344 L328 344" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="330" y="318" width="124" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="392" y="334" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">收紧分支</text>
+  <text x="392" y="348" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">取 d[i]，继续下一位</text>
+  <text x="392" y="362" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">需 d[i] ≥ prev</text>
+
+  <polygon points="392,372 424,388 392,404 360,388" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="392" y="392" text-anchor="middle" font-size="9.5" fill="#333" filter="url(#rough2)">d[i]≥prev?</text>
+  <text x="428" y="392" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">否→break</text>
+  <text x="392" y="414" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">是→prev = d[i]，扫描下一位</text>
+
+  <path d="M280 418 L280 432" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- End check -->
+  <rect x="130" y="436" width="300" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="455" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">未 break → s 自身非递减，res += 1，返回 res</text>
+
+  <!-- bottom note -->
+  <text x="280" y="484" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">外层差分：答案 = count_le(r) − count_le(l−1)（l−1 用十进制字符串减法）</text>
+</svg>

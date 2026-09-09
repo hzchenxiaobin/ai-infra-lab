@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：排序 + 逐位二分找最接近值</text>
+
+  <!-- Step 1: compute total -->
+  <rect x="80" y="44" width="380" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="66" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① total = Σ |nums1[i] − nums2[i]|   （原始差值之和）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 78 L 270 94" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: sort copy -->
+  <rect x="80" y="98" width="380" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="120" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">② sorted1 = sorted(nums1)   （副本排序，不动原数组）</text>
+
+  <!-- arrow down -->
+  <path d="M 270 132 L 270 148" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: init maxGain -->
+  <rect x="80" y="152" width="380" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="174" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">③ maxGain = 0   （记录最大可减小量）</text>
+
+  <!-- arrow down to loop -->
+  <path d="M 270 186 L 270 202" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Loop decision: i < n ? -->
+  <polygon points="270,206 380,250 270,294 160,250" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="270" y="246" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">i &lt; n ?</text>
+  <text x="270" y="262" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">(遍历每个位置)</text>
+
+  <!-- No branch -> end -->
+  <path d="M 380 250 L 452 250" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="408" y="242" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">否</text>
+
+  <!-- Yes branch down -->
+  <path d="M 270 294 L 270 310" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="306" font-size="11" fill="#82b366" filter="url(#rough2)">是</text>
+
+  <!-- Step 4: binary search -->
+  <rect x="60" y="314" width="420" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="332" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">④ p = bisect_left(sorted1, nums2[i])</text>
+  <text x="270" y="348" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">比较 p 与 p−1 两个候选，取 |sorted1[k] − nums2[i]| 最小者 → min_dist</text>
+
+  <!-- arrow down -->
+  <path d="M 270 354 L 270 368" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: improvement + update maxGain -->
+  <rect x="60" y="372" width="420" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="392" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">⑤ gain = |nums1[i] − nums2[i]| − min_dist</text>
+  <text x="270" y="410" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">maxGain = max(maxGain, gain)   ;   i += 1</text>
+
+  <!-- loop back arrow from step5 up to loop decision -->
+  <path d="M 60 396 L 36 396 L 36 250 L 160 250" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="28" y="324" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 28 324)" filter="url(#rough2)">下一位 i</text>
+
+  <!-- End node -->
+  <ellipse cx="486" cy="250" rx="46" ry="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="486" y="248" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">返回</text>
+  <text x="486" y="262" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">(total−maxGain)%MOD</text>
+
+  <!-- summary note -->
+  <text x="270" y="448" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">排序 O(n log n) + n 次二分各 O(log n) + O(1) 候选比较 = O(n log n)</text>
+  <text x="270" y="466" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">取最大减小量一次性扣减，无需逐位模拟替换</text>
+</svg>

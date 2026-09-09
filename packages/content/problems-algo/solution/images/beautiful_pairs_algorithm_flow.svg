@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">算法流程：重复点特判 → 排序 → 分治（切分/递归/合并窄带）</text>
+
+  <!-- 1. 重复点特判 -->
+  <polygon points="270,42 370,72 270,102 170,72" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="70" text-anchor="middle" font-size="11.5" fill="#333">存在同坐标点？</text>
+  <text x="270" y="84" text-anchor="middle" font-size="9.5" fill="#888">(距离 0)</text>
+
+  <!-- 是 → 返回 -->
+  <path d="M 370 72 L 452 72" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="440" y="58" width="92" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="486" y="77" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">返回前两下标</text>
+
+  <!-- 否 ↓ -->
+  <path d="M 270 102 L 270 120" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="116" font-size="10.5" fill="#4a7a3a">否 ↓</text>
+
+  <!-- 2. 按 x 排序 -->
+  <rect x="180" y="120" width="180" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="143" text-anchor="middle" font-size="11.5" fill="#333">① 所有点按 x 升序排序</text>
+
+  <path d="M 270 156 L 270 174" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3. dfs(l, r) -->
+  <rect x="160" y="174" width="220" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="197" text-anchor="middle" font-size="11.5" fill="#333">② dfs(l, r)：求 [l, r] 最近对</text>
+
+  <path d="M 270 210 L 270 228" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4. base case -->
+  <polygon points="270,228 360,260 270,292 180,260" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="258" text-anchor="middle" font-size="11" fill="#333">l ≥ r ?</text>
+  <text x="270" y="272" text-anchor="middle" font-size="9.5" fill="#888">(单点/空)</text>
+
+  <!-- 是 → 返回哨兵 -->
+  <path d="M 360 260 L 452 260" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <rect x="440" y="246" width="92" height="30" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="486" y="265" text-anchor="middle" font-size="10" fill="#888">返回 (+∞,−1,−1)</text>
+
+  <!-- 否 ↓ -->
+  <path d="M 270 292 L 270 310" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="282" y="306" font-size="10.5" fill="#4a7a3a">否 ↓</text>
+
+  <!-- 5. 切分 + 递归 -->
+  <rect x="120" y="310" width="300" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="330" text-anchor="middle" font-size="11.5" fill="#333">③ m=(l+r)/2，xm=pts[m].x</text>
+  <text x="270" y="346" text-anchor="middle" font-size="11" fill="#555">递归 dfs(l,m) 与 dfs(m+1,r)，取更优者 d</text>
+
+  <path d="M 270 354 L 270 372" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 6. 合并窄带 -->
+  <rect x="120" y="372" width="300" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="392" text-anchor="middle" font-size="11.5" fill="#333">④ 收集 |x−xm| ≤ d 的点 → 按 y 排序</text>
+  <text x="270" y="408" text-anchor="middle" font-size="11" fill="#555">逐点向后查，y 差 &gt; d 即 break，更新 (d,lo,hi)</text>
+
+  <path d="M 270 416 L 270 434" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 终点 -->
+  <rect x="160" y="434" width="220" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="453" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">返回 (d, lo, hi) → 输出 [lo, hi]</text>
+</svg>

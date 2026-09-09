@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 460" font-family="'Comic Sans MS','Marker Felt','Kaiti SC',楷体,'Segoe UI',cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="6" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="780" height="460" fill="#fdfcf7"/>
+
+  <text x="390" y="34" text-anchor="middle" font-size="18" fill="#2b2b2b" font-weight="bold">使数组严格递增 — DP 状态与两分支</text>
+  <path d="M 220 44 Q 390 52 560 44" stroke="#2b2b2b" stroke-width="1.4" fill="none" filter="url(#sk)"/>
+  <text x="390" y="58" text-anchor="middle" font-size="11" fill="#888">dp 状态 = {last_value: min_ops}，每个位置保留或替换</text>
+
+  <g filter="url(#sk)">
+    <rect x="50" y="100" width="130" height="62" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/>
+  </g>
+  <text x="115" y="124" text-anchor="middle" font-size="12" fill="#4a8edb" font-weight="bold">前一状态</text>
+  <text x="115" y="146" text-anchor="middle" font-size="13" fill="#2b2b2b">val=3, ops=1</text>
+
+  <g filter="url(#sk)">
+    <rect x="310" y="100" width="130" height="62" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="375" y="124" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">当前位置 i</text>
+  <text x="375" y="146" text-anchor="middle" font-size="13" fill="#2b2b2b">arr1[i] = 5</text>
+
+  <g filter="url(#sk)">
+    <rect x="310" y="195" width="130" height="50" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2"/>
+  </g>
+  <text x="375" y="217" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">arr2 (排序去重)</text>
+  <text x="375" y="234" text-anchor="middle" font-size="12" fill="#2b2b2b">[1, 2, 3, 4]</text>
+
+  <path d="M 180 118 Q 250 88 570 100" stroke="#4a8e4a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="235" y="86" font-size="11" fill="#4a8e4a" font-weight="bold">保留 arr1[i]</text>
+  <text x="235" y="100" font-size="10" fill="#666">条件: val &lt; arr1[i]</text>
+
+  <g filter="url(#sk)">
+    <rect x="570" y="88" width="150" height="56" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="2"/>
+  </g>
+  <text x="645" y="110" text-anchor="middle" font-size="11" fill="#4a8e4a" font-weight="bold">新状态 (保留)</text>
+  <text x="645" y="130" text-anchor="middle" font-size="13" fill="#2b2b2b">val=5, ops=1</text>
+
+  <path d="M 180 148 Q 250 225 570 210" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)" stroke-dasharray="5,3"/>
+  <text x="210" y="222" font-size="11" fill="#b85450" font-weight="bold">替换为 arr2[j]</text>
+  <text x="210" y="236" font-size="10" fill="#666">j = upper_bound(arr2, val)</text>
+
+  <g filter="url(#sk)">
+    <rect x="570" y="195" width="150" height="56" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2"/>
+  </g>
+  <text x="645" y="217" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">新状态 (替换)</text>
+  <text x="645" y="237" text-anchor="middle" font-size="13" fill="#2b2b2b">val=4, ops=2</text>
+
+  <g filter="url(#sk)">
+    <rect x="50" y="290" width="670" height="150" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.3" stroke-dasharray="5,3"/>
+  </g>
+  <text x="70" y="316" font-size="12" fill="#2b2b2b" font-weight="bold">两条转移路径：</text>
+  <text x="70" y="342" font-size="11" fill="#4a8e4a" font-weight="bold">保留 (绿色)</text>
+  <text x="165" y="342" font-size="11" fill="#444">prev_val &lt; arr1[i] 时，不改 arr1[i]，ops 不变</text>
+  <text x="70" y="366" font-size="11" fill="#b85450" font-weight="bold">替换 (红色)</text>
+  <text x="165" y="366" font-size="11" fill="#444">选 arr2 中 &gt; prev_val 的最小值，ops + 1</text>
+  <text x="70" y="396" font-size="11" fill="#d6a040" font-weight="bold">贪心关键</text>
+  <text x="165" y="396" font-size="11" fill="#444">替换时选最小合法值，给后续元素留最大递增空间</text>
+  <text x="70" y="420" font-size="11" fill="#888">同一 last_value 取 min ops 合并；dp 为空则返回 -1</text>
+</svg>

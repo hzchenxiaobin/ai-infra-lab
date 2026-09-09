@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：逐人松弛 + parent 回溯</text>
+
+  <!-- Step 1: Initialize -->
+  <rect x="160" y="44" width="240" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">① 初始化 dp[0]=0, 其余=+∞</text>
+
+  <path d="M 280 82 L 280 96" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Loop over people -->
+  <rect x="140" y="100" width="280" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">② 对每个人员 i（掩码 p_i）</text>
+
+  <path d="M 280 138 L 280 152" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Loop over states -->
+  <rect x="120" y="156" width="320" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="178" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">③ 枚举所有状态 s（dp[s] 可达）</text>
+
+  <path d="M 280 194 L 280 208" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Decision diamond -->
+  <polygon points="280,212 380,252 280,292 180,252" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="10.5" fill="#333">dp[s]+1</text>
+  <text x="280" y="262" text-anchor="middle" font-size="10.5" fill="#333">&lt; dp[s|p_i] ?</text>
+
+  <!-- Yes branch -->
+  <path d="M 380 252 L 440 252" stroke="#b85450" stroke-width="1.4" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="410" y="246" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">是</text>
+
+  <rect x="440" y="234" width="100" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="490" y="250" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold">更新 dp[s|p_i]</text>
+  <text x="490" y="262" text-anchor="middle" font-size="9.5" fill="#b85450">parent ← (s,i)</text>
+
+  <!-- No branch -->
+  <path d="M 280 292 L 280 310" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="296" y="304" font-size="9.5" fill="#888">否，跳过</text>
+
+  <!-- Loop back arrows -->
+  <path d="M 490 270 Q 490 320 380 320 Q 280 320 280 178" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="420" y="316" font-size="9" fill="#888">继续枚举 s</text>
+
+  <path d="M 180 252 Q 80 252 80 122 Q 80 118 140 118" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="50" y="190" font-size="9" fill="#888">下一个人员</text>
+
+  <!-- Step 5: Reconstruct -->
+  <rect x="140" y="336" width="280" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="358" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">④ 从 full_mask 回溯 parent 链</text>
+
+  <path d="M 280 374 L 280 388" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Reconstruct detail -->
+  <rect x="80" y="392" width="400" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="412" text-anchor="middle" font-size="10.5" fill="#333">mask=full → parent[mask]=(prev,i) → team.add(i)</text>
+  <text x="280" y="430" text-anchor="middle" font-size="10.5" fill="#555">mask=prev → 重复直到 mask=0 → 返回 team</text>
+
+  <!-- OR idempotent note -->
+  <rect x="20" y="156" width="86" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)" opacity="0.85"/>
+  <text x="62" y="174" text-anchor="middle" font-size="8.5" fill="#b85450" font-weight="bold">OR 幂等</text>
+  <text x="62" y="186" text-anchor="middle" font-size="8" fill="#b85450">p|p = p</text>
+  <text x="62" y="196" text-anchor="middle" font-size="8" fill="#b85450">原地更新安全</text>
+</svg>

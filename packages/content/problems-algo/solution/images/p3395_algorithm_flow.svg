@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 504"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="504" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">O(n) 单趟扫描：枚举中间下标 k，增量维护两侧统计量</text>
+
+  <!-- Box A: init -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="42" width="300" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="66" text-anchor="middle" font-size="12.5" fill="#333">初始化：suf = 全数组计数，pre = 0</text>
+  </g>
+  <path d="M 220 82 L 220 96" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box B: loop -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="98" width="300" height="34" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="220" y="120" text-anchor="middle" font-size="12.5" fill="#7a5c1e">枚举中间下标 k，记 v = nums[k]</text>
+  </g>
+  <path d="M 220 132 L 220 146" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box C: remove from suffix -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="148" width="300" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="170" text-anchor="middle" font-size="12.5" fill="#333">把 k 移出后缀：O(1) 更新 S₁、S₂、S₃</text>
+  </g>
+  <path d="M 220 182 L 220 196" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box D: derive -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="198" width="300" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="220" text-anchor="middle" font-size="12.5" fill="#333">O(1) 导出 p、b、K、M、E_L、E_R、cross 项</text>
+  </g>
+  <path d="M 220 232 L 220 246" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box E: formula -->
+  <g filter="url(#rough2)">
+    <rect x="50" y="248" width="340" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+    <text x="220" y="270" text-anchor="middle" font-size="12.5" fill="#2d4d22">valid(k) = C(k,2)·C(n−1−k,2) − C(K,2)·C(M,2)</text>
+    <text x="220" y="290" text-anchor="middle" font-size="12.5" fill="#2d4d22">− b·(M·E_L + cross₁) − p·(K·E_R + cross₂)</text>
+  </g>
+  <path d="M 220 300 L 220 314" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Box F: accumulate -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="316" width="300" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="338" text-anchor="middle" font-size="12.5" fill="#333">ans += valid(k)；把 k 加入前缀（O(1) 更新）</text>
+  </g>
+  <path d="M 220 350 L 220 364" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Diamond -->
+  <g filter="url(#rough2)">
+    <polygon points="220,366 296,392 220,418 144,392" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="220" y="397" text-anchor="middle" font-size="12" fill="#7a5c1e">还有 k ?</text>
+  </g>
+  <path d="M 220 418 L 220 434" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="228" y="430" font-size="12" fill="#b85450">否</text>
+
+  <!-- Box G: return -->
+  <g filter="url(#rough2)">
+    <rect x="70" y="436" width="300" height="34" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <text x="220" y="458" text-anchor="middle" font-size="12.5" fill="#333">返回 ans mod (10⁹ + 7)</text>
+  </g>
+
+  <!-- loop back arrow -->
+  <path d="M 144 392 L 30 392 L 30 115 L 66 115" stroke="#666" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="38" y="384" font-size="12" fill="#4a7a3a">是</text>
+
+  <!-- side box: aggregates -->
+  <g filter="url(#rough2)">
+    <rect x="404" y="140" width="146" height="160" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+    <text x="477" y="164" text-anchor="middle" font-size="13" font-weight="bold" fill="#8c3a34">三个聚合量</text>
+    <text x="477" y="188" text-anchor="middle" font-size="12" fill="#b85450">S₁ = Σ pre·suf</text>
+    <text x="477" y="208" text-anchor="middle" font-size="12" fill="#b85450">S₂ = Σ pre²·suf</text>
+    <text x="477" y="228" text-anchor="middle" font-size="12" fill="#b85450">S₃ = Σ pre·suf²</text>
+    <text x="477" y="252" text-anchor="middle" font-size="11.5" fill="#555">某值计数 ±1 时</text>
+    <text x="477" y="270" text-anchor="middle" font-size="11.5" fill="#555">三者均 O(1) 增量更新</text>
+    <text x="477" y="288" text-anchor="middle" font-size="11.5" fill="#555">cross 项由此 O(1) 导出</text>
+  </g>
+
+  <!-- legend -->
+  <g filter="url(#rough2)">
+    <text x="404" y="330" font-size="11.5" fill="#555">p、b：v 在左 / 右侧的个数</text>
+    <text x="404" y="348" font-size="11.5" fill="#555">K、M：左 / 右侧非 v 的个数</text>
+    <text x="404" y="366" font-size="11.5" fill="#555">E_L、E_R：非 v 同值对数</text>
+  </g>
+</svg>

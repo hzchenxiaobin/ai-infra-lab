@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="460" fill="#fafafa"/>
+
+  <text x="290" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">四操作流程：search / rent / drop / report</text>
+
+  <!-- ===== search ===== -->
+  <rect x="30" y="50" width="250" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="72" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">search(movie)</text>
+  <text x="48" y="94" font-size="11" fill="#333">1. 查 available[movie] 有序表</text>
+  <text x="48" y="112" font-size="11" fill="#333">2. 取前 5 个 (price, shop)</text>
+  <text x="48" y="130" font-size="11" fill="#4a7a3a" font-weight="bold">→ 返回 [shop1, shop2, ...]</text>
+  <rect x="210" y="86" width="60" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="102" text-anchor="middle" font-size="10" fill="#4a7a3a">O(5)</text>
+
+  <!-- ===== report ===== -->
+  <rect x="300" y="50" width="250" height="90" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="425" y="72" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">report()</text>
+  <text x="318" y="94" font-size="11" fill="#333">1. 查 rented 全局有序表</text>
+  <text x="318" y="112" font-size="11" fill="#333">2. 取前 5 个 (price, shop, movie)</text>
+  <text x="318" y="130" font-size="11" fill="#b85450" font-weight="bold">→ 返回 [[shop, movie], ...]</text>
+  <rect x="480" y="86" width="60" height="22" fill="#fff" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="102" text-anchor="middle" font-size="10" fill="#b85450">O(5)</text>
+
+  <!-- ===== rent ===== -->
+  <rect x="30" y="170" width="250" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="155" y="192" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">rent(shop, movie)</text>
+  <text x="48" y="214" font-size="11" fill="#333">1. price 表查 p = price[(shop,movie)]</text>
+  <text x="48" y="234" font-size="11" fill="#333">2. available[movie].erase({p, shop})</text>
+  <text x="48" y="254" font-size="11" fill="#333">3. rented.insert({p, shop, movie})</text>
+  <text x="48" y="276" font-size="11" fill="#d6a040" font-weight="bold">→ 可借表移除，已借表添加</text>
+  <rect x="210" y="248" width="60" height="22" fill="#fff" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="240" y="264" text-anchor="middle" font-size="10" fill="#d6a040">O(log n)</text>
+
+  <!-- ===== drop ===== -->
+  <rect x="300" y="170" width="250" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="425" y="192" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">drop(shop, movie)</text>
+  <text x="318" y="214" font-size="11" fill="#333">1. price 表查 p = price[(shop,movie)]</text>
+  <text x="318" y="234" font-size="11" fill="#333">2. rented.erase({p, shop, movie})</text>
+  <text x="318" y="254" font-size="11" fill="#333">3. available[movie].insert({p, shop})</text>
+  <text x="318" y="276" font-size="11" fill="#d6a040" font-weight="bold">→ 已借表移除，可借表添加</text>
+  <rect x="480" y="248" width="60" height="22" fill="#fff" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="510" y="264" text-anchor="middle" font-size="10" fill="#d6a040">O(log n)</text>
+
+  <!-- Arrows between rent and data structures -->
+  <path d="M155 290 L155 310" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <path d="M425 290 L425 310" stroke="#888" stroke-width="1.6" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== Data structure bar ===== -->
+  <rect x="30" y="320" width="250" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="342" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">price 表 + available[movie]</text>
+  <text x="155" y="360" text-anchor="middle" font-size="10" fill="#888">哈希表 + 有序集合</text>
+
+  <rect x="300" y="320" width="250" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="425" y="342" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">price 表 + rented</text>
+  <text x="425" y="360" text-anchor="middle" font-size="10" fill="#888">哈希表 + 有序集合</text>
+
+  <!-- ===== Key insight footer ===== -->
+  <rect x="30" y="396" width="520" height="48" fill="#f6f8fa" stroke="#bbb" stroke-width="1.4" rx="10" filter="url(#rough2)"/>
+  <text x="290" y="418" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">核心：有序集合保证前 5 个即最便宜，rent/drop 原子搬运</text>
+  <text x="290" y="436" text-anchor="middle" font-size="10.5" fill="#888" font-style="italic">search/report 只读前 5 → O(5)；rent/drop 各一次 erase + insert → O(log n)</text>
+</svg>

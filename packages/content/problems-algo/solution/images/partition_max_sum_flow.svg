@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="420" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：线性 DP + 滚动维护段内最大值</text>
+
+  <!-- Step 1: 定义 dp -->
+  <rect x="60" y="44" width="460" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="64" font-size="11" fill="#446688" font-weight="bold">①</text>
+  <text x="290" y="64" text-anchor="middle" font-size="12" fill="#333">dp[i] = arr[0..i−1] 分隔变换后的最大和</text>
+  <text x="290" y="80" text-anchor="middle" font-size="10.5" fill="#888">初始 dp[0] = 0（空前缀贡献为 0）</text>
+
+  <path d="M 290 90 L 290 106" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: 枚举末段长度 + curMax -->
+  <rect x="60" y="110" width="460" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="130" font-size="11" fill="#4a7a3a" font-weight="bold">②</text>
+  <text x="290" y="130" text-anchor="middle" font-size="12" fill="#333">对 i = 1..n，len 从 1 递增到 min(k, i)</text>
+  <text x="290" y="148" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">curMax = max(curMax, arr[i − len])</text>
+
+  <path d="M 290 160 L 290 176" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: 转移 -->
+  <rect x="40" y="180" width="500" height="68" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="200" font-size="11" fill="#d6a040" font-weight="bold">③</text>
+  <text x="290" y="200" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">转移（枚举末段长度 len）：</text>
+  <text x="290" y="220" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">dp[i] = max(dp[i], dp[i−len] + curMax × len)</text>
+  <text x="290" y="238" text-anchor="middle" font-size="10.5" fill="#888">len 递增 ⇒ 窗口向左扩展一格 ⇒ curMax O(1) 更新（避免 O(k²) 重算 max）</text>
+
+  <path d="M 290 250 L 290 266" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: 返回答案 -->
+  <rect x="60" y="270" width="460" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="80" y="290" font-size="11" fill="#b85450" font-weight="bold">④</text>
+  <text x="290" y="290" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">答案 = dp[n]</text>
+  <text x="290" y="308" text-anchor="middle" font-size="10.5" fill="#888">前 n 个元素的最优分隔最大和</text>
+
+  <path d="M 290 320 L 290 336" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 推导说明 -->
+  <rect x="80" y="340" width="420" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="361" text-anchor="middle" font-size="11" fill="#555">末段 arr[j..i−1] 全替换为 max(arr[j..i−1])，j = i−len</text>
+
+  <rect x="80" y="380" width="420" height="34" fill="#f5f5f5" stroke="#bbb" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="290" y="401" text-anchor="middle" font-size="11" fill="#555">前缀 dp[j] + 末段 max × (i−j)，前缀与末段独立</text>
+</svg>

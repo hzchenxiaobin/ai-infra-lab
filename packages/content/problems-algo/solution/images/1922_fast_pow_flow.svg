@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">快速幂：把指数按二进制拆解，O(log n) 次平方</text>
+  <text x="300" y="48" text-anchor="middle" font-size="11" fill="#888">每次看 exp 最低位：为 1 就把当前 base 乘进 result；base 自平方；exp 右移</text>
+
+  <!-- start node -->
+  <rect x="230" y="68" width="140" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="93" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">初始化 result = 1</text>
+
+  <path d="M 300 112 L 300 134" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- loop condition diamond -->
+  <polygon points="300,138 410,180 300,222 190,180" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="176" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">exp &gt; 0 ?</text>
+  <text x="300" y="194" text-anchor="middle" font-size="10" fill="#888">循环条件</text>
+
+  <!-- No branch -->
+  <path d="M 410 180 L 470 180 L 470 410" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="430" y="172" font-size="11" fill="#888">否</text>
+
+  <!-- Yes branch down -->
+  <path d="M 300 222 L 300 244" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="312" y="236" font-size="11" fill="#888">是</text>
+
+  <!-- bit check diamond -->
+  <polygon points="300,248 410,288 300,328 190,288" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="300" y="284" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">exp &amp; 1 ?</text>
+  <text x="300" y="302" text-anchor="middle" font-size="10" fill="#888">最低位为 1?</text>
+
+  <!-- yes (bit=1) -->
+  <path d="M 190 288 L 120 288 L 120 318" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="150" y="280" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="60" y="320" width="120" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="120" y="345" text-anchor="middle" font-size="12" fill="#b85450">result *= base</text>
+
+  <!-- no (bit=0) skip -->
+  <path d="M 410 288 L 470 288" stroke="#666" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="430" y="280" font-size="11" fill="#888">否</text>
+  <text x="486" y="292" font-size="10" fill="#888">跳过</text>
+
+  <!-- converge to base squaring -->
+  <path d="M 120 360 L 120 380 L 300 380" stroke="#666" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M 470 288 L 470 380 L 300 380" stroke="#666" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <path d="M 300 380 L 300 392" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- base squaring + exp shift -->
+  <rect x="190" y="394" width="220" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="419" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">base *= base ;  exp &gt;&gt;= 1</text>
+
+  <!-- loop back arrow -->
+  <path d="M 410 414 L 540 414 L 540 180 L 410 180" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="548" y="300" font-size="10" fill="#4a7a3a">回循环</text>
+
+  <!-- return -->
+  <rect x="400" y="410" width="120" height="38" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="460" y="434" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return result</text>
+</svg>

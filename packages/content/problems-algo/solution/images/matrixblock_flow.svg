@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L8 5 L0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L8 5 L0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L8 5 L0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：构建前缀和 → 遍历每格 → 裁剪 → 容斥填表</text>
+
+  <!-- ① 构建前缀和 -->
+  <rect x="70" y="46" width="320" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="73" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 构建二维前缀和 pre[(m+1)×(n+1)]（容斥递推）</text>
+
+  <!-- arrow 1→2 -->
+  <path d="M230 90 L230 118" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ② 遍历 (i,j) -->
+  <rect x="70" y="120" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 遍历每个格子 (i, j)</text>
+
+  <!-- arrow 2→3 -->
+  <path d="M230 162 L230 190" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ③ 裁剪角点 -->
+  <rect x="60" y="192" width="340" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="214" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">③ 裁剪邻域角点（夹回矩阵内）</text>
+  <text x="230" y="234" text-anchor="middle" font-size="11" fill="#444">r₁=max(0,i−k)  r₂=min(m−1,i+k)</text>
+  <text x="230" y="252" text-anchor="middle" font-size="11" fill="#444">c₁=max(0,j−k)  c₂=min(n−1,j+k)</text>
+
+  <!-- arrow 3→4 -->
+  <path d="M230 266 L230 294" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ④ 四角容斥求和 -->
+  <rect x="50" y="296" width="360" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="318" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">④ 四角容斥求和</text>
+  <text x="230" y="340" text-anchor="middle" font-size="11" fill="#444">answer[i][j] = pre[r2+1][c2+1] − pre[r1][c2+1] − pre[r2+1][c1] + pre[r1][c1]</text>
+
+  <!-- arrow 4→5 -->
+  <path d="M230 356 L230 380" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ⑤ 填入 answer[i][j] -->
+  <rect x="70" y="382" width="320" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="408" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑤ 填入 answer[i][j]</text>
+
+  <!-- loop-back arrow ⑤ → ② (left side, up) -->
+  <path d="M70 403 L40 403 L40 141 L70 141" stroke="#4a7a3a" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+  <text x="30" y="272" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" transform="rotate(-90 30 272)">下一个 (i, j)</text>
+
+  <!-- exit arrow ⑤ → 返回 answer (right side) -->
+  <path d="M390 403 L430 403 L430 146 L470 146" stroke="#b85450" stroke-width="1.6" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+  <text x="446" y="272" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" transform="rotate(-90 446 272)">全部遍历完</text>
+
+  <!-- end box 返回 answer -->
+  <rect x="470" y="120" width="80" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="510" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">返回 answer</text>
+</svg>

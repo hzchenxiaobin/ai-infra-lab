@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 600" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="600" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：BFS 层序 + 有序集合跳过已访问</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">无权图最短路 = BFS；邻居是「同奇偶的连续段」，用集合批量取并删除</text>
+
+  <!-- step 1: init two sets -->
+  <rect x="110" y="58" width="320" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="80" text-anchor="middle" font-size="12" fill="#333">① 建两张有序表：even 集 / odd 集，放入 0..n−1</text>
+
+  <path d="M 270 94 L 270 110" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- step 2: remove banned + start -->
+  <rect x="110" y="112" width="320" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="134" text-anchor="middle" font-size="12" fill="#333">② 从表中删 banned 各位；ans[p]=0，删 p，p 入队</text>
+
+  <path d="M 270 148 L 270 166" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- decision: queue empty? -->
+  <polygon points="270,168 400,210 270,252 140,210" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="206" text-anchor="middle" font-size="11" fill="#333">队列空 ?</text>
+  <text x="270" y="222" text-anchor="middle" font-size="11" fill="#333">（BFS 结束）</text>
+
+  <!-- yes -> return -->
+  <text x="412" y="206" font-size="11" fill="#4a7a3a" font-weight="bold">是</text>
+  <path d="M 400 210 L 450 210 L 450 540" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- no: pop pos -->
+  <text x="130" y="206" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <path d="M 140 210 L 100 210 L 100 268" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="60" y="270" width="240" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="180" y="292" text-anchor="middle" font-size="12" fill="#333">③ 出队 pos，距离 d = ans[pos]</text>
+
+  <path d="M 180 306 L 180 324" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- compute range -->
+  <rect x="40" y="326" width="280" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="180" y="346" text-anchor="middle" font-size="11" fill="#333">④ 算 lo=max(0,pos−k+1), hi=min(pos,n−k)</text>
+  <text x="180" y="364" text-anchor="middle" font-size="11" fill="#333">j∈[2·lo+k−1−pos, 2·hi+k−1−pos]，步长 2</text>
+
+  <path d="M 180 376 L 180 394" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- pick parity set -->
+  <polygon points="180,396 300,438 180,480 60,438" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="180" y="434" text-anchor="middle" font-size="11" fill="#333">奇偶 = ((k−1)^pos)&amp;1</text>
+  <text x="180" y="450" text-anchor="middle" font-size="11" fill="#333">查 even 还是 odd 集？</text>
+
+  <!-- right branch: scan set in range -->
+  <text x="312" y="434" font-size="11" fill="#446688" font-weight="bold">取对应集</text>
+  <path d="M 300 438 L 360 438 L 360 470" stroke="#666" stroke-width="1.3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="250" y="472" width="240" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="370" y="492" text-anchor="middle" font-size="11" fill="#333">⑤ lower_bound(jmin) 起遍历</text>
+  <text x="370" y="508" text-anchor="middle" font-size="11" fill="#333">每个未访问 j：ans[j]=d+1</text>
+  <text x="370" y="524" text-anchor="middle" font-size="11" fill="#333">入队 + 从集合删除（DSU 跳过）</text>
+
+  <!-- loop back -->
+  <path d="M 370 528 L 370 560 L 470 560 L 470 210 L 400 210" stroke="#666" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="430" y="556" font-size="9" fill="#888">循环回队首</text>
+
+  <!-- return box -->
+  <rect x="350" y="542" width="180" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="17" filter="url(#rough2)"/>
+  <text x="440" y="564" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">⑥ return ans（未达=-1）</text>
+
+  <!-- bottom note -->
+  <text x="270" y="592" text-anchor="middle" font-size="10" fill="#444" font-weight="bold">每点最多入队一次 + 最多删一次 → 总 O(n log n) / 摊还 O(n)</text>
+</svg>

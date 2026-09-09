@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">
+    示例演算：nums = [1, 2, 3] 的 cache 与底层指针快照
+  </text>
+
+  <!-- 列标题 -->
+  <text x="36" y="56" font-size="11" fill="#888" filter="url(#rough2)">阶段</text>
+  <text x="100" y="56" font-size="11" fill="#888" filter="url(#rough2)">底层迭代器剩余</text>
+  <text x="290" y="56" font-size="11" fill="#888" filter="url(#rough2)">cache</text>
+  <text x="400" y="56" font-size="11" fill="#888" filter="url(#rough2)">调用 / 返回</text>
+
+  <!-- ===== 阶段 0：构造 ===== -->
+  <text x="36" y="88" font-size="11" fill="#446688" filter="url(#rough2)">构造</text>
+  <rect x="100" y="72" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="91" text-anchor="middle" font-size="12" fill="#bbb" filter="url(#rough2)">1</text>
+  <rect x="138" y="72" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="91" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="176" y="72" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="91" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">3</text>
+  <text x="100" y="112" font-size="10" fill="#d6a040" filter="url(#rough2)">↑ next() 预读 1</text>
+
+  <rect x="290" y="72" width="50" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="91" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold" filter="url(#rough2)">1</text>
+
+  <text x="400" y="91" font-size="11" fill="#555" filter="url(#rough2)">PeekingIterator([1,2,3])</text>
+
+  <path d="M315,104 L315,128" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="120" font-size="10" fill="#b85450" filter="url(#rough2)">next()</text>
+
+  <!-- ===== 阶段 1：next() → 1 ===== -->
+  <text x="36" y="148" font-size="11" fill="#446688" filter="url(#rough2)">①</text>
+  <rect x="100" y="132" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="151" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">1</text>
+  <rect x="138" y="132" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="151" text-anchor="middle" font-size="12" fill="#bbb" filter="url(#rough2)">2</text>
+  <rect x="176" y="132" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="151" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">3</text>
+
+  <rect x="290" y="132" width="50" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="151" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold" filter="url(#rough2)">2</text>
+
+  <text x="400" y="151" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">return 1</text>
+  <text x="100" y="172" font-size="10" fill="#d6a040" filter="url(#rough2)">↑ 补读 2 入 cache</text>
+
+  <path d="M315,164 L315,188" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="180" font-size="10" fill="#b85450" filter="url(#rough2)">peek()</text>
+
+  <!-- ===== 阶段 2：peek() → 2 ===== -->
+  <text x="36" y="208" font-size="11" fill="#446688" filter="url(#rough2)">②</text>
+  <rect x="100" y="192" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="211" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">1</text>
+  <rect x="138" y="192" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="211" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">2</text>
+  <rect x="176" y="192" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="211" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">3</text>
+
+  <rect x="290" y="192" width="50" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="211" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold" filter="url(#rough2)">2</text>
+
+  <text x="400" y="211" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">return 2</text>
+  <text x="290" y="232" font-size="10" fill="#4a7a3a" filter="url(#rough2)">↑ cache 不变，指针未动</text>
+
+  <path d="M315,224 L315,248" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="240" font-size="10" fill="#b85450" filter="url(#rough2)">next()</text>
+
+  <!-- ===== 阶段 3：next() → 2 ===== -->
+  <text x="36" y="268" font-size="11" fill="#446688" filter="url(#rough2)">③</text>
+  <rect x="100" y="252" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="271" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">1</text>
+  <rect x="138" y="252" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="271" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">2</text>
+  <rect x="176" y="252" width="36" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="271" text-anchor="middle" font-size="12" fill="#bbb" filter="url(#rough2)">3</text>
+
+  <rect x="290" y="252" width="50" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="271" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold" filter="url(#rough2)">3</text>
+
+  <text x="400" y="271" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">return 2</text>
+  <text x="100" y="292" font-size="10" fill="#d6a040" filter="url(#rough2)">↑ 补读 3 入 cache</text>
+
+  <path d="M315,284 L315,308" fill="none" stroke="#b85450" stroke-width="1.5" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="322" y="300" font-size="10" fill="#b85450" filter="url(#rough2)">next()</text>
+
+  <!-- ===== 阶段 4：next() → 3，cache 清空 ===== -->
+  <text x="36" y="328" font-size="11" fill="#b85450" filter="url(#rough2)">④</text>
+  <rect x="100" y="312" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="118" y="331" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">1</text>
+  <rect x="138" y="312" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="156" y="331" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">2</text>
+  <rect x="176" y="312" width="36" height="28" fill="#f5f5f5" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" rx="4" filter="url(#rough2)"/>
+  <text x="194" y="331" text-anchor="middle" font-size="12" fill="#ccc" filter="url(#rough2)">3</text>
+
+  <rect x="290" y="312" width="50" height="28" fill="#fafafa" stroke="#b85450" stroke-width="1.5" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="315" y="331" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">空</text>
+
+  <text x="400" y="331" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">return 3</text>
+  <text x="290" y="352" font-size="10" fill="#b85450" filter="url(#rough2)">↑ 底层 hasNext()=false → cache 置空</text>
+
+  <text x="280" y="384" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">
+    peek() 可在 ② 重复调用任意次都返回 2；cache 是「提前消费、延迟交付」的单元素缓冲
+  </text>
+</svg>

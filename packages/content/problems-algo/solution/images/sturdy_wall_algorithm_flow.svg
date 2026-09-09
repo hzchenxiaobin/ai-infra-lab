@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：枚举行 → SOS 超集和 → 容斥求和</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">以 height=2, width=3, bricks=[1,2] 贯穿演算</text>
+
+  <!-- ===== Stage 1: DFS 枚举行 ===== -->
+  <rect x="40" y="58" width="460" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="80" font-size="13" fill="#446688" font-weight="bold">① DFS 枚举所有行 → cnt[mask]</text>
+  <text x="56" y="100" font-size="11.5" fill="#444">
+    从 pos=0 出发，依次试每块砖 b：nxt=pos+b；若 nxt &lt; width 则掩码置第 nxt−1 位。
+  </text>
+  <g font-size="11.5" fill="#333" font-weight="bold">
+    <text x="56" y="122">[1,1,1]→11</text>
+    <text x="170" y="122">[1,2]→01</text>
+    <text x="270" y="122">[2,1]→10</text>
+    <text x="380" y="122" fill="#4a7a3a">cnt = {11:1, 01:1, 10:1}</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="270" y1="136" x2="270" y2="156" stroke="#888" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Stage 2: SOS 超集和 ===== -->
+  <rect x="40" y="160" width="460" height="76" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="182" font-size="13" fill="#4a7a3a" font-weight="bold">② SOS 超集和：g[T] = Σ_{m ⊇ T} cnt[m]</text>
+  <text x="56" y="202" font-size="11.5" fill="#444">
+    对每位 i，让不含 i 的 T 累加 T|2^i 的值（超集 zeta 变换），一趟 O(W·2^W)。
+  </text>
+  <g font-size="11.5" fill="#333" font-weight="bold">
+    <text x="56" y="224">g[00]=3</text>
+    <text x="150" y="224">g[01]=2</text>
+    <text x="250" y="224">g[10]=2</text>
+    <text x="350" y="224">g[11]=1</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="270" y1="238" x2="270" y2="258" stroke="#888" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Stage 3: 容斥求和 ===== -->
+  <rect x="40" y="262" width="460" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="56" y="284" font-size="13" fill="#d6a040" font-weight="bold">③ 容斥求和：ans = Σ_T (−1)^|T| · g[T]^height</text>
+  <text x="56" y="304" font-size="11.5" fill="#444">
+    |T| 偶则加、奇则减；g[T]^height 用快速幂。
+  </text>
+  <text x="56" y="324" font-size="12" fill="#333" font-weight="bold">
+    = g[00]² − g[01]² − g[10]² + g[11]² = 9 − 4 − 4 + 1 = 2
+  </text>
+
+  <!-- Result tag -->
+  <rect x="200" y="346" width="140" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="13" filter="url(#rough2)"/>
+  <text x="270" y="364" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">ans = 2 ✓ 坚实方案数</text>
+</svg>

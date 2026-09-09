@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：把「节点」拆成「(节点, 上一条边颜色)」状态</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">同一节点经红/蓝边到达 → 后续可选边不同 → 必须拆成两个状态分别 BFS</text>
+
+  <!-- ===== Left panel: original graph ===== -->
+  <rect x="15" y="58" width="250" height="384" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">原图（红边 + 蓝边）</text>
+  <text x="140" y="96" text-anchor="middle" font-size="9" fill="#888">n=4, 红=[[0,1],[2,3]], 蓝=[[1,2]]</text>
+
+  <!-- edges original -->
+  <path d="M 60 154 L 60 224" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="40" y="194" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">红</text>
+  <path d="M 86 250 L 162 250" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="124" y="240" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">蓝</text>
+  <path d="M 190 274 L 190 344" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="212" y="314" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">红</text>
+
+  <!-- nodes original -->
+  <ellipse cx="60" cy="130" rx="22" ry="18" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="60" y="135" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">0</text>
+  <ellipse cx="60" cy="250" rx="22" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="60" y="255" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+  <ellipse cx="190" cy="250" rx="22" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="190" y="255" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">2</text>
+  <ellipse cx="190" cy="370" rx="22" ry="18" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="190" y="375" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">3</text>
+
+  <text x="140" y="412" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">交替路径 0→1→2→3 长 3</text>
+  <text x="140" y="428" text-anchor="middle" font-size="9" fill="#888">边色 红、蓝、红 交替</text>
+
+  <!-- arrow between panels -->
+  <path d="M 268 250 L 288 250" stroke="#666" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="278" y="240" text-anchor="middle" font-size="9" fill="#888">展开</text>
+
+  <!-- ===== Right panel: expanded state graph ===== -->
+  <rect x="295" y="58" width="250" height="384" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="80" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">展开后的状态图（2n 个节点）</text>
+
+  <!-- column headers -->
+  <text x="345" y="106" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">经红边到达</text>
+  <text x="485" y="106" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">经蓝边到达</text>
+
+  <!-- state edges: red original u->v => (u,蓝)->(v,红); blue original u->v => (u,红)->(v,蓝) -->
+  <path d="M 467 138 L 363 202" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 363 218 L 467 282" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 467 298 L 363 362" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- red column states -->
+  <ellipse cx="345" cy="130" rx="20" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="345" y="134" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">0</text>
+  <ellipse cx="345" cy="210" rx="20" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="345" y="214" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">1</text>
+  <ellipse cx="345" cy="290" rx="20" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="345" y="294" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">2</text>
+  <ellipse cx="345" cy="370" rx="20" ry="16" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="345" y="374" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">3</text>
+
+  <!-- blue column states -->
+  <ellipse cx="485" cy="130" rx="20" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="485" y="134" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">0</text>
+  <ellipse cx="485" cy="210" rx="20" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="485" y="214" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">1</text>
+  <ellipse cx="485" cy="290" rx="20" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="485" y="294" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">2</text>
+  <ellipse cx="485" cy="370" rx="20" ry="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="485" y="374" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">3</text>
+
+  <!-- dist labels (green = finalized shortest) -->
+  <text x="318" y="134" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">0</text>
+  <text x="512" y="134" text-anchor="start" font-size="10" fill="#4a7a3a" font-weight="bold">0</text>
+  <text x="318" y="214" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="512" y="294" text-anchor="start" font-size="10" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="318" y="374" text-anchor="end" font-size="10" fill="#4a7a3a" font-weight="bold">3</text>
+
+  <!-- start markers -->
+  <text x="345" y="120" text-anchor="middle" font-size="8" fill="#d6a040">起点</text>
+  <text x="485" y="120" text-anchor="middle" font-size="8" fill="#d6a040">起点</text>
+
+  <text x="420" y="412" text-anchor="middle" font-size="9" fill="#888">红原图边 u→v ⇒ (u,蓝)→(v,红)</text>
+  <text x="420" y="426" text-anchor="middle" font-size="9" fill="#888">蓝原图边 u→v ⇒ (u,红)→(v,蓝)</text>
+
+  <!-- footer note -->
+  <text x="40" y="462" font-size="10" fill="#446688" font-weight="bold">状态图是无权图 → BFS 首次到达即最短；answer[i] = min(dist[i][红], dist[i][蓝])</text>
+</svg>

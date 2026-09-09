@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <text x="300" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold" filter="url(#rough2)">核心观察：排序 + 滑动窗口抬升到右端</text>
+
+  <!-- ===== Step 1: Sort ===== -->
+  <text x="300" y="58" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 排序：让"可抬到同一目标"的元素聚成连续段</text>
+
+  <g filter="url(#rough2)">
+    <rect x="90" y="68" width="56" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4"/>
+    <text x="118" y="90" text-anchor="middle" font-size="13" fill="#333">4</text>
+    <rect x="150" y="68" width="56" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4"/>
+    <text x="178" y="90" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <rect x="210" y="68" width="56" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4"/>
+    <text x="238" y="90" text-anchor="middle" font-size="13" fill="#333">2</text>
+    <text x="176" y="58" text-anchor="middle" font-size="9" fill="#888">排序前</text>
+  </g>
+
+  <path d="M272 86 L328 86" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="300" y="80" text-anchor="middle" font-size="9" fill="#446688" filter="url(#rough2)">sort</text>
+
+  <g filter="url(#rough2)">
+    <rect x="340" y="68" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="368" y="90" text-anchor="middle" font-size="13" fill="#333">1</text>
+    <rect x="400" y="68" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="428" y="90" text-anchor="middle" font-size="13" fill="#333">2</text>
+    <rect x="460" y="68" width="56" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="488" y="90" text-anchor="middle" font-size="13" fill="#333">4</text>
+    <text x="428" y="58" text-anchor="middle" font-size="9" fill="#888">排序后（升序）</text>
+  </g>
+
+  <!-- ===== Step 2: Window + raise ===== -->
+  <text x="300" y="132" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">② 窗口 [left, right]：把所有元素抬到 nums[right]（目标 = 右端最大值）</text>
+
+  <!-- Window bracket -->
+  <g filter="url(#rough2)">
+    <rect x="338" y="146" width="182" height="80" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" fill-opacity="0.45"/>
+  </g>
+  <text x="429" y="160" text-anchor="middle" font-size="9.5" fill="#b85450" font-weight="bold" filter="url(#rough2)">窗口 = 全部 3 个元素</text>
+
+  <!-- Original values -->
+  <g filter="url(#rough2)">
+    <rect x="348" y="168" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="373" y="188" text-anchor="middle" font-size="12" fill="#333">1</text>
+    <rect x="404" y="168" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="429" y="188" text-anchor="middle" font-size="12" fill="#333">2</text>
+    <rect x="460" y="168" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4"/>
+    <text x="485" y="188" text-anchor="middle" font-size="12" fill="#333">4</text>
+  </g>
+
+  <!-- Raise arrows -->
+  <path d="M373 202 L373 218" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrO)" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <path d="M429 202 L429 218" stroke="#d6a040" stroke-width="1.6" fill="none" marker-end="url(#arrO)" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="358" y="214" text-anchor="middle" font-size="8" fill="#d6a040" filter="url(#rough2)">+3</text>
+  <text x="414" y="214" text-anchor="middle" font-size="8" fill="#d6a040" filter="url(#rough2)">+2</text>
+
+  <!-- Target values -->
+  <g filter="url(#rough2)">
+    <rect x="348" y="226" width="50" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="373" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">4</text>
+    <rect x="404" y="226" width="50" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="429" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">4</text>
+    <rect x="460" y="226" width="50" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4"/>
+    <text x="485" y="246" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">4</text>
+  </g>
+  <text x="429" y="270" text-anchor="middle" font-size="9" fill="#4a7a3a" filter="url(#rough2)">全部变成 4 → 频数 = 3</text>
+
+  <!-- ===== Step 3: Cost formula ===== -->
+  <rect x="80" y="288" width="440" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="309" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold" filter="url(#rough2)">代价 = nums[right] × 窗口长度 − 窗口元素和 s</text>
+
+  <!-- ===== Step 4: cost compute ===== -->
+  <g filter="url(#rough2)">
+    <text x="300" y="340" text-anchor="middle" font-size="10.5" fill="#b85450">代价 = 4 × 3 − (1+2+4) = 12 − 7 = 5 ≤ k=5 ✓</text>
+  </g>
+
+  <!-- Key insight -->
+  <rect x="60" y="356" width="480" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="372" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">单调性：right 右移后 nums[right] 不降，</text>
+  <text x="300" y="386" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">代价只增不减 → left 单调前进，无需回退 → 可滑动窗口</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一趟扫描，prev/cur 接力</text>
+
+  <!-- Init -->
+  <rect x="80" y="38" width="360" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="58" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="260" y="76" text-anchor="middle" font-size="11" fill="#555">prev = 0, cur = 0, ans = 0</text>
+
+  <path d="M 260 88 L 260 104" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- Loop diamond: num in nums ? -->
+  <polygon points="260,108 380,150 260,192 140,150" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="146" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">还有元素？</text>
+  <text x="260" y="164" text-anchor="middle" font-size="10.5" fill="#777">num ← nums[next]</text>
+
+  <!-- No -> return -->
+  <path d="M 380 150 L 460 150 L 460 200" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="402" y="142" font-size="11" fill="#b85450" font-weight="bold">No</text>
+  <rect x="380" y="204" width="130" height="56" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="445" y="224" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">扫描结束</text>
+  <text x="445" y="244" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">return min(ans, n)</text>
+
+  <!-- Yes down -->
+  <path d="M 260 192 L 260 212" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="276" y="206" font-size="11" fill="#82b366" font-weight="bold">Yes</text>
+
+  <!-- Decision diamond: num == 1 ? -->
+  <polygon points="260,216 370,256 260,296 150,256" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="252" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">num == 1 ?</text>
+
+  <!-- Yes (left): cur += 1 -->
+  <path d="M 150 256 L 90 256 L 90 300" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="100" y="248" font-size="11" fill="#4a7a3a" font-weight="bold">Yes</text>
+  <rect x="20" y="304" width="140" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="322" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">cur += 1</text>
+  <text x="90" y="337" text-anchor="middle" font-size="10" fill="#4a7a3a">当前段继续累加</text>
+
+  <!-- No (right): prev = cur; cur = 0 -->
+  <path d="M 370 256 L 430 256 L 430 300" stroke="#d6a040" stroke-width="1.8" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="396" y="248" font-size="11" fill="#d6a040" font-weight="bold">No</text>
+  <rect x="360" y="304" width="150" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="435" y="322" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">prev = cur</text>
+  <text x="435" y="337" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">cur = 0</text>
+
+  <!-- merge both branches to: ans = max(ans, prev+cur+1) -->
+  <path d="M 90 344 L 90 364 L 260 364" stroke="#888" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <path d="M 435 344 L 435 364 L 260 364" stroke="#888" stroke-width="1.6" fill="none" filter="url(#rough2)"/>
+  <path d="M 260 364 L 260 378" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- ans update box -->
+  <rect x="80" y="382" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="402" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">ans = max(ans, prev + cur + 1)</text>
+  <text x="260" y="418" text-anchor="middle" font-size="10.5" fill="#446688">+1 = 被翻的那个 0（无 0 可翻时由末尾 min 兜底）</text>
+
+  <!-- loop back to top -->
+  <path d="M 260 428 L 260 448 L 8 448 L 8 150 L 140 150" stroke="#888" stroke-width="1.4" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <text x="22" y="300" font-size="10.5" fill="#888" font-style="italic" transform="rotate(-90 22 300)">回到循环，取下一元素</text>
+</svg>

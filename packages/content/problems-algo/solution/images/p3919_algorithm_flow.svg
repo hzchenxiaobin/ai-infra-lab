@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：两张方向价目表，每个查询 O(1) 作差</text>
+
+  <!-- step 1 -->
+  <rect x="150" y="40" width="260" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="12.5" fill="#333">① 求 gap：g[k] = nums[k] - nums[k-1]</text>
+
+  <path d="M 218 78 L 160 104" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 342 78 L 400 104" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2a -->
+  <rect x="40" y="108" width="230" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="155" y="130" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 正向扫：右行前缀 SR</text>
+  <text x="155" y="150" text-anchor="middle" font-size="10.5" fill="#444">SR[i] = SR[i-1] + (可走 ? 1 : g[i])</text>
+  <text x="155" y="168" text-anchor="middle" font-size="10" fill="#666">可走：k=1 或 g[k] &lt; g[k-1]</text>
+  <text x="155" y="181" text-anchor="middle" font-size="10" fill="#999">不可走则该 gap 付 g[i]</text>
+
+  <!-- step 2b -->
+  <rect x="290" y="108" width="230" height="80" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="405" y="130" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 反向扫：左行后缀 SL</text>
+  <text x="405" y="150" text-anchor="middle" font-size="10.5" fill="#444">SL[i] = SL[i+1] + (可走 ? 1 : g[i])</text>
+  <text x="405" y="168" text-anchor="middle" font-size="10" fill="#666">可走：k=n-1 或 g[k] ≤ g[k+1]</text>
+  <text x="405" y="181" text-anchor="middle" font-size="10" fill="#999">不可走则该 gap 付 g[i]</text>
+
+  <path d="M 155 188 L 250 212" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 405 188 L 310 212" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- decision diamond -->
+  <polygon points="280,214 430,252 280,290 130,252" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ 查询 [l, r]</text>
+  <text x="280" y="266" text-anchor="middle" font-size="10.5" fill="#777">比较 l 与 r 的方向</text>
+
+  <path d="M 130 252 L 114 320" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 280 290 L 280 320" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 430 252 L 446 320" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- outcome boxes -->
+  <rect x="28" y="324" width="172" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="114" y="345" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">l &lt; r（右行）</text>
+  <text x="114" y="363" text-anchor="middle" font-size="11" fill="#444">ans = SR[r] - SR[l]</text>
+
+  <rect x="216" y="324" width="128" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="345" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">l = r</text>
+  <text x="280" y="363" text-anchor="middle" font-size="11" fill="#444">ans = 0</text>
+
+  <rect x="360" y="324" width="172" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="446" y="345" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">l &gt; r（左行）</text>
+  <text x="446" y="363" text-anchor="middle" font-size="10.5" fill="#444">ans = SL[r+1] - SL[l+1]</text>
+
+  <text x="280" y="396" text-anchor="middle" font-size="10.5" fill="#b85450">注意：前缀和中间值可达 2×10^9，C++ 须 64 位累加</text>
+</svg>

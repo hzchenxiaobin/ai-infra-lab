@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：s = "(*))"  ← 合法 ✓</text>
+  <text x="280" y="48" text-anchor="middle" font-size="11" fill="#888">逐字符维护未匹配左括号数量的可能区间 [lo, hi]</text>
+
+  <!-- 字符串格子 -->
+  <g font-size="14" fill="#333" font-weight="bold">
+    <rect x="80" y="62" width="40" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="100" y="86" text-anchor="middle">(</text>
+    <rect x="122" y="62" width="40" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="142" y="86" text-anchor="middle" fill="#4a7a3a">*</text>
+    <rect x="164" y="62" width="40" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="184" y="86" text-anchor="middle" fill="#b85450">)</text>
+    <rect x="206" y="62" width="40" height="36" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="226" y="86" text-anchor="middle" fill="#b85450">)</text>
+  </g>
+
+  <!-- 步骤表格 -->
+  <text x="40" y="128" font-size="12" fill="#444" font-weight="bold">步骤</text>
+  <text x="110" y="128" font-size="12" fill="#444" font-weight="bold">字符</text>
+  <text x="190" y="128" font-size="12" fill="#444" font-weight="bold">操作</text>
+  <text x="430" y="128" font-size="12" fill="#444" font-weight="bold">[lo, hi]</text>
+  <line x1="36" y1="134" x2="520" y2="134" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- 行 0 -->
+  <text x="48" y="156" font-size="11" fill="#888">0</text>
+  <text x="118" y="156" font-size="11" fill="#888">—</text>
+  <text x="190" y="156" font-size="11" fill="#555">初始</text>
+  <rect x="425" y="144" width="60" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="159" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">[0, 0]</text>
+
+  <!-- 行 1: ( -->
+  <text x="48" y="186" font-size="11" fill="#446688" font-weight="bold">①</text>
+  <text x="118" y="186" font-size="12" fill="#446688" font-weight="bold">(</text>
+  <text x="190" y="186" font-size="11" fill="#555">必为左括号，balance +1</text>
+  <rect x="425" y="174" width="60" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="189" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">[1, 1]</text>
+
+  <!-- 行 2: * -->
+  <text x="48" y="216" font-size="11" fill="#4a7a3a" font-weight="bold">②</text>
+  <text x="118" y="216" font-size="12" fill="#4a7a3a" font-weight="bold">*</text>
+  <text x="190" y="216" font-size="11" fill="#555">三义：当 ')' lo−1→0；当 '(' hi+1</text>
+  <rect x="425" y="204" width="60" height="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="219" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">[0, 2]</text>
+
+  <!-- 行 3: ) -->
+  <text x="48" y="246" font-size="11" fill="#b85450" font-weight="bold">③</text>
+  <text x="118" y="246" font-size="12" fill="#b85450" font-weight="bold">)</text>
+  <text x="190" y="246" font-size="11" fill="#555">hi 2−1=1；lo 0−1→截到 0</text>
+  <rect x="425" y="234" width="60" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="249" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">[0, 1]</text>
+
+  <!-- 行 4: ) -->
+  <text x="48" y="276" font-size="11" fill="#b85450" font-weight="bold">④</text>
+  <text x="118" y="276" font-size="12" fill="#b85450" font-weight="bold">)</text>
+  <text x="190" y="276" font-size="11" fill="#555">hi 1−1=0；lo 0−1→截到 0</text>
+  <rect x="425" y="264" width="60" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="455" y="279" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">[0, 0]</text>
+
+  <!-- 结论 -->
+  <rect x="80" y="300" width="400" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="322" font-size="12" fill="#4a7a3a" font-weight="bold">扫描结束 lo == 0 → 有效 ✓</text>
+  <text x="100" y="338" font-size="11" fill="#555">一种合法赋值：第 2 位 '*' 取 '('，得 "(())"，2 左对 2 右</text>
+
+  <!-- 反例 -->
+  <text x="40" y="368" font-size="12" fill="#b85450" font-weight="bold">反例 s = "*)("：</text>
+  <text x="40" y="386" font-size="11" fill="#555">[0,0]→[0,1]→[0,0]→[1,1]，结束 lo=1 ≠ 0 → 非法 ✗（末尾必剩 1 个 '('）</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="24" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">原地 O(1)：用第 2 位编码「新状态」，旧状态仍可读</text>
+  <text x="290" y="42" text-anchor="middle" font-size="11" fill="#888">bit0 = 原状态（始终不变）　bit1 = 新状态（算出后写入）　最后整体右移 1 位</text>
+
+  <!-- 2x2 state cards -->
+  <!-- Card1: 原活→新活  green -->
+  <rect x="40" y="60" width="230" height="78" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="55" y="82" font-size="12" fill="#3a5a2a" font-weight="bold">原：活(1) → 新：活(1)</text>
+  <text x="55" y="104" font-size="20" fill="#3a5a2a" font-weight="bold">0b<tspan fill="#4a7a3a">1</tspan><tspan fill="#b85450">1</tspan> = 3</text>
+  <text x="55" y="124" font-size="10" fill="#888">bit1=1 新活　bit0=1 原活</text>
+
+  <!-- Card2: 原活→新死  red -->
+  <rect x="310" y="60" width="230" height="78" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="325" y="82" font-size="12" fill="#8a3a36" font-weight="bold">原：活(1) → 新：死(0)</text>
+  <text x="325" y="104" font-size="20" fill="#8a3a36" font-weight="bold">0b<tspan fill="#4a7a3a">0</tspan><tspan fill="#b85450">1</tspan> = 1</text>
+  <text x="325" y="124" font-size="10" fill="#888">bit1=0 新死　bit0=1 原活</text>
+
+  <!-- Card3: 原死→新活  green -->
+  <rect x="40" y="150" width="230" height="78" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="55" y="172" font-size="12" fill="#3a5a2a" font-weight="bold">原：死(0) → 新：活(1)</text>
+  <text x="55" y="194" font-size="20" fill="#3a5a2a" font-weight="bold">0b<tspan fill="#4a7a3a">1</tspan><tspan fill="#b85450">0</tspan> = 2</text>
+  <text x="55" y="214" font-size="10" fill="#888">bit1=1 新活　bit0=0 原死</text>
+
+  <!-- Card4: 原死→新死  gray -->
+  <rect x="310" y="150" width="230" height="78" rx="8" fill="#f0f0f0" stroke="#999" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="325" y="172" font-size="12" fill="#666" font-weight="bold">原：死(0) → 新：死(0)</text>
+  <text x="325" y="194" font-size="20" fill="#666" font-weight="bold">0b<tspan fill="#4a7a3a">0</tspan><tspan fill="#b85450">0</tspan> = 0</text>
+  <text x="325" y="214" font-size="10" fill="#888">bit1=0 新死　bit0=0 原死</text>
+
+  <!-- legend for bit color -->
+  <g font-size="10" fill="#555">
+    <rect x="40" y="244" width="12" height="10" fill="#b85450" fill-opacity="0.6" stroke="#b85450" stroke-width="1" rx="2" filter="url(#rough2)"/>
+    <text x="58" y="253">bit0 = 原状态（红）</text>
+    <rect x="180" y="244" width="12" height="10" fill="#4a7a3a" fill-opacity="0.6" stroke="#4a7a3a" stroke-width="1" rx="2" filter="url(#rough2)"/>
+    <text x="198" y="253">bit1 = 新状态（绿）</text>
+  </g>
+
+  <!-- 3 step boxes -->
+  <rect x="20" y="276" width="172" height="66" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="106" y="298" text-anchor="middle" font-size="11" fill="#2a4a66" font-weight="bold">① 数邻居：读原状态</text>
+  <text x="106" y="318" text-anchor="middle" font-size="13" fill="#2a4a66" font-family="monospace">board[r][c] &amp; 1</text>
+  <text x="106" y="335" text-anchor="middle" font-size="9.5" fill="#888">只看 bit0，不受新写入影响</text>
+
+  <rect x="204" y="276" width="172" height="66" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="290" y="298" text-anchor="middle" font-size="11" fill="#7a5a20" font-weight="bold">② 若下一代存活：置 bit1</text>
+  <text x="290" y="318" text-anchor="middle" font-size="13" fill="#7a5a20" font-family="monospace">board[r][c] |= 2</text>
+  <text x="290" y="335" text-anchor="middle" font-size="9.5" fill="#888">存活条件见下方规则</text>
+
+  <rect x="388" y="276" width="172" height="66" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="474" y="298" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">③ 全部算完：右移收尾</text>
+  <text x="474" y="318" text-anchor="middle" font-size="13" fill="#3a5a2a" font-family="monospace">board[r][c] &gt;&gt;= 1</text>
+  <text x="474" y="335" text-anchor="middle" font-size="9.5" fill="#888">bit1 落到 bit0，bit0 丢弃</text>
+
+  <!-- arrows between steps -->
+  <line x1="192" y1="309" x2="202" y2="309" stroke="#666" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <line x1="376" y1="309" x2="386" y2="309" stroke="#666" stroke-width="1.6" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- caption -->
+  <rect x="20" y="356" width="540" height="32" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="290" y="376" text-anchor="middle" font-size="10.5" fill="#555">关键：bit0 在整个遍历期间保持「旧状态」，故每个细胞数邻居时读到的都是旧值 → 天然同步</text>
+</svg>

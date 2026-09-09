@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">记忆化 DFS 的状态：dfs(i, mask, changed)</text>
+
+  <!-- 三个状态框 -->
+  <rect x="24" y="40" width="130" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="89" y="66" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">i = 2</text>
+  <text x="89" y="86" text-anchor="middle" font-size="10.5" fill="#888">当前扫到哪一位</text>
+
+  <rect x="170" y="40" width="190" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="265" y="66" text-anchor="middle" font-size="14" fill="#4a7a3a" font-weight="bold">mask = {a, c}</text>
+  <text x="265" y="86" text-anchor="middle" font-size="10.5" fill="#888">当前段已收集的字符集合</text>
+
+  <rect x="376" y="40" width="120" height="58" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="436" y="66" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">changed = 0</text>
+  <text x="436" y="86" text-anchor="middle" font-size="10.5" fill="#888">还有 1 次修改机会</text>
+
+  <!-- 字符串演示 -->
+  <text x="34" y="148" font-size="12" fill="#555">s =</text>
+  <rect x="64" y="124" width="34" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="81" y="146" text-anchor="middle" font-size="13" fill="#333">a</text>
+  <rect x="104" y="124" width="34" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="121" y="146" text-anchor="middle" font-size="13" fill="#333">c</text>
+  <rect x="144" y="124" width="34" height="34" fill="#ffffff" stroke="#446688" stroke-width="2" stroke-dasharray="5,3" rx="4" filter="url(#rough2)"/>
+  <text x="161" y="146" text-anchor="middle" font-size="13" fill="#333">b</text>
+  <rect x="184" y="124" width="34" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="201" y="146" text-anchor="middle" font-size="13" fill="#777">c</text>
+  <rect x="224" y="124" width="34" height="34" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="4" filter="url(#rough2)"/>
+  <text x="241" y="146" text-anchor="middle" font-size="13" fill="#777">a</text>
+
+  <path d="M161,176 L161,164" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="161" y="190" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">i</text>
+  <text x="288" y="138" font-size="11" fill="#4a7a3a">← 当前段（已积累 mask）</text>
+  <text x="288" y="156" font-size="11" fill="#446688">← 待处理 s[i]</text>
+
+  <!-- 位掩码条 -->
+  <text x="32" y="222" font-size="11.5" fill="#555" font-weight="bold">mask 是 26 位整数：</text>
+  <rect x="200" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="210" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <rect x="222" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="232" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <rect x="244" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="254" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <rect x="266" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="276" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <rect x="288" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="298" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <text x="316" y="221" text-anchor="middle" font-size="12" fill="#999">…</text>
+  <rect x="328" y="204" width="20" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="338" y="221" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="350" y="204" width="20" height="24" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="360" y="221" text-anchor="middle" font-size="10" fill="#777">0</text>
+  <rect x="372" y="204" width="20" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="3" filter="url(#rough2)"/>
+  <text x="382" y="221" text-anchor="middle" font-size="10.5" fill="#4a7a3a" font-weight="bold">1</text>
+  <text x="200" y="200" font-size="9.5" fill="#aaa">z</text>
+  <text x="222" y="200" font-size="9.5" fill="#aaa">y</text>
+  <text x="244" y="200" font-size="9.5" fill="#aaa">x</text>
+  <text x="266" y="200" font-size="9.5" fill="#aaa">w</text>
+  <text x="288" y="200" font-size="9.5" fill="#aaa">v</text>
+  <text x="328" y="200" font-size="9.5" fill="#aaa">c</text>
+  <text x="350" y="200" font-size="9.5" fill="#aaa">b</text>
+  <text x="372" y="200" font-size="9.5" fill="#aaa">a</text>
+  <text x="408" y="222" font-size="10" fill="#888">低位在右</text>
+  <text x="408" y="238" font-size="10" fill="#888">a = bit 0</text>
+
+  <text x="56" y="256" font-size="11" fill="#555">并入新字符一步搞定：mask | (1 &lt;&lt; c)，不同字符数随时 popcount(mask) 查询</text>
+
+  <!-- 底部要点 -->
+  <rect x="24" y="274" width="472" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="298" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">无后效性：「在哪一位改、改成什么」的历史影响，</text>
+  <text x="260" y="318" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">全部浓缩在 mask 与 changed 两个量里传给未来</text>
+  <text x="260" y="336" text-anchor="middle" font-size="11" fill="#4a7a3a">⇒ 直接对 dfs(i, mask, changed) 记忆化，重复子状态自动合并</text>
+</svg>

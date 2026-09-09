@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="430" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">核心概念：动态 Pivot — 先查列名，再拼 SQL，最后 PREPARE/EXECUTE</text>
+  <path d="M 230 36 Q 430 44 630 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+
+  <!-- ===== Phase 1: Metadata query ===== -->
+  <text x="30" y="66" font-size="11" fill="#888">① 元数据查询：取出所有列名</text>
+  <g filter="url(#rough2)"><rect x="24" y="74" width="230" height="160" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6"/></g>
+  <text x="139" y="94" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">Products 表（长表）</text>
+  <line x1="24" y1="102" x2="254" y2="102" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="44" y="118" font-size="9" fill="#888" font-weight="bold">product_id</text>
+  <text x="128" y="118" font-size="9" fill="#888" font-weight="bold">store</text>
+  <text x="196" y="118" font-size="9" fill="#888" font-weight="bold">price</text>
+  <line x1="104" y1="104" x2="104" y2="234" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <line x1="172" y1="104" x2="172" y2="234" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="50" y="136" font-size="10" fill="#4a8edb">1</text>
+  <text x="116" y="136" font-size="9" fill="#b85450" font-weight="bold">Shop</text>
+  <text x="200" y="136" font-size="10" fill="#4a8edb">110</text>
+
+  <text x="50" y="154" font-size="10" fill="#4a8edb">1</text>
+  <text x="112" y="154" font-size="9" fill="#b85450" font-weight="bold">LC_Store</text>
+  <text x="200" y="154" font-size="10" fill="#4a8edb">100</text>
+
+  <text x="50" y="172" font-size="10" fill="#4a7a3a">2</text>
+  <text x="114" y="172" font-size="9" fill="#b85450" font-weight="bold">Nozama</text>
+  <text x="200" y="172" font-size="10" fill="#4a7a3a">200</text>
+
+  <text x="50" y="190" font-size="10" fill="#4a7a3a">2</text>
+  <text x="118" y="190" font-size="9" fill="#b85450" font-weight="bold">Souq</text>
+  <text x="200" y="190" font-size="10" fill="#4a7a3a">190</text>
+
+  <text x="50" y="208" font-size="10" fill="#d6a040">3</text>
+  <text x="116" y="208" font-size="9" fill="#b85450" font-weight="bold">Shop</text>
+  <text x="200" y="208" font-size="10" fill="#d6a040">1000</text>
+
+  <text x="50" y="226" font-size="10" fill="#d6a040">3</text>
+  <text x="118" y="226" font-size="9" fill="#b85450" font-weight="bold">Souq</text>
+  <text x="200" y="226" font-size="10" fill="#d6a040">1900</text>
+
+  <text x="139" y="252" text-anchor="middle" font-size="9" fill="#999">store 列值未知，写 SQL 时无法硬编码</text>
+
+  <!-- Arrow 1: table -> distinct stores -->
+  <path d="M 258 154 L 300 154" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="279" y="146" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">DISTINCT</text>
+
+  <!-- ===== Phase 2: Build SQL string ===== -->
+  <text x="310" y="66" font-size="11" fill="#888">② 拼接列表达式字符串</text>
+  <g filter="url(#rough2)"><rect x="306" y="74" width="270" height="160" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/></g>
+  <text x="441" y="94" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">GROUP_CONCAT 拼片段</text>
+  <line x1="316" y1="102" x2="566" y2="102" stroke="#bbb" stroke-width="1" stroke-dasharray="3,2" filter="url(#rough2)"/>
+
+  <text x="316" y="120" font-size="9" fill="#888">取出的列名（排序后）：</text>
+  <g filter="url(#rough2)"><rect x="330" y="126" width="64" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="362" y="140" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">LC_Store</text>
+  <g filter="url(#rough2)"><rect x="402" y="126" width="56" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="430" y="140" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Nozama</text>
+  <g filter="url(#rough2)"><rect x="466" y="126" width="44" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="488" y="140" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Shop</text>
+  <g filter="url(#rough2)"><rect x="518" y="126" width="44" height="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="4"/></g>
+  <text x="540" y="140" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">Souq</text>
+
+  <text x="316" y="168" font-size="9" fill="#446688" font-weight="bold">每个列名 → 一段聚合表达式：</text>
+  <g filter="url(#rough2)"><rect x="318" y="174" width="246" height="50" fill="#fff" stroke="#4a8edb" stroke-width="1" rx="4"/></g>
+  <text x="324" y="190" font-size="8" fill="#4a8edb">MAX(IF(store='LC_Store',price,NULL))</text>
+  <text x="324" y="202" font-size="8" fill="#4a8edb">  AS `LC_Store`</text>
+  <text x="324" y="216" font-size="7" fill="#888">…每个 store 各拼一段，逗号分隔</text>
+
+  <!-- Arrow 2: string -> PREPARE -->
+  <path d="M 580 154 L 622 154" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="601" y="146" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">PREPARE</text>
+  <text x="601" y="172" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">EXECUTE</text>
+
+  <!-- ===== Phase 3: Execute -> wide result ===== -->
+  <text x="628" y="66" font-size="11" fill="#888">③ 执行动态 SQL → 宽表</text>
+  <g filter="url(#rough2)"><rect x="624" y="74" width="222" height="160" fill="#fff" stroke="#4a7a3a" stroke-width="1.8" rx="6"/></g>
+  <text x="735" y="94" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">结果表（宽表）</text>
+  <line x1="624" y1="102" x2="846" y2="102" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <text x="636" y="118" font-size="8" fill="#888" font-weight="bold">product_id</text>
+  <text x="688" y="118" font-size="8" fill="#888" font-weight="bold">LC_Store</text>
+  <text x="738" y="118" font-size="8" fill="#888" font-weight="bold">Nozama</text>
+  <text x="778" y="118" font-size="8" fill="#888" font-weight="bold">Shop</text>
+  <text x="820" y="118" font-size="8" fill="#888" font-weight="bold">Souq</text>
+
+  <text x="642" y="138" font-size="10" fill="#4a8edb" font-weight="bold">1</text>
+  <text x="692" y="138" font-size="10" fill="#4a8edb">100</text>
+  <text x="742" y="138" font-size="10" fill="#b85450" font-weight="bold">null</text>
+  <text x="782" y="138" font-size="10" fill="#4a8edb">110</text>
+  <text x="822" y="138" font-size="10" fill="#b85450" font-weight="bold">null</text>
+
+  <text x="642" y="158" font-size="10" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="692" y="158" font-size="10" fill="#b85450" font-weight="bold">null</text>
+  <text x="742" y="158" font-size="10" fill="#4a7a3a">200</text>
+  <text x="782" y="158" font-size="10" fill="#b85450" font-weight="bold">null</text>
+  <text x="822" y="158" font-size="10" fill="#4a7a3a">190</text>
+
+  <text x="642" y="178" font-size="10" fill="#d6a040" font-weight="bold">3</text>
+  <text x="692" y="178" font-size="10" fill="#b85450" font-weight="bold">null</text>
+  <text x="742" y="178" font-size="10" fill="#b85450" font-weight="bold">null</text>
+  <text x="782" y="178" font-size="10" fill="#d6a040">1000</text>
+  <text x="822" y="178" font-size="10" fill="#d6a040">1900</text>
+
+  <text x="735" y="208" text-anchor="middle" font-size="9" fill="#999">列名 = 数据中的 store 值</text>
+  <text x="735" y="224" text-anchor="middle" font-size="9" fill="#999">运行时才确定，非编译期</text>
+
+  <!-- ===== Bottom: static vs dynamic contrast ===== -->
+  <g filter="url(#rough2)"><rect x="24" y="270" width="822" height="190" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2"/></g>
+  <text x="44" y="294" font-size="13" fill="#a06a10" font-weight="bold">⭐ 静态 Pivot（1777） vs 动态 Pivot（2252）</text>
+
+  <g filter="url(#rough2)"><rect x="44" y="306" width="380" height="140" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6"/></g>
+  <text x="64" y="328" font-size="11" fill="#4a7a3a" font-weight="bold">静态 Pivot（1777 / 1179）</text>
+  <text x="64" y="350" font-size="10" fill="#4a7a3a">• store 取值已知且固定（store1/store2/store3）</text>
+  <text x="64" y="370" font-size="10" fill="#4a7a3a">• 手写 MAX(IF(store='store1', ...)) AS store1</text>
+  <text x="64" y="390" font-size="10" fill="#4a7a3a">• 列在写 SQL 时就写死 → 可静态分析</text>
+  <text x="64" y="410" font-size="10" fill="#4a7a3a">• 优化器可缓存执行计划</text>
+  <text x="64" y="432" font-size="9" fill="#888">缺点：store 增减时必须改 SQL</text>
+
+  <g filter="url(#rough2)"><rect x="442" y="306" width="384" height="140" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6"/></g>
+  <text x="462" y="328" font-size="11" fill="#b85450" font-weight="bold">动态 Pivot（2252 本题）</text>
+  <text x="462" y="350" font-size="10" fill="#b85450">• store 取值未知，运行时从数据中取</text>
+  <text x="462" y="370" font-size="10" fill="#b85450">• SELECT DISTINCT store → GROUP_CONCAT 拼片段</text>
+  <text x="462" y="390" font-size="10" fill="#b85450">• PREPARE stmt FROM @sql; EXECUTE stmt;</text>
+  <text x="462" y="410" font-size="10" fill="#b85450">• 列名「数据化」→ 灵活适应增减</text>
+  <text x="462" y="432" font-size="9" fill="#888">代价：不可静态分析，难调试，需防注入</text>
+</svg>

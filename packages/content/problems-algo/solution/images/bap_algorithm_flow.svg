@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">首末词哈希索引：预处理 → 建索引 → 枚举 → 拼接 → 去重排序</text>
+
+  <!-- Step 1 -->
+  <rect x="60" y="50" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="78" font-size="12" fill="#333" filter="url(#rough2)"><tspan fill="#446688" font-weight="bold">① 预处理</tspan>：对每个短语抽取 first[i] 与 last[i]</text>
+  <text x="430" y="78" font-size="9.5" fill="#446688" filter="url(#rough2)">'writing code'→('writing','code')</text>
+
+  <!-- arrow 1->2 -->
+  <path d="M240 98 L240 124" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2 -->
+  <rect x="60" y="126" width="360" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="154" font-size="12" fill="#333" filter="url(#rough2)"><tspan fill="#446688" font-weight="bold">② 建索引</tspan>：head[首词] → 下标列表（哈希表）</text>
+  <text x="430" y="154" font-size="9.5" fill="#446688" filter="url(#rough2)">head['code']=[0,3]</text>
+
+  <!-- arrow 2->3 -->
+  <path d="M240 174 L240 200" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3 (decision noted) -->
+  <rect x="60" y="202" width="360" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="222" font-size="12" fill="#333" filter="url(#rough2)"><tspan fill="#d6a040" font-weight="bold">③ 枚举 i</tspan>：查 head[last[i]] 得候选 j</text>
+  <text x="76" y="238" font-size="10.5" fill="#b85450" filter="url(#rough2)">判定 <tspan font-weight="bold">i == j ?</tspan> 是 → 跳过（不能和自己拼）</text>
+  <text x="430" y="222" font-size="9.5" fill="#d6a040" filter="url(#rough2)">last[i]==首词[j]</text>
+  <text x="430" y="236" font-size="9.5" fill="#b85450" filter="url(#rough2)">i≠j 才拼接</text>
+
+  <!-- arrow 3->4 -->
+  <path d="M240 250 L240 276" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4 -->
+  <rect x="60" y="278" width="360" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="306" font-size="12" fill="#333" filter="url(#rough2)"><tspan fill="#d6a040" font-weight="bold">④ 拼接</tspan>：phrases[i] + phrases[j][首词长度:]</text>
+  <text x="430" y="306" font-size="9.5" fill="#b85450" filter="url(#rough2)">去掉 j 首词（=i 末词）</text>
+
+  <!-- arrow 4->5 -->
+  <path d="M240 326 L240 352" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5 -->
+  <rect x="60" y="354" width="360" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="76" y="382" font-size="12" fill="#333" filter="url(#rough2)"><tspan fill="#4a7a3a" font-weight="bold">⑤ 去重排序</tspan>：set 收集 → 字典序 sort → 返回</text>
+  <text x="430" y="382" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">distinct + sorted</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="410" width="500" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.1" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="426" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold" filter="url(#rough2)">哈希把「找首词==某词的 j」从 O(n) 降到均摊 O(1)，最坏仍 O(n²)</text>
+</svg>

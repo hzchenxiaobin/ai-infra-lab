@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：求包围矩形 → 建依赖图 → 拓扑排序判环</text>
+
+  <!-- ===== 步骤1：求包围矩形 ===== -->
+  <rect x="60" y="56" width="440" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="80" font-size="13" fill="#446688" font-weight="bold">① 求每种颜色的包围矩形</text>
+  <text x="80" y="100" font-size="11" fill="#444">遍历 m×n 网格，记录颜色 c 的 minR/maxR/minC/maxC</text>
+  <text x="80" y="114" font-size="10" fill="#888">即该颜色出现的最小/最大行号与列号，框出其打印矩形</text>
+
+  <!-- 箭头 1→2 -->
+  <path d="M 280 124 L 280 142" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== 步骤2：建依赖图 ===== -->
+  <rect x="60" y="148" width="440" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="172" font-size="13" fill="#a87020" font-weight="bold">② 扫描包围矩形，建有向依赖图</text>
+  <text x="80" y="192" font-size="11" fill="#444">对每种颜色 c，遍历其包围矩形内每个格子 (i,j)：</text>
+  <text x="80" y="208" font-size="11" fill="#444">若 targetGrid[i][j] = d ≠ c，则建有向边 c → d（c 先于 d）</text>
+  <text x="80" y="222" font-size="10" fill="#888">用 set 去重，避免重边；同时累计各节点入度 indeg</text>
+
+  <!-- 箭头 2→3 -->
+  <path d="M 280 230 L 280 248" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== 步骤3：拓扑排序 ===== -->
+  <rect x="60" y="254" width="440" height="78" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="80" y="278" font-size="13" fill="#4a7a3a" font-weight="bold">③ Kahn 拓扑排序（入度队列）</text>
+  <text x="80" y="298" font-size="11" fill="#444">入度为 0 的颜色入队；每次出队一个颜色 c，</text>
+  <text x="80" y="314" font-size="11" fill="#444">将其指向的邻居入度 −1，降为 0 则入队</text>
+  <text x="80" y="328" font-size="10" fill="#888">计数 processed = 成功出队的颜色数</text>
+
+  <!-- 箭头 3→4 -->
+  <path d="M 280 336 L 280 354" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ===== 步骤4：判环 ===== -->
+  <!-- 左：无环 true -->
+  <rect x="60" y="360" width="210" height="60" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="165" y="384" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">processed == 颜色总数</text>
+  <text x="165" y="404" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">→ 无环，返回 true</text>
+
+  <!-- 右：有环 false -->
+  <rect x="290" y="360" width="210" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="395" y="384" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">processed &lt; 颜色总数</text>
+  <text x="395" y="404" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">→ 有环，返回 false</text>
+</svg>

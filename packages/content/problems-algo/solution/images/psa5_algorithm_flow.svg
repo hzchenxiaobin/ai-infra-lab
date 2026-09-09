@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：JOIN 取单价 → 派生金额 → 分组求和 → 排序输出</text>
+
+  <!-- step 1 -->
+  <rect x="150" y="46" width="260" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="64" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① JOIN Product USING(product_id)</text>
+  <text x="280" y="80" text-anchor="middle" font-size="9" fill="#666">给每行销售补上单价 price（外键保证匹配）</text>
+  <path d="M280 94 L280 110" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2 -->
+  <rect x="150" y="114" width="260" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="132" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 行内派生金额 amount = quantity × price</text>
+  <text x="280" y="148" text-anchor="middle" font-size="9" fill="#666">同一行里把数量与单价相乘（行内乘积）</text>
+  <path d="M280 162 L280 178" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 3 -->
+  <rect x="150" y="182" width="260" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ GROUP BY user_id</text>
+  <text x="280" y="216" text-anchor="middle" font-size="9" fill="#666">把同一用户的销售折叠成一组</text>
+  <path d="M280 230 L280 246" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 4 -->
+  <rect x="150" y="250" width="260" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="268" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ SUM(quantity × price) AS spending</text>
+  <text x="280" y="284" text-anchor="middle" font-size="9" fill="#666">组内金额求和 = 每用户总消费</text>
+  <path d="M280 298 L280 314" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 5 decision -->
+  <polygon points="280,318 410,372 280,426 150,372" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="360" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑤ ORDER BY</text>
+  <text x="280" y="376" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">spending DESC,</text>
+  <text x="280" y="392" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">user_id ASC</text>
+
+  <!-- side note for tie-break -->
+  <path d="M410 372 L448 372" stroke="#b85450" stroke-width="1.4" fill="none" stroke-dasharray="4 3" filter="url(#rough2)"/>
+  <rect x="448" y="344" width="104" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="6" filter="url(#rough2)"/>
+  <text x="500" y="360" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">并列判定</text>
+  <text x="500" y="375" text-anchor="middle" font-size="8" fill="#666">spending 相同时</text>
+  <text x="500" y="388" text-anchor="middle" font-size="8" fill="#666">按 user_id 升序</text>
+  <text x="500" y="400" text-anchor="middle" font-size="8" fill="#666">→ 102 排 103 前</text>
+
+  <path d="M280 426 L280 442" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 6 output -->
+  <rect x="150" y="446" width="260" height="50" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="466" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑥ SELECT user_id, spending</text>
+  <text x="280" y="482" text-anchor="middle" font-size="9" fill="#666">输出两列，按上一步排序好的顺序</text>
+
+  <!-- footer hint -->
+  <rect x="60" y="506" width="440" height="26" fill="none" stroke="#d6a040" stroke-width="1.2" stroke-dasharray="5 3" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="522" text-anchor="middle" font-size="9" fill="#666">与 2324(IV) 同骨架，区别仅在第 ⑤ 步：IV 取最大(LIMIT 1)，Ⅴ 排序输出全部并列</text>
+</svg>

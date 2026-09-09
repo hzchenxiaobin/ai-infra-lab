@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="420" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333" filter="url(#rough2)">核心观察：先判「可删空子串」，再拼后缀最小串</text>
+
+  <!-- ================= 左栏：区间 DP 删空判定 ================= -->
+  <text x="162" y="52" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#446688" filter="url(#rough2)">① s[i..j] 能否删空？—— 区间 DP</text>
+
+  <!-- 例子 1：bcda 两端夹中间 -->
+  <text x="26" y="84" font-size="10.5" fill="#777" filter="url(#rough2)">结构一</text>
+  <rect x="36" y="64" width="32" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="52" y="84" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">b</text>
+  <rect x="70" y="64" width="32" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 3" filter="url(#rough2)"/>
+  <text x="86" y="84" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">c</text>
+  <rect x="104" y="64" width="32" height="30" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 3" filter="url(#rough2)"/>
+  <text x="120" y="84" text-anchor="middle" font-size="13" fill="#b85450" filter="url(#rough2)">d</text>
+  <rect x="138" y="64" width="32" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="154" y="84" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">a</text>
+  <!-- 外弧：b 到 a -->
+  <path d="M52,60 C52,38 154,38 154,60" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <!-- 中间删除线 -->
+  <path d="M76,70 L130,88" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="196" y="76" font-size="11" font-weight="bold" fill="#446688" filter="url(#rough2)">两端夹中间</text>
+  <text x="196" y="93" font-size="10" fill="#555" filter="url(#rough2)">|b−a|=1 ✓ 先删空中间 "cd"</text>
+  <text x="196" y="109" font-size="10" fill="#555" filter="url(#rough2)">b、a 拼合再消 ⇒ "bcda" 全删空</text>
+
+  <!-- 例子 2：abcd 拼接 -->
+  <text x="26" y="156" font-size="10.5" fill="#777" filter="url(#rough2)">结构二</text>
+  <rect x="34" y="134" width="70" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="52" y="155" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">a</text>
+  <text x="86" y="155" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">b</text>
+  <rect x="104" y="134" width="70" height="32" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="120" y="155" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">c</text>
+  <text x="154" y="155" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">d</text>
+  <text x="196" y="148" font-size="11" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">左右拼接</text>
+  <text x="196" y="165" font-size="10" fill="#555" filter="url(#rough2)">"ab"、"cd" 各自删空</text>
+  <text x="196" y="181" font-size="10" fill="#555" filter="url(#rough2)">⇒ "abcd" 整段删空</text>
+
+  <!-- 转移公式框 -->
+  <rect x="24" y="198" width="276" height="62" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="162" y="218" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#333" filter="url(#rough2)">ok[i][j] ⟸ 两种转移（充要）</text>
+  <text x="162" y="236" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">① s[i],s[j] 相邻 ∧ ok[i+1][j−1]</text>
+  <text x="162" y="252" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">② ∃k: ok[i][k] ∧ ok[k+1][j]</text>
+  <text x="24" y="278" font-size="10" fill="#777" filter="url(#rough2)">基础：长度 2 且相邻；每次删 2 个 ⇒ 只有偶数长度可能删空</text>
+
+  <!-- ================= 右栏：后缀 DP ================= -->
+  <text x="411" y="52" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#d6a040" filter="url(#rough2)">② ans[i] 拼后缀最小串</text>
+
+  <!-- 格子示意 -->
+  <rect x="322" y="64" width="24" height="30" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="334" y="84" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">i</text>
+  <rect x="348" y="64" width="24" height="30" rx="4" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="2 2" filter="url(#rough2)"/>
+  <rect x="374" y="64" width="24" height="30" rx="4" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="2 2" filter="url(#rough2)"/>
+  <rect x="400" y="64" width="24" height="30" rx="4" fill="#fafafa" stroke="#999" stroke-width="1" stroke-dasharray="2 2" filter="url(#rough2)"/>
+  <text x="386" y="84" text-anchor="middle" font-size="9" fill="#999" filter="url(#rough2)">删空 ⌫</text>
+  <rect x="426" y="64" width="24" height="30" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="438" y="84" text-anchor="middle" font-size="11" font-weight="bold" fill="#333" filter="url(#rough2)">j</text>
+  <rect x="452" y="64" width="24" height="30" rx="4" fill="#f0f0f0" stroke="#bbb" stroke-width="1" filter="url(#rough2)"/>
+  <text x="464" y="84" text-anchor="middle" font-size="10" fill="#777" filter="url(#rough2)">⋯</text>
+  <text x="334" y="110" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">起点 i</text>
+  <text x="386" y="110" text-anchor="middle" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">ok[i][j−1] 整段删空</text>
+  <text x="438" y="110" text-anchor="middle" font-size="9.5" fill="#d6a040" filter="url(#rough2)">s[j] 首个幸存</text>
+  <path d="M438,114 C438,128 470,120 468,132" fill="none" stroke="#d6a040" stroke-width="1.4" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="490" y="140" text-anchor="middle" font-size="9" fill="#777" filter="url(#rough2)">ans[j+1]</text>
+  <text x="411" y="152" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">右侧独立做子问题，继续拼</text>
+
+  <!-- 公式框 -->
+  <rect x="318" y="162" width="186" height="76" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="411" y="182" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#333" filter="url(#rough2)">ans[i] =</text>
+  <text x="411" y="201" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">min( s[j] + ans[j+1] )</text>
+  <text x="411" y="219" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">j 满足：i == j 或 ok[i][j−1]</text>
+  <text x="411" y="236" text-anchor="middle" font-size="10" fill="#555" filter="url(#rough2)">另加候选：ok[i][n−1] ⟹ ""</text>
+  <text x="411" y="258" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450" filter="url(#rough2)">空串最短，字典序直接最小！</text>
+
+  <!-- ================= 底部结论框 ================= -->
+  <rect x="24" y="276" width="478" height="128" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="263" y="298" text-anchor="middle" font-size="12" font-weight="bold" fill="#333" filter="url(#rough2)">为什么候选集是完备的？（关键正确性）</text>
+  <text x="263" y="320" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">删除的配对只能嵌套或并列，不能交叉——交叉的两对会互相等对方先删空，死锁</text>
+  <text x="263" y="340" text-anchor="middle" font-size="10.5" fill="#333" filter="url(#rough2)">若某配对 (p,q) 跨过幸存的 s[j]（p &lt; j &lt; q）</text>
+  <text x="263" y="360" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">⇒ 删它之前 s[p+1..q−1] 必须先删空，其中包含 s[j]，矛盾！</text>
+  <text x="263" y="384" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">⇒ s[j] 像一堵墙：左侧独立删空、右侧独立演化 —— 候选不重不漏</text>
+</svg>

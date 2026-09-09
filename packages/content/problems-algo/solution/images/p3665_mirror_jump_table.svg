@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#446688" stroke-width="1.6"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#b85450" stroke-width="1.8"/>
+    </marker>
+    <marker id="arrGray" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#9a9a9a" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="16" fill="#333"
+        filter="url(#rough2)">核心观察：一步移动的落点唯一 —— 预处理成「跳表」再数路径</text>
+
+  <!-- 左：示例 3 网格 -->
+  <text x="124" y="56" text-anchor="middle" font-size="11" fill="#446688"
+        filter="url(#rough2)">示例 3：grid = [[0,1,1],[1,1,0]]</text>
+
+  <text x="72" y="70" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">j=0</text>
+  <text x="124" y="70" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">j=1</text>
+  <text x="176" y="70" text-anchor="middle" font-size="9" fill="#888" filter="url(#rough2)">j=2</text>
+  <text x="40" y="103" text-anchor="end" font-size="9" fill="#888" filter="url(#rough2)">i=0</text>
+  <text x="40" y="155" text-anchor="end" font-size="9" fill="#888" filter="url(#rough2)">i=1</text>
+
+  <!-- 起点 -->
+  <rect x="46" y="74" width="52" height="52" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="58" y="92" font-size="13" fill="#446688" font-weight="bold" filter="url(#rough2)">起</text>
+
+  <!-- 镜子格（橙底 + 斜线） -->
+  <rect x="98" y="74" width="52" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <path d="M 105 119 L 143 81" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <rect x="150" y="74" width="52" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <path d="M 157 119 L 195 81" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <rect x="46" y="126" width="52" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <path d="M 53 171 L 91 133" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+  <rect x="98" y="126" width="52" height="52" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <path d="M 105 171 L 143 133" stroke="#d6a040" stroke-width="1.2" filter="url(#rough2)"/>
+
+  <!-- 终点 -->
+  <rect x="150" y="126" width="52" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="158" font-size="13" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">终</text>
+
+  <!-- 机器人 -->
+  <circle cx="72" cy="100" r="3.5" fill="#333" filter="url(#rough2)"/>
+
+  <!-- ① 红实线：向右出发的连锁反射（有效） -->
+  <path d="M 72 100 L 112 100 Q 124 100 124 112 L 124 140 Q 124 152 136 152 L 160 152"
+        fill="none" stroke="#b85450" stroke-width="2.4" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+  <text x="60" y="90" font-size="13" fill="#b85450" font-weight="bold" filter="url(#rough2)">①</text>
+
+  <!-- ② 灰虚线：向下出发的连锁反射（出界） -->
+  <path d="M 72 100 L 72 140 Q 72 152 84 152 L 112 152 Q 124 152 124 164 L 124 196"
+        fill="none" stroke="#9a9a9a" stroke-width="1.8" stroke-dasharray="5 4"
+        marker-end="url(#arrGray)" filter="url(#rough2)"/>
+  <text x="84" y="122" font-size="13" fill="#9a9a9a" font-weight="bold" filter="url(#rough2)">②</text>
+  <text x="124" y="212" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">出界 ✗</text>
+
+  <!-- 图例 -->
+  <text x="46" y="230" font-size="9.5" fill="#888" filter="url(#rough2)">橙底斜线 = 镜子（值为 1）</text>
+  <text x="46" y="243" font-size="9.5" fill="#888" filter="url(#rough2)">红 ① 有效链 / 灰虚线 ② 出界链</text>
+
+  <!-- 两条链的对照说明 -->
+  <rect x="28" y="250" width="206" height="60" fill="#ffffff" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="38" y="266" font-size="10.5" fill="#b85450" filter="url(#rough2)">① 向右出发：转下 → 再转右 → 终点 ✓</text>
+  <text x="38" y="280" font-size="10.5" fill="#888" filter="url(#rough2)">② 向下出发：转右 → 再转下 → 出界 ✗</text>
+  <text x="38" y="294" font-size="10.5" fill="#333" filter="url(#rough2)">同一面镜 (1,1)：进镜方向不同，</text>
+  <text x="38" y="307" font-size="10.5" fill="#333" font-weight="bold" filter="url(#rough2)">反射方向就不同！</text>
+
+  <!-- 右：跳表定义 -->
+  <rect x="252" y="48" width="284" height="124" fill="#ffffff" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="266" y="70" font-size="13" fill="#446688" font-weight="bold" filter="url(#rough2)">跳表：尝试进入 (i,j) 的最终落点</text>
+  <text x="266" y="94" font-size="11.5" fill="#4a7a3a" filter="url(#rough2)">空格：enterR = enterD = 自身</text>
+  <text x="266" y="116" font-size="11.5" fill="#446688" filter="url(#rough2)">镜子：enterR[i][j] = enterD[i+1][j]</text>
+  <text x="266" y="138" font-size="11.5" fill="#446688" filter="url(#rough2)">　　　enterD[i][j] = enterR[i][j+1]</text>
+  <text x="266" y="158" font-size="10.5" fill="#888" filter="url(#rough2)">（右进转下 / 下进转右；越界记 -1）</text>
+
+  <path d="M 394 172 L 394 184" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 右：填表顺序 -->
+  <rect x="252" y="186" width="284" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="266" y="210" font-size="12.5" fill="#b3541e" font-weight="bold" filter="url(#rough2)">填表顺序：i 自下而上，j 自右而左</text>
+  <text x="266" y="232" font-size="11" fill="#b3541e" filter="url(#rough2)">两个依赖格恰好已算好 —— 一趟 O(mn)</text>
+
+  <path d="M 394 250 L 394 310" stroke="#446688" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 结论 -->
+  <rect x="28" y="316" width="508" height="42" fill="#e6f4ea" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="282" y="342" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold"
+        filter="url(#rough2)">查表 O(1) ⇒ 反射路径计数就是网格 DP：dp[落点] += dp[i][j]</text>
+</svg>

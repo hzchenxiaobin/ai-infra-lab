@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="9" markerHeight="9" refX="4.5" refY="8" orient="auto">
+      <path d="M0,0 L4.5,8 L9,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心模型：更新栈 + 惰性覆盖</text>
+
+  <!-- Layer #2 (newest, top) -->
+  <rect x="130" y="64" width="300" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="146" y="86" font-size="12" fill="#d6a040" font-weight="bold">更新 #2（栈顶·最新）</text>
+  <text x="146" y="104" font-size="11" fill="#555">update(3,0, 3,2, 10)</text>
+  <text x="300" y="104" font-size="10.5" fill="#888">覆盖：第 3 行</text>
+
+  <!-- Layer #1 (middle) -->
+  <rect x="130" y="144" width="300" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="146" y="166" font-size="12" fill="#446688" font-weight="bold">更新 #1</text>
+  <text x="146" y="184" font-size="11" fill="#555">update(0,0, 3,2, 5)</text>
+  <text x="300" y="184" font-size="10.5" fill="#888">覆盖：全部 4 行</text>
+
+  <!-- Original rectangle (bottom) -->
+  <rect x="130" y="224" width="300" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="146" y="246" font-size="12" fill="#4a7a3a" font-weight="bold">原始矩形（栈底·最旧）</text>
+  <text x="146" y="264" font-size="11" fill="#555">rectangle（构造时给定）</text>
+
+  <!-- Scan direction arrow on left -->
+  <path d="M 104 96 L 104 252" stroke="#888" stroke-width="2.2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <rect x="58" y="158" width="42" height="44" fill="#fff" stroke="#888" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="79" y="176" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">getValue</text>
+  <text x="79" y="190" text-anchor="middle" font-size="9.5" fill="#888">倒序</text>
+  <text x="79" y="202" text-anchor="middle" font-size="9.5" fill="#888">扫描</text>
+
+  <!-- Probe 1: getValue(3,1) hits #2 -->
+  <path d="M 430 92 L 444 92" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="446" y="74" width="104" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="498" y="90" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">getValue(3,1)</text>
+  <text x="498" y="106" text-anchor="middle" font-size="10" fill="#555">命中 #2 → 10</text>
+
+  <!-- Probe 2: getValue(0,2) skips #2, hits #1 -->
+  <text x="424" y="148" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold">✗ 不在 [3,3]</text>
+  <path d="M 430 172 L 444 172" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="446" y="154" width="104" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="498" y="170" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">getValue(0,2)</text>
+  <text x="498" y="186" text-anchor="middle" font-size="10" fill="#555">命中 #1 → 5</text>
+
+  <!-- Bottom note -->
+  <rect x="130" y="300" width="300" height="56" fill="#f8f8f8" stroke="#888" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">update = 压栈 O(1)，不动原始矩形</text>
+  <text x="280" y="340" text-anchor="middle" font-size="10.5" fill="#888">getValue = 从栈顶倒序找首个覆盖 (row,col) 的更新</text>
+  <text x="280" y="354" text-anchor="middle" font-size="10" fill="#888">都未命中 → 回退到 rectangle[row][col]</text>
+</svg>

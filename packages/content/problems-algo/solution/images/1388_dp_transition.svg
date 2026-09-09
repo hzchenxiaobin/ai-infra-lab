@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="420" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">DP 转移：dp[i][j] = max(不挑 i, 挑 i)</text>
+  <text x="300" y="46" text-anchor="middle" font-size="11" fill="#888">dp[i][j] = 前 i 个元素挑 j 个互不相邻的最大和</text>
+
+  <!-- ===== dp grid sketch (small, schematic) ===== -->
+  <!-- rows i (down), cols j (right). highlight cell (i,j), (i-1,j), (i-2,j-1) -->
+  <text x="70" y="84" font-size="11" fill="#555" font-weight="bold">dp 表依赖关系：</text>
+
+  <!-- column header j -->
+  <g font-size="9" fill="#888">
+    <text x="140" y="104" text-anchor="middle">j-1</text>
+    <text x="190" y="104" text-anchor="middle">j</text>
+  </g>
+  <!-- row labels -->
+  <g font-size="9" fill="#888">
+    <text x="108" y="139" text-anchor="end">i-2</text>
+    <text x="108" y="179" text-anchor="end">i-1</text>
+    <text x="108" y="219" text-anchor="end">i</text>
+  </g>
+
+  <!-- cells: 3 rows x 2 cols -->
+  <!-- (i-2, j-1): pick source (green) -->
+  <rect x="116" y="124" width="44" height="30" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="138" y="144" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">dp</text>
+  <text x="138" y="156" text-anchor="middle" font-size="8" fill="#4a7a3a">[i-2][j-1]</text>
+  <!-- (i-2, j) -->
+  <rect x="166" y="124" width="44" height="30" rx="3" fill="#f5f5f5" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="188" y="144" text-anchor="middle" font-size="9" fill="#bbb">·</text>
+  <!-- (i-1, j-1) -->
+  <rect x="116" y="164" width="44" height="30" rx="3" fill="#f5f5f5" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="138" y="184" text-anchor="middle" font-size="9" fill="#bbb">·</text>
+  <!-- (i-1, j): skip source (orange) -->
+  <rect x="166" y="164" width="44" height="30" rx="3" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="188" y="184" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">dp</text>
+  <text x="188" y="196" text-anchor="middle" font-size="8" fill="#d6a040">[i-1][j]</text>
+  <!-- (i, j-1) -->
+  <rect x="116" y="204" width="44" height="30" rx="3" fill="#f5f5f5" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="138" y="224" text-anchor="middle" font-size="9" fill="#bbb">·</text>
+  <!-- (i, j): target (red) -->
+  <rect x="166" y="204" width="44" height="30" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="2.4" filter="url(#rough2)"/>
+  <text x="188" y="224" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp</text>
+  <text x="188" y="236" text-anchor="middle" font-size="8" fill="#b85450">[i][j]</text>
+
+  <!-- arrows: skip (i-1,j)->(i,j) orange down -->
+  <path d="M 188 196 L 188 202" stroke="#d6a040" stroke-width="2" marker-end="url(#arrO)" fill="none" filter="url(#rough2)"/>
+  <!-- pick (i-2,j-1)->(i,j) red diagonal -->
+  <path d="M 158 152 Q 172 178 184 202" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+
+  <!-- arrow labels -->
+  <text x="206" y="200" font-size="9" fill="#d6a040" font-weight="bold">不挑 i</text>
+  <text x="206" y="212" font-size="9" fill="#d6a040">↑ 正上方</text>
+  <text x="158" y="172" font-size="9" fill="#4a7a3a" font-weight="bold">挑 i</text>
+  <text x="158" y="184" font-size="9" fill="#4a7a3a">↘ 跳一格</text>
+
+  <!-- ===== right: the two choices explained ===== -->
+  <rect x="300" y="92" width="270" height="80" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="435" y="114" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">① 不挑第 i 个</text>
+  <text x="435" y="134" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">skip = dp[i-1][j]</text>
+  <text x="435" y="152" text-anchor="middle" font-size="10" fill="#888">前 i-1 个里挑 j 个，第 i 个无关</text>
+  <text x="435" y="166" text-anchor="middle" font-size="10" fill="#888">→ 直接继承正上方</text>
+
+  <rect x="300" y="186" width="270" height="100" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="435" y="208" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">② 挑第 i 个 = slices[i-1]</text>
+  <text x="435" y="228" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">pick = dp[i-2][j-1] + slices[i-1]</text>
+  <text x="435" y="246" text-anchor="middle" font-size="10" fill="#888">第 i-1 个被禁选 ⇒ 前缀只到 i-2</text>
+  <text x="435" y="260" text-anchor="middle" font-size="10" fill="#888">已挑 1 个 ⇒ 剩 j-1 个从更短前缀挑</text>
+  <text x="435" y="274" text-anchor="middle" font-size="10" fill="#888">→ 跳到左上对角格</text>
+
+  <!-- combine box -->
+  <rect x="300" y="300" width="270" height="50" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="435" y="320" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp[i][j] = max(skip, pick)</text>
+  <text x="435" y="338" text-anchor="middle" font-size="10" fill="#888">两种互斥选择取较大值</text>
+
+  <!-- bottom note: boundaries -->
+  <rect x="40" y="362" width="540" height="48" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="300" y="382" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">边界：dp[i][0]=0（挑 0 个）｜ dp[0][j]=−∞（j≥1，挑不了）</text>
+  <text x="300" y="400" text-anchor="middle" font-size="10" fill="#888">i==1 &amp;&amp; j==1 时 pick=slices[0]（避免 dp[−1]）｜ 填表：外层 i↑，内层 j↑</text>
+</svg>

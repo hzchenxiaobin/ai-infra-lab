@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrUp" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">作用域栈：查找从顶向下，内层遮蔽外层</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">(let x 2 (mult x (let x 3 y 4 (add x y))))</text>
+
+  <!-- Stack frame S2 (inner, top) -->
+  <rect x="70" y="62" width="420" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="84" y="82" font-size="12" fill="#b85450" font-weight="bold">S2（内层 let，栈顶）</text>
+  <text x="84" y="102" font-size="12" fill="#333" font-family="'Comic Sans MS', monospace">x = 3   y = 4</text>
+  <text x="84" y="118" font-size="11" fill="#b85450">查 x → 命中 3 ✓（遮蔽外层）</text>
+
+  <!-- Stack frame S1 (outer, bottom) -->
+  <rect x="70" y="140" width="420" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="84" y="160" font-size="12" fill="#446688" font-weight="bold">S1（外层 let）</text>
+  <text x="84" y="180" font-size="12" fill="#333" font-family="'Comic Sans MS', monospace">x = 2</text>
+  <text x="84" y="196" font-size="11" fill="#888">x=2 被内层遮蔽，查 y 时再到此处（无）→ 继续向外</text>
+
+  <!-- lookup arrow -->
+  <path d="M 430 74 Q 430 105 430 120" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrUp)" filter="url(#rough2)"/>
+  <text x="440" y="100" font-size="11" fill="#b85450">查找↑</text>
+
+  <!-- rules -->
+  <rect x="40" y="226" width="480" height="138" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">三条作用域规则</text>
+  <text x="56" y="270" font-size="11" fill="#444">① 进入 let → 压入新表；退出 let → 弹出（绑定不外泄）</text>
+  <text x="56" y="290" font-size="11" fill="#444">② 查找变量 → 从栈顶向下，首个命中即取值</text>
+  <text x="56" y="310" font-size="11" fill="#444">③ 「先求值后绑定」：右值 ei 求完才写入 vi</text>
+  <text x="56" y="332" font-size="11" fill="#b85450">   即 vi 在自己的初值里不可见 → 用外层/先前同名值</text>
+  <text x="56" y="352" font-size="11" fill="#888">   退出后内层绑定消失，回到 S1 时 x 恢复为 2</text>
+</svg>

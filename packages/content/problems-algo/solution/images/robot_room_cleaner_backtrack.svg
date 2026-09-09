@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">回溯动作 go_back()：原路返回 + 恢复朝向</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">递归返回后机器人在「下一格」朝 d，需掉头→前进→掉头回到「本格」朝 d</text>
+
+  <!-- helper: robot drawing as a symbol -->
+  <!-- We draw 4 frames side by side. Each frame: two cells (本格 A, 下一格 B) + robot -->
+
+  <!-- ===== Frame 1: 递归前，robot 从 A 向 B 前进 ===== -->
+  <text x="80" y="80" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 前进 A→B</text>
+  <!-- cell A -->
+  <rect x="36" y="96" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="60" y="124" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A 本格</text>
+  <!-- cell B -->
+  <rect x="96" y="96" width="48" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="120" y="124" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B 下格</text>
+  <!-- robot on B facing right (d=right) -->
+  <circle cx="120" cy="116" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 120 109 L 116 120 L 120 117 L 124 120 Z" fill="#7a5415" filter="url(#rough2)" transform="rotate(90 120 116)"/>
+  <text x="120" y="160" text-anchor="middle" font-size="9" fill="#888">朝向 d=→</text>
+  <!-- arrow A->B -->
+  <path d="M 84 120 L 92 120" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="90" y="180" text-anchor="middle" font-size="9" fill="#4a7a3a">move() 成功</text>
+
+  <!-- ===== Frame 2: 递归返回后，robot 在 B 仍朝 d ===== -->
+  <text x="240" y="80" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">② 递归返回后</text>
+  <rect x="196" y="96" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="220" y="124" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A</text>
+  <rect x="256" y="96" width="48" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B</text>
+  <!-- robot on B facing right -->
+  <circle cx="280" cy="116" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 280 109 L 276 120 L 280 117 L 284 120 Z" fill="#7a5415" filter="url(#rough2)" transform="rotate(90 280 116)"/>
+  <text x="280" y="160" text-anchor="middle" font-size="9" fill="#888">仍朝 d=→</text>
+  <text x="280" y="180" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">需回 A！</text>
+
+  <!-- ===== Frame 3: turnRight×2 (180°), robot on B facing ← (d+2) ===== -->
+  <text x="400" y="80" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">③ 掉头 180°</text>
+  <rect x="356" y="96" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="380" y="124" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A</text>
+  <rect x="416" y="96" width="48" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="440" y="124" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B</text>
+  <!-- robot on B facing left -->
+  <circle cx="440" cy="116" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 440 109 L 436 120 L 440 117 L 444 120 Z" fill="#7a5415" filter="url(#rough2)" transform="rotate(-90 440 116)"/>
+  <text x="440" y="160" text-anchor="middle" font-size="9" fill="#888">朝 d+2=←</text>
+  <text x="440" y="180" text-anchor="middle" font-size="9" fill="#d6a040">turnRight ×2</text>
+
+  <!-- ===== Frame 4: move() 回到 A，再掉头 180° 恢复 ===== -->
+  <text x="80" y="220" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">④ 前进 B→A（回去）</text>
+  <rect x="36" y="236" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="60" y="264" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A</text>
+  <rect x="96" y="236" width="48" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="120" y="264" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B</text>
+  <!-- robot now on A facing left -->
+  <circle cx="60" cy="256" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 60 249 L 56 260 L 60 257 L 64 260 Z" fill="#7a5415" filter="url(#rough2)" transform="rotate(-90 60 256)"/>
+  <text x="60" y="300" text-anchor="middle" font-size="9" fill="#888">已回 A，朝 ←</text>
+  <path d="M 96 260 L 88 260" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="90" y="320" text-anchor="middle" font-size="9" fill="#4a7a3a">move() 成功</text>
+
+  <!-- ===== Frame 5: 再掉头 180°，恢复朝 d=→ ===== -->
+  <text x="240" y="220" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">⑤ 再掉头 180°</text>
+  <rect x="196" y="236" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="220" y="264" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A</text>
+  <rect x="256" y="236" width="48" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" rx="4" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="280" y="264" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">B</text>
+  <!-- robot on A facing right (restored) -->
+  <circle cx="220" cy="256" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 220 249 L 216 260 L 220 257 L 224 260 Z" fill="#7a5415" filter="url(#rough2)" transform="rotate(90 220 256)"/>
+  <text x="220" y="300" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">朝向恢复 d=→</text>
+  <text x="220" y="320" text-anchor="middle" font-size="9" fill="#d6a040">turnRight ×2</text>
+
+  <!-- ===== Frame 6: 状态复原，可试下一方向 ===== -->
+  <text x="400" y="220" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑥ 可试下一向</text>
+  <rect x="356" y="236" width="48" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="264" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">A</text>
+  <rect x="416" y="236" width="48" height="48" fill="#f4f4f4" stroke="#bbb" stroke-width="1" rx="4" stroke-dasharray="3,2" filter="url(#rough2)"/>
+  <text x="440" y="264" text-anchor="middle" font-size="10" fill="#bbb">B</text>
+  <!-- robot on A, after one turnRight faces down (next dir) -->
+  <circle cx="380" cy="256" r="9" fill="#d6a040" stroke="#7a5415" stroke-width="1.4" filter="url(#rough2)"/>
+  <path d="M 380 249 L 376 260 L 380 257 L 384 260 Z" fill="#7a5415" filter="url(#rough2)"/>
+  <text x="380" y="300" text-anchor="middle" font-size="9" fill="#4a7a3a">turnRight 一次</text>
+  <text x="380" y="320" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">→ 切到 d+1</text>
+
+  <!-- ===== bottom: code summary ===== -->
+  <rect x="40" y="338" width="500" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="56" y="358" font-size="11.5" fill="#444" font-weight="bold">go_back() = turnRight; turnRight; move; turnRight; turnRight</text>
+  <text x="430" y="358" font-size="10" fill="#888">位置 ✓ 朝向 ✓</text>
+</svg>

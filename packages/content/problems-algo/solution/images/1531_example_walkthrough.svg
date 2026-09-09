@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 540" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="540" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">示例演算：s = “aaabcccd”, k = 2 → 答案 4</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">从末尾倒推 DP 决策，看 dp[8][2]=4 如何拼出来</text>
+
+  <!-- string with indices -->
+  <g font-size="11">
+    <text x="40" y="78" font-size="10" fill="#666">下标：</text>
+    <text x="120" y="78" text-anchor="middle" font-size="9" fill="#888">0</text>
+    <text x="148" y="78" text-anchor="middle" font-size="9" fill="#888">1</text>
+    <text x="176" y="78" text-anchor="middle" font-size="9" fill="#888">2</text>
+    <text x="204" y="78" text-anchor="middle" font-size="9" fill="#888">3</text>
+    <text x="232" y="78" text-anchor="middle" font-size="9" fill="#888">4</text>
+    <text x="260" y="78" text-anchor="middle" font-size="9" fill="#888">5</text>
+    <text x="288" y="78" text-anchor="middle" font-size="9" fill="#888">6</text>
+    <text x="316" y="78" text-anchor="middle" font-size="9" fill="#888">7</text>
+
+    <text x="40" y="108" font-size="10" fill="#666">字符：</text>
+    <!-- a a a b c c c d -->
+    <rect x="107" y="86" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="120" y="104" text-anchor="middle" fill="#333">a</text>
+    <rect x="135" y="86" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="148" y="104" text-anchor="middle" fill="#333">a</text>
+    <rect x="163" y="86" width="26" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="176" y="104" text-anchor="middle" fill="#333">a</text>
+    <rect x="191" y="86" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="204" y="104" text-anchor="middle" fill="#b85450" font-weight="bold">b</text>
+    <rect x="219" y="86" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="232" y="104" text-anchor="middle" fill="#333">c</text>
+    <rect x="247" y="86" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="260" y="104" text-anchor="middle" fill="#333">c</text>
+    <rect x="275" y="86" width="26" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="288" y="104" text-anchor="middle" fill="#333">c</text>
+    <rect x="303" y="86" width="26" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="316" y="104" text-anchor="middle" fill="#b85450" font-weight="bold">d</text>
+
+    <!-- delete marks -->
+    <text x="204" y="128" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">✗删</text>
+    <text x="316" y="128" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">✗删</text>
+  </g>
+
+  <text x="360" y="108" font-size="10" fill="#888">共删 2 个 = k，合法</text>
+
+  <!-- divider -->
+  <path d="M 40 142 L 520 142" stroke="#ccc" stroke-width="1" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- DP trace -->
+  <text x="40" y="162" font-size="11" fill="#446688" font-weight="bold">DP 倒推（自顶向下展开）：</text>
+
+  <!-- Step 1: dp[8][2] -->
+  <rect x="40" y="172" width="480" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="192" font-size="11" fill="#333">dp[8][2]</text>
+  <text x="56" y="208" font-size="10" fill="#666">i=8 处理 'd'</text>
+  <text x="180" y="192" font-size="10" fill="#888">决策 A 删 'd'：</text>
+  <text x="180" y="208" font-size="11" fill="#b85450" font-weight="bold">dp[8][2] = dp[7][1]</text>
+  <text x="320" y="192" font-size="10" fill="#888">（决策 B 保留 'd' 只剩 1 次删</text>
+  <text x="320" y="208" font-size="10" fill="#888">无法合并，更差）</text>
+  <text x="470" y="200" font-size="10" fill="#446688" font-weight="bold">→ 4</text>
+
+  <path d="M 130 218 L 130 236" stroke="#b85450" stroke-width="1.4" marker-end="url(#arrR)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: dp[7][1] -->
+  <rect x="40" y="240" width="480" height="62" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="260" font-size="11" fill="#333">dp[7][1]</text>
+  <text x="56" y="276" font-size="10" fill="#666">i=7 处理 'c'</text>
+  <text x="56" y="292" font-size="10" fill="#666">决策 B 保留</text>
+  <text x="150" y="260" font-size="10" fill="#888">向左扫：c c c（kept=3），b 异（del=1）</text>
+  <text x="150" y="276" font-size="10" fill="#888">取 p=4（b 之前），del=1 ≤ 1 ✓</text>
+  <text x="150" y="292" font-size="11" fill="#4a7a3a" font-weight="bold">dp[7][1] = dp[3][0] + encLen(3)</text>
+  <text x="470" y="276" font-size="10" fill="#446688" font-weight="bold">= ? + 2</text>
+
+  <path d="M 150 304 L 150 322" stroke="#4a7a3a" stroke-width="1.4" marker-end="url(#arrG)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 3: dp[3][0] -->
+  <rect x="40" y="326" width="480" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="346" font-size="11" fill="#333">dp[3][0]</text>
+  <text x="56" y="362" font-size="10" fill="#666">i=3 处理 'a'</text>
+  <text x="56" y="378" font-size="10" fill="#666">j=0 不能删</text>
+  <text x="150" y="346" font-size="10" fill="#888">决策 B 保留，向左扫：a a a（kept=3），del=0</text>
+  <text x="150" y="362" font-size="10" fill="#888">取 p=1，del=0 ≤ 0 ✓</text>
+  <text x="150" y="378" font-size="11" fill="#d6a040" font-weight="bold">dp[3][0] = dp[0][0] + encLen(3) = 0 + 2</text>
+  <text x="470" y="362" font-size="10" fill="#446688" font-weight="bold">= 2</text>
+
+  <path d="M 280 390 L 280 410" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 4: combine -->
+  <rect x="80" y="414" width="400" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="432" text-anchor="middle" font-size="11" fill="#333">回代：dp[7][1] = dp[3][0] + encLen(3) = 2 + 2 = 4</text>
+  <text x="280" y="448" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp[8][2] = dp[7][1] = 4</text>
+
+  <!-- final result -->
+  <path d="M 280 456 L 280 472" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <rect x="130" y="476" width="300" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="14" filter="url(#rough2)"/>
+  <text x="280" y="498" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">答案 = dp[8][2] = 4 （“a3c3”）</text>
+
+  <text x="280" y="528" text-anchor="middle" font-size="10" fill="#888">删 b 合并 a 段与 c 段、删 d 去尾 → 段长各 3，encLen(3)=2，合计 4</text>
+</svg>

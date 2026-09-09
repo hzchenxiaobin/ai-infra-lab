@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="680" viewBox="0 0 960 680" font-family="'Comic Sans MS','Marker Felt','Segoe UI',cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <rect width="960" height="680" fill="#fdfcf7"/>
+
+  <!-- ===== 标题 ===== -->
+  <text x="480" y="28" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">CUTLASS 三级 Tiling 架构（Threadblock → Warp → Instruction）</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#666">示例: C[4096,4096] = A[4096,4096] × B[4096,4096], FP16</text>
+  <path d="M 300 52 Q 480 58 660 52" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ================================================================ -->
+  <!-- 顶部：C[M,N] 全局 + ThreadblockTile 网格                          -->
+  <!-- ================================================================ -->
+  <text x="480" y="76" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b2b2b">C[M,N] 全局视图 —— 分成 ThreadblockTile 128×128</text>
+  <!-- C matrix 大框 -->
+  <g filter="url(#sk)">
+    <rect x="180" y="84" width="600" height="90" rx="6" fill="#f0ede4" stroke="#3a3a3a" stroke-width="1.4"/>
+  </g>
+  <text x="186" y="98" font-size="8" fill="#888">C[4096,4096]</text>
+  <!-- TB tiles 网格 7 列 × 3 行 示意 1024 块 -->
+  <g font-size="7" fill="#666">
+    <!-- row 0 -->
+    <g filter="url(#sk)"><rect x="190" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="229" y="114" text-anchor="middle">TB 128×128</text></g>
+    <g filter="url(#sk)"><rect x="270" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="309" y="114" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="350" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="389" y="114" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="430" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="469" y="114" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="510" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="549" y="114" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="590" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="629" y="114" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="670" y="100" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="709" y="114" text-anchor="middle">TB</text></g>
+    <!-- row 1 -->
+    <g filter="url(#sk)"><rect x="190" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="229" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="270" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="309" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="350" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="389" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="430" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="469" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="510" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="549" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="590" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="629" y="138" text-anchor="middle">TB</text></g>
+    <g filter="url(#sk)"><rect x="670" y="124" width="78" height="22" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/><text x="709" y="138" text-anchor="middle">TB</text></g>
+    <!-- row 2 (省略号) -->
+    <text x="229" y="162" text-anchor="middle" font-size="9" fill="#888">⋮</text>
+    <text x="480" y="162" text-anchor="middle" font-size="9" fill="#888">⋮  (4096/128)² = 1024 blocks ⋮</text>
+    <text x="709" y="162" text-anchor="middle" font-size="9" fill="#888">⋮</text>
+  </g>
+  <!-- 高亮第一块 -->
+  <g filter="url(#sk)"><rect x="190" y="100" width="78" height="22" fill="none" stroke="#b03a3a" stroke-width="2" stroke-dasharray="3 2"/></g>
+  <!-- 放大箭头：从高亮块指向 Level 1 -->
+  <path d="M 229 178 L 229 195 L 170 195 L 170 212" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+  <text x="240" y="190" font-size="9" fill="#b03a3a" font-style="italic">放大一个 TB</text>
+
+  <!-- ================================================================ -->
+  <!-- 中部：三个 Level 横向并排，水平箭头连接                            -->
+  <!-- ================================================================ -->
+
+  <!-- ===== Level 1: ThreadblockTile ===== -->
+  <text x="170" y="228" text-anchor="middle" font-size="12" font-weight="bold" fill="#4a8edb">Level 1: ThreadblockTile 128×128</text>
+  <g filter="url(#sk)">
+    <rect x="50" y="238" width="240" height="160" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="60" y="252" font-size="8" fill="#888">128×128 子矩阵</text>
+  <!-- 4 个 WarpTile 64×64 -->
+  <g font-size="9" fill="#444">
+    <g filter="url(#sk)"><rect x="62" y="258" width="108" height="64" fill="#cde8d8" stroke="#2e7d4f" stroke-width="0.8"/><text x="116" y="285" text-anchor="middle" font-weight="bold">Warp 0</text><text x="116" y="300" text-anchor="middle" font-size="8">64×64</text></g>
+    <g filter="url(#sk)"><rect x="172" y="258" width="108" height="64" fill="#cde8d8" stroke="#2e7d4f" stroke-width="0.8"/><text x="226" y="285" text-anchor="middle" font-weight="bold">Warp 1</text><text x="226" y="300" text-anchor="middle" font-size="8">64×64</text></g>
+    <g filter="url(#sk)"><rect x="62" y="324" width="108" height="64" fill="#cde8d8" stroke="#2e7d4f" stroke-width="0.8"/><text x="116" y="351" text-anchor="middle" font-weight="bold">Warp 2</text><text x="116" y="366" text-anchor="middle" font-size="8">64×64</text></g>
+    <g filter="url(#sk)"><rect x="172" y="324" width="108" height="64" fill="#cde8d8" stroke="#2e7d4f" stroke-width="0.8"/><text x="226" y="351" text-anchor="middle" font-weight="bold">Warp 3</text><text x="226" y="366" text-anchor="middle" font-size="8">64×64</text></g>
+  </g>
+  <!-- 高亮 Warp 0 -->
+  <g filter="url(#sk)"><rect x="62" y="258" width="108" height="64" fill="none" stroke="#b03a3a" stroke-width="2" stroke-dasharray="3 2"/></g>
+  <text x="170" y="412" text-anchor="middle" font-size="9" fill="#888">warps/block = (128/64)² = 4</text>
+  <!-- 箭头 L1 → L2 (水平，在框间空隙) -->
+  <path d="M 290 320 L 338 320" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+  <text x="314" y="312" text-anchor="middle" font-size="8" fill="#b03a3a" font-style="italic">放大</text>
+
+  <!-- ===== Level 2: WarpTile ===== -->
+  <text x="480" y="228" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d4f">Level 2: WarpTile 64×64</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="238" width="240" height="160" rx="6" fill="#eaf6ee" stroke="#2e7d4f" stroke-width="1.4"/>
+  </g>
+  <text x="350" y="252" font-size="8" fill="#888">64×64 子矩阵 = 8×4 = 32 个 MMA</text>
+  <!-- MMA 网格：只画 4 列 × 2 行 代表，其余用 ... 表示 -->
+  <g font-size="7" fill="#666">
+    <!-- row 0: y=260, 4 格 + ... -->
+    <g filter="url(#sk)"><rect x="350" y="260" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="370" y="278" text-anchor="middle">16×8</text></g>
+    <g filter="url(#sk)"><rect x="392" y="260" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="412" y="278" text-anchor="middle">16×8</text></g>
+    <g filter="url(#sk)"><rect x="434" y="260" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="454" y="278" text-anchor="middle">16×8</text></g>
+    <text x="486" y="278" text-anchor="middle" font-size="10" fill="#888">...</text>
+    <g filter="url(#sk)"><rect x="504" y="260" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="524" y="278" text-anchor="middle">16×8</text></g>
+    <!-- row 1: y=292 -->
+    <g filter="url(#sk)"><rect x="350" y="292" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="370" y="310" text-anchor="middle">16×8</text></g>
+    <g filter="url(#sk)"><rect x="392" y="292" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="412" y="310" text-anchor="middle">16×8</text></g>
+    <g filter="url(#sk)"><rect x="434" y="292" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="454" y="310" text-anchor="middle">16×8</text></g>
+    <text x="486" y="310" text-anchor="middle" font-size="10" fill="#888">...</text>
+    <g filter="url(#sk)"><rect x="504" y="292" width="40" height="28" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/><text x="524" y="310" text-anchor="middle">16×8</text></g>
+    <!-- row 2/3 用 ... 表示 -->
+    <text x="460" y="340" text-anchor="middle" font-size="10" fill="#888">⋮  (共 4 行 × 8 列 = 32 条 mma.sync)  ⋮</text>
+  </g>
+  <!-- 高亮一个 MMA 格 -->
+  <g filter="url(#sk)"><rect x="350" y="260" width="40" height="28" fill="none" stroke="#b03a3a" stroke-width="2" stroke-dasharray="3 2"/></g>
+  <text x="460" y="366" text-anchor="middle" font-size="9" fill="#888">mma/warp = (64/16)×(64/8) = 32</text>
+  <text x="460" y="382" text-anchor="middle" font-size="8" fill="#888">K 维循环 BK=32 → 128 次迭代</text>
+  <!-- 箭头 L2 → L3 (水平) -->
+  <path d="M 580 320 L 638 320" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+  <text x="609" y="312" text-anchor="middle" font-size="8" fill="#b03a3a" font-style="italic">放大</text>
+
+  <!-- ===== Level 3: InstructionShape ===== -->
+  <text x="790" y="228" text-anchor="middle" font-size="12" font-weight="bold" fill="#e8a838">Level 3: InstructionShape 16×8×16</text>
+  <g filter="url(#sk)">
+    <rect x="640" y="238" width="240" height="160" rx="6" fill="#fff8e1" stroke="#e8a838" stroke-width="1.4"/>
+  </g>
+  <text x="650" y="252" font-size="8" fill="#888">单条 mma.sync 指令</text>
+  <!-- 单条 MMA 示意 -->
+  <g filter="url(#sk)"><rect x="660" y="262" width="60" height="40" rx="4" fill="#fff3cf" stroke="#e8a838" stroke-width="1"/></g>
+  <text x="690" y="286" text-anchor="middle" font-size="10" font-weight="bold" fill="#8a6d18">16×8</text>
+  <text x="735" y="286" font-size="14" fill="#444">=</text>
+  <g filter="url(#sk)"><rect x="752" y="262" width="48" height="40" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="776" y="280" text-anchor="middle" font-size="8" fill="#1b5e8c">A 16×16</text>
+  <text x="776" y="293" text-anchor="middle" font-size="7" fill="#888">FP16</text>
+  <text x="806" y="286" font-size="14" fill="#444">×</text>
+  <g filter="url(#sk)"><rect x="816" y="262" width="48" height="40" rx="4" fill="#eaf6ee" stroke="#2e7d4f" stroke-width="1"/></g>
+  <text x="840" y="280" text-anchor="middle" font-size="8" fill="#1b5e3a">B 16×8</text>
+  <text x="840" y="293" text-anchor="middle" font-size="7" fill="#888">FP16</text>
+  <!-- 指令说明 -->
+  <text x="660" y="322" font-size="10" fill="#8a6d18" font-family="monospace" font-weight="bold">mma.sync m16n8k16</text>
+  <text x="660" y="340" font-size="9" fill="#444">D[16×8] = A[16×16] × B[16×8] + C[16×8]</text>
+  <text x="660" y="356" font-size="9" fill="#444">FP16 输入, FP32 累加</text>
+  <text x="660" y="372" font-size="9" fill="#e8a838" font-weight="bold">= 16×8×16×2 = 4096 FLOPs</text>
+  <text x="660" y="388" font-size="8" fill="#888">warp 32 线程协作, fragment 分布寄存器</text>
+
+  <!-- ================================================================ -->
+  <!-- 底部：层级关系 + 数量推导 + 2.x vs 3.x                            -->
+  <!-- ================================================================ -->
+  <g filter="url(#sk)">
+    <rect x="40" y="425" width="880" height="235" rx="8" fill="#fffdf3" stroke="#3a3a3a" stroke-width="1.4" stroke-dasharray="5 3"/>
+  </g>
+  <text x="60" y="450" font-size="13" font-weight="bold" fill="#2b2b2b">层级关系与数量推导（GEMM 4096×4096×4096, FP16）</text>
+
+  <!-- 三行公式，用色块对应三个 Level -->
+  <g filter="url(#sk)"><rect x="60" y="462" width="10" height="10" fill="#dbeaf6" stroke="#4a8edb" stroke-width="0.6"/></g>
+  <text x="78" y="471" font-size="11" fill="#444">ThreadblockShape 128×128×32 → blocks = (4096/128)² = 1024 个, 每个 K 循环加载 BK=32 切片到 smem</text>
+  <g filter="url(#sk)"><rect x="60" y="482" width="10" height="10" fill="#cde8d8" stroke="#2e7d4f" stroke-width="0.6"/></g>
+  <text x="78" y="491" font-size="11" fill="#444">WarpShape 64×64×32 → warps/block = (128/64)² = 4 个, 从 smem 读 fragment 到寄存器</text>
+  <g filter="url(#sk)"><rect x="60" y="502" width="10" height="10" fill="#fff3cf" stroke="#e8a838" stroke-width="0.6"/></g>
+  <text x="78" y="511" font-size="11" fill="#444">InstructionShape 16×8×16 → mma/warp = (64/16)×(64/8) = 32 条, 每条 K 步 16</text>
+
+  <text x="60" y="535" font-size="11" fill="#b03a3a" font-weight="bold">公式：warps_per_block = ThreadblockShape / WarpShape ；mma_per_warp = WarpShape / InstructionShape</text>
+
+  <!-- 分隔线 -->
+  <line x1="60" y1="548" x2="900" y2="548" stroke="#ccc" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+  <text x="60" y="568" font-size="12" font-weight="bold" fill="#2b2b2b">CUTLASS 2.x vs 3.x</text>
+  <text x="60" y="586" font-size="11" fill="#444">2.x (sm_70~89): 显式 Threadblock/Warp/Thread 三级 tiling，本教程使用</text>
+  <text x="60" y="604" font-size="11" fill="#444">3.x (sm_90+ Hopper): CuTe layout 抽象 + TMA（Tensor Memory Accelerator），学习曲线陡峭</text>
+  <text x="60" y="626" font-size="11" fill="#2e7d4f">可组合性：三级可独立配置，模板参数选择 → 编译时生成接近 cuBLAS 性能的 kernel</text>
+  <text x="60" y="648" font-size="10" fill="#888" font-style="italic">K 维循环：每次加载 BK=32 的 A/B tile 到 smem → 所有 warp 从 smem 读 fragment 执行 MMA → 累加到 C</text>
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="400" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心直觉：生成器记住两个滚动变量，每次只「产出 + 前进一步」</text>
+
+  <!-- Generator body -->
+  <rect x="40" y="52" width="320" height="300" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="60" y="76" font-size="13" fill="#446688" font-weight="bold">function* fibGenerator()  ← 生成器函数</text>
+
+  <!-- two rolling variables -->
+  <rect x="70" y="96" width="120" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="114" text-anchor="middle" font-size="11" fill="#888">前一项</text>
+  <text x="130" y="132" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">prev = 0</text>
+
+  <rect x="210" y="96" width="120" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="114" text-anchor="middle" font-size="11" fill="#888">当前项</text>
+  <text x="270" y="132" text-anchor="middle" font-size="15" fill="#333" font-weight="bold">curr = 1</text>
+
+  <text x="200" y="166" text-anchor="middle" font-size="10" fill="#888">↑ 两变量被 yield「挂起」时仍然活着</text>
+
+  <!-- yield step -->
+  <rect x="70" y="184" width="260" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="206" font-size="12" fill="#4a7a3a" font-weight="bold">① yield prev</text>
+  <text x="90" y="222" font-size="11" fill="#333">产出当前值，暂停 → 等下次 next()</text>
+
+  <!-- roll step -->
+  <rect x="70" y="244" width="260" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="266" font-size="12" fill="#b85450" font-weight="bold">② [prev, curr] = [curr, prev+curr]</text>
+  <text x="90" y="282" font-size="11" fill="#333">滚动前进：旧 curr→prev，和→curr</text>
+
+  <!-- loop arrow back -->
+  <path d="M 200 290 Q 200 320 130 320 Q 60 320 60 207" stroke="#4a7a3a" stroke-width="1.8" fill="none" stroke-dasharray="5,3" marker-end="url(#arrGreen)" filter="url(#rough2)"/>
+  <text x="70" y="312" font-size="10" fill="#4a7a3a">while(true) 循环</text>
+
+  <!-- output sequence -->
+  <text x="400" y="206" font-size="11" fill="#b85450" font-weight="bold">产出 →</text>
+  <path d="M 350 207 L 400 207" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrRed)" filter="url(#rough2)"/>
+
+  <rect x="400" y="150" width="180" height="170" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="490" y="174" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">产出序列（逐个）</text>
+  <text x="430" y="200" font-size="13" fill="#446688" font-weight="bold">0</text>
+  <text x="455" y="200" font-size="13" fill="#446688" font-weight="bold">1</text>
+  <text x="480" y="200" font-size="13" fill="#446688" font-weight="bold">1</text>
+  <text x="505" y="200" font-size="13" fill="#446688" font-weight="bold">2</text>
+  <text x="530" y="200" font-size="13" fill="#446688" font-weight="bold">3</text>
+  <text x="555" y="200" font-size="13" fill="#888">…</text>
+  <text x="415" y="226" font-size="10" fill="#888">每次 next() 取一个</text>
+  <text x="415" y="248" font-size="11" fill="#4a7a3a">不调就停，调多少算多少</text>
+  <text x="415" y="272" font-size="11" fill="#b85450">无限序列，O(1) 空间</text>
+  <text x="415" y="298" font-size="10" fill="#888">无序预存数组，按需生产</text>
+
+  <!-- key insight -->
+  <rect x="60" y="352" width="490" height="36" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="305" y="374" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">关键：递推状态 = 生成器私有记忆，yield 挂起时变量不销毁</text>
+</svg>

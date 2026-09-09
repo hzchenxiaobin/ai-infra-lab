@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 540" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="640" height="540" fill="#fdfcf7"/>
+
+  <!-- Title -->
+  <text x="320" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b2b2b">示例演算：3 个 Worker 并发爬取</text>
+  <path d="M 180 36 Q 320 44 460 36" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <text x="36" y="56" font-size="10" fill="#888">URL 图：start → A, B → A → C, D ｜ B → D, E ｜ C, D, E 无子链接</text>
+
+  <!-- ===== Timeline area ===== -->
+  <!-- Column headers -->
+  <text x="110" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">时刻</text>
+  <text x="240" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">T1</text>
+  <text x="400" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">T2</text>
+  <text x="530" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">T3</text>
+
+  <!-- Vertical divider lines -->
+  <path d="M 170 64 L 170 340" stroke="#ddd" stroke-width="1" filter="url(#sk)"/>
+  <path d="M 310 64 L 310 340" stroke="#ddd" stroke-width="1" filter="url(#sk)"/>
+  <path d="M 480 64 L 480 340" stroke="#ddd" stroke-width="1" filter="url(#sk)"/>
+
+  <!-- Time t0 -->
+  <text x="110" y="100" text-anchor="middle" font-size="9" fill="#888">t₀</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="88" width="120" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" width="1.5"/>
+  </g>
+  <text x="240" y="104" text-anchor="middle" font-size="9" fill="#2e6e2e">🔒 取 start</text>
+  <text x="320" y="100" font-size="8" fill="#aaa">working=1, q=[]</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="88" width="120" height="24" rx="4" fill="#f6f6f6" stroke="#ccc" stroke-width="1" stroke-dasharray="3 2"/>
+  </g>
+  <text x="400" y="104" text-anchor="middle" font-size="9" fill="#aaa">等待…</text>
+  <g filter="url(#sk)">
+    <rect x="470" y="88" width="120" height="24" rx="4" fill="#f6f6f6" stroke="#ccc" stroke-width="1" stroke-dasharray="3 2"/>
+  </g>
+  <text x="530" y="104" text-anchor="middle" font-size="9" fill="#aaa">等待…</text>
+
+  <!-- Time t1: T1 calls getUrls(start) -->
+  <text x="110" y="132" text-anchor="middle" font-size="9" fill="#888">t₁</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="120" width="120" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="136" text-anchor="middle" font-size="9" fill="#446688">getUrls(start)</text>
+  <text x="320" y="132" font-size="8" fill="#aaa">→ [A, B, X✗]</text>
+
+  <!-- Time t2: T1 locks, adds A, B -->
+  <text x="110" y="164" text-anchor="middle" font-size="9" fill="#888">t₂</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="152" width="120" height="24" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="168" text-anchor="middle" font-size="9" fill="#d6a040">🔒 +A, +B → q</text>
+  <text x="320" y="164" font-size="8" fill="#aaa">working=2</text>
+  <text x="380" y="164" font-size="8" fill="#b85450">X 主机不同→剪枝</text>
+
+  <!-- Time t3: T1 notify, T2 & T3 wake up -->
+  <text x="110" y="196" text-anchor="middle" font-size="9" fill="#888">t₃</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="184" width="120" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="200" text-anchor="middle" font-size="9" fill="#2e6e2e">🔒 取 A</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="184" width="120" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="400" y="200" text-anchor="middle" font-size="9" fill="#2e6e2e">🔒 取 B</text>
+  <text x="470" y="196" font-size="8" fill="#aaa">q 空, T3 继续等</text>
+  <text x="320" y="196" font-size="8" fill="#aaa">working=2</text>
+
+  <!-- Time t4: T1 getUrls(A), T2 getUrls(B) concurrently -->
+  <text x="110" y="228" text-anchor="middle" font-size="9" fill="#888">t₄</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="216" width="120" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="232" text-anchor="middle" font-size="9" fill="#446688">getUrls(A)</text>
+  <text x="310" y="228" font-size="8" fill="#aaa">→[C,D]</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="216" width="120" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+  <text x="400" y="232" text-anchor="middle" font-size="9" fill="#446688">getUrls(B)</text>
+  <text x="470" y="228" font-size="8" fill="#aaa">→[D,E]</text>
+  <text x="540" y="228" font-size="8" fill="#4a8e4a" font-weight="bold">并发！</text>
+
+  <!-- Time t5: T1 locks, adds C, D -->
+  <text x="110" y="260" text-anchor="middle" font-size="9" fill="#888">t₅</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="248" width="120" height="24" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="264" text-anchor="middle" font-size="9" fill="#d6a040">🔒 +C, +D → q</text>
+  <text x="320" y="260" font-size="8" fill="#aaa">working=3</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="248" width="120" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" stroke-dasharray="3 2"/>
+  </g>
+  <text x="400" y="264" text-anchor="middle" font-size="9" fill="#b85450">⏳ 等 T1 释放锁</text>
+
+  <!-- Time t6: T2 locks, D already visited, adds E -->
+  <text x="110" y="292" text-anchor="middle" font-size="9" fill="#888">t₆</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="280" width="120" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="296" text-anchor="middle" font-size="9" fill="#2e6e2e">🔒 取 C</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="280" width="120" height="24" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="400" y="296" text-anchor="middle" font-size="9" fill="#d6a040">🔒 D 已访问→跳</text>
+  <text x="470" y="292" font-size="8" fill="#aaa">+E, working=3</text>
+  <g filter="url(#sk)">
+    <rect x="470" y="280" width="120" height="24" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="530" y="296" text-anchor="middle" font-size="9" fill="#2e6e2e">🔒 取 D</text>
+
+  <!-- Time t7: all done -->
+  <text x="110" y="324" text-anchor="middle" font-size="9" fill="#888">t₇</text>
+  <g filter="url(#sk)">
+    <rect x="180" y="312" width="120" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+  </g>
+  <text x="240" y="328" text-anchor="middle" font-size="9" fill="#b85450">C 空 → work=2</text>
+  <g filter="url(#sk)">
+    <rect x="340" y="312" width="120" height="24" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+  </g>
+  <text x="400" y="328" text-anchor="middle" font-size="9" fill="#446688">getUrls(E)→空</text>
+  <g filter="url(#sk)">
+    <rect x="470" y="312" width="120" height="24" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+  </g>
+  <text x="530" y="328" text-anchor="middle" font-size="9" fill="#b85450">D 空 → work=0</text>
+
+  <!-- ===== Result box ===== -->
+  <path d="M 36 352 L 604 352" stroke="#ddd" stroke-width="1" stroke-dasharray="4 3" filter="url(#sk)"/>
+
+  <g filter="url(#sk)">
+    <rect x="44" y="362" width="556" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/>
+  </g>
+  <text x="56" y="382" font-size="11" fill="#2e6e2e" font-weight="bold">结果：visited = {start, A, B, C, D, E}（6 个同主机名 URL）</text>
+  <text x="56" y="398" font-size="10" fill="#4a7a3a">D 被 T1 和 T2 同时发现，但锁保证只入队一次 → 无重复</text>
+
+  <!-- ===== Legend ===== -->
+  <text x="36" y="428" font-size="10" fill="#888" font-weight="bold">图例：</text>
+
+  <g filter="url(#sk)"><rect x="44" y="436" width="20" height="16" rx="3" fill="#e6f4ea" stroke="#4a7a3a" width="1.5"/></g>
+  <text x="70" y="448" font-size="9" fill="#555">取任务（持锁）</text>
+
+  <g filter="url(#sk)"><rect x="170" y="436" width="20" height="16" rx="3" fill="#e8f0fe" stroke="#446688" width="1.5"/></g>
+  <text x="196" y="448" font-size="9" fill="#555">getUrls（无锁并发）</text>
+
+  <g filter="url(#sk)"><rect x="316" y="436" width="20" height="16" rx="3" fill="#fff8e1" stroke="#d6a040" width="1.5"/></g>
+  <text x="342" y="448" font-size="9" fill="#555">更新临界区（持锁）</text>
+
+  <g filter="url(#sk)"><rect x="460" y="436" width="20" height="16" rx="3" fill="#fce4ec" stroke="#b85450" width="1.5"/></g>
+  <text x="486" y="448" font-size="9" fill="#555">等待 / 收尾</text>
+
+  <!-- Key takeaway -->
+  <g filter="url(#sk)">
+    <rect x="44" y="468" width="556" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+  </g>
+  <text x="56" y="490" font-size="11" fill="#7a5415" font-weight="bold">💡 关键洞察</text>
+  <text x="56" y="508" font-size="10" fill="#555">① getUrls 是慢 I/O → 放锁外并发执行，多个线程同时爬不同页面</text>
+  <text x="56" y="522" font-size="10" fill="#555">② visited 检查+入队是快操作 → 放锁内串行，避免竞态 → 锁持有时间极短</text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L9,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="13.5" fill="#555" font-weight="bold">算法流程：初始化第 0 行 → 逐行滚动 → 9 前驱取 max → 末行取 max</text>
+
+  <!-- Start: init row 0 -->
+  <rect x="130" y="44" width="300" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">dp[0][0][cols−1] = grid[0][0] + grid[0][cols−1]</text>
+  <path d="M 280 80 L 280 100" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop i -->
+  <rect x="150" y="104" width="260" height="30" fill="#f6f6f6" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="124" text-anchor="middle" font-size="11.5" fill="#333">for i = 1 .. rows−1</text>
+  <path d="M 280 136 L 280 156" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop j1 -->
+  <rect x="150" y="160" width="260" height="30" fill="#f6f6f6" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="180" text-anchor="middle" font-size="11.5" fill="#333">for j₁ = 0 .. cols−1</text>
+  <path d="M 280 192 L 280 212" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop j2 -->
+  <rect x="150" y="216" width="260" height="30" fill="#f6f6f6" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="236" text-anchor="middle" font-size="11.5" fill="#333">for j₂ = j₁ .. cols−1（对称剪半）</text>
+  <path d="M 280 248 L 280 268" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- best = -inf -->
+  <rect x="120" y="272" width="320" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="292" text-anchor="middle" font-size="11" fill="#333">best = −∞</text>
+  <path d="M 280 304 L 280 322" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop 9 predecessors -->
+  <rect x="130" y="326" width="300" height="30" fill="#f6f6f6" stroke="#888" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="346" text-anchor="middle" font-size="11" fill="#333">for pj₁, pj₂ ∈ {−1, 0, +1}（9 种）</text>
+  <path d="M 280 358 L 280 376" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- transition -->
+  <rect x="80" y="380" width="400" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="398" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">best = max(best, dp_prev[pj₁][pj₂])</text>
+  <text x="280" y="416" text-anchor="middle" font-size="10.5" fill="#888">越界 / 无效前驱跳过</text>
+
+  <!-- assign -->
+  <rect x="80" y="432" width="400" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="454" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">dp_cur[j₁][j₂] = best + g[i][j₁] + (j₁≠j₂ ? g[i][j₂] : 0)</text>
+
+  <!-- loop back to j2 -->
+  <path d="M 80 449 L 48 449 L 48 231 L 146 231" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="28" y="340" font-size="9.5" fill="#4a7a3a">下一 j₂</text>
+
+  <!-- loop back to j1 (right) -->
+  <path d="M 480 449 L 508 449 L 508 175 L 414 175" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="514" y="312" font-size="9.5" fill="#4a7a3a">下一 j₁</text>
+
+  <!-- loop back to i (far right) -->
+  <path d="M 508 175 L 540 175 L 540 119 L 414 119" stroke="#4a7a3a" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="544" y="148" font-size="9.5" fill="#4a7a3a">下一 i</text>
+
+  <!-- roll note -->
+  <rect x="370" y="44" width="180" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="460" y="60" text-anchor="middle" font-size="10" fill="#888">每行结束后</text>
+  <text x="460" y="73" text-anchor="middle" font-size="10" fill="#555" font-weight="bold">dp_prev = dp_cur（滚动）</text>
+
+  <!-- return note at bottom -->
+  <rect x="80" y="432" width="180" height="0" fill="none"/>
+</svg>

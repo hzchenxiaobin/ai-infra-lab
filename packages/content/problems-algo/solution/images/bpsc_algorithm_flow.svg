@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">嵌套三分搜索流程</text>
+  <text x="270" y="44" text-anchor="middle" font-size="11" fill="#888">外层对 x 三分，每个 x 调用内层对 y 三分求 f(x) = min_y distSum(x,y)</text>
+
+  <!-- ===== Outer: ternary on x ===== -->
+  <rect x="30" y="58" width="480" height="180" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="80" font-size="13" fill="#446688" font-weight="bold">外层：对 x 三分搜索（lo_x=0, hi_x=100）</text>
+
+  <!-- init -->
+  <rect x="50" y="90" width="130" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="115" y="108" text-anchor="middle" font-size="10" fill="#333">lo_x=0, hi_x=100</text>
+
+  <path d="M 180 104 L 205 104" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- loop condition -->
+  <polygon points="265,88 330,104 265,120 200,104" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="265" y="108" text-anchor="middle" font-size="9" fill="#333">hi_x−lo_x &gt; ε?</text>
+
+  <path d="M 330 104 L 355 104" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- compute m1x, m2x -->
+  <rect x="355" y="90" width="145" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="427" y="103" text-anchor="middle" font-size="9" fill="#333">m1x=lo+(hi−lo)/3</text>
+  <text x="427" y="113" text-anchor="middle" font-size="9" fill="#333">m2x=hi−(hi−lo)/3</text>
+
+  <!-- call inner for m1x -->
+  <path d="M 130 118 L 130 155" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="50" y="155" width="160" height="32" fill="#fff" stroke="#446688" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="130" y="170" text-anchor="middle" font-size="10" fill="#333">f₁ = inner_ternary_y(m1x)</text>
+  <text x="130" y="182" text-anchor="middle" font-size="8" fill="#888">→ 固定 x，三分搜索 y</text>
+
+  <!-- call inner for m2x -->
+  <path d="M 427 118 L 427 155" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="345" y="155" width="165" height="32" fill="#fff" stroke="#446688" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="427" y="170" text-anchor="middle" font-size="10" fill="#333">f₂ = inner_ternary_y(m2x)</text>
+  <text x="427" y="182" text-anchor="middle" font-size="8" fill="#888">→ 固定 x，三分搜索 y</text>
+
+  <!-- compare and update -->
+  <path d="M 210 171 L 235 171" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 345 171 L 320 171" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <polygon points="278,155 320,171 278,187 236,171" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="278" y="168" text-anchor="middle" font-size="8" fill="#333">f₁&lt;f₂?</text>
+  <text x="278" y="178" text-anchor="middle" font-size="8" fill="#333">hi=m2</text>
+  <text x="278" y="188" text-anchor="middle" font-size="7" fill="#888">else lo=m1</text>
+
+  <!-- loop back arrow -->
+  <path d="M 278 155 C 278 135, 265 130, 265 120" stroke="#888" stroke-width="1" stroke-dasharray="3 2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="285" y="138" font-size="8" fill="#888">循环</text>
+
+  <!-- ===== Inner: ternary on y ===== -->
+  <rect x="30" y="250" width="480" height="170" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="272" font-size="13" fill="#4a7a3a" font-weight="bold">内层：inner_ternary_y(x) — 固定 x，对 y 三分搜索</text>
+
+  <rect x="50" y="282" width="120" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="110" y="300" text-anchor="middle" font-size="10" fill="#333">lo_y=0, hi_y=100</text>
+
+  <path d="M 170 296 L 195 296" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <polygon points="255,280 320,296 255,312 190,296" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="255" y="300" text-anchor="middle" font-size="9" fill="#333">hi_y−lo_y &gt; ε?</text>
+
+  <path d="M 320 296 L 345 296" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="345" y="282" width="165" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="5" filter="url(#rough2)"/>
+  <text x="427" y="295" text-anchor="middle" font-size="9" fill="#333">m1y, m2y = 1/3, 2/3</text>
+  <text x="427" y="305" text-anchor="middle" font-size="9" fill="#333">计算 distSum(x,m1y), distSum(x,m2y)</text>
+
+  <!-- compare -->
+  <path d="M 427 310 L 427 340" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <polygon points="427,340 490,360 427,380 364,360" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="427" y="357" text-anchor="middle" font-size="8" fill="#333">f(m1y)&lt;f(m2y)?</text>
+  <text x="427" y="368" text-anchor="middle" font-size="8" fill="#333">hi=m2 / lo=m1</text>
+
+  <!-- loop back -->
+  <path d="M 364 360 C 300 360, 255 340, 255 312" stroke="#888" stroke-width="1" stroke-dasharray="3 2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="300" y="350" font-size="8" fill="#888">循环</text>
+
+  <!-- return -->
+  <path d="M 190 296 C 100 296, 100 340, 100 390" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="78" y="310" font-size="9" fill="#888">退出</text>
+  <rect x="50" y="390" width="150" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="125" y="407" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">return (lo_y+hi_y)/2</text>
+
+  <!-- return to outer -->
+  <path d="M 200 403 C 280 403, 130 225, 130 187" stroke="#4a7a3a" stroke-width="1.2" stroke-dasharray="4 2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- output -->
+  <rect x="200" y="430" width="260" height="24" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="5" filter="url(#rough2)"/>
+  <text x="330" y="446" text-anchor="middle" font-size="10" fill="#333">最终返回：xc=(lo_x+hi_x)/2, yc=inner(xc)</text>
+
+  <!-- connection from outer to inner -->
+  <path d="M 130 187 L 130 250" stroke="#446688" stroke-width="1.5" stroke-dasharray="4 2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 427 187 L 427 250" stroke="#446688" stroke-width="1.5" stroke-dasharray="4 2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

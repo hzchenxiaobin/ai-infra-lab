@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：三种操作 + 有界可达范围</text>
+
+  <!-- ===== Part A: Three operations ===== -->
+  <text x="260" y="44" text-anchor="middle" font-size="12" fill="#666">① 每步三种操作 —— 谁能到达位置 p？</text>
+
+  <!-- p-1 box -->
+  <rect x="74" y="76" width="56" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="102" y="98" text-anchor="middle" font-size="13" fill="#446688">p−1</text>
+
+  <!-- p box (highlighted target) -->
+  <rect x="232" y="76" width="56" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+  <text x="260" y="98" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">p</text>
+
+  <!-- p+1 box -->
+  <rect x="390" y="76" width="56" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="418" y="98" text-anchor="middle" font-size="13" fill="#446688">p+1</text>
+
+  <!-- Arrow p-1 → p (右移) -->
+  <path d="M 130 93 L 226 93" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="178" y="86" text-anchor="middle" font-size="10" fill="#4a7a3a">右移 →</text>
+
+  <!-- Arrow p+1 → p (左移) -->
+  <path d="M 390 93 L 294 93" fill="none" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="342" y="86" text-anchor="middle" font-size="10" fill="#b85450">← 左移</text>
+
+  <!-- Self-loop on p (不动) -->
+  <path d="M 246 76 C 246 58, 274 58, 274 76" fill="none" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="288" y="62" text-anchor="middle" font-size="10" fill="#446688">不动</text>
+
+  <!-- Formula box -->
+  <rect x="60" y="126" width="400" height="30" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="5" filter="url(#rough2)"/>
+  <text x="260" y="146" text-anchor="middle" font-size="12" fill="#333">dp[s][p] = dp[s−1][p] + dp[s−1][p−1] + dp[s−1][p+1]</text>
+
+  <!-- ===== Part B: Bounded reachability ===== -->
+  <text x="260" y="184" text-anchor="middle" font-size="12" fill="#666">② 关键优化：有界可达范围</text>
+
+  <!-- Pointer triangle -->
+  <path d="M 52 198 L 68 198 L 60 189 z" fill="#b85450" filter="url(#rough2)"/>
+  <text x="60" y="186" text-anchor="middle" font-size="9" fill="#b85450">起点</text>
+
+  <!-- Reachable zone shaded background -->
+  <rect x="38" y="204" width="240" height="34" fill="#e8f0fe" opacity="0.45" rx="4" filter="url(#rough2)"/>
+
+  <!-- cell 0 -->
+  <rect x="38" y="204" width="40" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="58" y="226" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">0</text>
+  <!-- cell 1 -->
+  <rect x="78" y="204" width="40" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="98" y="226" text-anchor="middle" font-size="12" fill="#888">1</text>
+  <!-- cell 2 -->
+  <rect x="118" y="204" width="40" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="138" y="226" text-anchor="middle" font-size="12" fill="#888">2</text>
+  <!-- cell 3 -->
+  <rect x="158" y="204" width="40" height="34" fill="#fff" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="178" y="226" text-anchor="middle" font-size="12" fill="#888">3</text>
+  <!-- ... -->
+  <text x="208" y="226" text-anchor="middle" font-size="12" fill="#888">…</text>
+  <!-- steps cell (highlighted) -->
+  <rect x="222" y="204" width="56" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="250" y="222" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">steps</text>
+
+  <!-- ... after steps -->
+  <text x="296" y="226" text-anchor="middle" font-size="12" fill="#aaa">…</text>
+  <!-- n-1 cell (greyed out) -->
+  <rect x="316" y="204" width="48" height="34" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="340" y="224" text-anchor="middle" font-size="10" fill="#bbb">n−1</text>
+  <!-- X mark on unreachable zone -->
+  <path d="M 322 212 L 358 232 M 358 212 L 322 232" stroke="#ccc" stroke-width="1.5" filter="url(#rough2)"/>
+
+  <!-- Bracket for reachable zone -->
+  <path d="M 38 248 L 38 254 L 278 254 L 278 248" fill="none" stroke="#446688" stroke-width="1.3" filter="url(#rough2)"/>
+  <text x="158" y="268" text-anchor="middle" font-size="11" fill="#446688">可达范围 [0, steps]</text>
+
+  <text x="348" y="268" text-anchor="middle" font-size="10" fill="#aaa">超过 steps → 永不触及</text>
+
+  <!-- Note box -->
+  <rect x="60" y="286" width="400" height="62" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="310" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">有效长度 = min(arrLen, steps + 1)</text>
+  <text x="260" y="332" text-anchor="middle" font-size="10" fill="#666">每步最多右移 1 格，steps 步最远到索引 steps</text>
+</svg>

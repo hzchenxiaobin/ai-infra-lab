@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：一次分区排序双窗口同算 → 日期差把关 → 排序输出</text>
+
+  <rect x="40" y="44" width="440" height="104" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="66" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 分区排序 + 双窗口同算（CTE T）</text>
+  <text x="60" y="86" font-size="11" fill="#333" font-family="monospace" filter="url(#rough2)">AVG(steps_count) OVER (… ROWS 2 PRECEDING)</text>
+  <text x="60" y="102" font-size="11" fill="#999" filter="url(#rough2)">→ 算「当前行 + 前 2 行」的滚动平均</text>
+  <text x="60" y="120" font-size="11" fill="#333" font-family="monospace" filter="url(#rough2)">DATEDIFF(steps_date, LAG(steps_date, 2) OVER (…)) = 2</text>
+  <text x="60" y="136" font-size="11" fill="#999" filter="url(#rough2)">→ 判「上上行与当前行相差恰好 2 天」</text>
+
+  <path d="M 260 148 L 260 166" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="166" width="440" height="64" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="190" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 日期差把关：WHERE st = 1</text>
+  <text x="60" y="212" font-size="11" fill="#333" filter="url(#rough2)">行数不足（NULL）与日期断档（≠ 2）的行一并剔除</text>
+
+  <path d="M 260 230 L 260 248" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="248" width="440" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="272" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ 排序：ORDER BY user_id, steps_date</text>
+  <text x="60" y="292" font-size="11" fill="#333" filter="url(#rough2)">按题目要求升序输出</text>
+
+  <path d="M 260 308 L 260 326" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="40" y="326" width="440" height="60" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="350" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 输出 user_id / steps_date / rolling_average</text>
+  <text x="60" y="370" font-size="11" fill="#333" filter="url(#rough2)">rolling_average 已在 CTE 内 ROUND(…, 2)</text>
+
+  <text x="260" y="404" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">⚠️ 坑：分区前两行 ROWS 窗口静默退化，AVG 不是 NULL——必须靠日期差筛选</text>
+
+  <text x="260" y="426" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">两个窗口共用 PARTITION BY user_id ORDER BY steps_date，一次排序双份产出</text>
+</svg>

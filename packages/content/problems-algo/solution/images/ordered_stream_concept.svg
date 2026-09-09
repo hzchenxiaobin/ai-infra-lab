@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 340" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="8" orient="auto">
+      <path d="M0,0 L5,8 L10,0" fill="none" stroke="#b85450" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,3 L8,3" fill="none" stroke="#446688" stroke-width="1.5"/>
+      <path d="M6,0 L9,3 L6,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="340" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="270" y="28" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：ptr 之前的块已吐出，只在 idKey==ptr 时从 ptr 向右收割</text>
+
+  <!-- Return bracket above chunks 1..3 -->
+  <path d="M 70 78 L 70 70 L 310 70 L 310 78" fill="none" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="190" y="62" text-anchor="middle" font-size="11.5" fill="#d6a040" font-weight="bold">本次返回 = 从 ptr 起的连续非空段</text>
+
+  <!-- Chunk 1: filled, blue -->
+  <rect x="70" y="110" width="80" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="110" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">idKey=1</text>
+  <text x="110" y="150" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">aaaaa</text>
+
+  <!-- Chunk 2: filled, blue -->
+  <rect x="150" y="110" width="80" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="190" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">idKey=2</text>
+  <text x="190" y="150" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">bbbbb</text>
+
+  <!-- Chunk 3: filled, blue -->
+  <rect x="230" y="110" width="80" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="270" y="100" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">idKey=3</text>
+  <text x="270" y="150" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">ccccc</text>
+
+  <!-- Chunk 4: empty, dashed -->
+  <rect x="310" y="110" width="80" height="70" fill="#fafafa" stroke="#b85450" stroke-width="1.8" stroke-dasharray="5,3" rx="6" filter="url(#rough2)"/>
+  <text x="350" y="100" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">idKey=4</text>
+  <text x="350" y="150" text-anchor="middle" font-size="12" fill="#bbb">空</text>
+
+  <!-- Chunk 5: empty, dashed -->
+  <rect x="390" y="110" width="80" height="70" fill="#fafafa" stroke="#b85450" stroke-width="1.8" stroke-dasharray="5,3" rx="6" filter="url(#rough2)"/>
+  <text x="430" y="100" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">idKey=5</text>
+  <text x="430" y="150" text-anchor="middle" font-size="12" fill="#bbb">空</text>
+
+  <!-- ptr arrow pointing up at chunk 1 -->
+  <text x="110" y="222" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">ptr</text>
+  <path d="M 110 214 L 110 184" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- ptr advance arrow: 1 -> 4 -->
+  <path d="M 118 226 L 342 226" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="230" y="220" text-anchor="middle" font-size="10.5" fill="#4a7a3a">收割后 ptr 跳到第一个空位</text>
+  <text x="350" y="244" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">ptr = 4</text>
+
+  <!-- Bottom rule box -->
+  <rect x="40" y="268" width="460" height="56" fill="#f0f7ff" stroke="#446688" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="288" text-anchor="middle" font-size="11" fill="#555" font-weight="bold">规则：写入永远成功；idKey==ptr 才向前收割，否则返回 []</text>
+  <text x="270" y="306" text-anchor="middle" font-size="10.5" fill="#888">ptr 单调递增，每个块至多被收割一次 → 全程均摊 O(1)</text>
+</svg>

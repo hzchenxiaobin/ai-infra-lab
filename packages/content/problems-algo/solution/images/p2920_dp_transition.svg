@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">dp[u][t] 转移：本节点二选一，孩子继承不同的 t</text>
+
+  <!-- node u -->
+  <rect x="130" y="44" width="260" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="64" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">节点 u：祖先已减半 t 次</text>
+  <text x="260" y="82" text-anchor="middle" font-size="11" fill="#333">实际金币 c = coins[u] &gt;&gt; t</text>
+
+  <!-- branch arrows -->
+  <path d="M 190 92 Q 130 116 118 140" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <path d="M 330 92 Q 390 116 402 140" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- method 1 -->
+  <rect x="24" y="144" width="200" height="104" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="124" y="168" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">方法① 全收（付出 k）</text>
+  <text x="124" y="192" text-anchor="middle" font-size="11" fill="#333">自己得 c − k（可为负）</text>
+  <text x="124" y="212" text-anchor="middle" font-size="11" fill="#333">子树金币不变</text>
+  <text x="124" y="234" text-anchor="middle" font-size="11" fill="#555">孩子仍查 dp[v][t]</text>
+
+  <!-- method 2 -->
+  <rect x="296" y="144" width="200" height="104" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="396" y="168" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">方法② 减半（不花 k）</text>
+  <text x="396" y="192" text-anchor="middle" font-size="11" fill="#333">自己得 c &gt;&gt; 1</text>
+  <text x="396" y="212" text-anchor="middle" font-size="11" fill="#333">= coins[u] &gt;&gt; (t+1)</text>
+  <text x="396" y="234" text-anchor="middle" font-size="11" fill="#555">子树再减半，孩子查 dp[v][t+1]</text>
+
+  <!-- children sum -->
+  <rect x="100" y="270" width="320" height="44" fill="#f0f0f0" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="288" text-anchor="middle" font-size="11" fill="#555">对所有孩子 v 求和：</text>
+  <text x="260" y="306" text-anchor="middle" font-size="11" fill="#333">① Σ dp[v][t]　vs　② Σ dp[v][t+1]</text>
+
+  <!-- formula -->
+  <rect x="24" y="330" width="472" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="260" y="352" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">dp[u][t] = max( c − k + Σdp[v][t] ,  (c&gt;&gt;1) + Σdp[v][t+1] )</text>
+  <text x="260" y="372" text-anchor="middle" font-size="10.5" fill="#b85450">边界：t = T（全 0）时 dp[v][t+1] 用 dp[v][T] 兜底，状态自锁</text>
+</svg>

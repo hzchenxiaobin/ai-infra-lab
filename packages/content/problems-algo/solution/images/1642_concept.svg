@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrRed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：梯子留给最大的差值，最小堆动态降级</text>
+  <text x="300" y="46" text-anchor="middle" font-size="11" fill="#888">ladders=1：堆维护「梯子组」，溢出时弹最小 → 降级用砖块</text>
+
+  <!-- Buildings row -->
+  <text x="40" y="80" font-size="11" fill="#446688" font-weight="bold">建筑物</text>
+  <g filter="url(#rough2)">
+    <!-- building 0: h=4 -->
+    <rect x="80" y="130" width="44" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="80" y="110" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="102" y="178" text-anchor="middle" font-size="10" fill="#666">0</text>
+    <!-- building 1: h=2 -->
+    <rect x="150" y="150" width="44" height="20" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="150" y="130" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="172" y="178" text-anchor="middle" font-size="10" fill="#666">1</text>
+    <!-- building 2: h=7 -->
+    <rect x="220" y="100" width="44" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="220" y="80" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="242" y="178" text-anchor="middle" font-size="10" fill="#666">2</text>
+    <!-- building 3: h=6 -->
+    <rect x="290" y="110" width="44" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="290" y="90" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="312" y="178" text-anchor="middle" font-size="10" fill="#666">3</text>
+    <!-- building 4: h=9 -->
+    <rect x="360" y="80" width="44" height="90" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="360" y="60" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="382" y="178" text-anchor="middle" font-size="10" fill="#666">4</text>
+    <!-- building 5: h=14 -->
+    <rect x="430" y="30" width="44" height="140" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="430" y="10" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="452" y="178" text-anchor="middle" font-size="10" fill="#666">5</text>
+    <!-- building 6: h=12 -->
+    <rect x="500" y="50" width="44" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="1.5"/>
+    <rect x="500" y="30" width="44" height="20" fill="#446688" stroke="#446688" stroke-width="1.5"/>
+    <text x="522" y="178" text-anchor="middle" font-size="10" fill="#666">6</text>
+  </g>
+
+  <!-- height labels -->
+  <g font-size="10" fill="#446688" filter="url(#rough2)">
+    <text x="102" y="105" text-anchor="middle">4</text>
+    <text x="172" y="125" text-anchor="middle">2</text>
+    <text x="242" y="75" text-anchor="middle">7</text>
+    <text x="312" y="85" text-anchor="middle">6</text>
+    <text x="382" y="55" text-anchor="middle">9</text>
+    <text x="452" y="5" text-anchor="middle">14</text>
+    <text x="522" y="25" text-anchor="middle">12</text>
+  </g>
+
+  <!-- gap annotations -->
+  <g font-size="11" filter="url(#rough2)">
+    <!-- 0→1: -2 free -->
+    <text x="124" y="148" text-anchor="middle" fill="#888">−2</text>
+    <text x="124" y="160" text-anchor="middle" fill="#888" font-size="9">免费</text>
+    <!-- 1→2: +5 -->
+    <path d="M 172 145 Q 195 120 220 105" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrRed)" stroke-dasharray="3 2"/>
+    <text x="196" y="120" text-anchor="middle" fill="#b85450" font-weight="bold">+5</text>
+    <!-- 2→3: -1 free -->
+    <text x="262" y="140" text-anchor="middle" fill="#888">−1</text>
+    <text x="262" y="152" text-anchor="middle" fill="#888" font-size="9">免费</text>
+    <!-- 3→4: +3 -->
+    <path d="M 312 120 Q 335 105 360 88" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="3 2"/>
+    <text x="336" y="102" text-anchor="middle" fill="#d6a040" font-weight="bold">+3</text>
+    <!-- 4→5: +5 -->
+    <path d="M 382 70 Q 405 55 430 35" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrRed)" stroke-dasharray="3 2"/>
+    <text x="406" y="50" text-anchor="middle" fill="#b85450" font-weight="bold">+5</text>
+    <!-- 5→6: -2 free -->
+    <text x="474" y="55" text-anchor="middle" fill="#888">−2</text>
+    <text x="474" y="67" text-anchor="middle" fill="#888" font-size="9">免费</text>
+  </g>
+
+  <!-- divider -->
+  <line x1="40" y1="200" x2="560" y2="200" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- Min-heap section -->
+  <text x="40" y="225" font-size="11" fill="#4a7a3a" font-weight="bold">最小堆（梯子组）</text>
+  <text x="180" y="225" font-size="10" fill="#888">先入堆占梯子位 → 溢出时弹最小降级为砖块</text>
+
+  <!-- Step 1: gap=5 enters -->
+  <g filter="url(#rough2)">
+    <text x="60" y="252" font-size="10" fill="#555">① 差值 +5 入堆</text>
+    <rect x="80" y="240" width="50" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="105" y="259" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">5</text>
+    <text x="145" y="259" font-size="10" fill="#4a7a3a">size=1 ≤ ladders=1 ✓ 用梯子</text>
+  </g>
+
+  <!-- arrow down -->
+  <path d="M 105 272 L 105 285" stroke="#666" stroke-width="1.2" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- Step 2: gap=3 enters, overflow, pop min=3 -->
+  <g filter="url(#rough2)">
+    <text x="60" y="302" font-size="10" fill="#555">② 差值 +3 入堆</text>
+    <rect x="80" y="290" width="50" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="105" y="309" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">3</text>
+    <rect x="135" y="290" width="50" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="160" y="309" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">5</text>
+    <text x="200" y="309" font-size="10" fill="#b85450" font-weight="bold">size=2 &gt; 1 → 弹最小 3</text>
+  </g>
+
+  <!-- demotion arrow: 3 pops out to bricks -->
+  <path d="M 105 320 L 105 335" stroke="#d6a040" stroke-width="1.5" marker-end="url(#arr)" fill="none" stroke-dasharray="3 2" filter="url(#rough2)"/>
+  <text x="115" y="330" font-size="9" fill="#d6a040">降级</text>
+
+  <!-- Step 2 result: heap=[5], bricks -= 3 -->
+  <g filter="url(#rough2)">
+    <rect x="80" y="338" width="50" height="28" rx="4" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="105" y="357" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">5</text>
+    <text x="145" y="357" font-size="10" fill="#d6a040">堆=[5]，bricks −= 3 → 2</text>
+    <rect x="340" y="338" width="50" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/>
+    <text x="365" y="357" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">3</text>
+    <text x="400" y="357" font-size="10" fill="#d6a040">← 砖块组</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="40" y="385" width="520" height="62" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="58" y="407" font-size="11" fill="#d6a040" font-weight="bold">贪心直觉</text>
+  <text x="58" y="425" font-size="11" fill="#555">• 梯子是「无价资源」→ 必须留给最大的 l 个差值</text>
+  <text x="58" y="441" font-size="11" fill="#555">• 最小堆维护「梯子组」，溢出时弹最小 → 保证堆中始终是最大的 l 个</text>
+</svg>

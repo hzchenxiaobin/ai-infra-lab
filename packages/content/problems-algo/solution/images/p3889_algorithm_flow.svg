@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="18" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">算法流程：一趟计数 + 18 对求和</text>
+  <text x="260" y="34" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">示例 s = "ab1z9"：freq 中只有 a=b=1, z=1, 1=1, 9=1，其余为 0</text>
+
+  <!-- start -->
+  <rect x="140" y="46" width="240" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">输入 s（|s| ≤ 5×10⁵）</text>
+  <path d="M 260 80 L 260 94" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- count -->
+  <rect x="100" y="96" width="320" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="114" text-anchor="middle" font-size="11" fill="#333" font-weight="bold" filter="url(#rough2)">一趟扫描，统计 36 桶频次 freq</text>
+  <text x="260" y="130" text-anchor="middle" font-size="9.5" fill="#666" filter="url(#rough2)">'a'..'z' → 桶 0..25；'0'..'9' → 桶 26..35</text>
+  <path d="M 260 140 L 260 154" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- letter pairs -->
+  <rect x="100" y="156" width="320" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="174" text-anchor="middle" font-size="11" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">枚举字母 13 对：i = 0..12</text>
+  <text x="260" y="190" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">ans += |freq[i] − freq[25−i]|（a↔z … m↔n）</text>
+  <path d="M 260 200 L 260 214" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- digit pairs -->
+  <rect x="100" y="216" width="320" height="44" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="234" text-anchor="middle" font-size="11" fill="#8a6d1a" font-weight="bold" filter="url(#rough2)">枚举数字 5 对：i = 0..4</text>
+  <text x="260" y="250" text-anchor="middle" font-size="9.5" fill="#555" filter="url(#rough2)">ans += |freq[26+i] − freq[35−i]|（0↔9 … 4↔5）</text>
+  <path d="M 260 260 L 260 274" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- end -->
+  <rect x="140" y="276" width="240" height="34" rx="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="298" text-anchor="middle" font-size="11" fill="#2a5a1e" font-weight="bold" filter="url(#rough2)">返回 ans（"ab1z9" → 0+1+1+1 = 3）</text>
+
+  <!-- side note: dedup free -->
+  <rect x="30" y="326" width="222" height="62" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="141" y="346" text-anchor="middle" font-size="10" fill="#8a3030" font-weight="bold" filter="url(#rough2)">为什么不用去重？</text>
+  <text x="40" y="362" text-anchor="start" font-size="8.5" fill="#555" filter="url(#rough2)">L 只取每对的"左端"（a..m、0..4），</text>
+  <text x="40" y="376" text-anchor="start" font-size="8.5" fill="#555" filter="url(#rough2)">(c,m) 与 (m,c) 天然只被枚举一次</text>
+
+  <!-- side note: complexity -->
+  <rect x="268" y="326" width="222" height="62" rx="10" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="379" y="346" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold" filter="url(#rough2)">复杂度</text>
+  <text x="278" y="362" text-anchor="start" font-size="8.5" fill="#555" filter="url(#rough2)">时间 O(n + 36) = O(n)，一趟扫描</text>
+  <text x="278" y="376" text-anchor="start" font-size="8.5" fill="#555" filter="url(#rough2)">空间 O(1)，固定 36 个计数桶</text>
+</svg>

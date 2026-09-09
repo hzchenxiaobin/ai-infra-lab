@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：FROM → 窗口标注 → WHERE 三条件 → ORDER BY</text>
+
+  <!-- ① FROM -->
+  <rect x="60" y="42" width="300" height="46" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="60" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① FROM Scores</text>
+  <text x="210" y="78" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">逐行读入 4 列，共 9 行原始成绩</text>
+
+  <path d="M 210 88 L 210 104" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="222" y="100" font-size="8.5" fill="#888" filter="url(#rough2)">9 行进闸</text>
+
+  <!-- ② 窗口标注 -->
+  <rect x="60" y="108" width="300" height="66" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="126" text-anchor="middle" font-size="11" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">② 窗口标注 OVER (PARTITION BY ...)　★ 核心</text>
+  <text x="210" y="143" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">分区键 (student_id, subject)，组内按 exam_date 排序</text>
+  <text x="210" y="157" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">每行带上：rn / cnt / first_score / latest_score</text>
+  <text x="210" y="169" text-anchor="middle" font-size="9" fill="#8a6d1f" font-weight="bold" filter="url(#rough2)">9 行 → 9 行 × 8 列（5 个组各自对齐）</text>
+
+  <path d="M 210 174 L 210 190" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="222" y="186" font-size="8.5" fill="#888" filter="url(#rough2)">标注完成</text>
+
+  <!-- ③ WHERE -->
+  <rect x="60" y="194" width="300" height="62" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="212" text-anchor="middle" font-size="11" fill="#8a3a36" font-weight="bold" filter="url(#rough2)">③ WHERE rn=1 AND cnt≥2 AND latest&gt;first</text>
+  <text x="210" y="229" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">每组只留代表行，且须「至少两场」且「进步」</text>
+  <text x="210" y="247" text-anchor="middle" font-size="9" fill="#8a3a36" font-weight="bold" filter="url(#rough2)">5 组 → 3 组幸存</text>
+
+  <path d="M 210 256 L 210 272" stroke="#666" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="222" y="268" font-size="8.5" fill="#888" filter="url(#rough2)">3 行放行</text>
+
+  <!-- ④ SELECT + ORDER BY -->
+  <rect x="60" y="276" width="300" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="210" y="294" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ SELECT … ORDER BY student_id, subject</text>
+  <text x="210" y="312" text-anchor="middle" font-size="9" fill="#333" filter="url(#rough2)">取 4 列，按 (student_id, subject) 升序落座 → 答案</text>
+
+  <!-- 右侧：分组判定账本 -->
+  <rect x="400" y="108" width="140" height="214" fill="#ffffff" stroke="#999" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="128" text-anchor="middle" font-size="10" fill="#555" font-weight="bold" filter="url(#rough2)">分组判定账本</text>
+  <text x="410" y="148" font-size="9" fill="#2d5a1e" font-weight="bold" filter="url(#rough2)">✓ 101 Math　70→85</text>
+  <text x="410" y="168" font-size="9" fill="#b85450" filter="url(#rough2)">✗ 101 Phys　65→60</text>
+  <text x="410" y="188" font-size="9" fill="#2d5a1e" font-weight="bold" filter="url(#rough2)">✓ 102 Math　80→85</text>
+  <text x="410" y="208" font-size="9" fill="#777" filter="url(#rough2)">✗ 103 Math　仅 1 场</text>
+  <text x="410" y="228" font-size="9" fill="#2d5a1e" font-weight="bold" filter="url(#rough2)">✓ 104 Phys　75→85</text>
+  <path d="M 412 240 L 528 240" stroke="#ddd" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="410" y="258" font-size="9" fill="#8a6d1f" filter="url(#rough2)">② 分组　5 组</text>
+  <text x="410" y="276" font-size="9" fill="#8a6d1f" filter="url(#rough2)">③ 滤后　3 组</text>
+  <text x="410" y="296" font-size="9" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">④ 输出 3 行 × 4 列</text>
+  <text x="410" y="314" font-size="8" fill="#999" filter="url(#rough2)">按 (id, subject) 升序</text>
+
+  <!-- 底部注释 -->
+  <rect x="60" y="334" width="480" height="50" fill="#fff8e1" stroke="#d6a040" stroke-width="1.2" rx="10" filter="url(#rough2)"/>
+  <text x="300" y="353" text-anchor="middle" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">窗口函数在 WHERE 之后、SELECT 投影之前求值——rn 此刻才诞生，</text>
+  <text x="300" y="371" text-anchor="middle" font-size="9.5" fill="#8a6d1f" filter="url(#rough2)">故固定套路：窗口内层化（子查询 / CTE），过滤外层收（外层 WHERE 消费窗口列）</text>
+</svg>

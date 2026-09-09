@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="470" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold">执行流程：CTE s（高级累计）→ CTE j（初级累计+偏移）→ UNION ALL 计数</text>
+
+  <!-- ===== CTE s (left column) ===== -->
+  <rect x="30" y="50" width="250" height="26" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="155" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">CTE s：高级组累计求和</text>
+
+  <!-- step 1: filter -->
+  <rect x="30" y="86" width="250" height="40" fill="#fafafa" stroke="#999" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="102" font-size="9.5" fill="#446688" font-weight="bold">FROM Candidates</text>
+  <text x="40" y="116" font-size="9.5" fill="#333">WHERE experience = 'Senior'</text>
+
+  <path d="M155 128 L155 138" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 2: window sum -->
+  <rect x="30" y="140" width="250" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="156" font-size="9" fill="#333">SUM(salary) OVER (</text>
+  <text x="40" y="170" font-size="9" fill="#333">  ORDER BY salary</text>
+  <text x="40" y="184" font-size="9" fill="#b85450" font-weight="bold">  ROWS UNBOUNDED .. CURRENT</text>
+
+  <path d="M155 198 L155 208" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 3: cur column -->
+  <rect x="30" y="210" width="250" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="40" y="226" font-size="9.5" fill="#d6a040" font-weight="bold">产出 cur（累计前缀和）</text>
+  <text x="40" y="238" font-size="8.5" fill="#555">20000, 40000, 90000 ...</text>
+
+  <!-- arrow from s to j (offset) -->
+  <path d="M280 227 L340 227" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <rect x="280" y="252" width="60" height="16" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="310" y="264" text-anchor="middle" font-size="8" fill="#d6a040" font-weight="bold">MAX(cur)</text>
+  <path d="M310 252 L310 230 L340 230" stroke="#d6a040" stroke-width="1.5" stroke-dasharray="3,2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- arrow from s down to count -->
+  <path d="M155 248 L155 372" stroke="#446688" stroke-width="1.5" stroke-dasharray="4,3" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ===== CTE j (right column) ===== -->
+  <rect x="340" y="50" width="250" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="465" y="68" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">CTE j：初级组累计+偏移</text>
+
+  <!-- step 1: filter -->
+  <rect x="340" y="86" width="250" height="40" fill="#fafafa" stroke="#999" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="350" y="102" font-size="9.5" fill="#4a7a3a" font-weight="bold">FROM Candidates</text>
+  <text x="350" y="116" font-size="9.5" fill="#333">WHERE experience = 'Junior'</text>
+
+  <path d="M465 128 L465 138" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- step 2: offset + window sum -->
+  <rect x="340" y="140" width="250" height="72" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="350" y="156" font-size="9" fill="#d6a040" font-weight="bold">IFNULL(MAX(cur)≤70000, 0)</text>
+  <text x="350" y="168" font-size="8.5" fill="#555">  ↑ 高级花费偏移（来自 CTE s）</text>
+  <text x="350" y="184" font-size="9" fill="#333">+ SUM(salary) OVER (</text>
+  <text x="350" y="196" font-size="9" fill="#333">  ORDER BY salary ROWS ..)</text>
+  <text x="350" y="208" font-size="8.5" fill="#555">  ↑ 初级自身前缀和</text>
+
+  <path d="M465 214 L465 224" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- step 3: cur column -->
+  <rect x="340" y="226" width="250" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="350" y="242" font-size="9.5" fill="#d6a040" font-weight="bold">产出 cur（偏移+前缀和）</text>
+  <text x="350" y="254" font-size="8.5" fill="#555">50000, 60000, 100000 ...</text>
+
+  <!-- arrow from j down to count -->
+  <path d="M465 264 L465 372" stroke="#4a7a3a" stroke-width="1.5" stroke-dasharray="4,3" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== UNION ALL (bottom) ===== -->
+  <rect x="100" y="375" width="420" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="310" y="394" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">UNION ALL：COUNT(*) WHERE cur ≤ 70000</text>
+
+  <!-- two count outputs -->
+  <rect x="60" y="418" width="220" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="170" y="434" text-anchor="middle" font-size="9.5" fill="#446688" font-weight="bold">SELECT 'Senior', COUNT</text>
+  <text x="170" y="450" text-anchor="middle" font-size="9" fill="#555">FROM s WHERE cur ≤ 70000 → 2</text>
+
+  <rect x="340" y="418" width="220" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="450" y="434" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">SELECT 'Junior', COUNT</text>
+  <text x="450" y="450" text-anchor="middle" font-size="9" fill="#555">FROM j WHERE cur ≤ 70000 → 2</text>
+
+  <path d="M170 408 L170 416" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M450 408 L450 416" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+</svg>

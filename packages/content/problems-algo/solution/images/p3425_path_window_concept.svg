@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">核心观察：DFS 维护根路径 + 值互异滑窗 + 前缀和</text>
+  <text x="260" y="40" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">以示例 1 的链 0 → 1 → 2 → 5 为例（节点值 2, 1, 2, 1）</text>
+
+  <!-- 重复值回跳箭头 -->
+  <g filter="url(#rough2)">
+    <path d="M 352 104 C 325 62, 195 62, 172 104" stroke="#b85450" stroke-width="2" fill="none"
+          stroke-dasharray="6 4" marker-end="url(#arrR)"/>
+    <text x="262" y="58" text-anchor="middle" font-size="10.5" fill="#b85450">值 1 已在 d=1 出现（j=1）→ top ← j+1 = 2</text>
+  </g>
+
+  <!-- 路径链 -->
+  <g filter="url(#rough2)">
+    <line x1="104" y1="130" x2="146" y2="130" stroke="#888" stroke-width="2"/>
+    <line x1="194" y1="130" x2="236" y2="130" stroke="#888" stroke-width="2"/>
+    <line x1="284" y1="130" x2="326" y2="130" stroke="#888" stroke-width="2"/>
+    <text x="125" y="124" text-anchor="middle" font-size="10" fill="#666">w=2</text>
+    <text x="215" y="124" text-anchor="middle" font-size="10" fill="#666">w=3</text>
+    <text x="305" y="124" text-anchor="middle" font-size="10" fill="#666">w=6</text>
+
+    <circle cx="80" cy="130" r="24" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <circle cx="170" cy="130" r="24" fill="#e8f0fe" stroke="#446688" stroke-width="2"/>
+    <circle cx="260" cy="130" r="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4"/>
+    <circle cx="350" cy="130" r="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.4"/>
+    <text x="80" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#33506b">0</text>
+    <text x="170" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#33506b">1</text>
+    <text x="260" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#2f5d24">2</text>
+    <text x="350" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#2f5d24">5</text>
+
+    <text x="80" y="168" text-anchor="middle" font-size="11" fill="#333">值 2</text>
+    <text x="170" y="168" text-anchor="middle" font-size="11" fill="#333">值 1</text>
+    <text x="260" y="168" text-anchor="middle" font-size="11" fill="#333">值 2</text>
+    <text x="350" y="168" text-anchor="middle" font-size="11" fill="#333">值 1</text>
+
+    <text x="80" y="184" text-anchor="middle" font-size="9.5" fill="#7a7a7a">d=0 dist[0]=0</text>
+    <text x="170" y="184" text-anchor="middle" font-size="9.5" fill="#7a7a7a">d=1 dist[1]=2</text>
+    <text x="260" y="184" text-anchor="middle" font-size="9.5" fill="#7a7a7a">d=2 dist[2]=5</text>
+    <text x="350" y="184" text-anchor="middle" font-size="9.5" fill="#7a7a7a">d=3 dist[3]=11</text>
+  </g>
+
+  <!-- 窗口框 -->
+  <g filter="url(#rough2)">
+    <rect x="226" y="98" width="188" height="94" fill="#e6f4ea" fill-opacity="0.35"
+          stroke="#4a7a3a" stroke-width="2.2" stroke-dasharray="8 5" rx="12"/>
+    <text x="320" y="206" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#2f5d24">窗口 [top=2 .. d=3]：内部值互不相同</text>
+  </g>
+
+  <!-- 底部：答案公式 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="222" width="284" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="182" y="242" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#33506b">以「终点 = 节点 5」为例更新答案</text>
+    <text x="182" y="260" text-anchor="middle" font-size="10.5" fill="#33506b">长度 = dist[3] − dist[2] = 11 − 5 = 6</text>
+    <text x="182" y="276" text-anchor="middle" font-size="10.5" fill="#33506b">节点数 = d − top + 1 = 2</text>
+    <text x="182" y="292" text-anchor="middle" font-size="10" fill="#33506b">更长 → 替换；等长 → 节点数取 min</text>
+
+    <rect x="344" y="222" width="152" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8"/>
+    <text x="420" y="242" text-anchor="middle" font-size="10" font-weight="bold" fill="#8a6d1f">前缀和 dist[]</text>
+    <text x="420" y="258" text-anchor="middle" font-size="9.5" fill="#8a6d1f">任意区段 [s..d] 长度</text>
+    <text x="420" y="272" text-anchor="middle" font-size="9.5" fill="#8a6d1f">= dist[d] − dist[s]，O(1)</text>
+    <text x="420" y="288" text-anchor="middle" font-size="9.5" fill="#8a6d1f">沿链累加一次即可</text>
+
+    <rect x="40" y="312" width="456" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8"/>
+    <text x="268" y="328" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450">⚠ 回溯必须恢复现场：last[值] 与 top 都还原成进入节点前的值，</text>
+    <text x="268" y="343" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450">否则换到兄弟分支时窗口起点是错的</text>
+  </g>
+</svg>

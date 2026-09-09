@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="13" fill="#444" font-weight="bold" filter="url(#rough2)">核心观察：popcount 链极速坍缩，depth 只有 0~4 五种取值</text>
+  <text x="260" y="40" text-anchor="middle" font-size="10.5" fill="#666" filter="url(#rough2)">按深度分桶建 6 棵 0/1 树状数组，单点修改与区间计数都只要 O(log n)</text>
+
+  <!-- ============ ① 收敛链 ============ -->
+  <text x="46" y="70" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① 链坍缩：x ≤ 10¹⁵ 时最多 4 步到 1（例：127 = 1111111₂，7 个 1）</text>
+
+  <g filter="url(#rough2)">
+    <!-- p 下标标注 -->
+    <text x="72" y="86" font-size="9.5" fill="#888">p₀</text>
+    <text x="168" y="86" font-size="9.5" fill="#888">p₁</text>
+    <text x="264" y="86" font-size="9.5" fill="#888">p₂</text>
+    <text x="360" y="86" font-size="9.5" fill="#888">p₃</text>
+    <text x="456" y="86" font-size="9.5" fill="#888">p₄</text>
+
+    <!-- 链上的值 -->
+    <rect x="40" y="92" width="64" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6"/>
+    <text x="72" y="116" text-anchor="middle" font-size="15" fill="#33455e" font-weight="bold">127</text>
+    <rect x="136" y="92" width="64" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="168" y="116" text-anchor="middle" font-size="15" fill="#33455e" font-weight="bold">7</text>
+    <rect x="232" y="92" width="64" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="264" y="116" text-anchor="middle" font-size="15" fill="#33455e" font-weight="bold">3</text>
+    <rect x="328" y="92" width="64" height="38" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6"/>
+    <text x="360" y="116" text-anchor="middle" font-size="15" fill="#33455e" font-weight="bold">2</text>
+    <rect x="424" y="92" width="64" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="6"/>
+    <text x="456" y="116" text-anchor="middle" font-size="15" fill="#2a5a2a" font-weight="bold">1</text>
+
+    <!-- popcount 箭头 -->
+    <path d="M106,111 L132,111" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M202,111 L228,111" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M298,111 L324,111" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <path d="M394,111 L420,111" stroke="#666" stroke-width="1.6" marker-end="url(#arr)"/>
+    <text x="260" y="106" text-anchor="middle" font-size="9" fill="#999">每步做 popcount</text>
+
+    <!-- 二进制标注 -->
+    <text x="72" y="146" text-anchor="middle" font-size="9" fill="#888">1111111₂</text>
+    <text x="168" y="146" text-anchor="middle" font-size="9" fill="#888">111₂</text>
+    <text x="264" y="146" text-anchor="middle" font-size="9" fill="#888">11₂</text>
+    <text x="360" y="146" text-anchor="middle" font-size="9" fill="#888">10₂</text>
+    <text x="456" y="146" text-anchor="middle" font-size="9" fill="#888">1₂</text>
+
+    <!-- 值域坍缩标注 -->
+    <text x="72" y="166" text-anchor="middle" font-size="9.5" fill="#b85450">任意 ≤ 10¹⁵</text>
+    <text x="168" y="166" text-anchor="middle" font-size="9.5" fill="#b85450">≤ 50</text>
+    <text x="264" y="166" text-anchor="middle" font-size="9.5" fill="#b85450">≤ 5</text>
+    <text x="360" y="166" text-anchor="middle" font-size="9.5" fill="#b85450">≤ 2</text>
+    <text x="456" y="166" text-anchor="middle" font-size="9.5" fill="#4a7a3a">= 1</text>
+  </g>
+
+  <text x="260" y="190" text-anchor="middle" font-size="10" fill="#8a3a36" filter="url(#rough2)">depth(127) = 4：第 4 步首次到 1；depth(x) = 0 ⟺ x = 1；k = 5 的查询恒答 0</text>
+
+  <line x1="30" y1="202" x2="490" y2="202" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" filter="url(#rough2)"/>
+
+  <!-- ============ ② 六棵分桶 BIT ============ -->
+  <text x="46" y="224" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② 按深度分桶：fenw[d] 在位置 i 存 1 ⟺ dep[i] = d（示例 nums = [3,5,6]）</text>
+
+  <g filter="url(#rough2)">
+    <!-- fenw[0] -->
+    <rect x="40" y="236" width="70" height="26" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.4" rx="5"/>
+    <text x="75" y="253" text-anchor="middle" font-size="10" fill="#999">fenw[0]</text>
+    <rect x="46" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="65" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="84" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <text x="75" y="304" text-anchor="middle" font-size="8.5" fill="#999">只有 x=1 才进</text>
+
+    <!-- fenw[1] -->
+    <rect x="116" y="236" width="70" height="26" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.4" rx="5"/>
+    <text x="151" y="253" text-anchor="middle" font-size="10" fill="#999">fenw[1]</text>
+    <rect x="122" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="141" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="160" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <text x="151" y="304" text-anchor="middle" font-size="8.5" fill="#999">2 的幂在这</text>
+
+    <!-- fenw[2]（示例所在桶） -->
+    <rect x="192" y="236" width="70" height="26" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="5"/>
+    <text x="227" y="253" text-anchor="middle" font-size="10" fill="#2a5a2a" font-weight="bold">fenw[2]</text>
+    <rect x="198" y="266" width="19" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <rect x="217" y="266" width="19" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <rect x="236" y="266" width="19" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6"/>
+    <text x="207.5" y="283" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">1</text>
+    <text x="226.5" y="283" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">1</text>
+    <text x="245.5" y="283" text-anchor="middle" font-size="11" fill="#2a5a2a" font-weight="bold">1</text>
+    <text x="227" y="304" text-anchor="middle" font-size="8.5" fill="#2a5a2a">3、5、6 的 depth 全是 2</text>
+
+    <!-- fenw[3] -->
+    <rect x="268" y="236" width="70" height="26" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.4" rx="5"/>
+    <text x="303" y="253" text-anchor="middle" font-size="10" fill="#999">fenw[3]</text>
+    <rect x="274" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="293" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="312" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+
+    <!-- fenw[4] -->
+    <rect x="344" y="236" width="70" height="26" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.4" rx="5"/>
+    <text x="379" y="253" text-anchor="middle" font-size="10" fill="#999">fenw[4]</text>
+    <rect x="350" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="369" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <rect x="388" y="266" width="19" height="24" fill="#ffffff" stroke="#c9c9c9" stroke-width="1.2"/>
+    <text x="379" y="304" text-anchor="middle" font-size="8.5" fill="#999">127 这类</text>
+
+    <!-- fenw[5] -->
+    <rect x="420" y="236" width="70" height="26" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="5"/>
+    <text x="455" y="253" text-anchor="middle" font-size="10" fill="#8a3a36">fenw[5]</text>
+    <rect x="426" y="266" width="19" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+    <rect x="445" y="266" width="19" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+    <rect x="464" y="266" width="19" height="24" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+    <text x="455" y="304" text-anchor="middle" font-size="8.5" fill="#8a3a36">永远空桶</text>
+  </g>
+
+  <!-- 两个操作说明框 -->
+  <g filter="url(#rough2)">
+    <rect x="40" y="322" width="222" height="60" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8"/>
+    <text x="151" y="344" text-anchor="middle" font-size="10.5" fill="#33455e" font-weight="bold">查询 [1, l, r, k]</text>
+    <text x="151" y="364" text-anchor="middle" font-size="10" fill="#33455e">fenw[k].pre(r+1) − fenw[k].pre(l)</text>
+
+    <rect x="282" y="322" width="208" height="60" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8"/>
+    <text x="386" y="344" text-anchor="middle" font-size="10.5" fill="#8a6d1f" font-weight="bold">更新 [2, idx, val]</text>
+    <text x="386" y="364" text-anchor="middle" font-size="10" fill="#33455e">旧桶 idx 处 −1，新桶 idx 处 +1</text>
+  </g>
+</svg>

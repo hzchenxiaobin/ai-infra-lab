@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="440" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">算法流程：四步 DP + 回看窗口 m 位截断</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#888">每个 i 只回看至多 m 位，增量拼出段值 → O(n·m)</text>
+
+  <!-- ===== Left: four steps ===== -->
+  <g font-size="10" fill="#333">
+    <!-- ① 状态定义 -->
+    <rect x="36" y="66" width="236" height="58" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="154" y="88" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">① 状态定义</text>
+    <text x="154" y="106" text-anchor="middle" font-size="10" fill="#555">dp[i] = 前 i 位（s[0..i−1]）合法划分数</text>
+    <text x="154" y="119" text-anchor="middle" font-size="10" fill="#555">答案 = dp[n]</text>
+
+    <path d="M 154 124 L 154 138" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- ② 转移方程 -->
+    <rect x="36" y="140" width="236" height="108" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="154" y="160" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">② 转移方程（反向累加）</text>
+    <text x="52" y="182" font-family="monospace" font-size="11" fill="#333">dp[i] = Σ dp[j]</text>
+    <text x="52" y="200" font-family="monospace" font-size="10" fill="#555">j ∈ [max(0,i−m), i−1]</text>
+    <text x="52" y="218" font-size="9" fill="#888">条件：s[j]≠'0' 且 val(s[j..i])≤k</text>
+    <text x="52" y="234" font-size="9" fill="#888">m = 位数(k) ≤ 10</text>
+
+    <path d="M 154 248 L 154 262" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- ③ 初始条件 -->
+    <rect x="36" y="264" width="236" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="154" y="284" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">③ 初始条件</text>
+    <text x="154" y="304" text-anchor="middle" font-family="monospace" font-size="11" fill="#555">dp[0] = 1（空串一种划分）</text>
+
+    <path d="M 154 318 L 154 332" stroke="#666" stroke-width="1.2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+    <!-- ④ 计算顺序 -->
+    <rect x="36" y="334" width="236" height="74" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+    <text x="154" y="356" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④ 计算顺序</text>
+    <text x="154" y="374" text-anchor="middle" font-family="monospace" font-size="11" fill="#555">i = 1 → 2 → ... → n</text>
+    <text x="154" y="390" text-anchor="middle" font-size="9" fill="#888">内层 L=1→m，val = digit·power + val</text>
+    <text x="154" y="402" text-anchor="middle" font-size="9" fill="#888">power 同步 ×10，增量求值 O(1)/位</text>
+  </g>
+
+  <!-- ===== Right: length-judgement table ===== -->
+  <text x="394" y="78" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">段长判定（L = i − j）</text>
+  <g>
+    <!-- header -->
+    <rect x="300" y="86" width="84" height="26" fill="#f6f6f6" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="342" y="104" text-anchor="middle" font-size="9" fill="#888">段长 L</text>
+    <rect x="384" y="86" width="104" height="26" fill="#f6f6f6" stroke="#bbb" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="436" y="104" text-anchor="middle" font-size="9" fill="#888">判定</text>
+
+    <!-- L < m -->
+    <rect x="300" y="112" width="84" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="342" y="134" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">L &lt; m</text>
+    <rect x="384" y="112" width="104" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="436" y="128" text-anchor="middle" font-size="9" fill="#333">值必 &lt; k</text>
+    <text x="436" y="140" text-anchor="middle" font-size="9" fill="#333">只查前导 0</text>
+
+    <!-- L == m -->
+    <rect x="300" y="146" width="84" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="342" y="168" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">L = m</text>
+    <rect x="384" y="146" width="104" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="436" y="168" text-anchor="middle" font-size="9" fill="#333">比较 val ≤ k</text>
+
+    <!-- L > m -->
+    <rect x="300" y="180" width="84" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="342" y="202" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">L &gt; m</text>
+    <rect x="384" y="180" width="104" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="436" y="202" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">跳过（&gt; k）</text>
+  </g>
+
+  <!-- answer box -->
+  <rect x="296" y="226" width="196" height="50" fill="#f6f6f6" stroke="#ccc" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="394" y="246" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">答案</text>
+  <text x="394" y="266" text-anchor="middle" font-family="monospace" font-size="11" fill="#b85450" font-weight="bold">return dp[n] % (10⁹+7)</text>
+
+  <!-- code box -->
+  <rect x="296" y="288" width="196" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="394" y="308" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">增量求值 O(n·m)</text>
+  <text x="306" y="328" font-family="monospace" font-size="10" fill="#333">val=0; power=1;</text>
+  <text x="306" y="344" font-family="monospace" font-size="10" fill="#333">for L in 1..m:</text>
+  <text x="306" y="360" font-family="monospace" font-size="10" fill="#333">  j=i−L</text>
+  <text x="306" y="376" font-family="monospace" font-size="10" fill="#333">  val=digit*power+val</text>
+  <text x="306" y="392" font-family="monospace" font-size="10" fill="#333">  power*=10</text>
+  <text x="306" y="404" font-family="monospace" font-size="9" fill="#b85450" font-weight="bold">  if s[j]≠'0'&amp;&amp;val≤k: dp[i]+=dp[j]</text>
+</svg>

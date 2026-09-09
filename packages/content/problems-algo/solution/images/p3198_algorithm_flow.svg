@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="13" fill="#555" font-weight="bold" filter="url(#rough2)">算法流程：五个子句各管一层</text>
+  <text x="280" y="44" text-anchor="middle" font-size="10" fill="#888" filter="url(#rough2)">读行 → 分组 → 组内排序拼接 → 投影 → 外层排序</text>
+
+  <rect x="70" y="56" width="250" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="74" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">① FROM cities</text>
+  <text x="195" y="90" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">行源：逐行读入 (state, city)</text>
+
+  <path d="M 195 98 L 195 112" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="114" width="250" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="132" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">② GROUP BY state</text>
+  <text x="195" y="148" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">同州归一组：9 行 → 3 组</text>
+
+  <path d="M 195 156 L 195 170" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="172" width="250" height="52" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="192" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">③ GROUP_CONCAT(city</text>
+  <text x="195" y="207" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">ORDER BY city SEPARATOR ', ')</text>
+  <text x="195" y="219" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">组内字典序排序，再拼成一条串</text>
+
+  <path d="M 195 224 L 195 238" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="240" width="250" height="42" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="258" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">④ SELECT state, … AS cities</text>
+  <text x="195" y="274" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">每组输出一行：州名 + 拼接串</text>
+
+  <path d="M 195 282 L 195 296" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="70" y="298" width="250" height="42" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="195" y="316" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold" filter="url(#rough2)">⑤ ORDER BY state</text>
+  <text x="195" y="332" text-anchor="middle" font-size="9" fill="#666" filter="url(#rough2)">州升序输出 3 行</text>
+
+  <rect x="350" y="62" width="180" height="30" fill="#ffffff" stroke="#999" stroke-width="1" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="81" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">9 行 = 加州 3 + 得州 3 + 纽约 3</text>
+
+  <rect x="350" y="120" width="180" height="30" fill="#ffffff" stroke="#999" stroke-width="1" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="133" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">每组 ↔ 结果一行，输出行数 = 3</text>
+  <text x="440" y="145" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">主键无重复 → 免 DISTINCT</text>
+
+  <rect x="350" y="178" width="180" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="194" text-anchor="middle" font-size="8.5" fill="#8a3030" filter="url(#rough2)">函数内 ORDER BY 管组内串序</text>
+  <text x="440" y="208" text-anchor="middle" font-size="8.5" fill="#8a3030" filter="url(#rough2)">SEPARATOR ', ' = 逗号 + 空格</text>
+
+  <rect x="350" y="246" width="180" height="30" fill="#ffffff" stroke="#999" stroke-width="1" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="265" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">AS cities 对齐题面输出列名</text>
+
+  <rect x="350" y="304" width="180" height="30" fill="#ffffff" stroke="#999" stroke-width="1" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="440" y="323" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">外层 ORDER BY 管行序</text>
+  <text x="440" y="335" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">California &lt; New York &lt; Texas</text>
+
+  <rect x="70" y="354" width="460" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="375" text-anchor="middle" font-size="10" fill="#2d5a1e" filter="url(#rough2)">一趟分组聚合搞定：无子查询、无 DISTINCT，9 行 → 3 行</text>
+</svg>

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="430" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="320" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：CTE 流水线（gaps-and-islands）</text>
+
+  <!-- ===== Row 1: source + first CTE ===== -->
+  <!-- Matches -->
+  <rect x="30" y="56" width="120" height="64" fill="#fff" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="90" y="78" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">Matches</text>
+  <text x="90" y="94" text-anchor="middle" font-size="9" fill="#888">player_id</text>
+  <text x="90" y="106" text-anchor="middle" font-size="9" fill="#888">match_day, result</text>
+  <text x="90" y="118" text-anchor="middle" font-size="8" fill="#aaa">原始表</text>
+
+  <!-- arrow -->
+  <path d="M 150 88 L 184 88" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Ranked CTE: double ROW_NUMBER -->
+  <rect x="188" y="48" width="200" height="88" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="288" y="68" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① Ranked</text>
+  <line x1="200" y1="74" x2="376" y2="74" stroke="#bcd" stroke-width="1" filter="url(#rough2)"/>
+  <text x="200" y="90" font-size="9" fill="#446688">rn = ROW_NUMBER()</text>
+  <text x="216" y="102" font-size="8" fill="#888">PARTITION BY player_id</text>
+  <text x="216" y="113" font-size="8" fill="#888">ORDER BY match_day</text>
+  <text x="200" y="128" font-size="9" fill="#446688">result_rn = ROW_NUMBER()</text>
+  <text x="216" y="138" font-size="8" fill="#888">PARTITION BY player_id, result</text>
+  <text x="200" y="148" font-size="8" fill="#888" font-style="italic">（同上 ORDER BY match_day）</text>
+
+  <!-- arrow down to filter+grp -->
+  <path d="M 288 140 L 288 170" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 2: grp computation + filter ===== -->
+  <rect x="150" y="174" width="276" height="46" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="288" y="192" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② ③ grp = rn − result_rn  ·  WHERE result = 'Win'</text>
+  <text x="288" y="208" text-anchor="middle" font-size="9" fill="#888">算分组键 grp；只保留胜场行（非胜场直接丢弃）</text>
+
+  <!-- arrow down -->
+  <path d="M 288 222 L 288 252" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 3: group by + count ===== -->
+  <rect x="150" y="256" width="276" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="288" y="276" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">④ Streaks：GROUP BY player_id, grp</text>
+  <text x="288" y="292" text-anchor="middle" font-size="10" fill="#4a7a3a">COUNT(*) AS streak_len  →  每个连胜岛的长度</text>
+
+  <!-- arrow down -->
+  <path d="M 288 306 L 288 334" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 4: max per player ===== -->
+  <rect x="150" y="338" width="276" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="288" y="356" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ MaxStreak：GROUP BY player_id</text>
+  <text x="288" y="372" text-anchor="middle" font-size="10" fill="#4a7a3a">MAX(streak_len) AS longest_streak</text>
+
+  <!-- right side: LEFT JOIN note + result, branched from row4 -->
+  <path d="M 426 360 L 460 360" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Row 5 (right): left join + coalesce ===== -->
+  <rect x="462" y="296" width="150" height="86" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="537" y="316" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑥ 补 0</text>
+  <line x1="474" y1="322" x2="600" y2="322" stroke="#ecc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="474" y="338" font-size="9" fill="#b85450">LEFT JOIN 全部</text>
+  <text x="474" y="350" font-size="9" fill="#b85450">player_id</text>
+  <text x="474" y="364" font-size="9" fill="#b85450">COALESCE(.., 0)</text>
+  <text x="474" y="376" font-size="8" fill="#aaa">无胜场者→0</text>
+
+  <!-- arrow to result -->
+  <path d="M 537 384 L 537 398" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Result table (bottom right) -->
+  <rect x="452" y="402" width="170" height="0" fill="none"/>
+
+  <!-- ===== Result at bottom center-left ===== -->
+  <path d="M 288 384 L 288 398" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="150" y="402" width="276" height="0" fill="none"/>
+
+  <!-- Result table -->
+  <rect x="40" y="392" width="280" height="30" fill="#fff" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="56" y="411" font-size="9" fill="#4a7a3a" font-weight="bold">player_id</text>
+  <text x="170" y="411" font-size="9" fill="#4a7a3a" font-weight="bold">longest_streak</text>
+  <line x1="40" y1="416" x2="320" y2="416" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ORDER BY note -->
+  <rect x="332" y="392" width="120" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="392" y="406" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">⑦ ORDER BY</text>
+  <text x="392" y="417" text-anchor="middle" font-size="9" fill="#446688">player_id</text>
+</svg>

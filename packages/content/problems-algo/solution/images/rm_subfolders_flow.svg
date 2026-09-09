@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="260" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">排序 + 单遍扫描流程：维护队尾 prev，命中前缀即跳过</text>
+
+  <!-- Step 1: sort -->
+  <rect x="170" y="46" width="180" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="69" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">sort(folder)</text>
+  <path d="M 260 84 L 260 98" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init -->
+  <rect x="120" y="100" width="280" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="125" text-anchor="middle" font-size="12" fill="#333">ans = [folder[0]]；prev = folder[0]；i = 1</text>
+  <path d="M 260 142 L 260 156" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: i < n ? -->
+  <polygon points="260,158 350,198 260,238 170,198" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="195" text-anchor="middle" font-size="11" fill="#333">i &lt; n ?</text>
+  <text x="260" y="210" text-anchor="middle" font-size="10" fill="#888">(未扫完)</text>
+
+  <!-- No branch -> return ans -->
+  <path d="M 350 198 L 430 198" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="392" y="190" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">否</text>
+  <rect x="430" y="180" width="80" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="204" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">返回 ans</text>
+
+  <!-- Yes branch -> down to check -->
+  <path d="M 260 238 L 260 252" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="276" y="248" font-size="11" fill="#446688" font-weight="bold">是</text>
+
+  <!-- check box -->
+  <rect x="120" y="254" width="280" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="272" text-anchor="middle" font-size="11.5" fill="#333">key = prev + "/"</text>
+  <text x="260" y="290" text-anchor="middle" font-size="11.5" fill="#333">hit = folder[i].startswith(key)</text>
+  <path d="M 260 300 L 260 314" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Decision: hit ? -->
+  <polygon points="260,316 350,356 260,396 170,356" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="353" text-anchor="middle" font-size="11" fill="#333">hit ?</text>
+  <text x="260" y="368" text-anchor="middle" font-size="10" fill="#888">(以 prev+"/" 开头)</text>
+
+  <!-- Yes -> skip, i++ -->
+  <path d="M 170 356 L 90 356" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="132" y="348" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是</text>
+  <rect x="20" y="338" width="70" height="38" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="55" y="356" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">跳过</text>
+  <text x="55" y="370" text-anchor="middle" font-size="10.5" fill="#b85450" font-weight="bold">i++</text>
+
+  <!-- No -> keep, update prev, i++ -->
+  <path d="M 350 356 L 430 356" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="392" y="348" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否</text>
+  <rect x="430" y="338" width="80" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="470" y="356" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">ans.push(f)</text>
+  <text x="470" y="370" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">prev←f, i++</text>
+
+  <!-- loop back arrows to top decision i<n -->
+  <!-- from skip box up -->
+  <path d="M 55 338 L 55 198 L 170 198" stroke="#b85450" stroke-width="1.6" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="62" y="270" font-size="9.5" fill="#b85450" font-style="italic">回到判定</text>
+  <!-- from keep box up -->
+  <path d="M 470 338 L 470 198 L 350 198" stroke="#4a7a3a" stroke-width="1.6" fill="none" stroke-dasharray="4,2" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="448" y="270" font-size="9.5" fill="#4a7a3a" font-style="italic">回到判定</text>
+
+  <!-- bottom note -->
+  <rect x="120" y="416" width="280" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="436" text-anchor="middle" font-size="11" fill="#444">prev 始终是 ans 的队尾（最后保留的文件夹）</text>
+  <text x="260" y="452" text-anchor="middle" font-size="10.5" fill="#888">命中前缀 → 是子文件夹，丢弃；否则入队并更新 prev</text>
+
+  <!-- Legend -->
+  <rect x="20" y="416" width="14" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="40" y="428" font-size="10" fill="#555">处理</text>
+  <rect x="20" y="434" width="14" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="40" y="446" font-size="10" fill="#555">判定</text>
+  <rect x="80" y="416" width="14" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="100" y="428" font-size="10" fill="#555">计算</text>
+  <rect x="80" y="434" width="14" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="100" y="446" font-size="10" fill="#555">跳过/返回</text>
+</svg>

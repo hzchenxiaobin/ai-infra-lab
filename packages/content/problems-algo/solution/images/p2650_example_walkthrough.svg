@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="760" height="420" fill="#fafafa"/>
+
+  <text x="380" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例 5 演算：cancel 在 t=150 注入 'Cancelled'，被 catch 捕获后 return result(=1)</text>
+
+  <!-- generator snippet -->
+  <rect x="30" y="44" width="700" height="56" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="44" y="62" font-size="10" fill="#888">生成器：</text>
+  <text x="44" y="78" font-size="11" fill="#333">let result=0; try { yield P1(setT 100); result+=yield P2(res 1); yield P3(setT 100); result+=yield P4(res 1); } catch(e){ return result; } return result;</text>
+  <text x="44" y="94" font-size="10" fill="#888">P1 解析@t100 ｜ P2 立即解析→1 ｜ P3 解析@t200（被取消打断）｜ P4 永不执行</text>
+
+  <!-- time axis -->
+  <line x1="60" y1="200" x2="700" y2="200" stroke="#888" stroke-width="1.6" filter="url(#rough2)"/>
+  <path d="M 700 200 L 690 195 L 690 205 z" fill="#888" filter="url(#rough2)"/>
+  <text x="708" y="204" font-size="10" fill="#888">t(ms)</text>
+  <!-- ticks -->
+  <line x1="60" y1="196" x2="60" y2="204" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/><text x="60" y="218" text-anchor="middle" font-size="10" fill="#888">0</text>
+  <line x1="180" y1="196" x2="180" y2="204" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/><text x="180" y="218" text-anchor="middle" font-size="10" fill="#888">100</text>
+  <line x1="240" y1="196" x2="240" y2="204" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/><text x="240" y="218" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">150</text>
+  <line x1="360" y1="196" x2="360" y2="204" stroke="#888" stroke-width="1.4" filter="url(#rough2)"/><text x="360" y="218" text-anchor="middle" font-size="10" fill="#888">200</text>
+
+  <!-- step events as boxes above axis -->
+  <!-- t=0 step('next') -->
+  <rect x="40" y="120" width="150" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="115" y="134" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">step('next') 启动</text>
+  <text x="115" y="148" text-anchor="middle" font-size="9" fill="#888">→ yield P1，挂起 await</text>
+  <path d="M 115 154 L 80 198" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- t=100 P1 resolve -> step('next',undefined) -> yield P2 -> P2 resolve -> step('next',1) -> yield P3 -->
+  <rect x="120" y="120" width="220" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="230" y="134" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">P1 解析 → step('next',1) → result=1</text>
+  <text x="230" y="148" text-anchor="middle" font-size="9" fill="#888">→ 链式推进到 yield P3，挂起 await（P3@t200）</text>
+  <path d="M 200 154 L 180 198" stroke="#4a7a3a" stroke-width="1.4" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+
+  <!-- t=150 cancel -->
+  <rect x="210" y="248" width="170" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="295" y="262" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">cancel() → step('throw','Cancelled')</text>
+  <text x="295" y="276" text-anchor="middle" font-size="9" fill="#888">错误抛入生成器，打断对 P3 的 await</text>
+  <path d="M 240 248 L 240 204" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+
+  <!-- catch -> return -> resolve -->
+  <rect x="300" y="120" width="200" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="400" y="134" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">catch(e){ return result }</text>
+  <text x="400" y="148" text-anchor="middle" font-size="9" fill="#888">done=true, value=1 → resolve(1), settled=true</text>
+  <path d="M 320 248 C 360 248, 390 200, 400 154" stroke="#d6a040" stroke-width="1.4" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- t=200 P3 stale -> discarded -->
+  <rect x="490" y="120" width="220" height="34" fill="#f0f0f0" stroke="#bbb" stroke-width="1.4" stroke-dasharray="4,3" rx="6" filter="url(#rough2)"/>
+  <text x="600" y="134" text-anchor="middle" font-size="10" fill="#888" font-weight="bold">P3 迟到解析（t=200）</text>
+  <text x="600" y="148" text-anchor="middle" font-size="9" fill="#888">settled=true → 丢弃，不再推进生成器</text>
+  <path d="M 360 198 L 540 154" stroke="#bbb" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- result -->
+  <rect x="250" y="300" width="260" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="318" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">输出：{"resolved": 1}</text>
+  <text x="380" y="332" text-anchor="middle" font-size="10" fill="#888">'Cancelled' 被捕获 → 以 catch 内 return 的值解析</text>
+
+  <rect x="30" y="360" width="700" height="46" fill="#fff" stroke="#bbb" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="44" y="378" font-size="11" fill="#333">关键：① </text>
+  <text x="84" y="378" font-size="11" fill="#b85450" font-weight="bold">throw('Cancelled')</text>
+  <text x="184" y="378" font-size="11" fill="#333"> 走与 reject 同一条 throw 通道；② </text>
+  <text x="404" y="378" font-size="11" fill="#d6a040" font-weight="bold">catch 捕获后续行</text>
+  <text x="484" y="378" font-size="11" fill="#333">，promise 以新值解析；③ </text>
+  <text x="620" y="378" font-size="11" fill="#888">未捕获 → reject('Cancelled')</text>
+  <text x="44" y="396" font-size="10" fill="#888">对照示例 3：无 try/catch，'Cancelled' 未被捕获 → 返回的 promise 被 reject('Cancelled')。</text>
+</svg>

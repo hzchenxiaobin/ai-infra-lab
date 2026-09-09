@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#333" font-weight="bold" filter="url(#rough2)">三归宿转移：source[i−1] 删掉 / 匹配 / 跳过</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">dp[i][j] = 用 source 前 i 个字符匹配 pattern 前 j 个字符的最大删除数</text>
+
+  <!-- 源格子 (i-1, j-1) -->
+  <rect x="70" y="88" width="130" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="135" y="110" text-anchor="middle" font-size="12" fill="#33506e" font-weight="bold" filter="url(#rough2)">dp[i−1][j−1]</text>
+  <text x="135" y="128" text-anchor="middle" font-size="9" fill="#668" filter="url(#rough2)">（匹配分支的来源）</text>
+
+  <!-- 源格子 (i-1, j) -->
+  <rect x="320" y="88" width="130" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="385" y="110" text-anchor="middle" font-size="12" fill="#33506e" font-weight="bold" filter="url(#rough2)">dp[i−1][j]</text>
+  <text x="385" y="128" text-anchor="middle" font-size="9" fill="#668" filter="url(#rough2)">（删 / 跳过的来源）</text>
+
+  <!-- 目标格子 (i, j) -->
+  <rect x="320" y="225" width="130" height="54" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" rx="6" filter="url(#rough2)"/>
+  <text x="385" y="248" text-anchor="middle" font-size="13" fill="#8a6510" font-weight="bold" filter="url(#rough2)">dp[i][j]</text>
+  <text x="385" y="266" text-anchor="middle" font-size="9.5" fill="#a07830" filter="url(#rough2)">（三路取 max）</text>
+
+  <!-- 匹配：蓝色斜箭头 -->
+  <path d="M 200 146 L 312 230" stroke="#446688" stroke-width="2" fill="none" marker-end="url(#arrb)" filter="url(#rough2)"/>
+  <text x="140" y="205" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold" filter="url(#rough2)">保留并匹配</text>
+  <text x="140" y="222" text-anchor="middle" font-size="9.5" fill="#446688" filter="url(#rough2)">s[i−1] == p[j−1]，+0</text>
+
+  <!-- 删除：红色竖箭头 -->
+  <path d="M 350 146 L 350 221" stroke="#b85450" stroke-width="2.2" fill="none" marker-end="url(#arrr)" filter="url(#rough2)"/>
+  <text x="338" y="175" text-anchor="end" font-size="11" fill="#b85450" font-weight="bold" filter="url(#rough2)">删除：+1</text>
+  <text x="338" y="192" text-anchor="end" font-size="9.5" fill="#b85450" filter="url(#rough2)">i−1 ∈ targetIndices</text>
+
+  <!-- 跳过：绿色竖箭头 -->
+  <path d="M 430 146 L 430 221" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrg)" filter="url(#rough2)"/>
+  <text x="444" y="175" text-anchor="start" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">跳过：+0</text>
+  <text x="444" y="192" text-anchor="start" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">剩余可多</text>
+
+  <!-- 底部结论框 -->
+  <rect x="40" y="300" width="440" height="50" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="320" text-anchor="middle" font-size="10.5" fill="#2f5d24" font-weight="bold" filter="url(#rough2)">删除与跳过同源于 dp[i−1][j]：合并为 dp[i−1][j] + canDel[i−1]，再与匹配分支取 max</text>
+  <text x="260" y="338" text-anchor="middle" font-size="10" fill="#2f5d24" filter="url(#rough2)">能删时「删除」严格优于「白保留」—— 三归宿收敛成两条转移</text>
+</svg>

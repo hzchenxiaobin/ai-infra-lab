@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：排序 + 前缀和 + 二分 value + 双候选比较</text>
+
+  <!-- Step 1: sort + prefix sum -->
+  <rect x="150" y="46" width="260" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="66" text-anchor="middle" font-size="12" fill="#3a5a2a" font-weight="bold">① 排序 arr + 前缀和 prefix</text>
+  <text x="280" y="82" text-anchor="middle" font-size="10.5" fill="#555">prefix[i+1] = prefix[i] + arr[i]，S(v) 用 upper_bound 切分</text>
+
+  <!-- arrow -->
+  <path d="M 280 90 L 280 104" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 2: init binary search -->
+  <rect x="150" y="108" width="260" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="126" text-anchor="middle" font-size="12" fill="#335" font-weight="bold">② 二分 value ∈ [0, max(arr)]</text>
+  <text x="280" y="141" text-anchor="middle" font-size="10.5" fill="#555">lo = 0, hi = max(arr)</text>
+
+  <!-- arrow -->
+  <path d="M 280 148 L 280 162" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 3: compute S(mid) -->
+  <rect x="130" y="166" width="300" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="186" text-anchor="middle" font-size="12" fill="#a87020" font-weight="bold">③ 计算 S(mid) = Σ min(arr[i], mid)</text>
+  <text x="280" y="202" text-anchor="middle" font-size="10.5" fill="#555">idx = upper_bound(arr, mid) → prefix[idx] + mid×(n−idx)</text>
+
+  <!-- arrow to diamond -->
+  <path d="M 280 214 L 280 230" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="280,234 380,282 280,330 180,282" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="278" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">S(mid)</text>
+  <text x="280" y="294" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">&lt; target？</text>
+
+  <!-- Yes branch (right): value too small -->
+  <path d="M 380 282 L 440 282" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="408" y="276" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">是 ✗</text>
+  <rect x="430" y="260" width="118" height="44" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="489" y="278" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">value 太小</text>
+  <text x="489" y="294" text-anchor="middle" font-size="10.5" fill="#555">lo = mid + 1</text>
+
+  <!-- No branch (left): value enough -->
+  <path d="M 180 282 L 120 282" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="152" y="276" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">否 ✓</text>
+  <rect x="14" y="260" width="106" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="67" y="278" text-anchor="middle" font-size="11" fill="#3a5a2a" font-weight="bold">value 够大</text>
+  <text x="67" y="294" text-anchor="middle" font-size="10.5" fill="#555">hi = mid − 1</text>
+
+  <!-- loop back arrow -->
+  <path d="M 489 260 L 489 190 L 430 190" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <path d="M 67 260 L 67 190 L 130 190" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)" stroke-dasharray="4,3"/>
+  <text x="280" y="252" text-anchor="middle" font-size="9.5" fill="#aaa">lo ≤ hi 时循环 ↑</text>
+
+  <!-- arrow down to compare -->
+  <path d="M 280 330 L 280 354" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="300" y="346" font-size="10" fill="#aaa">lo &gt; hi 结束</text>
+
+  <!-- Step 4: compare two candidates -->
+  <rect x="100" y="358" width="360" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="378" text-anchor="middle" font-size="12" fill="#a87020" font-weight="bold">④ 比较 lo 与 hi 两个候选</text>
+  <text x="280" y="396" text-anchor="middle" font-size="10.5" fill="#555">lo = 首个 S(lo) ≥ target 的值</text>
+  <text x="280" y="410" text-anchor="middle" font-size="10.5" fill="#555">hi = 末个 S(hi) &lt; target 的值 → 差更小者胜，平手取 hi（更小）</text>
+
+  <!-- arrow -->
+  <path d="M 280 414 L 280 428" stroke="#888" stroke-width="1.5" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <!-- Step 5: return -->
+  <rect x="170" y="432" width="220" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="455" text-anchor="middle" font-size="13" fill="#3a5a2a" font-weight="bold">⑤ 返回最优 value</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：左 BIT 增量 / 右 BIT 装删，逐位双向判定</text>
+
+  <!-- 步骤 1：初始化 -->
+  <rect x="50" y="48" width="460" height="62" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="68" y="70" font-size="12.5" fill="#446688" font-weight="bold">① 初始化</text>
+  <text x="68" y="90" font-size="11.5" fill="#333">right BIT：把 nums 全部 update(v, +1) 装入；left BIT 清空；ans = 0</text>
+  <text x="68" y="104" font-size="11" fill="#888">此时 right 表示「整个数组」的值计数，遍历中逐步移出当前位</text>
+
+  <!-- 箭头 -->
+  <path d="M 280 112 L 280 128" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 2：循环框 -->
+  <rect x="50" y="130" width="460" height="150" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="68" y="152" font-size="12.5" fill="#d6a040" font-weight="bold">② 遍历 v = nums[i]（i = 0 … n−1）</text>
+
+  <rect x="68" y="162" width="180" height="34" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="184" text-anchor="middle" font-size="11.5" fill="#333">right.update(v, −1)</text>
+  <text x="262" y="184" font-size="11" fill="#4a7a3a">移出当前位 → 右侧余</text>
+
+  <rect x="68" y="202" width="180" height="34" fill="#fafafa" stroke="#b85450" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="224" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">left.query(v−1) ≥ k 且 right.query(v−1) ≥ k ?</text>
+  <text x="262" y="224" font-size="11" fill="#888">是 → ans += 1</text>
+
+  <rect x="68" y="242" width="180" height="34" fill="#fafafa" stroke="#4a7a3a" stroke-width="1.4" rx="4" filter="url(#rough2)"/>
+  <text x="158" y="264" text-anchor="middle" font-size="11.5" fill="#333">left.update(v, +1)</text>
+  <text x="262" y="264" font-size="11" fill="#4a7a3a">并入左侧 → 供后续位</text>
+
+  <!-- 内部箭头 -->
+  <path d="M 158 196 L 158 202" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 158 236 L 158 242" stroke="#446688" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 循环回边 -->
+  <path d="M 480 207 Q 510 207 510 179 Q 510 179 480 179" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="495" y="200" font-size="10" fill="#888">next i</text>
+
+  <!-- 箭头 -->
+  <path d="M 280 280 L 280 298" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 3：返回 -->
+  <rect x="50" y="300" width="460" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="68" y="328" font-size="12.5" fill="#4a7a3a" font-weight="bold">③ 返回 ans（k-big 索引数）</text>
+
+  <!-- 不变式说明 -->
+  <rect x="50" y="362" width="460" height="84" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8" filter="url(#rough2)"/>
+  <text x="68" y="384" font-size="12" fill="#b85450" font-weight="bold">循环不变式</text>
+  <text x="68" y="404" font-size="11.5" fill="#333">查询瞬间：left 装的恰好是 nums[0..i−1]，right 装的恰好是 nums[i+1..n−1]</text>
+  <text x="68" y="422" font-size="11.5" fill="#333">故 query(v−1) = 该侧「严格小于 nums[i]」的元素个数；等于 v 的天然被排除</text>
+  <text x="68" y="438" font-size="11" fill="#888">关键三步顺序：右删 → 查询 → 左加，缺一不可保证双侧计数准确</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="470" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#555" font-weight="bold">算法流程：一次遍历同时累计三个投影</text>
+
+  <!-- Start -->
+  <ellipse cx="280" cy="64" rx="70" ry="22" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="69" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">xy=yz=zx=0</text>
+  <path d="M 280 86 L 280 110" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- outer loop -->
+  <rect x="190" y="114" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="139" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">for i in 0..n-1  (每行)</text>
+  <path d="M 280 154 L 280 176" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- init row/col max -->
+  <rect x="190" y="180" width="180" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="201" text-anchor="middle" font-size="12" fill="#333">rowMax = 0, colMax = 0</text>
+  <path d="M 280 214 L 280 236" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- inner loop -->
+  <rect x="190" y="240" width="180" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="265" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">for j in 0..n-1  (每列)</text>
+  <path d="M 280 280 L 280 302" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- diamond: grid[i][j] > 0? -->
+  <polygon points="280,306 360,336 280,366 200,336" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="280" y="332" text-anchor="middle" font-size="11" fill="#b85450">grid[i][j] &gt; 0 ?</text>
+  <text x="280" y="346" text-anchor="middle" font-size="10" fill="#888">是 → xy++</text>
+
+  <!-- branch right to updates -->
+  <path d="M 360 336 L 410 336" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- update box -->
+  <rect x="410" y="300" width="140" height="74" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="480" y="322" text-anchor="middle" font-size="11" fill="#333">rowMax = max(</text>
+  <text x="480" y="338" text-anchor="middle" font-size="11" fill="#333">  rowMax, grid[i][j])</text>
+  <text x="480" y="354" text-anchor="middle" font-size="11" fill="#333">colMax = max(</text>
+  <text x="480" y="370" text-anchor="middle" font-size="11" fill="#333">  colMax, grid[j][i])</text>
+
+  <!-- note about grid[j][i] -->
+  <text x="480" y="392" text-anchor="middle" font-size="9" fill="#aaa">grid[j][i] 取第 i 列</text>
+
+  <!-- loop back arrows -->
+  <path d="M 480 300 Q 480 256 370 256" stroke="#666" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="440" y="248" text-anchor="middle" font-size="9" fill="#888">j++ 继续</text>
+
+  <!-- after inner loop: accumulate -->
+  <path d="M 280 366 L 280 396" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <rect x="160" y="400" width="240" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="280" y="421" text-anchor="middle" font-size="12" fill="#333">zx += rowMax;  yz += colMax</text>
+
+  <!-- i loop back -->
+  <path d="M 160 417 Q 120 417 120 134 Q 120 110 190 134" stroke="#666" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="100" y="280" text-anchor="middle" font-size="9" fill="#888">i++ 继续</text>
+
+  <!-- return -->
+  <path d="M 400 417 L 460 417 L 460 64 L 350 64" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <ellipse cx="280" cy="64" rx="0" ry="0" fill="none"/>
+  <rect x="438" y="232" width="98" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="487" y="250" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">遍历结束</text>
+  <text x="487" y="265" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return xy+yz+zx</text>
+</svg>

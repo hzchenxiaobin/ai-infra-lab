@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="440" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold" filter="url(#rough2)">四步流水线：LEAD 配对 → 过滤 start → 秒差求和 → 整天取整</text>
+
+  <rect x="50" y="44" width="440" height="70" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="64" font-size="12" fill="#446688" font-weight="bold" filter="url(#rough2)">① 窗口配对：LEAD 一览下一个事件</text>
+  <text x="70" y="84" font-size="10.5" fill="#333" font-family="monospace" filter="url(#rough2)">LEAD(status_time) OVER (PARTITION BY server_id ORDER BY status_time)</text>
+  <text x="70" y="104" font-size="10.5" fill="#999" filter="url(#rough2)">每行拿到「同服务器、按时间排序的下一行」时刻 → next_status_time</text>
+
+  <path d="M 270 114 L 270 132" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="50" y="132" width="440" height="70" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="152" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">② 只留会话起点</text>
+  <text x="70" y="172" font-size="10.5" fill="#333" font-family="monospace" filter="url(#rough2)">WHERE session_status = 'start'</text>
+  <text x="70" y="192" font-size="10.5" fill="#999" filter="url(#rough2)">stop 行全部出局——时长只在 start 行上统计</text>
+
+  <path d="M 270 202 L 270 220" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="50" y="220" width="440" height="70" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="240" font-size="12" fill="#d6a040" font-weight="bold" filter="url(#rough2)">③ 秒差求和：全表一个总计</text>
+  <text x="70" y="260" font-size="10.5" fill="#333" font-family="monospace" filter="url(#rough2)">SUM(TIMESTAMPDIFF(SECOND, status_time, next_status_time))</text>
+  <text x="70" y="280" font-size="10.5" fill="#999" filter="url(#rough2)">没有 GROUP BY、不输出 server_id——所有服务器共用一个总数</text>
+
+  <path d="M 270 290 L 270 308" stroke="#446688" stroke-width="1.8" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="50" y="308" width="440" height="70" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="70" y="328" font-size="12" fill="#b85450" font-weight="bold" filter="url(#rough2)">④ 换算成整天，向下取整</text>
+  <text x="70" y="348" font-size="10.5" fill="#333" font-family="monospace" filter="url(#rough2)">FLOOR(SUM(...) / 86400) AS total_uptime_days</text>
+  <text x="70" y="368" font-size="10.5" fill="#999" filter="url(#rough2)">86400 秒 = 1 天；「向下舍入」是 FLOOR，不是 ROUND</text>
+
+  <text x="270" y="416" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">单行单列输出 total_uptime_days——审题第一坑：这不是按服务器分组的报表！</text>
+</svg>

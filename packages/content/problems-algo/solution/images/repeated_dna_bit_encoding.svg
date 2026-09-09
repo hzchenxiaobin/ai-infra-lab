@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="440" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">187 核心：2 位编码 + 20 位滑动窗口</text>
+  <text x="290" y="44" text-anchor="middle" font-size="11" fill="#888">4 种碱基 → 2 bit/个 × 10 个 = 20 bit，一个 int 装下一条 10-mer</text>
+
+  <!-- ===== 编码表 ===== -->
+  <text x="50" y="74" font-size="12" fill="#446688" font-weight="bold">① 碱基 → 2 位编码</text>
+
+  <g font-size="11">
+    <rect x="40" y="84" width="100" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+    <text x="70" y="106" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">A</text>
+    <text x="115" y="106" text-anchor="middle" font-size="11" fill="#446688" font-family="monospace">00</text>
+
+    <rect x="160" y="84" width="100" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+    <text x="190" y="106" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">C</text>
+    <text x="235" y="106" text-anchor="middle" font-size="11" fill="#4a7a3a" font-family="monospace">01</text>
+
+    <rect x="280" y="84" width="100" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+    <text x="310" y="106" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">G</text>
+    <text x="355" y="106" text-anchor="middle" font-size="11" fill="#d6a040" font-family="monospace">10</text>
+
+    <rect x="400" y="84" width="100" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+    <text x="430" y="106" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">T</text>
+    <text x="475" y="106" text-anchor="middle" font-size="11" fill="#b85450" font-family="monospace">11</text>
+  </g>
+  <text x="290" y="136" text-anchor="middle" font-size="10" fill="#888">(s[i] &gt;&gt; 1) &amp; 3 或查表均可，本质是把 4 个字母映成 0/1/2/3</text>
+
+  <!-- ===== 10-mer 编码示意 ===== -->
+  <text x="50" y="166" font-size="12" fill="#446688" font-weight="bold">② 一条 10-mer = 20 bit，塞进一个 int32</text>
+
+  <text x="40" y="190" font-size="11" fill="#444">窗口</text>
+  <g font-size="11">
+    <rect x="80" y="178" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="97" y="197" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A</text>
+    <rect x="114" y="178" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="131" y="197" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A</text>
+    <rect x="148" y="178" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="165" y="197" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A</text>
+    <rect x="182" y="178" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="199" y="197" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A</text>
+    <rect x="216" y="178" width="34" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="233" y="197" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">A</text>
+    <rect x="250" y="178" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="267" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+    <rect x="284" y="178" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="301" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+    <rect x="318" y="178" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="335" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+    <rect x="352" y="178" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="369" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+    <rect x="386" y="178" width="34" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+    <text x="403" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+  </g>
+  <text x="436" y="197" font-size="10" fill="#888">= "AAAAACCCCC"</text>
+
+  <!-- 编码后的 20 bit -->
+  <text x="40" y="230" font-size="11" fill="#444">编码</text>
+  <g font-size="10" font-family="monospace">
+    <rect x="80" y="218" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="97" y="234" text-anchor="middle" fill="#446688">00</text>
+    <rect x="114" y="218" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="131" y="234" text-anchor="middle" fill="#446688">00</text>
+    <rect x="148" y="218" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="165" y="234" text-anchor="middle" fill="#446688">00</text>
+    <rect x="182" y="218" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="199" y="234" text-anchor="middle" fill="#446688">00</text>
+    <rect x="216" y="218" width="34" height="24" fill="#e8f0fe" stroke="#446688" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="233" y="234" text-anchor="middle" fill="#446688">00</text>
+    <rect x="250" y="218" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="267" y="234" text-anchor="middle" fill="#4a7a3a">01</text>
+    <rect x="284" y="218" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="301" y="234" text-anchor="middle" fill="#4a7a3a">01</text>
+    <rect x="318" y="218" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="335" y="234" text-anchor="middle" fill="#4a7a3a">01</text>
+    <rect x="352" y="218" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="369" y="234" text-anchor="middle" fill="#4a7a3a">01</text>
+    <rect x="386" y="218" width="34" height="24" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.1" rx="2" filter="url(#rough2)"/>
+    <text x="403" y="234" text-anchor="middle" fill="#4a7a3a">01</text>
+  </g>
+  <text x="436" y="234" font-size="10" fill="#888" font-family="monospace">= 0b…01010101</text>
+
+  <!-- 最终 int 值 -->
+  <rect x="80" y="252" width="340" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="5" filter="url(#rough2)"/>
+  <text x="250" y="271" text-anchor="middle" font-size="12" fill="#7a5a20" font-weight="bold" font-family="monospace">hash = 341（一个 int 搞定，免存 10 字符字符串）</text>
+
+  <!-- ===== 掩码说明 ===== -->
+  <text x="50" y="304" font-size="12" fill="#b85450" font-weight="bold">③ 掩码 0xFFFFF：只留低 20 位，自动踢掉最老的 2 位</text>
+
+  <rect x="40" y="316" width="500" height="108" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="338" font-size="11" fill="#8a3a36" font-weight="bold">滚动公式：</text>
+  <text x="60" y="360" font-size="13" fill="#8a3a36" font-family="monospace" font-weight="bold">hash = ((hash &lt;&lt; 2) | code(s[i])) &amp; 0xFFFFF</text>
+
+  <text x="60" y="384" font-size="10" fill="#666">• hash &lt;&lt; 2 ：全体左移 2 位，给新碱基腾出最低 2 位</text>
+  <text x="60" y="400" font-size="10" fill="#666">• | code(s[i]) ：新碱基的 2 位编码塞进最低位</text>
+  <text x="60" y="416" font-size="10" fill="#b85450" font-weight="bold">• &amp; 0xFFFFF：(1&lt;&lt;20)−1，截断第 21 位以上 → 最老碱基被丢弃</text>
+</svg>

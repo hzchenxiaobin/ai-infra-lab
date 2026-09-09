@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">示例演算：逐事件算均值 → 逐行比较 → 统计种类数</text>
+
+  <!-- ===== Step ①: avg per event_type ===== -->
+  <text x="300" y="48" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">① 按事件类型分组求均值</text>
+
+  <rect x="20" y="56" width="175" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="107" y="72" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">reviews 组</text>
+  <text x="107" y="90" text-anchor="middle" font-size="9" fill="#333">biz1: 7, biz3: 3</text>
+  <text x="107" y="108" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">avg = (7+3)/2 = 5</text>
+  <text x="107" y="124" text-anchor="middle" font-size="8" fill="#888">2 个业务参与</text>
+
+  <rect x="210" y="56" width="175" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="297" y="72" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">ads 组</text>
+  <text x="297" y="90" text-anchor="middle" font-size="9" fill="#333">biz1: 11, biz2: 7, biz3: 6</text>
+  <text x="297" y="108" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">avg = (11+7+6)/3 = 8</text>
+  <text x="297" y="124" text-anchor="middle" font-size="8" fill="#888">3 个业务参与</text>
+
+  <rect x="400" y="56" width="175" height="76" fill="#e8f0fe" stroke="#446688" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="487" y="72" text-anchor="middle" font-size="9" fill="#446688" font-weight="bold">page views 组</text>
+  <text x="487" y="90" text-anchor="middle" font-size="9" fill="#333">biz1: 3, biz2: 12</text>
+  <text x="487" y="108" text-anchor="middle" font-size="9" fill="#d6a040" font-weight="bold">avg = (3+12)/2 = 7.5</text>
+  <text x="487" y="124" text-anchor="middle" font-size="8" fill="#888">2 个业务参与</text>
+
+  <!-- ===== Step ②: compare each row ===== -->
+  <text x="300" y="148" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">② 逐行比较 occ 与 avg（occ &gt; avg 标 ✓）</text>
+
+  <!-- comparison table header -->
+  <rect x="20" y="158" width="560" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="45" y="173" font-size="8" fill="#b85450" font-weight="bold">biz</text>
+  <text x="115" y="173" font-size="8" fill="#b85450" font-weight="bold">event_type</text>
+  <text x="200" y="173" font-size="8" fill="#b85450" font-weight="bold">occ</text>
+  <text x="265" y="173" font-size="8" fill="#b85450" font-weight="bold">avg</text>
+  <text x="320" y="173" font-size="8" fill="#b85450" font-weight="bold">occ&gt;avg?</text>
+  <text x="420" y="173" font-size="8" fill="#b85450" font-weight="bold">超过的种类计数</text>
+
+  <!-- row 1: biz1 reviews 7 vs 5 -->
+  <rect x="20" y="180" width="560" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="193" text-anchor="middle" font-size="9" fill="#333">1</text>
+  <text x="115" y="193" text-anchor="middle" font-size="9" fill="#333">reviews</text>
+  <text x="200" y="193" text-anchor="middle" font-size="9" fill="#333">7</text>
+  <text x="265" y="193" text-anchor="middle" font-size="9" fill="#d6a040">5</text>
+  <text x="320" y="193" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">7&gt;5 ✓</text>
+  <text x="420" y="193" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">biz1: 1</text>
+
+  <!-- row 2: biz3 reviews 3 vs 5 -->
+  <rect x="20" y="198" width="560" height="18" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="211" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="115" y="211" text-anchor="middle" font-size="9" fill="#888">reviews</text>
+  <text x="200" y="211" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="265" y="211" text-anchor="middle" font-size="9" fill="#888">5</text>
+  <text x="320" y="211" text-anchor="middle" font-size="9" fill="#888">3&lt;5 ✗</text>
+  <text x="420" y="211" text-anchor="middle" font-size="9" fill="#888">biz3: 0</text>
+
+  <!-- row 3: biz1 ads 11 vs 8 -->
+  <rect x="20" y="216" width="560" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="229" text-anchor="middle" font-size="9" fill="#333">1</text>
+  <text x="115" y="229" text-anchor="middle" font-size="9" fill="#333">ads</text>
+  <text x="200" y="229" text-anchor="middle" font-size="9" fill="#333">11</text>
+  <text x="265" y="229" text-anchor="middle" font-size="9" fill="#d6a040">8</text>
+  <text x="320" y="229" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">11&gt;8 ✓</text>
+  <text x="420" y="229" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">biz1: 2 ★</text>
+
+  <!-- row 4: biz2 ads 7 vs 8 -->
+  <rect x="20" y="234" width="560" height="18" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="247" text-anchor="middle" font-size="9" fill="#888">2</text>
+  <text x="115" y="247" text-anchor="middle" font-size="9" fill="#888">ads</text>
+  <text x="200" y="247" text-anchor="middle" font-size="9" fill="#888">7</text>
+  <text x="265" y="247" text-anchor="middle" font-size="9" fill="#888">8</text>
+  <text x="320" y="247" text-anchor="middle" font-size="9" fill="#888">7&lt;8 ✗</text>
+  <text x="420" y="247" text-anchor="middle" font-size="9" fill="#888">biz2: 0</text>
+
+  <!-- row 5: biz3 ads 6 vs 8 -->
+  <rect x="20" y="252" width="560" height="18" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="265" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="115" y="265" text-anchor="middle" font-size="9" fill="#888">ads</text>
+  <text x="200" y="265" text-anchor="middle" font-size="9" fill="#888">6</text>
+  <text x="265" y="265" text-anchor="middle" font-size="9" fill="#888">8</text>
+  <text x="320" y="265" text-anchor="middle" font-size="9" fill="#888">6&lt;8 ✗</text>
+  <text x="420" y="265" text-anchor="middle" font-size="9" fill="#888">biz3: 0</text>
+
+  <!-- row 6: biz1 page views 3 vs 7.5 -->
+  <rect x="20" y="270" width="560" height="18" fill="#f0f0f0" stroke="#bbb" stroke-width="0.6" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="283" text-anchor="middle" font-size="9" fill="#888">1</text>
+  <text x="115" y="283" text-anchor="middle" font-size="9" fill="#888">page views</text>
+  <text x="200" y="283" text-anchor="middle" font-size="9" fill="#888">3</text>
+  <text x="265" y="283" text-anchor="middle" font-size="9" fill="#888">7.5</text>
+  <text x="320" y="283" text-anchor="middle" font-size="9" fill="#888">3&lt;7.5 ✗</text>
+  <text x="420" y="283" text-anchor="middle" font-size="9" fill="#888">biz1: 2</text>
+
+  <!-- row 7: biz2 page views 12 vs 7.5 -->
+  <rect x="20" y="288" width="560" height="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="2" filter="url(#rough2)"/>
+  <text x="45" y="301" text-anchor="middle" font-size="9" fill="#333">2</text>
+  <text x="115" y="301" text-anchor="middle" font-size="9" fill="#333">page views</text>
+  <text x="200" y="301" text-anchor="middle" font-size="9" fill="#333">12</text>
+  <text x="265" y="301" text-anchor="middle" font-size="9" fill="#d6a040">7.5</text>
+  <text x="320" y="301" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">12&gt;7.5 ✓</text>
+  <text x="420" y="301" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">biz2: 1</text>
+
+  <!-- ===== Step ③: HAVING COUNT > 1 ===== -->
+  <text x="300" y="324" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">③ GROUP BY business_id + HAVING COUNT(超过均值的行) &gt; 1</text>
+
+  <rect x="60" y="334" width="140" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="350" text-anchor="middle" font-size="9" fill="#333">biz 1: 超过 <tspan fill="#b85450" font-weight="bold">2</tspan> 种</text>
+  <text x="130" y="366" text-anchor="middle" font-size="9" fill="#4a7a3a" font-weight="bold">2 &gt; 1 → 活跃 ✓</text>
+
+  <rect x="230" y="334" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="300" y="350" text-anchor="middle" font-size="9" fill="#333">biz 2: 超过 <tspan fill="#b85450" font-weight="bold">1</tspan> 种</text>
+  <text x="300" y="366" text-anchor="middle" font-size="9" fill="#888">1 ≤ 1 → ✗ 不活跃</text>
+
+  <rect x="400" y="334" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" rx="6" filter="url(#rough2)"/>
+  <text x="470" y="350" text-anchor="middle" font-size="9" fill="#333">biz 3: 超过 <tspan fill="#b85450" font-weight="bold">0</tspan> 种</text>
+  <text x="470" y="366" text-anchor="middle" font-size="9" fill="#888">0 ≤ 1 → ✗ 不活跃</text>
+
+  <!-- arrow down -->
+  <path d="M130 378 L130 396" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ===== Result ===== -->
+  <rect x="60" y="398" width="140" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="416" text-anchor="middle" font-size="9" fill="#b85450" font-weight="bold">最终结果</text>
+  <text x="130" y="432" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">business_id = 1</text>
+
+  <!-- note box -->
+  <rect x="230" y="398" width="310" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="6" filter="url(#rough2)"/>
+  <text x="385" y="414" text-anchor="middle" font-size="8.5" fill="#d6a040" font-weight="bold">⚠️ "more than one" = 种类数 ≥ 2</text>
+  <text x="385" y="430" text-anchor="middle" font-size="8" fill="#333">biz 2 虽然 page views 超均值（12&gt;7.5），但仅 1 种 → 不活跃</text>
+</svg>

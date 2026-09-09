@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 380" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="380" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">稀疏矩阵乘法：按行存非零，跳过零元素</text>
+
+  <!-- 公式 -->
+  <rect x="50" y="42" width="440" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="13" fill="#333">C[i][j] = Σ_k A[i][k]·B[k][j]　密集三重循环 O(m·k·n)</text>
+
+  <!-- 左：mat1 网格 -->
+  <text x="130" y="100" text-anchor="middle" font-size="11" fill="#888">mat1 (m×k)</text>
+  <text x="92" y="118" text-anchor="middle" font-size="9" fill="#bbb">k=0</text>
+  <text x="132" y="118" text-anchor="middle" font-size="9" fill="#bbb">1</text>
+  <text x="172" y="118" text-anchor="middle" font-size="9" fill="#bbb">2</text>
+  <!-- 行 0 -->
+  <text x="62" y="142" text-anchor="end" font-size="9" fill="#bbb">i=0</text>
+  <rect x="74" y="124" width="36" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="145" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">1</text>
+  <rect x="110" y="124" width="36" height="32" fill="#f2f2f2" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="145" text-anchor="middle" font-size="12" fill="#bbb">0</text>
+  <rect x="146" y="124" width="36" height="32" fill="#f2f2f2" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="164" y="145" text-anchor="middle" font-size="12" fill="#bbb">0</text>
+  <!-- 行 1 -->
+  <text x="62" y="180" text-anchor="end" font-size="9" fill="#bbb">i=1</text>
+  <rect x="74" y="162" width="36" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="92" y="183" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">−1</text>
+  <rect x="110" y="162" width="36" height="32" fill="#f2f2f2" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="128" y="183" text-anchor="middle" font-size="12" fill="#bbb">0</text>
+  <rect x="146" y="162" width="36" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="164" y="183" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">3</text>
+
+  <!-- 中间箭头 -->
+  <path d="M195 159 H278" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="237" y="151" text-anchor="middle" font-size="10" fill="#888">按行压缩</text>
+
+  <!-- 右：稀疏行表 -->
+  <text x="385" y="100" text-anchor="middle" font-size="11" fill="#888">row-sparse 表示</text>
+  <rect x="290" y="116" width="200" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="137" text-anchor="middle" font-size="12" fill="#444">row 0 → [(0, 1)]</text>
+  <rect x="290" y="154" width="200" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="390" y="175" text-anchor="middle" font-size="12" fill="#444">row 1 → [(0, −1), (2, 3)]</text>
+
+  <!-- 分隔虚线 -->
+  <path d="M40 210 H500" stroke="#ccc" stroke-width="1.2" stroke-dasharray="5,4" filter="url(#rough2)"/>
+
+  <!-- 核心思想 -->
+  <text x="270" y="234" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">核心：只对非零 A[i][k]=v，累加 v·B[k][*] 到 C[i][*]</text>
+
+  <!-- B 的三行，只取 k=0 与 k=2 -->
+  <text x="84" y="262" font-size="11" fill="#888">B 的行（按需取）：</text>
+  <rect x="76" y="272" width="112" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="132" y="291" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">B[0]=[7,0,0]</text>
+  <rect x="76" y="304" width="112" height="28" fill="#f2f2f2" stroke="#ccc" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="132" y="323" text-anchor="middle" font-size="11" fill="#bbb">B[1]=[0,0,0] ✗</text>
+  <rect x="76" y="336" width="112" height="28" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="132" y="355" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">B[2]=[0,0,1]</text>
+
+  <!-- 右侧结果说明 -->
+  <rect x="220" y="270" width="284" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="362" y="292" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">row 0：A[0][0]=1, k=0</text>
+  <text x="362" y="312" text-anchor="middle" font-size="12" fill="#444">C[0] += 1 · B[0] = [7,0,0]</text>
+  <text x="362" y="334" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">row 1：A[1][0]=−1, A[1][2]=3</text>
+  <text x="362" y="354" text-anchor="middle" font-size="12" fill="#444">C[1] += −1·B[0] + 3·B[2]</text>
+</svg>

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arwf" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#446688" filter="url(#rough2)"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">区间 DP 流程：按长度递增逐条对角线填充（以 n=4 为例）</text>
+
+  <!-- ===== left: dp table fill order ===== -->
+  <text x="135" y="48" text-anchor="middle" font-size="11" fill="#888">dp 表填充顺序（nums=[1,5,233,7]）</text>
+
+  <!-- column header j -->
+  <text x="95" y="74" text-anchor="middle" font-size="10" fill="#aaa">j\i</text>
+  <text x="135" y="74" text-anchor="middle" font-size="10" fill="#aaa">0</text>
+  <text x="175" y="74" text-anchor="middle" font-size="10" fill="#aaa">1</text>
+  <text x="215" y="74" text-anchor="middle" font-size="10" fill="#aaa">2</text>
+  <text x="255" y="74" text-anchor="middle" font-size="10" fill="#aaa">3</text>
+
+  <!-- row headers i -->
+  <text x="95" y="100" text-anchor="middle" font-size="10" fill="#aaa">0</text>
+  <text x="95" y="140" text-anchor="middle" font-size="10" fill="#aaa">1</text>
+  <text x="95" y="180" text-anchor="middle" font-size="10" fill="#aaa">2</text>
+  <text x="95" y="220" text-anchor="middle" font-size="10" fill="#aaa">3</text>
+
+  <!-- len1 diagonal (green): (0,0)(1,1)(2,2)(3,3) -->
+  <rect x="115" y="84" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="135" y="108" text-anchor="middle" font-size="11" fill="#333">1</text>
+  <rect x="155" y="124" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="148" text-anchor="middle" font-size="11" fill="#333">5</text>
+  <rect x="195" y="164" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="188" text-anchor="middle" font-size="11" fill="#333">233</text>
+  <rect x="235" y="204" width="40" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="228" text-anchor="middle" font-size="11" fill="#333">7</text>
+
+  <!-- len2 (blue): (0,1)(1,2)(2,3) -->
+  <rect x="155" y="84" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="175" y="108" text-anchor="middle" font-size="11" fill="#333">4</text>
+  <rect x="195" y="124" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="148" text-anchor="middle" font-size="11" fill="#333">228</text>
+  <rect x="235" y="164" width="40" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="188" text-anchor="middle" font-size="11" fill="#333">226</text>
+
+  <!-- len3 (orange): (0,2)(1,3) -->
+  <rect x="195" y="84" width="40" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="215" y="108" text-anchor="middle" font-size="11" fill="#333">229</text>
+  <rect x="235" y="124" width="40" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="148" text-anchor="middle" font-size="11" fill="#333">-221</text>
+
+  <!-- len4 answer (red): (0,3) -->
+  <rect x="235" y="84" width="40" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2.5" rx="4" filter="url(#rough2)"/>
+  <text x="255" y="108" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">222</text>
+
+  <!-- fill-order arrow along diagonals -->
+  <path d="M 155 124 L 175 104" stroke="#4a7a3a" stroke-width="1.3" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+  <path d="M 215 164 L 235 144" stroke="#446688" stroke-width="1.3" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+  <path d="M 255 124 L 235 104" stroke="#d6a040" stroke-width="1.3" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+
+  <!-- legend -->
+  <rect x="60" y="262" width="14" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="80" y="274" font-size="10" fill="#555">len=1 边界</text>
+  <rect x="60" y="282" width="14" height="14" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="80" y="294" font-size="10" fill="#555">len=2</text>
+  <rect x="160" y="262" width="14" height="14" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="274" font-size="10" fill="#555">len=3</text>
+  <rect x="160" y="282" width="14" height="14" fill="#fce4ec" stroke="#b85450" stroke-width="1.3" rx="3" filter="url(#rough2)"/>
+  <text x="180" y="294" font-size="10" fill="#555">len=n 答案</text>
+
+  <!-- ===== right: flowchart ===== -->
+  <rect x="310" y="56" width="195" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="78" text-anchor="middle" font-size="11" fill="#333">① 初始化 dp[i][i] = nums[i]</text>
+
+  <path d="M 407 90 L 407 104" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+
+  <rect x="310" y="106" width="195" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="128" text-anchor="middle" font-size="11" fill="#333">② for len = 2 .. n</text>
+
+  <path d="M 407 140 L 407 154" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+
+  <rect x="310" y="156" width="195" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="178" text-anchor="middle" font-size="11" fill="#333">③ for i = 0 .. n−len, j=i+len−1</text>
+
+  <path d="M 407 190 L 407 204" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+
+  <rect x="300" y="206" width="215" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="226" text-anchor="middle" font-size="10.5" fill="#333">④ dp[i][j] = max(nums[i]−dp[i+1][j],</text>
+  <text x="407" y="242" text-anchor="middle" font-size="10.5" fill="#333">nums[j]−dp[i][j−1])</text>
+
+  <path d="M 407 250 L 407 264" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arwf)" filter="url(#rough2)"/>
+
+  <rect x="310" y="266" width="195" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="407" y="288" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">⑤ return dp[0][n−1] ≥ 0</text>
+
+  <!-- loop-back arrow from ④ to ② -->
+  <path d="M 300 228 Q 286 228 286 170 Q 286 124 310 123" stroke="#888" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arwf)" filter="url(#rough2)"/>
+  <text x="282" y="200" text-anchor="middle" font-size="9" fill="#888" transform="rotate(-90 282 200)">循环</text>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" filter="url(#rough2)">闭包 = fn + 一次性布尔开关</text>
+
+  <!-- once(fn) outer closure box -->
+  <rect x="30" y="55" width="180" height="230" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="120" y="76" text-anchor="middle" font-size="13" font-weight="bold" fill="#446688" filter="url(#rough2)">once(fn) 返回的闭包</text>
+  <line x1="40" y1="84" x2="200" y2="84" stroke="#446688" stroke-width="1" stroke-dasharray="4,3" filter="url(#rough2)"/>
+
+  <!-- fn inside -->
+  <rect x="55" y="100" width="130" height="42" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="120" y="119" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">fn</text>
+  <text x="120" y="135" text-anchor="middle" font-size="11" fill="#888" filter="url(#rough2)">(原函数)</text>
+
+  <!-- called flag inside -->
+  <rect x="55" y="160" width="130" height="48" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="120" y="179" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">called</text>
+  <text x="120" y="197" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">= false（一次性开关）</text>
+
+  <!-- note about capture -->
+  <text x="120" y="232" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">闭包捕获，跨调用共享</text>
+  <text x="120" y="250" text-anchor="middle" font-size="11" fill="#666" filter="url(#rough2)">外部无法直接访问</text>
+
+  <!-- Path 1: first call (green) -->
+  <rect x="250" y="72" width="250" height="78" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="375" y="94" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a7a3a" filter="url(#rough2)">第 1 次调用</text>
+  <text x="375" y="116" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">called = false → 调用 fn</text>
+  <text x="375" y="135" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">置 called = true → 返回结果</text>
+  <path d="M210,120 Q232,114 248,110" fill="none" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- Path 2: subsequent calls (orange) -->
+  <rect x="250" y="200" width="250" height="78" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="375" y="222" text-anchor="middle" font-size="13" font-weight="bold" fill="#d6a040" filter="url(#rough2)">第 2 次及以后</text>
+  <text x="375" y="244" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">called = true → 不碰 fn</text>
+  <text x="375" y="263" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">直接返回 undefined</text>
+  <path d="M210,185 Q232,205 248,233" fill="none" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- bottom note -->
+  <text x="260" y="318" text-anchor="middle" font-size="12" fill="#666" filter="url(#rough2)">开关只翻一次：false → true 后永不回退，故 fn 至多被调一次</text>
+  <text x="260" y="338" text-anchor="middle" font-size="11" fill="#999" filter="url(#rough2)">这是「装饰器 + 一次性守卫」的最简形态</text>
+</svg>

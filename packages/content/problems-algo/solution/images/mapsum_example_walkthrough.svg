@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="33" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+  </defs>
+  <rect width="780" height="440" fill="#fdfcf7"/>
+
+  <text x="390" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">示例演算：建树 + 前缀求和 + 覆盖更新</text>
+  <path d="M 220 38 Q 390 46 560 38" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="390" y="56" text-anchor="middle" font-size="11" fill="#888">跟踪节点 Σ（a / p / p / l / e）随 insert 与 sum 的变化，重点看步骤④的覆盖</text>
+
+  <!-- ===== table header ===== -->
+  <g filter="url(#sk)"><rect x="30" y="72" width="720" height="32" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.3"/></g>
+  <text x="60" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">步</text>
+  <text x="190" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">操作</text>
+  <text x="320" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">delta</text>
+  <text x="430" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">a</text>
+  <text x="480" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">p</text>
+  <text x="530" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">p</text>
+  <text x="580" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">l</text>
+  <text x="630" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">e</text>
+  <text x="710" y="93" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">sum("ap")</text>
+  <!-- column separators -->
+  <path d="M 100 72 L 100 104 M 280 72 L 280 104 M 360 72 L 360 104" stroke="#4a8edb" stroke-width="0.8" fill="none" filter="url(#sk)"/>
+  <text x="390" y="93" text-anchor="middle" font-size="9" fill="#888">Σ 值</text>
+  <path d="M 660 72 L 660 104" stroke="#4a8edb" stroke-width="0.8" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== row 1: insert("apple",3) ===== -->
+  <g filter="url(#sk)"><rect x="30" y="106" width="720" height="48" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1"/></g>
+  <text x="60" y="135" text-anchor="middle" font-size="12" fill="#9a6a20" font-weight="bold">①</text>
+  <text x="190" y="135" text-anchor="middle" font-size="10" fill="#9a6a20">insert("apple",3)</text>
+  <text x="320" y="135" text-anchor="middle" font-size="10" fill="#9a6a20" font-weight="bold">+3</text>
+  <g filter="url(#sk)"><rect x="412" y="116" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="430" y="135" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">3</text>
+  <g filter="url(#sk)"><rect x="462" y="116" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="480" y="135" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">3</text>
+  <g filter="url(#sk)"><rect x="512" y="116" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="530" y="135" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">3</text>
+  <g filter="url(#sk)"><rect x="562" y="116" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="580" y="135" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">3</text>
+  <g filter="url(#sk)"><rect x="612" y="116" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="630" y="135" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">3</text>
+  <text x="710" y="135" text-anchor="middle" font-size="10" fill="#888">—</text>
+
+  <!-- ===== row 2: insert("app",2) ===== -->
+  <g filter="url(#sk)"><rect x="30" y="158" width="720" height="48" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1"/></g>
+  <text x="60" y="187" text-anchor="middle" font-size="12" fill="#9a6a20" font-weight="bold">②</text>
+  <text x="190" y="187" text-anchor="middle" font-size="10" fill="#9a6a20">insert("app",2)</text>
+  <text x="320" y="187" text-anchor="middle" font-size="10" fill="#9a6a20" font-weight="bold">+2</text>
+  <g filter="url(#sk)"><rect x="412" y="168" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/></g>
+  <text x="430" y="187" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">5</text>
+  <g filter="url(#sk)"><rect x="462" y="168" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/></g>
+  <text x="480" y="187" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">5</text>
+  <g filter="url(#sk)"><rect x="512" y="168" width="36" height="28" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2"/></g>
+  <text x="530" y="187" text-anchor="middle" font-size="11" fill="#9a6a20" font-weight="bold">5</text>
+  <g filter="url(#sk)"><rect x="562" y="168" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="580" y="187" text-anchor="middle" font-size="11" fill="#888">3</text>
+  <g filter="url(#sk)"><rect x="612" y="168" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="630" y="187" text-anchor="middle" font-size="11" fill="#888">3</text>
+  <text x="710" y="187" text-anchor="middle" font-size="10" fill="#888">—</text>
+  <text x="480" y="222" text-anchor="middle" font-size="8" fill="#d6a040">↑ 这3个+2</text>
+
+  <!-- ===== row 3: sum("ap") ===== -->
+  <g filter="url(#sk)"><rect x="30" y="228" width="720" height="48" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1"/></g>
+  <text x="60" y="257" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">③</text>
+  <text x="190" y="257" text-anchor="middle" font-size="10" fill="#2e6e2e">sum("ap")</text>
+  <text x="320" y="257" text-anchor="middle" font-size="10" fill="#888">—</text>
+  <g filter="url(#sk)"><rect x="412" y="238" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="430" y="257" text-anchor="middle" font-size="11" fill="#888">5</text>
+  <g filter="url(#sk)"><rect x="462" y="238" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="480" y="257" text-anchor="middle" font-size="11" fill="#888">5</text>
+  <g filter="url(#sk)"><rect x="512" y="238" width="36" height="28" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2.4"/></g>
+  <text x="530" y="257" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">5</text>
+  <g filter="url(#sk)"><rect x="562" y="238" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="580" y="257" text-anchor="middle" font-size="11" fill="#888">3</text>
+  <g filter="url(#sk)"><rect x="612" y="238" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="630" y="257" text-anchor="middle" font-size="11" fill="#888">3</text>
+  <g filter="url(#sk)"><rect x="668" y="238" width="84" height="28" rx="6" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2"/></g>
+  <text x="710" y="257" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">5</text>
+  <text x="530" y="288" text-anchor="middle" font-size="8" fill="#2e8b57">↑ 读这个</text>
+
+  <!-- ===== row 4: insert("apple",5) overwrite ===== -->
+  <g filter="url(#sk)"><rect x="30" y="294" width="720" height="48" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.2"/></g>
+  <text x="60" y="323" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">④</text>
+  <text x="190" y="323" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">insert("apple",5)</text>
+  <text x="320" y="323" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">+2</text>
+  <text x="335" y="336" text-anchor="middle" font-size="8" fill="#b85450">(5-3)</text>
+  <g filter="url(#sk)"><rect x="412" y="304" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="430" y="323" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">7</text>
+  <g filter="url(#sk)"><rect x="462" y="304" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="480" y="323" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">7</text>
+  <g filter="url(#sk)"><rect x="512" y="304" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="530" y="323" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">7</text>
+  <g filter="url(#sk)"><rect x="562" y="304" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="580" y="323" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">5</text>
+  <g filter="url(#sk)"><rect x="612" y="304" width="36" height="28" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="2"/></g>
+  <text x="630" y="323" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">5</text>
+  <text x="710" y="323" text-anchor="middle" font-size="10" fill="#888">—</text>
+  <text x="530" y="354" text-anchor="middle" font-size="8" fill="#b85450">↑ 覆盖：apple 3→5，全路径 +2</text>
+
+  <!-- ===== row 5: sum("ap") ===== -->
+  <g filter="url(#sk)"><rect x="30" y="360" width="720" height="48" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1"/></g>
+  <text x="60" y="389" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">⑤</text>
+  <text x="190" y="389" text-anchor="middle" font-size="10" fill="#2e6e2e">sum("ap")</text>
+  <text x="320" y="389" text-anchor="middle" font-size="10" fill="#888">—</text>
+  <g filter="url(#sk)"><rect x="412" y="370" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="430" y="389" text-anchor="middle" font-size="11" fill="#888">7</text>
+  <g filter="url(#sk)"><rect x="462" y="370" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="480" y="389" text-anchor="middle" font-size="11" fill="#888">7</text>
+  <g filter="url(#sk)"><rect x="512" y="370" width="36" height="28" rx="4" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2.4"/></g>
+  <text x="530" y="389" text-anchor="middle" font-size="11" fill="#2e6e2e" font-weight="bold">7</text>
+  <g filter="url(#sk)"><rect x="562" y="370" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="580" y="389" text-anchor="middle" font-size="11" fill="#888">5</text>
+  <g filter="url(#sk)"><rect x="612" y="370" width="36" height="28" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="630" y="389" text-anchor="middle" font-size="11" fill="#888">5</text>
+  <g filter="url(#sk)"><rect x="668" y="370" width="84" height="28" rx="6" fill="#e6f4ea" stroke="#2e8b57" stroke-width="2"/></g>
+  <text x="710" y="389" text-anchor="middle" font-size="12" fill="#2e6e2e" font-weight="bold">7</text>
+
+  <!-- bottom legend -->
+  <g filter="url(#sk)"><rect x="40" y="416" width="700" height="20" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1"/></g>
+  <text x="390" y="430" text-anchor="middle" font-size="9" fill="#2b6e9e">💡 步骤④覆盖插入：delta=5-3=+2（非直接加5），故 sum("ap") 从5→7 而非误算成5+5=10</text>
+</svg>

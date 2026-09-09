@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="460" fill="#fafafa"/>
+
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：双指针逐段合并乘法</text>
+
+  <!-- Step 1: Initialize -->
+  <rect x="40" y="40" width="480" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="58" font-size="11" fill="#446688" font-weight="bold">① 初始化</text>
+  <text x="130" y="58" font-size="11" fill="#333">i = 0, j = 0（双指针分别指向 enc1, enc2），ans = []</text>
+  <text x="130" y="72" font-size="11" fill="#555">两个 RLE 数组各自从左到右，段已按原数组顺序排列</text>
+
+  <!-- arrow -->
+  <path d="M 280 84 L 280 98" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: while loop -->
+  <rect x="40" y="100" width="480" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="118" font-size="11" fill="#d6a040" font-weight="bold">② while</text>
+  <text x="120" y="118" font-size="11" fill="#333">i &lt; len(enc1) 且 j &lt; len(enc2)：</text>
+  <text x="120" y="134" font-size="11" fill="#555">取当前段 enc1[i] = [v₁, f₁]，enc2[j] = [v₂, f₂]</text>
+
+  <!-- arrow -->
+  <path d="M 280 148 L 280 162" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: compute f and v (decision diamond) -->
+  <polygon points="280,166 410,216 280,266 150,216" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="280" y="200" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 计算重叠段</text>
+  <text x="280" y="216" text-anchor="middle" font-size="11" fill="#333">f = min(f₁, f₂)</text>
+  <text x="280" y="232" text-anchor="middle" font-size="11" fill="#333">v = v₁ × v₂</text>
+  <text x="280" y="250" text-anchor="middle" font-size="11" fill="#555">→ 产出 [v, f]</text>
+
+  <!-- arrow to merge check -->
+  <path d="M 280 268 L 280 282" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: merge or append -->
+  <rect x="40" y="284" width="480" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="302" font-size="11" fill="#4a7a3a" font-weight="bold">④ 合并判定</text>
+  <text x="130" y="302" font-size="11" fill="#333">若 ans 非空 且 ans[-1][0] == v：</text>
+  <text x="150" y="318" font-size="11" fill="#4a7a3a">→ ans[-1][1] += f（同值合并，保证最短）</text>
+  <text x="130" y="334" font-size="11" fill="#333">否则 → ans.append([v, f])（新值入列）</text>
+
+  <!-- arrow -->
+  <path d="M 280 344 L 280 358" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 5: advance pointers -->
+  <rect x="40" y="360" width="480" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="60" y="378" font-size="11" fill="#446688" font-weight="bold">⑤ 推进指针</text>
+  <text x="130" y="378" font-size="11" fill="#333">f₁ -= f；f₂ -= f（双双消耗重叠长度 f）</text>
+  <text x="150" y="394" font-size="11" fill="#446688">if f₁ == 0: i += 1（enc1 段耗尽，前进）</text>
+  <text x="150" y="410" font-size="11" fill="#446688">if f₂ == 0: j += 1（enc2 段耗尽，前进）</text>
+  <text x="130" y="410" font-size="11" fill="#555"></text>
+
+  <!-- loop back arrow -->
+  <path d="M 520 388 Q 548 388 548 122 Q 548 60 520 60" stroke="#d6a040" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="540" y="250" font-size="10" fill="#d6a040" transform="rotate(90, 540, 250)">回到 ②</text>
+
+  <!-- return -->
+  <rect x="170" y="424" width="220" height="28" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="443" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">return ans（已是最短 RLE）</text>
+</svg>

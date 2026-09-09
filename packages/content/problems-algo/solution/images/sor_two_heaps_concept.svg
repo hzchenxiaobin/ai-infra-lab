@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="30" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：维护「前 k 佳 / 其余」的分界</text>
+  <text x="280" y="50" text-anchor="middle" font-size="11" fill="#888">get 使 k 增 1，分界右移；add 插入后按需 rebalance</text>
+
+  <!-- ===== 顶部：有序序列（最好→最坏），k=3 ===== -->
+  <text x="40" y="86" font-size="12" fill="#446688" font-weight="bold">已加入景点按「评分降序、同分字典序升」排好：</text>
+
+  <g font-size="13">
+    <!-- index labels -->
+    <g font-size="9" fill="#888">
+      <text x="92" y="108" text-anchor="middle">1st</text>
+      <text x="136" y="108" text-anchor="middle">2nd</text>
+      <text x="180" y="108" text-anchor="middle">3rd</text>
+      <text x="224" y="108" text-anchor="middle">4th</text>
+      <text x="268" y="108" text-anchor="middle">5th</text>
+      <text x="312" y="108" text-anchor="middle">6th</text>
+    </g>
+    <!-- cells: A5 B4 C3 | D2 E1 F0 -->
+    <rect x="74" y="114" width="36" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="92" y="129" text-anchor="middle" fill="#333">A</text>
+    <text x="92" y="142" text-anchor="middle" font-size="10" fill="#888">5</text>
+
+    <rect x="118" y="114" width="36" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="136" y="129" text-anchor="middle" fill="#333">B</text>
+    <text x="136" y="142" text-anchor="middle" font-size="10" fill="#888">4</text>
+
+    <rect x="162" y="114" width="36" height="34" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+    <text x="180" y="129" text-anchor="middle" fill="#4a7a3a" font-weight="bold">C</text>
+    <text x="180" y="142" text-anchor="middle" font-size="10" fill="#4a7a3a">3</text>
+
+    <rect x="206" y="114" width="36" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+    <text x="224" y="129" text-anchor="middle" fill="#d6a040" font-weight="bold">D</text>
+    <text x="224" y="142" text-anchor="middle" font-size="10" fill="#d6a040">2</text>
+
+    <rect x="250" y="114" width="36" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="268" y="129" text-anchor="middle" fill="#333">E</text>
+    <text x="268" y="142" text-anchor="middle" font-size="10" fill="#888">1</text>
+
+    <rect x="294" y="114" width="36" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.3" rx="4" filter="url(#rough2)"/>
+    <text x="312" y="129" text-anchor="middle" fill="#333">F</text>
+    <text x="312" y="142" text-anchor="middle" font-size="10" fill="#888">0</text>
+  </g>
+
+  <!-- boundary dashed line between C(3rd) and D(4th) -->
+  <path d="M 202 100 L 202 168" stroke="#b85450" stroke-width="1.6" stroke-dasharray="4 3" fill="none" filter="url(#rough2)"/>
+  <text x="202" y="176" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">分界 k=3</text>
+
+  <!-- bracket: 前 k 佳 -->
+  <path d="M 74 186 L 74 192 L 198 192 L 198 186" stroke="#4a7a3a" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="136" y="206" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">前 k 佳（left）</text>
+  <!-- bracket: 其余 -->
+  <path d="M 206 186 L 206 192 L 330 192 L 330 186" stroke="#d6a040" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+  <text x="268" y="206" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">其余（right）</text>
+
+  <!-- ===== 下方：两个堆的结构 ===== -->
+  <!-- left heap box -->
+  <rect x="50" y="232" width="200" height="120" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="150" y="254" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">left：前 k 佳（大顶视角）</text>
+  <text x="60" y="274" font-size="10" fill="#333">堆顶 = 这 k 个里「最差」者</text>
+  <text x="60" y="288" font-size="10" fill="#333">　　 = 第 k 佳（即 C）</text>
+  <!-- mini heap cells: top C, below A B -->
+  <rect x="134" y="300" width="32" height="26" fill="#fff" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="150" y="318" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">C</text>
+  <rect x="112" y="332" width="30" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="127" y="348" text-anchor="middle" font-size="10" fill="#333">A</text>
+  <rect x="158" y="332" width="30" height="22" fill="#fff" stroke="#4a7a3a" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="173" y="348" text-anchor="middle" font-size="10" fill="#333">B</text>
+
+  <!-- right heap box -->
+  <rect x="310" y="232" width="200" height="120" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="410" y="254" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">right：其余（小顶视角）</text>
+  <text x="320" y="274" font-size="10" fill="#333">堆顶 = 其余里「最佳」者</text>
+  <text x="320" y="288" font-size="10" fill="#333">　　 = 第 k+1 佳（即 D）</text>
+  <rect x="394" y="300" width="32" height="26" fill="#fff" stroke="#d6a040" stroke-width="2" rx="4" filter="url(#rough2)"/>
+  <text x="410" y="318" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">D</text>
+  <rect x="372" y="332" width="30" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="387" y="348" text-anchor="middle" font-size="10" fill="#333">E</text>
+  <rect x="418" y="332" width="30" height="22" fill="#fff" stroke="#d6a040" stroke-width="1.2" rx="3" filter="url(#rough2)"/>
+  <text x="433" y="348" text-anchor="middle" font-size="10" fill="#333">F</text>
+
+  <!-- ===== 操作箭头 ===== -->
+  <!-- get(): 从 right 堆顶取 D，压入 left，返回 D；边界右移 -->
+  <path d="M 394 313 C 320 360, 200 360, 168 326" stroke="#b85450" stroke-width="1.8" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <rect x="220" y="362" width="150" height="22" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="6" filter="url(#rough2)"/>
+  <text x="295" y="378" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">get()：D 越界→返回 D，k++</text>
+
+  <!-- add(): 先入 right，提升堆顶到 left，超 k 则退一个 -->
+  <text x="40" y="396" font-size="10" fill="#446688" font-weight="bold">add(x)：</text>
+  <text x="92" y="396" font-size="10" fill="#333">入 right → 提升堆顶至 left → 若 |left|&gt;k 退 left 堆顶回 right</text>
+</svg>

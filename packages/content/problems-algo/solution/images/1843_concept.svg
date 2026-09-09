@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="460" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="300" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：按月聚合收入 → 超阈值标记 → 连续月份判定</text>
+
+  <!-- ===== Accounts table (top-left) ===== -->
+  <text x="40" y="52" font-size="10" fill="#888">Accounts（账户阈值）</text>
+  <rect x="30" y="58" width="150" height="72" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="40" y="74" font-size="9" fill="#446688" font-weight="bold">account_id  max_income</text>
+  <line x1="30" y1="80" x2="180" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="40" y="96" font-size="9" fill="#666">3            21000</text>
+  <text x="40" y="114" font-size="9" fill="#666">4            10400</text>
+
+  <!-- ===== Transactions table (top-right) ===== -->
+  <text x="400" y="52" font-size="10" fill="#888">Transactions（交易流水）</text>
+  <rect x="370" y="58" width="210" height="100" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="378" y="74" font-size="8" fill="#446688" font-weight="bold">tx_id acct type     amount day</text>
+  <line x1="370" y1="80" x2="580" y2="80" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <rect x="372" y="84" width="206" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)" opacity="0.4"/>
+  <text x="378" y="96" font-size="8" fill="#4a7a3a">2    3   Creditor  107100 06-02</text>
+  <rect x="372" y="98" width="206" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)" opacity="0.4"/>
+  <text x="378" y="110" font-size="8" fill="#4a7a3a">10   3   Creditor  102100 06-15</text>
+  <rect x="372" y="112" width="206" height="14" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.6" rx="2" filter="url(#rough2)" opacity="0.4"/>
+  <text x="378" y="124" font-size="8" fill="#4a7a3a">7    3   Creditor   90900 06-14</text>
+  <text x="378" y="140" font-size="8" fill="#bbb">15   3   Debtor    75500 05-23</text>
+  <text x="378" y="152" font-size="8" fill="#bbb">...  （Debtor 行被过滤）</text>
+
+  <!-- Filter arrow -->
+  <path d="M 480 162 L 480 180" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="510" y="176" font-size="8" fill="#d6a040">WHERE type='Creditor'</text>
+
+  <!-- ===== Step 1: Monthly aggregation ===== -->
+  <rect x="100" y="186" width="400" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="208" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 按 account_id + 年月 GROUP BY → SUM(amount)</text>
+
+  <!-- Arrow down -->
+  <path d="M 300 226 L 300 240" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 2: Monthly income table ===== -->
+  <rect x="120" y="246" width="360" height="56" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="130" y="262" font-size="9" fill="#446688" font-weight="bold">account_id  month    income   max_income</text>
+  <line x1="120" y1="268" x2="480" y2="268" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="130" y="282" font-size="9" fill="#666">3          2021-06  300100   21000</text>
+  <text x="130" y="296" font-size="9" fill="#666">3          2021-07   64900   21000</text>
+
+  <!-- Arrow down -->
+  <path d="M 300 306 L 300 320" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 3: Flag + consecutive check ===== -->
+  <rect x="80" y="326" width="440" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="348" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② income &gt; max_income？ → 标记可疑月份</text>
+
+  <!-- Arrow down -->
+  <path d="M 300 366 L 300 380" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- ===== Step 4: Consecutive month timeline ===== -->
+  <rect x="60" y="386" width="480" height="58" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="300" y="404" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">③ 连续两个月均被标记？ → 账户可疑</text>
+  <!-- Timeline for account 3 -->
+  <rect x="120" y="416" width="40" height="18" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="140" y="428" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">06 ✓</text>
+  <path d="M 162 425 L 178 425" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <rect x="180" y="416" width="40" height="18" fill="#fce4ec" stroke="#b85450" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="200" y="428" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">07 ✓</text>
+  <text x="245" y="428" font-size="9" fill="#4a7a3a" font-weight="bold">→ 连续 ✓</text>
+  <!-- Timeline for account 4 -->
+  <rect x="360" y="416" width="40" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="380" y="428" text-anchor="middle" font-size="8" fill="#446688">05 ✓</text>
+  <text x="410" y="428" font-size="9" fill="#bbb">06 ✗</text>
+  <rect x="430" y="416" width="40" height="18" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+  <text x="450" y="428" text-anchor="middle" font-size="8" fill="#446688">07 ✓</text>
+  <text x="485" y="428" font-size="9" fill="#b85450" font-weight="bold">→ 不连续 ✗</text>
+</svg>

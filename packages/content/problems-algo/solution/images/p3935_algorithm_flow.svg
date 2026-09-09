@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="400" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：单个查询 [x, k] 的处理——先调编制，再插入</text>
+  <text x="260" y="44" text-anchor="middle" font-size="11" fill="#666">L = 前 k 大（小根堆，堆顶 = 第 k 大）；R = 其余（大根堆）</text>
+
+  <!-- start -->
+  <rect x="200" y="54" width="120" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">取查询 [x, k]</text>
+  <path d="M 260 82 L 260 94" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 1: resize -->
+  <rect x="85" y="98" width="350" height="44" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="114" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">① 把 L 的编制调到新 k（对旧多重集）</text>
+  <text x="260" y="132" text-anchor="middle" font-size="11" fill="#555">L 超编 → 堆顶降级去 R；L 缺编 → R 堆顶晋升（共搬 |Δk| 人）</text>
+  <path d="M 260 142 L 260 154" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- decision: insert side -->
+  <polygon points="260,158 352,196 260,234 168,196" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="201" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">满编且 x &lt; 堆顶？</text>
+
+  <path d="M 352 196 L 406 196" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="380" y="189" text-anchor="middle" font-size="11" fill="#4a7a3a">是</text>
+  <rect x="412" y="178" width="92" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="458" y="200" text-anchor="middle" font-size="12" fill="#333">x 入 R</text>
+
+  <path d="M 168 196 L 114 196" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="142" y="189" text-anchor="middle" font-size="11" fill="#446688">否</text>
+  <rect x="16" y="178" width="92" height="36" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="62" y="200" text-anchor="middle" font-size="12" fill="#333">x 入 L</text>
+
+  <!-- merge to step 3 -->
+  <path d="M 458 214 L 458 321 L 416 321" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <path d="M 62 214 L 62 321 L 104 321" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 3: overflow demotion -->
+  <rect x="110" y="306" width="300" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="325" text-anchor="middle" font-size="11.5" fill="#333">③ 若 L 溢出 1 人：L 堆顶降级去 R</text>
+  <path d="M 260 336 L 260 348" fill="none" stroke="#446688" stroke-width="2" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- step 4/5: answer & power update -->
+  <rect x="85" y="352" width="350" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="368" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">④ v = L 堆顶（第 k 大），p ← p^v mod 10⁹+7（快速幂）</text>
+  <text x="260" y="385" text-anchor="middle" font-size="11" fill="#555">⑤ 记录 ans[i] = p，进入下一查询</text>
+</svg>

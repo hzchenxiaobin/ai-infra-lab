@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="680" height="380" fill="#fafafa"/>
+
+  <text x="340" y="24" text-anchor="middle" font-size="16" fill="#333" filter="url(#rough2)">示例 1 演算：k=2 → c=k+1=3，多源 Dijkstra 执行轨迹</text>
+
+  <!-- ============ 左：原图 ============ -->
+  <text x="150" y="50" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">图（边=去程 w，节点下=appleCost）</text>
+
+  <!-- edges -->
+  <g filter="url(#rough2)" stroke="#446688" stroke-width="1.6" fill="none">
+    <line x1="80" y1="120" x2="190" y2="70"/>
+    <line x1="190" y1="70" x2="240" y2="200"/>
+    <line x1="190" y1="70" x2="110" y2="230"/>
+    <line x1="240" y1="200" x2="110" y2="230"/>
+    <line x1="80" y1="120" x2="240" y2="200"/>
+  </g>
+  <!-- edge cost labels -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <text x="128" y="88">4</text>
+    <text x="220" y="132">2</text>
+    <text x="138" y="156">5</text>
+    <text x="180" y="232">1</text>
+    <text x="160" y="166">4</text>
+  </g>
+
+  <!-- nodes -->
+  <g filter="url(#rough2)">
+    <rect x="58" y="102" width="44" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="80" y="125" text-anchor="middle" font-size="15" fill="#334455">1</text>
+    <text x="80" y="156" text-anchor="middle" font-size="10" fill="#b85450">$56</text>
+
+    <rect x="168" y="52" width="44" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="190" y="75" text-anchor="middle" font-size="15" fill="#334455">2</text>
+    <text x="190" y="46" text-anchor="middle" font-size="10" fill="#b85450">$42</text>
+
+    <rect x="218" y="182" width="44" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="240" y="205" text-anchor="middle" font-size="15" fill="#334455">3</text>
+    <text x="240" y="236" text-anchor="middle" font-size="10" fill="#b85450">$102</text>
+
+    <rect x="88" y="212" width="44" height="36" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.6"/>
+    <text x="110" y="235" text-anchor="middle" font-size="15" fill="#334455">4</text>
+    <text x="110" y="266" text-anchor="middle" font-size="10" fill="#b85450">$301</text>
+  </g>
+
+  <!-- divider -->
+  <path d="M310,40 L310,340" fill="none" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4 4" filter="url(#rough2)"/>
+
+  <!-- ============ 右：dist 演化表 ============ -->
+  <text x="485" y="50" text-anchor="middle" font-size="12" fill="#888" filter="url(#rough2)">堆弹出 (d,u) 后 dist[] 演化（c=3）</text>
+
+  <!-- table frame: header row -->
+  <g filter="url(#rough2)">
+    <rect x="320" y="62" width="44" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="342" y="81" text-anchor="middle" font-size="11" fill="#334455">步</text>
+    <rect x="364" y="62" width="90" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="409" y="81" text-anchor="middle" font-size="11" fill="#334455">取出(d,u)</text>
+    <!-- 4 dist cells header -->
+    <rect x="454" y="62" width="46" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="477" y="81" text-anchor="middle" font-size="11" fill="#334455">d[1]</text>
+    <rect x="500" y="62" width="46" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="523" y="81" text-anchor="middle" font-size="11" fill="#334455">d[2]</text>
+    <rect x="546" y="62" width="46" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="569" y="81" text-anchor="middle" font-size="11" fill="#334455">d[3]</text>
+    <rect x="592" y="62" width="46" height="28" fill="#e8f0fe" stroke="#446688" stroke-width="1.3"/>
+    <text x="615" y="81" text-anchor="middle" font-size="11" fill="#334455">d[4]</text>
+  </g>
+
+  <!-- helper: each row y_top, step label, pop label, 4 values + changed flag -->
+  <!-- row 初始 y=90 -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <rect x="320" y="90" width="44" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="342" y="109">0</text>
+    <rect x="364" y="90" width="90" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="409" y="109">初始入堆</text>
+    <rect x="454" y="90" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="477" y="109">56</text>
+    <rect x="500" y="90" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="523" y="109">42</text>
+    <rect x="546" y="90" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="569" y="109">102</text>
+    <rect x="592" y="90" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="615" y="109">301</text>
+  </g>
+
+  <!-- row 1: pop (42,2) -> d[1]=54 d[3]=48 d[4]=57 changed (orange) -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <rect x="320" y="118" width="44" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="342" y="137">1</text>
+    <rect x="364" y="118" width="90" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/>
+    <text x="409" y="137" fill="#7a4a10">(42, 2)</text>
+    <rect x="454" y="118" width="46" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/><text x="477" y="137" fill="#7a4a10">54</text>
+    <rect x="500" y="118" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="523" y="137">42</text>
+    <rect x="546" y="118" width="46" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/><text x="569" y="137" fill="#7a4a10">48</text>
+    <rect x="592" y="118" width="46" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/><text x="615" y="137" fill="#7a4a10">57</text>
+  </g>
+
+  <!-- row 2: pop (48,3) -> d[4]=51 changed -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <rect x="320" y="146" width="44" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="342" y="165">2</text>
+    <rect x="364" y="146" width="90" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/>
+    <text x="409" y="165" fill="#7a4a10">(48, 3)</text>
+    <rect x="454" y="146" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="477" y="165">54</text>
+    <rect x="500" y="146" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="523" y="165">42</text>
+    <rect x="546" y="146" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="569" y="165">48</text>
+    <rect x="592" y="146" width="46" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/><text x="615" y="165" fill="#7a4a10">51</text>
+  </g>
+
+  <!-- row 3: pop (51,4) -> no change -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <rect x="320" y="174" width="44" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="342" y="193">3</text>
+    <rect x="364" y="174" width="90" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/>
+    <text x="409" y="193" fill="#7a4a10">(51, 4)</text>
+    <rect x="454" y="174" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="477" y="193">54</text>
+    <rect x="500" y="174" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="523" y="193">42</text>
+    <rect x="546" y="174" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="569" y="193">48</text>
+    <rect x="592" y="174" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="615" y="193">51</text>
+  </g>
+  <text x="640" y="193" text-anchor="end" font-size="9" fill="#888" filter="url(#rough2)">无更新</text>
+
+  <!-- row 4: pop (54,1) -> no change -->
+  <g filter="url(#rough2)" font-size="11" fill="#334455" text-anchor="middle">
+    <rect x="320" y="202" width="44" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/>
+    <text x="342" y="221">4</text>
+    <rect x="364" y="202" width="90" height="28" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3"/>
+    <text x="409" y="221" fill="#7a4a10">(54, 1)</text>
+    <rect x="454" y="202" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="477" y="221">54</text>
+    <rect x="500" y="202" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="523" y="221">42</text>
+    <rect x="546" y="202" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="569" y="221">48</text>
+    <rect x="592" y="202" width="46" height="28" fill="#fafafa" stroke="#bbb" stroke-width="1"/><text x="615" y="221">51</text>
+  </g>
+  <text x="640" y="221" text-anchor="end" font-size="9" fill="#888" filter="url(#rough2)">无更新</text>
+
+  <!-- result row (green) -->
+  <g filter="url(#rough2)" font-size="11" text-anchor="middle">
+    <rect x="320" y="232" width="44" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="342" y="252" fill="#3a5a2a" font-weight="bold">结果</text>
+    <rect x="364" y="232" width="90" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="409" y="252" fill="#3a5a2a">—</text>
+    <rect x="454" y="232" width="184" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+    <text x="546" y="252" fill="#3a5a2a" font-weight="bold">[54, 42, 48, 51] ✓</text>
+  </g>
+
+  <!-- annotation -->
+  <text x="485" y="296" text-anchor="middle" font-size="11" fill="#7a4a10" filter="url(#rough2)">橙格=本轮被松弛更新；每条边松弛按 c=(k+1)=3 放大</text>
+  <text x="485" y="316" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">如 d[1]：42 + 3×4 = 54（经城市 2 购买）</text>
+  <text x="485" y="336" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">如 d[4]：48 + 3×1 = 51（经 3→4 松弛，城市 2 购买）</text>
+</svg>

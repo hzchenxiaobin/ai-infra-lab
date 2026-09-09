@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="660" height="420" fill="#fafafa"/>
+
+  <text x="330" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">树形 DP：每个节点算出 [变 false 代价, 变 true 代价]</text>
+  <text x="330" y="44" text-anchor="middle" font-size="11" fill="#888">圈中数字 = 节点 val；右侧红框 [f0, f1] = 使该子树评价为 false / true 的最少叶翻转数</text>
+
+  <!-- edges (draw first so nodes cover ends) -->
+  <g stroke="#888" stroke-width="1.4" fill="none" filter="url(#rough2)">
+    <line x1="330" y1="88" x2="210" y2="150"/>
+    <line x1="330" y1="88" x2="450" y2="150"/>
+    <line x1="210" y1="168" x2="120" y2="230"/>
+    <line x1="210" y1="168" x2="300" y2="230" stroke-dasharray="4 3" stroke="#bbb"/>
+    <line x1="450" y1="168" x2="390" y2="230"/>
+    <line x1="450" y1="168" x2="510" y2="230"/>
+    <line x1="120" y1="248" x2="70" y2="310"/>
+    <line x1="120" y1="248" x2="170" y2="310"/>
+  </g>
+
+  <!-- idx0 root: val 3 AND -->
+  <circle cx="330" cy="70" r="18" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="330" y="75" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">3</text>
+  <text x="330" y="104" text-anchor="middle" font-size="9" fill="#888">AND</text>
+  <rect x="354" y="58" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="379" y="73" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">0, 2</text>
+
+  <!-- idx1: val 5 NOT -->
+  <circle cx="210" cy="150" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="210" y="155" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">5</text>
+  <text x="210" y="184" text-anchor="middle" font-size="9" fill="#888">NOT</text>
+  <rect x="232" y="138" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="257" y="153" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">0, 1</text>
+
+  <!-- idx2: val 4 XOR -->
+  <circle cx="450" cy="150" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="450" y="155" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">4</text>
+  <text x="450" y="184" text-anchor="middle" font-size="9" fill="#888">XOR</text>
+  <rect x="472" y="138" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="497" y="153" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">0, 1</text>
+
+  <!-- idx3: val 2 OR -->
+  <circle cx="120" cy="230" r="16" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="120" y="235" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">2</text>
+  <text x="120" y="264" text-anchor="middle" font-size="9" fill="#888">OR</text>
+  <rect x="142" y="218" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="167" y="233" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1, 0</text>
+
+  <!-- idx4: null (dashed) -->
+  <circle cx="300" cy="230" r="13" fill="none" stroke="#bbb" stroke-width="1.2" stroke-dasharray="3 3" filter="url(#rough2)"/>
+  <text x="300" y="234" text-anchor="middle" font-size="10" fill="#bbb">∅</text>
+  <text x="300" y="256" text-anchor="middle" font-size="8" fill="#bbb">[∞,∞]</text>
+
+  <!-- idx5: leaf 1 -->
+  <circle cx="390" cy="230" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="390" y="235" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="412" y="218" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="437" y="233" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1, 0</text>
+
+  <!-- idx6: leaf 1 -->
+  <circle cx="510" cy="230" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="510" y="235" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="532" y="218" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="557" y="233" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1, 0</text>
+
+  <!-- idx7: leaf 1 -->
+  <circle cx="70" cy="310" r="15" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="70" y="315" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">1</text>
+  <rect x="92" y="298" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="117" y="313" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">1, 0</text>
+
+  <!-- idx8: leaf 0 -->
+  <circle cx="170" cy="310" r="15" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="170" y="315" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">0</text>
+  <rect x="192" y="298" width="50" height="22" rx="4" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="217" y="313" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">0, 1</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="350" width="580" height="56" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="330" y="372" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">自底向上后序 DFS：先算出叶 [f0,f1]，再按 val 的运算由左右子合成父节点</text>
+  <text x="330" y="390" text-anchor="middle" font-size="10" fill="#666">示例 1 根 = [0, 2]，result=true → 取 f1 = 2，即翻转 2 个叶节点</text>
+</svg>

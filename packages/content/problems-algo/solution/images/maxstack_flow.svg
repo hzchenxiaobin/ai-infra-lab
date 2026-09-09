@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="480" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">五操作流程：popMax 的"清理堆顶 → 取真最大 → 删链表"循环</text>
+  <path d="M 120 38 Q 300 46 480 38" stroke="#2b2b2b" stroke-width="1.4" fill="none" filter="url(#rough2)"/>
+
+  <!-- ============ 左侧：四个平凡操作 ============ -->
+  <text x="30" y="74" font-size="12" fill="#2b6e9e" font-weight="bold">平凡操作（push / pop / top / peekMax）</text>
+
+  <!-- push -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="86" width="230" height="56" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="40" y="104" font-size="11.5" fill="#2b6e9e" font-weight="bold">push(x)　　O(log n)</text>
+  <text x="40" y="120" font-size="10.5" fill="#555">node = new Node(x)</text>
+  <text x="40" y="134" font-size="10.5" fill="#555">dll.linkBeforeTail(node); heap.push((x,cnt++,node))</text>
+
+  <!-- pop -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="152" width="230" height="56" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="40" y="170" font-size="11.5" fill="#2b6e9e" font-weight="bold">pop()　　O(1)</text>
+  <text x="40" y="186" font-size="10.5" fill="#555">node = dll.tail.prev</text>
+  <text x="40" y="200" font-size="10.5" fill="#555">unlink(node); node.removed = true　返回 node.val</text>
+
+  <!-- top -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="218" width="230" height="44" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="40" y="236" font-size="11.5" fill="#2b6e9e" font-weight="bold">top()　　O(1)</text>
+  <text x="40" y="252" font-size="10.5" fill="#555">return dll.tail.prev.val</text>
+
+  <!-- peekMax -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="272" width="230" height="56" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4"/>
+  </g>
+  <text x="40" y="290" font-size="11.5" fill="#d6a040" font-weight="bold">peekMax()　　均摊 O(log n)</text>
+  <text x="40" y="306" font-size="10.5" fill="#555">cleanTop()：while top.removed: pop</text>
+  <text x="40" y="320" font-size="10.5" fill="#555">return heap.top().val</text>
+
+  <!-- ============ 右侧：popMax 流程图 ============ -->
+  <text x="300" y="74" font-size="12" fill="#b85450" font-weight="bold">popMax() 流程（均摊 O(log n)）</text>
+
+  <!-- Start 椭圆 -->
+  <g filter="url(#rough2)">
+    <ellipse cx="425" cy="100" rx="50" ry="20" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/>
+  </g>
+  <text x="425" y="105" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">调用 popMax</text>
+
+  <!-- 箭头到菱形 -->
+  <path d="M 425 120 L 425 140" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 菱形：堆顶 removed? -->
+  <g filter="url(#rough2)">
+    <polygon points="425,144 525,180 425,216 325,180" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6"/>
+  </g>
+  <text x="425" y="176" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold">堆顶条目所指</text>
+  <text x="425" y="190" text-anchor="middle" font-size="11" fill="#7a5415" font-weight="bold">node.removed ?</text>
+
+  <!-- Yes 分支：丢弃脏条目，回环 -->
+  <path d="M 525 180 L 560 180 L 560 100 L 475 100" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="548" y="140" font-size="10.5" fill="#b85450" font-weight="bold">是</text>
+  <g filter="url(#rough2)">
+    <rect x="300" y="232" width="250" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.4"/>
+  </g>
+  <text x="425" y="250" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">heap.pop()：丢弃该脏条目（不碰链表）</text>
+  <text x="425" y="264" text-anchor="middle" font-size="9.5" fill="#888">每个脏条目至多被丢弃一次 → 均摊 O(log n)</text>
+  <!-- 回环箭头：从丢弃框回到菱形 -->
+  <path d="M 425 232 L 425 218" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- No 分支：取真堆顶 -->
+  <path d="M 325 180 L 250 180 L 250 232" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="262" y="172" font-size="10.5" fill="#4a7a3a" font-weight="bold">否</text>
+  <g filter="url(#rough2)">
+    <rect x="160" y="234" width="180" height="40" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4"/>
+  </g>
+  <text x="250" y="252" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">it = heap.pop()　取真堆顶</text>
+  <text x="250" y="266" text-anchor="middle" font-size="9.5" fill="#888">(val, cnt, node) —— node 必为活节点</text>
+
+  <!-- 箭头到 unlink -->
+  <path d="M 250 274 L 250 300" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <rect x="160" y="302" width="180" height="46" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4"/>
+  </g>
+  <text x="250" y="320" text-anchor="middle" font-size="11" fill="#2b6e9e" font-weight="bold">dll.unlink(it.node)</text>
+  <text x="250" y="336" text-anchor="middle" font-size="10.5" fill="#555">node.removed = true　O(1) 删链表</text>
+
+  <!-- 箭头到 return -->
+  <path d="M 250 348 L 250 372" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <g filter="url(#rough2)">
+    <ellipse cx="250" cy="392" rx="50" ry="18" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/>
+  </g>
+  <text x="250" y="397" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">return it.val</text>
+
+  <!-- 底部说明 -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="424" width="540" height="44" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.3"/>
+  </g>
+  <text x="48" y="444" font-size="11" fill="#555">关键：堆条目里存"节点引用"，拿到堆顶即可 O(1) 定位链表节点；删链表只打标记，不清堆。</text>
+  <text x="48" y="460" font-size="11" fill="#b85450" font-weight="bold">→ "堆的随机删除"难题被转化为"堆顶顺次清理"，每次操作均摊 O(log n)。</text>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 430"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#4a7a3a" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#d6a040" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="430" fill="#fafafa"/>
+
+  <text x="260" y="28" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)">算法流程：查询按 y 分桶 + 从右往左单调栈 + 栈上二分</text>
+
+  <!-- 步骤 1 -->
+  <rect x="70" y="48" width="380" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="66" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">① 预处理查询：归一化 x = min(a,b)、y = max(a,b)</text>
+  <text x="260" y="83" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">x == y 或 heights[x] &lt; heights[y] → 答案 y（O(1) 特判）</text>
+  <text x="260" y="96" text-anchor="middle" font-size="10.5" fill="#446688" filter="url(#rough2)">否则 (h = heights[x], 查询号) 挂到桶 qs[y]</text>
+
+  <path d="M 260 100 L 260 120" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 循环容器 -->
+  <rect x="56" y="124" width="408" height="158" rx="10" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" stroke-dasharray="7,5" filter="url(#rough2)"/>
+  <text x="260" y="144" text-anchor="middle" font-size="12" fill="#d6a040" filter="url(#rough2)">② i 从 n−1 倒序扫到 0</text>
+
+  <rect x="76" y="154" width="368" height="32" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="174" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">回答 qs[i]：栈上二分第一个高度 &gt; h 的候选 → ans；全栈 ≤ h → −1</text>
+
+  <rect x="76" y="194" width="368" height="32" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="214" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">弹栈：高度 ≤ heights[i] 的栈顶候选全部出栈（被 i 挡住）</text>
+
+  <rect x="76" y="234" width="368" height="32" rx="4" fill="#ffffff" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="254" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">i 进栈：成为新的最左候选（栈内高度保持严格递增）</text>
+
+  <!-- 循环回边 -->
+  <path d="M 452 252 C 472 210 472 170 452 150" fill="none" stroke="#d6a040" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="488" y="204" text-anchor="middle" font-size="10" fill="#d6a040" filter="url(#rough2)">i−1</text>
+
+  <path d="M 260 282 L 260 300" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤 3 -->
+  <rect x="120" y="304" width="280" height="38" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="260" y="328" text-anchor="middle" font-size="13" fill="#333" filter="url(#rough2)">③ 返回 ans</text>
+
+  <!-- 底部注释 -->
+  <rect x="40" y="356" width="440" height="58" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="374" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">不变量：栈内候选下标递增、高度严格递增（= i 右侧的可见建筑）</text>
+  <text x="260" y="391" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">时序咬合：扫到 i 时栈内下标全 &gt; i —— 恰好服务 y = i 的查询</text>
+  <text x="260" y="407" text-anchor="middle" font-size="10.5" fill="#b85450" filter="url(#rough2)">（先回答查询、再压栈，两步顺序不能反）</text>
+</svg>

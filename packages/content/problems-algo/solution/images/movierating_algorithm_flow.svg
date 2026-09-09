@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="720" height="430" fill="#fafafa"/>
+
+  <text x="360" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：两段分组聚合 Top-1 → UNION ALL 拼接</text>
+
+  <!-- ============ Part 1 pipeline ============ -->
+  <text x="20" y="56" font-size="12" fill="#446688" font-weight="bold">第 1 问</text>
+
+  <!-- B1: source -->
+  <rect x="20" y="64" width="135" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="87" y="84" text-anchor="middle" font-size="11" fill="#333">MovieRating</text>
+  <text x="87" y="100" text-anchor="middle" font-size="10" fill="#666">JOIN Users</text>
+  <text x="87" y="113" text-anchor="middle" font-size="9.5" fill="#888">ON user_id</text>
+
+  <!-- arrow -->
+  <path d="M155 92 L180 92" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="167" y="84" text-anchor="middle" font-size="9" fill="#446688">GROUP</text>
+  <text x="167" y="108" text-anchor="middle" font-size="9" fill="#446688">BY user</text>
+
+  <!-- B2: cnt table -->
+  <rect x="180" y="64" width="150" height="56" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="80" text-anchor="middle" font-size="10" fill="#446688" font-weight="bold">cnt 表</text>
+  <text x="255" y="95" text-anchor="middle" font-size="9.5" fill="#333">name | cnt</text>
+  <text x="255" y="108" text-anchor="middle" font-size="9" fill="#666">4 行（每用户 1 行）</text>
+
+  <!-- arrow -->
+  <path d="M330 92 L355 92" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="342" y="84" text-anchor="middle" font-size="9" fill="#446688">ORDER</text>
+  <text x="342" y="108" text-anchor="middle" font-size="9" fill="#446688">cnt↓ name↑</text>
+
+  <!-- B3: limit -->
+  <rect x="355" y="64" width="130" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="84" text-anchor="middle" font-size="11" fill="#333">LIMIT 1</text>
+  <text x="420" y="100" text-anchor="middle" font-size="10" fill="#666">取首行</text>
+  <text x="420" y="113" text-anchor="middle" font-size="9.5" fill="#888">SELECT name AS results</text>
+
+  <!-- arrow to result -->
+  <path d="M485 92 L510 92" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- R1 result chip -->
+  <rect x="510" y="68" width="130" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="16" filter="url(#rough2)"/>
+  <text x="575" y="97" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">Daniel</text>
+
+  <!-- ============ Part 2 pipeline ============ -->
+  <text x="20" y="152" font-size="12" fill="#4a7a3a" font-weight="bold">第 2 问</text>
+
+  <!-- B1: source + filter -->
+  <rect x="20" y="160" width="135" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="87" y="178" text-anchor="middle" font-size="10.5" fill="#333">MovieRating</text>
+  <text x="87" y="192" text-anchor="middle" font-size="9.5" fill="#b85450">WHERE created_at</text>
+  <text x="87" y="205" text-anchor="middle" font-size="9.5" fill="#b85450">∈ [02-01, 03-01)</text>
+
+  <!-- arrow -->
+  <path d="M155 188 L180 188" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="167" y="180" text-anchor="middle" font-size="9" fill="#4a7a3a">JOIN Movies</text>
+  <text x="167" y="204" text-anchor="middle" font-size="9" fill="#4a7a3a">GROUP movie</text>
+
+  <!-- B2: avg table -->
+  <rect x="180" y="160" width="150" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="255" y="176" text-anchor="middle" font-size="10" fill="#4a7a3a" font-weight="bold">avg 表</text>
+  <text x="255" y="191" text-anchor="middle" font-size="9.5" fill="#333">title | avg_r</text>
+  <text x="255" y="204" text-anchor="middle" font-size="9" fill="#666">3 行（每电影 1 行）</text>
+
+  <!-- arrow -->
+  <path d="M330 188 L355 188" stroke="#4a7a3a" stroke-width="1.8" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="342" y="180" text-anchor="middle" font-size="9" fill="#4a7a3a">ORDER</text>
+  <text x="342" y="204" text-anchor="middle" font-size="9" fill="#4a7a3a">avg↓ title↑</text>
+
+  <!-- B3: limit -->
+  <rect x="355" y="160" width="130" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <text x="420" y="180" text-anchor="middle" font-size="11" fill="#333">LIMIT 1</text>
+  <text x="420" y="196" text-anchor="middle" font-size="10" fill="#666">取首行</text>
+  <text x="420" y="209" text-anchor="middle" font-size="9.5" fill="#888">SELECT title AS results</text>
+
+  <!-- arrow to result -->
+  <path d="M485 188 L510 188" stroke="#d6a040" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- R2 result chip -->
+  <rect x="510" y="164" width="130" height="48" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" rx="16" filter="url(#rough2)"/>
+  <text x="575" y="193" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">Frozen 2</text>
+
+  <!-- ============ Merge to UNION ALL ============ -->
+  <!-- R1 down-curve to UNION ALL (centered at x=360) -->
+  <path d="M575 116 Q575 250 460 270" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <!-- R2 down-curve to UNION ALL -->
+  <path d="M575 212 Q575 250 460 270" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- UNION ALL node -->
+  <rect x="300" y="262" width="160" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="380" y="284" text-anchor="middle" font-size="13" fill="#b85450" font-weight="bold">UNION ALL（纵向拼接）</text>
+
+  <!-- arrow down -->
+  <path d="M380 296 L380 314" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- final results column -->
+  <rect x="300" y="318" width="160" height="72" fill="#fafafa" stroke="#446688" stroke-width="1.8" rx="6" filter="url(#rough2)"/>
+  <rect x="300" y="318" width="160" height="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+  <text x="380" y="334" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">results</text>
+  <line x1="300" y1="340" x2="460" y2="340" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="380" y="356" text-anchor="middle" font-size="12" fill="#333">Daniel</text>
+  <line x1="300" y1="364" x2="460" y2="364" stroke="#888" stroke-width="0.8" filter="url(#rough2)"/>
+  <text x="380" y="380" text-anchor="middle" font-size="12" fill="#333">Frozen 2</text>
+
+  <!-- side annotations -->
+  <text x="648" y="92" font-size="9.5" fill="#446688" font-weight="bold">二级排序</text>
+  <text x="648" y="105" font-size="9" fill="#666">指标↓ + 名称↑</text>
+  <text x="648" y="188" font-size="9.5" fill="#4a7a3a" font-weight="bold">sargable</text>
+  <text x="648" y="201" font-size="9" fill="#666">半开区间走索引</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="400" width="680" height="22" fill="#fff8e1" stroke="#d6a040" stroke-width="1" rx="4" filter="url(#rough2)"/>
+  <text x="360" y="414" text-anchor="middle" font-size="10" fill="#333">两段骨架一致：<tspan fill="#b85450" font-weight="bold">JOIN → GROUP BY → 聚合 → ORDER BY 指标 DESC, 名称 ASC → LIMIT 1</tspan>，仅关联表/聚合函数不同</text>
+</svg>

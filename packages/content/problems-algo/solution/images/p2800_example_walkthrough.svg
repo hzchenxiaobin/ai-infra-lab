@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr2800w" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arr2800x" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="440" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">贪心陷阱：最大重叠未必最优（c 桥接非最大接缝）</text>
+
+  <!-- input -->
+  <text x="280" y="50" text-anchor="middle" font-size="12" fill="#888">输入：a = "xab"，b = "aby"，c = "aba"</text>
+
+  <!-- ===== 贪心（最大重叠）===== -->
+  <text x="40" y="80" font-size="12" fill="#b85450" font-weight="bold">贪心：每步只取最大重叠</text>
+
+  <!-- step1: xaby -->
+  <g font-size="15" font-weight="bold">
+    <rect x="175" y="90" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="190" y="111" text-anchor="middle" fill="#333">x</text>
+    <rect x="205" y="90" width="30" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="220" y="111" text-anchor="middle" fill="#4a7a3a">a</text>
+    <rect x="235" y="90" width="30" height="32" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="250" y="111" text-anchor="middle" fill="#4a7a3a">b</text>
+    <rect x="265" y="90" width="30" height="32" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="4" filter="url(#rough2)"/>
+    <text x="280" y="111" text-anchor="middle" fill="#d6a040">y</text>
+  </g>
+  <text x="310" y="111" font-size="10" fill="#888">merge(a,b)：o12=2（"ab"="ab"）→ xaby</text>
+
+  <!-- step2: xabyaba -->
+  <g font-size="15" font-weight="bold">
+    <rect x="175" y="132" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="190" y="153" text-anchor="middle" fill="#333">x</text>
+    <rect x="205" y="132" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="220" y="153" text-anchor="middle" fill="#333">a</text>
+    <rect x="235" y="132" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="250" y="153" text-anchor="middle" fill="#333">b</text>
+    <rect x="265" y="132" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="280" y="153" text-anchor="middle" fill="#333">y</text>
+    <rect x="295" y="132" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="310" y="153" text-anchor="middle" fill="#b85450">a</text>
+    <rect x="325" y="132" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="340" y="153" text-anchor="middle" fill="#b85450">b</text>
+    <rect x="355" y="132" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="4" filter="url(#rough2)"/>
+    <text x="370" y="153" text-anchor="middle" fill="#b85450">a</text>
+  </g>
+  <text x="395" y="153" font-size="10" fill="#b85450">o3=0，整段追加 c</text>
+  <text x="280" y="180" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">结果 "xabyaba"，长度 7</text>
+
+  <!-- divider -->
+  <path d="M40,198 L520,198" fill="none" stroke="#ddd" stroke-width="1.2" stroke-dasharray="4,4" filter="url(#rough2)"/>
+
+  <!-- ===== 最优（枚举非最大）===== -->
+  <text x="40" y="222" font-size="12" fill="#4a7a3a" font-weight="bold">最优：枚举非最大 o12=0，让 c 桥接接缝</text>
+
+  <!-- acc = xababy, highlight c occurrence [1..3] -->
+  <g font-size="15" font-weight="bold">
+    <rect x="175" y="232" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="190" y="253" text-anchor="middle" fill="#333">x</text>
+    <rect x="205" y="232" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+    <text x="220" y="253" text-anchor="middle" fill="#b85450">a</text>
+    <rect x="235" y="232" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+    <text x="250" y="253" text-anchor="middle" fill="#b85450">b</text>
+    <rect x="265" y="232" width="30" height="32" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="4" filter="url(#rough2)"/>
+    <text x="280" y="253" text-anchor="middle" fill="#b85450">a</text>
+    <rect x="295" y="232" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="310" y="253" text-anchor="middle" fill="#333">b</text>
+    <rect x="325" y="232" width="30" height="32" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="4" filter="url(#rough2)"/>
+    <text x="340" y="253" text-anchor="middle" fill="#333">y</text>
+  </g>
+  <text x="360" y="253" font-size="10" fill="#4a7a3a">acc = xab+aby（o12=0）= xababy</text>
+
+  <!-- junction marker between index2 (250) and index3 (265) -->
+  <path d="M250,270 L280,270" fill="none" stroke="#4a7a3a" stroke-width="2" marker-end="url(#arr2800x)" filter="url(#rough2)"/>
+  <text x="265" y="286" text-anchor="middle" font-size="10" fill="#4a7a3a">xab | aby 接缝</text>
+
+  <text x="280" y="306" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">c="aba" 恰嵌在 acc[1..3]（横跨接缝）→ 不追加</text>
+  <text x="280" y="326" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">结果 "xababy"，长度 6 ✓</text>
+
+  <!-- note box -->
+  <rect x="50" y="346" width="460" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="368" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">关键：最大重叠把接缝压成 "xaby"，c 再也嵌不进去</text>
+  <text x="280" y="386" text-anchor="middle" font-size="11" fill="#d6a040">只有枚举到非最大 o12=0，才看到 "xababy" 这条接缝</text>
+  <text x="280" y="404" text-anchor="middle" font-size="11" fill="#d6a040">→ 故对非末位串必须枚举所有重叠量，不能只取最大</text>
+</svg>

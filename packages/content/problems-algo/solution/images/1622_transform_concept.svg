@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#6a9acc"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="380" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">核心观察：全局仿射变换 v = b·mult + add</text>
+
+  <!-- 左侧：基值数组 seq -->
+  <text x="70" y="78" text-anchor="middle" font-size="12" fill="#888">基值数组 seq（存 b）</text>
+  <rect x="30" y="88" width="80" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="113" text-anchor="middle" font-size="14" fill="#a87020" font-weight="bold">b₀</text>
+  <rect x="30" y="130" width="80" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="155" text-anchor="middle" font-size="14" fill="#a87020" font-weight="bold">b₁</text>
+  <rect x="30" y="172" width="80" height="38" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="70" y="197" text-anchor="middle" font-size="14" fill="#a87020" font-weight="bold">b₂</text>
+  <text x="70" y="226" text-anchor="middle" font-size="11" fill="#888">原始值（不变）</text>
+
+  <!-- 中间：变换管道 -->
+  <text x="280" y="78" text-anchor="middle" font-size="12" fill="#888">全局变换 (mult, add)</text>
+  <rect x="200" y="92" width="160" height="120" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="120" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">× mult</text>
+  <text x="280" y="150" text-anchor="middle" font-size="11" fill="#888">再</text>
+  <text x="280" y="176" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">+ add</text>
+  <text x="280" y="200" text-anchor="middle" font-size="10.5" fill="#4a7a3a">所有元素共用</text>
+
+  <!-- 箭头：seq -> 变换 -->
+  <path d="M 112 145 L 196 145" stroke="#6a9acc" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="154" y="138" text-anchor="middle" font-size="10" fill="#6a9acc">套公式</text>
+
+  <!-- 右侧：当前值数组 -->
+  <text x="480" y="78" text-anchor="middle" font-size="12" fill="#888">当前值（getIndex 返回）</text>
+  <rect x="440" y="88" width="80" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="480" y="113" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">b₀·m+a</text>
+  <rect x="440" y="130" width="80" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="480" y="155" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">b₁·m+a</text>
+  <rect x="440" y="172" width="80" height="38" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="4" filter="url(#rough2)"/>
+  <text x="480" y="197" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">b₂·m+a</text>
+  <text x="480" y="226" text-anchor="middle" font-size="11" fill="#888">懒算，不实存</text>
+
+  <!-- 箭头：变换 -> 当前值 -->
+  <path d="M 362 145 L 436 145" stroke="#6a9acc" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 下方：三种操作对 (mult, add) 的影响 -->
+  <rect x="30" y="252" width="500" height="112" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10" filter="url(#rough2)"/>
+  <text x="50" y="276" font-size="12" fill="#a87020" font-weight="bold">操作只改 (mult, add)，O(1)：</text>
+
+  <text x="50" y="302" font-size="12" fill="#333">multAll(m)：</text>
+  <text x="150" y="302" font-size="12" fill="#b85450" font-weight="bold">mult *= m；add *= m</text>
+
+  <text x="50" y="324" font-size="12" fill="#333">addAll(inc)：</text>
+  <text x="150" y="324" font-size="12" fill="#b85450" font-weight="bold">add += inc</text>
+
+  <text x="50" y="346" font-size="12" fill="#333">getIndex(idx)：</text>
+  <text x="150" y="346" font-size="12" fill="#4a7a3a" font-weight="bold">return (seq[idx]·mult + add) % p</text>
+
+  <text x="380" y="302" font-size="11" fill="#888">乘法复合</text>
+  <text x="380" y="324" font-size="11" fill="#888">加法复合</text>
+  <text x="380" y="346" font-size="11" fill="#888">查询不动标记</text>
+</svg>

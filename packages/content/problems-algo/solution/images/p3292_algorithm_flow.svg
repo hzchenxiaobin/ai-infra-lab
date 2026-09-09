@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 540"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d6a040"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="540" fill="#fafafa"/>
+
+  <text x="260" y="24" text-anchor="middle" font-size="14.5" fill="#333" font-weight="bold" filter="url(#rough2)">算法流程：三步换引擎 + 与 3291 一字不差的分层贪心</text>
+
+  <!-- ============ ① 拼接 ============ -->
+  <rect x="140" y="46" width="240" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="66" text-anchor="middle" font-size="11" fill="#2c4a66" filter="url(#rough2)">① 逐 word 拼接 s = w + '#' + target</text>
+  <path d="M 260 78 L 260 90" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ============ ② 求 Z ============ -->
+  <rect x="140" y="92" width="240" height="32" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="112" text-anchor="middle" font-size="11" fill="#2c4a66" filter="url(#rough2)">② 线性求 Z 数组（Z-box 复用，摊还 O(1)/位）</text>
+  <path d="M 260 124 L 260 136" stroke="#446688" stroke-width="1.8" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- ============ ③ 合并 ============ -->
+  <rect x="140" y="138" width="240" height="32" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="158" text-anchor="middle" font-size="11" fill="#3a5f30" filter="url(#rough2)">③ target 段 z 值逐位取 max → match[]</text>
+
+  <!-- 右侧注释 -->
+  <text x="432" y="56" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">①~③：引擎升级</text>
+  <text x="432" y="70" text-anchor="middle" font-size="9.5" fill="#888" filter="url(#rough2)">（3292 的全部新意）</text>
+
+  <!-- 分界虚线 -->
+  <path d="M 60 184 L 460 184" stroke="#bbb" stroke-width="1.2" stroke-dasharray="5 4" filter="url(#rough2)"/>
+  <text x="70" y="178" font-size="9.5" fill="#999" filter="url(#rough2)">以下与 3291 一字不差</text>
+
+  <path d="M 260 170 L 260 196" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ============ ④ 扫描 ============ -->
+  <rect x="140" y="198" width="240" height="32" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="218" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">④ farthest = max(farthest, i + match[i])</text>
+  <path d="M 260 230 L 260 244" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- ============ 菱形 E：i == end？ ============ -->
+  <polygon points="260,246 350,278 260,310 170,278" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="274" text-anchor="middle" font-size="10.5" fill="#2c4a66" font-weight="bold" filter="url(#rough2)">i == end ？</text>
+  <text x="260" y="288" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">当前层扫完？</text>
+
+  <!-- E 否：绕回 ④ -->
+  <path d="M 350 278 L 445 278 L 445 214 L 384 214" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="398" y="270" text-anchor="middle" font-size="9.5" fill="#777" filter="url(#rough2)">否（继续扫）</text>
+
+  <!-- E 是：向下 -->
+  <path d="M 260 310 L 260 328" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="270" y="322" font-size="10" fill="#777" filter="url(#rough2)">是</text>
+
+  <!-- ============ 菱形 F：farthest == end？ ============ -->
+  <polygon points="260,330 355,364 260,398 165,364" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="360" text-anchor="middle" font-size="10.5" fill="#8a6d3b" font-weight="bold" filter="url(#rough2)">farthest == end ？</text>
+  <text x="260" y="374" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">原地踏步？</text>
+
+  <!-- F 是：返回 -1 -->
+  <path d="M 355 364 L 398 364" stroke="#b85450" stroke-width="1.8" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="362" y="356" font-size="10" fill="#777" filter="url(#rough2)">是</text>
+  <rect x="400" y="346" width="104" height="36" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="452" y="362" text-anchor="middle" font-size="11.5" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">return −1</text>
+  <text x="452" y="376" text-anchor="middle" font-size="8.5" fill="#b85450" filter="url(#rough2)">无进展，卡死</text>
+
+  <!-- F 否：向下 -->
+  <path d="M 260 398 L 260 412" stroke="#d6a040" stroke-width="1.8" marker-end="url(#arrO)" filter="url(#rough2)"/>
+  <text x="270" y="408" font-size="10" fill="#777" filter="url(#rough2)">否</text>
+
+  <!-- ============ ⑤ 换层 ============ -->
+  <rect x="150" y="414" width="220" height="30" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="433" text-anchor="middle" font-size="11" fill="#8a6d3b" filter="url(#rough2)">⑤ end = farthest；ans++</text>
+  <path d="M 260 444 L 260 456" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- ============ 菱形 H：end >= n？ ============ -->
+  <polygon points="260,458 345,490 260,522 175,490" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="486" text-anchor="middle" font-size="10.5" fill="#3a5f30" font-weight="bold" filter="url(#rough2)">end ≥ n ？</text>
+  <text x="260" y="500" text-anchor="middle" font-size="8.5" fill="#888" filter="url(#rough2)">抵达终点？</text>
+
+  <!-- H 是：返回 ans -->
+  <path d="M 345 490 L 394 490" stroke="#4a7a3a" stroke-width="1.8" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <text x="352" y="482" font-size="10" fill="#777" filter="url(#rough2)">是</text>
+  <rect x="396" y="472" width="106" height="36" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="449" y="494" text-anchor="middle" font-size="11.5" fill="#2c5f2c" font-weight="bold" filter="url(#rough2)">return ans</text>
+
+  <!-- H 否：绕回 ④（换层继续扫） -->
+  <path d="M 175 490 L 92 490 L 92 214 L 136 214" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+  <text x="158" y="482" font-size="10" fill="#777" filter="url(#rough2)">否</text>
+  <text x="112" y="232" text-anchor="middle" font-size="9" fill="#777" filter="url(#rough2)">换层，</text>
+  <text x="112" y="245" text-anchor="middle" font-size="9" fill="#777" filter="url(#rough2)">继续扫</text>
+</svg>

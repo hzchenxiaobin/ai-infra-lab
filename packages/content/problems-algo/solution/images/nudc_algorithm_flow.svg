@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="460" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：子查询求首次登录日 → 外查询按日计数</text>
+
+  <!-- Step 1: Input -->
+  <rect x="160" y="42" width="220" height="34" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="63" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">输入：Traffic 表（user_id, activity, activity_date）</text>
+
+  <path d="M270 76 L270 92" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Filter login -->
+  <rect x="100" y="94" width="340" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="113" font-size="10" fill="#4a7a3a" font-weight="bold">① WHERE activity = 'login'</text>
+  <text x="120" y="128" font-size="9" fill="#4a7a3a">从 Traffic 中筛出所有 login 记录（丢弃 logout / sessions）</text>
+
+  <path d="M270 134 L270 150" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 3: GROUP BY user_id, MIN(date) -->
+  <rect x="80" y="152" width="380" height="48" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="172" font-size="10" fill="#4a7a3a" font-weight="bold">② GROUP BY user_id → MIN(activity_date) AS install_date</text>
+  <text x="100" y="188" font-size="9" fill="#4a7a3a">按用户分组，取最早登录日 = 该用户的注册日（一人一行）</text>
+  <text x="100" y="198" font-size="8.5" fill="#888">⚠ 若同一用户有多条 login，MIN 只取最早一条</text>
+
+  <path d="M270 200 L270 216" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 4: WHERE date range -->
+  <rect x="100" y="218" width="340" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="120" y="237" font-size="10" fill="#d6a040" font-weight="bold">③ WHERE install_date BETWEEN '2019-06-30' AND '2019-07-27'</text>
+  <text x="120" y="252" font-size="9" fill="#d6a040">丢弃注册日落在统计区间之外的用户（如 05-01、07-28）</text>
+
+  <path d="M270 258 L270 274" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 5: GROUP BY install_date, COUNT -->
+  <rect x="80" y="276" width="380" height="48" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="100" y="296" font-size="10" fill="#b85450" font-weight="bold">④ GROUP BY install_date → COUNT(user_id) AS installs</text>
+  <text x="100" y="312" font-size="9" fill="#b85450">按注册日分组，统计每天有多少新用户注册</text>
+  <text x="100" y="322" font-size="8.5" fill="#888">同日注册多人 → 合并计数（如 07-02 有 2 人 → installs=2）</text>
+
+  <path d="M270 324 L270 340" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Step 6: ORDER BY -->
+  <rect x="120" y="342" width="300" height="34" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="363" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">⑤ ORDER BY install_date</text>
+
+  <path d="M270 376 L270 392" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrB)" filter="url(#rough2)"/>
+
+  <!-- Output -->
+  <rect x="140" y="394" width="260" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="415" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">输出：install_date, installs（按日期升序）</text>
+
+  <!-- side annotations -->
+  <!-- inner query bracket -->
+  <path d="M465 152 L475 152 L475 200 L465 200" stroke="#4a7a3a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="490" y="170" font-size="9" fill="#4a7a3a" font-weight="bold">子查询</text>
+  <text x="490" y="184" font-size="8" fill="#4a7a3a">（内层）</text>
+
+  <!-- outer query bracket -->
+  <path d="M465 218 L475 218 L475 324 L465 324" stroke="#b85450" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <text x="490" y="265" font-size="9" fill="#b85450" font-weight="bold">外查询</text>
+  <text x="490" y="279" font-size="8" fill="#b85450">（外层）</text>
+
+  <!-- left side: data flow annotation -->
+  <text x="60" y="118" font-size="8" fill="#888" text-anchor="middle">全表</text>
+  <text x="60" y="178" font-size="8" fill="#4a7a3a" text-anchor="middle">每人一行</text>
+  <text x="60" y="240" font-size="8" fill="#d6a040" text-anchor="middle">区间内</text>
+  <text x="60" y="302" font-size="8" fill="#b85450" text-anchor="middle">每日一行</text>
+
+  <!-- SQL snippet at bottom -->
+  <rect x="20" y="438" width="500" height="16" fill="#e8f0fe" stroke="#446688" stroke-width="0.6" rx="3" filter="url(#rough2)"/>
+  <text x="30" y="450" font-size="8" fill="#446688" font-family="monospace">SELECT install_date, COUNT(user_id) AS installs FROM (SELECT user_id, MIN(activity_date) AS install_date FROM ...)</text>
+</svg>

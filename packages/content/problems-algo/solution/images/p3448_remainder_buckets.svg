@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 438"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="438" fill="#fafafa"/>
+
+  <text x="18" y="24" font-size="12.5" fill="#333" filter="url(#rough2)">核心观察：子串数值可达 10⁵ 位 → 只存 mod d 的余数，O(1) 增量转移</text>
+
+  <!-- string "12936" -->
+  <rect x="70" y="40" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="87" y="61" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">1</text>
+  <rect x="106" y="40" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="123" y="61" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">2</text>
+  <rect x="142" y="40" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="159" y="61" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">9</text>
+  <rect x="178" y="40" width="34" height="32" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="195" y="61" text-anchor="middle" font-size="14" fill="#7a5a10" filter="url(#rough2)">3</text>
+  <rect x="214" y="40" width="34" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="231" y="61" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">6</text>
+  <text x="159" y="90" text-anchor="middle" font-size="11" fill="#7a5a10" filter="url(#rough2)">i = 3，当前字符 x = '3'（子串的末位 = 除数）</text>
+
+  <!-- right column -->
+  <text x="290" y="52" font-size="12" fill="#333" filter="url(#rough2)">以 '3' 结尾的子串：</text>
+  <text x="290" y="70" font-size="12" fill="#446688" filter="url(#rough2)">「3」「93」「293」「1293」</text>
+  <text x="290" y="90" font-size="11" fill="#666" filter="url(#rough2)">数值越拼越大、存不下，</text>
+  <text x="290" y="106" font-size="11" fill="#b85450" filter="url(#rough2)">但整除判定只需要余数！</text>
+
+  <!-- transition boxes -->
+  <rect x="48" y="122" width="140" height="44" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="118" y="141" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">以 i−1 结尾的子串</text>
+  <text x="118" y="157" text-anchor="middle" font-size="11" fill="#446688" filter="url(#rough2)">余数 r = v mod d</text>
+  <path d="M190,144 L240,144" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="215" y="136" text-anchor="middle" font-size="11" fill="#b85450" filter="url(#rough2)">×10 + x</text>
+  <rect x="244" y="122" width="152" height="44" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="320" y="141" text-anchor="middle" font-size="11" fill="#333" filter="url(#rough2)">以 i 结尾的新子串</text>
+  <text x="320" y="157" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">余数 (10r + x) mod d</text>
+
+  <text x="48" y="188" font-size="11" fill="#333" filter="url(#rough2)">例（d=3）：'29' mod 3 = 2 → 右端添 '3'：(2×10+3) mod 3 = 2 ✓（正是 293 mod 3）</text>
+
+  <!-- buckets -->
+  <text x="18" y="224" font-size="12" fill="#333" filter="url(#rough2)">f[d][r]：以当前位置结尾、mod d 余数为 r 的子串个数 —— 模数只有 9 种</text>
+
+  <!-- row d=1 -->
+  <text x="84" y="252" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=1</text>
+  <rect x="92" y="240" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="252" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <!-- row d=2 -->
+  <text x="84" y="271" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=2</text>
+  <rect x="92" y="259" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="271" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="259" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="271" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <!-- row d=3 highlighted -->
+  <text x="84" y="290" text-anchor="end" font-size="9.5" fill="#4a7a3a" filter="url(#rough2)">d=3</text>
+  <rect x="92" y="278" width="26" height="17" rx="3" fill="#fff8e1" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="105" y="290" text-anchor="middle" font-size="10" font-weight="bold" fill="#b85450" filter="url(#rough2)">0</text>
+  <rect x="118" y="278" width="26" height="17" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="290" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="278" width="26" height="17" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="290" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <!-- row d=4 -->
+  <text x="84" y="309" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=4</text>
+  <rect x="92" y="297" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="309" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="297" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="309" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="297" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="309" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="297" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="309" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <!-- row d=5 -->
+  <text x="84" y="328" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=5</text>
+  <rect x="92" y="316" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="328" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="316" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="328" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="316" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="328" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="316" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="328" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <rect x="196" y="316" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="209" y="328" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">4</text>
+  <!-- row d=6 -->
+  <text x="84" y="347" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=6</text>
+  <rect x="92" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <rect x="196" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="209" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">4</text>
+  <rect x="222" y="335" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="235" y="347" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">5</text>
+  <!-- row d=7 -->
+  <text x="84" y="366" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=7</text>
+  <rect x="92" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <rect x="196" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="209" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">4</text>
+  <rect x="222" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="235" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">5</text>
+  <rect x="248" y="354" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="261" y="366" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">6</text>
+  <!-- row d=8 -->
+  <text x="84" y="385" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=8</text>
+  <rect x="92" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <rect x="196" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="209" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">4</text>
+  <rect x="222" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="235" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">5</text>
+  <rect x="248" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="261" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">6</text>
+  <rect x="274" y="373" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="287" y="385" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">7</text>
+  <!-- row d=9 -->
+  <text x="84" y="404" text-anchor="end" font-size="9.5" fill="#666" filter="url(#rough2)">d=9</text>
+  <rect x="92" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="105" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">0</text>
+  <rect x="118" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="131" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">1</text>
+  <rect x="144" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="157" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">2</text>
+  <rect x="170" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="183" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">3</text>
+  <rect x="196" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="209" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">4</text>
+  <rect x="222" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="235" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">5</text>
+  <rect x="248" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="261" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">6</text>
+  <rect x="274" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="287" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">7</text>
+  <rect x="300" y="392" width="26" height="17" rx="3" fill="#e8f0fe" stroke="#446688" stroke-width="1" filter="url(#rough2)"/>
+  <text x="313" y="404" text-anchor="middle" font-size="8.5" fill="#666" filter="url(#rough2)">8</text>
+
+  <!-- annotation for row d=3 -->
+  <path d="M174,287 L200,287" stroke="#666" stroke-width="1.5" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="206" y="284" font-size="11" fill="#b85450" filter="url(#rough2)">x = 3 ⇒ ans += f[3][0]</text>
+  <text x="206" y="300" font-size="10.5" fill="#333" filter="url(#rough2)">i=3 时 f[3] = [3,0,1]（3 个子串余 0）</text>
+
+  <!-- bottom caption -->
+  <text x="18" y="428" font-size="11" fill="#7a5a10" filter="url(#rough2)">d = 1..9、r = 0..d−1：总状态 1+2+…+9 = 45 → 两层滚动，O(1) 空间</text>
+</svg>

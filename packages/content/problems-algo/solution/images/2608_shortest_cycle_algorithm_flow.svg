@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 500" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="500" fill="#fafafa"/>
+
+  <text x="270" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">逐源 BFS 找最短环 · 算法流程</text>
+
+  <!-- 1: build graph -->
+  <rect x="150" y="44" width="240" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="62" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">建无向邻接表 g[]</text>
+  <text x="270" y="77" text-anchor="middle" font-size="10.5" fill="#666">ans = ∞</text>
+  <line x1="270" y1="84" x2="270" y2="104" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 2: for each source -->
+  <rect x="120" y="104" width="300" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="122" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">for s = 0 .. n-1 ：以 s 为源做一次 BFS</text>
+  <text x="270" y="137" text-anchor="middle" font-size="10.5" fill="#666">dist[s]=0, parent[s]=−1, 队列=[s]</text>
+  <line x1="270" y1="144" x2="270" y2="164" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 3: dequeue u + prune -->
+  <rect x="100" y="164" width="340" height="56" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="183" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">出队 u（队列空 → 结束本源，换下一个 s）</text>
+  <text x="270" y="199" text-anchor="middle" font-size="11" fill="#333">剪枝：若 dist[u]×2 ≥ ans 则跳出本源</text>
+  <text x="270" y="213" text-anchor="middle" font-size="10" fill="#4a7a3a">剩余节点形成的环必 ≥ 2·dist[u] ≥ ans</text>
+  <path d="M 440 192 Q 484 192 484 124 Q 484 104 366 104" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="492" y="160" font-size="10" fill="#888" transform="rotate(90 492 160)">下一源</text>
+  <line x1="270" y1="220" x2="270" y2="240" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 4: for each neighbor v -->
+  <rect x="70" y="240" width="400" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="259" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">遍历 u 的每条邻接边 (u, v)</text>
+  <text x="270" y="276" text-anchor="middle" font-size="11" fill="#333">▸ 若 dist[v]==−1（未访问）：</text>
+  <text x="270" y="290" text-anchor="middle" font-size="10.5" fill="#666">　dist[v]=dist[u]+1, parent[v]=u, v 入队</text>
+  <text x="270" y="306" text-anchor="middle" font-size="11" fill="#b85450">▸ 否则若 v ≠ parent[u]（横边）：</text>
+  <text x="270" y="318" text-anchor="middle" font-size="10.5" fill="#666">　ans = min(ans, dist[u]+dist[v]+1)</text>
+  <path d="M 470 279 Q 506 279 506 192 Q 506 168 366 168" stroke="#888" stroke-width="1.4" fill="none" marker-end="url(#arr)" stroke-dasharray="4,3" filter="url(#rough2)"/>
+  <text x="514" y="232" font-size="10" fill="#888" transform="rotate(90 514 232)">遍历下一邻居</text>
+  <line x1="270" y1="318" x2="270" y2="338" stroke="#888" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 5: answer -->
+  <rect x="120" y="338" width="300" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="270" y="358" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">所有源点扫完</text>
+  <text x="270" y="375" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">返回 ans == ∞ ? −1 : ans</text>
+
+  <!-- insight box -->
+  <rect x="60" y="404" width="420" height="78" fill="#fff8e1" stroke="#d6a040" stroke-width="1.3" rx="10" filter="url(#rough2)"/>
+  <text x="270" y="424" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">为何只需「横边」？BFS 按距离分层扩展</text>
+  <text x="270" y="442" text-anchor="middle" font-size="10.5" fill="#666">每个源 s 找到的是「过 s 的最短环」；取所有源的最小值即全图最短环</text>
+  <text x="270" y="460" text-anchor="middle" font-size="10.5" fill="#666">时间 O(n·(n+m))，剪枝后实测远低于此上界</text>
+</svg>

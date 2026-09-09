@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 560"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="560" fill="#fafafa"/>
+
+  <text x="300" y="26" text-anchor="middle" font-size="15" fill="#333" filter="url(#rough2)" font-weight="bold">示例演算：沿结构逐层下钻，遇不同即短路</text>
+
+  <!-- 表头 -->
+  <rect x="30" y="44" width="540" height="32" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <g font-size="12" fill="#446688" filter="url(#rough2)" font-weight="bold">
+    <text x="60" y="64" text-anchor="middle">层</text>
+    <text x="200" y="64" text-anchor="middle">比对内容</text>
+    <text x="430" y="64" text-anchor="middle">判定</text>
+    <text x="528" y="64" text-anchor="middle">结果</text>
+  </g>
+  <g stroke="#ccc" stroke-width="1" filter="url(#rough2)">
+    <line x1="100" y1="44" x2="100" y2="500"/>
+    <line x1="340" y1="44" x2="340" y2="500"/>
+    <line x1="480" y1="44" x2="480" y2="500"/>
+  </g>
+
+  <!-- 小标题：示例2 true -->
+  <rect x="30" y="80" width="540" height="24" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="40" y="97" font-size="11" fill="#4a7a3a" filter="url(#rough2)" font-weight="bold">示例 2（true）：o1={"x":null,"y":[1,2,3]}  vs  o2={"x":null,"y":[1,2,3]}</text>
+
+  <!-- 行 L0 对象 -->
+  <rect x="30" y="106" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="125" text-anchor="middle">L0</text>
+    <text x="110" y="125">o1 vs o2（均 object）</text>
+    <text x="350" y="125">键集 {x,y} 相同 → 逐键下钻</text>
+    <text x="528" y="125" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L1 x:null -->
+  <rect x="30" y="136" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="155" text-anchor="middle">L1</text>
+    <text x="110" y="155">o1.x=null  vs  o2.x=null</text>
+    <text x="350" y="155">null === null（递归基）</text>
+    <text x="528" y="155" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L1 y 数组 -->
+  <rect x="30" y="166" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="185" text-anchor="middle">L1</text>
+    <text x="110" y="185">o1.y=[1,2,3]  vs  o2.y=[1,2,3]</text>
+    <text x="350" y="185">均数组·长度 3 → 逐元素下钻</text>
+    <text x="528" y="185" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L2 元素 -->
+  <rect x="30" y="196" width="540" height="30" rx="3" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.4" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="215" text-anchor="middle">L2</text>
+    <text x="110" y="215">[0] 1vs1  [1] 2vs2  [2] 3vs3</text>
+    <text x="350" y="215">数字 === 数字（×3 全过）</text>
+    <text x="528" y="215" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 汇总 true -->
+  <rect x="30" y="226" width="540" height="28" rx="6" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="245" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)" font-weight="bold">汇总：所有配对节点同型同值 → return true</text>
+
+  <!-- 小标题：示例3 false -->
+  <rect x="30" y="262" width="540" height="24" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="40" y="279" font-size="11" fill="#b85450" filter="url(#rough2)" font-weight="bold">示例 3（false）：o1={"a":1,"b":{"c":2}}  vs  o2={"a":1,"b":{"c":3}}</text>
+
+  <!-- 行 L0 -->
+  <rect x="30" y="288" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="307" text-anchor="middle">L0</text>
+    <text x="110" y="307">o1 vs o2（均 object）</text>
+    <text x="350" y="307">键集 {a,b} 相同 → 逐键下钻</text>
+    <text x="528" y="307" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L1 a -->
+  <rect x="30" y="318" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="337" text-anchor="middle">L1</text>
+    <text x="110" y="337">o1.a=1  vs  o2.a=1</text>
+    <text x="350" y="337">1 === 1（递归基）</text>
+    <text x="528" y="337" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L1 b 对象 -->
+  <rect x="30" y="348" width="540" height="30" rx="3" fill="#fff" stroke="#ddd" stroke-width="1" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="367" text-anchor="middle">L1</text>
+    <text x="110" y="367">o1.b={c:2}  vs  o2.b={c:3}</text>
+    <text x="350" y="367">均 object·键集 {c} → 下钻</text>
+    <text x="528" y="367" text-anchor="middle" fill="#4a7a3a" font-weight="bold">✓</text>
+  </g>
+
+  <!-- 行 L2 b.c 短路 -->
+  <rect x="30" y="378" width="540" height="32" rx="3" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <g font-size="11" fill="#333" filter="url(#rough2)">
+    <text x="60" y="398" text-anchor="middle">L2</text>
+    <text x="110" y="398">o1.b.c=2  vs  o2.b.c=3</text>
+    <text x="350" y="398" fill="#b85450" font-weight="bold">2 !== 3 → 短路返回</text>
+    <text x="528" y="398" text-anchor="middle" fill="#b85450" font-weight="bold">✗</text>
+  </g>
+
+  <!-- 汇总 false -->
+  <rect x="30" y="414" width="540" height="28" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="300" y="433" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)" font-weight="bold">汇总：b.c 处失配 → 立即 return false（其上各层无需回滚）</text>
+
+  <!-- 结论框 -->
+  <rect x="30" y="456" width="540" height="84" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="46" y="478" font-size="12" fill="#333" filter="url(#rough2)" font-weight="bold">关键观察：</text>
+  <text x="46" y="498" font-size="11" fill="#555" filter="url(#rough2)">· 递归「走到第一个不同处即停」——示例 2 走完全程才 true，示例 3 在 L2 短路；</text>
+  <text x="46" y="514" font-size="11" fill="#555" filter="url(#rough2)">· 配对节点「同型」是前提：object 与 array 不能混比，数组按下标、对象按键配对；</text>
+  <text x="46" y="530" font-size="11" fill="#555" filter="url(#rough2)">· 原始值是递归基（null===null / 数字===数字），数组/对象是递归步。</text>
+</svg>

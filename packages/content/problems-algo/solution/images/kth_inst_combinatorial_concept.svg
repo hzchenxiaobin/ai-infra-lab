@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="4"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#666"/>
+    </marker>
+    <marker id="arrR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="440" fill="#fafafa"/>
+  <text x="300" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">核心观察：字典序=按前缀分块，组合数定块大小</text>
+
+  <!-- ===== Example: destination=[2,3], 3 H + 2 V, total C(5,2)=10 ===== -->
+  <text x="40" y="62" font-size="12" fill="#446688" font-weight="bold">示例：destination=[2,3] → 3 个 H、2 个 V，共 C(5,2)=10 条</text>
+
+  <!-- Sorted list split into H-block / V-block -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="74" width="250" height="118" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" rx="8"/>
+    <rect x="320" y="74" width="180" height="118" fill="#fce4ec" stroke="#b85450" stroke-width="1.4" rx="8"/>
+  </g>
+  <text x="155" y="92" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">以 H 开头：C(4,2)=6 条</text>
+  <text x="410" y="92" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">以 V 开头：C(4,1)=4 条</text>
+
+  <g font-size="10.5" fill="#333">
+    <text x="44" y="112">HHHVV</text>
+    <text x="44" y="128">HHVHV</text>
+    <text x="44" y="144">HHVVH</text>
+    <text x="44" y="160">HVHHV</text>
+    <text x="44" y="176">HVHVH</text>
+    <text x="44" y="192">HVVHH</text>
+  </g>
+  <g font-size="10.5" fill="#333">
+    <text x="334" y="112">VHHHV</text>
+    <text x="334" y="128">VHHVH</text>
+    <text x="334" y="144">VHVHH</text>
+    <text x="334" y="160">VVHHH</text>
+  </g>
+
+  <!-- k pointer into H-block -->
+  <g filter="url(#rough2)">
+    <path d="M 18 132 L 30 132" stroke="#d6a040" stroke-width="2" marker-end="url(#arrR)"/>
+  </g>
+  <text x="14" y="124" font-size="11" fill="#d6a040" font-weight="bold">k=2</text>
+  <text x="14" y="150" font-size="9.5" fill="#d6a040">落入 H 块</text>
+
+  <!-- ===== Formula box ===== -->
+  <g filter="url(#rough2)">
+    <rect x="30" y="208" width="540" height="64" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="10"/>
+  </g>
+  <text x="300" y="232" text-anchor="middle" font-size="12" fill="#7a5415" font-weight="bold">当前位置选 H 后，剩余可排列方案数：</text>
+  <text x="300" y="256" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">cnt = C(row + col − 1, row)</text>
+
+  <!-- ===== Decision rule ===== -->
+  <text x="300" y="296" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">逐位贪心判定规则：</text>
+
+  <g filter="url(#rough2)">
+    <rect x="30" y="308" width="260" height="96" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8"/>
+    <rect x="310" y="308" width="260" height="96" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8"/>
+  </g>
+  <text x="160" y="330" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">k ≤ cnt</text>
+  <text x="160" y="350" text-anchor="middle" font-size="11" fill="#333">选 H，第 k 条在 H 块内</text>
+  <text x="160" y="368" text-anchor="middle" font-size="10.5" fill="#888">col−−，k 不变</text>
+  <text x="160" y="386" text-anchor="middle" font-size="10.5" fill="#888">递归求剩余串第 k 条</text>
+
+  <text x="440" y="330" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">k &gt; cnt</text>
+  <text x="440" y="350" text-anchor="middle" font-size="11" fill="#333">选 V，跳过整个 H 块</text>
+  <text x="440" y="368" text-anchor="middle" font-size="10.5" fill="#888">row−−，k −= cnt</text>
+  <text x="440" y="386" text-anchor="middle" font-size="10.5" fill="#888">在 V 块内求第 k−cnt 条</text>
+
+  <g filter="url(#rough2)">
+    <rect x="30" y="412" width="540" height="22" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3" rx="6"/>
+  </g>
+  <text x="300" y="427" text-anchor="middle" font-size="10.5" fill="#444">与 60 题「第 k 个排列」同源：康托尔展开解码，逐位用组合数定候选</text>
+</svg>

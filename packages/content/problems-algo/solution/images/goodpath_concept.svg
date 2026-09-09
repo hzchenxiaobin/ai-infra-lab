@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="400" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">好路径：两端同值 V + 路径中间全 ≤ V（V 是路径最大值）</text>
+
+  <!-- ===== Tree of example 1 ===== -->
+  <text x="280" y="52" text-anchor="middle" font-size="12" fill="#888" font-weight="bold">示例 1 的树：vals = [1,3,2,1,3]</text>
+
+  <!-- good path edges (1-0-2-4) drawn first in orange, thick -->
+  <line x1="110" y1="150" x2="200" y2="150" stroke="#d6a040" stroke-width="3" filter="url(#rough2)"/>
+  <line x1="200" y1="150" x2="290" y2="150" stroke="#d6a040" stroke-width="3" filter="url(#rough2)"/>
+  <line x1="290" y1="150" x2="380" y2="150" stroke="#d6a040" stroke-width="3" filter="url(#rough2)"/>
+  <!-- other edge 2-3 (not on good path) thin grey -->
+  <line x1="290" y1="150" x2="290" y2="232" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4 3" filter="url(#rough2)"/>
+
+  <!-- node 1 (val 3) endpoint : orange filled -->
+  <circle cx="110" cy="150" r="17" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="110" y="155" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">3</text>
+  <text x="110" y="186" text-anchor="middle" font-size="10" fill="#888">节点1</text>
+
+  <!-- node 0 (val 1) intermediate -->
+  <circle cx="200" cy="150" r="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="200" y="155" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">1</text>
+  <text x="200" y="186" text-anchor="middle" font-size="10" fill="#888">节点0</text>
+
+  <!-- node 2 (val 2) intermediate -->
+  <circle cx="290" cy="150" r="17" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="155" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">2</text>
+  <text x="290" y="186" text-anchor="middle" font-size="10" fill="#888">节点2</text>
+
+  <!-- node 3 (val 1) leaf, not good path endpoint -->
+  <circle cx="290" cy="248" r="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="290" y="253" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">1</text>
+  <text x="290" y="282" text-anchor="middle" font-size="10" fill="#888">节点3</text>
+
+  <!-- node 4 (val 3) endpoint -->
+  <circle cx="380" cy="150" r="17" fill="#fff8e1" stroke="#d6a040" stroke-width="2.5" filter="url(#rough2)"/>
+  <text x="380" y="155" text-anchor="middle" font-size="13" fill="#d6a040" font-weight="bold">3</text>
+  <text x="380" y="186" text-anchor="middle" font-size="10" fill="#888">节点4</text>
+
+  <!-- good path annotation -->
+  <text x="245" y="118" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">好路径 1 → 0 → 2 → 4</text>
+  <text x="245" y="132" text-anchor="middle" font-size="10" fill="#888">端点均 = 3，中间 1、2 ≤ 3 ✓</text>
+
+  <!-- bad path note -->
+  <rect x="40" y="216" width="210" height="40" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="145" y="234" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">0 → 2 → 3 不是好路径</text>
+  <text x="145" y="250" text-anchor="middle" font-size="10" fill="#888">端点值 1，但中间 vals[2]=2 &gt; 1 ✗</text>
+  <path d="M 250 236 Q 268 230 278 232" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#arrR)" filter="url(#rough2)"/>
+
+  <!-- ===== Key insight box ===== -->
+  <rect x="40" y="300" width="480" height="84" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="322" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold">核心观察：按值升序逐步「激活」节点与边</text>
+  <text x="280" y="342" text-anchor="middle" font-size="11" fill="#555">处理值 V 时，只合并两端值 ≤ V 的边 → 同值 V 节点若落同一分量</text>
+  <text x="280" y="358" text-anchor="middle" font-size="11" fill="#555">则它们之间必存在「中间全 ≤ V」的路径 → 两两配对，每分量贡献 C(k,2)</text>
+  <text x="280" y="376" text-anchor="middle" font-size="11" fill="#888">再加每个单节点（长度 0）共 n 条 → 总数 = n + Σ C(k,2)</text>
+</svg>

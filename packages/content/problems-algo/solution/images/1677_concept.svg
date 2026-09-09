@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#446688"/>
+    </marker>
+    <marker id="arrG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#4a7a3a"/>
+    </marker>
+    <marker id="arrO" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d6a040"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="470" fill="#fafafa"/>
+
+  <text x="340" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">核心观察：Product JOIN Invoice → GROUP BY product_id → 四列 SUM 聚合</text>
+
+  <!-- ===== Product table (left) ===== -->
+  <text x="40" y="54" font-size="10" fill="#888">Product（取 name）</text>
+  <rect x="30" y="60" width="150" height="92" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="42" y="76" font-size="9.5" fill="#446688" font-weight="bold">pid   name</text>
+  <line x1="30" y1="82" x2="180" y2="82" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+  <text x="42" y="100" font-size="9.5" fill="#4a7a3a" font-weight="bold">0     ham</text>
+  <text x="42" y="120" font-size="9.5" fill="#d6a040" font-weight="bold">1     bacon</text>
+  <text x="42" y="140" font-size="8.5" fill="#888">product_id 为主键</text>
+
+  <!-- ===== Invoice table (right) ===== -->
+  <text x="260" y="54" font-size="10" fill="#888">Invoice（按 product_id 关联，含 rest/paid/canceled/refunded 四列金额）</text>
+  <rect x="250" y="60" width="400" height="172" fill="#fff" stroke="#446688" stroke-width="1.5" rx="6" filter="url(#rough2)"/>
+  <text x="260" y="76" font-size="9" fill="#446688" font-weight="bold">inv  pid  rest paid canc ref</text>
+  <line x1="250" y1="82" x2="650" y2="82" stroke="#ccc" stroke-width="1" filter="url(#rough2)"/>
+
+  <!-- ham group (pid=0): green tint -->
+  <rect x="252" y="84" width="396" height="44" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.4"/>
+  <text x="260" y="100" font-size="9" fill="#4a7a3a">23    0     2    0    5    0</text>
+  <text x="260" y="116" font-size="9" fill="#4a7a3a">12    0     0    4    0    3</text>
+
+  <!-- bacon group (pid=1): orange tint -->
+  <rect x="252" y="130" width="396" height="84" fill="#fff8e1" stroke="#d6a040" stroke-width="0.8" rx="3" filter="url(#rough2)" opacity="0.5"/>
+  <text x="260" y="146" font-size="9" fill="#d6a040">1     1     1    1    0    1</text>
+  <text x="260" y="162" font-size="9" fill="#d6a040">2     1     1    0    1    1</text>
+  <text x="260" y="178" font-size="9" fill="#d6a040">3     1     0    1    1    1</text>
+  <text x="260" y="194" font-size="9" fill="#d6a040">4     1     1    1    1    0</text>
+  <text x="260" y="214" font-size="8.5" fill="#888">invoice_id 为主键；product_id 为外键</text>
+
+  <!-- JOIN arrows: Product.pid -> Invoice.pid -->
+  <path d="M180 96 C 215 96, 215 102, 250 102" stroke="#4a7a3a" stroke-width="1.5" fill="none" marker-end="url(#arrG)" filter="url(#rough2)" opacity="0.8"/>
+  <path d="M180 116 C 215 116, 215 164, 250 164" stroke="#d6a040" stroke-width="1.5" fill="none" marker-end="url(#arrO)" filter="url(#rough2)" opacity="0.8"/>
+  <text x="196" y="88" font-size="8.5" fill="#4a7a3a">ON pid</text>
+
+  <!-- ===== GROUP BY + SUM arrow down ===== -->
+  <path d="M340 232 L340 258" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- GROUP BY box -->
+  <rect x="60" y="262" width="560" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="280" text-anchor="middle" font-size="10.5" fill="#446688" font-weight="bold">③ GROUP BY p.product_id, p.name</text>
+  <text x="340" y="296" text-anchor="middle" font-size="9.5" fill="#666">按 product_id 分组：ham 组（2 行）| bacon 组（4 行）</text>
+
+  <path d="M340 302 L340 324" stroke="#b85450" stroke-width="2" fill="none" marker-end="url(#arrO)" filter="url(#rough2)"/>
+
+  <!-- SUM box -->
+  <rect x="60" y="328" width="560" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="340" y="346" text-anchor="middle" font-size="10.5" fill="#d6a040" font-weight="bold">④ SUM(rest) / SUM(paid) / SUM(canceled) / SUM(refunded)</text>
+  <text x="340" y="362" text-anchor="middle" font-size="9.5" fill="#666">每组对四个金额列分别求和 → 一行四数</text>
+
+  <!-- ===== Result table ===== -->
+  <rect x="120" y="382" width="440" height="62" fill="#fff" stroke="#4a7a3a" stroke-width="1.6" rx="6" filter="url(#rough2)"/>
+  <text x="340" y="398" text-anchor="middle" font-size="9.5" fill="#4a7a3a" font-weight="bold">结果（ORDER BY name）</text>
+  <text x="150" y="416" font-size="9" fill="#888" font-weight="bold">name    rest paid canc ref</text>
+  <text x="150" y="432" font-size="9.5" fill="#d6a040" font-weight="bold">bacon    3    3    3    3</text>
+  <text x="380" y="432" font-size="9.5" fill="#4a7a3a" font-weight="bold">ham    2    4    5    3</text>
+
+  <!-- Note -->
+  <rect x="30" y="450" width="620" height="0" fill="none"/>
+</svg>

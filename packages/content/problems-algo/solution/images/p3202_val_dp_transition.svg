@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="360" fill="#fafafa"/>
+
+  <text x="260" y="26" text-anchor="middle" font-size="16.5" fill="#333" font-weight="bold" filter="url(#rough2)">固定 val：前驱余数被唯一确定，一维 dp 就够</text>
+
+  <rect x="60" y="42" width="400" height="54" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="63" text-anchor="middle" font-size="12.5" fill="#446688" font-weight="bold" filter="url(#rough2)">val = (a+b) % k ∈ [0, k)，外层只枚举它（k 个）</text>
+  <text x="260" y="84" text-anchor="middle" font-size="12" fill="#446688" filter="url(#rough2)">dp[r]：以余数 r 结尾、相邻和 %k 均为 val 的最长链长</text>
+
+  <rect x="40" y="120" width="112" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="96" y="143" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">当前元素 x</text>
+
+  <path d="M 152 138 L 200 138" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="204" y="120" width="106" height="36" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="257" y="143" text-anchor="middle" font-size="12" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">y = x % k</text>
+
+  <path d="M 310 138 L 358 138" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="362" y="120" width="118" height="36" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="421" y="136" text-anchor="middle" font-size="11" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">prev =</text>
+  <text x="421" y="151" text-anchor="middle" font-size="11" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">(val−y+k) % k</text>
+
+  <path d="M 260 156 L 260 170" stroke="#446688" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <rect x="130" y="174" width="260" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2.2" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="196" text-anchor="middle" font-size="13.5" fill="#8a3a34" font-weight="bold" filter="url(#rough2)">dp[y] ← dp[prev] + 1</text>
+
+  <rect x="36" y="224" width="228" height="76" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="150" y="245" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold" filter="url(#rough2)">枚举 (a,b)：k² 组 × O(n) → 10⁹ 超时</text>
+  <text x="150" y="265" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">枚举 val：k 组 × O(n) → 10⁶ 通过</text>
+  <text x="150" y="286" text-anchor="middle" font-size="11" fill="#4a7a3a" filter="url(#rough2)">同 val 的 k 组 (a,b) 一次扫描全合并</text>
+
+  <rect x="284" y="224" width="204" height="76" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="386" y="245" text-anchor="middle" font-size="11" fill="#8a6a20" font-weight="bold" filter="url(#rough2)">prev == y（2y ≡ val）时：</text>
+  <text x="386" y="265" text-anchor="middle" font-size="11" fill="#8a6a20" filter="url(#rough2)">dp[y] = dp[y] + 1 读旧写新</text>
+  <text x="386" y="286" text-anchor="middle" font-size="11" fill="#8a6a20" filter="url(#rough2)">右侧先求值，无需倒序 ✓</text>
+
+  <rect x="70" y="312" width="380" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="260" y="332" text-anchor="middle" font-size="11.5" fill="#446688" filter="url(#rough2)">链能否延长只看「结尾余数 + val」，与链首无关 → 无后效性</text>
+
+  <text x="260" y="356" text-anchor="middle" font-size="10.5" fill="#888" filter="url(#rough2)">k 个 val 全部跑完取最大，即覆盖所有 (a,b) 组合</text>
+</svg>

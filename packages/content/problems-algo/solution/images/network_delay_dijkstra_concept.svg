@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="420" fill="#fafafa"/>
+
+  <text x="280" y="28" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">堆优化 Dijkstra：从源点 k 向外逐层确定最短路</text>
+  <text x="280" y="46" text-anchor="middle" font-size="11" fill="#888">每次取 dist 最小的节点松弛出边；答案 = max(dist[1..n])</text>
+
+  <!-- ===== Graph ===== -->
+  <text x="40" y="78" font-size="11" fill="#446688" font-weight="bold">示例图：n=4, k=2（信号源）</text>
+
+  <!-- edges -->
+  <path d="M 118 196 Q 200 120 286 132" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="180" y="112" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">w=1</text>
+
+  <path d="M 120 210 L 282 248" stroke="#446688" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="196" y="222" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">w=1</text>
+
+  <path d="M 320 258 L 446 258" stroke="#4a7a3a" stroke-width="1.6" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="383" y="250" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">w=1</text>
+
+  <!-- nodes -->
+  <!-- node 2 (source) -->
+  <ellipse cx="92" cy="206" rx="30" ry="24" fill="#fff8e1" stroke="#d6a040" stroke-width="2.2" filter="url(#rough2)"/>
+  <text x="92" y="204" text-anchor="middle" font-size="14" fill="#d6a040" font-weight="bold">2</text>
+  <text x="92" y="218" text-anchor="middle" font-size="8" fill="#d6a040">源 k</text>
+
+  <!-- node 1 -->
+  <ellipse cx="306" cy="132" rx="28" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="306" y="137" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">1</text>
+
+  <!-- node 3 -->
+  <ellipse cx="306" cy="258" rx="28" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="306" y="263" text-anchor="middle" font-size="14" fill="#446688" font-weight="bold">3</text>
+
+  <!-- node 4 -->
+  <ellipse cx="466" cy="258" rx="28" ry="22" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="466" y="263" text-anchor="middle" font-size="14" fill="#b85450" font-weight="bold">4</text>
+
+  <!-- dist labels near nodes -->
+  <text x="306" y="108" text-anchor="middle" font-size="10" fill="#446688">dist=1</text>
+  <text x="92" y="248" text-anchor="middle" font-size="10" fill="#d6a040">dist=0</text>
+  <text x="306" y="294" text-anchor="middle" font-size="10" fill="#446688">dist=1</text>
+  <text x="466" y="294" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">dist=2 ← 最大</text>
+
+  <!-- ===== dist array ===== -->
+  <text x="40" y="338" font-size="11" fill="#446688" font-weight="bold">最终 dist[]（1-indexed）</text>
+  <g font-size="11">
+    <rect x="60" y="348" width="50" height="30" fill="#f6f6f6" stroke="#ccc" stroke-width="0.8" rx="3" filter="url(#rough2)"/>
+    <text x="85" y="367" text-anchor="middle" fill="#aaa">—</text>
+    <text x="85" y="340" text-anchor="middle" font-size="8" fill="#aaa">[0]</text>
+
+    <rect x="112" y="348" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="137" y="367" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <text x="137" y="340" text-anchor="middle" font-size="8" fill="#888">[1]</text>
+
+    <rect x="164" y="348" width="50" height="30" fill="#fff8e1" stroke="#d6a040" stroke-width="1.4" rx="3" filter="url(#rough2)"/>
+    <text x="189" y="367" text-anchor="middle" fill="#d6a040" font-weight="bold">0</text>
+    <text x="189" y="340" text-anchor="middle" font-size="8" fill="#888">[2]</text>
+
+    <rect x="216" y="348" width="50" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="1" rx="3" filter="url(#rough2)"/>
+    <text x="241" y="367" text-anchor="middle" fill="#446688" font-weight="bold">1</text>
+    <text x="241" y="340" text-anchor="middle" font-size="8" fill="#888">[3]</text>
+
+    <rect x="268" y="348" width="50" height="30" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" rx="3" filter="url(#rough2)"/>
+    <text x="293" y="367" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+    <text x="293" y="340" text-anchor="middle" font-size="8" fill="#b85450" font-weight="bold">[4]</text>
+  </g>
+
+  <!-- answer box -->
+  <rect x="350" y="344" width="180" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="440" y="362" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">答案 = max(dist) = 2</text>
+  <text x="440" y="378" text-anchor="middle" font-size="9" fill="#666">最后收到信号的节点决定总时间</text>
+
+  <!-- footer note -->
+  <text x="40" y="404" font-size="10" fill="#888">边权非负 → 取出的最小 dist 节点已确定最短路（贪心正确）</text>
+</svg>

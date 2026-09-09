@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 470" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a7a7a"/>
+    </marker>
+  </defs>
+
+  <rect width="540" height="470" fill="#fafafa"/>
+
+  <text x="270" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：一次遍历 + 哈希表存「最早下标」</text>
+
+  <!-- Init oval -->
+  <rect x="140" y="38" width="260" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="60" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">初始化：seen = {}，score = 0，ans = 0</text>
+  <path d="M 270 72 L 270 88" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- score update -->
+  <rect x="130" y="90" width="280" height="32" rx="6" fill="#ffffff" stroke="#4a7a3a" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="111" text-anchor="middle" font-size="11.5" fill="#333">score += (hours[i] &gt; 8 ? +1 : −1)</text>
+  <path d="M 270 122 L 270 136" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 1: score > 0 ? -->
+  <polygon points="270,138 390,178 270,218 150,178" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="175" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">score &gt; 0 ?</text>
+  <text x="270" y="190" text-anchor="middle" font-size="10" fill="#888">（整段前缀合法）</text>
+  <text x="382" y="172" text-anchor="end" font-size="10.5" fill="#82b366" font-weight="bold">是</text>
+  <text x="158" y="172" text-anchor="start" font-size="10.5" fill="#b85450" font-weight="bold">否</text>
+
+  <!-- Yes box (right): ans = i + 1 -->
+  <rect x="402" y="150" width="120" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="462" y="172" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">ans = i + 1</text>
+  <text x="462" y="190" text-anchor="middle" font-size="9.5" fill="#4a7a3a">整段 [0..i] 合法</text>
+  <text x="462" y="202" text-anchor="middle" font-size="9.5" fill="#4a7a3a">跳过查表</text>
+  <path d="M 390 178 L 401 178" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No branch: decision 2: score - 1 in seen ? -->
+  <polygon points="150,228 270,262 150,296 30,262" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="150" y="259" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">score − 1</text>
+  <text x="150" y="274" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">in seen ?</text>
+  <text x="262" y="256" text-anchor="end" font-size="10.5" fill="#82b366" font-weight="bold">是</text>
+  <text x="138" y="284" text-anchor="start" font-size="10.5" fill="#888" font-weight="bold">否</text>
+  <path d="M 150 218 L 150 228" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Yes box (right of decision2): ans = max(ans, i - seen[score-1]) -->
+  <rect x="282" y="234" width="146" height="56" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="355" y="256" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">ans = max(ans,</text>
+  <text x="355" y="270" text-anchor="middle" font-size="10.5" fill="#333" font-weight="bold">i − seen[score−1])</text>
+  <text x="355" y="284" text-anchor="middle" font-size="9.5" fill="#4a7a3a">命中最早下标</text>
+  <path d="M 270 262 L 281 262" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- No branch goes down (nothing) -->
+  <rect x="78" y="306" width="144" height="30" rx="6" fill="#f6f6f6" stroke="#bbb" stroke-width="1.2" filter="url(#rough2)"/>
+  <text x="150" y="326" text-anchor="middle" font-size="10.5" fill="#888">暂无更早下标，跳过</text>
+  <path d="M 150 296 L 150 306" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- merge to record step -->
+  <path d="M 462 206 L 462 352 L 270 352" stroke="#7a7a7a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 355 290 L 355 352 L 270 352" stroke="#7a7a7a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 150 336 L 150 352 L 270 352" stroke="#7a7a7a" stroke-width="1.5" fill="none" filter="url(#rough2)"/>
+  <path d="M 270 352 L 270 364" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- record first occurrence -->
+  <rect x="130" y="366" width="280" height="32" rx="6" fill="#ffffff" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="270" y="387" text-anchor="middle" font-size="11.5" fill="#333">seen.setdefault(score, i)   （首次出现才记录）</text>
+  <path d="M 270 398 L 270 410" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- decision 3: next i? -->
+  <polygon points="270,412 380,442 270,472 160,442" fill="#fff8e1" stroke="#d6a040" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="270" y="446" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">还有下一个 i ?</text>
+  <text x="372" y="438" text-anchor="end" font-size="10.5" fill="#82b366" font-weight="bold">是</text>
+
+  <!-- loop back to score update -->
+  <path d="M 380 442 L 525 442 L 525 106 L 401 106" stroke="#82b366" stroke-width="1.6" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3" filter="url(#rough2)"/>
+  <text x="520" y="280" text-anchor="end" font-size="9.5" fill="#4a7a3a" font-style="italic">i++，下一轮</text>
+
+  <!-- exit -->
+  <rect x="36" y="430" width="120" height="34" rx="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="96" y="452" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">否 → 返回 ans</text>
+  <path d="M 160 442 L 156 442" stroke="#7a7a7a" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+</svg>

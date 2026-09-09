@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480"
+     font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="480" fill="#fafafa"/>
+
+  <text x="260" y="22" text-anchor="middle" font-size="14" fill="#333" filter="url(#rough2)">算法流程：逐字符滚动 DP + 前缀和播撒，O(t·n·m)</text>
+
+  <!-- 初始化 -->
+  <rect x="140" y="34" width="240" height="26" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="51" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">初始化：dp[00][0][0] = 1，其余为 0</text>
+  <path d="M 260 60 L 260 74" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 取字符 -->
+  <rect x="100" y="78" width="320" height="26" rx="4" fill="#fff" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="95" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">第 i 个字符 c = target[i]：新建空表 ndp（i = 0, 1, …, t−1）</text>
+  <path d="M 260 104 L 260 118" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤① -->
+  <rect x="100" y="122" width="320" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="139" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">① 对每个 mask 沿 j 求前缀和：S[j][k] = 前 j 行 dp[mask][·][k] 之和</text>
+  <text x="94" y="139" text-anchor="end" font-size="10" fill="#446688" filter="url(#rough2)">word1 侧</text>
+  <path d="M 260 148 L 260 162" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤② -->
+  <rect x="100" y="166" width="320" height="26" rx="4" fill="#e8f0fe" stroke="#446688" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="183" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">② 播撒：若 word1[j−1] = c，则 ndp[mask|01][j][k] += S[j][k]</text>
+  <text x="94" y="183" text-anchor="end" font-size="10" fill="#446688" filter="url(#rough2)">word1 侧</text>
+  <path d="M 260 192 L 260 206" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤③ -->
+  <rect x="100" y="210" width="320" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="227" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">③ 对每个 mask 沿 k 求前缀和：T[j][k] = 前 k 列 dp[mask][j][·] 之和</text>
+  <text x="94" y="227" text-anchor="end" font-size="10" fill="#d6a040" filter="url(#rough2)">word2 侧</text>
+  <path d="M 260 236 L 260 250" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 步骤④ -->
+  <rect x="100" y="254" width="320" height="26" rx="4" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="260" y="271" text-anchor="middle" font-size="11.5" fill="#333" filter="url(#rough2)">④ 播撒：若 word2[k−1] = c，则 ndp[mask|10][j][k] += T[j][k]</text>
+  <text x="94" y="271" text-anchor="end" font-size="10" fill="#d6a040" filter="url(#rough2)">word2 侧</text>
+  <path d="M 260 280 L 260 294" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 滚动 -->
+  <rect x="130" y="298" width="260" height="26" rx="4" fill="#fff" stroke="#666" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="260" y="315" text-anchor="middle" font-size="12" fill="#333" filter="url(#rough2)">dp ← ndp（每步对 10⁹+7 取模）</text>
+  <path d="M 260 324 L 260 338" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- 判断菱形 -->
+  <polygon points="260,342 350,384 260,426 170,384" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="389" text-anchor="middle" font-size="12" fill="#b85450" filter="url(#rough2)">还有 target 字符？</text>
+
+  <!-- 是：回环 -->
+  <path d="M 170 384 L 64 384 L 64 91 L 94 91" fill="none" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="150" y="376" font-size="11.5" fill="#b85450" filter="url(#rough2)">是</text>
+
+  <!-- 否：收尾 -->
+  <path d="M 260 426 L 260 440" fill="none" stroke="#446688" stroke-width="1.6" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <text x="270" y="438" font-size="11.5" fill="#666" filter="url(#rough2)">否</text>
+  <rect x="120" y="444" width="280" height="26" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="260" y="461" text-anchor="middle" font-size="12" fill="#4a7a3a" filter="url(#rough2)">答案 = Σ_{j,k} dp[11][j][k]</text>
+
+  <text x="260" y="477" text-anchor="middle" font-size="10.5" fill="#999" filter="url(#rough2)">单个字符一轮 O(4·n·m)，全程 O(t·n·m) ≈ 4×10⁶，轻松通过</text>
+</svg>

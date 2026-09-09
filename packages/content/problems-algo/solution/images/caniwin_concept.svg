@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 440" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#666" stroke-width="1.5"/>
+    </marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#4a7a3a" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect width="620" height="440" fill="#fafafa"/>
+
+  <text x="310" y="26" text-anchor="middle" font-size="14.5" fill="#555" font-weight="bold">极小化极大：我赢 ⟺ 存在一手让对手必输</text>
+
+  <!-- Root: me -->
+  <ellipse cx="310" cy="70" rx="78" ry="22" fill="#e8f0fe" stroke="#446688" stroke-width="2" filter="url(#rough2)"/>
+  <text x="310" y="75" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">我（当前回合）dfs=?</text>
+
+  <!-- OR annotation near root -->
+  <text x="412" y="64" font-size="11" fill="#446688" font-style="italic">OR：取并集</text>
+
+  <!-- edges from root to 3 children -->
+  <path d="M 250 86 L 130 140" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 310 92 L 310 138" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+  <path d="M 372 86 L 490 140" stroke="#666" stroke-width="1.5" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- child 1: immediate win -->
+  <rect x="48" y="146" width="166" height="46" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="131" y="166" text-anchor="middle" font-size="11.5" fill="#4a7a3a" font-weight="bold">选 i → 累计 ≥ T</text>
+  <text x="131" y="182" text-anchor="middle" font-size="11" fill="#333">我直接赢 ✓</text>
+
+  <!-- child 2: opponent turn -->
+  <rect x="232" y="146" width="156" height="46" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="166" text-anchor="middle" font-size="11.5" fill="#b85450" font-weight="bold">对手回合 dfs=?</text>
+  <text x="310" y="182" text-anchor="middle" font-size="10.5" fill="#555">未达 T，递归</text>
+
+  <!-- child 3: ellipsis -->
+  <rect x="448" y="146" width="120" height="46" fill="#f5f5f5" stroke="#bbb" stroke-width="1.3" stroke-dasharray="4,3" rx="8" filter="url(#rough2)"/>
+  <text x="508" y="174" text-anchor="middle" font-size="12" fill="#888">其他选法 …</text>
+
+  <!-- edges from opponent node to its leaves -->
+  <path d="M 280 192 L 250 236" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+  <path d="M 340 192 L 370 236" stroke="#4a7a3a" stroke-width="2" fill="none" marker-end="url(#arrG)" filter="url(#rough2)"/>
+
+  <!-- opponent leaf 1: opponent reaches T -> I lose -->
+  <rect x="168" y="240" width="158" height="42" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="7" filter="url(#rough2)"/>
+  <text x="247" y="258" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">对手达到 T</text>
+  <text x="247" y="274" text-anchor="middle" font-size="10.5" fill="#555">我输 ✗</text>
+
+  <!-- opponent leaf 2: opponent cannot win -> I win -->
+  <rect x="346" y="240" width="158" height="42" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="7" filter="url(#rough2)"/>
+  <text x="425" y="258" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">对手怎么走都输</text>
+  <text x="425" y="274" text-anchor="middle" font-size="10.5" fill="#333">我赢 ✓</text>
+
+  <!-- recursive rule box -->
+  <rect x="40" y="300" width="540" height="44" fill="#fff8e1" stroke="#d6a040" stroke-width="1.7" rx="8" filter="url(#rough2)"/>
+  <text x="310" y="318" text-anchor="middle" font-size="11.5" fill="#444" font-weight="bold">递推式：dfs(s) = ∃ 合法 i ：(sum+i ≥ T) ∨ ¬ dfs(s ∪ {i})</text>
+  <text x="310" y="335" text-anchor="middle" font-size="10.8" fill="#666">当前玩家赢 ⟺ 某一手能立即达标，或令对手在剩余局面必输</text>
+
+  <!-- state = mask -->
+  <rect x="40" y="356" width="262" height="64" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="171" y="376" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">状态 = 已用整数集合 mask</text>
+  <text x="171" y="393" text-anchor="middle" font-size="10.8" fill="#555">例 mask = 01101₂ → 已用 {1,3,4}</text>
+  <text x="171" y="410" text-anchor="middle" font-size="10.8" fill="#555">2^M 个状态，M ≤ 20</text>
+
+  <!-- prunes -->
+  <rect x="318" y="356" width="262" height="64" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="449" y="376" text-anchor="middle" font-size="11.5" fill="#333" font-weight="bold">两条剪枝</text>
+  <text x="449" y="393" text-anchor="middle" font-size="10.6" fill="#555">① Σ(1..M) &lt; T → false</text>
+  <text x="449" y="410" text-anchor="middle" font-size="10.6" fill="#555">② T ≤ 0 → true</text>
+</svg>

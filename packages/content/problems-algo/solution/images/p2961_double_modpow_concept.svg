@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#446688"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">双模幂：每一步都取模，数值永不越界</text>
+
+  <!-- 公式 -->
+  <text x="280" y="58" text-anchor="middle" font-size="15" fill="#333">((<tspan fill="#4a7a3a" font-weight="bold">a^b mod 10</tspan>)<tspan fill="#d6a040" font-weight="bold">^c</tspan>) mod m == target</text>
+
+  <!-- 流水线：输入 -->
+  <rect x="36" y="90" width="88" height="52" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="80" y="112" text-anchor="middle" font-size="12" fill="#333">variables[i]</text>
+  <text x="80" y="130" text-anchor="middle" font-size="11.5" fill="#333">[a, b, c, m]</text>
+
+  <path d="M 124 116 L 152 116" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arrb)"/>
+
+  <!-- 第一段模幂 -->
+  <rect x="156" y="90" width="106" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="209" y="112" text-anchor="middle" font-size="12.5" fill="#333">第一段模幂</text>
+  <text x="209" y="130" text-anchor="middle" font-size="11.5" fill="#4a7a3a">x = a^b mod 10</text>
+  <text x="209" y="158" text-anchor="middle" font-size="10.5" fill="#999">结果只有 1 位数字</text>
+
+  <path d="M 262 116 L 288 116" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arrb)"/>
+
+  <!-- 中间值胶囊 -->
+  <rect x="292" y="98" width="62" height="36" rx="18" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+  <text x="323" y="121" text-anchor="middle" font-size="12" fill="#333">x ∈ 0..9</text>
+
+  <path d="M 354 116 L 380 116" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arrb)"/>
+
+  <!-- 第二段模幂 -->
+  <rect x="384" y="90" width="118" height="52" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" filter="url(#rough2)"/>
+  <text x="443" y="112" text-anchor="middle" font-size="12.5" fill="#333">第二段模幂</text>
+  <text x="443" y="130" text-anchor="middle" font-size="11.5" fill="#4a7a3a">y = x^c mod m</text>
+
+  <!-- 比较 -->
+  <path d="M 443 142 L 443 160" fill="none" stroke="#446688" stroke-width="1.8" filter="url(#rough2)" marker-end="url(#arrb)"/>
+  <rect x="386" y="162" width="114" height="34" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="2" filter="url(#rough2)"/>
+  <text x="443" y="184" text-anchor="middle" font-size="12.5" fill="#333">y == target ?</text>
+  <text x="443" y="212" text-anchor="middle" font-size="10.5" fill="#666">是 → i 是好下标</text>
+
+  <!-- 溢出警告 -->
+  <rect x="36" y="222" width="304" height="76" rx="10" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="188" y="244" text-anchor="middle" font-size="12.5" fill="#b85450" font-weight="bold">⚠ 若不取模、直接硬算幂：必然爆炸</text>
+  <text x="188" y="264" text-anchor="middle" font-size="11.5" fill="#333">1000^1000 是 3001 位数，而 long long 只有 19 位</text>
+  <text x="188" y="284" text-anchor="middle" font-size="11.5" fill="#333">→ 每步取模不是优化，而是唯一出路</text>
+
+  <!-- 底部恒等式 -->
+  <rect x="56" y="312" width="448" height="40" rx="8" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="331" text-anchor="middle" font-size="13" fill="#333">(x·y) mod m = ((x mod m)·(y mod m)) mod m</text>
+  <text x="280" y="347" text-anchor="middle" font-size="11" fill="#666">每乘一次就取一次模 → 中间积恒 &lt; m² ≤ 10⁶，永不溢出</text>
+</svg>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 560" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrowD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L4,7 L8,0 Z" fill="#888"/>
+    </marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="460" height="560" fill="#fafafa"/>
+
+  <text x="230" y="26" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">推多米诺：两遍扫描 + 合并流程</text>
+
+  <!-- ===== Init ===== -->
+  <rect x="110" y="44" width="240" height="48" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="64" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">初始化</text>
+  <text x="230" y="82" text-anchor="middle" font-size="11" fill="#555">force[0..n−1] = 0，N = n</text>
+
+  <path d="M 230 96 L 230 112" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- ===== Pass 1 ===== -->
+  <rect x="60" y="116" width="340" height="86" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="136" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">第一遍  for i = 0 → n−1 （左→右）</text>
+  <text x="230" y="154" text-anchor="middle" font-size="10.5" fill="#555">维护右向力 f：R ⇒ f = N；L ⇒ f = 0；. ⇒ f = max(f−1, 0)</text>
+  <text x="230" y="170" text-anchor="middle" font-size="10.5" fill="#555">force[i] += f</text>
+  <text x="230" y="190" text-anchor="middle" font-size="9.5" fill="#b85450">遇异向源 L 立即截断（不向右传）</text>
+
+  <path d="M 230 206 L 230 222" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- ===== Pass 2 ===== -->
+  <rect x="60" y="226" width="340" height="86" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="246" text-anchor="middle" font-size="12.5" fill="#333" font-weight="bold">第二遍  for i = n−1 → 0 （右→左）</text>
+  <text x="230" y="264" text-anchor="middle" font-size="10.5" fill="#555">维护左向力 f：L ⇒ f = N；R ⇒ f = 0；. ⇒ f = max(f−1, 0)</text>
+  <text x="230" y="280" text-anchor="middle" font-size="10.5" fill="#555">force[i] −= f</text>
+  <text x="230" y="300" text-anchor="middle" font-size="9.5" fill="#b85450">遇异向源 R 立即截断（不向左传）</text>
+
+  <path d="M 230 316 L 230 332" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+
+  <!-- ===== Merge decision diamond ===== -->
+  <polygon points="230,336 360,384 230,432 100,384" fill="#f0f0f0" stroke="#888" stroke-width="2" filter="url(#rough2)"/>
+  <text x="230" y="380" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">force[i] ?</text>
+  <text x="230" y="398" text-anchor="middle" font-size="10.5" fill="#777">按符号映射字符</text>
+
+  <!-- three branches -->
+  <!-- >0 -> R (left) -->
+  <path d="M 100 384 L 50 384 L 50 444" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="74" y="376" font-size="10.5" fill="#446688" font-weight="bold">&gt; 0</text>
+  <rect x="14" y="448" width="72" height="40" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="50" y="473" text-anchor="middle" font-size="13" fill="#446688" font-weight="bold">'R'</text>
+
+  <!-- ==0 -> . (center) -->
+  <path d="M 230 432 L 230 444" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="244" y="440" font-size="10.5" fill="#888" font-weight="bold">= 0</text>
+  <rect x="194" y="448" width="72" height="40" fill="#fff" stroke="#aaa" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="230" y="473" text-anchor="middle" font-size="13" fill="#888" font-weight="bold">'.'</text>
+
+  <!-- <0 -> L (right) -->
+  <path d="M 360 384 L 410 384 L 410 444" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrowD)" filter="url(#rough2)"/>
+  <text x="372" y="376" font-size="10.5" fill="#4a7a3a" font-weight="bold">&lt; 0</text>
+  <rect x="374" y="448" width="72" height="40" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" rx="8" filter="url(#rough2)"/>
+  <text x="410" y="473" text-anchor="middle" font-size="13" fill="#4a7a3a" font-weight="bold">'L'</text>
+
+  <!-- merge to return -->
+  <path d="M 50 488 L 50 506 L 230 506" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <path d="M 410 488 L 410 506 L 230 506" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+  <path d="M 230 488 L 230 506" stroke="#888" stroke-width="1.8" fill="none" marker-end="url(#arrowR)" filter="url(#rough2)"/>
+
+  <rect x="130" y="510" width="200" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="230" y="535" text-anchor="middle" font-size="12" fill="#d6a040" font-weight="bold">return ans  （O(n), O(n)）</text>
+</svg>

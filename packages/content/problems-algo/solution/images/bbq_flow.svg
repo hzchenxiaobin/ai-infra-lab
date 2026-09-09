@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arrD" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto">
+      <path d="M0,0 L8,0 L4,8 Z" fill="#888"/>
+    </marker>
+    <marker id="arrR" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#b85450"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="25" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">enqueue / dequeue 流程：mutex + 双条件变量</text>
+
+  <text x="140" y="55" text-anchor="middle" font-size="12" fill="#446688" font-weight="bold">enqueue(element)</text>
+  <text x="420" y="55" text-anchor="middle" font-size="12" fill="#b85450" font-weight="bold">dequeue()</text>
+
+  <rect x="55" y="70" width="170" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="90" text-anchor="middle" font-size="11" fill="#333">lock(mtx)</text>
+  <path d="M 140 100 L 140 115" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="55" y="118" width="170" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="136" text-anchor="middle" font-size="10" fill="#333">cv_not_full.wait</text>
+  <text x="140" y="150" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">size &lt; capacity ?</text>
+  <path d="M 140 158 L 140 173" stroke="#888" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="170" y="168" font-size="9" fill="#888" font-style="italic">满则阻塞</text>
+
+  <rect x="55" y="176" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="196" text-anchor="middle" font-size="11" fill="#333">q.push(element)</text>
+  <path d="M 140 206 L 140 221" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="55" y="224" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="244" text-anchor="middle" font-size="11" fill="#333">size++</text>
+  <path d="M 140 254 L 140 269" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="55" y="272" width="170" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="287" text-anchor="middle" font-size="10" fill="#333">cv_not_empty.notify</text>
+  <text x="140" y="300" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">唤醒消费者</text>
+  <path d="M 140 306 L 140 321" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="55" y="324" width="170" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="140" y="344" text-anchor="middle" font-size="11" fill="#333">unlock(mtx)</text>
+
+  <rect x="335" y="70" width="170" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="90" text-anchor="middle" font-size="11" fill="#333">lock(mtx)</text>
+  <path d="M 420 100 L 420 115" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="335" y="118" width="170" height="40" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="136" text-anchor="middle" font-size="10" fill="#333">cv_not_empty.wait</text>
+  <text x="420" y="150" text-anchor="middle" font-size="10" fill="#d6a040" font-weight="bold">size &gt; 0 ?</text>
+  <path d="M 420 158 L 420 173" stroke="#888" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrD)" filter="url(#rough2)"/>
+  <text x="450" y="168" font-size="9" fill="#888" font-style="italic">空则阻塞</text>
+
+  <rect x="335" y="176" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="196" text-anchor="middle" font-size="11" fill="#333">val = q.front()</text>
+  <path d="M 420 206 L 420 221" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="335" y="224" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="244" text-anchor="middle" font-size="11" fill="#333">q.pop(); size--</text>
+  <path d="M 420 254 L 420 269" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="335" y="272" width="170" height="34" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="287" text-anchor="middle" font-size="10" fill="#333">cv_not_full.notify</text>
+  <text x="420" y="300" text-anchor="middle" font-size="10" fill="#b85450" font-weight="bold">唤醒生产者</text>
+  <path d="M 420 306 L 420 321" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="335" y="324" width="170" height="30" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="344" text-anchor="middle" font-size="11" fill="#333">unlock(mtx)</text>
+  <path d="M 420 354 L 420 369" stroke="#888" stroke-width="2" fill="none" marker-end="url(#arrD)" filter="url(#rough2)"/>
+
+  <rect x="335" y="372" width="170" height="30" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="8" filter="url(#rough2)"/>
+  <text x="420" y="392" text-anchor="middle" font-size="11" fill="#333">return val</text>
+
+  <path d="M 225 289 L 335 289" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <path d="M 335 289 L 225 289" stroke="#b85450" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrR)" filter="url(#rough2)"/>
+  <text x="280" y="282" text-anchor="middle" font-size="9" fill="#b85450">互相唤醒</text>
+
+  <rect x="30" y="415" width="500" height="55" fill="#fff8e1" fill-opacity="0.4" stroke="#d6a040" stroke-width="1.5" rx="8" filter="url(#rough2)"/>
+  <text x="280" y="437" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">不变式（Invariant）</text>
+  <text x="280" y="455" text-anchor="middle" font-size="10" fill="#555">enqueue 后：0 &lt; size ≤ capacity → 队列必不空 → notify(not_empty) 合法</text>
+  <text x="280" y="467" text-anchor="middle" font-size="10" fill="#555">dequeue 后：0 ≤ size &lt; capacity → 队列必不满 → notify(not_full) 合法</text>
+</svg>

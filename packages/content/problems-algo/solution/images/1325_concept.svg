@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 400" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="580" height="400" fill="#fafafa"/>
+
+  <text x="290" y="26" text-anchor="middle" font-size="15" fill="#444" font-weight="bold">删除逐层向上传播 → 必须后序（先处理孩子，再判自己）</text>
+  <text x="290" y="46" text-anchor="middle" font-size="11" fill="#888">孩子删完后父节点可能变成新叶子；若新叶子值=target，继续删</text>
+
+  <!-- Stage labels -->
+  <text x="110" y="74" text-anchor="middle" font-size="11" fill="#446688" font-weight="bold">① 初始</text>
+  <text x="290" y="74" text-anchor="middle" font-size="11" fill="#d6a040" font-weight="bold">② 删两片 target 叶</text>
+  <text x="470" y="74" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">③ 父成新叶+target → 删</text>
+
+  <!-- Stage 1: root 2 with two red leaves 2,2 -->
+  <g font-size="13">
+    <line x1="110" y1="128" x2="80" y2="185" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <line x1="110" y1="128" x2="140" y2="185" stroke="#888" stroke-width="1.3" filter="url(#rough2)"/>
+    <circle cx="110" cy="120" r="17" fill="#e8f0fe" stroke="#446688" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="110" y="125" text-anchor="middle" fill="#446688" font-weight="bold">2</text>
+    <circle cx="80" cy="195" r="15" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="80" y="200" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+    <circle cx="140" cy="195" r="15" fill="#fce4ec" stroke="#b85450" stroke-width="1.8" filter="url(#rough2)"/>
+    <text x="140" y="200" text-anchor="middle" fill="#b85450" font-weight="bold">2</text>
+  </g>
+  <text x="110" y="232" text-anchor="middle" font-size="9" fill="#b85450">红叶=target，待删</text>
+
+  <!-- arrow 1 -> 2 -->
+  <path d="M 162 158 L 238 158" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="200" y="150" text-anchor="middle" font-size="9" fill="#888">先删孩子</text>
+
+  <!-- Stage 2: root 2 now a leaf, orange (newly exposed) -->
+  <g font-size="13">
+    <circle cx="290" cy="158" r="17" fill="#fff8e1" stroke="#d6a040" stroke-width="2" filter="url(#rough2)"/>
+    <text x="290" y="163" text-anchor="middle" fill="#d6a040" font-weight="bold">2</text>
+  </g>
+  <text x="290" y="198" text-anchor="middle" font-size="9" fill="#d6a040">左右孩子已 null</text>
+  <text x="290" y="212" text-anchor="middle" font-size="9" fill="#d6a040">→ 自身变叶子</text>
+
+  <!-- arrow 2 -> 3 -->
+  <path d="M 342 158 L 418 158" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="380" y="150" text-anchor="middle" font-size="9" fill="#888">val=target → 删</text>
+
+  <!-- Stage 3: null returned -->
+  <g font-size="12">
+    <rect x="428" y="138" width="84" height="42" rx="6" fill="none" stroke="#999" stroke-width="1.4" stroke-dasharray="4 3" filter="url(#rough2)"/>
+    <text x="470" y="164" text-anchor="middle" fill="#888" font-weight="bold">return null</text>
+  </g>
+  <text x="470" y="198" text-anchor="middle" font-size="9" fill="#888">父节点收到 null</text>
+
+  <!-- bottom note box -->
+  <rect x="30" y="248" width="520" height="134" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" filter="url(#rough2)"/>
+  <text x="50" y="274" font-size="12" fill="#444" font-weight="bold">后序模板（一句话）：先递归处理左右孩子，拿到新子树后再判自己</text>
+  <text x="50" y="298" font-size="11" fill="#555" font-family="monospace">node.left  = dfs(node.left)    // 孩子可能被删成 null</text>
+  <text x="50" y="316" font-size="11" fill="#555" font-family="monospace">node.right = dfs(node.right)</text>
+  <text x="50" y="334" font-size="11" fill="#555" font-family="monospace">if (!node.left &amp;&amp; !node.right &amp;&amp; node.val==target) return null</text>
+  <text x="50" y="352" font-size="11" fill="#555" font-family="monospace">return node</text>
+  <text x="50" y="372" font-size="10" fill="#888">关键：判定发生在孩子处理之后，因此「删孩子→我成叶→删我」自然级联</text>
+</svg>

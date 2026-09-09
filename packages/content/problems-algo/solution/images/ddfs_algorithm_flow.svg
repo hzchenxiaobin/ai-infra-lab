@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#446688" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="360" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="280" y="24" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">算法流程：建 Trie → 后序序列化 → 哈希计数 → 标记收集</text>
+
+  <!-- Step 1: Build Trie -->
+  <rect x="20" y="50" width="110" height="90" fill="#e8f0fe" stroke="#446688" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="75" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">① 建 Trie</text>
+  <text x="75" y="92" text-anchor="middle" font-size="10" fill="#555">逐条路径</text>
+  <text x="75" y="106" text-anchor="middle" font-size="10" fill="#555">插入字典树</text>
+  <text x="75" y="126" text-anchor="middle" font-size="9" fill="#888">O(Σ|path|)</text>
+
+  <!-- Arrow 1 -->
+  <path d="M 132 95 L 158 95" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 2: Serialize -->
+  <rect x="160" y="50" width="130" height="90" fill="#fff8e1" stroke="#d6a040" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="225" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">② 后序 DFS</text>
+  <text x="225" y="92" text-anchor="middle" font-size="10" fill="#555">先递归子节点</text>
+  <text x="225" y="106" text-anchor="middle" font-size="10" fill="#555">再拼 serial 串</text>
+  <text x="225" y="126" text-anchor="middle" font-size="9" fill="#888">叶子 serial = ""</text>
+
+  <!-- Arrow 2 -->
+  <path d="M 292 95 L 318 95" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 3: Count -->
+  <rect x="320" y="50" width="110" height="90" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="375" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">③ 哈希计数</text>
+  <text x="375" y="92" text-anchor="middle" font-size="10" fill="#555">freq[serial]++</text>
+  <text x="375" y="106" text-anchor="middle" font-size="10" fill="#555">仅计非叶节点</text>
+  <text x="375" y="126" text-anchor="middle" font-size="9" fill="#888">空集不计</text>
+
+  <!-- Arrow 3 -->
+  <path d="M 432 95 L 458 95" stroke="#446688" stroke-width="1.8" fill="none" marker-end="url(#arr)" filter="url(#rough2)"/>
+
+  <!-- Step 4: Collect -->
+  <rect x="460" y="50" width="90" height="90" fill="#fce4ec" stroke="#b85450" stroke-width="2" rx="10" filter="url(#rough2)"/>
+  <text x="505" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">④ 收集</text>
+  <text x="505" y="92" text-anchor="middle" font-size="10" fill="#555">freq ≥ 2</text>
+  <text x="505" y="106" text-anchor="middle" font-size="10" fill="#b85450">→ 跳过整棵</text>
+  <text x="505" y="126" text-anchor="middle" font-size="9" fill="#555">否则保留</text>
+
+  <!-- Serial formula box -->
+  <rect x="20" y="160" width="530" height="56" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="280" y="182" text-anchor="middle" font-size="12" fill="#444" font-weight="bold">序列化公式（后序：先处理子节点，再拼当前节点）</text>
+  <text x="280" y="202" text-anchor="middle" font-size="11" fill="#555" font-family="monospace">serial(node) = "" + Σ sorted( name + "(" + serial(child) + ")" )</text>
+
+  <!-- Key rules -->
+  <rect x="20" y="232" width="250" height="108" fill="#e8f0fe" stroke="#446688" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="145" y="254" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">为什么有效？</text>
+  <text x="35" y="274" font-size="10" fill="#555">• serial 编码完整子树结构 + 名称</text>
+  <text x="35" y="290" font-size="10" fill="#555">• 两个节点相同 ⟺ serial 相同</text>
+  <text x="35" y="306" font-size="10" fill="#555">• 名称仅小写字母，括号做分隔无歧义</text>
+  <text x="35" y="322" font-size="10" fill="#555">• map/排序保证子节点顺序一致</text>
+
+  <rect x="290" y="232" width="260" height="108" fill="#fce4ec" stroke="#b85450" stroke-width="1.5" rx="10" filter="url(#rough2)"/>
+  <text x="420" y="254" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">关键陷阱</text>
+  <text x="305" y="274" font-size="10" fill="#b85450">• 叶子节点（空子文件夹集）不计</text>
+  <text x="305" y="290" font-size="10" fill="#b85450">• freq ≥ 2 时删除「全部」副本</text>
+  <text x="305" y="306" font-size="10" fill="#b85450">• 标记基于原始树，只删一次</text>
+  <text x="305" y="322" font-size="10" fill="#b85450">• 删后新出现的重复不再处理</text>
+</svg>

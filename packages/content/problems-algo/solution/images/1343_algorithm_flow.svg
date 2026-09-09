@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 480" font-family="'Comic Sans MS', 'Segoe UI', 'Kaiti SC', 楷体, cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="2"/>
+    </filter>
+    <filter id="rough2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect width="560" height="480" fill="#fafafa"/>
+
+  <text x="280" y="26" text-anchor="middle" font-size="14" fill="#444" font-weight="bold">定长滑动窗口算法流程</text>
+  <text x="280" y="44" text-anchor="middle" font-size="11" fill="#888">窗口恒为 k，无 while 收缩，左右端同步右移</text>
+
+  <!-- ① target -->
+  <rect x="150" y="60" width="260" height="34" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="82" text-anchor="middle" font-size="11" fill="#444">① target = k × threshold  (用 long long)</text>
+
+  <path d="M 280 94 L 280 108" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ② initial window sum -->
+  <rect x="120" y="112" width="320" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="138" text-anchor="middle" font-size="11" fill="#333">② sum = arr[0] + ... + arr[k−1]   (首窗)</text>
+
+  <path d="M 280 152 L 280 166" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ③ check first -->
+  <rect x="120" y="170" width="320" height="40" rx="6" fill="#e8f0fe" stroke="#446688" stroke-width="1.4" filter="url(#rough2)"/>
+  <text x="280" y="196" text-anchor="middle" font-size="11" fill="#333">③ 若 sum ≥ target → ans++</text>
+
+  <path d="M 280 210 L 280 224" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ④ loop -->
+  <rect x="90" y="228" width="380" height="40" rx="6" fill="#fce4ec" stroke="#b85450" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="254" text-anchor="middle" font-size="11" fill="#444" font-weight="bold">④ for i = 0 .. n−k−1 ：平移窗口</text>
+
+  <path d="M 280 268 L 280 282" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+
+  <!-- ⑤ slide body -->
+  <rect x="90" y="286" width="380" height="64" rx="6" fill="#fff8e1" stroke="#d6a040" stroke-width="1.6" filter="url(#rough2)"/>
+  <text x="280" y="308" text-anchor="middle" font-size="11" fill="#444" font-family="monospace">sum += arr[i+k] − arr[i]</text>
+  <text x="280" y="326" text-anchor="middle" font-size="11" fill="#555">减出左端、加进右端，O(1) 更新</text>
+  <text x="280" y="342" text-anchor="middle" font-size="11" fill="#b85450" font-weight="bold">若 sum ≥ target → ans++</text>
+
+  <!-- loop back arrow from ⑤ to ④ -->
+  <path d="M 90 318 L 64 318 L 64 248 L 90 248" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)" stroke-dasharray="4 3"/>
+  <text x="44" y="284" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90 44 284)">i++</text>
+
+  <path d="M 280 350 L 280 366" stroke="#666" stroke-width="1.4" marker-end="url(#arr)" fill="none" filter="url(#rough2)"/>
+  <text x="292" y="362" font-size="10" fill="#4a7a3a">循环结束</text>
+
+  <!-- ⑥ return -->
+  <rect x="130" y="370" width="300" height="34" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8" filter="url(#rough2)"/>
+  <text x="280" y="392" text-anchor="middle" font-size="11" fill="#4a7a3a" font-weight="bold">⑤ 返回 ans</text>
+
+  <!-- bottom notes -->
+  <text x="280" y="424" text-anchor="middle" font-size="10" fill="#888">共检查 n−k+1 个窗口（首窗 + n−k 次平移）</text>
+  <text x="280" y="440" text-anchor="middle" font-size="10" fill="#888">时间 O(n)，空间 O(1)；无 while 收缩是定长滑窗的标志</text>
+  <text x="280" y="456" text-anchor="middle" font-size="10" fill="#888">溢出提醒：target 与 sum 都用 long long 存储</text>
+</svg>
