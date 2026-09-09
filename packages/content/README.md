@@ -1,8 +1,8 @@
 # @ailab/content — 内容库
 
 全产品唯一的内容事实来源（Git 为准，DB 只存元数据/索引，正文不入库）。
-全部 Markdown 需补齐 frontmatter，规范见 [dev/content-kit.md](../../dev/content-kit.md)
-与 [03-data-model.md](../../03-data-model.md)。
+全部 Markdown 需补齐 frontmatter，规范见 [dev/content-kit.md](../../docs/dev/content-kit.md)
+与 [03-data-model.md](../../docs/03-data-model.md)。
 
 ## 目录结构（三仓库一次性快照拷入，迁入后本目录为唯一维护地）
 

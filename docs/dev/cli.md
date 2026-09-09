@@ -60,10 +60,10 @@ export async function getCaller() {
 
 面试会话内命令：空行提交回答、`:end` 提前结束并生成报告、`:quit` 退出保存进度。
 
-### 现状在 server scripts、M1 收编进 CLI
+### bank 管线（已收编，apps/cli/src/bank.ts）
 
-interview 现状里 `bank:generate` / `bank:import` 是 server 包的 npm scripts
-（`tsx scripts/generate-aiinfra-bank.ts`），拷入后收编为 CLI 子命令：
+已按 06 的映射计划从 server scripts 收编为 CLI 子命令（数据文件在
+`apps/cli/data/`，server 侧入库入口为 `question.bankImport` 路由方法）：
 
 | 命令 | 说明 |
 |---|---|
@@ -85,7 +85,7 @@ interview 现状里 `bank:generate` / `bank:import` 是 server 包的 npm script
 # 初始化一套新环境
 pnpm --filter server db:push
 pnpm cli seed
-pnpm cli bank:import apps/server/data/question-bank.ai-infra.json
+pnpm cli bank:import   # 默认读 apps/cli/data/question-bank.ai-infra.json
 
 # 按 week3 考察范围开一场 5 题面试
 pnpm cli start -s "ai-infra-notes:aiinfra/daily/week3/" -n 5

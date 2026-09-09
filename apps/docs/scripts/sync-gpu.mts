@@ -1,4 +1,4 @@
-// sync-gpu.mts —— packages/content/problems-gpu → apps/docs/gpu/src 的 URL 形态拷贝。
+// sync-gpu.mts —— packages/content/problems-gpu → apps/docs/problems-gpu/src 的 URL 形态拷贝。
 //
 // 目录映射（对齐 ids.ts 的 contents.url：/problems/gpu/{diff}/{num}-{slug}）：
 //   solutions/{diff}/{dir}/index.md → src/{diff}/{dir}/index.md（页面）
@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.resolve(here, "../../../packages/content/problems-gpu");
-const DEST = path.resolve(here, "../gpu/src");
+const DEST = path.resolve(here, "../problems-gpu/src");
 
 const DIFFS = ["easy", "medium", "hard"] as const;
 

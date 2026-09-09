@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const partition = process.argv[2];
-if (!partition || !["learn", "gpu", "algo"].includes(partition)) {
+if (!partition || !["learn", "problems-gpu", "problems-algo"].includes(partition)) {
   console.error("用法：merge-dist.mts <learn|gpu|algo> [batchTotal]");
   process.exit(1);
 }

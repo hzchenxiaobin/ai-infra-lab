@@ -39,13 +39,9 @@ apps/server/
 │   │   ├── schema.ts       # 全部表定义（见 database.md）
 │   │   └── migrations/     # drizzle-kit 生成的迁移
 │   ├── seed.ts             # 【已有】15 道内置种子题
-│   └── sync/               # 【退役】github.ts 在线拉仓库 → 由 content-kit 本地管线替代
-├── scripts/
-│   ├── generate-aiinfra-bank.ts   # 【已有】LLM 抽题 → 静态 JSON（断点续跑）
-│   └── import-aiinfra-bank.ts     # 【已有】题库 JSON 幂等入库
-├── data/question-bank.ai-infra.json  # 729 题题库快照
+│   └── sync/               # sync/index.ts contentHash；github.ts 在线拉仓库（CLI bank:generate 用）
 ├── drizzle.config.ts
-└── package.json            # @interview/server（拷入后改名 @ailab/server）
+└── package.json            # @ailab/server（bank 管线已收编进 apps/cli，见 dev/cli.md）
 ```
 
 ## 2. 入口与请求链路
@@ -146,7 +142,8 @@ suggestion/answers（answers 与面试官每次提问一一对应）+ `weakDimen
 
 ## 7. 关键实现：题库幂等入库（sourceKey + contentHash）
 
-`scripts/import-aiinfra-bank.ts` 的模式是全部"内容 → DB"同步的范本：
+`question.bankImport` 路由方法（CLI `bank:import` 调用，原 server scripts
+`import-aiinfra-bank.ts` 的逻辑）是全部"内容 → DB"同步的范本：
 
 - **幂等键**：`sourceKey`（如 `bank:ai-infra-notes:aiinfra/daily/week3/...`，
   手工题 `manual:<uuid>`、种子题 `seed:<title>`）。

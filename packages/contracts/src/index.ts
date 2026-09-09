@@ -62,6 +62,29 @@ export const questionListFilterSchema = z.object({
 export type QuestionListFilter = z.infer<typeof questionListFilterSchema>;
 
 // ---------------------------------------------------------------------------
+// LLM 题库导入（dev/cli.md §3：cli bank:import → question.bankImport）
+// ---------------------------------------------------------------------------
+
+export const bankImportItemSchema = questionInputSchema.extend({
+  /** 幂等键：bank:{repo}:{path}#{条目序号} */
+  sourceKey: z.string().min(1).max(500),
+});
+export type BankImportItem = z.infer<typeof bankImportItemSchema>;
+
+/** LLM 抽题单条结构（bank:generate 产物元素，无 sourceKey；sourceKey 在聚合落盘时赋） */
+export const bankExtractItemSchema = questionInputSchema;
+export type BankExtractItem = z.infer<typeof bankExtractItemSchema>;
+
+export const bankImportSchema = z.object({
+  items: z.array(bankImportItemSchema).min(1),
+  /** 本批 bank 条目的 sourceKey 公共前缀（如 bank:ai-infra-notes:），用于识别"源里已删除"的失效条目 */
+  bankSourceKeyPrefix: z.string().min(1).max(500),
+  /** 同源规则解析题的 sourceKey 前缀；LLM bank 落库后将其标记 stale（替代语义） */
+  replaceSourceKeyPrefix: z.string().max(500).optional(),
+});
+export type BankImportInput = z.infer<typeof bankImportSchema>;
+
+// ---------------------------------------------------------------------------
 // 面试（README §5、§9）
 // ---------------------------------------------------------------------------
 

@@ -1,34 +1,47 @@
-/**
- * 一次性 LLM 题库生成（README §7.4 思路落地，仅 ai-infra-notes）：
- * 拉取仓库 markdown → 逐文件调 LLM 抽取结构化题目 → 落盘静态 JSON，
- * 之后用 import-aiinfra-bank.ts 入库，不再调 LLM。
- *
- * 断点续跑：每完成一个文件追加一行到 data/.bank-checkpoint.jsonl，
- * 重跑时自动跳过已完成文件；全部完成后聚合写出 data/question-bank.ai-infra.json。
- *
- * 运行：pnpm --filter @ailab/server bank:generate
- */
+// bank.ts —— LLM 题库管线（dev/cli.md §3：bank:generate / bank:import）。
+// 从 server scripts 收编（06 §interview 代码映射）：generate 是离线批处理
+// （拉仓库 → 逐文件调 LLM 抽题 → 断点续跑落盘 JSON），import 经 createCaller
+// 走 question.bankImport 幂等入库。
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { z } from "zod";
-import { categorySchema, difficultySchema, type Category } from "@ailab/contracts";
-import { env } from "../src/env.js";
-import { fetchRepoFiles } from "../src/sync/github.js";
+import path from "node:path";
+import {
+  bankExtractItemSchema,
+  bankImportItemSchema,
+  type BankExtractItem,
+  type BankImportItem,
+} from "@ailab/contracts";
+import { env } from "@ailab/server/env";
+import { fetchRepoFiles } from "@ailab/server/sync/github";
+import type { Command } from "commander";
+import { getCaller } from "./session.js";
+import { dimLine, errorLine, successLine } from "./ui.js";
 
+const DATA_DIR = fileURLToPath(new URL("../data", import.meta.url));
 const REPO = "ai-infra-notes";
 const OWNER = "hzchenxiaobin";
-const DATA_DIR = fileURLToPath(new URL("../data", import.meta.url));
-const CHECKPOINT_FILE = `${DATA_DIR}/.bank-checkpoint.jsonl`;
-const OUTPUT_FILE = `${DATA_DIR}/question-bank.ai-infra.json`;
+
+// ---------------------------------------------------------------------------
+// bank:generate（离线批处理，不依赖 DB）
+// ---------------------------------------------------------------------------
 
 const CONCURRENCY = 3;
-// glm-5.3 reasoning 耗时波动大（实测成功调用 36–161s），90s 会误杀大量请求
+// reasoning 模型耗时波动大（实测 36–161s），过短超时会误杀大量请求
 const TIMEOUT_MS = 300_000;
-// reasoning 先消耗思考 token，8192 会导致 JSON 数组被截断（解析失败）或 content 为空
+// reasoning 先消耗思考 token，预算太小会导致 JSON 数组被截断或 content 为空
 const MAX_TOKENS = 16_384;
 const MAX_CONTENT_CHARS = 15_000;
 
-// 与规则解析器 aiInfraNotes.ts 相同的取材范围与分类映射（全部归 knowledge；cuda 仅收 leetgpu 编程题）
+type Category = "leetcode" | "cuda" | "knowledge";
+
+interface ScopedFile {
+  path: string;
+  content: string;
+  categoryHint: Category;
+  source: string;
+}
+
+/** 与规则解析器相同的取材范围与分类映射（全部归 knowledge；cuda 仅收 leetgpu 编程题） */
 const TOPIC_CATEGORY: Record<string, Category> = {
   cpp: "knowledge",
   cuda: "knowledge",
@@ -42,26 +55,6 @@ const TOPIC_CATEGORY: Record<string, Category> = {
   transformer: "knowledge",
   vllm: "knowledge",
 };
-
-const bankItemSchema = z.object({
-  category: categorySchema,
-  title: z.string().min(1).max(500),
-  content: z.string().min(1),
-  difficulty: difficultySchema,
-  tags: z.string().max(500).default(""),
-  followUps: z.array(z.string()).default([]),
-  keyPoints: z.string().default(""),
-  source: z.string().max(255).default(""),
-});
-type BankItem = z.infer<typeof bankItemSchema>;
-const bankFileSchema = z.array(bankItemSchema);
-
-interface ScopedFile {
-  path: string;
-  content: string;
-  categoryHint: Category;
-  source: string;
-}
 
 function scopeFiles(files: Array<{ path: string; content: string }>): ScopedFile[] {
   const out: ScopedFile[] = [];
@@ -82,7 +75,9 @@ function scopeFiles(files: Array<{ path: string; content: string }>): ScopedFile
   return out;
 }
 
-async function chatCompletion(messages: Array<{ role: "system" | "user"; content: string }>): Promise<string> {
+async function chatCompletion(
+  messages: Array<{ role: "system" | "user"; content: string }>,
+): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -127,7 +122,10 @@ function extractJsonArray(text: string): unknown {
   throw new Error("响应中未找到 JSON 数组");
 }
 
-function buildMessages(file: ScopedFile, retryHint?: string): Array<{ role: "system" | "user"; content: string }> {
+function buildMessages(
+  file: ScopedFile,
+  retryHint?: string,
+): Array<{ role: "system" | "user"; content: string }> {
   const system = [
     "你是技术面试题库构建专家，正在为 AI Infra 岗位（CUDA/GPU、C++、算法、项目经历）的模拟面试准备题库。给你一篇学习材料，请从中抽取适合口头面试的题目。",
     "",
@@ -160,12 +158,14 @@ function buildMessages(file: ScopedFile, retryHint?: string): Array<{ role: "sys
   ];
 }
 
-async function extractFromFile(file: ScopedFile): Promise<BankItem[]> {
+async function extractFromFile(file: ScopedFile): Promise<BankExtractItem[]> {
   let retryHint: string | undefined;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const raw = await chatCompletion(buildMessages(file, retryHint));
-      return bankFileSchema.parse(extractJsonArray(raw));
+      const arr = extractJsonArray(raw);
+      if (!Array.isArray(arr)) throw new Error("响应不是 JSON 数组");
+      return arr.map((i) => bankExtractItemSchema.parse(i));
     } catch (err) {
       retryHint = (err as Error).message.slice(0, 300);
       if (attempt === 1) throw new Error(`两次尝试均失败：${retryHint}`);
@@ -174,17 +174,18 @@ async function extractFromFile(file: ScopedFile): Promise<BankItem[]> {
   throw new Error("unreachable");
 }
 
-async function main() {
+async function runGenerate(outDir: string): Promise<void> {
   if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY，无法生成题库");
-
-  await mkdir(DATA_DIR, { recursive: true });
+  const checkpointFile = path.join(outDir, ".bank-checkpoint.jsonl");
+  const outputFile = path.join(outDir, `question-bank.${REPO}.json`);
+  await mkdir(outDir, { recursive: true });
 
   // 加载断点
-  const done = new Map<string, BankItem[]>();
+  const done = new Map<string, BankExtractItem[]>();
   try {
-    const lines = (await readFile(CHECKPOINT_FILE, "utf8")).split("\n").filter(Boolean);
+    const lines = (await readFile(checkpointFile, "utf8")).split("\n").filter(Boolean);
     for (const line of lines) {
-      const rec = JSON.parse(line) as { path: string; questions: BankItem[] };
+      const rec = JSON.parse(line) as { path: string; questions: BankExtractItem[] };
       done.set(rec.path, rec.questions);
     }
   } catch {
@@ -195,7 +196,9 @@ async function main() {
   const { commitSha, files } = await fetchRepoFiles(OWNER, REPO);
   const scoped = scopeFiles(files);
   const todo = scoped.filter((f) => !done.has(f.path));
-  console.log(`commit: ${commitSha || "(未知)"}；范围内文件 ${scoped.length} 个，已完成 ${done.size} 个，待生成 ${todo.length} 个`);
+  console.log(
+    `commit: ${commitSha || "(未知)"}；范围内文件 ${scoped.length} 个，已完成 ${done.size} 个，待生成 ${todo.length} 个`,
+  );
 
   let finished = done.size;
   let failed = 0;
@@ -206,33 +209,98 @@ async function main() {
       const started = Date.now();
       try {
         const questions = await extractFromFile(file);
-        await appendFile(CHECKPOINT_FILE, `${JSON.stringify({ path: file.path, questions })}\n`);
+        await appendFile(checkpointFile, `${JSON.stringify({ path: file.path, questions })}\n`);
         done.set(file.path, questions);
         finished += 1;
-        console.log(`[${finished}/${scoped.length}] ${file.path} → ${questions.length} 题（${((Date.now() - started) / 1000).toFixed(1)}s）`);
+        console.log(
+          `[${finished}/${scoped.length}] ${file.path} → ${questions.length} 题（${((Date.now() - started) / 1000).toFixed(1)}s）`,
+        );
       } catch (err) {
         failed += 1;
         finished += 1;
-        console.warn(`[${finished}/${scoped.length}] ${file.path} 生成失败（跳过）：${(err as Error).message}`);
+        console.warn(
+          `[${finished}/${scoped.length}] ${file.path} 生成失败（跳过）：${(err as Error).message}`,
+        );
       }
     }
   });
   await Promise.all(workers);
 
   // 聚合落盘：按路径排序，赋 sourceKey
-  const all: Array<BankItem & { sourceKey: string }> = [];
-  for (const path of [...done.keys()].sort()) {
-    const questions = done.get(path)!;
-    questions.forEach((q, i) => {
-      all.push({ ...q, sourceKey: `bank:${REPO}:${path}#${i}` });
+  const all: Array<BankImportItem> = [];
+  for (const p of [...done.keys()].sort()) {
+    done.get(p)!.forEach((q, i) => {
+      all.push({ ...q, sourceKey: `bank:${REPO}:${p}#${i}` });
     });
   }
   await writeFile(
-    OUTPUT_FILE,
+    outputFile,
     `${JSON.stringify({ repo: REPO, commitSha, generatedAt: new Date().toISOString(), model: env.LLM_MODEL, questions: all }, null, 2)}\n`,
   );
-  console.log(`\n完成：${all.length} 题（失败跳过 ${failed} 个文件）→ ${OUTPUT_FILE}`);
-  console.log("下一步：pnpm --filter @ailab/server bank:import");
+  console.log(`\n完成：${all.length} 题（失败跳过 ${failed} 个文件）→ ${outputFile}`);
+  console.log("下一步：cli bank:import");
 }
 
-await main();
+// ---------------------------------------------------------------------------
+// bank:import（静态 JSON → question.bankImport 幂等入库）
+// ---------------------------------------------------------------------------
+
+interface BankFile {
+  repo: string;
+  questions: BankImportItem[];
+}
+
+async function runImport(file: string): Promise<void> {
+  const bank = JSON.parse(await readFile(file, "utf8")) as BankFile;
+  // 生成产物按旧四分类（cpp/cuda/project）抽取；现行分类体系下 ai-infra-notes
+  // 全部归 knowledge（cuda 分类仅收 leetgpu 编程题），导入时统一改写
+  for (const q of bank.questions) q.category = "knowledge";
+  const items = bank.questions.map((q) => bankImportItemSchema.parse(q));
+
+  const caller = await getCaller();
+  console.log(dimLine(`题库文件 ${items.length} 题，导入中…`));
+  const stats = await caller.question.bankImport({
+    items,
+    bankSourceKeyPrefix: `bank:${bank.repo}:`,
+    replaceSourceKeyPrefix: `${bank.repo}:`,
+  });
+  console.log(
+    successLine(
+      `导入完成：新增 ${stats.inserted} · 更新 ${stats.updated} · 未变 ${stats.unchanged} · bank 失效 ${stats.bankStale} · 规则题标记失效 ${stats.replacedStale}`,
+    ),
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+export function registerBankCommands(program: Command): void {
+  program
+    .command("bank:generate")
+    .description("LLM 从 ai-infra-notes 抽面试题 → 静态 JSON（断点续跑，离线批处理）")
+    .option("-o, --out <dir>", "产物目录", DATA_DIR)
+    .action(async (opts) => {
+      try {
+        await runGenerate(path.resolve(opts.out));
+        process.exit(0);
+      } catch (err) {
+        console.log(errorLine((err as Error).message));
+        process.exit(1);
+      }
+    });
+
+  program
+    .command("bank:import [file]")
+    .description("题库 JSON 幂等入库（默认 apps/cli/data/question-bank.ai-infra.json）")
+    .action(async (file?: string) => {
+      const target = file
+        ? path.resolve(file)
+        : path.join(DATA_DIR, "question-bank.ai-infra.json");
+      try {
+        await runImport(target);
+        process.exit(0);
+      } catch (err) {
+        console.log(errorLine((err as Error).message));
+        process.exit(1);
+      }
+    });
+}

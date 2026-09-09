@@ -1,4 +1,4 @@
-// sync-algo.mts —— packages/content/problems-algo → apps/docs/algo/src 的 URL 形态拷贝。
+// sync-algo.mts —— packages/content/problems-algo → apps/docs/problems-algo/src 的 URL 形态拷贝。
 //
 // 目录映射（对齐 ids.ts 的 contents.url，题解 URL 不含区间段）：
 //   solution/{range}/{num}_{title}.md  → src/algo/{num:04d}.md     （扁平，区间仅作列表分组）
@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.resolve(here, "../../../packages/content/problems-algo");
-const DEST = path.resolve(here, "../algo/src");
+const DEST = path.resolve(here, "../problems-algo/src");
 
 const BATCH_TOTAL = Math.max(1, parseInt(process.env.BATCH_TOTAL || "1", 10));
 const BATCH_INDEX = Math.max(0, parseInt(process.env.BATCH_INDEX || "0", 10));

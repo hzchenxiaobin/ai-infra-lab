@@ -81,14 +81,18 @@ CI 必跑；**禁止绕过**（06 内容工作流 §4）。lint 即内容侧的�
 
 ## 5. 图片规范
 
-- 存放：`packages/content/assets/<内容ID命名空间>/`（如 `assets/lc/0001/xxx.svg`），
-  命名空间与内容 ID 前缀对齐，迁移期跨仓库去重（04 去重矩阵：三仓库共 ~1.3 万张）。
+- **就地存放（2026-09 决策修正）**：图片与内容同路径演进，不集中到
+  `packages/content/assets/`（原方案已废弃，理由见 [06 §2](../06-development.md#2-仓库结构)）。
+  现状：`problems-algo/solution/images/` 与 `problems-algo/images/`（周赛/专题插图，
+  两者存在同名不同文件，靠目录区分）、`problems-gpu/images/`、`learn/**/images/`。
+- **引用形态**：内容文件里用相对路径引用（`../images/xxx.svg`）；docs 各分区的
+  sync 脚本在构建期改写为分区 public 绝对路径（`/images/`、`/contest-images/`）。
+  这是图片存储"Git 直存 → 宿主机卷挂载"切换的保险：URL 解耦在 sync 重写层，
+  切换只改 sync 脚本，不动任何内容文件。
 - **新增 SVG 先过 SVGO**（Excalidraw 的 feTurbulence SVG 通常可压 30–60%）；
-  content-kit 提供 `assets:optimize` 脚本，CI 校验"已压缩"状态。
-- 正文引用用**内容 ID 相对路径**（如 `./assets/...` 或 ID 引用），最终 URL 由
-  content-kit 构建期重写——这是图片存储方案一（Git 直存 + 打进 docs 镜像）→
-  方案四（宿主机卷挂载）切换的保险，切换不改任何内容文件（04 主要风险）。
-- 禁止站点根绝对路径（`/leetgpu/images/...`）与 base path 硬编码（04 口径修正 §3）。
+  content-kit 后续提供 `assets:optimize` 脚本与 CI"已压缩"校验（未落地）。
+- lint 的图片完整性检查（悬空图片引用报 error、孤儿图片告警）覆盖就地布局；
+  引用提取支持 alt 文本任意层嵌套括号与行内代码屏蔽。
 
 ## 6. 内容 → DB 同步
 

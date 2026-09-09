@@ -12,6 +12,7 @@ import {
   type ContentImportInput,
 } from "@ailab/contracts";
 import { getCaller, runSession } from "./session.js";
+import { registerBankCommands } from "./bank.js";
 import { banner, dimLine, errorLine, successLine, tableRow } from "./ui.js";
 
 const program = new Command();
@@ -20,6 +21,8 @@ program
   .name("interview")
   .description("AI Infra 模拟面试 CLI")
   .version("0.0.0");
+
+registerBankCommands(program);
 
 // ── start ──────────────────────────────────────────────────────────────
 

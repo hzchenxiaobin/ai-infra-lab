@@ -1,10 +1,16 @@
 import { and, desc, eq, like, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { CATEGORIES, questionInputSchema, questionListFilterSchema } from "@ailab/contracts";
+import {
+  bankImportSchema,
+  CATEGORIES,
+  questionInputSchema,
+  questionListFilterSchema,
+} from "@ailab/contracts";
 import { db } from "../db/client.js";
 import { questions } from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
+import { contentHash } from "../sync/index.js";
 import { SEED_QUESTIONS } from "../seed.js";
 
 export const questionRouter = router({
@@ -132,5 +138,105 @@ export const questionRouter = router({
       );
     }
     return { seeded: toInsert.length, skipped: SEED_QUESTIONS.length - toInsert.length };
+  }),
+
+  /**
+   * LLM 题库导入（cli bank:import 调用，dev/server.md §7 sourceKey+contentHash 幂等）：
+   * 未变跳过、变了更新、源里消失标 stale（不物理删除，保护历史场次快照）；
+   * 落库后把同源规则解析题标记 stale（LLM 版替代规则版）。
+   */
+  bankImport: authedProcedure.input(bankImportSchema).mutation(async ({ input, ctx }) => {
+    const { items, bankSourceKeyPrefix, replaceSourceKeyPrefix } = input;
+    const STALE_PREFIX = "[已失效] ";
+    const INSERT_CHUNK = 100;
+
+    const existing = await db
+      .select()
+      .from(questions)
+      .where(
+        and(eq(questions.userId, ctx.userId), like(questions.sourceKey, `${bankSourceKeyPrefix}%`)),
+      );
+    const bySourceKey = new Map(existing.map((row) => [row.sourceKey, row]));
+
+    let inserted = 0;
+    let updated = 0;
+    let unchanged = 0;
+    const toInsert: Array<typeof questions.$inferInsert> = [];
+    const seenKeys = new Set<string>();
+
+    for (const q of items) {
+      seenKeys.add(q.sourceKey);
+      const hash = contentHash(q);
+      const row = bySourceKey.get(q.sourceKey);
+      if (row && row.contentHash === hash && row.stale === 0) {
+        unchanged += 1;
+        continue;
+      }
+      if (row) {
+        await db
+          .update(questions)
+          .set({
+            category: q.category,
+            title: q.title,
+            content: q.content,
+            difficulty: q.difficulty,
+            tags: q.tags,
+            followUps: q.followUps,
+            keyPoints: q.keyPoints,
+            source: row.source.startsWith(STALE_PREFIX) ? row.source.slice(STALE_PREFIX.length) : q.source,
+            contentHash: hash,
+            stale: 0,
+          })
+          .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+        updated += 1;
+      } else {
+        toInsert.push({ ...q, userId: ctx.userId, contentHash: hash });
+      }
+    }
+    for (let i = 0; i < toInsert.length; i += INSERT_CHUNK) {
+      await db.insert(questions).values(toInsert.slice(i, i + INSERT_CHUNK));
+    }
+    inserted = toInsert.length;
+
+    // 题库文件中已删除的条目 → stale
+    let bankStale = 0;
+    for (const row of existing) {
+      if (seenKeys.has(row.sourceKey) || row.stale === 1) continue;
+      await db
+        .update(questions)
+        .set({
+          stale: 1,
+          source: row.source.startsWith(STALE_PREFIX) ? row.source : `${STALE_PREFIX}${row.source}`,
+        })
+        .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+      bankStale += 1;
+    }
+
+    // 替代语义：同源规则解析题全部标记 stale
+    let replacedStale = 0;
+    if (replaceSourceKeyPrefix) {
+      const ruleRows = await db
+        .select({ id: questions.id, source: questions.source })
+        .from(questions)
+        .where(
+          and(
+            eq(questions.userId, ctx.userId),
+            like(questions.sourceKey, `${replaceSourceKeyPrefix}%`),
+            eq(questions.stale, 0),
+          ),
+        );
+      for (const row of ruleRows) {
+        await db
+          .update(questions)
+          .set({
+            stale: 1,
+            source: row.source.startsWith(STALE_PREFIX) ? row.source : `${STALE_PREFIX}${row.source}`,
+          })
+          .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+      }
+      replacedStale = ruleRows.length;
+    }
+
+    return { inserted, updated, unchanged, bankStale, replacedStale };
   }),
 });

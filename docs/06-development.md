@@ -35,22 +35,31 @@
 
 ```
 ai-infra-lab/
+├── docs/               # 仓库文档：01–06 设计文档 + dev/ 模块开发文档
 ├── apps/
 │   ├── web/            # 门户应用：React 19 + Vite 8 + Tailwind 4 + react-router 7 + TanStack Query
 │   ├── server/         # API：Hono + tRPC 11 + Drizzle ORM + MySQL 8
 │   ├── docs/           # 内容站：VitePress 三分区（learn / problems-gpu / problems-algo）
 │   ├── cli/            # 管理 CLI：commander + tsx，经 appRouter.createCaller() 直调后端
+│   │                   #   bank:generate / bank:import（LLM 题库管线）+ data/ 题库 JSON
 │   └── judge-worker/   # 评测沙箱：DB 轮询取任务，Docker-out-of-Docker 拉起一次性容器
 ├── packages/
 │   ├── contracts/      # zod 共享 schema（tRPC 端到端类型安全的源头）
 │   ├── content/        # 内容库（全部 Markdown + frontmatter）
 │   │   ├── learn/          # ← ai-infra-notes：daily/topics/paper/profiling
-│   │   ├── problems-gpu/   # ← leetgpu solutions（含 .cu）
-│   │   ├── problems-algo/  # ← leetcode solution/contest/topics
-│   │   └── assets/         # 全部 SVG 插图（SVGO 压缩 + 去重后）
+│   │   ├── problems-gpu/   # ← leetgpu solutions（含 .cu 与 images/）
+│   │   └── problems-algo/  # ← leetcode solution/contest/topics（images/ 就地存放）
 │   └── content-kit/    # 内容管线：frontmatter 解析校验、统一 ID、lint、索引导出、题库同步
 └── deploy/             # docker-compose.yml、Caddyfile、评测镜像 Dockerfile、备份脚本
 ```
+
+> 图片布局（2026-09 决策修正）：原计划的 `packages/content/assets/` 统一命名空间
+> **不执行**——图片就地存放在各分区（`problems-algo/{solution/,}images/`、
+> `problems-gpu/images/`、`learn/**/images/`），与内容同 Git 路径演进；URL 解耦
+> 由 docs sync 的构建期重写层承担（图片引用在 sync 时改写为分区 public 绝对路径，
+> 未来切宿主机卷挂载只改 sync 脚本，不动内容文件）。原 assets/ 方案的两个目标
+> （SVGO 压缩去重、URL 切换保险）前者转入 content-kit 的可选任务，后者已由
+> sync 重写层达成。
 
 各目录内部的详细结构见对应 dev/ 文档。
 
@@ -69,7 +78,7 @@ cp .env.example .env        # 至少填 DATABASE_URL、LLM_*、SMTP_*、SESSION_
 # 3. 建表 + 种子数据
 pnpm --filter server db:push        # drizzle-kit 迁移（本地从零起库）
 pnpm cli seed                       # 内置 15 道 seed 题
-pnpm cli bank:import apps/server/data/question-bank.ai-infra.json   # 729 题题库
+pnpm cli bank:import   # 729 题题库（默认 apps/cli/data/question-bank.ai-infra.json）
 
 # 4. 内容同步（frontmatter 校验 → 元数据入库 → 搜索索引）
 pnpm --filter content-kit sync
