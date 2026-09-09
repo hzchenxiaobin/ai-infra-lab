@@ -32,7 +32,14 @@ LLM 驱动的模拟面试，三者通过统一知识图谱互相引用、用同�
 | [03-data-model.md](03-data-model.md) | 统一内容元数据规范、统一题目 ID 方案、数据库设计 |
 | [04-migration.md](04-migration.md) | 资产盘点、去重矩阵、编号冲突处理、迁移步骤 |
 | [05-roadmap.md](05-roadmap.md) | 里程碑（M0–M4）、验收标准、风险与开放问题 |
-| [06-development.md](06-development.md) | 开发文档：环境准备、快速开始、各应用开发指南、内容工作流、部署运维 |
+| [06-development.md](06-development.md) | 开发文档总览：环境准备、快速开始、测试、环境变量、开发约定、interview 代码映射 |
+| [dev/](dev/) | 模块开发文档（每个模块一份，详见下行清单） |
+
+模块开发文档：[server](dev/server.md)（API 服务）· [web](dev/web.md)（门户前端）·
+[content-site](dev/content-site.md)（docs 内容站）· [cli](dev/cli.md)（管理 CLI）·
+[judge-worker](dev/judge-worker.md)（评测沙箱）· [content-kit](dev/content-kit.md)
+（内容管线与工作流）· [database](dev/database.md)（数据库）·
+[deployment](dev/deployment.md)（部署运维）
 
 ## 核心设计决策速览
 
