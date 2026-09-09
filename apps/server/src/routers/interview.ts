@@ -16,6 +16,7 @@ import { db } from "../db/client.js";
 import { interviewMessages, interviewSessions, questions } from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
 import { getInterviewer } from "../interviewer/factory.js";
+import { quotaFor } from "../middleware/quota.js";
 
 type SessionRow = typeof interviewSessions.$inferSelect;
 type MessageRow = typeof interviewMessages.$inferSelect;
@@ -120,7 +121,8 @@ function scopeLabel(scope: string): string {
 }
 
 export const interviewRouter = router({
-  start: authedProcedure.input(startInterviewSchema).mutation(async ({ input, ctx }) => {
+  // 配额计量：LLM 面试场次创建入口（dev/server.md §8）
+  start: authedProcedure.use(quotaFor("interview")).input(startInterviewSchema).mutation(async ({ input, ctx }) => {
     const scope = input.scope?.trim() || undefined;
     if (scope && !scope.startsWith("ai-infra-notes:")) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "非法的考察范围" });

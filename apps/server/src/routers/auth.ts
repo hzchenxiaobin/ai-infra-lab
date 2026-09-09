@@ -1,0 +1,143 @@
+import { TRPCError } from "@trpc/server";
+import { desc, eq } from "drizzle-orm";
+import {
+  authLoginSchema,
+  authRegisterSchema,
+  authSendCodeSchema,
+  type CurrentUser,
+} from "@ailab/contracts";
+import {
+  checkVerificationCode,
+  generateVerificationCode,
+  hashPassword,
+  hashVerificationCode,
+  signSession,
+  VERIFICATION_CODE_TTL_MS,
+  verifyPassword,
+} from "../auth.js";
+import { db } from "../db/client.js";
+import { emailVerifications, users } from "../db/schema.js";
+import { sendVerificationCodeEmail } from "../mailer.js";
+import { emailPerDayLimiter, emailPerMinuteLimiter, ipPerHourLimiter } from "../rate-limit.js";
+import { authedProcedure, clearSessionCookie, publicProcedure, router, setSessionCookie } from "../trpc.js";
+
+type UserRow = typeof users.$inferSelect;
+
+function toCurrentUser(row: UserRow): CurrentUser {
+  return {
+    id: row.id,
+    email: row.email,
+    name: row.name,
+    avatar: row.avatar,
+    tier: row.tier,
+    emailVerified: row.emailVerified === 1,
+  };
+}
+
+/** 登录成功：种 session cookie（createCaller/CLI 场景无 hono 上下文则跳过） */
+function grantSession(ctx: { hono?: import("hono").Context }, userId: number) {
+  if (ctx.hono) setSessionCookie(ctx.hono, signSession(userId));
+}
+
+export const authRouter = router({
+  /** 发送注册验证码：按 IP + 邮箱双维度限流（开放注册下唯一的闸门） */
+  sendCode: publicProcedure.input(authSendCodeSchema).mutation(async ({ input, ctx }) => {
+    const email = input.email;
+    if (!emailPerMinuteLimiter.tryConsume(`email:min:${email}`)) {
+      throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "发送太频繁，请 1 分钟后再试" });
+    }
+    if (!emailPerDayLimiter.tryConsume(`email:day:${email}`)) {
+      throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "该邮箱今日验证码发送次数已达上限" });
+    }
+    const ip = ctx.ip ?? "unknown";
+    if (!ipPerHourLimiter.tryConsume(`ip:hour:${ip}`)) {
+      throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "请求过于频繁，请稍后再试" });
+    }
+
+    const code = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + VERIFICATION_CODE_TTL_MS);
+    // 每个邮箱只保留最新一条：重发即作废旧码
+    await db.delete(emailVerifications).where(eq(emailVerifications.email, email));
+    await db.insert(emailVerifications).values({
+      email,
+      codeHash: hashVerificationCode(email, code),
+      expiresAt,
+      attempts: 0,
+    });
+    await sendVerificationCodeEmail(email, code);
+    return { ok: true as const };
+  }),
+
+  /** 注册：邮箱 + 密码（scrypt）+ 验证码；成功即视为邮箱已验证并种 session */
+  register: publicProcedure.input(authRegisterSchema).mutation(async ({ input, ctx }) => {
+    const email = input.email;
+
+    const rows = await db
+      .select()
+      .from(emailVerifications)
+      .where(eq(emailVerifications.email, email))
+      .orderBy(desc(emailVerifications.id))
+      .limit(1);
+    const record = rows[0];
+    if (!record) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "请先获取验证码" });
+    }
+    const verdict = checkVerificationCode(record, email, input.code);
+    if (!verdict.ok) {
+      if (verdict.reason === "mismatch") {
+        await db
+          .update(emailVerifications)
+          .set({ attempts: record.attempts + 1 })
+          .where(eq(emailVerifications.id, record.id));
+        throw new TRPCError({ code: "BAD_REQUEST", message: "验证码错误" });
+      }
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: verdict.reason === "expired" ? "验证码已过期，请重新获取" : "验证码尝试次数过多，请重新获取",
+      });
+    }
+
+    const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+    if (existing.length > 0) {
+      throw new TRPCError({ code: "CONFLICT", message: "该邮箱已注册，请直接登录" });
+    }
+
+    const inserted = await db
+      .insert(users)
+      .values({
+        email,
+        passwordHash: hashPassword(input.password),
+        emailVerified: 1,
+        name: input.name ?? email.split("@")[0],
+      })
+      .$returningId();
+    const userId = inserted[0].id;
+    // 验证码一次性使用
+    await db.delete(emailVerifications).where(eq(emailVerifications.email, email));
+
+    grantSession(ctx, userId);
+    const me = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    return { user: toCurrentUser(me[0]) };
+  }),
+
+  login: publicProcedure.input(authLoginSchema).mutation(async ({ input, ctx }) => {
+    const rows = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+    const user = rows[0];
+    if (!user?.passwordHash || !verifyPassword(input.password, user.passwordHash)) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "邮箱或密码错误" });
+    }
+    grantSession(ctx, user.id);
+    return { user: toCurrentUser(user) };
+  }),
+
+  logout: publicProcedure.mutation(({ ctx }) => {
+    if (ctx.hono) clearSessionCookie(ctx.hono);
+    return { ok: true as const };
+  }),
+
+  me: authedProcedure.query(async ({ ctx }) => {
+    const rows = await db.select().from(users).where(eq(users.id, ctx.userId)).limit(1);
+    if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
+    return { user: toCurrentUser(rows[0]) };
+  }),
+});

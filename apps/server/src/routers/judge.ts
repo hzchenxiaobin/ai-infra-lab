@@ -15,6 +15,7 @@ import {
   type MethodSpec,
 } from "../judge/parse.js";
 import { runJudge } from "../judge/run.js";
+import { quotaFor } from "../middleware/quota.js";
 import { authedProcedure, router } from "../trpc.js";
 
 type QuestionRow = typeof questions.$inferSelect;
@@ -114,8 +115,9 @@ export const judgeRouter = router({
       };
     }),
 
-  /** 提交代码，跑全部示例用例 */
+  /** 提交代码，跑全部示例用例（配额计量：judge 提交入口，dev/server.md §8） */
   run: authedProcedure
+    .use(quotaFor("judge"))
     .input(
       z.object({
         questionId: z.number(),
