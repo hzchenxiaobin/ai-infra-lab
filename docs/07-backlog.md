@@ -29,11 +29,11 @@
 - ✅ router 测试：problem/progress/quota/content/auth（封禁）已补，judge worker 队列测试已补（submit→worker→getResult 端到端含 AC/WA/CE），测试 50 passed（2026-09-10）
 - ✅ CLI（2026-09-10）：bin 名 `interview` → `ailab`；`user:list`/`user:ban --yes`/`user:unban`、`quota:get`/`quota:set <email> <kind> <n|unlimited>`、`db:backup`（mysqldump → deploy/backups/）已落地；server 侧配套 admin 端点（auth.userList/userSetBanned/userByEmail、quota.adminGet/adminSet）
 
-## P1 — M3 主体（评测沙箱与部署，约 0%）
+## P1 — M3 主体（评测沙箱与部署，约 40%）
 
-- ⬜ **judge-worker 全部**：`apps/judge-worker/` 只有占位 README。对照 `docs/dev/judge-worker.md`：主循环、队列原子领取（submissions 表 `ie` 终态值和 `started_at` 列已补——迁移 0004，2026-09-10）、Docker-out-of-Docker 拉起一次性容器、algo 镜像（g++/python3/SQLite）、资源限额与安全红线（无网络/只读/超时强杀/输出截断）、SQL 题评测、崩溃恢复。评测核心从 `apps/server/src/judge/` 抽 `packages/judge-core/` 共享（server 内置 in-process worker 的执行路径届时下线，队列语义不变）
-- ⬜ **server 侧配套**：worker 领取/回报内部 API（内部 token 鉴权）、GPU 题 `judge_type` 拒绝投递队列、本机 exec 路径下线
-- ⬜ **deploy/ 全部**（只有占位 README）：六服务 `docker-compose.yml`、Caddyfile、四个应用 Dockerfile、algo 评测镜像 Dockerfile、`backup.sh`/`restore.sh`、`bootstrap.sh`、监控告警脚本
+- ✅ **judge-worker 全部**（2026-09-10 第七批）：`packages/judge-core` 抽取评测核心（parse/driver/compare/verdict + 本机 exec run，server 与 worker 同源，比对规则两端一致）；`apps/judge-worker` 独立进程落地——轮询 submissions（领取语义与 in-process worker 一致）+ Docker-out-of-Docker 一次性容器（`deploy/images/algo`：debian + g++/python3，run.py 哑执行器 stdin/stdout 协议）+ 安全红线全落地（无网络/只读根 + tmpfs /work/资源与 pids 限额/超时强杀/输出截断/非 root 用户）+ 崩溃恢复与孤儿容器清理。真实 docker 冒烟全过：两数之和 AC（C++/Python）、WA、CE、死循环 TLE、无网络红线（DNS 必败）；队列端到端 + server API 全链路（submit → 独立 worker 容器执行 → getResult 读回 AC/TLE）。SQL 题评测未做（数据库题示例不可机器解析、无数据路径，M4 候选）
+- ✅ **server 侧配套**（2026-09-10 第七批）：GPU/非 internal 题 `judge_type` 拒绝投递（第六批已在 getProblem/submit 入口）；本机 exec 路径下线经 `JUDGE_INPROCESS_WORKER=false` 门控（开发保留、部署关闭，队列语义不变）；worker 领取/回报不做内部 HTTP API——按 judge-worker.md §1/§6 设计直接读写 submissions 表（队列即表），原"内部 token 鉴权"方案作废
+- ⬜ **deploy/ 全部**（只有占位 README）：六服务 `docker-compose.yml`、Caddyfile、四个应用 Dockerfile、`backup.sh`/`restore.sh`、`bootstrap.sh`、监控告警脚本。已有进展：algo 评测镜像 Dockerfile + run.py 已落地（`deploy/images/algo/`）、judge-worker 应用 Dockerfile 已就位
 - ⬜ **CI 接线**：无 `.github/workflows/`——lint 必跑、algo 4 批构建、sync 产物校验、测试
 
 ## P2 — 内容侧收尾
@@ -75,3 +75,4 @@
 - 2026-09-10 第四批：interview_reports 拆表（迁移 0006：建表 + 存量数据搬迁 + sessions 拆列补 scope 快照）+ 薄弱点 → 学习/练习推荐链接（contracts recommendations 参数 + server SQL 匹配 + web Markdown 链接渲染）；interview router 测试补齐（51 passed）
 - 2026-09-10 第五批：题单 + 周赛 + GPU 领域分组（`problem_lists` 表迁移 0007、content-kit `lists.json` 产物、`problem.lists/getList/contestSessions/contestProblems` 四端点、web 四新路由 + ProblemRow 复用 + A–L 领域 chips）；vitest 关文件并行（content.import 全量 stale 标记曾交叉污染并行测试）；CLI content:sync 接 lists.json；测试 52 passed
 - 2026-09-10 第六批：judge 数据源切换到 problems 表（content-kit judge-extract 解析 testcases/judge_meta + judge_type 推导、迁移 0008 加 judge_meta 列 + DROP repo_syncs、LEETCODE_REPO_DIR 退役、judge 三端点统一 ID 化、getResult AC 联动 user_progress）+ 面试间内嵌评测器（语言切换/评测/内联结果，JudgeResult 共享组件）；web JudgePage 重构（题面跳 docs）+ 题库/题单行评测入口；测试 53 passed（真实数据端到端：lc:0053 AC → user_progress ac → mastered 不降级）
+- 2026-09-10 第七批：评测沙箱落地——`packages/judge-core` 抽取评测核心（server/judge-worker 同源）+ `apps/judge-worker` 独立进程（Docker-out-of-Docker 一次性容器、安全红线全量、崩溃恢复/孤儿容器清理）+ `deploy/images/algo` 镜像（run.py 哑执行器、stdin/stdout 协议、国内 APT 镜像源 ARG）+ server `JUDGE_INPROCESS_WORKER` 门控；测试 60 passed（judge-core 9 + worker 7 含真实 docker 冒烟 + server 44）；全链路真实验证：server API 提交 → 独立 worker 容器执行 → AC/TLE 写回读回

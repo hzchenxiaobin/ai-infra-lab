@@ -1,35 +1,18 @@
+// run.ts —— 本机 exec 判题运行（server 内置 in-process worker 的过渡执行路径，
+// dev/judge-worker.md §5：judge-worker 沙箱落地后从生产路径下线，保留用于开发）。
+// 生产执行走 judge-worker 的 Docker runner（同一份 driver/compare/verdict）。
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { buildCppSource, buildPythonSource } from "./driver.js";
+import { outputsEqual } from "./compare.js";
+import type { CaseResult, JudgeRunResult } from "./verdict.js";
 import type { ExampleCase, MethodSpec } from "./parse.js";
-
-// ---------------------------------------------------------------------------
-// 判题运行编排：临时目录 + 编译（C++）+ 逐用例执行 + 结果比对。
-// 注意：用户代码在本机直接执行（个人工具定位），仅以超时与临时目录做约束。
-// ---------------------------------------------------------------------------
 
 const COMPILE_TIMEOUT_MS = 30_000;
 const RUN_TIMEOUT_MS = 8_000;
 const MAX_OUTPUT = 64 * 1024;
-
-export interface CaseResult {
-  input: string;
-  expected: string;
-  actual: string;
-  pass: boolean;
-  /** 运行错误（超时/运行时错误），通过时为 null */
-  error: string | null;
-}
-
-export interface JudgeRunResult {
-  status: "ok" | "compile_error" | "no_cases";
-  compileError?: string;
-  cases: CaseResult[];
-  passed: number;
-  total: number;
-}
 
 export function runJudge(opts: {
   language: "cpp" | "python";
@@ -109,7 +92,7 @@ function runCase(workDir: string, bin: string, language: "cpp" | "python", c: Ex
 }
 
 /** 示例参数 → JSON 对象文本（参数名来自题面赋值，顺序即签名顺序） */
-function buildInputJson(c: ExampleCase): string | null {
+export function buildInputJson(c: ExampleCase): string | null {
   try {
     const obj: Record<string, unknown> = {};
     for (const a of c.args) obj[a.name] = JSON.parse(a.value);
@@ -117,60 +100,4 @@ function buildInputJson(c: ExampleCase): string | null {
   } catch {
     return null;
   }
-}
-
-// ---------------------------------------------------------------------------
-// 输出比对：JSON 深比较（数值容差 1e-5）；失败再试无序数组规范化；兜底字符串
-// ---------------------------------------------------------------------------
-
-export function outputsEqual(actual: string, expected: string): boolean {
-  if (actual.trim() === expected.trim()) return true;
-  const a = tryJson(actual);
-  const e = tryJson(expected);
-  if (a.ok && e.ok) {
-    if (deepEqual(a.v, e.v)) return true;
-    // 无序兜底仅用于二维数组（如字母异位词分组），一维数组顺序敏感
-    if (Array.isArray(a.v) && Array.isArray(e.v) && a.v.every(Array.isArray) && e.v.every(Array.isArray)) {
-      return canonical(a.v) === canonical(e.v);
-    }
-  }
-  return false;
-}
-
-function tryJson(s: string): { ok: true; v: unknown } | { ok: false } {
-  try {
-    return { ok: true, v: JSON.parse(s) };
-  } catch {
-    return { ok: false };
-  }
-}
-
-function deepEqual(a: unknown, b: unknown): boolean {
-  if (typeof a === "number" && typeof b === "number") {
-    return Math.abs(a - b) <= 1e-5 * Math.max(1, Math.abs(a), Math.abs(b));
-  }
-  if (Array.isArray(a) && Array.isArray(b)) {
-    return a.length === b.length && a.every((x, i) => deepEqual(x, b[i]));
-  }
-  if (a && b && typeof a === "object" && typeof b === "object") {
-    const ka = Object.keys(a);
-    const kb = Object.keys(b);
-    return ka.length === kb.length && ka.every((k) => deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
-  }
-  return a === b;
-}
-
-/** 无序比较兜底：递归排序数组（如字母异位词分组答案顺序不限） */
-function canonical(v: unknown): string {
-  if (Array.isArray(v)) {
-    const items = v.map(canonical).sort();
-    return `[${items.join(",")}]`;
-  }
-  if (v && typeof v === "object") {
-    const entries = Object.entries(v as Record<string, unknown>)
-      .map(([k, x]) => `${JSON.stringify(k)}:${canonical(x)}`)
-      .sort();
-    return `{${entries.join(",")}}`;
-  }
-  return JSON.stringify(v) ?? "";
 }

@@ -1,13 +1,13 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import type { ProblemJudgeMeta, ProblemTestcase } from "@ailab/contracts";
-import { db } from "../db/client.js";
-import { contents, problems } from "../db/schema.js";
 import {
   unsupportedReason,
   type ExampleCase,
   type MethodSpec,
-} from "./parse.js";
+} from "@ailab/judge-core";
+import { db } from "../db/client.js";
+import { contents, problems } from "../db/schema.js";
 
 // ---------------------------------------------------------------------------
 // 判题上下文装配（judge 数据源切换，2026-09-10 第六批）：

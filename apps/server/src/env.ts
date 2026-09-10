@@ -38,8 +38,14 @@ const envSchema = z.object({
   /** 配额默认值（缺省/空 = 不限，上线初期默认；后续仅改配置开启分层） */
   QUOTA_DEFAULT_JUDGE: optionalInt,
   QUOTA_DEFAULT_INTERVIEW: optionalInt,
-  /** 评测队列并发上限（in-process worker，dev/judge-worker.md） */
+  /** 评测队列并发上限（in-process worker 与独立 judge-worker 通用） */
   JUDGE_CONCURRENCY: z.coerce.number().int().positive().default(2),
+  /** false 时禁用 server 内置 in-process worker（独立 judge-worker 部署模式，
+   *  生产 compose 置 false：本机 exec 路径下线，沙箱执行由独立进程接管） */
+  JUDGE_INPROCESS_WORKER: z
+    .string()
+    .default("true")
+    .transform((v) => v !== "false"),
 });
 
 export const env = envSchema.parse(process.env);

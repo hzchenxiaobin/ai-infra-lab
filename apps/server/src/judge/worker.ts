@@ -1,17 +1,21 @@
 import { and, asc, eq, sql } from "drizzle-orm";
+import {
+  runJudge,
+  terminalStatus,
+  type JudgeRunResult,
+} from "@ailab/judge-core";
+import type { SubmissionStatus } from "@ailab/contracts";
 import { env } from "../env.js";
 import { db } from "../db/client.js";
 import { submissions } from "../db/schema.js";
-import type { SubmissionStatus } from "@ailab/contracts";
 import { loadProblemJudgeContext, type ProblemJudgeContext } from "./context.js";
-import { runJudge, type JudgeRunResult } from "./run.js";
 
 // ---------------------------------------------------------------------------
-// 评测队列 worker（P0 过渡形态，dev/judge-worker.md §1/§6）：
-// 轮询 submissions 表 → 原子领取 pending → runJudge 执行 → 写回终态与 verdict_detail。
-// 判题数据来自 problems 表（testcases + judge_meta，2026-09-10 第六批数据源切换）。
-// P1 独立 judge-worker（Docker 沙箱）落地后接管执行路径，队列表/领取语义/verdict
-// 结构保持不变；本机 exec 的安全红线（对外开放注册前的门槛）见 dev/judge-worker.md §5。
+// 评测队列 worker（in-process 过渡形态，dev/judge-worker.md §1/§6）：
+// 轮询 submissions 表 → 原子领取 pending → runJudge（本机 exec）→ 写回终态。
+// 判题数据来自 problems 表（testcases + judge_meta）；评测核心在 @ailab/judge-core
+// （生产由 apps/judge-worker 的 Docker 沙箱接管，本路径仅开发用，
+//  部署时 JUDGE_INPROCESS_WORKER=false 关闭）。
 // ---------------------------------------------------------------------------
 
 const POLL_INTERVAL_MS = 500;
@@ -21,8 +25,12 @@ type SubmissionRow = typeof submissions.$inferSelect;
 let inFlight = 0;
 let started = false;
 
-/** server 启动时调用：崩溃恢复 + 开启轮询（重复调用幂等） */
+/** server 启动时调用：崩溃恢复 + 开启轮询（重复调用幂等；外部 worker 模式下 no-op） */
 export function startJudgeWorker() {
+  if (!env.JUDGE_INPROCESS_WORKER) {
+    console.log("[judge-worker] 外部 worker 模式（JUDGE_INPROCESS_WORKER=false），in-process worker 未启动");
+    return;
+  }
   if (started) return;
   started = true;
   void recoverOrphaned();
@@ -130,14 +138,8 @@ function judge(language: string, code: string, ctx: ProblemJudgeContext): JudgeR
   throw new Error(`不支持的评测语言：${language}`);
 }
 
-/** JudgeRunResult → 提交终态（dev/judge-worker.md §6） */
-export function terminalStatus(result: JudgeRunResult): Exclude<SubmissionStatus, "pending" | "running"> {
-  if (result.status === "compile_error") return "ce";
-  if (result.status === "no_cases") return "ie";
-  if (result.passed === result.total) return "ac";
-  if (result.cases.some((c) => c.error != null && c.error.includes("超时"))) return "tle";
-  return "wa";
-}
+/** JudgeRunResult → 提交终态（judge-core 同源映射，供测试与类型引用） */
+export const terminalStatusOf = terminalStatus;
 
 /** 队列深度与积压（监控/测试用）：各状态计数 */
 export async function queueDepths(): Promise<Record<string, number>> {

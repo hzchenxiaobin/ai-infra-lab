@@ -29,13 +29,9 @@ apps/server/
  │   ├── interviewer/
  │   │   ├── factory.ts      # 【已有】纯 LLM 模式，getInterviewer()
  │   │   └── llm.ts          # 【已有】OpenAI 兼容封装 + 状态机 prompt（FOLLOWUP/EVAL 分级）
- │   ├── judge/              # 【已有】评测器核心，M2 起被 judge-worker 复用
- │   │   ├── parse.ts        #   签名解析、示例用例解析、类型支持性判断
- │   │   ├── driver.ts       #   生成 C++/Python harness 源码
- │   │   ├── run.ts          #   编译 + 逐用例执行 + 输出比对
+ │   ├── judge/              # 评测队列（in-process worker，开发形态；评测核心在 @ailab/judge-core）
  │   │   ├── context.ts      #   判题上下文装配（problems 表数据源，router 与 worker 共用）
- │   │   ├── worker.ts       #   in-process 队列 worker（P0 过渡，P1 独立进程接管）
- │   │   ├── judge.test.ts   #   评测器测试样板
+ │   │   ├── worker.ts       #   in-process 队列 worker（生产由独立 judge-worker 接管）
  │   │   └── worker.test.ts  #   队列语义 + 端到端 + AC 联动测试
 │   ├── db/
 │   │   ├── client.ts       # mysql2 pool + drizzle
@@ -199,11 +195,14 @@ pnpm --filter server db:migrate    # 执行迁移（drizzle.config.ts 读 DATABA
 ## 10. 测试
 
 - 样板：`routers/interview.test.ts`（状态机集成测试，MySQL 可用才跑，LLM 用
-  `vi.stubGlobal("fetch", ...)` mock）、`judge/judge.test.ts`（评测器纯函数测试）、
-  `judge/worker.test.ts`（队列领取/执行/写回 + 端到端 AC/WA/CE）、
+  `vi.stubGlobal("fetch", ...)` mock）、`judge/worker.test.ts`（队列领取/执行/写回 +
+  端到端 AC/WA/CE + AC 联动 user_progress）、
   `routers/content|problem|progress|quota|auth.test.ts`（router 集成）。
+- 评测核心纯函数测试在 `packages/judge-core`（签名解析/输出比对/终态映射/本机 exec e2e）；
+  Docker 沙箱冒烟在 `apps/judge-worker`（独立测试库 `interview_test_jw`，与 server 的
+  `interview_test` 隔离——`pnpm -r test` 并行时队列 FIFO 领取不互抢）。
 - 新模块照此补：评测器与配额中间件必须有测试；auth 的验证码限流逻辑要有单测。
-- 跑法：`pnpm --filter server test`（vitest）。
+- 跑法：`pnpm --filter server test`（vitest）；全仓 `pnpm test`。
 
 ## 11. 环境变量
 
@@ -217,5 +216,6 @@ pnpm --filter server db:migrate    # 执行迁移（drizzle.config.ts 读 DATABA
 | `SESSION_SECRET` | 新增 | session cookie 签名 |
 | `SMTP_HOST/PORT/USER/PASS` | 新增 | 注册验证码邮件 |
 | `QUOTA_DEFAULT_*` | 新增 | 配额默认值（空 = 不限） |
-| `JUDGE_CONCURRENCY` | 已落地 | in-process 评测队列 worker 并发上限（默认 2） |
+| `JUDGE_CONCURRENCY` | 已落地 | 评测队列并发上限（in-process worker 与独立 judge-worker 通用） |
+| `JUDGE_INPROCESS_WORKER` | 已落地 | `false` 时禁用 server 内置 in-process worker——部署形态由独立 judge-worker（Docker 沙箱）接管执行，队列语义不变（2026-09-10 第七批） |
 | ~~`LEETCODE_REPO_DIR`~~ | 已退役 | judge 数据源已切 `problems` 表（2026-09-10 第六批）：testcases/judge_meta 由 content-kit 解析入库，本地 leetcode 仓库不再被评测路径读取 |

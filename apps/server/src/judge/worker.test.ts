@@ -3,13 +3,18 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { and, eq, sql } from "drizzle-orm";
+import {
+  extractReferenceCode,
+  parseCppSignature,
+  parseExamples,
+  parsePythonSignature,
+  type JudgeRunResult,
+} from "@ailab/judge-core";
 import type { ProblemJudgeMeta } from "@ailab/contracts";
 import { db } from "../db/client.js";
 import { contents, problems, submissions, usageQuotas, userProgress } from "../db/schema.js";
 import { appRouter } from "../routers/index.js";
-import { extractReferenceCode, parseCppSignature, parseExamples, parsePythonSignature } from "./parse.js";
-import { claimNextSubmission, executeSubmission, recoverOrphaned, terminalStatus } from "./worker.js";
-import type { JudgeRunResult } from "./run.js";
+import { claimNextSubmission, executeSubmission, recoverOrphaned } from "./worker.js";
 
 // ---------------------------------------------------------------------------
 // 评测队列集成测试（dev/judge-worker.md §1/§6）：submit → submissions(pending) →
@@ -45,29 +50,7 @@ async function cleanupSubmissions() {
   await db.delete(userProgress).where(and(eq(userProgress.userId, TEST_USER), eq(userProgress.contentId, FIXTURE_ID)));
 }
 
-describe("terminalStatus 结果映射", () => {
-  const base = { cases: [], total: 1 } as unknown as JudgeRunResult;
-  it("compile_error → ce；全过 → ac；超时 → tle；其余 → wa", () => {
-    expect(terminalStatus({ ...base, status: "compile_error", passed: 0 })).toBe("ce");
-    expect(terminalStatus({ ...base, status: "ok", passed: 1 })).toBe("ac");
-    expect(
-      terminalStatus({
-        status: "ok",
-        passed: 0,
-        total: 1,
-        cases: [{ input: "", expected: "", actual: "", pass: false, error: "运行超时（>8s）" }],
-      }),
-    ).toBe("tle");
-    expect(
-      terminalStatus({
-        status: "ok",
-        passed: 0,
-        total: 1,
-        cases: [{ input: "", expected: "", actual: "1", pass: false, error: null }],
-      }),
-    ).toBe("wa");
-  });
-});
+// terminalStatus 结果映射的测试已随评测核心迁移 @ailab/judge-core（两端同源）
 
 run("队列领取语义（集成）", () => {
   it("FIFO 领取 + 条件抢占 + 队列空返回 null", async () => {

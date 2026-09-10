@@ -22,34 +22,43 @@ web 轮询 submissions 状态 ◀──tRPC── server judge.getResult ◀─�
 - **任务队列就是 DB 表 `submissions`**：`status: pending → running → ac/wa/ce/tle/mle/ie`。
   worker 轮询领取，初期不引入 MQ（02 已决策）。
 - worker 与 web/server 同仓库独立部署（独立 compose 服务、独立镜像），不共享进程。
-- **P0 过渡形态（已落地）**：server 进程内置 in-process worker
+- **P0 过渡形态（已落地，生产由独立 worker 接管）**：server 进程内置 in-process worker
   （`apps/server/src/judge/worker.ts`，`startJudgeWorker()` 于 index.ts 启动）——
-  轮询/领取/执行/写回/崩溃恢复逻辑与独立 worker 同构，`judge.submit`/`judge.getResult`
-  已按队列语义工作；但执行路径仍是本机 exec（`run.ts`），**沙箱安全红线未达成**，
-  对外开放注册前必须切换到本文件的 Docker 方案（P1）。
+  队列领取/写回语义与独立 worker 同构，执行路径为本机 exec（`@ailab/judge-core` 的
+  run.ts），**仅开发用**：部署时 `JUDGE_INPROCESS_WORKER=false` 关闭，执行全部走
+  独立 judge-worker 的 Docker 沙箱（2026-09-10 第七批落地）。
 - **判题数据源已切换 problems 表**（2026-09-10 第六批）：`submissions.problem_id`
   存统一题目 ID（`lc:0001` 等），testcases 与参考签名元数据（`problems.judge_meta`）
   由 content-kit 构建期从题解机器解析入库，评测路径不再读本地 leetcode 仓库；
   `judge_type` 非 `internal` 的题在 `judge.getProblem`/`submit` 即拒绝投递（§7）。
+- **独立 worker 已落地**（2026-09-10 第七批）：`apps/judge-worker` 独立进程直接
+  轮询 `submissions` 表（领取/写回语义与 in-process worker 一致），执行走本文件
+  的 Docker 方案——一次性容器（`deploy/images/algo`）+ 全部安全红线（§5 逐条验证）；
+  worker 领取/回报不做内部 HTTP API，直接读写 DB（队列即表，本文件 §1/§6 的设计）。
 
 ## 2. 目录结构
 
 ```
 apps/judge-worker/
 ├── src/
-│   ├── index.ts            # 主循环：轮询 → 领取 → 执行 → 写回
-│   ├── queue.ts            # submissions 领取（事务内 UPDATE ... status=running）
-│   ├── runner.ts           # docker run 编排：挂载、限额、超时、收尸
-│   ├── images.ts           # 镜像名/标签常量与镜像存在性检查
-│   └── verdict.ts          # 用例结果 → 终态判定（ac/wa/ce/tle/mle）
-├── package.json            # 依赖复用 server 的 judge/ 评测核心（见 §4）
-└── Dockerfile              # node:22-slim + docker CLI（不嵌套 Docker daemon）
+│   ├── index.ts            # 主循环：启动检查 → 崩溃恢复/孤儿容器清理 → 轮询执行写回
+│   ├── db.ts               # submissions 领取/写回/恢复（raw SQL，与 server worker 同语义）
+│   ├── runner.ts           # docker run 编排：stdin/stdout 协议、限额、超时强杀、结果映射
+│   ├── env.ts              # 环境变量（无 zod，依赖最小化）
+│   ├── runner.test.ts      # Docker runner 冒烟（AC/WA/CE/TLE/无网络，镜像未构建则跳过）
+│   └── worker.test.ts      # 队列端到端（fixture → 领取 → 容器执行 → 写回）
+├── Dockerfile              # node:22-slim + docker CLI（挂宿主 docker.sock，不嵌套 daemon）
+└── package.json            # 依赖 @ailab/judge-core（评测核心同源）+ mysql2
+
+deploy/images/algo/
+├── Dockerfile              # debian slim + g++ + python3（APT_MIRROR 可换国内源）
+└── run.py                  # 容器内哑执行器：stdin task.json → stdout results.json
 ```
 
-**评测核心代码只有一份**：`apps/server/src/judge/`（parse.ts 签名/用例解析、
-driver.ts harness 生成、run.ts 的比对逻辑）抽到可共享的位置（如
-`packages/judge-core/`），server 与 judge-worker 都依赖它——输出比对规则
-（JSON 深比较、数值容差 1e-5、二维数组无序兜底）两端必须一致。
+**评测核心代码只有一份**：`packages/judge-core/`（签名/用例解析 parse、harness 生成
+driver、输出比对 compare、本机 exec run、终态映射 verdict）——server（开发形态）与
+judge-worker（生产形态）都依赖它，输出比对规则（JSON 深比较、数值容差 1e-5、二维数组
+无序兜底）两端同源；容器内不做比对，只做编译与执行。
 
 ## 3. Docker-out-of-Docker
 
@@ -93,27 +102,32 @@ docker run --rm \
 ## 4. algo 评测镜像
 
 ```
-deploy/images/algo/Dockerfile     # debian slim + g++ ≥ 11 + python3 + sqlite3
+deploy/images/algo/Dockerfile     # debian slim + g++ ≥ 11 + python3
+deploy/images/algo/run.py         # 容器内哑执行器（stdin task.json → stdout results.json）
 ```
 
-- C++：`g++ -std=c++17 -O2`（沿用 run.ts 现状）；编译超时 30s，运行超时 8s/用例，
-  输出上限 64KB——这些常量拷自 `server/src/judge/run.ts`，环境变量化后镜像内外一致。
-- Python：直接 `python3 main.py`，harness 由 driver.ts 的 `buildPythonSource` 生成。
-- **SQL 题**：镜像内嵌 SQLite；harness 把用例的建表/数据 SQL 导入临时库，执行用户
-  查询，**比对结果集**（行序无关、列名敏感；leetcode 有 324 道数据库题，见 02 §3）。
-  MySQL 方言题 v1 一律按 SQLite 评测，题面标注差异。
-- 镜像内不带任何源码仓库与凭据，用例经只读挂载注入。
+- C++：`g++ -std=c++17 -O2`；编译超时 30s，运行超时 `JUDGE_TIMEOUT_MS`（默认 8s）/用例，
+  逐用例输出截断 8KB / 编译错误截断 4KB（run.py 内，输出截断红线）。
+- Python：直接 `python3 main.py`，harness 由 judge-core driver 的 `buildPythonSource` 生成。
+- 容器协议：task.json 经 **stdin** 注入（源码为完整 harness）、results.json 走
+  **stdout**（容器无挂载卷，tmpfs /work 为唯一可写区，容器退出即焚）；
+  比对在 worker 侧（judge-core 同源），容器只做编译与执行。
+- **SQL 题（后续项）**：leetcode 数据库题的示例用例尚不可机器解析（无
+  `name = value` 形态 → judge_type=none），无数据路径，SQLite 评测待用例解析
+  方案（M4 候选）；镜像暂不装 sqlite3，落地时再加。
+- 镜像内不带任何源码仓库与凭据。
 
 ## 5. 资源限额与安全红线
 
 | 红线 | 实现 |
 |---|---|
-| 无网络 | `--network none`，绝无例外 |
-| 只读输入 | 用例只读挂载；根 fs 只读 + 限定 tmpfs 可写区 |
-| 超时强杀 | 每用例 wall-clock 超时 → SIGKILL；整个 submission 有总时限兜底 |
-| 资源上限 | memory / cpus / pids-limit 三者都设，防 fork 炸弹与内存撑爆 |
-| 输出截断 | stdout/stderr 超上限截断入库，防日志撑爆 DB |
+| 无网络 | `--network none`，绝无例外（runner.test.ts 有 DNS 解析必败的回归用例） |
+| 只读输入 | task.json 经 stdin 注入；根 fs 只读 + tmpfs /work 唯一可写（`rw,exec,size=64m,mode=1777`——exec 允许执行编译产物、mode 允许非 root 的 judge 用户写入） |
+| 超时强杀 | 每用例 wall-clock 超时（run.py subprocess timeout）→ 整容器 SIGKILL 兜底（worker 侧总时限 + `docker rm -f` 收尸） |
+| 资源上限 | memory（`JUDGE_MEM_MB`）/ cpus=1 / pids-limit=128 三者都设，防 fork 炸弹与内存撑爆 |
+| 输出截断 | run.py 逐用例截断（stdout 8KB / stderr 2KB / 编译错误 4KB），worker 侧容器 stdout 上限 4MB，防日志撑爆 DB |
 | 并发上限 | `JUDGE_CONCURRENCY` 控制同时在跑的评测容器数（部署机 CPU 有限） |
+| 非 root 执行 | 镜像内置 judge 用户（USER judge），容器内编译/执行不提权 |
 
 补充防线（与沙箱正交，见 05 风险清单"滥用与刷接口"）：提交频率走 server 配额中间件
 （[server](server.md#8-配额中间件计量先行限额后置)）；评测队列积压进监控告警。
@@ -153,7 +167,13 @@ WHERE id = (SELECT id FROM submissions WHERE status='pending'
 
 ## 8. 测试
 
-- 评测核心（比对/harness 生成）沿用 `server/src/judge/judge.test.ts` 模式做纯函数测试，
-  **必须覆盖**：编译错误、超时、数值容差、二维数组无序答案、输出截断。
-- worker 层测试：queue 领取的原子性（并发双 worker 不重复领取）、崩溃恢复重置。
-- 端到端冒烟（M3 上线前）：真实 docker 环境跑一道两数之和 AC + 一道死循环 TLE。
+- 评测核心（比对/harness 生成）：`packages/judge-core/src/judge-core.test.ts`——
+  覆盖签名解析、数值容差、二维数组无序答案、本机 exec e2e（编译错误/超时/截断）。
+- runner 层：`apps/judge-worker/src/runner.test.ts` 真实 docker 冒烟（镜像未构建跳过）
+  ——已覆盖两数之和 AC（C++/Python）、WA、CE、死循环 TLE、无网络红线（容器内
+  DNS 解析失败）。
+- 端到端（M3 上线前）：`worker.test.ts` 队列全链路（fixture → 领取 → 容器执行 →
+  写回读回）+ 手工冒烟：server `judge.submit` → 独立 worker 进程消费 →
+  `getResult` 读回 AC/TLE（2026-09-10 第七批已验证）。
+- 队列领取的原子性（并发双 worker 不重复领取）由两步条件 UPDATE 保证
+  （与 server in-process worker 同语义，server 测试覆盖）。

@@ -4,19 +4,20 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   extractReferenceCode,
+  outputsEqual,
   parseCppSignature,
   parseExamples,
   parsePythonSignature,
+  runJudge,
+  terminalStatus,
   unsupportedReason,
-} from "./parse.js";
-import { outputsEqual, runJudge } from "./run.js";
+} from "./index.js";
 
-// 题解 fixture 用 content 仓库副本（judge 数据源已切换 problems 表，
-// LEETCODE_REPO_DIR 退役，2026-09-10 第六批）
-const repo53 = fileURLToPath(
-  new URL("../../../../packages/content/problems-algo/solution/0001-0100/53_最大子数组和.md", import.meta.url),
+// 题解 fixture 用 content 仓库副本（judge 数据源为 problems 表，2026-09-10 第六批）
+const md53 = fileURLToPath(
+  new URL("../../content/problems-algo/solution/0001-0100/53_最大子数组和.md", import.meta.url),
 );
-const hasRepo = existsSync(repo53);
+const hasRepo = existsSync(md53);
 
 describe("judge parse", () => {
   it("从题面解析示例用例", () => {
@@ -94,9 +95,33 @@ describe("judge outputsEqual", () => {
   });
 });
 
-describe.skipIf(!hasRepo)("judge e2e（53 最大子数组和）", () => {
+describe("terminalStatus 结果映射", () => {
+  const base = { cases: [], total: 1 } as unknown as ReturnType<typeof runJudge>;
+  it("compile_error → ce；全过 → ac；超时 → tle；其余 → wa", () => {
+    expect(terminalStatus({ ...base, status: "compile_error", passed: 0 })).toBe("ce");
+    expect(terminalStatus({ ...base, status: "ok", passed: 1 })).toBe("ac");
+    expect(
+      terminalStatus({
+        status: "ok",
+        passed: 0,
+        total: 1,
+        cases: [{ input: "", expected: "", actual: "", pass: false, error: "运行超时（>8s）" }],
+      }),
+    ).toBe("tle");
+    expect(
+      terminalStatus({
+        status: "ok",
+        passed: 0,
+        total: 1,
+        cases: [{ input: "", expected: "", actual: "1", pass: false, error: null }],
+      }),
+    ).toBe("wa");
+  });
+});
+
+describe.skipIf(!hasRepo)("judge e2e 本机 exec（53 最大子数组和）", () => {
   async function load() {
-    const md = await readFile(repo53, "utf8");
+    const md = await readFile(md53, "utf8");
     const cases = parseExamples(md);
     expect(cases.length).toBeGreaterThanOrEqual(3);
     return { md, cases };
