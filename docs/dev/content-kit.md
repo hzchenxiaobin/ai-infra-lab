@@ -101,7 +101,10 @@ CI 必跑；**禁止绕过**（06 内容工作流 §4）。lint 即内容侧的�
 - `contents` / `problems` 表以**统一 ID 为主键 + contentHash 判变更**幂等 upsert，
   沿用 interview 的 sourceKey/contentHash 模式（实现范本见
   [server](server.md#7-关键实现题库幂等入库sourcekey--contenthash)）。
-- 源里消失的内容标 `status='stale'`，**不物理删除**（保护 user_progress 与历史引用）。
+- `problem_lists` 表（题单）：`lists.json` 产物由题单正文「站内题解」链接解析出
+  成员统一 ID（`parseListProblemIds`，保持出现顺序去重），随 `content:sync` upsert。
+- 源里消失的内容标 `status='stale'`，**不物理删除**（保护 user_progress 与历史引用）；
+  题单源消失不标 stale（留旧行无害，题单页只是导航视图）。
 - 同步时机：docs 构建期（CI）执行，产物（元数据 JSON）随构建输出；server 启动时
   或经 `cli content:sync` 导入。
 - **内容正文不入库**：只同步元数据与索引（02 关键取舍）。

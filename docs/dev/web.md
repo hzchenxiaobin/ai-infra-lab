@@ -48,12 +48,13 @@ apps/web/
 | `/bank` | 面试题库（729 题 CRUD） | 已有 |
 | `/interview/:id` | 面试间 | 已有 |
 | `/judge/:id` | 在线评测 | 已有；M2 已改 submit + getResult 异步轮询（2026-09-10） |
-| `/report/:id` | 评估报告（M2 补薄弱点 → 内容链接） | 已有 |
+| `/report/:id` | 评估报告（薄弱点 → 学习/练习推荐链接，M2 已闭环） | 已有 |
 | `/history` | 面试历史 | 已有 |
 | `/login` `/register` | 登录 / 注册（邮箱 + 验证码） | 已有（M2） |
 | `/learn` `/learn/path` | 学习路径总览（10 周/专题/论文 + 进度标记） | 已有（M2） |
-| `/problems/gpu` `/problems/algo` | 题库浏览（难度/AC/标签/知识点/评测方式筛选） | 已有（M2） |
-| `/problems/lists/:slug` | 题单（hot-interview / 10 周计划 / 每日配套） | 新增（M2） |
+| `/problems/gpu` `/problems/algo` | 题库浏览（难度/AC/标签/知识点/评测方式筛选；GPU 分区带 A–L 知识领域快捷分组 chips） | 已有（M2） |
+| `/problems/lists` `/problems/lists/:slug` | 题单索引 + 详情（成员有序浏览 + AC 进度条，编排正文跳 docs） | 已有（2026-09-10 第五批） |
+| `/problems/contest` `/problems/contest/:session` | 周赛场次列表（新→旧）+ 单场 Q1..Qn 浏览 | 已有（2026-09-10 第五批） |
 | `/search` | 全站搜索 | 已有（M1） |
 
 路由集中维护在 `App.tsx`，新页面先加路由再建 `pages/` 目录文件。
@@ -110,7 +111,9 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({ client: trpcClient, quer
 - **SVG 插图**：web 不渲染内容正文，题目卡片/学习卡片里的缩略图直接 `<img>` 指向
   docs 站的最终 URL（content-kit 构建期重写产出，见
   [content-kit](content-kit.md#5-图片规范)）；不要在 web 里内联 SVG 源文件。
-- 报告里的"参考答案折叠""要点对照"等交互在 `ReportBody.tsx`，M2 的薄弱点链接也加在这里。
+- 报告里的"参考答案折叠""要点对照"等交互在 `ReportBody.tsx`；薄弱点推荐链接由报告
+  markdown 里的 `[标题](url)` 承载，`Markdown.tsx` 的 renderInline 负责链接化（站内路径
+  当前页跳转，http 外链新开标签）。
 
 ## 6. 构建与开发
 

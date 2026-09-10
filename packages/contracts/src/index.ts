@@ -221,6 +221,25 @@ export function computeOverallGrade(evaluations: QuestionEvaluation[]): Grade {
   return "D";
 }
 
+// ---------------------------------------------------------------------------
+// 薄弱点 → 学习/练习推荐（M2 闭环最后一环，server.md §6）
+// ---------------------------------------------------------------------------
+
+/** 推荐链接目标：站内 docs 路径或外部 URL */
+export interface RecommendLink {
+  id: string;
+  title: string;
+  url: string;
+}
+
+/** 单个薄弱点的推荐：关联学习章节与练习题（SQL 按 knowledge_points/tags 匹配） */
+export interface WeakPointRecommendation {
+  /** 知识点 slug 或题目标签（questions.knowledgePoints 缺失时回落 tags） */
+  name: string;
+  learn: RecommendLink[];
+  problems: RecommendLink[];
+}
+
 export function renderReportMarkdown(opts: {
   sessionId: number;
   categories: Category[];
@@ -228,8 +247,11 @@ export function renderReportMarkdown(opts: {
   durationMinutes: number | null;
   result: EvaluationResult;
   keyPointsByQuestion: Map<number, string>;
+  /** 薄弱点推荐（可选）：有内容命中时渲染为带链接的专项训练计划 */
+  recommendations?: WeakPointRecommendation[];
 }): string {
   const { sessionId, categories, questionCount, durationMinutes, result, keyPointsByQuestion } = opts;
+  const recommendations = opts.recommendations?.filter((r) => r.learn.length > 0 || r.problems.length > 0) ?? [];
   const catLabels = categories.map((c) => CATEGORY_LABELS[c]).join("/");
   const duration = durationMinutes != null ? ` · ${durationMinutes} 分钟` : "";
   const lines: string[] = [];
@@ -255,10 +277,23 @@ export function renderReportMarkdown(opts: {
     const kp = keyPointsByQuestion.get(q.questionId);
     if (kp) lines.push(`- 要点对照：${kp}`);
   }
-  if (result.weakDimensions.length > 0) {
+  if (result.weakDimensions.length > 0 || recommendations.length > 0) {
     lines.push("");
     lines.push("## 专项训练建议");
     result.weakDimensions.forEach((w, i) => lines.push(`${i + 1}. ${w}`));
+    if (recommendations.length > 0) {
+      if (result.weakDimensions.length > 0) lines.push("");
+      lines.push("### 薄弱点 → 学习与练习");
+      for (const rec of recommendations) {
+        lines.push(`- **${rec.name}**`);
+        if (rec.learn.length > 0) {
+          lines.push(`  - 学习：${rec.learn.map((l) => `[${l.title}](${l.url})`).join("、")}`);
+        }
+        if (rec.problems.length > 0) {
+          lines.push(`  - 练习：${rec.problems.map((p) => `[${p.title}](${p.url})`).join("、")}`);
+        }
+      }
+    }
   }
   return lines.join("\n");
 }
@@ -497,9 +532,21 @@ export const problemImportItemSchema = z.object({
 });
 export type ProblemImportItem = z.infer<typeof problemImportItemSchema>;
 
+/** 题单（problems-algo/hot-interview.md 等，sync 解析正文题解链接产出） */
+export const problemListImportItemSchema = z.object({
+  id: z.string().min(1).max(128),
+  title: z.string().min(1).max(500),
+  url: z.string().max(500).default(""),
+  /** 成员题目的统一 ID，按题单出现顺序 */
+  problemIds: z.array(z.string().min(1).max(128)).default([]),
+  contentHash: z.string().min(1).max(64),
+});
+export type ProblemListImportItem = z.infer<typeof problemListImportItemSchema>;
+
 export const contentImportSchema = z.object({
   contents: z.array(contentImportItemSchema).default([]),
   problems: z.array(problemImportItemSchema).default([]),
+  lists: z.array(problemListImportItemSchema).default([]),
 });
 export type ContentImportInput = z.infer<typeof contentImportSchema>;
 
@@ -526,6 +573,39 @@ export type SubmissionIdParam = z.infer<typeof submissionIdParamSchema>;
 /** 统一 ID 参数（contents/problems 的字符串主键，如 lc:1 / gpu:12 / learn:week1:day1） */
 export const unifiedIdParamSchema = z.object({ id: z.string().min(1).max(128) });
 export type UnifiedIdParam = z.infer<typeof unifiedIdParamSchema>;
+
+/** 题单 slug 参数（/problems/lists/:slug，id 为 lc:list:{slug}） */
+export const problemListSlugParamSchema = z.object({
+  slug: z.string().trim().min(1).max(100).regex(/^[a-z0-9-]+$/, "非法的题单标识"),
+});
+export type ProblemListSlugParam = z.infer<typeof problemListSlugParamSchema>;
+
+/** 周赛场次参数（/problems/contest/:session，id 为 lc:contest:{session}q{n}） */
+export const contestSessionParamSchema = z.object({
+  session: z.number().int().min(1).max(999_999),
+});
+export type ContestSessionParam = z.infer<typeof contestSessionParamSchema>;
+
+// ---------------------------------------------------------------------------
+// GPU 知识领域（leetgpu SKILL.md §1.5 的 A–L 领域；题目侧以 slug 进 knowledge_points，
+// web 的 GPU 分组视图按此常量渲染，领域元数据与 content-kit 保持一致）
+// ---------------------------------------------------------------------------
+
+export const GPU_DOMAINS = [
+  { letter: "A", slug: "parallel-patterns", name: "基础并行模式（Element-wise / Memory-bound）" },
+  { letter: "B", slug: "convolution-pooling", name: "卷积与池化（Convolution & Pooling）" },
+  { letter: "C", slug: "reduction-scan", name: "归约与扫描（Reduction & Scan）" },
+  { letter: "D", slug: "gemm", name: "矩阵乘法与 GEMM（GEMM & Matmul）" },
+  { letter: "E", slug: "attention", name: "注意力机制（Attention）" },
+  { letter: "F", slug: "normalization-embedding", name: "归一化与嵌入（Normalization & Embedding）" },
+  { letter: "G", slug: "transformer-inference", name: "Transformer 组件与推理优化" },
+  { letter: "H", slug: "quantization", name: "量化与低精度（Quantization）" },
+  { letter: "I", slug: "sampling-sorting-search", name: "采样、排序与搜索" },
+  { letter: "J", slug: "advanced-algorithms-math", name: "高级算法与数学" },
+  { letter: "K", slug: "losses-basic-ml", name: "损失函数与基础 ML" },
+  { letter: "L", slug: "simulation-misc", name: "其他综合与模拟" },
+] as const;
+export type GpuDomain = (typeof GPU_DOMAINS)[number];
 
 export const questionUpdateSchema = z.object({
   id: z.number().int().min(1),

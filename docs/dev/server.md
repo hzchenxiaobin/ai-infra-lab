@@ -75,8 +75,9 @@ apps/server/
 | `interview` | 已有 | 面试状态机全流程（见 §6） |
 | `judge` | 已队列化 | getProblem / submit（写 submissions 队列）/ getResult（轮询）；执行见 `judge/worker.ts` |
 | `auth` | 已有 | 发送验证码 / 注册 / 登录 / 登出 / me；user:list / userSetBanned / userByEmail（admin，CLI 用） |
-| `content` | 已有 | contents/problems 元数据查询、统一 ID 解析、import（admin） |
+| `content` | 已有 | contents/problems 元数据查询、统一 ID 解析、import（admin，含 problem_lists 题单 upsert） |
 | `progress` | 已有 | 进度标记 upsert、掌握度雷达、Dashboard 聚合（含 streakDays） |
+| `problem` | 已有 | 题库浏览（list/facets）+ 题单（lists/getList：成员有序 + AC 联动）+ 周赛（contestSessions/contestProblems：场次聚合与 Q 序） |
 | `quota` | 已有 | me + adminGet/adminSet（CLI quota:get/set，admin） |
 
 约定：**每个 router 的输入输出 schema 一律放 `packages/contracts`**，router 内只做
@@ -143,8 +144,10 @@ finishSession     按题分组聚合 GroupedTranscript → LLM 评估（evaluati
 
 评估输出契约见 `packages/contracts`：`overallGrade A–D` + 每题 dimensions/diagnosis/
 suggestion/answers（answers 与面试官每次提问一一对应）+ `weakDimensions`。
-**M2 闭环扩展**：报告新增"薄弱点 → 学习章节/练习题链接"，用 knowledge_points 标签
-匹配（SQL 即可），不必再调 LLM（见 03 掌握度模型）。
+**M2 闭环已落地**（2026-09-10）：报告拆表到 `interview_reports`（`weak_points` =
+C/D 维度题目 knowledge_points 并集，缺标签回落题目 tags），finishSession 按
+knowledge_points/tags SQL 匹配 contents/problems 生成"薄弱点 → 学习章节/练习题"
+链接写进报告（`renderReportMarkdown` 的 `recommendations` 参数），不调 LLM。
 
 ## 7. 关键实现：题库幂等入库（sourceKey + contentHash）
 

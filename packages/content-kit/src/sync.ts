@@ -5,6 +5,8 @@
 //                      contentHash/status/updated_at（+ path 与 meta 附加字段）
 //   problems.json      problems 表结构：id/source/number/difficulty/languages/
 //                      judge_type/testcases/external_url
+//   lists.json         problem_lists 表结构：id/title/url/problem_ids/content_hash
+//                      （题单成员从正文「站内题解」链接解析，见 parseListProblemIds）
 //   search-index.json  miniSearch 可用的轻量索引：id/title/summary/tags/url
 //                      （正文剔除代码块后取摘要）
 //
@@ -13,6 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { extractExternalUrl, scanContent, type ContentFile } from "./content.ts";
+import { classify } from "./ids.ts";
 import { DIST_DIR, sha256 } from "./util.ts";
 
 const files = scanContent();
@@ -103,6 +106,32 @@ const searchIndex = files
   }))
   .sort((a, b) => String(a.id).localeCompare(String(b.id)));
 
+// 题单成员：正文「站内题解」链接（solution/....md）→ classify 得统一 ID，
+// 保持出现顺序去重。链接缺失（题单未收录站内题解）的题目自然不在成员里。
+function parseListProblemIds(f: ContentFile): string[] {
+  const ids: string[] = [];
+  const seen = new Set<string>();
+  for (const m of f.body.matchAll(/\]\((solution\/[^)#\s]+\.md)\)/g)) {
+    const cls = classify(`problems-algo/${m[1]}`);
+    if (cls?.type === "problem" && !seen.has(cls.id)) {
+      seen.add(cls.id);
+      ids.push(cls.id);
+    }
+  }
+  return ids;
+}
+
+const lists = files
+  .filter((f) => f.existing.id.startsWith("lc:list:"))
+  .map((f) => ({
+    id: f.existing.id,
+    title: f.existing.title,
+    url: f.cls.url,
+    problem_ids: parseListProblemIds(f),
+    contentHash: sha256(f.raw),
+  }))
+  .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+
 fs.mkdirSync(DIST_DIR, { recursive: true });
 const write = (name: string, data: unknown) => {
   const p = path.join(DIST_DIR, name);
@@ -112,10 +141,12 @@ const write = (name: string, data: unknown) => {
 
 const s1 = write("contents.json", contents);
 const s2 = write("problems.json", problems);
-const s3 = write("search-index.json", searchIndex);
+const s3 = write("lists.json", lists);
+const s4 = write("search-index.json", searchIndex);
 
 const fmt = (n: number) => (n / 1024 / 1024).toFixed(2) + " MB";
 console.log("== sync 产物 ==");
 console.log(`dist/contents.json      ${contents.length} 行  ${fmt(s1)}`);
 console.log(`dist/problems.json      ${problems.length} 行  ${fmt(s2)}`);
-console.log(`dist/search-index.json  ${searchIndex.length} 行  ${fmt(s3)}`);
+console.log(`dist/lists.json         ${lists.length} 行  ${fmt(s3)}`);
+console.log(`dist/search-index.json  ${searchIndex.length} 行  ${fmt(s4)}`);

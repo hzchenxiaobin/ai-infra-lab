@@ -5,6 +5,10 @@ import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import BankPage from "./pages/bank/BankPage";
 import { ProblemsPage } from "./pages/problems/ProblemsPage";
+import ProblemListsPage from "./pages/problems/ProblemListsPage";
+import ProblemListPage from "./pages/problems/ProblemListPage";
+import ContestPage from "./pages/problems/ContestPage";
+import ContestSessionPage from "./pages/problems/ContestSessionPage";
 import LearnPage from "./pages/learn/LearnPage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -27,6 +31,10 @@ export default function App() {
             <Route path="learn/path" element={<LearnPage />} />
             <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
             <Route path="problems/algo" element={<ProblemsPage partition="algo" />} />
+            <Route path="problems/lists" element={<ProblemListsPage />} />
+            <Route path="problems/lists/:slug" element={<ProblemListPage />} />
+            <Route path="problems/contest" element={<ContestPage />} />
+            <Route path="problems/contest/:session" element={<ContestSessionPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="bank" element={<BankPage />} />
             <Route path="search" element={<SearchPage />} />

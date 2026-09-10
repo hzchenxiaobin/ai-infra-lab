@@ -40,6 +40,7 @@
 | `contents` | `id`(统一 ID, PK varchar), `type`, `title`, `tags`(json), `knowledge_points`(json), `url`(docs 站路径), `content_hash`, `status(active/stale)`, `updated_at` | 构建期从 frontmatter 同步（content-kit），contentHash 幂等 upsert，失效标 stale 不物理删除 |
 | `problems` | `id`(PK, FK→contents), `source(leetcode/leetgpu/contest)`, `number`, `difficulty`, `languages`(json), `judge_type(internal/leetgpu-com/none)`, `testcases`(json), `external_url` | contents 的 problem 子集单列，带评测字段；`testcases` 存内置评测用例（替代 interview 现状的"评测时读本地 leetcode 仓库题解"）；GPU 题 `judge_type=leetgpu-com` + `external_url` 跳 leetgpu.com |
 | `knowledge_points` | `id`(slug, PK), `name`, `category(gpu/algo/system/cpp/...)`, `description` | 知识点受控词表，闭环的公共坐标系；content-kit lint 校验 frontmatter 标签必须命中词表 |
+| `problem_lists` | `id`(题单统一 ID `lc:list:{slug}`, PK), `title`, `url`, `problem_ids`(json 有序), `content_hash`, `updated_at` | 题单（hot-interview / 10 周计划）：成员由 content-kit sync 解析正文题解链接产出，随 content.import upsert；已落地（迁移 0007，2026-09-10） |
 
 ### 2.4 用户数据域（M2 新增）
 
@@ -53,9 +54,9 @@
 | 表 | 现状（interview schema.ts） | 扩展 |
 |---|---|---|
 | `questions` | `id`, `user_id`, `category(leetcode/cuda/knowledge)`, `title`, `content`, `difficulty`, `tags`, `follow_ups`(json), `key_points`, `source`, `source_key`, `content_hash`, `stale`, 时间戳 | 补 `knowledge_points` 列（json）；729 题经 `cli bank:import` 入库 |
-| `interview_sessions` | `id`, `user_id`, `title`, `categories`(json), `question_ids`(json), `current_index`, `follow_up_index`, `status(active/finished)`, `overall_grade`, `report`, `evaluated_by`, 时间戳 | 补 scope 快照关联 `knowledge_points`；状态机字段说明见 [server §6](server.md#6-关键实现面试状态机断点续面) |
+| `interview_sessions` | `id`, `user_id`, `title`, `categories`(json), `question_ids`(json), `current_index`, `follow_up_index`, `status(active/finished)`, `overall_grade`, `scope_knowledge_points`(json，建场时题目知识点并集快照), 时间戳 | `report`/`evaluated_by` 已拆到 interview_reports（迁移 0006，2026-09-10）；状态机字段说明见 [server §6](server.md#6-关键实现面试状态机断点续面) |
 | `interview_messages` | `id`, `session_id`, `question_id`(可空), `role(interviewer/candidate/system)`, `content`, `created_at` | 不变 |
-| `interview_reports` | 现状报告是 `interview_sessions.report` 的 text 字段 | 03 设计了独立 `interview_reports` 表 + `weak_points → knowledge_points` 映射列；落地时把 report 从 sessions 拆出，薄弱点映射驱动"报告 → 学习章节/练习题"推荐 |
+| `interview_reports` | `id`, `session_id`(unique), `user_id`, `overall_grade`, `evaluated_by`, `report`(text), `weak_points`(json), `created_at` | 已落地（迁移 0006）：报告自 sessions 拆出，`weak_points` 为 C/D 维度题目 knowledge_points 并集（缺标签回落题目 tags），驱动"报告 → 学习章节/练习题"推荐 |
 
 另有 `repo_syncs`（GitHub 同步记录）随 sync 模块**退役**——新产品内容为本地
 `packages/content/`，同步改走 content-kit + CI。

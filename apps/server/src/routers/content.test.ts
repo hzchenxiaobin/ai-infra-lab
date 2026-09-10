@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { contents, problems, users } from "../db/schema.js";
+import { contents, problemLists, problems, users } from "../db/schema.js";
 import { appRouter } from "./index.js";
 
 // ---------------------------------------------------------------------------
@@ -28,6 +28,7 @@ const TEST_IDS = ["lc:zzc1", "lc:zzc2", "gpu:zzc1"];
 async function cleanup() {
   await db.delete(problems).where(inArray(problems.id, TEST_IDS));
   await db.delete(contents).where(inArray(contents.id, TEST_IDS));
+  await db.delete(problemLists).where(eq(problemLists.id, "lc:list:zz-content"));
 }
 
 async function adminCaller() {
@@ -140,17 +141,46 @@ run("content router（集成）", () => {
         testcases: [],
         externalUrl: "",
       };
+      const list = (hash: string, problemIds: string[]) => ({
+        id: "lc:list:zz-content",
+        title: "导入题单",
+        url: "/problems/lists/zz-test",
+        problemIds,
+        contentHash: hash,
+      });
 
-      const first = await caller.content.import({ contents: [item("h1")], problems: [problem] });
+      const first = await caller.content.import({
+        contents: [item("h1")],
+        problems: [problem],
+        lists: [list("l1", ["lc:zzc1"])],
+      });
       expect(first.inserted).toBe(1);
       expect(first.problemsUpserted).toBe(1);
+      expect(first.listsUpserted).toBe(1);
+      const l1 = (
+        await db.select().from(problemLists).where(eq(problemLists.id, "lc:list:zz-content")).limit(1)
+      )[0]!;
+      expect(l1.title).toBe("导入题单");
+      expect(l1.problemIds).toEqual(["lc:zzc1"]);
 
-      const again = await caller.content.import({ contents: [item("h1")], problems: [problem] });
+      const again = await caller.content.import({
+        contents: [item("h1")],
+        problems: [problem],
+        lists: [list("l1", ["lc:zzc1"])],
+      });
       expect(again.unchanged).toBe(1);
       expect(again.inserted).toBe(0);
 
-      const updated = await caller.content.import({ contents: [item("h2")], problems: [problem] });
+      const updated = await caller.content.import({
+        contents: [item("h2")],
+        problems: [problem],
+        lists: [list("l2", ["lc:zzc1", "lc:zzc2"])],
+      });
       expect(updated.updated).toBe(1);
+      const l2 = (
+        await db.select().from(problemLists).where(eq(problemLists.id, "lc:list:zz-content")).limit(1)
+      )[0]!;
+      expect(l2.problemIds).toEqual(["lc:zzc1", "lc:zzc2"]);
 
       // 源里消失：只导入 zzc2，zzc1 标 stale；zzc2 带不同 hash 入库
       const staleRun = await caller.content.import({

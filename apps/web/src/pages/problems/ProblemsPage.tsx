@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import { DIFFICULTIES, JUDGE_TYPES, type Difficulty, type JudgeType } from "@ailab/contracts";
-import { queryClient, trpc, type ProblemListData } from "../../lib/trpc";
-import { Button, DifficultyBadge, EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import {
+  DIFFICULTIES,
+  GPU_DOMAINS,
+  JUDGE_TYPES,
+  type Difficulty,
+  type JudgeType,
+} from "@ailab/contracts";
+import { trpc } from "../../lib/trpc";
+import { Button, EmptyBox, ErrorBox, Loading } from "../../components/ui";
 import { DIFFICULTY_LABELS, JUDGE_TYPE_LABELS } from "../../lib/format";
-
-type ProblemItem = ProblemListData["items"][number];
+import { ProblemRow } from "./ProblemRow";
 
 const PAGE_SIZE = 50;
 
@@ -15,7 +20,7 @@ const PARTITIONS = {
     label: "GPU",
     title: "GPU 题库",
     source: "leetgpu" as const,
-    desc: "CUDA 编程题（LeetGPU 106 题），站内浏览题解，评测跳转 leetgpu.com。",
+    desc: "CUDA 编程题（LeetGPU 106 题），按知识领域分组浏览，评测跳转 leetgpu.com。",
   },
   algo: {
     label: "算法",
@@ -68,12 +73,6 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
       solved: true,
       page: 1,
       pageSize: 1,
-    }),
-  );
-
-  const mark = useMutation(
-    trpc.progress.mark.mutationOptions({
-      onSuccess: () => queryClient.invalidateQueries(),
     }),
   );
 
@@ -192,6 +191,60 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
         </span>
       </section>
 
+      {/* GPU 分区：知识领域 A–L 快捷分组（点击即按领域知识点筛选）；算法分区：题单/周赛入口 */}
+      {partition === "gpu" ? (
+        <section className="flex animate-fade-up flex-wrap items-center gap-1.5" style={{ animationDelay: "0.2s" }}>
+          <span className="mr-1 text-xs font-medium text-muted">知识领域</span>
+          <button
+            type="button"
+            onClick={() => {
+              setKnowledgePoint("");
+              setPage(1);
+            }}
+            className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
+              knowledgePoint === ""
+                ? "bg-ink font-medium text-white"
+                : "bg-divider text-muted hover:text-ink"
+            }`}
+          >
+            全部
+          </button>
+          {GPU_DOMAINS.map((d) => (
+            <button
+              key={d.letter}
+              type="button"
+              title={d.name}
+              onClick={() => {
+                setKnowledgePoint(knowledgePoint === d.slug ? "" : d.slug);
+                setPage(1);
+              }}
+              className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
+                knowledgePoint === d.slug
+                  ? "bg-ink font-medium text-white"
+                  : "bg-divider text-muted hover:text-ink"
+              }`}
+            >
+              {d.letter}
+            </button>
+          ))}
+          {knowledgePoint && (
+            <span className="ml-2 text-xs text-faint">
+              {GPU_DOMAINS.find((d) => d.slug === knowledgePoint)?.name ?? knowledgePoint}
+            </span>
+          )}
+        </section>
+      ) : (
+        <section className="flex animate-fade-up flex-wrap items-center gap-2" style={{ animationDelay: "0.2s" }}>
+          <span className="mr-1 text-xs font-medium text-muted">专题导航</span>
+          <Link to="/problems/lists" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
+            📋 题单
+          </Link>
+          <Link to="/problems/contest" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
+            🏆 周赛
+          </Link>
+        </section>
+      )}
+
       {/* 列表 */}
       <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.24s" }}>
         {list.isLoading ? (
@@ -204,12 +257,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           <>
             <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
               {list.data.items.map((p) => (
-                <ProblemRow
-                  key={p.id}
-                  problem={p}
-                  onMarkAc={() => mark.mutate({ contentId: p.id, status: "ac" })}
-                  marking={mark.isPending && mark.variables?.contentId === p.id}
-                />
+                <ProblemRow key={p.id} problem={p} />
               ))}
             </div>
             <div className="flex items-center justify-between text-sm text-muted">
@@ -232,65 +280,6 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           </>
         )}
       </section>
-    </div>
-  );
-}
-
-function ProblemRow({
-  problem,
-  onMarkAc,
-  marking,
-}: {
-  problem: ProblemItem;
-  onMarkAc: () => void;
-  marking: boolean;
-}) {
-  return (
-    <div className="group flex items-center gap-4 px-5 py-3 transition-colors duration-150 hover:bg-[#fafbfc]">
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          {problem.number > 0 && (
-            <span className="font-mono text-xs text-faint">#{problem.number}</span>
-          )}
-          <a
-            href={problem.url}
-            className="text-[15px] font-medium transition-colors duration-150 hover:text-accent-600"
-          >
-            {problem.title}
-          </a>
-          <DifficultyBadge difficulty={problem.difficulty} />
-          {problem.tags.slice(0, 3).map((t) => (
-            <span
-              key={t}
-              className="rounded-md bg-page px-1.5 py-0.5 text-[11px] text-muted"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-        <div className="mt-1 flex items-center gap-3 text-[11px] text-faint">
-          <span className="font-mono">{problem.id}</span>
-          {problem.judgeType === "leetgpu-com" && problem.externalUrl && (
-            <a
-              href={problem.externalUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="transition-colors duration-150 hover:text-accent-600"
-            >
-              leetgpu 评测 ↗
-            </a>
-          )}
-        </div>
-      </div>
-      {problem.ac ? (
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-100 px-3 py-1 text-xs font-medium text-accent-600">
-          ✓ AC
-        </span>
-      ) : (
-        <Button variant="secondary" disabled={marking} onClick={onMarkAc} className="shrink-0">
-          {marking ? "标记中…" : "标记 AC"}
-        </Button>
-      )}
     </div>
   );
 }

@@ -117,6 +117,20 @@ export const knowledgePoints = mysqlTable("knowledge_points", {
   description: text("description").notNull().default(""),
 });
 
+/** 题单（hot-interview / 10 周计划）：成员题目统一 ID 有序列表，content-kit sync 解析正文产出 */
+export const problemLists = mysqlTable("problem_lists", {
+  /** 题单统一 ID（lc:list:{slug}） */
+  id: varchar("id", { length: 128 }).primaryKey(),
+  title: varchar("title", { length: 500 }).notNull(),
+  /** docs 站路径（/problems/lists/{slug}） */
+  url: varchar("url", { length: 500 }).notNull().default(""),
+  /** 成员题目统一 ID，按题单出现顺序 */
+  problemIds: json("problem_ids").$type<string[]>().notNull(),
+  /** contentHash 幂等 upsert（与 contents 同一模式） */
+  contentHash: varchar("content_hash", { length: 64 }).notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+});
+
 // ---------------------------------------------------------------------------
 // 用户数据域（dev/database.md §2.4）
 // ---------------------------------------------------------------------------
@@ -191,12 +205,31 @@ export const interviewSessions = mysqlTable("interview_sessions", {
   currentIndex: int("current_index").notNull().default(0),
   followUpIndex: int("follow_up_index").notNull().default(0),
   status: mysqlEnum("status", ["active", "finished"]).notNull().default("active"),
+  /** 冗余自 interview_reports（stats/list 轻量展示用，报告本体在拆表中） */
   overallGrade: varchar("overall_grade", { length: 8 }),
-  report: text("report"),
-  evaluatedBy: varchar("evaluated_by", { length: 8 }),
+  /** scope 快照：建场时所考题目关联 knowledge_points 的并集（掌握度模型 interview 信号） */
+  scopeKnowledgePoints: json("scope_knowledge_points").$type<string[]>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   finishedAt: timestamp("finished_at"),
 });
+
+/** 评估报告（自 interview_sessions 拆出，03 数据模型）：weakPoints 为 knowledge_points 映射，
+ *  驱动"报告 → 学习章节/练习题"推荐与掌握度聚合（database.md §2.4）。 */
+export const interviewReports = mysqlTable(
+  "interview_reports",
+  {
+    id: serial("id").primaryKey(),
+    sessionId: bigint("session_id", { mode: "number" }).notNull(),
+    userId: bigint("user_id", { mode: "number" }).notNull(),
+    overallGrade: varchar("overall_grade", { length: 8 }),
+    evaluatedBy: varchar("evaluated_by", { length: 8 }),
+    report: text("report").notNull(),
+    /** 薄弱知识点（C/D 维度题目的 knowledge_points 并集，缺标签时回落题目 tags） */
+    weakPoints: json("weak_points").$type<string[]>().notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("uq_interview_report_session").on(t.sessionId)],
+);
 
 export const interviewMessages = mysqlTable("interview_messages", {
   id: serial("id").primaryKey(),

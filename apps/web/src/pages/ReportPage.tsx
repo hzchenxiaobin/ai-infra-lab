@@ -25,7 +25,7 @@ function ReportView({ sessionId }: { sessionId: number }) {
   if (get.error) return <ErrorBox error={get.error} />;
   if (!get.data) return null;
 
-  const { session, messages, questions } = get.data;
+  const { session, report, messages, questions } = get.data;
 
   if (session.status !== "finished") {
     return (
@@ -44,9 +44,9 @@ function ReportView({ sessionId }: { sessionId: number }) {
   const duration = durationMinutes(session.createdAt, session.finishedAt);
   const cats = session.categories.map((c) => CATEGORY_LABELS[c as Category] ?? c).join(" / ");
   const evaluatedByText =
-    session.evaluatedBy === "llm"
+    report?.evaluatedBy === "llm"
       ? "LLM 评估"
-      : session.evaluatedBy === "rule"
+      : report?.evaluatedBy === "rule"
         ? "规则引擎评估"
         : null;
 
@@ -104,9 +104,9 @@ function ReportView({ sessionId }: { sessionId: number }) {
       </div>
 
       {tab === "report" ? (
-        session.report ? (
+        report?.report ? (
           <ReportBody
-            text={session.report}
+            text={report.report}
             questionIds={session.questionIds}
             questions={questions}
             messages={messages}

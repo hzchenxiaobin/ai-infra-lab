@@ -30,7 +30,7 @@ export async function runSession(sessionId: number, caller: Caller): Promise<voi
 
   if (detail.session.status === "finished") {
     console.log(banner("面试评估报告"));
-    console.log(detail.session.report ?? "（无报告）");
+    console.log(detail.report?.report ?? "（无报告）");
     process.exit(0);
   }
 
@@ -97,7 +97,7 @@ async function endSession(sessionId: number, caller: Caller, rl: readline.Interf
 async function showReport(sessionId: number, caller: Caller, rl: readline.Interface | null): Promise<void> {
   const detail = await caller.interview.get({ sessionId });
   console.log(banner("面试评估报告"));
-  console.log(detail.session.report ?? "（报告生成失败）");
+  console.log(detail.report?.report ?? "（报告生成失败）");
   if (detail.session.overallGrade) {
     console.log(successLine(`综合等级：${detail.session.overallGrade}`));
   }

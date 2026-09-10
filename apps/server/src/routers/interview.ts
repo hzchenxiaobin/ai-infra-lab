@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, or, sql, type SQL } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import {
   CATEGORY_LABELS,
@@ -8,14 +8,23 @@ import {
   sessionIdParamSchema,
   startInterviewSchema,
   type Category,
+  type EvaluationResult,
   type GroupedTranscript,
   type InterviewMessage,
   type InterviewState,
   type Question,
+  type WeakPointRecommendation,
   renderReportMarkdown,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { interviewMessages, interviewSessions, questions } from "../db/schema.js";
+import {
+  contents,
+  interviewMessages,
+  interviewReports,
+  interviewSessions,
+  problems,
+  questions,
+} from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
 import { getInterviewer } from "../interviewer/factory.js";
 import { quotaFor } from "../middleware/quota.js";
@@ -122,6 +131,108 @@ function scopeLabel(scope: string): string {
   return scope;
 }
 
+/** tag / knowledgePoint 匹配：MySQL JSON 数组包含判断（沿用 content.ts 模式） */
+function jsonContains(column: SQL | unknown, value: string): SQL {
+  return sql`JSON_CONTAINS(${column as SQL}, JSON_QUOTE(${value}))`;
+}
+
+/** 薄弱知识点推导：任一维度 C/D 的题目贡献其 knowledge_points；
+ *  存量题库无 knowledge_points 时回落题目 tags（P2 bank 管线补标签后自动切回） */
+function deriveWeakPoints(
+  result: EvaluationResult,
+  questionMeta: Map<number, { knowledgePoints: string[] | null; tags: string }>,
+): string[] {
+  const weak = new Set<string>();
+  for (const q of result.questions) {
+    if (!q.dimensions.some((d) => d.grade === "C" || d.grade === "D")) continue;
+    const meta = questionMeta.get(q.questionId);
+    if (!meta) continue;
+    const points =
+      meta.knowledgePoints ??
+      meta.tags.split(/[,，]/).map((t) => t.trim()).filter(Boolean);
+    for (const p of points) weak.add(p);
+  }
+  return [...weak];
+}
+
+/** 报告内"薄弱点 → 学习/练习"每个知识点的推荐条数上限 */
+const RECOMMEND_ITEMS_PER_POINT = 3;
+/** 报告渲染的薄弱点数量上限（weak_points 列存全量，渲染截断保证可读性） */
+const RECOMMEND_MAX_POINTS = 6;
+
+/** 薄弱点 → 学习章节/练习题推荐（server.md §6：SQL 按 knowledge_points/tags 匹配，不调 LLM） */
+async function buildRecommendations(weakPoints: string[]): Promise<WeakPointRecommendation[]> {
+  if (weakPoints.length === 0) return [];
+  const matches = (col: SQL | unknown) => or(...weakPoints.map((p) => jsonContains(col, p)));
+  const [learnRows, problemRows] = await Promise.all([
+    db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        url: contents.url,
+        knowledgePoints: contents.knowledgePoints,
+        tags: contents.tags,
+      })
+      .from(contents)
+      .where(
+        and(
+          eq(contents.type, "learn"),
+          eq(contents.status, "active"),
+          or(matches(contents.knowledgePoints), matches(contents.tags)),
+        ),
+      )
+      .orderBy(asc(contents.id)),
+    db
+      .select({
+        id: problems.id,
+        number: problems.number,
+        title: contents.title,
+        url: contents.url,
+        knowledgePoints: contents.knowledgePoints,
+        tags: contents.tags,
+      })
+      .from(problems)
+      .innerJoin(contents, eq(problems.id, contents.id))
+      .where(
+        and(
+          eq(contents.status, "active"),
+          or(matches(contents.knowledgePoints), matches(contents.tags)),
+        ),
+      )
+      .orderBy(asc(problems.source), asc(problems.number)),
+  ]);
+
+  return weakPoints.map((name) => {
+    const hit = (row: { knowledgePoints: string[]; tags: string[] }) =>
+      row.knowledgePoints.includes(name) || row.tags.includes(name);
+    return {
+      name,
+      learn: learnRows
+        .filter(hit)
+        .slice(0, RECOMMEND_ITEMS_PER_POINT)
+        .map((r) => ({ id: r.id, title: r.title, url: r.url })),
+      problems: problemRows
+        .filter(hit)
+        .slice(0, RECOMMEND_ITEMS_PER_POINT)
+        .map((r) => ({
+          id: r.id,
+          title: r.number > 0 ? `#${r.number} ${r.title}` : r.title,
+          url: r.url,
+        })),
+    };
+  });
+}
+
+/** 场次报告行（拆表后报告本体在 interview_reports；无报告返回 null） */
+async function loadReport(sessionId: number) {
+  const rows = await db
+    .select()
+    .from(interviewReports)
+    .where(eq(interviewReports.sessionId, sessionId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 export const interviewRouter = router({
   // 配额计量：LLM 面试场次创建入口（dev/server.md §8）
   start: authedProcedure.use(quotaFor("interview")).input(startInterviewSchema).mutation(async ({ input, ctx }) => {
@@ -178,6 +289,8 @@ export const interviewRouter = router({
     const title = scope ? `${catLabels}专项面试 ${mmdd}` : `${catLabels}混合面试 ${mmdd}`;
 
     const questionIds = picked.map((q) => q.id);
+    // scope 快照：所考题目 knowledge_points 并集（掌握度模型 interview 信号，03 数据模型）
+    const scopeKnowledgePoints = [...new Set(picked.flatMap((q) => q.knowledgePoints ?? []))];
     const first = toQuestion(picked[0]);
     const firstQuestion = await getInterviewer().openingQuestion(first, "AI Infra 工程师");
     const opening =
@@ -195,6 +308,7 @@ export const interviewRouter = router({
           currentIndex: 0,
           followUpIndex: 0,
           status: "active",
+          scopeKnowledgePoints,
         })
         .$returningId();
       await tx.insert(interviewMessages).values({
@@ -354,25 +468,31 @@ export const interviewRouter = router({
     .input(sessionIdParamSchema)
     .query(async ({ input, ctx }) => {
       const session = await loadSession(input.sessionId, ctx.userId);
-      const messages = await db
-        .select()
-        .from(interviewMessages)
-        .where(eq(interviewMessages.sessionId, session.id))
-        .orderBy(asc(interviewMessages.id));
-      const questionMap = await loadQuestionsByIds(session.questionIds);
+      const [messages, questionMap, report] = await Promise.all([
+        db
+          .select()
+          .from(interviewMessages)
+          .where(eq(interviewMessages.sessionId, session.id))
+          .orderBy(asc(interviewMessages.id)),
+        loadQuestionsByIds(session.questionIds),
+        session.status === "finished" ? loadReport(session.id) : Promise.resolve(null),
+      ]);
       return {
         session,
+        /** 评估报告（拆表后）；active 场次为 null */
+        report,
         messages: messages.map(toMessage),
         questions: Object.fromEntries(questionMap),
       };
     }),
 });
 
-/** 结束流程（README §5.2）：聚合消息 → 评分 → 写回报告 */
+/** 结束流程（README §5.2）：聚合消息 → 评分 → 薄弱点推荐 → 写 interview_reports 拆表 */
 async function finishSession(sessionId: number, userId: number) {
   const session = await loadSession(sessionId, userId);
   if (session.status === "finished") {
-    return { report: session.report, overallGrade: session.overallGrade };
+    const existing = await loadReport(sessionId);
+    return { report: existing?.report ?? null, overallGrade: session.overallGrade };
   }
   const messageRows = await db
     .select()
@@ -411,6 +531,15 @@ async function finishSession(sessionId: number, userId: number) {
   // 纯 LLM 模式：评估失败直接抛错（LLM 内部已重试一次）
   const result = await getInterviewer().evaluate(transcript);
 
+  // 薄弱点推导 + 学习/练习推荐（SQL 匹配 contents/problems，不调 LLM）
+  const metaRows = await db
+    .select({ id: questions.id, knowledgePoints: questions.knowledgePoints, tags: questions.tags })
+    .from(questions)
+    .where(inArray(questions.id, session.questionIds));
+  const questionMeta = new Map(metaRows.map((r) => [r.id, r]));
+  const weakPoints = deriveWeakPoints(result, questionMeta);
+  const recommendations = await buildRecommendations(weakPoints.slice(0, RECOMMEND_MAX_POINTS));
+
   const report = renderReportMarkdown({
     sessionId,
     categories: session.categories as Category[],
@@ -418,18 +547,38 @@ async function finishSession(sessionId: number, userId: number) {
     durationMinutes,
     result,
     keyPointsByQuestion: new Map(groups.map((g) => [g.question.id, g.question.keyPoints])),
+    recommendations,
   });
 
-  await db
-    .update(interviewSessions)
-    .set({
-      status: "finished",
-      overallGrade: result.overallGrade,
-      report,
-      evaluatedBy: result.evaluatedBy,
-      finishedAt: new Date(),
-    })
-    .where(eq(interviewSessions.id, sessionId));
+  await db.transaction(async (tx) => {
+    // onDuplicateKeyUpdate：并发双 finish 时幂等（sessionId 唯一键）
+    await tx
+      .insert(interviewReports)
+      .values({
+        sessionId,
+        userId,
+        overallGrade: result.overallGrade,
+        evaluatedBy: result.evaluatedBy,
+        report,
+        weakPoints,
+      })
+      .onDuplicateKeyUpdate({
+        set: {
+          overallGrade: result.overallGrade,
+          evaluatedBy: result.evaluatedBy,
+          report,
+          weakPoints,
+        },
+      });
+    await tx
+      .update(interviewSessions)
+      .set({
+        status: "finished",
+        overallGrade: result.overallGrade,
+        finishedAt: new Date(),
+      })
+      .where(eq(interviewSessions.id, sessionId));
+  });
 
   return { report, overallGrade: result.overallGrade };
 }

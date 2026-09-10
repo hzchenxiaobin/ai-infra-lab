@@ -1,16 +1,51 @@
 import { TRPCError } from "@trpc/server";
-import { and, asc, eq, like, sql, type SQL } from "drizzle-orm";
+import { and, asc, eq, inArray, like, sql, type SQL } from "drizzle-orm";
 import {
+  contestSessionParamSchema,
   problemFacetsSchema,
   problemFilterSchema,
+  problemListSlugParamSchema,
   unifiedIdParamSchema,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { contents, problems, userProgress } from "../db/schema.js";
+import { contents, problemLists, problems, userProgress } from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
 
 function jsonContains(column: SQL | unknown, value: string): SQL {
   return sql`JSON_CONTAINS(${column as SQL}, JSON_QUOTE(${value}))`;
+}
+
+/** 按统一 ID 列表取题目（保持传入顺序，联 contents + user_progress） */
+async function problemRowsByIds(ids: string[], userId: number) {
+  if (ids.length === 0) return [];
+  const rows = await db
+    .select({
+      id: problems.id,
+      source: problems.source,
+      number: problems.number,
+      difficulty: problems.difficulty,
+      languages: problems.languages,
+      judgeType: problems.judgeType,
+      externalUrl: problems.externalUrl,
+      title: contents.title,
+      url: contents.url,
+      tags: contents.tags,
+      knowledgePoints: contents.knowledgePoints,
+      progressStatus: userProgress.status,
+    })
+    .from(problems)
+    .innerJoin(contents, eq(problems.id, contents.id))
+    .leftJoin(
+      userProgress,
+      and(eq(userProgress.contentId, problems.id), eq(userProgress.userId, userId)),
+    )
+    .where(and(inArray(problems.id, ids), eq(contents.status, "active")));
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  return ids.flatMap((id) => {
+    const r = byId.get(id);
+    if (!r) return []; // 成员无对应 active 行（未同步/已 stale）时跳过
+    return [{ ...r, progressStatus: r.progressStatus ?? ("unseen" as const), ac: r.progressStatus === "ac" }];
+  });
 }
 
 export const problemRouter = router({
@@ -111,4 +146,70 @@ export const problemRouter = router({
         .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value, "zh-Hans"));
     return { tags: toList(tagCounts), knowledgePoints: toList(kpCounts) };
   }),
+
+  /** 题单索引（/problems/lists 入口卡片） */
+  lists: authedProcedure.query(async () => {
+    const rows = await db.select().from(problemLists);
+    return rows
+      .map((r) => {
+        const slug = r.id.split(":")[2] ?? "";
+        return { id: r.id, slug, title: r.title, url: r.url, problemCount: r.problemIds.length };
+      })
+      .filter((r) => r.slug !== "")
+      .sort((a, b) => a.slug.localeCompare(b.slug));
+  }),
+
+  /** 题单详情：成员题目（保持题单顺序）+ AC 状态 */
+  getList: authedProcedure
+    .input(problemListSlugParamSchema)
+    .query(async ({ input, ctx }) => {
+      const id = `lc:list:${input.slug}`;
+      const rows = await db.select().from(problemLists).where(eq(problemLists.id, id)).limit(1);
+      if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "题单不存在" });
+      const list = rows[0];
+      const items = await problemRowsByIds(list.problemIds, ctx.userId);
+      return {
+        list: {
+          id: list.id,
+          slug: input.slug,
+          title: list.title,
+          url: list.url,
+          problemCount: list.problemIds.length,
+        },
+        items,
+      };
+    }),
+
+  /** 周赛场次列表（lc:contest:{场次}q{n} 按场次聚合，新→旧） */
+  contestSessions: authedProcedure.query(async () => {
+    const rows = await db
+      .select({ id: problems.id })
+      .from(problems)
+      .innerJoin(contents, eq(problems.id, contents.id))
+      .where(and(eq(problems.source, "contest"), eq(contents.status, "active")));
+    const bySession = new Map<number, number>();
+    for (const r of rows) {
+      const m = /^lc:contest:(\d+)q\d+$/.exec(r.id);
+      if (!m) continue;
+      bySession.set(+m[1], (bySession.get(+m[1]) ?? 0) + 1);
+    }
+    return [...bySession.entries()]
+      .map(([session, problemCount]) => ({ session, problemCount }))
+      .sort((a, b) => b.session - a.session);
+  }),
+
+  /** 单场周赛题目（按 Q1..Qn 顺序）+ AC 状态 */
+  contestProblems: authedProcedure
+    .input(contestSessionParamSchema)
+    .query(async ({ input, ctx }) => {
+      const rows = await db
+        .select({ id: problems.id })
+        .from(problems)
+        .where(and(eq(problems.source, "contest"), like(problems.id, `lc:contest:${input.session}q%`)));
+      const ordered = rows
+        .map((r) => ({ id: r.id, q: Number(/^lc:contest:\d+q(\d+)$/.exec(r.id)?.[1] ?? 0) }))
+        .sort((a, b) => a.q - b.q)
+        .map((r) => r.id);
+      return { session: input.session, items: await problemRowsByIds(ordered, ctx.userId) };
+    }),
 });

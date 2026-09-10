@@ -140,7 +140,7 @@ program
         process.exit(1);
       }
       console.log(banner(detail.session.title));
-      console.log(detail.session.report ?? "（无报告）");
+      console.log(detail.report?.report ?? "（无报告）");
       if (detail.session.overallGrade) {
         console.log(successLine(`综合等级：${detail.session.overallGrade}`));
       }
@@ -263,10 +263,12 @@ program
       opts.dist ?? path.resolve(fileURLToPath(new URL("../../../packages/content-kit/dist", import.meta.url)));
     let contentsRaw: unknown;
     let problemsRaw: unknown;
+    let listsRaw: unknown;
     try {
-      [contentsRaw, problemsRaw] = await Promise.all([
+      [contentsRaw, problemsRaw, listsRaw] = await Promise.all([
         readFile(path.join(distDir, "contents.json"), "utf8").then(JSON.parse),
         readFile(path.join(distDir, "problems.json"), "utf8").then(JSON.parse),
+        readFile(path.join(distDir, "lists.json"), "utf8").then(JSON.parse),
       ]);
     } catch (err) {
       console.log(errorLine(`读取 dist 产物失败（${distDir}）：${(err as Error).message}`));
@@ -294,14 +296,21 @@ program
         testcases: (p.testcases as ContentImportInput["problems"][number]["testcases"]) ?? [],
         externalUrl: String(p.external_url ?? ""),
       })),
+      lists: ((listsRaw as Array<Record<string, unknown>>) ?? []).map((l) => ({
+        id: String(l.id),
+        title: String(l.title),
+        url: String(l.url ?? ""),
+        problemIds: (l.problem_ids as string[]) ?? [],
+        contentHash: String(l.contentHash),
+      })),
     };
-    console.log(dimLine(`导入 ${input.contents.length} 条内容元数据 / ${input.problems.length} 条题目元数据…`));
+    console.log(dimLine(`导入 ${input.contents.length} 条内容元数据 / ${input.problems.length} 条题目元数据 / ${input.lists.length} 个题单…`));
     try {
       const caller = await getCaller();
       const stats = await caller.content.import(input);
       console.log(
         successLine(
-          `同步完成：新增 ${stats.inserted} · 更新 ${stats.updated} · 未变 ${stats.unchanged} · 标 stale ${stats.stale} · 题目 upsert ${stats.problemsUpserted}`,
+          `同步完成：新增 ${stats.inserted} · 更新 ${stats.updated} · 未变 ${stats.unchanged} · 标 stale ${stats.stale} · 题目 upsert ${stats.problemsUpserted} · 题单 upsert ${stats.listsUpserted}`,
         ),
       );
       process.exit(0);

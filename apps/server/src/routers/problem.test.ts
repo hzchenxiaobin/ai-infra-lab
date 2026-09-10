@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { contents, problems, userProgress } from "../db/schema.js";
+import { contents, problemLists, problems, userProgress } from "../db/schema.js";
 import { appRouter } from "./index.js";
 
 // ---------------------------------------------------------------------------
@@ -182,6 +182,82 @@ run("problem router（集成）", () => {
       expect(all.tags.find((t) => t.value === "zz-test-gpu")?.count).toBe(1);
       expect(all.knowledgePoints.find((k) => k.value === "zz-test-kp-cuda")?.count).toBe(1);
     } finally {
+      await cleanup();
+    }
+  });
+
+  it("题单与周赛：lists/getList 成员有序 + contestSessions/contestProblems 聚合", async () => {
+    await seed();
+    const CONTEST_IDS = ["lc:contest:998877q1", "lc:contest:998877q2", "lc:contest:998878q1"];
+    // 先清残留（历史失败运行可能留下半截数据，insert 在 try 外无 finally 兜底）
+    await db.delete(problems).where(inArray(problems.id, CONTEST_IDS));
+    await db.delete(contents).where(inArray(contents.id, CONTEST_IDS));
+    await db.delete(problemLists).where(eq(problemLists.id, "lc:list:zz-problem"));
+    await db.insert(contents).values(
+      CONTEST_IDS.map((id, i) => ({
+        id,
+        type: "problem" as const,
+        title: `测试-周赛题${i + 1}`,
+        tags: [],
+        knowledgePoints: [],
+        url: `/problems/contest/${id}`,
+        contentHash: `zz-contest-${i}`,
+      })),
+    );
+    await db.insert(problems).values(
+      CONTEST_IDS.map((id, i) => ({
+        id,
+        source: "contest" as const,
+        number: 90000 + i,
+        difficulty: "medium" as const,
+        languages: [],
+        judgeType: "none" as const,
+        testcases: [],
+        externalUrl: "",
+      })),
+    );
+    await db.insert(problemLists).values({
+      id: "lc:list:zz-problem",
+      title: "测试题单",
+      url: "/problems/lists/zz-test",
+      // 乱序引用 seed 题 + 一个无元数据的 ID（验证顺序保持与缺失剔除）
+      problemIds: ["lc:zztest2", "lc:zztest1", "lc:zzmissing"],
+      contentHash: "zz-list-1",
+    });
+    try {
+      const lists = await caller.problem.lists();
+      const mine = lists.find((l) => l.slug === "zz-problem");
+      expect(mine?.problemCount).toBe(3);
+
+      const detail = await caller.problem.getList({ slug: "zz-problem" });
+      expect(detail.list.title).toBe("测试题单");
+      expect(detail.items.map((i) => i.id)).toEqual(["lc:zztest2", "lc:zztest1"]);
+      // AC 联动：seed 已标记 zztest1，zztest2 未标记
+      expect(detail.items.find((i) => i.id === "lc:zztest1")?.ac).toBe(true);
+      expect(detail.items.find((i) => i.id === "lc:zztest2")?.ac).toBe(false);
+
+      // 标记 zztest2 后 getList 反映
+      await caller.progress.mark({ contentId: "lc:zztest2", status: "ac" });
+      const after = await caller.problem.getList({ slug: "zz-problem" });
+      expect(after.items.find((i) => i.id === "lc:zztest2")?.ac).toBe(true);
+
+      // 周赛场次聚合（新 → 旧）
+      const sessions = await caller.problem.contestSessions();
+      const iNew = sessions.findIndex((s) => s.session === 998878);
+      const iOld = sessions.findIndex((s) => s.session === 998877);
+      expect(iNew).toBeGreaterThanOrEqual(0);
+      expect(iOld).toBeGreaterThan(iNew);
+      expect(sessions.find((s) => s.session === 998877)?.problemCount).toBe(2);
+
+      // 单场题目按 Q 序
+      const c = await caller.problem.contestProblems({ session: 998877 });
+      expect(c.items.map((i) => i.id)).toEqual(["lc:contest:998877q1", "lc:contest:998877q2"]);
+      // 无该场次 → 空
+      expect((await caller.problem.contestProblems({ session: 998876 })).items).toHaveLength(0);
+    } finally {
+      await db.delete(problemLists).where(eq(problemLists.id, "lc:list:zz-problem"));
+      await db.delete(problems).where(inArray(problems.id, CONTEST_IDS));
+      await db.delete(contents).where(inArray(contents.id, CONTEST_IDS));
       await cleanup();
     }
   });

@@ -9,10 +9,10 @@
 ### Web 前端
 
 - ✅ **Dashboard M2 扩展**（2026-09-10）：`/dashboard` 个人中心已落地（`apps/web/src/pages/dashboard/DashboardPage.tsx`）——学习路径进度条、刷题统计（AC 数/难度分布/连续天数，`progress.overview` 新增 `streakDays`）、掌握度雷达图（手写 SVG）+ 薄弱知识点信号列表、配额用量（`quota.me`）
-- ⬜ **面试报告薄弱点 → 学习/练习推荐链接**（闭环最后一环）：后端 `renderReportMarkdown`（`packages/contracts/src/index.ts`）目前只把 weakDimensions 渲成纯文本；需输出带链接的结构，web `ReportBody.tsx` 配合链接化。依赖 P1 的 `interview_reports` 拆表 + weak_points→knowledge_points 映射
+- ✅ **面试报告薄弱点 → 学习/练习推荐链接**（2026-09-10 第四批，闭环最后一环）：`renderReportMarkdown` 新增 `recommendations` 参数，专项训练建议里渲染"薄弱点 → 学习章节/练习题"markdown 链接；web `Markdown.tsx` renderInline 支持链接渲染（站内路径当前页、外链新开），`ReportBody.tsx` 走既有 GenericCard 自动生效
 - ✅ **主动路由守卫**（2026-09-10）：`components/RequireAuth.tsx` 包裹全部需登录路由，登录页对已登录用户跳回（含 `from` 回跳）
-- ⬜ **题单页** `/problems/lists/:slug`（hot-interview、10 周计划、每日配套题单）：前后端均无，需新增 router
-- ⬜ **周赛页** `/problems/contest`、**GPU 知识领域 A–H 分组**（ProblemsPage 目前无分组视图）
+- ✅ **题单页**（2026-09-10 第五批）：`/problems/lists`（索引）+ `/problems/lists/:slug`（成员有序浏览 + AC 进度条 + 编排正文跳 docs）。数据链路：content-kit sync 新增 `lists.json`（解析题单正文「站内题解」链接 → 成员统一 ID 有序列表）→ `content:sync` upsert `problem_lists` 表（迁移 0007）→ `problem.lists/getList`；CLI `content:sync` 已接 lists.json。每日配套题单待 P2 补 related_problems 数据后由同链路接入
+- ✅ **周赛页 + GPU 知识领域分组**（2026-09-10 第五批）：`/problems/contest`（20 场次新→旧聚合）+ `/problems/contest/:session`（Q1..Qn 序号徽标浏览）；GPU 分区 ProblemsPage 加 A–L 知识领域快捷 chips（`GPU_DOMAINS` 进 contracts，点击按领域知识点筛选，计数来自 facets）。ProblemsPage 题库/题单/周赛共用 `ProblemRow`（行内 AC 标记）
 - ✅ **Problems 筛选未暴露全**（2026-09-10）：tag/knowledgePoint/judgeType 筛选已加（候选项来自新增 `problem.facets`）
 - ✅ 顶栏品牌名（2026-09-10）：已改 AIInfra Lab（`Layout.tsx` + `index.html` 标题）
 - ✅ `/learn/path`、`/dashboard` 独立路由（2026-09-10）：原 `/` 拆为 HomePage（门户首页，`/`）+ DashboardPage（个人中心，`/dashboard`）；`/learn` 与 `/learn/path` 均渲染 LearnPage
@@ -23,7 +23,7 @@
 - ✅ **judge 队列化**（2026-09-10 第三批）：`judge.run` 同步裸跑已下线，改为 `judge.submit`（入队前快速校验 + insert submissions pending）+ `judge.getResult` 轮询；server 内置 in-process worker（`apps/server/src/judge/worker.ts`：轮询/FIFO 条件领取/执行/写回/崩溃恢复，`JUDGE_CONCURRENCY`）；迁移 0004 补 `ie` 终态 + `started_at` 列；web `JudgePage.tsx` 已改提交+轮询。**执行路径仍为本机 exec**（P1 Docker 沙箱接管前的过渡形态，dev/judge-worker.md §1 已注明）
 - 🔶 **认证残留清理**：单用户自动 provision（`apps/server/src/auth.ts`、`trpc.ts` 两处 TODO 标注）；`adminProcedure` 对 email=NULL 遗留用户放行待收紧；遗留用户历史数据归属方案待定（注：封禁能力已就位——users.banned_at 迁移 0005 + 登录/enforceUser 双拦截，2026-09-10）
 - ⬜ **judge 数据源切换**：从 `LEETCODE_REPO_DIR` 读题解改为 `problems.testcases` 入库（字段已建未用），`LEETCODE_REPO_DIR` 与 `src/sync/` 模块、`repo_syncs` 表随迁移退役（切换后 judge context 从 questions 迁到 problems，AC 联动 user_progress 在 getResult 补）
-- ⬜ `interview_reports` 独立表（报告现在是 `interview_sessions.report` text 字段）+ `interview_sessions` 补 scope 快照关联 knowledge_points 列
+- ✅ **`interview_reports` 独立表**（2026-09-10 第四批）：迁移 0006 建表（`session_id` unique / `overall_grade` / `evaluated_by` / `report` / `weak_points` json）+ 存量 report 数据搬迁 + sessions 拆除 `report`/`evaluated_by` 两列、补 `scope_knowledge_points` 快照列（建场时题目知识点并集）；`interview.get` 返回 `report` 对象，web `ReportPage.tsx` / CLI 已跟进。`weak_points` 推导：C/D 维度题目 knowledge_points 并集，存量题无标签时回落题目 tags（P2 bank 管线补标签后自动切回受控词表）
 - ✅ LLM 模型分级（2026-09-10）：`LLM_MODEL_FOLLOWUP`/`LLM_MODEL_EVAL` 已生效（发言类/评估类分模型，空值回落 `LLM_MODEL`），`.env.example` 注释同步
 - ✅ 契约收编（2026-09-10）：judge/content/problem/search/interview/question/health 的局部 `z.object` 已全部进 `packages/contracts`（ID 参数/judgeRun/searchQuery 等 schema），`interview.stats` 的 GRADE_SCORES 重复定义一并清理
 - ✅ router 测试：problem/progress/quota/content/auth（封禁）已补，judge worker 队列测试已补（submit→worker→getResult 端到端含 AC/WA/CE），测试 50 passed（2026-09-10）
@@ -72,3 +72,5 @@
 - M2 web：11 路由（原 6 页 + 登录/注册/Learn/Problems/Search）、Learn 进度格子、Problems 筛选分页 AC 标记、401 全局处理
 - 2026-09-10 第二批（backlog P0 清理）：web 路由守卫 + `/dashboard` 个人中心（进度/刷题统计/掌握度雷达/配额）+ `/learn/path` 独立路由 + Problems 全量筛选 + 品牌名改 AIInfra Lab；server LLM 模型分级 + 契约全量收编 + `problem.facets`/`progress.overview.streakDays`；problem/progress/quota router 测试补齐（41 passed）
 - 2026-09-10 第三批：judge 队列化（submit/getResult + in-process worker + 迁移 0004 + web 轮询）；CLI bin 改 `ailab` + user:list/ban/unban + quota:get/set + db:backup（server 侧 admin 端点 + users.banned_at 迁移 0005 + 封禁双拦截）；content router 测试补齐（50 passed）
+- 2026-09-10 第四批：interview_reports 拆表（迁移 0006：建表 + 存量数据搬迁 + sessions 拆列补 scope 快照）+ 薄弱点 → 学习/练习推荐链接（contracts recommendations 参数 + server SQL 匹配 + web Markdown 链接渲染）；interview router 测试补齐（51 passed）
+- 2026-09-10 第五批：题单 + 周赛 + GPU 领域分组（`problem_lists` 表迁移 0007、content-kit `lists.json` 产物、`problem.lists/getList/contestSessions/contestProblems` 四端点、web 四新路由 + ProblemRow 复用 + A–L 领域 chips）；vitest 关文件并行（content.import 全量 stale 标记曾交叉污染并行测试）；CLI content:sync 接 lists.json；测试 52 passed

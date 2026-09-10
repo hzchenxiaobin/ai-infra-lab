@@ -7,7 +7,7 @@ import {
   type ContentImportInput,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { contents, problems } from "../db/schema.js";
+import { contents, problemLists, problems } from "../db/schema.js";
 import { adminProcedure, authedProcedure, router } from "../trpc.js";
 
 /** tag / knowledgePoint 筛选：MySQL JSON 数组包含判断 */
@@ -57,7 +57,7 @@ export const contentRouter = router({
 });
 
 export async function importContents(input: ContentImportInput) {
-  const stats = { inserted: 0, updated: 0, unchanged: 0, stale: 0, problemsUpserted: 0 };
+  const stats = { inserted: 0, updated: 0, unchanged: 0, stale: 0, problemsUpserted: 0, listsUpserted: 0 };
 
   // 全量读出已有行建 Map<id, row>（沿用 import-aiinfra-bank 模式）
   const existing = new Map(
@@ -121,6 +121,18 @@ export async function importContents(input: ContentImportInput) {
         },
       });
     stats.problemsUpserted += 1;
+  }
+
+  // 题单：随内容 upsert（成员为统一 ID 有序数组；题单源里消失不标 stale，
+  // 留旧行无害——题单页只是导航视图，无历史场次依赖）
+  for (const l of input.lists) {
+    await db
+      .insert(problemLists)
+      .values(l)
+      .onDuplicateKeyUpdate({
+        set: { title: l.title, url: l.url, problemIds: l.problemIds, contentHash: l.contentHash },
+      });
+    stats.listsUpserted += 1;
   }
 
   return stats;

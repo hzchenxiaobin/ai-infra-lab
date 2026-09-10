@@ -15,7 +15,9 @@ function renderMath(tex: string, displayMode: boolean, key: number): ReactNode {
 
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
-  const regex = /(\$\$[\s\S]+?\$\$|\*\*[^*]+\*\*|`[^`]+`|\$[^$\n]+?\$)/g;
+  // [text](url) 链接、**加粗**、`行内代码`、$公式$（KaTeX）
+  const regex =
+    /(\$\$[\s\S]+?\$\$|\[[^\]]+\]\([^)\s]+\)|\*\*[^*]+\*\*|`[^`]+`|\$[^$\n]+?\$)/g;
   let last = 0;
   let key = 0;
   for (const m of text.matchAll(regex)) {
@@ -23,6 +25,24 @@ function renderInline(text: string): ReactNode[] {
     const tok = m[0];
     if (tok.startsWith("$$")) {
       nodes.push(renderMath(tok.slice(2, -2), true, key++));
+    } else if (tok.startsWith("[")) {
+      const lm = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(tok);
+      if (lm) {
+        const [, label, url] = lm;
+        const external = /^https?:\/\//.test(url);
+        nodes.push(
+          <a
+            key={key++}
+            href={url}
+            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="text-accent-600 underline decoration-accent-300 underline-offset-2 transition-colors duration-150 hover:text-accent-700"
+          >
+            {renderInline(label)}
+          </a>,
+        );
+      } else {
+        nodes.push(tok);
+      }
     } else if (tok.startsWith("$")) {
       nodes.push(renderMath(tok.slice(1, -1), false, key++));
     } else if (tok.startsWith("**")) {

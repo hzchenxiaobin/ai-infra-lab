@@ -74,7 +74,7 @@ export async function getCaller() {
 
 | 命令 | 说明 |
 |---|---|
-| `cli content:sync` | 触发 content-kit 同步：frontmatter → contents/problems 幂等 upsert |
+| `cli content:sync` | 触发 content-kit 同步：frontmatter → contents/problems/problem_lists 幂等 upsert（读 dist 三份 JSON，含题单 lists.json） |
 | `cli user:list [-s kw]` / `user:ban <email> --yes` / `user:unban <email>` | 用户管理（已落地；ban 打印影响范围并要求 `--yes`，封禁即登录与既有会话失效） |
 | `cli quota:get <email>` / `quota:set <email> <kind> <n\|unlimited>` | 查看/调整用户当前周期配额（已落地） |
 | `cli db:backup [-o dir]` | mysqldump 到 `deploy/backups/`（已落地，见 [deployment](deployment.md)） |
