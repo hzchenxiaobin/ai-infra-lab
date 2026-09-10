@@ -126,6 +126,22 @@ export interface Question {
   followUps: string[];
   keyPoints: string;
   source: string;
+  /** 对应的统一题目 ID（leetcode 同步题 → lc:*，judge 内嵌评测用）；无映射为 null */
+  judgeProblemId: string | null;
+}
+
+/**
+ * 面试题库 question 的 leetcode sourceKey → 统一题目 ID（对齐 content-kit ids.ts 的
+ * solution/contest 路径规则）。manual/seed/bank 题无映射返回 null。
+ */
+export function judgeProblemIdFromSourceKey(sourceKey: string): string | null {
+  let m = /^leetcode:solution\/\d{4}-\d{4}\/(\d+)_/.exec(sourceKey);
+  if (m) return `lc:${String(Number(m[1])).padStart(4, "0")}`;
+  m = /^leetcode:solution\/\d{4}-\d{4}\/LCOF(\d+)_/i.exec(sourceKey);
+  if (m) return `lc:lcof:${Number(m[1])}`;
+  m = /^leetcode:contest\/(\d+)\/Q(\d+)\./i.exec(sourceKey);
+  if (m) return `lc:contest:${Number(m[1])}q${Number(m[2])}`;
+  return null;
 }
 
 export interface InterviewMessage {
@@ -459,6 +475,30 @@ export interface ProblemTestcase {
   expected: string;
 }
 
+/**
+ * 判题元数据（problems.judge_meta，content-kit 从题解参考代码解析）：
+ * 方法签名 + 语言可用性，server 侧据此生成 starter 与本机/沙箱 harness。
+ */
+export interface ProblemJudgeMeta {
+  /** Solution 方法名（C++/Python 参考签名一致） */
+  methodName: string;
+  /** C++ 参考签名是否解析成功（失败则 C++ 不可评测） */
+  cppAvailable: boolean;
+  /** C++ 参数（规范化类型，driver 的 jAs<T> 转换依据） */
+  cppParams: Array<{ name: string; type: string }>;
+  cppReturnType: string;
+  /** Python 参考签名是否解析成功（Python harness 只需方法名） */
+  pythonAvailable: boolean;
+}
+
+export const problemJudgeMetaSchema = z.object({
+  methodName: z.string().min(1),
+  cppAvailable: z.boolean(),
+  cppParams: z.array(z.object({ name: z.string(), type: z.string() })),
+  cppReturnType: z.string(),
+  pythonAvailable: z.boolean(),
+});
+
 export const contentFilterSchema = z.object({
   type: contentTypeSchema.optional(),
   /** 分区：统一 ID 的冒号前缀（lc / gpu / learn / paper / q），匹配 `id LIKE 'partition:%'` */
@@ -528,6 +568,8 @@ export const problemImportItemSchema = z.object({
     args: z.array(z.object({ name: z.string(), value: z.string() })),
     expected: z.string(),
   })).default([]),
+  /** 判题元数据（judge_type=internal 时由 content-kit 从参考代码解析；否则 null） */
+  judgeMeta: problemJudgeMetaSchema.nullable().default(null),
   externalUrl: z.string().max(500).default(""),
 });
 export type ProblemImportItem = z.infer<typeof problemImportItemSchema>;
@@ -558,9 +600,13 @@ export type ContentImportInput = z.infer<typeof contentImportSchema>;
 export const numericIdParamSchema = z.object({ id: z.number().int().min(1) });
 export type NumericIdParam = z.infer<typeof numericIdParamSchema>;
 
-/** 面试题自增主键参数（judge.getProblem / judge.run） */
+/** 面试题自增主键参数（question.* 路由） */
 export const questionIdParamSchema = z.object({ questionId: z.number().int().min(1) });
 export type QuestionIdParam = z.infer<typeof questionIdParamSchema>;
+
+/** 统一题目 ID 参数（judge.getProblem，数据源切换后 judge 面向 problems 表） */
+export const judgeProblemParamSchema = z.object({ problemId: z.string().min(1).max(128) });
+export type JudgeProblemParam = z.infer<typeof judgeProblemParamSchema>;
 
 /** 面试场次自增主键参数（interview.reply/finish/get） */
 export const sessionIdParamSchema = z.object({ sessionId: z.number().int().min(1) });
@@ -630,7 +676,8 @@ export type JudgeLanguage = (typeof JUDGE_LANGUAGES)[number];
 export const judgeLanguageSchema = z.enum(JUDGE_LANGUAGES);
 
 export const judgeRunSchema = z.object({
-  questionId: z.number().int().min(1),
+  /** 统一题目 ID（judge 数据源已切换到 problems 表，2026-09-10 第六批） */
+  problemId: z.string().min(1).max(128),
   language: judgeLanguageSchema,
   code: z.string().min(1).max(100_000),
 });

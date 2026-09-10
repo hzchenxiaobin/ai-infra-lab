@@ -1,8 +1,7 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { env } from "../env.js";
 import {
   extractReferenceCode,
   parseCppSignature,
@@ -12,7 +11,11 @@ import {
 } from "./parse.js";
 import { outputsEqual, runJudge } from "./run.js";
 
-const repo53 = path.join(env.LEETCODE_REPO_DIR, "solution/0001-0100/53_最大子数组和.md");
+// 题解 fixture 用 content 仓库副本（judge 数据源已切换 problems 表，
+// LEETCODE_REPO_DIR 退役，2026-09-10 第六批）
+const repo53 = fileURLToPath(
+  new URL("../../../../packages/content/problems-algo/solution/0001-0100/53_最大子数组和.md", import.meta.url),
+);
 const hasRepo = existsSync(repo53);
 
 describe("judge parse", () => {

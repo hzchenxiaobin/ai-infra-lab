@@ -1,20 +1,21 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { and, eq, sql } from "drizzle-orm";
-import { env } from "../env.js";
+import type { ProblemJudgeMeta } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { questions, submissions, usageQuotas } from "../db/schema.js";
+import { contents, problems, submissions, usageQuotas, userProgress } from "../db/schema.js";
 import { appRouter } from "../routers/index.js";
-import { extractReferenceCode } from "./parse.js";
+import { extractReferenceCode, parseCppSignature, parseExamples, parsePythonSignature } from "./parse.js";
 import { claimNextSubmission, executeSubmission, recoverOrphaned, terminalStatus } from "./worker.js";
 import type { JudgeRunResult } from "./run.js";
 
 // ---------------------------------------------------------------------------
 // 评测队列集成测试（dev/judge-worker.md §1/§6）：submit → submissions(pending) →
-// worker 领取/执行/写回 → getResult 轮询。队列语义不依赖 leetcode 仓库；
-// 端到端（真实编译执行）沿用 judge.test.ts 的 hasRepo 跳过模式。
+// worker 领取/执行/写回 → getResult 轮询 + AC 联动 user_progress。
+// 判题数据来自 problems 表（testcases + judge_meta，judge 数据源切换后），
+// fixture 解析自 content 仓库题解副本（judge-extract 的 server 侧同构实现）。
 // ---------------------------------------------------------------------------
 
 async function dbAvailable(): Promise<boolean> {
@@ -26,18 +27,22 @@ async function dbAvailable(): Promise<boolean> {
   }
 }
 
-const repo53 = path.join(env.LEETCODE_REPO_DIR, "solution/0001-0100/53_最大子数组和.md");
-const hasRepo = existsSync(repo53);
+const md53 = fileURLToPath(
+  new URL("../../../../packages/content/problems-algo/solution/0001-0100/53_最大子数组和.md", import.meta.url),
+);
+const hasRepo = existsSync(md53);
 
 const available = await dbAvailable();
 const run = available ? describe : describe.skip;
 const runE2E = available && hasRepo ? describe : describe.skip;
 
 const TEST_USER = 987_654_325;
+const FIXTURE_ID = "lc:zz53";
 
 async function cleanupSubmissions() {
   await db.delete(submissions).where(eq(submissions.userId, TEST_USER));
   await db.delete(usageQuotas).where(eq(usageQuotas.userId, TEST_USER));
+  await db.delete(userProgress).where(and(eq(userProgress.userId, TEST_USER), eq(userProgress.contentId, FIXTURE_ID)));
 }
 
 describe("terminalStatus 结果映射", () => {
@@ -70,8 +75,8 @@ run("队列领取语义（集成）", () => {
     const inserted = await db
       .insert(submissions)
       .values([
-        { userId: TEST_USER, problemId: "1", language: "cpp", code: "x", status: "pending" },
-        { userId: TEST_USER, problemId: "2", language: "python", code: "y", status: "pending" },
+        { userId: TEST_USER, problemId: "lc:zz-a", language: "cpp", code: "x", status: "pending" },
+        { userId: TEST_USER, problemId: "lc:zz-b", language: "python", code: "y", status: "pending" },
       ])
       .$returningId();
 
@@ -101,8 +106,8 @@ run("队列领取语义（集成）", () => {
   it("崩溃恢复：running 重置为 pending", async () => {
     await cleanupSubmissions();
     await db.insert(submissions).values([
-      { userId: TEST_USER, problemId: "1", language: "cpp", code: "x", status: "running" },
-      { userId: TEST_USER, problemId: "2", language: "cpp", code: "y", status: "pending" },
+      { userId: TEST_USER, problemId: "lc:zz-a", language: "cpp", code: "x", status: "running" },
+      { userId: TEST_USER, problemId: "lc:zz-b", language: "cpp", code: "y", status: "pending" },
     ]);
     await recoverOrphaned();
     const rows = await db.select().from(submissions).where(eq(submissions.userId, TEST_USER));
@@ -117,7 +122,7 @@ run("队列领取语义（集成）", () => {
     await cleanupSubmissions();
     const inserted = await db
       .insert(submissions)
-      .values({ userId: TEST_USER, problemId: "99999999", language: "cpp", code: "x", status: "running" })
+      .values({ userId: TEST_USER, problemId: "lc:zz-nope", language: "cpp", code: "x", status: "running" })
       .$returningId();
     await executeSubmission(
       (await db.select().from(submissions).where(eq(submissions.id, inserted[0].id)).limit(1))[0]!,
@@ -130,58 +135,86 @@ run("队列领取语义（集成）", () => {
   });
 });
 
-runE2E("submit → worker → getResult 端到端（53 最大子数组和）", () => {
+runE2E("submit → worker → getResult 端到端（53 最大子数组和，problems 数据源）", () => {
   const caller = appRouter.createCaller({ userId: TEST_USER });
 
-  async function seedQuestion(): Promise<number> {
-    const md = await readFile(repo53, "utf8");
-    const inserted = await db
-      .insert(questions)
-      .values({
-        userId: TEST_USER,
-        category: "leetcode",
-        title: "[测试] 53. 最大子数组和",
-        content: md,
-        difficulty: "medium",
-        sourceKey: "leetcode:solution/0001-0100/53_最大子数组和.md",
-        followUps: [],
-      })
-      .$returningId();
-    return inserted[0].id;
+  /** 从题解 md 构建 problems 表判题数据（content-kit judge-extract 的同构实现） */
+  async function seedProblem(): Promise<void> {
+    const md = await readFile(md53, "utf8");
+    const cppRef = extractReferenceCode(md, "cpp")!;
+    const pyRef = extractReferenceCode(md, "python")!;
+    const cppSpec = parseCppSignature(cppRef)!;
+    const pySpec = parsePythonSignature(pyRef)!;
+    // 示例用例：题解 md 的示例 ```text 块（parseExamples 与 content-kit 同规则）
+    const testcases = parseExamples(md).map(({ args, expected }) => ({ args, expected }));
+    expect(testcases.length).toBeGreaterThanOrEqual(3);
+    const judgeMeta: ProblemJudgeMeta = {
+      methodName: cppSpec.name,
+      cppAvailable: true,
+      cppParams: cppSpec.params.map(({ name, type }) => ({ name, type })),
+      cppReturnType: cppSpec.returnType,
+      pythonAvailable: pySpec != null,
+    };
+    await db.delete(problems).where(eq(problems.id, FIXTURE_ID));
+    await db.delete(contents).where(eq(contents.id, FIXTURE_ID));
+    await db.insert(contents).values({
+      id: FIXTURE_ID,
+      type: "problem",
+      title: "[测试] 53. 最大子数组和",
+      tags: [],
+      knowledgePoints: [],
+      url: "/problems/algo/zz53",
+      contentHash: "zz53",
+    });
+    await db.insert(problems).values({
+      id: FIXTURE_ID,
+      source: "leetcode",
+      number: 53,
+      difficulty: "medium",
+      languages: ["cpp", "python"],
+      judgeType: "internal",
+      testcases,
+      judgeMeta,
+      externalUrl: "",
+    });
   }
 
   /** 提交并等 worker 跑完，返回终态 getResult */
-  async function submitAndDrain(questionId: number, code: string) {
-    const { submissionId } = await caller.judge.submit({ questionId, language: "cpp", code });
+  async function submitAndDrain(language: "cpp" | "python", code: string) {
+    const { submissionId } = await caller.judge.submit({ problemId: FIXTURE_ID, language, code });
     const pending = (await db.select().from(submissions).where(eq(submissions.id, submissionId)).limit(1))[0]!;
     expect(pending.status).toBe("pending");
     await executeSubmission((await claimNextSubmission())!);
     return caller.judge.getResult({ submissionId });
   }
 
-  it("参考代码 AC、错误答案 WA、编译错误 CE", async () => {
+  it("参考代码 AC（联动 user_progress）、错误答案 WA、编译错误 CE", async () => {
     await cleanupSubmissions();
-    await db
-      .delete(questions)
-      .where(and(eq(questions.userId, TEST_USER), eq(questions.sourceKey, "leetcode:solution/0001-0100/53_最大子数组和.md")));
-    const questionId = await seedQuestion();
+    await seedProblem();
     try {
-      const reference = extractReferenceCode(await readFile(repo53, "utf8"), "cpp")!;
+      const reference = extractReferenceCode(await readFile(md53, "utf8"), "cpp")!;
 
-      const ac = await submitAndDrain(questionId, reference);
+      const ac = await submitAndDrain("cpp", reference);
       expect(ac.status).toBe("ac");
       expect(ac.verdictDetail).toMatchObject({ status: "ok" });
       expect((ac.verdictDetail as { passed: number; total: number }).passed)
         .toBe((ac.verdictDetail as { passed: number; total: number }).total);
       expect(ac.runtimeMs).toBeGreaterThan(0);
+      // AC 联动：getResult 读到 ac 时顺手标记 user_progress
+      const prog = await db
+        .select()
+        .from(userProgress)
+        .where(and(eq(userProgress.userId, TEST_USER), eq(userProgress.contentId, FIXTURE_ID)))
+        .limit(1);
+      expect(prog[0]?.status).toBe("ac");
 
       const wa = await submitAndDrain(
-        questionId,
+        "cpp",
         "class Solution { public: int maxSubArray(vector<int>& nums) { return 0; } };",
       );
       expect(wa.status).toBe("wa");
 
-      const ce = await submitAndDrain(questionId, "this is not c++");
+      const ce = await submitAndDrain("cpp", "this is not c++");
       expect(ce.status).toBe("ce");
       expect((ce.verdictDetail as { compileError?: string }).compileError).toBeTruthy();
 
@@ -195,9 +228,31 @@ runE2E("submit → worker → getResult 端到端（53 最大子数组和）", (
       await expect(other.judge.getResult({ submissionId: mine[0].id })).rejects.toThrow();
     } finally {
       await cleanupSubmissions();
+      await db.delete(problems).where(eq(problems.id, FIXTURE_ID));
+      await db.delete(contents).where(eq(contents.id, FIXTURE_ID));
+    }
+  }, 60_000);
+
+  it("AC 不降级 mastered 进度", async () => {
+    await cleanupSubmissions();
+    await seedProblem();
+    try {
       await db
-        .delete(questions)
-        .where(and(eq(questions.userId, TEST_USER), eq(questions.sourceKey, "leetcode:solution/0001-0100/53_最大子数组和.md")));
+        .insert(userProgress)
+        .values({ userId: TEST_USER, contentId: FIXTURE_ID, status: "mastered" });
+      const reference = extractReferenceCode(await readFile(md53, "utf8"), "python")!;
+      const ac = await submitAndDrain("python", reference);
+      expect(ac.status).toBe("ac");
+      const prog = await db
+        .select()
+        .from(userProgress)
+        .where(and(eq(userProgress.userId, TEST_USER), eq(userProgress.contentId, FIXTURE_ID)))
+        .limit(1);
+      expect(prog[0]?.status).toBe("mastered");
+    } finally {
+      await cleanupSubmissions();
+      await db.delete(problems).where(eq(problems.id, FIXTURE_ID));
+      await db.delete(contents).where(eq(contents.id, FIXTURE_ID));
     }
   }, 60_000);
 });

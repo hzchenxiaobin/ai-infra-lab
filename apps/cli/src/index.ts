@@ -294,6 +294,8 @@ program
         languages: (p.languages as string[]) ?? [],
         judgeType: p.judge_type as ContentImportInput["problems"][number]["judgeType"],
         testcases: (p.testcases as ContentImportInput["problems"][number]["testcases"]) ?? [],
+        judgeMeta:
+          (p.judge_meta as ContentImportInput["problems"][number]["judgeMeta"]) ?? null,
         externalUrl: String(p.external_url ?? ""),
       })),
       lists: ((listsRaw as Array<Record<string, unknown>>) ?? []).map((l) => ({

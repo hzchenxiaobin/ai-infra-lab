@@ -33,9 +33,10 @@ apps/server/
  │   │   ├── parse.ts        #   签名解析、示例用例解析、类型支持性判断
  │   │   ├── driver.ts       #   生成 C++/Python harness 源码
  │   │   ├── run.ts          #   编译 + 逐用例执行 + 输出比对
- │   │   ├── context.ts      #   判题上下文装配（router 与 worker 共用）
+ │   │   ├── context.ts      #   判题上下文装配（problems 表数据源，router 与 worker 共用）
  │   │   ├── worker.ts       #   in-process 队列 worker（P0 过渡，P1 独立进程接管）
- │   │   └── judge.test.ts   #   评测器测试样板
+ │   │   ├── judge.test.ts   #   评测器测试样板
+ │   │   └── worker.test.ts  #   队列语义 + 端到端 + AC 联动测试
 │   ├── db/
 │   │   ├── client.ts       # mysql2 pool + drizzle
 │   │   ├── schema.ts       # 全部表定义（见 database.md）
@@ -73,7 +74,7 @@ apps/server/
 | `health` | 已有 | 存活探针 |
 | `question` | 已有 | 题库 CRUD / 分页筛选 / stats / scopes / seed |
 | `interview` | 已有 | 面试状态机全流程（见 §6） |
-| `judge` | 已队列化 | getProblem / submit（写 submissions 队列）/ getResult（轮询）；执行见 `judge/worker.ts` |
+| `judge` | 已队列化 | getProblem / submit（写 submissions 队列）/ getResult（轮询 + AC 联动 user_progress）；统一题目 ID 入参（problems 表数据源，2026-09-10 第六批）；执行见 `judge/worker.ts` |
 | `auth` | 已有 | 发送验证码 / 注册 / 登录 / 登出 / me；user:list / userSetBanned / userByEmail（admin，CLI 用） |
 | `content` | 已有 | contents/problems 元数据查询、统一 ID 解析、import（admin，含 problem_lists 题单 upsert） |
 | `progress` | 已有 | 进度标记 upsert、掌握度雷达、Dashboard 聚合（含 streakDays） |
@@ -217,4 +218,4 @@ pnpm --filter server db:migrate    # 执行迁移（drizzle.config.ts 读 DATABA
 | `SMTP_HOST/PORT/USER/PASS` | 新增 | 注册验证码邮件 |
 | `QUOTA_DEFAULT_*` | 新增 | 配额默认值（空 = 不限） |
 | `JUDGE_CONCURRENCY` | 已落地 | in-process 评测队列 worker 并发上限（默认 2） |
-| `LEETCODE_REPO_DIR` | 退役 | 现状 judge 从本地 leetcode 仓库读参考代码；新产品改为 `problems.testcases` 入库，此变量随 sync 模块一并移除 |
+| ~~`LEETCODE_REPO_DIR`~~ | 已退役 | judge 数据源已切 `problems` 表（2026-09-10 第六批）：testcases/judge_meta 由 content-kit 解析入库，本地 leetcode 仓库不再被评测路径读取 |

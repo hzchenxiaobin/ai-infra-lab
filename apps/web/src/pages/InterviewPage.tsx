@@ -6,6 +6,11 @@ import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
 import { Button, Card, DifficultyBadge, ErrorBox, Loading } from "../components/ui";
 import { Markdown } from "../components/Markdown";
 import { MessageBubble } from "../components/MessageBubble";
+import { JudgeResultView } from "../components/JudgeResult";
+import { POLL_INTERVAL_MS } from "../lib/judge";
+
+type Language = "cpp" | "python";
+const LANG_LABELS: Record<Language, string> = { cpp: "C++", python: "Python" };
 
 type MessageItem = InterviewGetData["messages"][number];
 
@@ -223,10 +228,11 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
             {inputArea}
           </div>
           <div className="min-w-0">
-            {/* key=题 ID：换题时重置编辑器内容 */}
+            {/* key=题 ID：换题时重置编辑器内容与评测状态 */}
             <CodeEditorCard
               key={codeQ.id}
               categoryLabel={CATEGORY_LABELS[codeQ.category]}
+              judgeProblemId={codeQ.judgeProblemId}
               pending={reply.isPending}
               onSubmit={sendContent}
             />
@@ -242,36 +248,136 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
   );
 }
 
-/** 代码作答面板：右侧编辑器，提交后将代码作为考生消息发送 */ 
+/**
+ * 代码作答面板（内嵌评测器，2026-09-10 第六批）：右侧编辑器，提交后将代码作为
+ * 考生消息发送；leetcode 同步题（judgeProblemId 非空）可直接在面试间内评测
+ * ——语言切换 + 入队提交 + 轮询结果，AC 自动联动 user_progress（server 侧）。
+ */
 function CodeEditorCard({
   categoryLabel,
+  judgeProblemId,
   pending,
   onSubmit,
 }: {
   categoryLabel: string;
+  judgeProblemId: string | null;
   pending: boolean;
   onSubmit: (code: string) => void;
 }) {
-  const [code, setCode] = useState("");
+  const [language, setLanguage] = useState<Language>("cpp");
+  const [code, setCode] = useState<Record<Language, string>>({ cpp: "", python: "" });
+  const [submissionId, setSubmissionId] = useState<number | null>(null);
+
+  const problem = useQuery({
+    ...trpc.judge.getProblem.queryOptions({ problemId: judgeProblemId ?? "" }),
+    enabled: judgeProblemId != null,
+  });
+
+  // starter 填充（换题/拿到判题元数据后；编辑过的内容不覆盖——按题 remount 天然重置）
+  useEffect(() => {
+    if (!problem.data) return;
+    setCode({ cpp: problem.data.cpp.starter ?? "", python: problem.data.python.starter ?? "" });
+    if (!problem.data.cpp.available && problem.data.python.available) setLanguage("python");
+  }, [problem.data]);
+
+  const result = useQuery(
+    trpc.judge.getResult.queryOptions(
+      { submissionId: submissionId ?? 0 },
+      {
+        enabled: submissionId != null,
+        refetchInterval: (query) => {
+          const status = query.state.data?.status;
+          return status == null || status === "pending" || status === "running"
+            ? POLL_INTERVAL_MS
+            : false;
+        },
+      },
+    ),
+  );
+
+  const submitJudge = useMutation(
+    trpc.judge.submit.mutationOptions({
+      onSuccess: (data) => setSubmissionId(data.submissionId),
+    }),
+  );
+
+  const judgeData = problem.data;
+  // 可评测：有判题元数据且当前语言可用且有示例用例
+  const judgable = judgeData != null && judgeData.examples.length > 0;
+  const langAvailable = judgable && judgeData[language].available;
+  const judgeRunning =
+    submitJudge.isPending || result.data?.status === "pending" || result.data?.status === "running";
+
+  const onJudge = () => {
+    if (!judgeProblemId) return;
+    setSubmissionId(null);
+    submitJudge.mutate({ problemId: judgeProblemId, language, code: code[language] });
+  };
+
   return (
     <Card className="lg:sticky lg:top-6">
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-sm font-semibold">代码作答</span>
-        <span className="text-xs text-muted">{categoryLabel} · 提交后发送给面试官</span>
+        {judgable ? (
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5 rounded-full bg-divider p-1">
+              {(Object.keys(LANG_LABELS) as Language[]).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => setLanguage(l)}
+                  disabled={!judgeData[l].available}
+                  className={`rounded-full px-2.5 py-0.5 text-xs transition-colors duration-150 ${
+                    language === l
+                      ? "bg-ink font-medium text-white"
+                      : judgeData[l].available
+                        ? "text-muted hover:text-ink"
+                        : "cursor-not-allowed text-faint"
+                  }`}
+                  title={judgeData[l].available ? undefined : (judgeData[l].reason ?? "")}
+                >
+                  {LANG_LABELS[l]}
+                </button>
+              ))}
+            </div>
+            <span className="text-xs text-muted">{categoryLabel} · 评测/提交均可用</span>
+          </div>
+        ) : (
+          <span className="text-xs text-muted">{categoryLabel} · 提交后发送给面试官</span>
+        )}
       </div>
       <textarea
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
+        value={code[language]}
+        onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
         spellCheck={false}
         placeholder="在这里编写你的代码…"
-        className="h-[55vh] w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-white/90 outline-none"
+        className="h-[45vh] w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-white/90 outline-none"
       />
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-muted">思路讨论 / 追问回答请用左侧输入框</span>
-        <Button disabled={!code.trim() || pending} onClick={() => onSubmit(code)}>
-          {pending ? "发送中…" : "提交代码"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {judgable && (
+            <Button
+              variant="secondary"
+              disabled={!langAvailable || judgeRunning || !code[language].trim()}
+              onClick={onJudge}
+            >
+              {judgeRunning ? "评测中…" : "评测"}
+            </Button>
+          )}
+          <Button disabled={!code[language].trim() || pending} onClick={() => onSubmit(code[language])}>
+            {pending ? "发送中…" : "提交代码"}
+          </Button>
+        </div>
       </div>
+      {submitJudge.error && (
+        <p className="mt-2 text-xs text-red-600">{submitJudge.error.message}</p>
+      )}
+      {result.data && (
+        <div className="mt-3 border-t border-line pt-3">
+          <JudgeResultView result={result.data} />
+        </div>
+      )}
     </Card>
   );
 }

@@ -16,13 +16,13 @@
 - ✅ **Problems 筛选未暴露全**（2026-09-10）：tag/knowledgePoint/judgeType 筛选已加（候选项来自新增 `problem.facets`）
 - ✅ 顶栏品牌名（2026-09-10）：已改 AIInfra Lab（`Layout.tsx` + `index.html` 标题）
 - ✅ `/learn/path`、`/dashboard` 独立路由（2026-09-10）：原 `/` 拆为 HomePage（门户首页，`/`）+ DashboardPage（个人中心，`/dashboard`）；`/learn` 与 `/learn/path` 均渲染 LearnPage
-- ⬜ 面试间内嵌评测器（现在只跳独立 `/judge/:id` 页）
+- ✅ **面试间内嵌评测器**（2026-09-10 第六批）：InterviewPage 代码作答面板升级——leetcode 同步题（`Question.judgeProblemId` 由 `judgeProblemIdFromSourceKey` 从 sourceKey 映射统一 ID）显示语言切换 + 「评测」按钮（入队 + 轮询 + `JudgeResultView` 内联结果），AC 自动联动 user_progress；无映射题（seed/manual/cuda）保持纯编辑器。评测结果卡片与 JudgePage 共用 `components/JudgeResult.tsx`（POLL_INTERVAL/isJudgeVerdict 收在 `lib/judge.ts`）
 
 ### Server
 
 - ✅ **judge 队列化**（2026-09-10 第三批）：`judge.run` 同步裸跑已下线，改为 `judge.submit`（入队前快速校验 + insert submissions pending）+ `judge.getResult` 轮询；server 内置 in-process worker（`apps/server/src/judge/worker.ts`：轮询/FIFO 条件领取/执行/写回/崩溃恢复，`JUDGE_CONCURRENCY`）；迁移 0004 补 `ie` 终态 + `started_at` 列；web `JudgePage.tsx` 已改提交+轮询。**执行路径仍为本机 exec**（P1 Docker 沙箱接管前的过渡形态，dev/judge-worker.md §1 已注明）
 - 🔶 **认证残留清理**：单用户自动 provision（`apps/server/src/auth.ts`、`trpc.ts` 两处 TODO 标注）；`adminProcedure` 对 email=NULL 遗留用户放行待收紧；遗留用户历史数据归属方案待定（注：封禁能力已就位——users.banned_at 迁移 0005 + 登录/enforceUser 双拦截，2026-09-10）
-- ⬜ **judge 数据源切换**：从 `LEETCODE_REPO_DIR` 读题解改为 `problems.testcases` 入库（字段已建未用），`LEETCODE_REPO_DIR` 与 `src/sync/` 模块、`repo_syncs` 表随迁移退役（切换后 judge context 从 questions 迁到 problems，AC 联动 user_progress 在 getResult 补）
+- ✅ **judge 数据源切换**（2026-09-10 第六批）：判题数据从 questions + `LEETCODE_REPO_DIR` 本地仓库迁到 problems 表——content-kit `judge-extract.ts` 构建期解析示例用例（`testcases`）与参考签名（`judge_meta`，迁移 0008）+ `judge_type` 按解析能力推导（4229 题中 3549 可站内评测）；`judge.getProblem/submit` 改统一 ID 入参，`LEETCODE_REPO_DIR` 已从 env/.env.example 移除，`repo_syncs` 表随 0008 删除（`src/sync/` 保留——实为 CLI bank 管线依赖：github.ts 拉仓库、index.ts contentHash，与判题无关， backlog 原表述有误）；`getResult` 读到 ac 顺手 upsert user_progress（mastered 不降级，非统一 ID 遗留行跳过）；web JudgePage 改 problemId + 题面跳 docs + internal 行/题库卡片评测入口；worker/judge 测试 fixture 改用 content 仓库副本
 - ✅ **`interview_reports` 独立表**（2026-09-10 第四批）：迁移 0006 建表（`session_id` unique / `overall_grade` / `evaluated_by` / `report` / `weak_points` json）+ 存量 report 数据搬迁 + sessions 拆除 `report`/`evaluated_by` 两列、补 `scope_knowledge_points` 快照列（建场时题目知识点并集）；`interview.get` 返回 `report` 对象，web `ReportPage.tsx` / CLI 已跟进。`weak_points` 推导：C/D 维度题目 knowledge_points 并集，存量题无标签时回落题目 tags（P2 bank 管线补标签后自动切回受控词表）
 - ✅ LLM 模型分级（2026-09-10）：`LLM_MODEL_FOLLOWUP`/`LLM_MODEL_EVAL` 已生效（发言类/评估类分模型，空值回落 `LLM_MODEL`），`.env.example` 注释同步
 - ✅ 契约收编（2026-09-10）：judge/content/problem/search/interview/question/health 的局部 `z.object` 已全部进 `packages/contracts`（ID 参数/judgeRun/searchQuery 等 schema），`interview.stats` 的 GRADE_SCORES 重复定义一并清理
@@ -74,3 +74,4 @@
 - 2026-09-10 第三批：judge 队列化（submit/getResult + in-process worker + 迁移 0004 + web 轮询）；CLI bin 改 `ailab` + user:list/ban/unban + quota:get/set + db:backup（server 侧 admin 端点 + users.banned_at 迁移 0005 + 封禁双拦截）；content router 测试补齐（50 passed）
 - 2026-09-10 第四批：interview_reports 拆表（迁移 0006：建表 + 存量数据搬迁 + sessions 拆列补 scope 快照）+ 薄弱点 → 学习/练习推荐链接（contracts recommendations 参数 + server SQL 匹配 + web Markdown 链接渲染）；interview router 测试补齐（51 passed）
 - 2026-09-10 第五批：题单 + 周赛 + GPU 领域分组（`problem_lists` 表迁移 0007、content-kit `lists.json` 产物、`problem.lists/getList/contestSessions/contestProblems` 四端点、web 四新路由 + ProblemRow 复用 + A–L 领域 chips）；vitest 关文件并行（content.import 全量 stale 标记曾交叉污染并行测试）；CLI content:sync 接 lists.json；测试 52 passed
+- 2026-09-10 第六批：judge 数据源切换到 problems 表（content-kit judge-extract 解析 testcases/judge_meta + judge_type 推导、迁移 0008 加 judge_meta 列 + DROP repo_syncs、LEETCODE_REPO_DIR 退役、judge 三端点统一 ID 化、getResult AC 联动 user_progress）+ 面试间内嵌评测器（语言切换/评测/内联结果，JudgeResult 共享组件）；web JudgePage 重构（题面跳 docs）+ 题库/题单行评测入口；测试 53 passed（真实数据端到端：lc:0053 AC → user_progress ac → mastered 不降级）

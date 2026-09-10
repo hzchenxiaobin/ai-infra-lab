@@ -3,13 +3,13 @@ import { env } from "../env.js";
 import { db } from "../db/client.js";
 import { submissions } from "../db/schema.js";
 import type { SubmissionStatus } from "@ailab/contracts";
-import { loadJudgeContext, type JudgeContext } from "./context.js";
+import { loadProblemJudgeContext, type ProblemJudgeContext } from "./context.js";
 import { runJudge, type JudgeRunResult } from "./run.js";
-import { unsupportedReason } from "./parse.js";
 
 // ---------------------------------------------------------------------------
 // 评测队列 worker（P0 过渡形态，dev/judge-worker.md §1/§6）：
 // 轮询 submissions 表 → 原子领取 pending → runJudge 执行 → 写回终态与 verdict_detail。
+// 判题数据来自 problems 表（testcases + judge_meta，2026-09-10 第六批数据源切换）。
 // P1 独立 judge-worker（Docker 沙箱）落地后接管执行路径，队列表/领取语义/verdict
 // 结构保持不变；本机 exec 的安全红线（对外开放注册前的门槛）见 dev/judge-worker.md §5。
 // ---------------------------------------------------------------------------
@@ -95,8 +95,7 @@ export async function executeSubmission(row: SubmissionRow): Promise<void> {
       .where(eq(submissions.id, row.id));
 
   try {
-    // 数据源切换前 problemId 存面试题库 question 自增 id（文本）
-    const ctx = await loadJudgeContext(Number(row.problemId), row.userId);
+    const ctx = await loadProblemJudgeContext(row.problemId);
     const result = judge(row.language, row.code, ctx);
     await finish(terminalStatus(result), result as unknown as Record<string, unknown>);
   } catch (err) {
@@ -105,20 +104,28 @@ export async function executeSubmission(row: SubmissionRow): Promise<void> {
   }
 }
 
-/** 判题执行（沿用原同步评测路径的语言分支与校验） */
-function judge(language: string, code: string, ctx: JudgeContext): JudgeRunResult {
+/** 判题执行（语言分支与校验，判题数据来自 problems 表） */
+function judge(language: string, code: string, ctx: ProblemJudgeContext): JudgeRunResult {
   if (language === "cpp") {
     if (!ctx.cppSpec) throw new Error("该题无 C++ 参考签名");
-    const reason = unsupportedReason(ctx.cppSpec);
-    if (reason) throw new Error(reason);
+    if (ctx.cppUnsupported) throw new Error(ctx.cppUnsupported);
     return runJudge({ language: "cpp", code, spec: ctx.cppSpec, cases: ctx.examples });
   }
   if (language === "python") {
-    if (!ctx.pySpec) throw new Error("该题无 Python 参考签名");
-    // Python 签名不含类型注解解析，参数类型与 C++ 一致，复用其支持性判断
-    const reason = ctx.cppSpec ? unsupportedReason(ctx.cppSpec) : null;
-    if (reason) throw new Error(reason);
-    return runJudge({ language: "python", code, spec: { ...ctx.pySpec, returnType: "" }, cases: ctx.examples });
+    if (!ctx.pythonAvailable) throw new Error("该题无 Python 参考签名");
+    // Python harness 只需方法名；类型转换由 json 运行时处理，
+    // 仅当 C++ 签名存在且类型不支持时同样受限（与 submit 校验同语义）
+    if (ctx.cppUnsupported) throw new Error(ctx.cppUnsupported);
+    return runJudge({
+      language: "python",
+      code,
+      spec: {
+        name: ctx.meta.methodName,
+        params: ctx.meta.cppParams.map((p) => ({ ...p, raw: `${p.type} ${p.name}` })),
+        returnType: "",
+      },
+      cases: ctx.examples,
+    });
   }
   throw new Error(`不支持的评测语言：${language}`);
 }

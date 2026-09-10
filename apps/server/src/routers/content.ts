@@ -117,6 +117,7 @@ export async function importContents(input: ContentImportInput) {
           languages: p.languages,
           judgeType: p.judgeType,
           testcases: p.testcases,
+          judgeMeta: p.judgeMeta,
           externalUrl: p.externalUrl,
         },
       });

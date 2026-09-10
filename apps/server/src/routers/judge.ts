@@ -1,86 +1,83 @@
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import {
+  judgeProblemParamSchema,
   judgeRunSchema,
-  questionIdParamSchema,
   submissionIdParamSchema,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { submissions } from "../db/schema.js";
-import {
-  cppStarter,
-  loadJudgeContext,
-  pyStarter,
-} from "../judge/context.js";
-import { unsupportedReason } from "../judge/parse.js";
+import { contents, submissions, userProgress } from "../db/schema.js";
+import { cppStarter, loadProblemJudgeContext, pyStarter } from "../judge/context.js";
 import { quotaFor } from "../middleware/quota.js";
 import { authedProcedure, router } from "../trpc.js";
 
 export const judgeRouter = router({
-  /** 评测题目详情：题面 + 示例用例 + 各语言 starter/参考代码 */
+  /** 评测题目详情：元数据 + 示例用例 + 各语言 starter（题面与完整题解在 docs 站，见 url） */
   getProblem: authedProcedure
-    .input(questionIdParamSchema)
-    .query(async ({ input, ctx }) => {
-      const { question, examples, cppSpec, cppReference, pySpec, pyReference } =
-        await loadJudgeContext(input.questionId, ctx.userId);
-      const cppReason = cppSpec
-        ? unsupportedReason(cppSpec)
-        : "题解中未找到 C++ 参考代码或签名";
-      // Python 签名不含类型注解解析，参数类型与 C++ 一致，复用其支持性判断
-      const pyReason = pySpec == null ? "题解中未找到 Python 参考代码或签名" : cppReason;
+    .input(judgeProblemParamSchema)
+    .query(async ({ input }) => {
+      const ctx = await loadProblemJudgeContext(input.problemId);
+      // Python harness 只需方法名，类型转换由 json 运行时处理；
+      // 仅当 C++ 签名存在且类型不支持时 Python 同样受限（原同步评测路径语义）
+      const cppReason = ctx.cppSpec == null ? "题解中未找到 C++ 参考代码或签名" : ctx.cppUnsupported;
+      const pyReason = ctx.pythonAvailable
+        ? ctx.cppUnsupported
+        : "题解中未找到 Python 参考代码或签名";
       return {
-        question: {
-          id: question.id,
-          title: question.title,
-          difficulty: question.difficulty,
-          content: question.content,
-          source: question.source,
+        problem: {
+          id: ctx.problem.id,
+          title: ctx.title,
+          difficulty: ctx.problem.difficulty,
+          source: ctx.problem.source,
+          number: ctx.problem.number,
+          url: ctx.url,
+          externalUrl: ctx.problem.externalUrl,
         },
-        examples,
+        examples: ctx.examples,
         cpp: {
-          available: cppSpec != null && cppReason == null,
+          available: ctx.cppSpec != null && ctx.cppUnsupported == null,
           reason: cppReason,
-          starter: cppSpec ? cppStarter(cppSpec) : null,
-          reference: cppReference,
+          starter: ctx.cppSpec && ctx.cppUnsupported == null ? cppStarter(ctx.cppSpec) : null,
         },
         python: {
-          available: pySpec != null && pyReason == null,
+          available: ctx.pythonAvailable && pyReason == null,
           reason: pyReason,
-          starter: pySpec ? pyStarter(pySpec) : null,
-          reference: pyReference,
+          starter: ctx.pythonAvailable && pyReason == null ? pyStarter(ctx.meta) : null,
         },
       };
     }),
 
   /**
    * 提交代码进评测队列（dev/judge-worker.md §1：insert submissions status=pending，
-   * worker 异步执行；原同步 exec 路径已下线）。结果轮询 judge.getResult。
-   * 入队前同步校验（快速失败，不产生队列垃圾）：题面有示例用例 + 语言签名可用。
+   * worker 异步执行）。结果轮询 judge.getResult。
+   * 入队前同步校验（快速失败，不产生队列垃圾）：站内评测题 + 有用例 + 语言签名可用。
    */
   submit: authedProcedure
     .use(quotaFor("judge"))
     .input(judgeRunSchema)
     .mutation(async ({ input, ctx }) => {
-      const { examples, cppSpec, pySpec } = await loadJudgeContext(input.questionId, ctx.userId);
-      if (examples.length === 0) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "未从题面解析到示例用例，无法评测" });
+      const judgeCtx = await loadProblemJudgeContext(input.problemId);
+      if (judgeCtx.examples.length === 0) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "该题未解析到示例用例，无法评测" });
       }
       if (input.language === "cpp") {
-        if (!cppSpec) throw new TRPCError({ code: "BAD_REQUEST", message: "该题无 C++ 参考签名" });
-        const reason = unsupportedReason(cppSpec);
-        if (reason) throw new TRPCError({ code: "BAD_REQUEST", message: reason });
-      } else {
-        if (!pySpec) throw new TRPCError({ code: "BAD_REQUEST", message: "该题无 Python 参考签名" });
-        const reason = cppSpec ? unsupportedReason(cppSpec) : null;
-        if (reason) throw new TRPCError({ code: "BAD_REQUEST", message: reason });
+        if (judgeCtx.cppSpec == null) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "该题无 C++ 参考签名" });
+        }
+        if (judgeCtx.cppUnsupported) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: judgeCtx.cppUnsupported });
+        }
+      } else if (!judgeCtx.pythonAvailable) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "该题无 Python 参考签名" });
+      } else if (judgeCtx.cppUnsupported) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: judgeCtx.cppUnsupported });
       }
 
       const inserted = await db
         .insert(submissions)
         .values({
           userId: ctx.userId,
-          // 数据源切换前存面试题库 question 自增 id（文本）；切换后为统一 ID
-          problemId: String(input.questionId),
+          problemId: input.problemId,
           language: input.language,
           code: input.code,
           status: "pending",
@@ -92,8 +89,8 @@ export const judgeRouter = router({
   /**
    * 轮询评测结果（web 1–2s 间隔，终态 ac/wa/ce/tle/mle/ie 停止轮询）。
    * verdictDetail 为 JudgeVerdict（contracts）。
-   * 注：AC 联动 user_progress 待 judge 数据源切到 problems（统一 ID）后补——
-   * 现在判的是面试题库 question，无对应 contents 行可标记（dev/judge-worker.md §6）。
+   * AC 联动 user_progress（dev/judge-worker.md §6：server 读到 ac 时顺手标记，
+   * worker 不写用户进度表；mastered 不被降级；统一 ID 形态外的遗留 problemId 跳过）。
    */
   getResult: authedProcedure
     .input(submissionIdParamSchema)
@@ -105,6 +102,25 @@ export const judgeRouter = router({
         .limit(1);
       const row = rows[0];
       if (!row) throw new TRPCError({ code: "NOT_FOUND", message: "评测记录不存在" });
+
+      if (row.status === "ac" && isUnifiedId(row.problemId)) {
+        const exists = await db
+          .select({ id: contents.id })
+          .from(contents)
+          .where(eq(contents.id, row.problemId))
+          .limit(1);
+        if (exists.length > 0) {
+          await db
+            .insert(userProgress)
+            .values({ userId: row.userId, contentId: row.problemId, status: "ac" })
+            .onDuplicateKeyUpdate({
+              set: {
+                status: sql`IF(${userProgress.status} = 'mastered', ${userProgress.status}, 'ac')`,
+              },
+            });
+        }
+      }
+
       return {
         submissionId: row.id,
         status: row.status,
@@ -115,3 +131,8 @@ export const judgeRouter = router({
       };
     }),
 });
+
+/** 统一 ID 形态（lc:0001 / gpu:m:007）：区分数据源切换前的 question 自增 id 遗留行 */
+function isUnifiedId(problemId: string): boolean {
+  return /^[a-z]+:/.test(problemId);
+}

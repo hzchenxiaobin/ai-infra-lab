@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
-import { CATEGORY_LABELS } from "@ailab/contracts";
+import { CATEGORY_LABELS, judgeProblemIdFromSourceKey } from "@ailab/contracts";
 import { queryClient, trpc, type QuestionListItem } from "../../lib/trpc";
 import { DifficultyBadge } from "../../components/ui";
 import { formatDateTime } from "../../lib/format";
@@ -88,14 +88,18 @@ export function QuestionCard({
           )}
           {question.source && <div className="text-xs text-muted">来源：{question.source}</div>}
           <div className="flex items-center gap-2 pt-1">
-            {question.category === "leetcode" && (
-              <Link
-                to={`/judge/${question.id}`}
-                className="rounded-full bg-accent-50 px-3 py-1 text-xs text-accent-700 ring-1 ring-inset ring-accent-600/20 transition-colors duration-150 hover:bg-accent-100"
-              >
-                在线评测
-              </Link>
-            )}
+            {(() => {
+              // judge 数据源已切 problems（统一 ID）：仅 leetcode 同步题有映射可评测
+              const judgeProblemId = judgeProblemIdFromSourceKey(question.sourceKey);
+              return judgeProblemId ? (
+                <Link
+                  to={`/judge/${judgeProblemId}`}
+                  className="rounded-full bg-accent-50 px-3 py-1 text-xs text-accent-700 ring-1 ring-inset ring-accent-600/20 transition-colors duration-150 hover:bg-accent-100"
+                >
+                  在线评测
+                </Link>
+              ) : null;
+            })()}
             <button
               type="button"
               onClick={onEdit}

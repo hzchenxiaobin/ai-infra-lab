@@ -4,7 +4,9 @@
 //   contents.json      contents 表结构：id/type/title/tags/knowledge_points/url/
 //                      contentHash/status/updated_at（+ path 与 meta 附加字段）
 //   problems.json      problems 表结构：id/source/number/difficulty/languages/
-//                      judge_type/testcases/external_url
+//                      judge_type/testcases/judge_meta/external_url
+//                      （algo 题的示例用例与参考签名由 judge-extract.ts 机器解析；
+//                       judge_type 按解析能力推导，见 deriveJudgeType）
 //   lists.json         problem_lists 表结构：id/title/url/problem_ids/content_hash
 //                      （题单成员从正文「站内题解」链接解析，见 parseListProblemIds）
 //   search-index.json  miniSearch 可用的轻量索引：id/title/summary/tags/url
@@ -15,6 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { extractExternalUrl, scanContent, type ContentFile } from "./content.ts";
+import { deriveJudgeType, extractJudgeData } from "./judge-extract.ts";
 import { classify } from "./ids.ts";
 import { DIST_DIR, sha256 } from "./util.ts";
 
@@ -82,17 +85,27 @@ const contents = files.map(row).sort((a, b) => String(a.id).localeCompare(String
 
 const problems = files
   .filter((f) => f.cls.type === "problem")
-  .map((f) => ({
-    id: f.existing.id,
-    source: f.existing.source,
-    number: f.existing.number,
-    difficulty: f.existing.difficulty,
-    languages: f.existing.languages,
-    judge_type: f.existing.judge,
-    testcases: [] as unknown[], // 内置评测用例尚未从「示例」段机器解析（见任务报告遗留问题）
-    external_url: extractExternalUrl(f.body),
-  }))
+  .map((f) => {
+    // 判题数据提取（judge 数据源切换）：algo 题解（leetcode/contest）从正文解析
+    // 示例用例与参考签名；GPU 题走 leetgpu.com 外站评测，不入判题数据
+    const isAlgo = f.cls.source === "leetcode" || f.cls.source === "contest";
+    const judge = isAlgo ? extractJudgeData(f.body) : { testcases: [], judgeMeta: null };
+    return {
+      id: f.existing.id,
+      source: f.existing.source,
+      number: f.existing.number,
+      difficulty: f.existing.difficulty,
+      languages: f.existing.languages,
+      judge_type: deriveJudgeType(f.existing.judge, judge),
+      testcases: judge.testcases,
+      judge_meta: judge.judgeMeta,
+      external_url: extractExternalUrl(f.body),
+    };
+  })
   .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+
+let internalCount = 0;
+for (const p of problems) if (p.judge_type === "internal") internalCount += 1;
 
 const searchIndex = files
   .map((f) => ({
@@ -147,6 +160,6 @@ const s4 = write("search-index.json", searchIndex);
 const fmt = (n: number) => (n / 1024 / 1024).toFixed(2) + " MB";
 console.log("== sync 产物 ==");
 console.log(`dist/contents.json      ${contents.length} 行  ${fmt(s1)}`);
-console.log(`dist/problems.json      ${problems.length} 行  ${fmt(s2)}`);
+console.log(`dist/problems.json      ${problems.length} 行  ${fmt(s2)}（可站内评测 ${internalCount}）`);
 console.log(`dist/lists.json         ${lists.length} 行  ${fmt(s3)}`);
 console.log(`dist/search-index.json  ${searchIndex.length} 行  ${fmt(s4)}`);

@@ -10,7 +10,7 @@ import {
   uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
-import type { ProblemTestcase, ProgressStatus } from "@ailab/contracts";
+import type { ProblemJudgeMeta, ProblemTestcase, ProgressStatus } from "@ailab/contracts";
 
 // ---------------------------------------------------------------------------
 // 账号域（dev/database.md §2.1）
@@ -102,8 +102,10 @@ export const problems = mysqlTable("problems", {
   difficulty: mysqlEnum("difficulty", ["easy", "medium", "hard"]).notNull(),
   languages: json("languages").$type<string[]>().notNull(),
   judgeType: mysqlEnum("judge_type", ["internal", "leetgpu-com", "none"]).notNull(),
-  /** 内置评测用例（替代 interview 现状的"评测时读本地 leetcode 仓库题解"） */
+  /** 内置评测用例（content-kit 从题面示例机器解析，judge 数据源） */
   testcases: json("testcases").$type<ProblemTestcase[]>().notNull(),
+  /** 判题元数据（参考签名，content-kit 从题解代码解析；judge_type=internal 时非空） */
+  judgeMeta: json("judge_meta").$type<ProblemJudgeMeta>(),
   /** judge_type=leetgpu-com 时跳 leetgpu.com 的评测地址 */
   externalUrl: varchar("external_url", { length: 500 }).notNull().default(""),
 });
@@ -155,7 +157,7 @@ export const userProgress = mysqlTable(
 export const submissions = mysqlTable("submissions", {
   id: serial("id").primaryKey(),
   userId: bigint("user_id", { mode: "number" }).notNull(),
-  /** 题目标识：数据源切换前存面试题库 question 自增 id（文本），切换后为统一 ID */
+  /** 统一题目 ID（lc:0001 等；judge 数据源已切换到 problems 表，2026-09-10 第六批） */
   problemId: varchar("problem_id", { length: 128 }).notNull(),
   language: varchar("language", { length: 32 }).notNull(),
   code: text("code").notNull(),
@@ -238,13 +240,4 @@ export const interviewMessages = mysqlTable("interview_messages", {
   role: mysqlEnum("role", ["interviewer", "candidate", "system"]).notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-export const repoSyncs = mysqlTable("repo_syncs", {
-  id: serial("id").primaryKey(),
-  userId: bigint("user_id", { mode: "number" }).notNull(),
-  repo: varchar("repo", { length: 100 }).notNull(),
-  commitSha: varchar("commit_sha", { length: 64 }).notNull().default(""),
-  questionCount: int("question_count").notNull().default(0),
-  syncedAt: timestamp("synced_at").notNull().defaultNow(),
 });

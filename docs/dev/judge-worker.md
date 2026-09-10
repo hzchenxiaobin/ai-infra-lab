@@ -27,6 +27,10 @@ web 轮询 submissions 状态 ◀──tRPC── server judge.getResult ◀─�
   轮询/领取/执行/写回/崩溃恢复逻辑与独立 worker 同构，`judge.submit`/`judge.getResult`
   已按队列语义工作；但执行路径仍是本机 exec（`run.ts`），**沙箱安全红线未达成**，
   对外开放注册前必须切换到本文件的 Docker 方案（P1）。
+- **判题数据源已切换 problems 表**（2026-09-10 第六批）：`submissions.problem_id`
+  存统一题目 ID（`lc:0001` 等），testcases 与参考签名元数据（`problems.judge_meta`）
+  由 content-kit 构建期从题解机器解析入库，评测路径不再读本地 leetcode 仓库；
+  `judge_type` 非 `internal` 的题在 `judge.getProblem`/`submit` 即拒绝投递（§7）。
 
 ## 2. 目录结构
 
@@ -131,7 +135,8 @@ WHERE id = (SELECT id FROM submissions WHERE status='pending'
 - web 端轮询间隔 1–2s，运行中显示进度；完成写 `runtime_ms` / `memory_kb`（取所有
   用例最大值），驱动掌握度模型（03）。
 - 评测结果落库后联动 `user_progress`（AC 标记）——由 server 侧轮询接口在读到时
-  顺手更新，worker 不写用户进度表（职责单一）。
+  顺手更新（已落地：`judge.getResult` 读到 ac 时 upsert，mastered 不降级），
+  worker 不写用户进度表（职责单一）。
 
 ## 7. GPU 题：引流 leetgpu.com
 

@@ -25,10 +25,6 @@ const envSchema = z.object({
   LLM_MODEL_EVAL: z.string().default(""),
   /** 部分网关（如 cannbot）除 Bearer 外还要求 x-api-vkey 头 */
   LLM_VKEY: z.string().default(""),
-  /** 本地 leetcode 仓库路径（在线评测取参考代码/签名用），默认面试仓库的同级 leetcode 目录 */
-  LEETCODE_REPO_DIR: z
-    .string()
-    .default(fileURLToPath(new URL("../../../../leetcode", import.meta.url))),
   /** session cookie 签名密钥；为空时使用进程内随机密钥（仅开发用，重启即失效） */
   SESSION_SECRET: z.string().default(""),
   /** 注册验证码 SMTP；SMTP_HOST 为空时 dev 模式把验证码打印到日志 */

@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { Link } from "react-router";
 import { queryClient, trpc } from "../../lib/trpc";
 import { Button, DifficultyBadge } from "../../components/ui";
 
@@ -61,6 +62,14 @@ export function ProblemRow({
         </div>
         <div className="mt-1 flex items-center gap-3 text-[11px] text-faint">
           <span className="font-mono">{problem.id}</span>
+          {problem.judgeType === "internal" && (
+            <Link
+              to={`/judge/${problem.id}`}
+              className="text-accent-600 transition-colors duration-150 hover:text-accent-700"
+            >
+              站内评测 →
+            </Link>
+          )}
           {problem.judgeType === "leetgpu-com" && problem.externalUrl && (
             <a
               href={problem.externalUrl}

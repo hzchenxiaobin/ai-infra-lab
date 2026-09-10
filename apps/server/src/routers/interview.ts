@@ -4,6 +4,7 @@ import {
   CATEGORY_LABELS,
   GRADE_SCORES,
   interviewReplySchema,
+  judgeProblemIdFromSourceKey,
   MAX_FOLLOW_UPS,
   sessionIdParamSchema,
   startInterviewSchema,
@@ -43,6 +44,7 @@ function toQuestion(row: typeof questions.$inferSelect): Question {
     followUps: row.followUps ?? [],
     keyPoints: row.keyPoints,
     source: row.source,
+    judgeProblemId: judgeProblemIdFromSourceKey(row.sourceKey),
   };
 }
 
