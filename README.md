@@ -33,6 +33,7 @@ LLM 驱动的模拟面试，三者通过统一知识图谱互相引用、用同�
 | [04-migration.md](docs/04-migration.md) | 资产盘点、去重矩阵、编号冲突处理、迁移步骤 |
 | [05-roadmap.md](docs/05-roadmap.md) | 里程碑（M0–M4）、验收标准、风险与开放问题 |
 | [06-development.md](docs/06-development.md) | 开发文档总览：环境准备、快速开始、测试、环境变量、开发约定、interview 代码映射 |
+| [07-backlog.md](docs/07-backlog.md) | 待办清单：2026-09-10 代码审计后的未完成事项（按 P0–P3 分级） |
 | [dev/](docs/dev/) | 模块开发文档（每个模块一份，详见下行清单） |
 
 模块开发文档：[server](docs/dev/server.md)（API 服务）· [web](docs/dev/web.md)（门户前端）·
