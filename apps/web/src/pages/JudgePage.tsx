@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { type JudgeVerdict } from "@ailab/contracts";
 import { trpc } from "../lib/trpc";
 import { Markdown } from "../components/Markdown";
 import { Card, DifficultyBadge } from "../components/ui";
@@ -8,6 +9,9 @@ import { Card, DifficultyBadge } from "../components/ui";
 type Language = "cpp" | "python";
 
 const LANG_LABELS: Record<Language, string> = { cpp: "C++", python: "Python" };
+
+/** 轮询间隔（dev/judge-worker.md §6：web 端 1–2s） */
+const POLL_INTERVAL_MS = 1500;
 
 function BackArrowIcon({ className = "" }: { className?: string }) {
   return (
@@ -30,12 +34,34 @@ export default function JudgePage() {
   const { id } = useParams();
   const questionId = Number(id);
   const problem = useQuery(trpc.judge.getProblem.queryOptions({ questionId }));
-  const run = useMutation(trpc.judge.run.mutationOptions());
 
   const [language, setLanguage] = useState<Language>("cpp");
   const [code, setCode] = useState<Record<Language, string>>({ cpp: "", python: "" });
   const [showReference, setShowReference] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [submissionId, setSubmissionId] = useState<number | null>(null);
+
+  // 提交进队列后轮询结果，终态（ac/wa/ce/tle/mle/ie）停止
+  const result = useQuery(
+    trpc.judge.getResult.queryOptions(
+      { submissionId: submissionId ?? 0 },
+      {
+        enabled: submissionId != null,
+        refetchInterval: (query) => {
+          const status = query.state.data?.status;
+          return status == null || status === "pending" || status === "running"
+            ? POLL_INTERVAL_MS
+            : false;
+        },
+      },
+    ),
+  );
+
+  const submit = useMutation(
+    trpc.judge.submit.mutationOptions({
+      onSuccess: (data) => setSubmissionId(data.submissionId),
+    }),
+  );
 
   if (problem.isLoading) return <div className="py-20 text-center text-sm text-muted">加载中…</div>;
   if (problem.error) {
@@ -55,8 +81,17 @@ export default function JudgePage() {
   }
 
   const langState = data[language];
-  const onRun = () => run.mutate({ questionId, language, code: code[language] });
-  const result = run.data;
+  const onSubmit = () => {
+    setSubmissionId(null);
+    submit.mutate({ questionId, language, code: code[language] });
+  };
+  const status = result.data?.status;
+  const detail = result.data?.verdictDetail;
+  const verdict: JudgeVerdict | undefined =
+    detail != null && "cases" in detail ? (detail as unknown as JudgeVerdict) : undefined;
+  const internalError =
+    detail != null && "error" in detail ? String((detail as { error: unknown }).error) : null;
+  const running = submit.isPending || status === "pending" || status === "running";
 
   return (
     <div className="space-y-4">
@@ -146,36 +181,54 @@ export default function JudgePage() {
             <div className="mt-3 flex items-center gap-3">
               <button
                 type="button"
-                onClick={onRun}
-                disabled={run.isPending || !langState.available || data.examples.length === 0}
+                onClick={onSubmit}
+                disabled={running || !langState.available || data.examples.length === 0}
                 className="rounded-full bg-accent-600 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-700 disabled:bg-accent-300"
               >
-                {run.isPending ? "评测中…" : "运行评测"}
+                {running ? "评测中…" : "提交评测"}
               </button>
-              {run.error && <span className="text-xs text-red-600">{run.error.message}</span>}
+              {running && <span className="text-xs text-muted">已入队，等待评测完成…</span>}
+              {submit.error && <span className="text-xs text-red-600">{submit.error.message}</span>}
             </div>
           </Card>
 
-          {result && (
+          {result.data && (
             <Card className="p-5">
-              {result.status === "compile_error" ? (
+              {status === "pending" || status === "running" ? (
+                <div className="flex items-center gap-2 text-sm text-muted">
+                  <span className="size-3.5 animate-spin rounded-full border-2 border-line border-t-muted" />
+                  {status === "pending" ? "排队中…" : "评测运行中…"}
+                </div>
+              ) : status === "ie" || verdict == null || verdict.status === "no_cases" ? (
+                <div>
+                  <div className="text-sm font-medium text-red-600">评测服务异常（{status}），请稍后重试。</div>
+                  {internalError && (
+                    <pre className="mt-2 max-h-40 overflow-auto rounded-lg border border-red-100 bg-red-50/60 p-3 font-mono text-xs text-red-700">
+                      {internalError}
+                    </pre>
+                  )}
+                </div>
+              ) : verdict.status === "compile_error" ? (
                 <div>
                   <div className="mb-2 text-sm font-medium text-red-600">编译失败</div>
                   <pre className="max-h-60 overflow-auto rounded-lg border border-red-100 bg-red-50/60 p-3 font-mono text-xs text-red-700">
-                    {result.compileError}
+                    {verdict.compileError}
                   </pre>
                 </div>
               ) : (
                 <>
-                  <div className="mb-2 text-sm font-medium">
-                    {result.passed === result.total ? (
-                      <span className="text-ink">全部通过（{result.passed}/{result.total}）</span>
+                  <div className="mb-2 flex items-baseline justify-between text-sm font-medium">
+                    {verdict.passed === verdict.total ? (
+                      <span className="text-ink">全部通过（{verdict.passed}/{verdict.total}）</span>
                     ) : (
-                      <span className="text-accent-600">通过 {result.passed}/{result.total}</span>
+                      <span className="text-accent-600">通过 {verdict.passed}/{verdict.total}</span>
+                    )}
+                    {result.data.runtimeMs != null && (
+                      <span className="text-xs font-normal text-muted">耗时 {result.data.runtimeMs} ms</span>
                     )}
                   </div>
                   <div className="space-y-2">
-                    {result.cases.map((c, i) => (
+                    {verdict.cases.map((c, i) => (
                       <div
                         key={i}
                         className={`rounded-lg border p-2 font-mono text-xs ${

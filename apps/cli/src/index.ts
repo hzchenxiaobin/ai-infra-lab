@@ -2,15 +2,19 @@
 import { Command } from "commander";
 import * as readline from "node:readline/promises";
 import { readFile } from "node:fs/promises";
+import { closeSync, mkdirSync, openSync, statSync, unlinkSync } from "node:fs";
+import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { stdin as input, stdout as output } from "node:process";
 import {
   CATEGORIES,
   CATEGORY_LABELS,
+  QUOTA_KINDS,
   type Category,
   type ContentImportInput,
 } from "@ailab/contracts";
+import { env } from "@ailab/server/env";
 import { getCaller, runSession } from "./session.js";
 import { registerBankCommands } from "./bank.js";
 import { banner, dimLine, errorLine, successLine, tableRow } from "./ui.js";
@@ -18,8 +22,8 @@ import { banner, dimLine, errorLine, successLine, tableRow } from "./ui.js";
 const program = new Command();
 
 program
-  .name("interview")
-  .description("AI Infra 模拟面试 CLI")
+  .name("ailab")
+  .description("AIInfra Lab 管理 CLI")
   .version("0.0.0");
 
 registerBankCommands(program);
@@ -303,6 +307,196 @@ program
       process.exit(0);
     } catch (err) {
       console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
+// ── user:list / user:ban / user:unban（管理，dev/cli.md §3）──────────────
+
+program
+  .command("user:list")
+  .description("列出用户（管理）")
+  .option("-s, --search <keyword>", "按邮箱/昵称搜索")
+  .option("-p, --page <n>", "页码", "1")
+  .action(async (opts) => {
+    const caller = await getCaller();
+    const { items, total, page } = await caller.auth.userList({
+      search: opts.search,
+      page: parseInt(opts.page, 10),
+      pageSize: 20,
+    });
+    if (items.length === 0) {
+      console.log(dimLine("无匹配用户"));
+      process.exit(0);
+    }
+    const widths = [6, 30, 16, 6, 8, 17];
+    console.log(tableRow(["ID", "邮箱", "昵称", "tier", "状态", "注册时间"], widths));
+    for (const u of items) {
+      const date = u.createdAt.toISOString().slice(0, 16).replace("T", " ");
+      console.log(tableRow([
+        String(u.id),
+        (u.email ?? "（遗留单用户）").slice(0, 28),
+        u.name.slice(0, 14),
+        u.tier,
+        u.bannedAt ? "已封禁" : "正常",
+        date,
+      ], widths));
+    }
+    console.log(dimLine(`\n第 ${page} 页 · 共 ${total} 个用户`));
+    process.exit(0);
+  });
+
+async function printBanTarget(caller: Awaited<ReturnType<typeof getCaller>>, email: string) {
+  const user = await caller.auth.userByEmail({ email });
+  console.log(dimLine(`目标：#${user.id} ${user.email}（${user.name}，tier=${user.tier}，当前${user.bannedAt ? "已封禁" : "正常"}）`));
+  return user;
+}
+
+program
+  .command("user:ban <email>")
+  .description("封禁用户（破坏性：登录与既有会话立即失效；--yes 确认）")
+  .option("--yes", "跳过影响范围确认，直接执行")
+  .action(async (email: string, opts: { yes?: boolean }) => {
+    const caller = await getCaller();
+    try {
+      await printBanTarget(caller, email);
+      if (!opts.yes) {
+        console.log(errorLine("封禁后该用户登录与既有会话立即失效；确认请加 --yes"));
+        process.exit(1);
+      }
+      await caller.auth.userSetBanned({ email, banned: true });
+      console.log(successLine(`已封禁：${email}`));
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("user:unban <email>")
+  .description("解封用户")
+  .action(async (email: string) => {
+    const caller = await getCaller();
+    try {
+      await caller.auth.userSetBanned({ email, banned: false });
+      console.log(successLine(`已解封：${email}`));
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
+// ── quota:get / quota:set（管理，dev/cli.md §3）─────────────────────────
+
+program
+  .command("quota:get <email>")
+  .description("查看用户当前周期配额用量（管理）")
+  .action(async (email: string) => {
+    const caller = await getCaller();
+    try {
+      const data = await caller.quota.adminGet({ email });
+      console.log(banner(`${email} · 周期 ${data.current[0]?.period ?? "—"}`));
+      for (const u of data.current) {
+        const quota = u.quota == null ? "不限" : String(u.quota);
+        console.log(`  ${u.kind.padEnd(12)} 已用 ${String(u.used).padEnd(6)} 限额 ${quota}`);
+      }
+      if (data.history.length > 0) {
+        console.log(dimLine("\n历史周期："));
+        for (const h of data.history.slice(0, 10)) {
+          console.log(`  ${h.period}  ${h.kind.padEnd(12)} 已用 ${h.used} / ${h.quota == null ? "不限" : h.quota}`);
+        }
+      }
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("quota:set <email> <kind> <quota>")
+  .description("调整用户当前周期配额（管理）；quota 为正整数或 unlimited（=不限）")
+  .action(async (email: string, kind: string, quotaStr: string) => {
+    if (!QUOTA_KINDS.includes(kind as (typeof QUOTA_KINDS)[number])) {
+      console.log(errorLine(`未知配额类型：${kind}`));
+      console.log(dimLine(`可选：${QUOTA_KINDS.join(", ")}`));
+      process.exit(1);
+    }
+    const unlimited = quotaStr === "unlimited" || quotaStr === "null";
+    const quota = unlimited ? null : parseInt(quotaStr, 10);
+    if (quota != null && (Number.isNaN(quota) || quota < 1)) {
+      console.log(errorLine("quota 须为正整数或 unlimited"));
+      process.exit(1);
+    }
+    const caller = await getCaller();
+    try {
+      const result = await caller.quota.adminSet({
+        email,
+        kind: kind as (typeof QUOTA_KINDS)[number],
+        quota,
+      });
+      console.log(
+        successLine(`已设置 ${result.email} ${result.kind} = ${result.quota == null ? "不限" : result.quota}（周期 ${result.period}）`),
+      );
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
+// ── db:backup（dev/cli.md §3 / deployment.md）───────────────────────────
+
+program
+  .command("db:backup")
+  .description("mysqldump 备份到 deploy/backups/")
+  .option("-o, --out <dir>", "输出目录（默认 deploy/backups）")
+  .action(async (opts: { out?: string }) => {
+    const url = new URL(env.DATABASE_URL);
+    const host = url.hostname;
+    const port = url.port || "3306";
+    const user = decodeURIComponent(url.username);
+    const password = decodeURIComponent(url.password);
+    const database = url.pathname.replace(/^\//, "");
+    const outDir =
+      opts.out ?? path.resolve(fileURLToPath(new URL("../../../deploy/backups", import.meta.url)));
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
+    const file = path.join(outDir, `${database}-${stamp}.sql`);
+
+    mkdirSync(outDir, { recursive: true });
+    console.log(dimLine(`mysqldump ${user}@${host}:${port}/${database} → ${file}`));
+
+    // 直接把已打开的 fd 给子进程写（spawn stdio 不接受未 open 的 WriteStream）
+    const fd = openSync(file, "w");
+    const dump = spawn("mysqldump", ["-h", host, "-P", port, "-u", user, database], {
+      env: { ...process.env, ...(password ? { MYSQL_PWD: password } : {}) },
+      stdio: ["ignore", fd, "pipe"],
+    });
+    const stderrChunks: Buffer[] = [];
+    if (dump.stderr) dump.stderr.on("data", (d: Buffer) => stderrChunks.push(d));
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        dump.on("error", reject);
+        dump.on("close", (code) => {
+          if (code === 0) resolve();
+          else reject(new Error(`mysqldump 退出码 ${code}：${Buffer.concat(stderrChunks).toString().slice(0, 500)}`));
+        });
+      });
+      closeSync(fd);
+      const size = statSync(file).size;
+      console.log(successLine(`备份完成：${file}（${(size / 1024).toFixed(1)} KB）`));
+      process.exit(0);
+    } catch (err) {
+      try {
+        closeSync(fd);
+        unlinkSync(file);
+      } catch {
+        // 清理失败忽略
+      }
+      console.log(errorLine(`备份失败：${(err as Error).message}`));
       process.exit(1);
     }
   });

@@ -1,7 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { and, asc, eq, like, sql, type SQL } from "drizzle-orm";
-import { problemFilterSchema } from "@ailab/contracts";
-import { z } from "zod";
+import {
+  problemFacetsSchema,
+  problemFilterSchema,
+  unifiedIdParamSchema,
+} from "@ailab/contracts";
 import { db } from "../db/client.js";
 import { contents, problems, userProgress } from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
@@ -60,7 +63,7 @@ export const problemRouter = router({
 
   /** 题目详情：元数据 + 评测字段 + 当前用户进度 */
   get: authedProcedure
-    .input(z.object({ id: z.string().min(1).max(128) }))
+    .input(unifiedIdParamSchema)
     .query(async ({ input, ctx }) => {
       const rows = await db
         .select({
@@ -85,4 +88,27 @@ export const problemRouter = router({
         progress: { status: progressStatus ?? ("unseen" as const), score: progressScore },
       };
     }),
+
+  /** 筛选候选项：题库（可按分区）出现过的标签与知识点及计数，供下拉筛选 */
+  facets: authedProcedure.input(problemFacetsSchema).query(async ({ input }) => {
+    const conditions: SQL[] = [eq(contents.status, "active")];
+    if (input.source) conditions.push(eq(problems.source, input.source));
+    const rows = await db
+      .select({ tags: contents.tags, knowledgePoints: contents.knowledgePoints })
+      .from(problems)
+      .innerJoin(contents, eq(problems.id, contents.id))
+      .where(and(...conditions));
+
+    const tagCounts = new Map<string, number>();
+    const kpCounts = new Map<string, number>();
+    for (const r of rows) {
+      for (const t of r.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+      for (const k of r.knowledgePoints) kpCounts.set(k, (kpCounts.get(k) ?? 0) + 1);
+    }
+    const toList = (m: Map<string, number>) =>
+      [...m.entries()]
+        .map(([value, count]) => ({ value, count }))
+        .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value, "zh-Hans"));
+    return { tags: toList(tagCounts), knowledgePoints: toList(kpCounts) };
+  }),
 });

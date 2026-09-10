@@ -315,6 +315,27 @@ export interface CurrentUser {
 }
 
 // ---------------------------------------------------------------------------
+// 用户/配额管理（dev/cli.md §3：CLI user:list/ban、quota:get/set，按 email 寻址）
+// ---------------------------------------------------------------------------
+
+export const adminUserListSchema = z.object({
+  search: z.string().trim().min(1).max(200).optional(),
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(100).default(20),
+});
+export type AdminUserListInput = z.infer<typeof adminUserListSchema>;
+
+export const adminUserEmailParamSchema = z.object({ email: emailSchema });
+export type AdminUserEmailParam = z.infer<typeof adminUserEmailParamSchema>;
+
+/** user:ban / user:unban（banned=false 解封） */
+export const adminUserBanSchema = z.object({
+  email: emailSchema,
+  banned: z.boolean(),
+});
+export type AdminUserBanInput = z.infer<typeof adminUserBanSchema>;
+
+// ---------------------------------------------------------------------------
 // 配额（dev/server.md §8：计量先行、限额后置；quota NULL = 不限）
 // ---------------------------------------------------------------------------
 
@@ -330,6 +351,15 @@ export interface QuotaUsage {
   /** NULL = 不限（上线初期默认） */
   quota: number | null;
 }
+
+/** cli quota:set <email> <kind> <n|unlimited> */
+export const adminQuotaSetSchema = z.object({
+  email: emailSchema,
+  kind: quotaKindSchema,
+  /** null = 不限（上线初期默认） */
+  quota: z.number().int().min(1).nullable(),
+});
+export type AdminQuotaSetInput = z.infer<typeof adminQuotaSetSchema>;
 
 // ---------------------------------------------------------------------------
 // 内容元数据（03 数据模型：contents / problems / knowledge_points）
@@ -355,9 +385,38 @@ export const PROGRESS_STATUSES = ["unseen", "seen", "mastered", "ac"] as const;
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 export const progressStatusSchema = z.enum(PROGRESS_STATUSES);
 
-export const SUBMISSION_STATUSES = ["pending", "running", "ac", "wa", "ce", "tle", "mle"] as const;
+/** 评测提交终/中间态：pending → running → 终态；ie = worker 自身故障（告警用） */
+export const SUBMISSION_STATUSES = [
+  "pending",
+  "running",
+  "ac",
+  "wa",
+  "ce",
+  "tle",
+  "mle",
+  "ie",
+] as const;
 export type SubmissionStatus = (typeof SUBMISSION_STATUSES)[number];
 export const submissionStatusSchema = z.enum(SUBMISSION_STATUSES);
+
+/** 评测提交的终态集合（getResult 轮询停止条件） */
+export const SUBMISSION_TERMINAL_STATUSES = ["ac", "wa", "ce", "tle", "mle", "ie"] as const;
+export type SubmissionTerminalStatus = (typeof SUBMISSION_TERMINAL_STATUSES)[number];
+
+/** 判题执行结果（verdict_detail 落库结构，对齐 server judge/run.ts 的 JudgeRunResult） */
+export interface JudgeVerdict {
+  status: "ok" | "compile_error" | "no_cases";
+  compileError?: string;
+  cases: Array<{
+    input: string;
+    expected: string;
+    actual: string;
+    pass: boolean;
+    error: string | null;
+  }>;
+  passed: number;
+  total: number;
+}
 
 /** 内置评测用例（problems.testcases，对齐 judge/parse.ts 的 ExampleCase 结构） */
 export interface ProblemTestcase {
@@ -391,6 +450,12 @@ export const problemFilterSchema = z.object({
   pageSize: z.number().int().min(1).max(100).default(20),
 });
 export type ProblemFilter = z.infer<typeof problemFilterSchema>;
+
+/** problem.facets 入参：题库筛选候选项（标签/知识点）按分区枚举 */
+export const problemFacetsSchema = z.object({
+  source: problemSourceSchema.optional(),
+});
+export type ProblemFacetsInput = z.infer<typeof problemFacetsSchema>;
 
 export const progressMarkSchema = z.object({
   contentId: z.string().min(1).max(128),
@@ -437,6 +502,69 @@ export const contentImportSchema = z.object({
   problems: z.array(problemImportItemSchema).default([]),
 });
 export type ContentImportInput = z.infer<typeof contentImportSchema>;
+
+// ---------------------------------------------------------------------------
+// router 输入参数（契约收编：原先散落在各 router 的局部 z.object 统一进 contracts）
+// ---------------------------------------------------------------------------
+
+/** 自增数字主键参数（questions 等） */
+export const numericIdParamSchema = z.object({ id: z.number().int().min(1) });
+export type NumericIdParam = z.infer<typeof numericIdParamSchema>;
+
+/** 面试题自增主键参数（judge.getProblem / judge.run） */
+export const questionIdParamSchema = z.object({ questionId: z.number().int().min(1) });
+export type QuestionIdParam = z.infer<typeof questionIdParamSchema>;
+
+/** 面试场次自增主键参数（interview.reply/finish/get） */
+export const sessionIdParamSchema = z.object({ sessionId: z.number().int().min(1) });
+export type SessionIdParam = z.infer<typeof sessionIdParamSchema>;
+
+/** 评测提交自增主键参数（judge.getResult） */
+export const submissionIdParamSchema = z.object({ submissionId: z.number().int().min(1) });
+export type SubmissionIdParam = z.infer<typeof submissionIdParamSchema>;
+
+/** 统一 ID 参数（contents/problems 的字符串主键，如 lc:1 / gpu:12 / learn:week1:day1） */
+export const unifiedIdParamSchema = z.object({ id: z.string().min(1).max(128) });
+export type UnifiedIdParam = z.infer<typeof unifiedIdParamSchema>;
+
+export const questionUpdateSchema = z.object({
+  id: z.number().int().min(1),
+  data: questionInputSchema.partial(),
+});
+export type QuestionUpdateInput = z.infer<typeof questionUpdateSchema>;
+
+export const questionBulkImportSchema = z.object({
+  items: z.array(questionInputSchema).min(1),
+});
+export type QuestionBulkImportInput = z.infer<typeof questionBulkImportSchema>;
+
+export const interviewReplySchema = z.object({
+  sessionId: z.number().int().min(1),
+  content: z.string().min(1),
+});
+export type InterviewReplyInput = z.infer<typeof interviewReplySchema>;
+
+/** 在线评测支持的语言 */
+export const JUDGE_LANGUAGES = ["cpp", "python"] as const;
+export type JudgeLanguage = (typeof JUDGE_LANGUAGES)[number];
+export const judgeLanguageSchema = z.enum(JUDGE_LANGUAGES);
+
+export const judgeRunSchema = z.object({
+  questionId: z.number().int().min(1),
+  language: judgeLanguageSchema,
+  code: z.string().min(1).max(100_000),
+});
+export type JudgeRunInput = z.infer<typeof judgeRunSchema>;
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(1).max(200),
+  type: contentTypeSchema.optional(),
+  limit: z.number().int().min(1).max(100).default(30),
+});
+export type SearchQueryInput = z.infer<typeof searchQuerySchema>;
+
+export const healthCheckSchema = z.object({ name: z.string().optional() }).optional();
+export type HealthCheckInput = z.infer<typeof healthCheckSchema>;
 
 // ---------------------------------------------------------------------------
 // progress.overview 输出（03 掌握度模型：0.2 学习 + 0.5 刷题 + 0.3 面试）

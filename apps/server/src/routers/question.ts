@@ -1,11 +1,13 @@
 import { and, desc, eq, like, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import {
   bankImportSchema,
   CATEGORIES,
+  numericIdParamSchema,
+  questionBulkImportSchema,
   questionInputSchema,
   questionListFilterSchema,
+  questionUpdateSchema,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
 import { questions } from "../db/schema.js";
@@ -91,7 +93,7 @@ export const questionRouter = router({
   }),
 
   update: authedProcedure
-    .input(z.object({ id: z.number(), data: questionInputSchema.partial() }))
+    .input(questionUpdateSchema)
     .mutation(async ({ input, ctx }) => {
       const result = await db
         .update(questions)
@@ -102,7 +104,7 @@ export const questionRouter = router({
     }),
 
   remove: authedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(numericIdParamSchema)
     .mutation(async ({ input, ctx }) => {
       const result = await db
         .delete(questions)
@@ -112,7 +114,7 @@ export const questionRouter = router({
     }),
 
   bulkImport: authedProcedure
-    .input(z.object({ items: z.array(questionInputSchema).min(1) }))
+    .input(questionBulkImportSchema)
     .mutation(async ({ input, ctx }) => {
       await db.insert(questions).values(
         input.items.map((item) => ({

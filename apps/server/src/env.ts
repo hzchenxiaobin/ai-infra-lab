@@ -19,6 +19,10 @@ const envSchema = z.object({
   LLM_BASE_URL: z.string().default("https://api.moonshot.cn/v1"),
   LLM_API_KEY: z.string().default(""),
   LLM_MODEL: z.string().default("moonshot-v1-8k"),
+  /** 模型分级（docs/dev/server.md）：追问/开场用便宜模型；空则回落 LLM_MODEL */
+  LLM_MODEL_FOLLOWUP: z.string().default(""),
+  /** 模型分级：评估用强模型；空则回落 LLM_MODEL */
+  LLM_MODEL_EVAL: z.string().default(""),
   /** 部分网关（如 cannbot）除 Bearer 外还要求 x-api-vkey 头 */
   LLM_VKEY: z.string().default(""),
   /** 本地 leetcode 仓库路径（在线评测取参考代码/签名用），默认面试仓库的同级 leetcode 目录 */
@@ -38,6 +42,8 @@ const envSchema = z.object({
   /** 配额默认值（缺省/空 = 不限，上线初期默认；后续仅改配置开启分层） */
   QUOTA_DEFAULT_JUDGE: optionalInt,
   QUOTA_DEFAULT_INTERVIEW: optionalInt,
+  /** 评测队列并发上限（in-process worker，dev/judge-worker.md） */
+  JUDGE_CONCURRENCY: z.coerce.number().int().positive().default(2),
 });
 
 export const env = envSchema.parse(process.env);

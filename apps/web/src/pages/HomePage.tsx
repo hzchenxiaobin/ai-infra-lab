@@ -55,7 +55,7 @@ function MicroLabel({ children }: { children: string }) {
   );
 }
 
-export default function DashboardPage() {
+export default function HomePage() {
   const navigate = useNavigate();
   const stats = useQuery(trpc.question.stats.queryOptions());
   const scopes = useQuery(trpc.question.scopes.queryOptions());

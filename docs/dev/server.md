@@ -17,23 +17,25 @@ apps/server/
 │   ├── middleware/         # 【新增】配额计量、限流、错误打点
 │   │   └── quota.ts
 │   ├── routers/
-│   │   ├── index.ts        # appRouter 聚合出口（web/cli 的类型源头）
-│   │   ├── health.ts       # 【已有】
-│   │   ├── question.ts     # 【已有】题库 CRUD + stats + scopes + seed
-│   │   ├── interview.ts    # 【已有】面试状态机（start/reply/finish/list/get/stats）
-│   │   ├── judge.ts        # 【改造】现为同步裸跑；改为投递 submissions 队列
-│   │   ├── auth.ts         # 【新增】注册/登录/验证码/登出/当前用户
-│   │   ├── content.ts      # 【新增】内容元数据查询（contents/problems 表）
-│   │   ├── progress.ts     # 【新增】进度标记、掌握度聚合、Dashboard 数据
-│   │   └── quota.ts        # 【新增】用量查询（管理向）
-│   ├── interviewer/
-│   │   ├── factory.ts      # 【已有】纯 LLM 模式，getInterviewer()
-│   │   └── llm.ts          # 【已有】OpenAI 兼容封装 + 状态机 prompt
-│   ├── judge/              # 【已有】评测器核心，M2 起被 judge-worker 复用
-│   │   ├── parse.ts        #   签名解析、示例用例解析、类型支持性判断
-│   │   ├── driver.ts       #   生成 C++/Python harness 源码
-│   │   ├── run.ts          #   编译 + 逐用例执行 + 输出比对
-│   │   └── judge.test.ts   #   评测器测试样板
+ │   │   ├── index.ts        # appRouter 聚合出口（web/cli 的类型源头）
+ │   │   ├── health.ts       # 【已有】
+ │   │   ├── question.ts     # 【已有】题库 CRUD + stats + scopes + seed
+ │   │   ├── interview.ts    # 【已有】面试状态机（start/reply/finish/list/get/stats）
+ │   │   ├── judge.ts        # 【已队列化】getProblem/submit/getResult（submissions 表 + 轮询）
+ │   │   ├── auth.ts         # 【已有】注册/登录/验证码/登出/当前用户 + user:list/ban（admin）
+ │   │   ├── content.ts      # 【已有】内容元数据查询（contents/problems 表）
+ │   │   ├── progress.ts     # 【已有】进度标记、掌握度聚合、Dashboard 数据
+ │   │   └── quota.ts        # 【已有】用量查询 + adminGet/adminSet（CLI quota:*）
+ │   ├── interviewer/
+ │   │   ├── factory.ts      # 【已有】纯 LLM 模式，getInterviewer()
+ │   │   └── llm.ts          # 【已有】OpenAI 兼容封装 + 状态机 prompt（FOLLOWUP/EVAL 分级）
+ │   ├── judge/              # 【已有】评测器核心，M2 起被 judge-worker 复用
+ │   │   ├── parse.ts        #   签名解析、示例用例解析、类型支持性判断
+ │   │   ├── driver.ts       #   生成 C++/Python harness 源码
+ │   │   ├── run.ts          #   编译 + 逐用例执行 + 输出比对
+ │   │   ├── context.ts      #   判题上下文装配（router 与 worker 共用）
+ │   │   ├── worker.ts       #   in-process 队列 worker（P0 过渡，P1 独立进程接管）
+ │   │   └── judge.test.ts   #   评测器测试样板
 │   ├── db/
 │   │   ├── client.ts       # mysql2 pool + drizzle
 │   │   ├── schema.ts       # 全部表定义（见 database.md）
@@ -71,11 +73,11 @@ apps/server/
 | `health` | 已有 | 存活探针 |
 | `question` | 已有 | 题库 CRUD / 分页筛选 / stats / scopes / seed |
 | `interview` | 已有 | 面试状态机全流程（见 §6） |
-| `judge` | 改造 | 题目详情 + starter 代码；`run` 从同步执行改为写 `submissions` 队列 |
-| `auth` | 新增 | 发送验证码 / 注册 / 登录 / 登出 / me |
-| `content` | 新增 | contents/problems 元数据查询、统一 ID 解析、题单 |
-| `progress` | 新增 | 进度标记 upsert、掌握度雷达、Dashboard 聚合 |
-| `quota` | 新增 | 当前用户用量查询 |
+| `judge` | 已队列化 | getProblem / submit（写 submissions 队列）/ getResult（轮询）；执行见 `judge/worker.ts` |
+| `auth` | 已有 | 发送验证码 / 注册 / 登录 / 登出 / me；user:list / userSetBanned / userByEmail（admin，CLI 用） |
+| `content` | 已有 | contents/problems 元数据查询、统一 ID 解析、import（admin） |
+| `progress` | 已有 | 进度标记 upsert、掌握度雷达、Dashboard 聚合（含 streakDays） |
+| `quota` | 已有 | me + adminGet/adminSet（CLI quota:get/set，admin） |
 
 约定：**每个 router 的输入输出 schema 一律放 `packages/contracts`**，router 内只做
 编排，不手写 zod 对象（已有代码的 `z.object({ sessionId: ... })` 这类局部 schema
@@ -88,10 +90,14 @@ apps/server/
 ```
 POST 验证码   auth.sendCode     → 写 email_verifications（code 存 hash）+ SMTP 发信
 POST 注册     auth.register     → 校验验证码 → 建 users 行 → 种 session cookie
-POST 登录     auth.login        → 校验密码（argon2/bcrypt hash）→ 种 session cookie
+POST 登录     auth.login        → 校验密码（scrypt hash）→ 封禁拒绝 → 种 session cookie
 GET  当前用户  auth.me           → session → users 行
 POST 登出     auth.logout       → 销 session
 ```
+
+封禁（`users.banned_at`，cli user:ban）：登录直接 FORBIDDEN；session 为无状态签名
+cookie 无法主动吊销，封禁在 `enforceUser` 中间件生效（每个已认证请求一次主键查询，
+封禁即全部 authedProcedure 返回 UNAUTHORIZED）。
 
 - **验证码发送限流是开放注册下唯一的闸门**（05 风险清单"滥用与刷接口"）：
   按 IP + 邮箱双维度限流（如每邮箱 1 封/分钟、5 封/天；每 IP 20 封/天），
@@ -115,10 +121,10 @@ POST 登出     auth.logout       → 销 session
   （整句复用评分要点即重试）。
 - 上下文裁剪：当前题 + 最近 6 条消息。
 
-**模型分级（新增）**：现状是单一 `LLM_MODEL`。拆为
-`LLM_MODEL_FOLLOWUP`（追问/开场，便宜模型）与 `LLM_MODEL_EVAL`（评估，强模型），
-`chatCompletion` 加 `model` 参数，调用方按用途选择；用量与延迟打点进监控
-（LLM 调用是对外产品主要变动成本，见 02 §6）。
+**模型分级（已落地）**：`LLM_MODEL_FOLLOWUP`（追问/开场，便宜模型）与
+`LLM_MODEL_EVAL`（评估，强模型）缺省回落 `LLM_MODEL`；`chatCompletion` 的 `model`
+参数由调用方按用途选择（发言类走 `followupModel()`，评估走 `evalModel()`）；
+用量与延迟打点进监控（LLM 调用是对外产品主要变动成本，见 02 §6）。
 
 ## 6. 关键实现：面试状态机（断点续面）
 
@@ -157,7 +163,7 @@ suggestion/answers（answers 与面试官每次提问一一对应）+ `weakDimen
 
 ## 8. 配额中间件（计量先行，限额后置）
 
-所有评测提交（`judge.run`）与 LLM 面试（`interview.start`）先过配额中间件：
+所有评测提交（`judge.submit`）与 LLM 面试（`interview.start`）先过配额中间件：
 
 ```ts
 // 伪代码：tRPC middleware
@@ -189,7 +195,9 @@ pnpm --filter server db:migrate    # 执行迁移（drizzle.config.ts 读 DATABA
 ## 10. 测试
 
 - 样板：`routers/interview.test.ts`（状态机集成测试，MySQL 可用才跑，LLM 用
-  `vi.stubGlobal("fetch", ...)` mock）、`judge/judge.test.ts`（评测器纯函数测试）。
+  `vi.stubGlobal("fetch", ...)` mock）、`judge/judge.test.ts`（评测器纯函数测试）、
+  `judge/worker.test.ts`（队列领取/执行/写回 + 端到端 AC/WA/CE）、
+  `routers/content|problem|progress|quota|auth.test.ts`（router 集成）。
 - 新模块照此补：评测器与配额中间件必须有测试；auth 的验证码限流逻辑要有单测。
 - 跑法：`pnpm --filter server test`（vitest）。
 
@@ -200,9 +208,10 @@ pnpm --filter server db:migrate    # 执行迁移（drizzle.config.ts 读 DATABA
 | `DATABASE_URL` | 已有 | 默认 `mysql://root:root@localhost:3306/interview` |
 | `PORT` | 已有 | 默认 **3001**（web 的 vite proxy 也指向 3001） |
 | `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_VKEY` | 已有 | OpenAI 兼容端点；未配 key 时面试直接报错（纯 LLM 模式） |
-| `LLM_MODEL` | 已有 | 现状单模型；模型分级落地后拆为下两行 |
-| `LLM_MODEL_FOLLOWUP` / `LLM_MODEL_EVAL` | 新增 | 追问/评估分级 |
+| `LLM_MODEL` | 已有 | 通用模型；FOLLOWUP/EVAL 未配置时作为回落值 |
+| `LLM_MODEL_FOLLOWUP` / `LLM_MODEL_EVAL` | 已落地 | 追问/评估分级，空则回落 `LLM_MODEL` |
 | `SESSION_SECRET` | 新增 | session cookie 签名 |
 | `SMTP_HOST/PORT/USER/PASS` | 新增 | 注册验证码邮件 |
 | `QUOTA_DEFAULT_*` | 新增 | 配额默认值（空 = 不限） |
+| `JUDGE_CONCURRENCY` | 已落地 | in-process 评测队列 worker 并发上限（默认 2） |
 | `LEETCODE_REPO_DIR` | 退役 | 现状 judge 从本地 leetcode 仓库读参考代码；新产品改为 `problems.testcases` 入库，此变量随 sync 模块一并移除 |

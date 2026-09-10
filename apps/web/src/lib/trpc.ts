@@ -46,4 +46,7 @@ export type SessionListItem = Awaited<ReturnType<typeof trpcClient.interview.lis
 export type InterviewGetData = Awaited<ReturnType<typeof trpcClient.interview.get.query>>;
 export type InterviewStatsData = Awaited<ReturnType<typeof trpcClient.interview.stats.query>>;
 export type ProblemListData = Awaited<ReturnType<typeof trpcClient.problem.list.query>>;
+export type ProblemFacetsData = Awaited<ReturnType<typeof trpcClient.problem.facets.query>>;
 export type LearnOverviewData = Awaited<ReturnType<typeof trpcClient.learn.overview.query>>;
+export type ProgressOverviewData = Awaited<ReturnType<typeof trpcClient.progress.overview.query>>;
+export type QuotaMeData = Awaited<ReturnType<typeof trpcClient.quota.me.query>>;

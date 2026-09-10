@@ -73,7 +73,7 @@ export const drizzleQuotaStore: QuotaStore = {
 
 /**
  * 配额中间件（挂在 authedProcedure 之后）：
- * judge.run（评测提交）与 interview.start（LLM 面试场次创建）各挂一个。
+ * judge.submit（评测提交）与 interview.start（LLM 面试场次创建）各挂一个。
  */
 export function quotaFor(kind: QuotaKind) {
   return middleware(async ({ ctx, next }) => {

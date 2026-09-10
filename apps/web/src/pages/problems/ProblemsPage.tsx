@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import { DIFFICULTIES, type Difficulty } from "@ailab/contracts";
+import { DIFFICULTIES, JUDGE_TYPES, type Difficulty, type JudgeType } from "@ailab/contracts";
 import { queryClient, trpc, type ProblemListData } from "../../lib/trpc";
 import { Button, DifficultyBadge, EmptyBox, ErrorBox, Loading } from "../../components/ui";
-import { DIFFICULTY_LABELS } from "../../lib/format";
+import { DIFFICULTY_LABELS, JUDGE_TYPE_LABELS } from "../../lib/format";
 
 type ProblemItem = ProblemListData["items"][number];
 
@@ -29,6 +29,9 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
   const meta = PARTITIONS[partition];
   const [difficulty, setDifficulty] = useState<"all" | Difficulty>("all");
   const [solved, setSolved] = useState<"all" | "ac" | "unac">("all");
+  const [tag, setTag] = useState("");
+  const [knowledgePoint, setKnowledgePoint] = useState("");
+  const [judgeType, setJudgeType] = useState<"all" | JudgeType>("all");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -41,11 +44,18 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
     return () => clearTimeout(t);
   }, [searchInput]);
 
+  const facets = useQuery(
+    trpc.problem.facets.queryOptions({ source: meta.source }),
+  );
+
   const list = useQuery(
     trpc.problem.list.queryOptions({
       source: meta.source,
       difficulty: difficulty === "all" ? undefined : difficulty,
       solved: solved === "all" ? undefined : solved === "ac",
+      tag: tag || undefined,
+      knowledgePoint: knowledgePoint || undefined,
+      judgeType: judgeType === "all" ? undefined : judgeType,
       search: search || undefined,
       page,
       pageSize: PAGE_SIZE,
@@ -125,6 +135,51 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           <option value="all">全部状态</option>
           <option value="ac">已 AC</option>
           <option value="unac">未 AC</option>
+        </select>
+        <select
+          value={tag}
+          onChange={(e) => {
+            setTag(e.target.value);
+            setPage(1);
+          }}
+          className="input max-w-44"
+        >
+          <option value="">全部标签</option>
+          {facets.data?.tags.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.value}（{t.count}）
+            </option>
+          ))}
+        </select>
+        <select
+          value={knowledgePoint}
+          onChange={(e) => {
+            setKnowledgePoint(e.target.value);
+            setPage(1);
+          }}
+          className="input max-w-44"
+        >
+          <option value="">全部知识点</option>
+          {facets.data?.knowledgePoints.map((k) => (
+            <option key={k.value} value={k.value}>
+              {k.value}（{k.count}）
+            </option>
+          ))}
+        </select>
+        <select
+          value={judgeType}
+          onChange={(e) => {
+            setJudgeType(e.target.value as "all" | JudgeType);
+            setPage(1);
+          }}
+          className="input"
+        >
+          <option value="all">全部评测方式</option>
+          {JUDGE_TYPES.map((j) => (
+            <option key={j} value={j}>
+              {JUDGE_TYPE_LABELS[j]}
+            </option>
+          ))}
         </select>
         <input
           value={searchInput}

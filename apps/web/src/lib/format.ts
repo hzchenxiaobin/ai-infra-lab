@@ -1,9 +1,15 @@
-import type { Difficulty } from "@ailab/contracts";
+import type { Difficulty, JudgeType } from "@ailab/contracts";
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   easy: "简单",
   medium: "中等",
   hard: "困难",
+};
+
+export const JUDGE_TYPE_LABELS: Record<JudgeType, string> = {
+  internal: "站内评测",
+  "leetgpu-com": "leetgpu 评测",
+  none: "不可评测",
 };
 
 function toDate(value: Date | string): Date | null {

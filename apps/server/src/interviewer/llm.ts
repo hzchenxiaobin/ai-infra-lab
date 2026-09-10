@@ -13,12 +13,22 @@ import { env } from "../env.js";
 const TIMEOUT_MS = 60_000;
 const MAX_TOKENS = 1024;
 
+/** 发言类（开场/追问）模型：LLM_MODEL_FOLLOWUP，缺省回落 LLM_MODEL */
+const followupModel = () => env.LLM_MODEL_FOLLOWUP || env.LLM_MODEL;
+
+/** 评估类模型（输出质量优先）：LLM_MODEL_EVAL，缺省回落 LLM_MODEL */
+const evalModel = () => env.LLM_MODEL_EVAL || env.LLM_MODEL;
+
 interface ChatMessage {
   role: "system" | "user" | "assistant";
   content: string;
 }
 
-async function chatCompletion(messages: ChatMessage[], maxTokens = MAX_TOKENS): Promise<string> {
+async function chatCompletion(
+  messages: ChatMessage[],
+  maxTokens = MAX_TOKENS,
+  model: string = env.LLM_MODEL,
+): Promise<string> {
   if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY（系统为纯 LLM 模式，无规则引擎降级）");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -31,7 +41,7 @@ async function chatCompletion(messages: ChatMessage[], maxTokens = MAX_TOKENS): 
         ...(env.LLM_VKEY ? { "x-api-vkey": env.LLM_VKEY } : {}),
       },
       body: JSON.stringify({
-        model: env.LLM_MODEL,
+        model,
         messages,
         max_tokens: maxTokens,
         // 不传 temperature：部分模型（如 kimi-for-coding）锁定为 1，显式传 0.7 会 400
@@ -170,12 +180,12 @@ function extractJson(text: string): unknown {
  * 仍失败则抛错由上层呈现；评估调用同样重试一次后抛错。
  */
 export class LlmInterviewer implements IInterviewer {
-  /** 发言生成：失败/泄露要点重试一次，再失败抛错 */
+  /** 发言生成：失败/泄露要点重试一次，再失败抛错（发言类用便宜模型，成本控制） */
   private async utterance(build: () => ChatMessage[], keyPoints: string, what: string): Promise<string> {
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         // reasoning 模型会先消耗思考 token，预算太小会全部耗在 reasoning 上导致 content 为空
-        const text = await chatCompletion(build(), 2048);
+        const text = await chatCompletion(build(), 2048, followupModel());
         if (leaksKeyPoints(text, keyPoints)) throw new Error("疑似泄露评分要点");
         return text;
       } catch (err) {
@@ -198,7 +208,7 @@ export class LlmInterviewer implements IInterviewer {
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const raw = await chatCompletion(messages, 8192);
+        const raw = await chatCompletion(messages, 8192, evalModel());
         const parsed = evaluationJsonSchema.parse(extractJson(raw));
         const byId = new Map(transcript.groups.map((g) => [g.question.id, g.question]));
         const questions: QuestionEvaluation[] = parsed.questions

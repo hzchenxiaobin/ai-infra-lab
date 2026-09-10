@@ -8,12 +8,12 @@
 
 ```
 apps/cli/
-├── bin/interview.mjs       # bin 入口：tsx/esm 的 tsImport 直接跑 TS 源码，免构建
+├── bin/ailab.mjs           # bin 入口：tsx/esm 的 tsImport 直接跑 TS 源码，免构建
 ├── src/
 │   ├── index.ts            # commander 命令注册（全部命令集中此处）
 │   ├── session.ts          # getCaller() + 交互式面试会话循环
 │   └── ui.ts               # 终端输出助手（banner/表格/着色）
-└── package.json            # @interview/cli，bin 名 interview（拷入后可改 ailab）
+└── package.json            # @ailab/cli，bin 名 ailab
 ```
 
 依赖关键点：`@interview/server` 与 `@interview/contracts` 都是 `workspace:*`——
@@ -75,9 +75,9 @@ export async function getCaller() {
 | 命令 | 说明 |
 |---|---|
 | `cli content:sync` | 触发 content-kit 同步：frontmatter → contents/problems 幂等 upsert |
-| `cli user:list / user:ban` | 用户管理（M2） |
-| `cli quota:get <user> / quota:set <user> <kind> <n>` | 查看/调整用户配额（M3） |
-| `cli db:backup` | mysqldump 到 `deploy/backups/`（见 [deployment](deployment.md)） |
+| `cli user:list [-s kw]` / `user:ban <email> --yes` / `user:unban <email>` | 用户管理（已落地；ban 打印影响范围并要求 `--yes`，封禁即登录与既有会话失效） |
+| `cli quota:get <email>` / `quota:set <email> <kind> <n\|unlimited>` | 查看/调整用户当前周期配额（已落地） |
+| `cli db:backup [-o dir]` | mysqldump 到 `deploy/backups/`（已落地，见 [deployment](deployment.md)） |
 
 ## 4. 用法示例
 

@@ -19,9 +19,14 @@ web JudgePage ──tRPC──▶ server judge.run ──insert──▶ submiss
 web 轮询 submissions 状态 ◀──tRPC── server judge.getResult ◀──────────────┘
 ```
 
-- **任务队列就是 DB 表 `submissions`**：`status: pending → running → ac/wa/ce/tle/mle`。
+- **任务队列就是 DB 表 `submissions`**：`status: pending → running → ac/wa/ce/tle/mle/ie`。
   worker 轮询领取，初期不引入 MQ（02 已决策）。
 - worker 与 web/server 同仓库独立部署（独立 compose 服务、独立镜像），不共享进程。
+- **P0 过渡形态（已落地）**：server 进程内置 in-process worker
+  （`apps/server/src/judge/worker.ts`，`startJudgeWorker()` 于 index.ts 启动）——
+  轮询/领取/执行/写回/崩溃恢复逻辑与独立 worker 同构，`judge.submit`/`judge.getResult`
+  已按队列语义工作；但执行路径仍是本机 exec（`run.ts`），**沙箱安全红线未达成**，
+  对外开放注册前必须切换到本文件的 Docker 方案（P1）。
 
 ## 2. 目录结构
 
@@ -122,7 +127,7 @@ WHERE id = (SELECT id FROM submissions WHERE status='pending'
 ```
 
 - 终态：`ac / wa / ce / tle / mle`，外加 `ie`（internal error，worker 自身故障，
-  用于告警与人工介入）；逐用例明细写 `verdict_detail` json。
+  用于告警与人工介入，迁移 0004 已入表）；逐用例明细写 `verdict_detail` json。
 - web 端轮询间隔 1–2s，运行中显示进度；完成写 `runtime_ms` / `memory_kb`（取所有
   用例最大值），驱动掌握度模型（03）。
 - 评测结果落库后联动 `user_progress`（AC 标记）——由 server 侧轮询接口在读到时

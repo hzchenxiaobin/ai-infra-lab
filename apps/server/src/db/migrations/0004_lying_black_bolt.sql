@@ -1,0 +1,2 @@
+ALTER TABLE `submissions` MODIFY COLUMN `status` enum('pending','running','ac','wa','ce','tle','mle','ie') NOT NULL DEFAULT 'pending';--> statement-breakpoint
+ALTER TABLE `submissions` ADD `started_at` timestamp;

@@ -1,22 +1,29 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { queryClient, trpc } from "../../lib/trpc";
 import { Button, Card } from "../../components/ui";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const me = useQuery(trpc.auth.me.queryOptions());
+  const from = (location.state as { from?: string } | null)?.from ?? "/";
 
   const login = useMutation(
     trpc.auth.login.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries();
-        navigate("/");
+        navigate(from, { replace: true });
       },
     }),
   );
+
+  // 已登录（含守卫跳转过来前的竞态）：直接回首页/来源页
+  if (me.data?.user?.email != null) return <Navigate to={from} replace />;
 
   return (
     <div className="mx-auto max-w-md space-y-6 py-10">

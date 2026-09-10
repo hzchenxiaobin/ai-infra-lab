@@ -43,11 +43,12 @@ export const progressRouter = router({
   }),
 
   /**
-   * Dashboard 聚合：学习路径进度 + 刷题统计 + 掌握度雷达（03 掌握度模型：
-   * 0.2×学习信号 + 0.5×刷题信号（难度加权）+ 0.3×面试信号，无数据的信号按 0 计）。
+   * Dashboard 聚合：学习路径进度 + 刷题统计 + 掌握度雷达 + 连续活跃天数
+   * （03 掌握度模型：0.2×学习信号 + 0.5×刷题信号（难度加权）+ 0.3×面试信号，
+   * 无数据的信号按 0 计）。
    */
   overview: authedProcedure.query(async ({ ctx }) => {
-    const [contentRows, problemRows, progressRows, sessionRows] = await Promise.all([
+    const [contentRows, problemRows, progressRows, sessionRows, sessionDateRows] = await Promise.all([
       db
         .select({
           id: contents.id,
@@ -58,7 +59,7 @@ export const progressRouter = router({
         .where(eq(contents.status, "active")),
       db.select({ id: problems.id, difficulty: problems.difficulty }).from(problems),
       db
-        .select({ contentId: userProgress.contentId, status: userProgress.status })
+        .select({ contentId: userProgress.contentId, status: userProgress.status, lastAt: userProgress.lastAt })
         .from(userProgress)
         .where(eq(userProgress.userId, ctx.userId)),
       db
@@ -70,6 +71,10 @@ export const progressRouter = router({
         .from(interviewSessions)
         .where(and(eq(interviewSessions.userId, ctx.userId), eq(interviewSessions.status, "finished")))
         .orderBy(desc(interviewSessions.createdAt)),
+      db
+        .select({ createdAt: interviewSessions.createdAt })
+        .from(interviewSessions)
+        .where(eq(interviewSessions.userId, ctx.userId)),
     ]);
 
     const progressById = new Map(progressRows.map((r) => [r.contentId, r.status] as const));
@@ -166,6 +171,27 @@ export const progressRouter = router({
     });
     mastery.sort((a, b) => a.mastery - b.mastery);
 
-    return { learning, practice, mastery };
+    // ---- 连续活跃天数：学习/刷题/面试任一信号覆盖的 UTC 日，从今天（或昨天）往回数 ----
+    const activeDays = new Set<string>();
+    for (const r of progressRows) activeDays.add(r.lastAt.toISOString().slice(0, 10));
+    for (const r of sessionDateRows) activeDays.add(r.createdAt.toISOString().slice(0, 10));
+    const streakDays = computeStreakDays(activeDays);
+
+    return { learning, practice, mastery, streakDays };
   }),
 });
+
+function computeStreakDays(days: Set<string>): number {
+  const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+  let cursor = new Date();
+  if (!days.has(dayKey(cursor))) {
+    cursor = new Date(cursor.getTime() - 86_400_000);
+    if (!days.has(dayKey(cursor))) return 0;
+  }
+  let streak = 0;
+  while (days.has(dayKey(cursor))) {
+    streak += 1;
+    cursor = new Date(cursor.getTime() - 86_400_000);
+  }
+  return streak;
+}

@@ -2,36 +2,36 @@
 
 > 2026-09-10 四路代码审计（server/web/docs 站/部署）后汇总的未完成事项。
 > 对应路线图见 [05-roadmap.md](05-roadmap.md)，各模块规格见 [dev/](dev/) 目录。
-> 状态约定：⬜ 未开始 / 🔶 部分完成待收尾。
+> 状态约定：⬜ 未开始 / 🔶 部分完成待收尾 / ✅ 已完成。
 
 ## P0 — M2 收尾（应用融合缺口）
 
 ### Web 前端
 
-- ⬜ **Dashboard M2 扩展**：server `progress.overview`（`apps/server/src/routers/progress.ts`）数据已就绪但前端零调用。补：学习路径进度条、刷题统计（AC 数/难度分布/连续天数）、掌握度雷达图（SVG 手写，不引图表库）、配额用量（`quota.me` 也已就绪未用）。落点：`apps/web/src/pages/DashboardPage.tsx`
+- ✅ **Dashboard M2 扩展**（2026-09-10）：`/dashboard` 个人中心已落地（`apps/web/src/pages/dashboard/DashboardPage.tsx`）——学习路径进度条、刷题统计（AC 数/难度分布/连续天数，`progress.overview` 新增 `streakDays`）、掌握度雷达图（手写 SVG）+ 薄弱知识点信号列表、配额用量（`quota.me`）
 - ⬜ **面试报告薄弱点 → 学习/练习推荐链接**（闭环最后一环）：后端 `renderReportMarkdown`（`packages/contracts/src/index.ts`）目前只把 weakDimensions 渲成纯文本；需输出带链接的结构，web `ReportBody.tsx` 配合链接化。依赖 P1 的 `interview_reports` 拆表 + weak_points→knowledge_points 映射
-- ⬜ **主动路由守卫**：App.tsx 无 RequireAuth，目前靠"authedProcedure 401 → 全局跳登录"被动兜底，页面会先闪空态；登录页也无"已登录跳回首页"
+- ✅ **主动路由守卫**（2026-09-10）：`components/RequireAuth.tsx` 包裹全部需登录路由，登录页对已登录用户跳回（含 `from` 回跳）
 - ⬜ **题单页** `/problems/lists/:slug`（hot-interview、10 周计划、每日配套题单）：前后端均无，需新增 router
 - ⬜ **周赛页** `/problems/contest`、**GPU 知识领域 A–H 分组**（ProblemsPage 目前无分组视图）
-- 🔶 **Problems 筛选未暴露全**：contracts `problemFilterSchema` 支持 tag/knowledgePoint/judgeType，前端只做了难度/AC/搜索
-- ⬜ 顶栏品牌名仍是"模拟面试 Mock Interview"（`apps/web/src/components/Layout.tsx`），未改 AIInfra Lab
-- ⬜ `/learn/path`、`/dashboard` 独立路由（设计信息架构中有，目前 LearnPage 与 `/` 兼职）
+- ✅ **Problems 筛选未暴露全**（2026-09-10）：tag/knowledgePoint/judgeType 筛选已加（候选项来自新增 `problem.facets`）
+- ✅ 顶栏品牌名（2026-09-10）：已改 AIInfra Lab（`Layout.tsx` + `index.html` 标题）
+- ✅ `/learn/path`、`/dashboard` 独立路由（2026-09-10）：原 `/` 拆为 HomePage（门户首页，`/`）+ DashboardPage（个人中心，`/dashboard`）；`/learn` 与 `/learn/path` 均渲染 LearnPage
 - ⬜ 面试间内嵌评测器（现在只跳独立 `/judge/:id` 页）
 
 ### Server
 
-- 🔶 **judge 队列化**：`judge.run` 仍是 `execFileSync` 本机同步裸跑（`apps/server/src/judge/run.ts`），`submissions` 表无写入路径。需改为：submit → insert pending → worker 异步执行 → `judge.getResult` 轮询（web 端 `JudgePage.tsx` 同步改轮询）
-- 🔶 **认证残留清理**：单用户自动 provision（`apps/server/src/auth.ts`、`trpc.ts` 两处 TODO 标注）；`adminProcedure` 对 email=NULL 遗留用户放行待收紧；遗留用户历史数据归属方案待定
-- ⬜ **judge 数据源切换**：从 `LEETCODE_REPO_DIR` 读题解改为 `problems.testcases` 入库（字段已建未用），`LEETCODE_REPO_DIR` 与 `src/sync/` 模块、`repo_syncs` 表随迁移退役
+- ✅ **judge 队列化**（2026-09-10 第三批）：`judge.run` 同步裸跑已下线，改为 `judge.submit`（入队前快速校验 + insert submissions pending）+ `judge.getResult` 轮询；server 内置 in-process worker（`apps/server/src/judge/worker.ts`：轮询/FIFO 条件领取/执行/写回/崩溃恢复，`JUDGE_CONCURRENCY`）；迁移 0004 补 `ie` 终态 + `started_at` 列；web `JudgePage.tsx` 已改提交+轮询。**执行路径仍为本机 exec**（P1 Docker 沙箱接管前的过渡形态，dev/judge-worker.md §1 已注明）
+- 🔶 **认证残留清理**：单用户自动 provision（`apps/server/src/auth.ts`、`trpc.ts` 两处 TODO 标注）；`adminProcedure` 对 email=NULL 遗留用户放行待收紧；遗留用户历史数据归属方案待定（注：封禁能力已就位——users.banned_at 迁移 0005 + 登录/enforceUser 双拦截，2026-09-10）
+- ⬜ **judge 数据源切换**：从 `LEETCODE_REPO_DIR` 读题解改为 `problems.testcases` 入库（字段已建未用），`LEETCODE_REPO_DIR` 与 `src/sync/` 模块、`repo_syncs` 表随迁移退役（切换后 judge context 从 questions 迁到 problems，AC 联动 user_progress 在 getResult 补）
 - ⬜ `interview_reports` 独立表（报告现在是 `interview_sessions.report` text 字段）+ `interview_sessions` 补 scope 快照关联 knowledge_points 列
-- 🔶 LLM 模型分级未实现：现状单一 `LLM_MODEL`，`LLM_MODEL_FOLLOWUP/EVAL` 拆分未做（`.env.example` 已占位）
-- 🔶 契约收编：judge/content/problem/search/interview 等 router 仍有局部 `z.object`，未全部进 `packages/contracts`
-- ⬜ content/problem/progress/quota router 无测试
-- ⬜ CLI bin 名仍为 `interview`（可改 ailab）；缺 `user:list`/`user:ban`（M2）、`quota:get/set`（M3）、`db:backup`
+- ✅ LLM 模型分级（2026-09-10）：`LLM_MODEL_FOLLOWUP`/`LLM_MODEL_EVAL` 已生效（发言类/评估类分模型，空值回落 `LLM_MODEL`），`.env.example` 注释同步
+- ✅ 契约收编（2026-09-10）：judge/content/problem/search/interview/question/health 的局部 `z.object` 已全部进 `packages/contracts`（ID 参数/judgeRun/searchQuery 等 schema），`interview.stats` 的 GRADE_SCORES 重复定义一并清理
+- ✅ router 测试：problem/progress/quota/content/auth（封禁）已补，judge worker 队列测试已补（submit→worker→getResult 端到端含 AC/WA/CE），测试 50 passed（2026-09-10）
+- ✅ CLI（2026-09-10）：bin 名 `interview` → `ailab`；`user:list`/`user:ban --yes`/`user:unban`、`quota:get`/`quota:set <email> <kind> <n|unlimited>`、`db:backup`（mysqldump → deploy/backups/）已落地；server 侧配套 admin 端点（auth.userList/userSetBanned/userByEmail、quota.adminGet/adminSet）
 
 ## P1 — M3 主体（评测沙箱与部署，约 0%）
 
-- ⬜ **judge-worker 全部**：`apps/judge-worker/` 只有占位 README。对照 `docs/dev/judge-worker.md`：主循环、队列原子领取（submissions 表缺 `ie` 终态值和 `started_at` 列，需补迁移）、Docker-out-of-Docker 拉起一次性容器、algo 镜像（g++/python3/SQLite）、资源限额与安全红线（无网络/只读/超时强杀/输出截断）、SQL 题评测、崩溃恢复。评测核心从 `apps/server/src/judge/` 抽 `packages/judge-core/` 共享
+- ⬜ **judge-worker 全部**：`apps/judge-worker/` 只有占位 README。对照 `docs/dev/judge-worker.md`：主循环、队列原子领取（submissions 表 `ie` 终态值和 `started_at` 列已补——迁移 0004，2026-09-10）、Docker-out-of-Docker 拉起一次性容器、algo 镜像（g++/python3/SQLite）、资源限额与安全红线（无网络/只读/超时强杀/输出截断）、SQL 题评测、崩溃恢复。评测核心从 `apps/server/src/judge/` 抽 `packages/judge-core/` 共享（server 内置 in-process worker 的执行路径届时下线，队列语义不变）
 - ⬜ **server 侧配套**：worker 领取/回报内部 API（内部 token 鉴权）、GPU 题 `judge_type` 拒绝投递队列、本机 exec 路径下线
 - ⬜ **deploy/ 全部**（只有占位 README）：六服务 `docker-compose.yml`、Caddyfile、四个应用 Dockerfile、algo 评测镜像 Dockerfile、`backup.sh`/`restore.sh`、`bootstrap.sh`、监控告警脚本
 - ⬜ **CI 接线**：无 `.github/workflows/`——lint 必跑、algo 4 批构建、sync 产物校验、测试
@@ -61,8 +61,8 @@
 ## 待核实
 
 - 04 去重矩阵提到的 `topics/cuda`（LeetGPU 43 题对照）在新旧仓库均不存在；专题实际 17 个而非文档所述 18 个——需确认该对照表是否本就不在 topics/cuda，并修正 04 文档
-- drizzle migrations/meta 缺 `0002_snapshot.json`（0002 为手写数据迁移，不影响顺序，首次对真实 MySQL 执行 0003 前建议复核）
-- 密码哈希实现用 scrypt，`dev/server.md` 写 argon2/bcrypt——实现 OK，需修正文档表述
+- drizzle migrations/meta 缺 `0002_snapshot.json`（0002 为手写数据迁移，不影响顺序，首次对真实 MySQL 执行 0003 前建议复核；0004/0005 由 drizzle-kit generate 产出、快照齐全）
+- ~~密码哈希文档表述~~ → `dev/server.md` 已改为 scrypt（2026-09-10 修正，实现本就是 scrypt）
 
 ## 已完成基线（审计确认，供对照）
 
@@ -70,3 +70,5 @@
 - M1：三仓库内容快照（4042 题解 + 106 GPU 题 + 257 learn 篇）、docs 三分区 VitePress 站可构建（algo 4047 页分批构建产物在位）、组件全迁移
 - M2 server：11 个 router、14 表 schema + 4 迁移、邮箱验证码注册全链路、配额计量挂接、CLI bank 管线收编、测试 27 passed
 - M2 web：11 路由（原 6 页 + 登录/注册/Learn/Problems/Search）、Learn 进度格子、Problems 筛选分页 AC 标记、401 全局处理
+- 2026-09-10 第二批（backlog P0 清理）：web 路由守卫 + `/dashboard` 个人中心（进度/刷题统计/掌握度雷达/配额）+ `/learn/path` 独立路由 + Problems 全量筛选 + 品牌名改 AIInfra Lab；server LLM 模型分级 + 契约全量收编 + `problem.facets`/`progress.overview.streakDays`；problem/progress/quota router 测试补齐（41 passed）
+- 2026-09-10 第三批：judge 队列化（submit/getResult + in-process worker + 迁移 0004 + web 轮询）；CLI bin 改 `ailab` + user:list/ban/unban + quota:get/set + db:backup（server 侧 admin 端点 + users.banned_at 迁移 0005 + 封禁双拦截）；content router 测试补齐（50 passed）

@@ -4,9 +4,10 @@ import { Link } from "react-router";
 import { queryClient, trpc } from "../lib/trpc";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Dashboard", end: true },
+  { to: "/", label: "首页", end: true },
   { to: "/learn", label: "学习", end: false },
   { to: "/problems/algo", label: "刷题", end: false },
+  { to: "/dashboard", label: "个人中心", end: false },
   { to: "/bank", label: "题库", end: false },
   { to: "/search", label: "搜索", end: false },
   { to: "/history", label: "历史", end: false },
@@ -30,9 +31,9 @@ export function Layout() {
           <NavLink to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="size-[18px] rounded-[5px] bg-accent-600" />
             <span className="flex flex-col leading-none">
-              <span className="text-[15px] font-bold tracking-tight">模拟面试</span>
+              <span className="text-[15px] font-bold tracking-tight">AIInfra Lab</span>
               <span className="mt-1 text-[10px] font-medium uppercase tracking-[.24em] text-muted">
-                Mock Interview
+                Learn · Practice · Interview
               </span>
             </span>
           </NavLink>

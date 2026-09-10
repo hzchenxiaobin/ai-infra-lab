@@ -224,6 +224,38 @@ run("auth register/login 流程（集成）", () => {
     );
   });
 
+  it("封禁：登录拒绝（FORBIDDEN）+ 既有 authedProcedure 会话失效（UNAUTHORIZED）", async () => {
+    const banEmail = `banned-${Date.now()}@example.com`;
+    const inserted = await db
+      .insert(users)
+      .values({
+        email: banEmail,
+        passwordHash: hashPassword(password),
+        emailVerified: 1,
+        name: "BanTest",
+      })
+      .$returningId();
+    const userId = inserted[0].id;
+
+    try {
+      // 未封禁：登录与 procedure 正常
+      const ok = await caller().auth.login({ email: banEmail, password });
+      expect(ok.user.email).toBe(banEmail);
+      await expect(caller(userId).auth.me()).resolves.toBeTruthy();
+
+      // 封禁：登录 FORBIDDEN、authedProcedure UNAUTHORIZED
+      await db.update(users).set({ bannedAt: new Date() }).where(eq(users.id, userId));
+      await expect(caller().auth.login({ email: banEmail, password })).rejects.toThrow("封禁");
+      await expect(caller(userId).auth.me()).rejects.toThrow("封禁");
+
+      // 解封恢复
+      await db.update(users).set({ bannedAt: null }).where(eq(users.id, userId));
+      await expect(caller().auth.login({ email: banEmail, password })).resolves.toBeTruthy();
+    } finally {
+      await db.delete(users).where(eq(users.id, userId));
+    }
+  });
+
   it("清理测试用户", async () => {
     await db.delete(users).where(eq(users.email, email));
   });

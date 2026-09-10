@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Layout } from "./components/Layout";
-import DashboardPage from "./pages/DashboardPage";
+import { RequireAuth } from "./components/RequireAuth";
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 import BankPage from "./pages/bank/BankPage";
 import { ProblemsPage } from "./pages/problems/ProblemsPage";
 import LearnPage from "./pages/learn/LearnPage";
@@ -17,18 +19,22 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="learn" element={<LearnPage />} />
-          <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
-          <Route path="problems/algo" element={<ProblemsPage partition="algo" />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="bank" element={<BankPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="interview/:id" element={<InterviewPage />} />
-          <Route path="judge/:id" element={<JudgePage />} />
-          <Route path="report/:id" element={<ReportPage />} />
-          <Route path="history" element={<HistoryPage />} />
+          <Route element={<RequireAuth />}>
+            <Route index element={<HomePage />} />
+            <Route path="learn" element={<LearnPage />} />
+            <Route path="learn/path" element={<LearnPage />} />
+            <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
+            <Route path="problems/algo" element={<ProblemsPage partition="algo" />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="bank" element={<BankPage />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="interview/:id" element={<InterviewPage />} />
+            <Route path="judge/:id" element={<JudgePage />} />
+            <Route path="report/:id" element={<ReportPage />} />
+            <Route path="history" element={<HistoryPage />} />
+          </Route>
           <Route
             path="*"
             element={<div className="py-20 text-center text-sm text-muted">页面不存在</div>}

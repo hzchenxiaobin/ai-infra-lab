@@ -1,6 +1,9 @@
 import { TRPCError } from "@trpc/server";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, like, or, sql } from "drizzle-orm";
 import {
+  adminUserBanSchema,
+  adminUserEmailParamSchema,
+  adminUserListSchema,
   authLoginSchema,
   authRegisterSchema,
   authSendCodeSchema,
@@ -19,7 +22,7 @@ import { db } from "../db/client.js";
 import { emailVerifications, users } from "../db/schema.js";
 import { sendVerificationCodeEmail } from "../mailer.js";
 import { emailPerDayLimiter, emailPerMinuteLimiter, ipPerHourLimiter } from "../rate-limit.js";
-import { authedProcedure, clearSessionCookie, publicProcedure, router, setSessionCookie } from "../trpc.js";
+import { adminProcedure, authedProcedure, clearSessionCookie, publicProcedure, router, setSessionCookie } from "../trpc.js";
 
 type UserRow = typeof users.$inferSelect;
 
@@ -126,6 +129,9 @@ export const authRouter = router({
     if (!user?.passwordHash || !verifyPassword(input.password, user.passwordHash)) {
       throw new TRPCError({ code: "UNAUTHORIZED", message: "邮箱或密码错误" });
     }
+    if (user.bannedAt) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "该账号已被封禁，如有疑问请联系管理员" });
+    }
     grantSession(ctx, user.id);
     return { user: toCurrentUser(user) };
   }),
@@ -139,5 +145,62 @@ export const authRouter = router({
     const rows = await db.select().from(users).where(eq(users.id, ctx.userId)).limit(1);
     if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
     return { user: toCurrentUser(rows[0]) };
+  }),
+
+  /** 用户管理（dev/cli.md §3：cli user:list，admin）——不返回 password_hash */
+  userList: adminProcedure.input(adminUserListSchema).query(async ({ input }) => {
+    const where = input.search
+      ? or(like(users.email, `%${input.search}%`), like(users.name, `%${input.search}%`))
+      : undefined;
+    const [items, total] = await Promise.all([
+      db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          tier: users.tier,
+          emailVerified: users.emailVerified,
+          bannedAt: users.bannedAt,
+          createdAt: users.createdAt,
+        })
+        .from(users)
+        .where(where)
+        .orderBy(desc(users.id))
+        .limit(input.pageSize)
+        .offset((input.page - 1) * input.pageSize),
+      db.select({ count: sql<number>`count(*)` }).from(users).where(where),
+    ]);
+    return { items, total: Number(total[0].count), page: input.page, pageSize: input.pageSize };
+  }),
+
+  /** 封禁/解封（dev/cli.md §6：破坏性操作，CLI 侧要求 --yes 确认） */
+  userSetBanned: adminProcedure.input(adminUserBanSchema).mutation(async ({ input }) => {
+    const result = await db
+      .update(users)
+      .set({ bannedAt: input.banned ? new Date() : null })
+      .where(eq(users.email, input.email));
+    if (result[0].affectedRows === 0) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
+    }
+    return { email: input.email, banned: input.banned };
+  }),
+
+  /** 按 email 取单个用户（CLI 内部寻址用，admin） */
+  userByEmail: adminProcedure.input(adminUserEmailParamSchema).query(async ({ input }) => {
+    const rows = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        tier: users.tier,
+        emailVerified: users.emailVerified,
+        bannedAt: users.bannedAt,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .where(eq(users.email, input.email))
+      .limit(1);
+    if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
+    return rows[0];
   }),
 });

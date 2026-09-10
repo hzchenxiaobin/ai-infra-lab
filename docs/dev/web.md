@@ -18,21 +18,23 @@ apps/web/
 │   │   └── format.ts       # 日期/时长等格式化
 │   ├── components/
 │   │   ├── Layout.tsx      # 顶栏 + 导航壳
+│   │   ├── RequireAuth.tsx # 路由守卫（未登录跳 /login，见 §3）
 │   │   ├── Markdown.tsx    # 轻量 Markdown + KaTeX 渲染器（见 §5）
 │   │   ├── MessageBubble.tsx   # 面试对话气泡
 │   │   ├── ReportBody.tsx  # 评估报告渲染
 │   │   └── ui.tsx          # 基础控件（按钮/卡片/徽标等）
 │   └── pages/
-│       ├── DashboardPage.tsx       # 【已有，扩展】统计看板 → 个人中心
-│       ├── bank/                   # 【已有】面试题库页（BankPage + 题目卡片/表单弹窗）
-│       ├── InterviewPage.tsx       # 【已有】面试间
-│       ├── JudgePage.tsx           # 【已有，改造】评测页（接队列化提交）
-│       ├── ReportPage.tsx          # 【已有】评估报告
-│       ├── HistoryPage.tsx         # 【已有】历史场次
-│       ├── auth/                   # 【新增】注册 / 登录
-│       ├── learn/                  # 【新增】Learn 路径页（10 周 × 7 天进度）
-│       ├── problems/               # 【新增】Problems 题库页（GPU/算法两分区 + 题单）
-│       └── SearchPage.tsx          # 【新增】全站搜索（查 server 托管的静态索引）
+│       ├── HomePage.tsx            # 门户首页（组卷 + 最近场次）
+│       ├── dashboard/              # 个人中心（进度/统计/掌握度雷达/配额，progress.overview + quota.me）
+│       ├── bank/                   # 面试题库页（BankPage + 题目卡片/表单弹窗）
+│       ├── InterviewPage.tsx       # 面试间
+│       ├── JudgePage.tsx           # 评测页（接队列化提交）
+│       ├── ReportPage.tsx          # 评估报告
+│       ├── HistoryPage.tsx         # 历史场次
+│       ├── auth/                   # 注册 / 登录
+│       ├── learn/                  # Learn 路径页（10 周 × 7 天进度）
+│       ├── problems/               # Problems 题库页（GPU/算法两分区 + 题单）
+│       └── SearchPage.tsx          # 全站搜索（查 server 托管的静态索引）
 ├── vite.config.ts          # 见 §6
 └── package.json            # @interview/web（拷入后改名 @ailab/web）
 ```
@@ -41,17 +43,18 @@ apps/web/
 
 | 路由 | 页面 | 状态 |
 |---|---|---|
-| `/` | Dashboard（进度摘要 + 掌握度雷达 + 面试统计） | 已有，M2 扩展 |
+| `/` | 门户首页（组卷 + 最近场次） | 已有 |
+| `/dashboard` | 个人中心（进度 / 统计 / 掌握度雷达 / 配额用量） | 已有（M2 扩展） |
 | `/bank` | 面试题库（729 题 CRUD） | 已有 |
 | `/interview/:id` | 面试间 | 已有 |
-| `/judge/:id` | 在线评测 | 已有，M2 改为异步轮询提交结果 |
+| `/judge/:id` | 在线评测 | 已有；M2 已改 submit + getResult 异步轮询（2026-09-10） |
 | `/report/:id` | 评估报告（M2 补薄弱点 → 内容链接） | 已有 |
 | `/history` | 面试历史 | 已有 |
-| `/login` `/register` | 登录 / 注册（邮箱 + 验证码） | 新增（M2） |
-| `/learn` `/learn/path` | 学习路径总览、按周/天进度 | 新增（M2） |
-| `/problems/gpu` `/problems/algo` | 题库浏览（筛选/检索/AC 状态） | 新增（M2） |
+| `/login` `/register` | 登录 / 注册（邮箱 + 验证码） | 已有（M2） |
+| `/learn` `/learn/path` | 学习路径总览（10 周/专题/论文 + 进度标记） | 已有（M2） |
+| `/problems/gpu` `/problems/algo` | 题库浏览（难度/AC/标签/知识点/评测方式筛选） | 已有（M2） |
 | `/problems/lists/:slug` | 题单（hot-interview / 10 周计划 / 每日配套） | 新增（M2） |
-| `/search` | 全站搜索 | 新增（M1） |
+| `/search` | 全站搜索 | 已有（M1） |
 
 路由集中维护在 `App.tsx`，新页面先加路由再建 `pages/` 目录文件。
 **正文阅读页不在 web**：`/learn/week{n}/day{m}`、题目正文这类只读内容由 docs 站渲染，
@@ -78,7 +81,10 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({ client: trpcClient, quer
   （`lib/trpc.ts` 底部已有样板），避免引入 `@trpc/server`。
 - mutation 成功后按需 `queryClient.invalidateQueries`；列表类 query 用
   `queryKey` 带筛选参数（tRPC proxy 自动处理）。
-- 认证后的 401：TanStack Query 全局 onError 捕获 `UNAUTHORIZED` → 跳 `/login`。
+- **路由守卫**：`components/RequireAuth.tsx` 包裹需登录路由（`App.tsx` 中 login/register
+  之外的路径均在其内）——依据 `auth.me` 判定（遗留单用户 email 为 NULL 视为未登录），
+  未登录带 `from` 跳 `/login`；登录/注册页对已登录用户反向跳回。
+- 认证后的 401：TanStack Query 全局 onError 捕获 `UNAUTHORIZED` → 跳 `/login`（守卫的兜底）。
 
 ## 4. 组件组织
 

@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { queryClient, trpc } from "../../lib/trpc";
 import { Button, Card } from "../../components/ui";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [countdown, setCountdown] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+
+  const me = useQuery(trpc.auth.me.queryOptions());
+  const from = (location.state as { from?: string } | null)?.from ?? "/";
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -29,10 +33,13 @@ export default function RegisterPage() {
     trpc.auth.register.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries();
-        navigate("/");
+        navigate(from, { replace: true });
       },
     }),
   );
+
+  // 已登录：直接回首页/来源页
+  if (me.data?.user?.email != null) return <Navigate to={from} replace />;
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 

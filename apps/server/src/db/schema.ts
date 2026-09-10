@@ -25,6 +25,8 @@ export const users = mysqlTable("users", {
   name: varchar("name", { length: 255 }).notNull().default("考生"),
   avatar: varchar("avatar", { length: 500 }),
   tier: mysqlEnum("tier", ["free", "pro"]).notNull().default("free"),
+  /** 封禁时间（cli user:ban）；非空时登录与既有会话一律拒绝 */
+  bannedAt: timestamp("banned_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -139,16 +141,20 @@ export const userProgress = mysqlTable(
 export const submissions = mysqlTable("submissions", {
   id: serial("id").primaryKey(),
   userId: bigint("user_id", { mode: "number" }).notNull(),
+  /** 题目标识：数据源切换前存面试题库 question 自增 id（文本），切换后为统一 ID */
   problemId: varchar("problem_id", { length: 128 }).notNull(),
   language: varchar("language", { length: 32 }).notNull(),
   code: text("code").notNull(),
-  status: mysqlEnum("status", ["pending", "running", "ac", "wa", "ce", "tle", "mle"])
+  /** pending → running → ac/wa/ce/tle/mle/ie（ie = worker 自身故障，告警用） */
+  status: mysqlEnum("status", ["pending", "running", "ac", "wa", "ce", "tle", "mle", "ie"])
     .notNull()
     .default("pending"),
   verdictDetail: json("verdict_detail").$type<Record<string, unknown>>(),
   runtimeMs: int("runtime_ms"),
   memoryKb: int("memory_kb"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  /** worker 领取时间（崩溃恢复：running 超时的行重置为 pending 重领） */
+  startedAt: timestamp("started_at"),
 });
 
 // ---------------------------------------------------------------------------

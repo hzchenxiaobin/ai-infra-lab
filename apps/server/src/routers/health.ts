@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { healthCheckSchema } from "@ailab/contracts";
 import { publicProcedure, router } from "../trpc.js";
 
 export const healthRouter = router({
   health: publicProcedure
-    .input(z.object({ name: z.string().optional() }).optional())
+    .input(healthCheckSchema)
     .query(({ input, ctx }) => ({
       ok: true as const,
       message: `hello ${input?.name ?? "interview"}`,

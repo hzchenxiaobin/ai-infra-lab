@@ -1,9 +1,11 @@
 import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import {
   CATEGORY_LABELS,
+  GRADE_SCORES,
+  interviewReplySchema,
   MAX_FOLLOW_UPS,
+  sessionIdParamSchema,
   startInterviewSchema,
   type Category,
   type GroupedTranscript,
@@ -214,7 +216,7 @@ export const interviewRouter = router({
   }),
 
   reply: authedProcedure
-    .input(z.object({ sessionId: z.number(), content: z.string().min(1) }))
+    .input(interviewReplySchema)
     .mutation(async ({ input, ctx }) => {
       const session = await loadSession(input.sessionId, ctx.userId);
       if (session.status !== "active") {
@@ -294,7 +296,7 @@ export const interviewRouter = router({
     }),
 
   finish: authedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(sessionIdParamSchema)
     .mutation(async ({ input, ctx }) => {
       await loadSession(input.sessionId, ctx.userId);
       return finishSession(input.sessionId, ctx.userId);
@@ -316,7 +318,7 @@ export const interviewRouter = router({
       .where(and(eq(interviewSessions.userId, ctx.userId), eq(interviewSessions.status, "finished")))
       .orderBy(desc(interviewSessions.createdAt));
 
-    const gradeScore: Record<string, number> = { A: 4, B: 3, C: 2, D: 1 };
+    const gradeScore: Record<string, number> = GRADE_SCORES;
     const byCategory = new Map<string, number[]>();
     for (const s of rows) {
       const score = gradeScore[s.overallGrade ?? ""] ?? 0;
@@ -349,7 +351,7 @@ export const interviewRouter = router({
   }),
 
   get: authedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(sessionIdParamSchema)
     .query(async ({ input, ctx }) => {
       const session = await loadSession(input.sessionId, ctx.userId);
       const messages = await db

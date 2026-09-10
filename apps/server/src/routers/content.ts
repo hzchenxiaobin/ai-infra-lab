@@ -3,9 +3,9 @@ import { and, desc, eq, inArray, like, sql, type SQL } from "drizzle-orm";
 import {
   contentFilterSchema,
   contentImportSchema,
+  unifiedIdParamSchema,
   type ContentImportInput,
 } from "@ailab/contracts";
-import { z } from "zod";
 import { db } from "../db/client.js";
 import { contents, problems } from "../db/schema.js";
 import { adminProcedure, authedProcedure, router } from "../trpc.js";
@@ -40,7 +40,7 @@ export const contentRouter = router({
   }),
 
   get: authedProcedure
-    .input(z.object({ id: z.string().min(1).max(128) }))
+    .input(unifiedIdParamSchema)
     .query(async ({ input }) => {
       const rows = await db.select().from(contents).where(eq(contents.id, input.id)).limit(1);
       if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "内容不存在" });

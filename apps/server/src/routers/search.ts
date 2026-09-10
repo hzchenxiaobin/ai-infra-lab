@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { z } from "zod";
-import { contentTypeSchema } from "@ailab/contracts";
+import { searchQuerySchema } from "@ailab/contracts";
 import { authedProcedure, router } from "../trpc.js";
 
 // ---------------------------------------------------------------------------
@@ -38,13 +37,7 @@ async function loadIndex(): Promise<IndexRow[]> {
 
 export const searchRouter = router({
   query: authedProcedure
-    .input(
-      z.object({
-        q: z.string().trim().min(1).max(200),
-        type: contentTypeSchema.optional(),
-        limit: z.number().int().min(1).max(100).default(30),
-      }),
-    )
+    .input(searchQuerySchema)
     .query(async ({ input }) => {
       const rows = await loadIndex();
       const q = input.q.toLowerCase();

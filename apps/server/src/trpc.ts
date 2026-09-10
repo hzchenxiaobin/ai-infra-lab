@@ -71,10 +71,24 @@ export const router = t.router;
 export const middleware = t.middleware;
 export const publicProcedure = t.procedure;
 
-/** 要求登录：userId 为 null 即 UNAUTHORIZED，下游 ctx.userId 收窄为 number */
-const enforceUser = middleware(({ ctx, next }) => {
+/**
+ * 要求登录：userId 为 null 即 UNAUTHORIZED，下游 ctx.userId 收窄为 number。
+ * 封禁检查（cli user:ban）：banned_at 非空即拒绝——session 是无状态签名 cookie，
+ * 无法主动吊销，封禁在此生效（代价是每个已认证请求一次主键查询）。
+ * 注：users 无删除路径，行缺失只出现在 createCaller 合成 userId（测试/CLI）场景，
+ * 此时视作未封禁放行。
+ */
+const enforceUser = middleware(async ({ ctx, next }) => {
   if (ctx.userId == null) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "请先登录" });
+  }
+  const rows = await db
+    .select({ bannedAt: users.bannedAt })
+    .from(users)
+    .where(eq(users.id, ctx.userId))
+    .limit(1);
+  if (rows[0]?.bannedAt) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "账号已被封禁" });
   }
   return next({ ctx: { ...ctx, userId: ctx.userId } });
 });
