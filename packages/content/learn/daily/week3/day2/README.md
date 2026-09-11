@@ -7,7 +7,7 @@ knowledge_points: [cutlass, tensor-core]
 updated: 2026-08-28
 week: 3
 day: 2
-related_problems: ["gpu:e:002"]
+related_problems: ["gpu:e:002", "gpu:m:057", "lc:0019", "lc:0141", "lc:0142", "lc:0160", "lc:0234"]
 related_questions: []
 ---
 
@@ -433,19 +433,19 @@ M=N=K    | Day1_naive(ms)  Day2_tiled(ms)  TF32cub(ms)  | Day1%   Day2%   tiled/
 
 **题目链接**：<https://leetgpu.com/challenges/fp16-batched-matrix-multiplication>
 
-本题与今日 WMMA GEMM 强相关：FP16 存储 + FP32 累加正是 WMMA `m16n16k16` 指令的精度策略。朴素版用 CUDA Core 逐元素乘加（`__half2float` → FMA → `__float2half`），思考如何用今天学的 shared memory tiling + WMMA 改造为 Tensor Core 版本。完整题解见 [FP16 Batched MatMul 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fp16-batched-matmul-solution.html)。
+本题与今日 WMMA GEMM 强相关：FP16 存储 + FP32 累加正是 WMMA `m16n16k16` 指令的精度策略。朴素版用 CUDA Core 逐元素乘加（`__half2float` → FMA → `__float2half`），思考如何用今天学的 shared memory tiling + WMMA 改造为 Tensor Core 版本。完整题解见 <a href="/problems/gpu/medium/57-fp16-batched-matmul">FP16 Batched MatMul 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 3 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 3 周「链表与数学技巧」Day 2（快慢指针），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 2（快慢指针），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/) | 简单 | 快慢指针 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/141_环形链表.html) |
-| [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/) | 中等 | 快慢指针找入口 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/142_环形链表%20II.html) |
-| [160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/) | 简单 | 双指针交叉走 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/160_相交链表.html) |
-| [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/) | 中等 | 快慢双指针 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/19_删除链表的倒数第N个节点.html) |
-| [234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/) | 简单 | 快慢指针 + 反转半链 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/234_回文链表.html) |
+| [141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/) | 简单 | 快慢指针 | <a href="/problems/algo/0141">题解</a> |
+| [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/) | 中等 | 快慢指针找入口 | <a href="/problems/algo/0142">题解</a> |
+| [160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/) | 简单 | 双指针交叉走 | <a href="/problems/algo/0160">题解</a> |
+| [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/) | 中等 | 快慢双指针 | <a href="/problems/algo/0019">题解</a> |
+| [234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/) | 简单 | 快慢指针 + 反转半链 | <a href="/problems/algo/0234">题解</a> |
 
 ---
 

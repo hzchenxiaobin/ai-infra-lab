@@ -10,7 +10,7 @@ number: 2
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w01d06", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d05", "learn:w03d02", "learn:w04d01", "learn:w04d04"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w01d06", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d05", "learn:w03d02", "learn:w04d01", "learn:w04d04"]
 ---
 
 # LeetGPU Matrix Multiplication 题解

@@ -10,7 +10,7 @@ number: 45
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Count 3D Array Element 题解

@@ -7,7 +7,7 @@ knowledge_points: [gpu-execution-model, memory-hierarchy]
 updated: 2026-08-28
 week: 1
 day: 2
-related_problems: ["gpu:e:021"]
+related_problems: ["gpu:e:021", "lc:0011", "lc:0015", "lc:0042", "lc:0283"]
 related_questions: []
 ---
 
@@ -501,18 +501,18 @@ ncu \
 
 ReLU 是纯 element-wise 的 memory-bound kernel，代码极简、寄存器占用极低，适合专注观察 block size 与寄存器用量对 Occupancy 的影响。用 ncu 对比不同 blockDim 下的 achieved occupancy，直接验证 Day 2 的理论。
 
-> 💡 提交后在 [LeetGPU ReLU 题目](https://leetgpu.com/challenges/relu)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 [ReLU 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-relu-solution.html)。
+> 💡 提交后在 [LeetGPU ReLU 题目](https://leetgpu.com/challenges/relu)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 <a href="/problems/gpu/easy/21-relu">ReLU 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 1 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 1 周「数组、哈希与双指针（含手撕排序）」Day 2（双指针），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 2（双指针），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [283. 移动零](https://leetcode.cn/problems/move-zeroes/) | 简单 | 双指针填非零 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/283_移动零.html) |
-| [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/) | 中等 | 双指针 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/11_盛最多水的容器.html) |
-| [15. 三数之和](https://leetcode.cn/problems/3sum/) | 中等 | 排序 + 双指针 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/15_三数之和.html) |
-| [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) | 困难 | 双指针 / 单调栈 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/42_接雨水.html) |
+| [283. 移动零](https://leetcode.cn/problems/move-zeroes/) | 简单 | 双指针填非零 | <a href="/problems/algo/0283">题解</a> |
+| [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/) | 中等 | 双指针 | <a href="/problems/algo/0011">题解</a> |
+| [15. 三数之和](https://leetcode.cn/problems/3sum/) | 中等 | 排序 + 双指针 | <a href="/problems/algo/0015">题解</a> |
+| [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) | 困难 | 双指针 / 单调栈 | <a href="/problems/algo/0042">题解</a> |
 
 ---
 

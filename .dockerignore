@@ -1,0 +1,43 @@
+# 四个应用 Dockerfile 构建上下文均为仓库根（apps/*/Dockerfile），
+# 此文件控制送入 daemon 的内容：源码与 lockfile 进、依赖与产物不进
+# （镜像内各自 pnpm install / build，避免宿主软链 node_modules 污染分层）。
+#
+# 注意：packages/content 是内容快照，任何通配模式都不得波及其内部文件
+# （曾用 **/dist_* 全局排除，误伤 solution/images/dist_islands*.svg 等题解插图，
+# 导致 docs 镜像构建 UNRESOLVED_IMPORT——排除模式一律锚定具体目录）。
+
+# 版本库与本地工具
+.git
+.gitignore
+.github
+.opencode
+.claude
+.vscode
+.idea
+*.log
+logs/
+
+# 秘密（只在部署机，不进任何镜像层）
+.env
+.env.*
+!.env.example
+
+# 依赖与构建产物（镜像内自建；按目录锚定）
+node_modules
+**/node_modules
+apps/*/dist
+packages/*/dist
+*.tsbuildinfo
+coverage
+
+# docs 内容站：分批产物与 sync 源由镜像内 build:* 生成（仅 apps/docs 内匹配）
+apps/docs/learn/dist
+apps/docs/problems-gpu/dist
+apps/docs/problems-algo/dist
+apps/docs/problems-algo/dist_*
+apps/docs/**/src
+apps/docs/**/.vitepress/cache
+
+# 运维产物
+deploy/backups
+apps/server/data

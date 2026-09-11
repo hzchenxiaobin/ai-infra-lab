@@ -10,7 +10,7 @@ number: 3
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w01d04", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w07d04", "learn:w08d04", "learn:w10d01"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w01d04", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w07d04", "learn:w08d04", "learn:w10d01"]
 ---
 
 # LeetGPU Matrix Transpose 题解

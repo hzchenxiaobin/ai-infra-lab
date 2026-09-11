@@ -10,7 +10,7 @@ number: 54
 difficulty: easy
 languages: [cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d03"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d03"]
 ---
 
 # LeetGPU SwiGLU 题解

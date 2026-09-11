@@ -33,10 +33,10 @@ related_questions: []
 
 | Day | 主题 | 目录 |
 |-----|------|------|
-| Day 1 | Trace Transformer 推理流程（Prefill/Decode） | [day1/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day1.html) |
-| Day 2 | 手写 Softmax 与 LayerNorm Kernel | [day2/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day2.html) |
-| Day 3 | LayerNorm 优化与 GEMM Backward 数据流 | [day3/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day3.html) |
-| Day 4 | Triton 语言专题 —— 用 Triton 重写 Softmax/GEMM/FA | [day4/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day4.html) |
-| Day 5 | 项目推进 —— Triton 三方 Benchmark 与 Autotune | [day5/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day5.html) |
-| Day 6 | Profiling —— Triton vs CUDA vs PyTorch 性能对比 | [day6/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day6.html) |
-| Day 7 | Transformer 算子分类与总结 | [day7/](https://hzchenxiaobin.github.io/ai-infra-notes/week4/day7.html) |
+| Day 1 | Trace Transformer 推理流程（Prefill/Decode） | [day1/](/week4/day1) |
+| Day 2 | 手写 Softmax 与 LayerNorm Kernel | [day2/](/week4/day2) |
+| Day 3 | LayerNorm 优化与 GEMM Backward 数据流 | [day3/](/week4/day3) |
+| Day 4 | Triton 语言专题 —— 用 Triton 重写 Softmax/GEMM/FA | [day4/](/week4/day4) |
+| Day 5 | 项目推进 —— Triton 三方 Benchmark 与 Autotune | [day5/](/week4/day5) |
+| Day 6 | Profiling —— Triton vs CUDA vs PyTorch 性能对比 | [day6/](/week4/day6) |
+| Day 7 | Transformer 算子分类与总结 | [day7/](/week4/day7) |

@@ -10,7 +10,7 @@ number: 8
 difficulty: medium
 languages: [cpp, python]
 judge: none
-related_learn: []
+related_learn: ["learn:w02d04", "learn:w02d07"]
 ---
 
 # LeetCode 字符串转换整数 (atoi) 题解

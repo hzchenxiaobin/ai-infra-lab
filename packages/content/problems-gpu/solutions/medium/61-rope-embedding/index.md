@@ -10,7 +10,7 @@ number: 61
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d02"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d02"]
 ---
 
 # LeetGPU Rotary Positional Embedding 题解

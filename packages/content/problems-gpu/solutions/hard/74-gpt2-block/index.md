@@ -10,7 +10,7 @@ number: 74
 difficulty: hard
 languages: [cuda]
 judge: leetgpu-com
-related_learn: ["learn:w04d07", "learn:w06d05", "learn:w06d07"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w04d07", "learn:w06d05", "learn:w06d07"]
 ---
 
 # LeetGPU GPT-2 Transformer Block 题解（Week4 Day7 综合验收）

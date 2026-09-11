@@ -7,7 +7,7 @@ knowledge_points: [gpu-execution-model, memory-hierarchy]
 updated: 2026-08-28
 week: 1
 day: 6
-related_problems: ["gpu:e:002"]
+related_problems: ["gpu:e:002", "lc:0137", "lc:0260", "lc:0338", "lc:0349", "lc:0581"]
 related_questions: []
 ---
 
@@ -194,7 +194,7 @@ Roofline 图帮助判断 kernel 是 compute-bound 还是 memory-bound：
 
 ![Ridge Point 公式](../images/ridge_point_formula.svg)
 
-以 RTX 5090 为例（实测值，详见 [Day 3](https://hzchenxiaobin.github.io/ai-infra-notes/week1/exercise/my_gpu_info.md)）：
+以 RTX 5090 为例（实测值，详见 [Day 3](/week1)）：
 
 ![RTX 5090 Ridge Point 计算](../images/ridge_point_calc.svg)
 
@@ -229,7 +229,7 @@ ncu --metrics \
 
 **Step 2：采集到的数据**
 
-执行时间来自仓库留档的 nsys 实测（[profiles/week1_profile_summary.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/profiles/week1_profile_summary.html)，RTX 5090，2026-08-04）；bank conflict 计数因容器环境 Performance Counter 权限受限（ERR_NVGPUCTRPERM）未能实测，下表给出按 `grid(1,1) × block(32,8)` 估算的量级，有 GPU 权限时用上面的 ncu 命令实测回填：
+执行时间来自仓库留档的 nsys 实测（[profiles/week1_profile_summary.md](/week1/profiles/week1-profile-summary)，RTX 5090，2026-08-04）；bank conflict 计数因容器环境 Performance Counter 权限受限（ERR_NVGPUCTRPERM）未能实测，下表给出按 `grid(1,1) × block(32,8)` 估算的量级，有 GPU 权限时用上面的 ncu 命令实测回填：
 
 | Kernel | 执行时间（nsys 实测） | bank conflicts（load，估算） | 说明 |
 |--------|----------------------|------------------------------|------|
@@ -261,7 +261,7 @@ ncu --metrics \
 
 ### Coding 任务：本周 kernel profiling
 
-> 📄 本日任务的命令清单与 Roofline 记录表已留档在 [notes/day6_nsight_profiling.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/notes/day6_nsight_profiling.md)，可对照填写。
+> 📄 本日任务的命令清单与 Roofline 记录表已留档在 [notes/day6_nsight_profiling.md](/week1/day6)，可对照填写。
 
 #### 任务 1：profiling hello_gpu
 
@@ -344,19 +344,19 @@ ncu \
 
 本题是 GEMM 的基础版，适合用 ncu 做完整 profiling。用 Day 6 学的 Nsight Compute 分析 SM throughput、memory throughput、occupancy，画出 Roofline 图，判断 kernel 是 memory-bound 还是 compute-bound。
 
-> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 [Matrix Multiplication 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html)。
+> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 任务 6：LeetCode 面试题（10 周计划 · 第 1 周 Day 6）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 1 周「数组、哈希与双指针（含手撕排序）」Day 6（位运算与其他），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 6（位运算与其他），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/) | 中等 | 位运算按位计数 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/137_只出现一次的数字II.html) |
-| [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/) | 中等 | 异或 + lowbit 分组 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/260_只出现一次的数字III.html) |
-| [338. 比特位计数](https://leetcode.cn/problems/counting-bits/) | 简单 | DP + lowbit | [题解](https://hzchenxiaobin.github.io/leetcode/problems/338_比特位计数.html) |
-| [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/) | 简单 | 哈希集合 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/349_两个数组的交集.html) |
-| [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/) | 中等 | 双指针找乱序边界 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/581_最短无序连续子数组.html) |
+| [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/) | 中等 | 位运算按位计数 | <a href="/problems/algo/0137">题解</a> |
+| [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/) | 中等 | 异或 + lowbit 分组 | <a href="/problems/algo/0260">题解</a> |
+| [338. 比特位计数](https://leetcode.cn/problems/counting-bits/) | 简单 | DP + lowbit | <a href="/problems/algo/0338">题解</a> |
+| [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/) | 简单 | 哈希集合 | <a href="/problems/algo/0349">题解</a> |
+| [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/) | 中等 | 双指针找乱序边界 | <a href="/problems/algo/0581">题解</a> |
 
 ---
 
@@ -398,7 +398,7 @@ ncu --set full -o profiles/day6_bank_conflict ./day5/kernels/bank_conflict
 - [ ] 能读取 Roofline 图并定位瓶颈类型
 - [ ] 能判断 kernel 是 memory-bound / compute-bound / latency-bound
 - [ ] 记录各 kernel 的 throughput 和 occupancy
-- [ ] 整理 profiling 结果到 [profiles/week1_profile_summary.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/profiles/week1_profile_summary.html)
+- [ ] 整理 profiling 结果到 [profiles/week1_profile_summary.md](/week1/profiles/week1-profile-summary)
 
 ---
 

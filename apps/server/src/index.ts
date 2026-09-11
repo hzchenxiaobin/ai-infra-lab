@@ -5,6 +5,7 @@ import { serve } from "@hono/node-server";
 import { appRouter } from "./routers/index.js";
 import { createContext } from "./trpc.js";
 import { env } from "./env.js";
+import { llmMetricsSnapshot } from "./llm-metrics.js";
 import { startJudgeWorker } from "./judge/worker.js";
 
 const app = new Hono();
@@ -16,6 +17,10 @@ app.use(
 );
 
 app.get("/healthz", (c) => c.json({ ok: true }));
+
+// LLM 打点（dev/deployment.md §5）：当日调用/token 聚合 + 延迟 p95，
+// monitor.sh 轮询做「日 token 超预算 / p95 > 60s」告警。聚合计数无敏感信息
+app.get("/metrics/llm", (c) => c.json(llmMetricsSnapshot()));
 
 serve({ fetch: app.fetch, port: env.PORT }, (info) => {
   console.log(`server listening on http://localhost:${info.port}`);

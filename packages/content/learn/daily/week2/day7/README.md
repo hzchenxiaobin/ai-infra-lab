@@ -7,7 +7,7 @@ knowledge_points: [kernel-optimization, profiling]
 updated: 2026-08-28
 week: 2
 day: 7
-related_problems: ["gpu:m:004"]
+related_problems: ["gpu:m:004", "lc:0003", "lc:0008", "lc:0014", "lc:0028", "lc:0043", "lc:0048", "lc:0054", "lc:0073", "lc:0076", "lc:0151", "lc:0165", "lc:0209", "lc:0239", "lc:0240", "lc:0415", "lc:0424", "lc:0438", "lc:0468", "lc:0560", "lc:0713", "lc:0974"]
 related_questions: []
 ---
 
@@ -378,7 +378,7 @@ o_new = o * (l * exp(m - m_new) / l_new) + (exp(xj - m_new) / l_new) * vj
 
 **与本周知识的关联**：本题综合了 Week2 的 Reduction 主线（Week1 Day4/Day5 + Week2 Day1 的 Warp Shuffle），是 reduction 最纯粹的形态。kernel 采用两阶段归约：每个线程用 grid-stride 循环累加局部和（`double`）→ Warp Shuffle 归约 → Shared Memory 中转 → `atomicAdd` 跨 block 汇总。适合在验收日限时完成，检验 block reduce + 跨 block 汇总的综合掌握程度。
 
-> 💡 完整题解（含 grid-stride 累加、warp shuffle sum 归约、atomicAdd 跨 block 汇总）见 [Reduction 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-reduction-solution.html)。
+> 💡 完整题解（含 grid-stride 累加、warp shuffle sum 归约、atomicAdd 跨 block 汇总）见 <a href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
 
 #### 任务 5：GitHub 仓库整理
 
@@ -447,15 +447,15 @@ GFLOPS = 2.0 * M * N * K / (time_ms * 1e6)
 
 #### 任务 7：本周 LeetCode 题目回顾（10 周计划 · 第 2 周）
 
-本周 LeetCode 题目对应 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 2 周「字符串、滑动窗口与矩阵」（点击查看题解）：
+本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 滑动窗口基础 | [3. 无重复字符的最长子串](https://hzchenxiaobin.github.io/leetcode/problems/3_无重复字符的最长子串.html)、[438. 找到字符串中所有字母异位词](https://hzchenxiaobin.github.io/leetcode/problems/438_找到字符串中所有字母异位词.html)、[560. 和为 K 的子数组](https://hzchenxiaobin.github.io/leetcode/problems/560_和为K的子数组.html)、[974. 和可被 K 整除的子数组](https://hzchenxiaobin.github.io/leetcode/problems/974_和可被K整除的子数组.html) |
-| Day 2 | 滑动窗口进阶 | [239. 滑动窗口最大值](https://hzchenxiaobin.github.io/leetcode/problems/239_滑动窗口最大值.html)、[76. 最小覆盖子串](https://hzchenxiaobin.github.io/leetcode/problems/76_最小覆盖子串.html)、[209. 长度最小的子数组](https://hzchenxiaobin.github.io/leetcode/problems/209_长度最小的子数组.html)、[424. 替换后的最长重复字符](https://hzchenxiaobin.github.io/leetcode/problems/424_替换后的最长重复字符.html)、[713. 乘积小于 K 的子数组](https://hzchenxiaobin.github.io/leetcode/problems/713_乘积小于K的子数组.html) |
-| Day 3 | 字符串模拟 | [415. 字符串相加](https://hzchenxiaobin.github.io/leetcode/problems/415_字符串相加.html)、[43. 字符串相乘](https://hzchenxiaobin.github.io/leetcode/problems/43_字符串相乘.html)、[151. 反转字符串中的单词](https://hzchenxiaobin.github.io/leetcode/problems/151_反转字符串中的单词.html)、[14. 最长公共前缀](https://hzchenxiaobin.github.io/leetcode/problems/14_最长公共前缀.html) |
-| Day 4 | 字符串匹配 | [165. 比较版本号](https://hzchenxiaobin.github.io/leetcode/problems/165_比较版本号.html)、[8. 字符串转换整数（atoi）](https://hzchenxiaobin.github.io/leetcode/problems/8_字符串转换整数atoi.html)、[28. 找出字符串中第一个匹配项的下标](https://hzchenxiaobin.github.io/leetcode/problems/28_找出字符串中第一个匹配项的下标.html)、[468. 验证 IP 地址](https://hzchenxiaobin.github.io/leetcode/problems/468_验证IP地址.html) |
-| Day 5 | 矩阵 | [73. 矩阵置零](https://hzchenxiaobin.github.io/leetcode/problems/73_矩阵置零.html)、[54. 螺旋矩阵](https://hzchenxiaobin.github.io/leetcode/problems/54_螺旋矩阵.html)、[48. 旋转图像](https://hzchenxiaobin.github.io/leetcode/problems/48_旋转图像.html)、[240. 搜索二维矩阵 II](https://hzchenxiaobin.github.io/leetcode/problems/240_搜索二维矩阵II.html) |
+| Day 1 | 滑动窗口基础 | <a href="/problems/algo/0003">3. 无重复字符的最长子串</a>、<a href="/problems/algo/0438">438. 找到字符串中所有字母异位词</a>、<a href="/problems/algo/0560">560. 和为 K 的子数组</a>、<a href="/problems/algo/0974">974. 和可被 K 整除的子数组</a> |
+| Day 2 | 滑动窗口进阶 | <a href="/problems/algo/0239">239. 滑动窗口最大值</a>、<a href="/problems/algo/0076">76. 最小覆盖子串</a>、<a href="/problems/algo/0209">209. 长度最小的子数组</a>、<a href="/problems/algo/0424">424. 替换后的最长重复字符</a>、<a href="/problems/algo/0713">713. 乘积小于 K 的子数组</a> |
+| Day 3 | 字符串模拟 | <a href="/problems/algo/0415">415. 字符串相加</a>、<a href="/problems/algo/0043">43. 字符串相乘</a>、<a href="/problems/algo/0151">151. 反转字符串中的单词</a>、<a href="/problems/algo/0014">14. 最长公共前缀</a> |
+| Day 4 | 字符串匹配 | <a href="/problems/algo/0165">165. 比较版本号</a>、<a href="/problems/algo/0008">8. 字符串转换整数（atoi）</a>、<a href="/problems/algo/0028">28. 找出字符串中第一个匹配项的下标</a>、<a href="/problems/algo/0468">468. 验证 IP 地址</a> |
+| Day 5 | 矩阵 | <a href="/problems/algo/0073">73. 矩阵置零</a>、<a href="/problems/algo/0054">54. 螺旋矩阵</a>、<a href="/problems/algo/0048">48. 旋转图像</a>、<a href="/problems/algo/0240">240. 搜索二维矩阵 II</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 2 周「字符串、滑动窗口与矩阵」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

@@ -7,7 +7,7 @@ knowledge_points: [gpu-execution-model, memory-hierarchy]
 updated: 2026-08-28
 week: 1
 day: 4
-related_problems: ["gpu:e:003"]
+related_problems: ["gpu:e:003", "lc:0088", "lc:0179", "lc:0274", "lc:0912"]
 related_questions: []
 ---
 
@@ -76,7 +76,7 @@ GPU 有一个**平衡点（Ridge Point）**，由峰值算力和峰值带宽决�
 - 当 `AI < Ridge Point` 时 → **Memory-Bound**（算力富余，数据喂不饱）
 - 当 `AI > Ridge Point` 时 → **Compute-Bound**（数据充足，算力是瓶颈）
 
-以 RTX 5090 为例（实测值，详见 [Day 3](https://hzchenxiaobin.github.io/ai-infra-notes/week1/exercise/my_gpu_info.md)）：
+以 RTX 5090 为例（实测值，详见 [Day 3](/week1)）：
 - Peak FP32 算力：104.75 TFLOP/s
 - Peak 显存带宽：1.792 TB/s（GDDR7）
 - **Ridge Point = 104.75 / 1.792 ≈ 58.45 FLOP/Byte**
@@ -492,18 +492,18 @@ ncu --metrics dram__throughput.avg.pct_of_peak_sustained_elapsed ./transpose
 
 > ⚠️ 这是 Matrix Transpose 本周**唯一一次正式布置**（Day 1–3 分别为 Vector Addition / ReLU / Matrix Addition），请把 tiling + padding 版本做透，Day 5 还会在它的基础上分析 bank conflict。
 
-> 💡 提交后在 [LeetGPU Matrix Transpose 题目](https://leetgpu.com/challenges/matrix-transpose)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 [Matrix Transpose 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-transpose-solution.html)。
+> 💡 提交后在 [LeetGPU Matrix Transpose 题目](https://leetgpu.com/challenges/matrix-transpose)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 1 周 Day 4）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 1 周「数组、哈希与双指针（含手撕排序）」Day 4（手撕排序），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 4（手撕排序），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) | 中等 | 手撕快排 / 归并 / 堆排 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/912_排序数组.html) |
-| [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) | 简单 | 三指针从后往前 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/88_合并两个有序数组.html) |
-| [179. 最大数](https://leetcode.cn/problems/largest-number/) | 中等 | 自定义排序（拼接比较） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/179_最大数.html) |
-| [274. H 指数](https://leetcode.cn/problems/h-index/) | 中等 | 计数排序 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/274_H指数.html) |
+| [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) | 中等 | 手撕快排 / 归并 / 堆排 | <a href="/problems/algo/0912">题解</a> |
+| [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) | 简单 | 三指针从后往前 | <a href="/problems/algo/0088">题解</a> |
+| [179. 最大数](https://leetcode.cn/problems/largest-number/) | 中等 | 自定义排序（拼接比较） | <a href="/problems/algo/0179">题解</a> |
+| [274. H 指数](https://leetcode.cn/problems/h-index/) | 中等 | 计数排序 | <a href="/problems/algo/0274">题解</a> |
 
 ---
 

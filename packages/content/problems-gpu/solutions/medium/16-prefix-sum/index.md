@@ -10,7 +10,7 @@ number: 16
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w02d01"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w02d01"]
 ---
 
 # LeetGPU Prefix Sum 题解

@@ -7,7 +7,7 @@ knowledge_points: [batching, scheduling]
 updated: 2026-08-28
 week: 7
 day: 1
-related_problems: ["gpu:e:041"]
+related_problems: ["gpu:e:041", "lc:0112", "lc:0113", "lc:0128", "lc:0129", "lc:0222", "lc:0437"]
 related_questions: []
 ---
 
@@ -269,19 +269,19 @@ Submitting 3 sequences with staggered arrival...
 
 Simple Inference 是一个**完整的简化推理 kernel**——把 embedding lookup + matmul + activation 串成一个 kernel，正好对应 Day 1 的 Continuous Batching 主题：理解**单个请求的推理流程**是理解多请求调度的前提。本题帮助你从"单算子优化"视角转向"**推理管线**"视角。
 
-> 💡 提交后在 [LeetGPU Simple Inference](https://leetgpu.com/challenges/simple-inference) 上记录通过耗时。完整题解（含 embedding/matmul/activation 串联 kernel、与 Continuous Batching 单请求推理流程的类比）见 [Simple Inference 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-simple-inference-solution.html)。
+> 💡 提交后在 [LeetGPU Simple Inference](https://leetgpu.com/challenges/simple-inference) 上记录通过耗时。完整题解（含 embedding/matmul/activation 串联 kernel、与 Continuous Batching 单请求推理流程的类比）见 <a href="/problems/gpu/easy/41-simple-inference">Simple Inference 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 7 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 1（路径问题），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 1（路径问题），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [112. 路径总和](https://leetcode.cn/problems/path-sum/) | 简单 | DFS 递归 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/112_路径总和.html) |
-| [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/) | 中等 | DFS 回溯收集路径 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/113_路径总和II.html) |
-| [129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/) | 中等 | DFS 前缀累积 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/129_求根节点到叶节点数字之和.html) |
-| [222. 完全二叉树的节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/) | 简单 | 完全二叉树性质 + 二分 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/222_完全二叉树的节点个数.html) |
-| [437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) | 中等 | 前缀和 + 哈希 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/437_路径总和III.html) |
+| [112. 路径总和](https://leetcode.cn/problems/path-sum/) | 简单 | DFS 递归 | <a href="/problems/algo/0112">题解</a> |
+| [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/) | 中等 | DFS 回溯收集路径 | <a href="/problems/algo/0113">题解</a> |
+| [129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/) | 中等 | DFS 前缀累积 | <a href="/problems/algo/0129">题解</a> |
+| [222. 完全二叉树的节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/) | 简单 | 完全二叉树性质 + 二分 | <a href="/problems/algo/0222">题解</a> |
+| [437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) | 中等 | 前缀和 + 哈希 | <a href="/problems/algo/0437">题解</a> |
 
 ---
 

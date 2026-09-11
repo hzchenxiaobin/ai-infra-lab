@@ -10,7 +10,7 @@ number: 96
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d01", "learn:w06d01", "learn:w06d06"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d01", "learn:w06d01", "learn:w06d06"]
 ---
 
 # LeetGPU INT8 KV-Cache Attention 题解

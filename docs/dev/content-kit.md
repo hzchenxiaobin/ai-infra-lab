@@ -44,7 +44,9 @@ schema 全文见 [03](../03-data-model.md#统一内容元数据frontmatter)。co
   （`knowledge_points` 表 / 词表文件）内，防止标签自由发散。
 - `related_problems` / `related_learn` 的对称性构建期校验：A 引用了 B，B 缺反向引用时
   报错或自动补齐（单向维护、构建期补对称，03 已注明可由 learn 侧单向维护）。
-- `paper` 的 `status: skeleton` 显式标注空骨架（18 篇待补），列表页据此展示完成度。
+- 论文骨架显式口径（2026-09-11 落地）：`stats.ts` 扫 `learn/paper/` 目录——有
+  README.md = 成文，只有 PDF = 骨架（`paper_skeleton_dirs` 显式列出）；docs 站
+  papers 索引页同口径列出（🚧 + PDF 下载），PDF 经 `src/public/papers/` 进产物。
 
 ## 3. 统一 ID 方案
 
@@ -71,7 +73,7 @@ schema 全文见 [03](../03-data-model.md#统一内容元数据frontmatter)。co
 |---|---|---|
 | frontmatter 结构 | ai-infra-notes check_course.py 思路 + 新增 zod | 必填字段、枚举值、日期格式 |
 | 重复标题 | check_course.py | 同分区标题查重 |
-| 悬空链接 | check_course.py | 站内链接/统一 ID 引用必须能解析到存在的内容 |
+| 悬空链接 | check_course.py | 相对路径按文件解析；站内统一 URL（完整 `/learn/...`、`/problems/...` 与分区相对 `/week1/day1` 两形态）按 scanContent 的 url 集校验（`fix-oldsite-links.ts` 产物）；分区资源路径（`/images/...`）按分区根解析 |
 | 图片引用完整性 | 新增（替代 leetcode 的缺失图片容忍插件） | 引用的 assets 文件必须存在；未引用的孤儿图片告警 |
 | 陈旧口径 | check_course.py | "共 N 题""8 周/56 天"等手写统计与构建期实际统计比对 |
 | 模板结构 | leetgpu/leetcode/ai-infra-notes SKILL.md | GPU 题解 6 段式、每日教程 8 段骨架、论文 17 节骨架的标题序列检查 |

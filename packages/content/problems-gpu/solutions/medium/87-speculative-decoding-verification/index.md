@@ -10,7 +10,7 @@ number: 87
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d03", "learn:w08d03"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d03", "learn:w08d03"]
 ---
 
 # LeetGPU Speculative Decoding Verification 题解

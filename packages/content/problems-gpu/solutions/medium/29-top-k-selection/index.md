@@ -10,7 +10,7 @@ number: 29
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w06d06", "learn:w07d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w06d06", "learn:w07d05"]
 ---
 
 # LeetGPU Top K Selection 题解

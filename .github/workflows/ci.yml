@@ -1,0 +1,85 @@
+# CI（dev/backlog P1：lint 必跑、sync 产物校验、测试）。
+# 分区构建（learn/gpu/algo 4 批）见 docs-build.yml（workflow_dispatch + 周调度，
+# algo 单批堆上限 10GB，与常规检查分流）。
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: pnpm install
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: build（tsc/vite，除 docs——三分区构建见 docs-build.yml）
+        run: pnpm build
+
+      - name: lint（web oxlint）
+        run: pnpm --filter @ailab/web lint
+
+      - name: content-kit sync 产物校验
+        run: |
+          pnpm --filter content-kit sync
+          node -e "
+          const fs = require('fs');
+          const checks = [
+            ['packages/content-kit/dist/contents.json', (a) => a.length >= 4000, 'contents ≥ 4000 行'],
+            ['packages/content-kit/dist/problems.json', (a) => a.filter(p => p.judge_type === 'internal').length >= 3000, '可评测题 ≥ 3000'],
+            ['packages/content-kit/dist/lists.json', (a) => a.length >= 1, '题单 ≥ 1'],
+            ['packages/content-kit/dist/search-index.json', (a) => a.length >= 4000, '搜索索引 ≥ 4000 行'],
+          ];
+          for (const [file, ok, what] of checks) {
+            const rows = JSON.parse(fs.readFileSync(file, 'utf8'));
+            if (!ok(rows)) { console.error('校验失败：' + what + '（' + file + ' 实际 ' + rows.length + '）'); process.exit(1); }
+            console.log('ok:', what);
+          }"
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=5s --health-timeout=3s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: pnpm install
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: 建测试库并迁移（server 与 judge-worker 各自独立库）
+        run: |
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE interview_test; CREATE DATABASE interview_test_jw;"
+          DATABASE_URL=mysql://root:root@127.0.0.1:3306/interview_test pnpm --filter @ailab/server db:migrate
+          DATABASE_URL=mysql://root:root@127.0.0.1:3306/interview_test_jw pnpm --filter @ailab/server db:migrate
+
+      - name: 构建 algo 评测镜像（judge-worker docker 冒烟用）
+        run: docker build --build-arg APT_MIRROR=deb.debian.org -t ailab/judge-algo:latest deploy/images/algo
+
+      - name: 测试（judge-core / server / judge-worker）
+        # root test 脚本先构建 judge-core dist（exports 指向 dist，server/worker
+        # 测试的运行时解析依赖它），再 pnpm -r test
+        run: pnpm test

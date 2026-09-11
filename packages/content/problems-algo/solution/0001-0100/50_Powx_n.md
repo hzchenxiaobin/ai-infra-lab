@@ -10,7 +10,7 @@ number: 50
 difficulty: medium
 languages: [cpp, python]
 judge: none
-related_learn: []
+related_learn: ["learn:w03d06", "learn:w03d07"]
 ---
 
 # LeetCode Pow(x, n) 题解

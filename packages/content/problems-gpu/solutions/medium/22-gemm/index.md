@@ -10,7 +10,7 @@ number: 22
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w02d02", "learn:w02d04", "learn:w09d06", "learn:w10d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w02d02", "learn:w02d04", "learn:w09d06", "learn:w10d05"]
 ---
 
 # LeetGPU General Matrix Multiplication (GEMM) 题解

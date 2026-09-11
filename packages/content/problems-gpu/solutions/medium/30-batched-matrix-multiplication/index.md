@@ -10,7 +10,7 @@ number: 30
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w03d04", "learn:w05d06", "learn:w06d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w03d01", "learn:w03d04", "learn:w05d06", "learn:w06d05", "learn:w07d04"]
 ---
 
 # LeetGPU Batched Matrix Multiplication 题解

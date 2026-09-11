@@ -10,7 +10,7 @@ number: 51
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w06d02"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w06d02"]
 ---
 
 # LeetGPU Max Subarray Sum 题解

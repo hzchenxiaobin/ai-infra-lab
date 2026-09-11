@@ -1,0 +1,51 @@
+# Caddy 反向代理（dev/deployment.md §1）。
+#
+# 路由总表（SPA 与 docs 站的路径取舍）：
+#   /learn/*                    → docs（学习正文；SPA 的 /learn 精确路由落兜底→web）
+#   /problems/gpu/*             → docs（GPU 题解）
+#   /problems/algo/*            → docs（算法题解）
+#   /problems/contest/*/*       → docs（周赛题解，4 段深路径）
+#   /problems/lists/*           → web  （SPA 题单详情优先；docs 题单正文与 SPA 同路径，
+#                                        取舍：交互页直达，正文经站内链接在 SPA 内嵌访问）
+#   /trpc*                      → server
+#   /healthz*、/metrics/*       → server（探活与 LLM 打点，公网只读聚合数）
+#   其余（/,/login,/dashboard,/problems/gpu 等精确 SPA 路由）→ web
+#   注：SPA 路由的站内跳转由 react-router 客户端处理，不经过本代理；
+#       上表只影响直接输入 URL / 刷新的行为。
+#
+# 生产域名模式：把站点块改为 `example.com { ... }`，Caddy 自动签发 Let's Encrypt
+# （需要 80/443 可达 + DNS 解析）；纯内网可维持 :80 不配 TLS。
+:80 {
+	# 访问日志（JSON → stdout → docker logs）：monitor.sh 统计近 10 分钟 5xx
+	log {
+		output stdout
+		format json
+	}
+	handle /learn/* {
+		reverse_proxy docs:80
+	}
+	handle /problems/gpu/* {
+		reverse_proxy docs:80
+	}
+	handle /problems/algo/* {
+		reverse_proxy docs:80
+	}
+	handle /problems/contest/*/* {
+		reverse_proxy docs:80
+	}
+	handle /problems/lists/* {
+		reverse_proxy web:80
+	}
+	handle /trpc* {
+		reverse_proxy server:3001
+	}
+	handle /healthz* {
+		reverse_proxy server:3001
+	}
+	handle /metrics/* {
+		reverse_proxy server:3001
+	}
+	handle {
+		reverse_proxy web:80
+	}
+}

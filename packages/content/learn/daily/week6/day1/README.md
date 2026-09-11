@@ -7,7 +7,7 @@ knowledge_points: [inference-system, kv-cache]
 updated: 2026-08-28
 week: 6
 day: 1
-related_problems: ["gpu:e:041", "gpu:m:096"]
+related_problems: ["gpu:e:041", "gpu:m:096", "lc:0094", "lc:0102", "lc:0103", "lc:0144", "lc:0145"]
 related_questions: []
 ---
 
@@ -395,19 +395,19 @@ print(prof.key_averages().table(sort_by='cuda_time', row_limit=8))
 
 这道题就是**今天 Decode 阶段的核心算子**——单 query 对 KV Cache 做 1×N attention，是典型的 memory-bound。更关键的是，题目把 KV Cache 存成 **int8 + per-token scale**，这正是今天"减少 KV Cache 读取"优化方向里的**KV Cache 量化**：int8 相比 fp32 把 KV 的 HBM 流量直接砍到 1/4，Decode 的带宽瓶颈立刻缓解。生产级推理系统（TensorRT-LLM、vLLM）都用这套。
 
-> 💡 提交后在 [LeetGPU INT8 KV-Cache Attention](https://leetgpu.com/challenges/int8-kv-cache-attention) 上记录通过耗时。完整题解（含 int8 反量化、decode attention kernel、ncu 带宽 profiling、与 prefill 的算术强度对比）见 [INT8 KV-Cache Attention 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int8-kv-cache-attention-solution.html)。
+> 💡 提交后在 [LeetGPU INT8 KV-Cache Attention](https://leetgpu.com/challenges/int8-kv-cache-attention) 上记录通过耗时。完整题解（含 int8 反量化、decode attention kernel、ncu 带宽 profiling、与 prefill 的算术强度对比）见 <a href="/problems/gpu/medium/96-int8-kv-cache-attention">INT8 KV-Cache Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 6 周「二叉树（上）——遍历、形态与 BST」Day 1（遍历），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 1（遍历），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/) | 简单 | 递归 / 栈迭代 / Morris | [题解](https://hzchenxiaobin.github.io/leetcode/problems/94_二叉树的中序遍历.html) |
-| [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/) | 简单 | 栈迭代 / Morris | [题解](https://hzchenxiaobin.github.io/leetcode/problems/144_二叉树的前序遍历.html) |
-| [145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/) | 简单 | 栈迭代（根右左逆序） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/145_二叉树的后序遍历.html) |
-| [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/) | 中等 | BFS 队列 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/102_二叉树的层序遍历.html) |
-| [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/) | 中等 | BFS + 奇偶层反向 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/103_二叉树的锯齿形层序遍历.html) |
+| [94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/) | 简单 | 递归 / 栈迭代 / Morris | <a href="/problems/algo/0094">题解</a> |
+| [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/) | 简单 | 栈迭代 / Morris | <a href="/problems/algo/0144">题解</a> |
+| [145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/) | 简单 | 栈迭代（根右左逆序） | <a href="/problems/algo/0145">题解</a> |
+| [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/) | 中等 | BFS 队列 | <a href="/problems/algo/0102">题解</a> |
+| [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/) | 中等 | BFS + 奇偶层反向 | <a href="/problems/algo/0103">题解</a> |
 
 ---
 

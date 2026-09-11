@@ -10,7 +10,7 @@ number: 60
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w06d03"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w06d03"]
 ---
 
 # LeetGPU Top-p Sampling 题解

@@ -508,11 +508,11 @@ ncu --metrics \
 
 本题是今天 GEMM 主题的最纯粹实战——`tl.dot` 调用 Tensor Core、`@triton.autotune` 搜索最优 tile，正是 Triton GEMM 的核心。LeetGPU 这道题既接受 CUDA C++ 提交也接受 Triton 提交，正好对比同一算法两种写法的生产力差异：CUDA 版要手写 `wmma` PTX + shared memory tiling（参考 Week 4 Day 1 题解），Triton 版用 `tl.dot` 一行搞定。建议先用 Triton 写一版提交，再用 CUDA 写一版对比代码量与性能。
 
-> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时与所用语言。完整 CUDA 题解（含 `wmma` + double buffering + L2 优化）见 [Matrix Multiplication 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html)。
+> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时与所用语言。完整 CUDA 题解（含 `wmma` + double buffering + L2 优化）见 <a href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 4 周 Day 4 复盘）
 
-> 📅 今日为 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 4 周「栈、队列与单调栈」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
+> 📅 今日为 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
 ---
 

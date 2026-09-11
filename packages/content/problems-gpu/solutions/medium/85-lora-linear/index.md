@@ -10,7 +10,7 @@ number: 85
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d05"]
 ---
 
 # LeetGPU LoRA Linear 题解

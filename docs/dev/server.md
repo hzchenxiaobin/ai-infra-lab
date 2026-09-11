@@ -13,7 +13,7 @@ apps/server/
 │   ├── index.ts            # 【已有】Hono 入口：/trpc/* 挂 tRPC，/healthz 健康检查
 │   ├── env.ts              # 【已有】zod 校验的环境变量（加载仓库根 .env）
 │   ├── trpc.ts             # 【已有】initTRPC + superjson；createContext 注入 userId
-│   ├── auth.ts             # 【重写】现为单用户自动 provision，M2 改为 session cookie 认证
+│   ├── auth.ts             # 【已有】scrypt 密码/验证码/签名 session + getUserIdByEmail（CLI 身份解析）
 │   ├── middleware/         # 【新增】配额计量、限流、错误打点
 │   │   └── quota.ts
 │   ├── routers/
@@ -58,10 +58,12 @@ apps/server/
                               └─ authedProcedure   需登录，ctx.userId 可用
 ```
 
-`src/trpc.ts` 现状：`createContext` 调 `getCurrentUserId()` 自动 provision 唯一用户。
-**M2 改造**：`createContext` 从 cookie 解 session 得 `userId`，未登录时 `userId = null`；
-`authedProcedure` 上加 `enforceUser` 中间件，null 即抛 `UNAUTHORIZED`。自动 provision
-逻辑删除（06 开发约定：勿在新代码上叠加单用户残留）。
+`src/trpc.ts`：`createContext` 从 cookie 解 session 得 `userId`，未登录为 `null`，
+`authedProcedure` 的 `enforceUser` 中间件抛 `UNAUTHORIZED`（2026-09-11 收紧：
+单用户自动 provision 回落已删除，未登录不再静默造用户）；封禁检查在
+`enforceUser` 内生效（users.banned_at 非空即拒）。`adminProcedure` 仅认
+`ADMIN_EMAILS` 命中用户——email 为 NULL 的遗留用户需先经 `auth.userClaim`
+认领绑定邮箱，再加入 ADMIN_EMAILS 获得管理身份。
 
 ## 3. Router 模块划分
 
@@ -71,7 +73,7 @@ apps/server/
 | `question` | 已有 | 题库 CRUD / 分页筛选 / stats / scopes / seed |
 | `interview` | 已有 | 面试状态机全流程（见 §6） |
 | `judge` | 已队列化 | getProblem / submit（写 submissions 队列）/ getResult（轮询 + AC 联动 user_progress）；统一题目 ID 入参（problems 表数据源，2026-09-10 第六批）；执行见 `judge/worker.ts` |
-| `auth` | 已有 | 发送验证码 / 注册 / 登录 / 登出 / me；user:list / userSetBanned / userByEmail（admin，CLI 用） |
+| `auth` | 已有 | 发送验证码 / 注册 / 登录 / 登出 / me；user:list / userSetBanned / userByEmail / userClaim（admin，CLI 用） |
 | `content` | 已有 | contents/problems 元数据查询、统一 ID 解析、import（admin，含 problem_lists 题单 upsert） |
 | `progress` | 已有 | 进度标记 upsert、掌握度雷达、Dashboard 聚合（含 streakDays） |
 | `problem` | 已有 | 题库浏览（list/facets）+ 题单（lists/getList：成员有序 + AC 联动）+ 周赛（contestSessions/contestProblems：场次聚合与 Q 序） |

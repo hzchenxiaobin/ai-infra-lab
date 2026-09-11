@@ -10,7 +10,7 @@ number: 470
 difficulty: medium
 languages: [cpp, python]
 judge: none
-related_learn: []
+related_learn: ["learn:w03d06", "learn:w03d07"]
 ---
 
 # LeetCode 用 Rand7() 实现 Rand10() 题解

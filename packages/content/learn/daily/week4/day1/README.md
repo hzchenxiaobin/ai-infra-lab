@@ -7,7 +7,7 @@ knowledge_points: [transformer, triton]
 updated: 2026-08-28
 week: 4
 day: 1
-related_problems: ["gpu:e:002"]
+related_problems: ["gpu:e:002", "lc:0020", "lc:0150", "lc:0155", "lc:0232", "lc:0380", "lc:0946"]
 related_questions: []
 ---
 
@@ -39,7 +39,7 @@ related_questions: []
 
 ### 背景知识：Transformer 结构基础
 
-> 📖 Transformer 的结构基础——RNN/LSTM 演化、Self-Attention 与 QKV 数学推导、Multi-Head Attention、位置编码、残差/LayerNorm/FFN、Block 组装——在 **Transformer 专题** 里有完整的 7 天教程（每天配手写实现）：[Transformer 专题](https://hzchenxiaobin.github.io/ai-infra-notes/transformer/index.html)。已熟悉这些内容或学完专题的同学直接往下读，本文不再重复，只保留后续章节要用的符号约定。
+> 📖 Transformer 的结构基础——RNN/LSTM 演化、Self-Attention 与 QKV 数学推导、Multi-Head Attention、位置编码、残差/LayerNorm/FFN、Block 组装——在 **Transformer 专题** 里有完整的 7 天教程（每天配手写实现）：[Transformer 专题](/topics/transformer)。已熟悉这些内容或学完专题的同学直接往下读，本文不再重复，只保留后续章节要用的符号约定。
 
 #### 关键符号速查
 
@@ -303,20 +303,20 @@ python trace_transformer.py
 
 **与今日知识的关联**：Matrix Multiplication 是 GEMM 的最纯粹形态——今天 profiling 揭示了 Prefill 阶段 `aten::mm` 占 CUDA 时间 60%+（compute-bound），本题就是手写这个主角：naive 版每 thread 独立算一个 `C` 元素，`A`/`B` 被重复读，算术强度仅 1/4 FLOP/Byte（memory-bound）；shared memory tiling 靠数据复用把 AI 拉高，转为 compute-bound。它是"用 ncu 判定 bound 类型"的最佳练习对象——同一份代码加 tiling 前后 `DRAM%` 与 `SM%` 的对比，就是今天 Roofline 分析的实战。
 
-> 💡 完整题解见 [Matrix Multiplication 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html)。
+> 💡 完整题解见 <a href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 4 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 4 周「栈、队列与单调栈」Day 1（栈基础与设计），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 1（栈基础与设计），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/) | 简单 | 栈 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/20_有效括号.html) |
-| [155. 最小栈](https://leetcode.cn/problems/min-stack/) | 中等 | 辅助栈 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/155_最小栈.html) |
-| [232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/) | 简单 | 双栈倒换（摊还 O(1)） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/232_用栈实现队列.html) |
-| [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/) | 中等 | 操作数栈求值 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/150_逆波兰表达式求值.html) |
-| [380. O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/) | 中等 | 哈希 + 数组交换删除 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/380_O1时间插入删除和获取随机元素.html) |
-| [946. 验证栈序列](https://leetcode.cn/problems/validate-stack-sequences/) | 中等 | 栈模拟 pushed→popped | [题解](https://hzchenxiaobin.github.io/leetcode/problems/946_验证栈序列.html) |
+| [20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/) | 简单 | 栈 | <a href="/problems/algo/0020">题解</a> |
+| [155. 最小栈](https://leetcode.cn/problems/min-stack/) | 中等 | 辅助栈 | <a href="/problems/algo/0155">题解</a> |
+| [232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/) | 简单 | 双栈倒换（摊还 O(1)） | <a href="/problems/algo/0232">题解</a> |
+| [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/) | 中等 | 操作数栈求值 | <a href="/problems/algo/0150">题解</a> |
+| [380. O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/) | 中等 | 哈希 + 数组交换删除 | <a href="/problems/algo/0380">题解</a> |
+| [946. 验证栈序列](https://leetcode.cn/problems/validate-stack-sequences/) | 中等 | 栈模拟 pushed→popped | <a href="/problems/algo/0946">题解</a> |
 
 ---
 

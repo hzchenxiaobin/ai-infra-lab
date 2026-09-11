@@ -7,7 +7,7 @@ knowledge_points: [gpu-execution-model, memory-hierarchy]
 updated: 2026-08-28
 week: 1
 day: 7
-related_problems: ["gpu:e:001", "gpu:e:002", "gpu:e:003", "gpu:e:008", "gpu:e:021", "gpu:m:004"]
+related_problems: ["gpu:e:001", "gpu:e:002", "gpu:e:003", "gpu:e:008", "gpu:e:021", "gpu:m:004", "lc:0001", "lc:0011", "lc:0015", "lc:0031", "lc:0041", "lc:0042", "lc:0049", "lc:0053", "lc:0056", "lc:0075", "lc:0088", "lc:0128", "lc:0136", "lc:0137", "lc:0169", "lc:0179", "lc:0189", "lc:0238", "lc:0260", "lc:0274", "lc:0283", "lc:0287", "lc:0338", "lc:0349", "lc:0581", "lc:0912"]
 related_questions: []
 ---
 
@@ -177,7 +177,7 @@ cudaFuncSetAttribute(kernel, cudaFuncAttributePreferredSharedMemoryCarveout, 100
 
 #### 任务 1：完成 Week 1 学习笔记
 
-更新 [notes/week1_notes.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/notes/week1_notes.html)，建议包含以下内容：
+更新 [notes/week1_notes.md](/week1/notes/week1-notes)，建议包含以下内容：
 
 ~~~~markdown
 # Week 1 学习笔记
@@ -247,7 +247,7 @@ nsys profile -o ...
 - 与 SIMD 的区别：SIMT 允许 warp 内分支（warp divergence），但有分支的线程会被串行化；SIMD 通常不支持分支
 - **性能启示**：避免 warp divergence（if 条件让 warp 内线程走不同路径），block 大小取 32 的倍数
 
-参见 [Day 1](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day1.html)、[Day 2](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day2.html)。
+参见 [Day 1](/week1/day1)、[Day 2](/week1/day2)。
 
 </details>
 
@@ -271,7 +271,7 @@ else { B分支 } // lane 16-31 走 B
 3. 把会发散的计算拆成多个 kernel，每个处理一个分支
 4. 实在无法避免时，让两条分支工作量尽量均衡
 
-参见 [Day 1](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day1.html)。
+参见 [Day 1](/week1/day1)。
 
 </details>
 
@@ -293,7 +293,7 @@ else { B分支 } // lane 16-31 走 B
 - **盲目追求 100% 可能反而降性能**：为提 occupancy 而减少每线程寄存器，可能触发 register spilling（寄存器溢出到 local memory，延迟激增）
 - 经验法则：先保证不 spilling，再考虑 occupancy
 
-参见 [Day 2](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day2.html)。
+参见 [Day 2](/week1/day2)。
 
 </details>
 
@@ -321,7 +321,7 @@ A[threadIdx.x * N] // lane 0→A[0], lane 1→A[N], ...
 
 **矩阵存储顺序的影响**：行优先矩阵按行访问 coalesced，按列访问 stride → 这就是矩阵转置要先用 shared memory 的原因。
 
-参见 [Day 4](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day4.html)。
+参见 [Day 4](/week1/day4)。
 
 </details>
 
@@ -351,9 +351,9 @@ __shared__ float tile[32][33]; // 列维度 +1 padding
 // 行 stride 从 32×4=128B 变成 33×4=132B，132/4=33，33%32=1，相邻行错开 bank
 ```
 
-**注意**：padding 会浪费一点 shared memory，需评估是否影响 occupancy。对 16×16 方形 tile + block(16,16) 配置，warp 跨相邻两行且 broadcast，实际不触发 conflict（详见 [matmul 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html) 的 bank conflict 分析）。
+**注意**：padding 会浪费一点 shared memory，需评估是否影响 occupancy。对 16×16 方形 tile + block(16,16) 配置，warp 跨相邻两行且 broadcast，实际不触发 conflict（详见 <a href="/problems/gpu/easy/2-matrix-multiplication">matmul 题解</a> 的 bank conflict 分析）。
 
-参见 [Day 4](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day4.html)、[Day 5](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day5.html)。
+参见 [Day 4](/week1/day4)、[Day 5](/week1/day5)。
 
 </details>
 
@@ -388,7 +388,7 @@ Ridge Point = Peak FLOP/s / Peak Bandwidth （RTX 5090 ≈ 58.45 FLOP/Byte）
 2. 用 `ncu --metrics dram__throughput,sm__throughput` 看两个利用率
 3. 哪个高就是哪个 bound；都低则是 latency-bound
 
-参见 [Day 6](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day6.html)。
+参见 [Day 6](/week1/day6)。
 
 </details>
 
@@ -414,7 +414,7 @@ nsys profile → 找 top3 耗时 kernel → ncu 分析这几个 kernel → 优�
 
 **误区**：不要一上来就 ncu——它的开销大，且如果选错了 kernel（不是瓶颈），分析再细也没用。先 nsys 定位，再 ncu 深挖。
 
-参见 [Day 6](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day6.html)。
+参见 [Day 6](/week1/day6)。
 
 </details>
 
@@ -442,7 +442,7 @@ nsys profile → 找 top3 耗时 kernel → ncu 分析这几个 kernel → 优�
 
 **局限**：不考虑 cache 命中、latency-bound（两者都未达屋顶），是"上界估计"非精确预测。
 
-参见 [Day 6](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day6.html)。
+参见 [Day 6](/week1/day6)。
 
 </details>
 
@@ -466,7 +466,7 @@ nsys profile → 找 top3 耗时 kernel → ncu 分析这几个 kernel → 优�
 - 偶发的复用依赖 L1 cache（无需编程，但不保证命中）
 - 两者物理共享，配比要权衡（smem 多了 L1 小，反之亦然）
 
-参见 [Day 2](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day2.html)、[Day 5](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day5.html)。
+参见 [Day 2](/week1/day2)、[Day 5](/week1/day5)。
 
 </details>
 
@@ -486,7 +486,7 @@ nsys profile → 找 top3 耗时 kernel → ncu 分析这几个 kernel → 优�
 
 **何时需要跨 block 同步**：用 cooperative groups（`cudaLaunchCooperativeKernel`）或拆成多个 kernel（用 global memory 传中间结果）。
 
-参见 [Day 1](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day1.html)、[Day 2](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day2.html)。
+参见 [Day 1](/week1/day1)、[Day 2](/week1/day2)。
 
 </details>
 
@@ -497,7 +497,7 @@ nsys profile → 找 top3 耗时 kernel → ncu 分析这几个 kernel → 优�
 - [ ] 完成 4 个基础 CUDA kernel 编写与运行
 - [ ] 完成 1 个 bank conflict 对比实验
 - [ ] 生成 3+ Nsight Compute 报告
-- [ ] 完成 [notes/week1_notes.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/notes/week1_notes.html) 学习笔记
+- [ ] 完成 [notes/week1_notes.md](/week1/notes/week1-notes) 学习笔记
 - [ ] 能用自己的话解释：SM、Warp、Occupancy、Coalescing、Bank Conflict
 - [ ] 能使用 Nsight 定位 kernel 瓶颈类型
 
@@ -534,16 +534,16 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 
 #### 任务 5：本周 LeetCode 题目回顾（10 周计划 · 第 1 周）
 
-本周 LeetCode 题目对应 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 1 周「数组、哈希与双指针（含手撕排序）」（点击查看题解）：
+本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 哈希 | [1. 两数之和](https://hzchenxiaobin.github.io/leetcode/problems/1_两数之和.html)、[49. 字母异位词分组](https://hzchenxiaobin.github.io/leetcode/problems/49_字母异位词分组.html)、[128. 最长连续序列](https://hzchenxiaobin.github.io/leetcode/problems/128_最长连续序列.html)、[136. 只出现一次的数字](https://hzchenxiaobin.github.io/leetcode/problems/136_只出现一次的数字.html)、[169. 多数元素](https://hzchenxiaobin.github.io/leetcode/problems/169_多数元素.html) |
-| Day 2 | 双指针 | [283. 移动零](https://hzchenxiaobin.github.io/leetcode/problems/283_移动零.html)、[11. 盛最多水的容器](https://hzchenxiaobin.github.io/leetcode/problems/11_盛最多水的容器.html)、[15. 三数之和](https://hzchenxiaobin.github.io/leetcode/problems/15_三数之和.html)、[42. 接雨水](https://hzchenxiaobin.github.io/leetcode/problems/42_接雨水.html) |
-| Day 3 | 数组 DP / 前缀和 | [53. 最大子数组和](https://hzchenxiaobin.github.io/leetcode/problems/53_最大子数组和.html)、[56. 合并区间](https://hzchenxiaobin.github.io/leetcode/problems/56_合并区间.html)、[238. 除自身以外数组的乘积](https://hzchenxiaobin.github.io/leetcode/problems/238_除自身以外数组的乘积.html)、[41. 缺失的第一个正数](https://hzchenxiaobin.github.io/leetcode/problems/41_缺失的第一个正数.html) |
-| Day 4 | 手撕排序 | [912. 排序数组](https://hzchenxiaobin.github.io/leetcode/problems/912_排序数组.html)、[88. 合并两个有序数组](https://hzchenxiaobin.github.io/leetcode/problems/88_合并两个有序数组.html)、[179. 最大数](https://hzchenxiaobin.github.io/leetcode/problems/179_最大数.html)、[274. H 指数](https://hzchenxiaobin.github.io/leetcode/problems/274_H指数.html) |
-| Day 5 | 数组技巧 | [75. 颜色分类](https://hzchenxiaobin.github.io/leetcode/problems/75_颜色分类.html)、[31. 下一个排列](https://hzchenxiaobin.github.io/leetcode/problems/31_下一个排列.html)、[287. 寻找重复数](https://hzchenxiaobin.github.io/leetcode/problems/287_寻找重复数.html)、[189. 轮转数组](https://hzchenxiaobin.github.io/leetcode/problems/189_轮转数组.html) |
-| Day 6 | 位运算与其他 | [137. 只出现一次的数字 II](https://hzchenxiaobin.github.io/leetcode/problems/137_只出现一次的数字II.html)、[260. 只出现一次的数字 III](https://hzchenxiaobin.github.io/leetcode/problems/260_只出现一次的数字III.html)、[338. 比特位计数](https://hzchenxiaobin.github.io/leetcode/problems/338_比特位计数.html)、[349. 两个数组的交集](https://hzchenxiaobin.github.io/leetcode/problems/349_两个数组的交集.html)、[581. 最短无序连续子数组](https://hzchenxiaobin.github.io/leetcode/problems/581_最短无序连续子数组.html) |
+| Day 1 | 哈希 | <a href="/problems/algo/0001">1. 两数之和</a>、<a href="/problems/algo/0049">49. 字母异位词分组</a>、<a href="/problems/algo/0128">128. 最长连续序列</a>、<a href="/problems/algo/0136">136. 只出现一次的数字</a>、<a href="/problems/algo/0169">169. 多数元素</a> |
+| Day 2 | 双指针 | <a href="/problems/algo/0283">283. 移动零</a>、<a href="/problems/algo/0011">11. 盛最多水的容器</a>、<a href="/problems/algo/0015">15. 三数之和</a>、<a href="/problems/algo/0042">42. 接雨水</a> |
+| Day 3 | 数组 DP / 前缀和 | <a href="/problems/algo/0053">53. 最大子数组和</a>、<a href="/problems/algo/0056">56. 合并区间</a>、<a href="/problems/algo/0238">238. 除自身以外数组的乘积</a>、<a href="/problems/algo/0041">41. 缺失的第一个正数</a> |
+| Day 4 | 手撕排序 | <a href="/problems/algo/0912">912. 排序数组</a>、<a href="/problems/algo/0088">88. 合并两个有序数组</a>、<a href="/problems/algo/0179">179. 最大数</a>、<a href="/problems/algo/0274">274. H 指数</a> |
+| Day 5 | 数组技巧 | <a href="/problems/algo/0075">75. 颜色分类</a>、<a href="/problems/algo/0031">31. 下一个排列</a>、<a href="/problems/algo/0287">287. 寻找重复数</a>、<a href="/problems/algo/0189">189. 轮转数组</a> |
+| Day 6 | 位运算与其他 | <a href="/problems/algo/0137">137. 只出现一次的数字 II</a>、<a href="/problems/algo/0260">260. 只出现一次的数字 III</a>、<a href="/problems/algo/0338">338. 比特位计数</a>、<a href="/problems/algo/0349">349. 两个数组的交集</a>、<a href="/problems/algo/0581">581. 最短无序连续子数组</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 1 周「数组、哈希与双指针（含手撕排序）」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
@@ -559,7 +559,7 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 3. **Bank conflict**（Day 5）：tile 内按列访问会产生 32-way conflict，用 padding（`[32][33]`）消除
 4. **Roofline 判定**（Day 6）：AI << Ridge Point → memory-bound，优化方向是最大化带宽利用率
 
-> 💡 完整题解见 [Matrix Transpose 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-transpose-solution.html)。
+> 💡 完整题解见 <a href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 综合练习 2：Matrix Multiplication —— naive GEMM + ncu 定位瓶颈
 
@@ -572,11 +572,11 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 2. **Coalesced Access 分析**（Day 4）：观察 naive 实现中 A、B 的访问模式，思考 B 的按列读取能否合并
 3. **Roofline 判定**（Day 6）：大矩阵理论 AI（按每矩阵只读一次的最小流量口径 ≈ N/6）远大于 Ridge Point 58.45，属于 compute-bound；但 naive 实现没有数据复用，实际有效 AI 低得多——用 ncu 测 `dram__throughput` 和 `sm__throughput`，看实际瓶颈落在哪一侧
 
-> ⚠️ shared memory tiling、register blocking 等 GEMM 优化属于 **Week 2** 内容，本周不作要求；学有余力可作为 Week 2 预习。完整题解（含 Naive / Tiled / Tiled-nobc / Register Tiling 四个版本 + bank conflict 实测分析）见 [Matrix Multiplication 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html)。
+> ⚠️ shared memory tiling、register blocking 等 GEMM 优化属于 **Week 2** 内容，本周不作要求；学有余力可作为 Week 2 预习。完整题解（含 Naive / Tiled / Tiled-nobc / Register Tiling 四个版本 + bank conflict 实测分析）见 <a href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 练习提交记录
 
-提交后把通过截图和耗时记录到 [exercise/leetgpu_week1_review.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/exercise/leetgpu_week1_review.md)（仓库已提供模板），按下表格式整理：
+提交后把通过截图和耗时记录到 [exercise/leetgpu_week1_review.md](/week1)（仓库已提供模板），按下表格式整理：
 
 | 题目 | 耗时 | GFLOPS / 带宽利用率 | 瓶颈类型 | 优化尝试 |
 |------|------|---------------------|---------|---------|
@@ -655,7 +655,7 @@ Day 7 我们完成了 Week 1 的系统复盘：
 
 1. **知识地图**：把 SM、Warp、Occupancy、Coalescing、Bank Conflict、Profiling 连成网络
 2. **优化决策树**：建立了从 profiling 到优化的完整思路
-3. **学习笔记模板**：提供了 [week1_notes.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/notes/week1_notes.html) 的结构
+3. **学习笔记模板**：提供了 [week1_notes.md](/week1/notes/week1-notes) 的结构
 4. **面试准备框架**：概念 + 代码 + 表达三位一体
 5. **Week 2 衔接**：明确了还需要巩固的基础
 
@@ -747,7 +747,7 @@ Day 7 我们完成了 Week 1 的系统复盘：
 - [ ] 完成 4 个基础 CUDA kernel 编写与运行
 - [ ] 完成 1 个 bank conflict 对比实验
 - [ ] 生成 3+ Nsight Compute 报告
-- [ ] 完成 [notes/week1_notes.md](https://hzchenxiaobin.github.io/ai-infra-notes/week1/notes/week1_notes.html) 学习笔记
+- [ ] 完成 [notes/week1_notes.md](/week1/notes/week1-notes) 学习笔记
 - [ ] 能用自己的话解释：SM、Warp、Occupancy、Coalescing、Bank Conflict
 - [ ] 能使用 Nsight 定位 kernel 瓶颈类型
 

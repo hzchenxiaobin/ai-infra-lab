@@ -10,7 +10,7 @@ number: 5
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w02d06"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w02d06"]
 ---
 
 # LeetGPU Softmax 题解

@@ -10,7 +10,7 @@ number: 18
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Sparse Matrix-Vector Multiplication 题解

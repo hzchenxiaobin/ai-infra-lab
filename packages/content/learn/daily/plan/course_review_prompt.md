@@ -1,3 +1,14 @@
+---
+id: "learn:plan:course-review-prompt"
+type: learn
+title: "1. 培养目标分析"
+tags: [cuda-course, plan]
+knowledge_points: [cuda-course]
+updated: 2026-09-10
+related_problems: []
+related_questions: []
+---
+
 你是一名资深 AI Infra 技术专家，同时也是大厂 AI Infra 岗位面试官和技术课程设计专家。
 
 我正在设计一套面向【AI Infra 工程师培养】的 10 周课程体系。

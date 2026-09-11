@@ -10,7 +10,7 @@ number: 52
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d01", "learn:w10d04"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d01", "learn:w10d04"]
 ---
 
 # LeetGPU SiLU 题解

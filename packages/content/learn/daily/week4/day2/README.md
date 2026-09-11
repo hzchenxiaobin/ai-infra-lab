@@ -7,7 +7,7 @@ knowledge_points: [transformer, triton]
 updated: 2026-08-28
 week: 4
 day: 2
-related_problems: ["gpu:h:012", "gpu:m:076", "gpu:m:115"]
+related_problems: ["gpu:h:012", "gpu:m:076", "gpu:m:115", "lc:0224", "lc:0227", "lc:0316", "lc:0394", "lc:0402"]
 related_questions: []
 ---
 
@@ -440,15 +440,15 @@ ncu --metrics \
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 4 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 4 周「栈、队列与单调栈」Day 2（表达式与计算器），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 2（表达式与计算器），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [394. 字符串解码](https://leetcode.cn/problems/decode-string/) | 中等 | 栈 / 递归解码 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/394_字符串解码.html) |
-| [224. 基本计算器](https://leetcode.cn/problems/basic-calculator/) | 困难 | 栈处理括号与一元符号 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/224_基本计算器.html) |
-| [227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/) | 中等 | 栈处理乘除优先级 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/227_基本计算器II.html) |
-| [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) | 中等 | 单调栈删大留小 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/402_移掉K位数字.html) |
-| [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/) | 中等 | 单调栈 + 贪心 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/316_去除重复字母.html) |
+| [394. 字符串解码](https://leetcode.cn/problems/decode-string/) | 中等 | 栈 / 递归解码 | <a href="/problems/algo/0394">题解</a> |
+| [224. 基本计算器](https://leetcode.cn/problems/basic-calculator/) | 困难 | 栈处理括号与一元符号 | <a href="/problems/algo/0224">题解</a> |
+| [227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/) | 中等 | 栈处理乘除优先级 | <a href="/problems/algo/0227">题解</a> |
+| [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) | 中等 | 单调栈删大留小 | <a href="/problems/algo/0402">题解</a> |
+| [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/) | 中等 | 单调栈 + 贪心 | <a href="/problems/algo/0316">题解</a> |
 
 ---
 

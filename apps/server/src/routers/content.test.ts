@@ -7,9 +7,12 @@ import { appRouter } from "./index.js";
 // ---------------------------------------------------------------------------
 // content router 集成测试（dev/server.md §7）：list 筛选/分页 + get + import
 // 幂等入库（insert/update/unchanged/stale + problems upsert）。
-// import 走 adminProcedure：造一个 email=NULL 的遗留形态用户充任管理员
-//（与 CLI 经 getCurrentUserId 的路径同构）。
+// import 走 adminProcedure：造一个 email 在 ADMIN_EMAILS（vitest 注入
+// test-admin@ailab.test）的用户充任管理员（2026-09-11 收紧后 email=NULL
+// 的遗留形态不再天然是 admin）。
 // ---------------------------------------------------------------------------
+
+const ADMIN_EMAIL = "test-admin@ailab.test";
 
 async function dbAvailable(): Promise<boolean> {
   try {
@@ -32,13 +35,15 @@ async function cleanup() {
 }
 
 async function adminCaller() {
+  // 上次异常中断可能残留同邮箱行（email 唯一约束），先清
+  await db.delete(users).where(eq(users.email, ADMIN_EMAIL));
   const inserted = await db
     .insert(users)
-    .values({ name: "content-test-admin" })
+    .values({ email: ADMIN_EMAIL, name: "content-test-admin", emailVerified: 1 })
     .$returningId();
   const userId = inserted[0].id;
   try {
-    // 确认该形态用户具备 admin（email=NULL 遗留放行）
+    // 确认该用户具备 admin（ADMIN_EMAILS 命中）
     await appRouter.createCaller({ userId }).content.list({ pageSize: 1 });
   } catch (err) {
     await db.delete(users).where(eq(users.id, userId));

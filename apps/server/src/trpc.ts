@@ -3,19 +3,13 @@ import type { Context as HonoContext } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import superjson from "superjson";
 import { eq } from "drizzle-orm";
-import {
-  getCurrentUserId,
-  SESSION_COOKIE,
-  SESSION_TTL_MS,
-  signSession,
-  verifySession,
-} from "./auth.js";
+import { SESSION_COOKIE, SESSION_TTL_MS, signSession, verifySession } from "./auth.js";
 import { db } from "./db/client.js";
 import { users } from "./db/schema.js";
 import { env } from "./env.js";
 
 export type Context = {
-  /** 登录用户 id；未登录为 null。当前因有自动 provision 回落，实际恒非 null（见下） */
+  /** 登录用户 id；未登录为 null（2026-09-11 收紧：自动 provision 回落已删除） */
   userId: number | null;
   /** 客户端 IP（限流用）；CLI/createCaller 场景可不传 */
   ip?: string | null;
@@ -41,12 +35,8 @@ export async function createContext(_opts: unknown, c?: HonoContext): Promise<Co
       deleteCookie(c, SESSION_COOKIE, { path: "/" });
     }
   }
-
-  // TODO(M2 完成后删除)：无 session 时回落到单用户自动 provision。
-  // CLI 与现有 interview/question/judge 路由仍依赖这个行为；M2 全量切换登录后
-  // 删除此回落（未登录 userId 即为 null），并同步删除 auth.ts 的 provision 段。
-  const userId = await getCurrentUserId();
-  return { userId, ip, hono: c };
+  // 未登录即 null：authedProcedure 抛 UNAUTHORIZED（CLI 走 --user 显式身份）
+  return { userId: null, ip, hono: c };
 }
 
 /** 种 session cookie（httpOnly，7 天，滑动续期由 createContext 负责） */
@@ -96,10 +86,9 @@ const enforceUser = middleware(async ({ ctx, next }) => {
 export const authedProcedure = publicProcedure.use(enforceUser);
 
 /**
- * 管理员：users.email 命中 ADMIN_EMAILS 环境变量。
- * 例外：自动 provision 的遗留单用户（email 为 NULL）在 dev 单用户模式下视为管理员，
- * 以便 CLI 经 createCaller 调 content.import。
- * TODO(M2)：provision 删除后收紧为仅 ADMIN_EMAILS 匹配。
+ * 管理员：users.email 命中 ADMIN_EMAILS 环境变量（2026-09-11 收紧：
+ * email 为 NULL 的遗留用户不再天然是管理员——遗留数据经 user:claim 认领后，
+ * 用绑定邮箱加入 ADMIN_EMAILS 获得管理身份）。
  */
 export const adminProcedure = authedProcedure.use(async ({ ctx, next }) => {
   const rows = await db
@@ -109,8 +98,7 @@ export const adminProcedure = authedProcedure.use(async ({ ctx, next }) => {
     .limit(1);
   const email = rows[0]?.email ?? null;
   const admins = env.ADMIN_EMAILS.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-  const isLegacyProvisionedUser = email == null;
-  if (!isLegacyProvisionedUser && !admins.includes(email)) {
+  if (email == null || !admins.includes(email)) {
     throw new TRPCError({ code: "FORBIDDEN", message: "需要管理员权限" });
   }
   return next();

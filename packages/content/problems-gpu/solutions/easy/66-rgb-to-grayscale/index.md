@@ -10,7 +10,7 @@ number: 66
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU RGB to Grayscale 题解

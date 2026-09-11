@@ -73,23 +73,25 @@ pnpm install
 docker compose -f deploy/docker-compose.yml up -d mysql
 
 # 2. 配置环境变量
-cp .env.example .env        # 至少填 DATABASE_URL、LLM_*、SMTP_*、SESSION_SECRET
+cp .env.example .env        # 至少填 DATABASE_URL、LLM_*、SMTP_*、SESSION_SECRET、ADMIN_EMAILS
 
-# 3. 建表 + 种子数据
-pnpm --filter server db:push        # drizzle-kit 迁移（本地从零起库）
-pnpm cli seed                       # 内置 15 道 seed 题
-pnpm cli bank:import   # 729 题题库（默认 apps/cli/data/question-bank.ai-infra.json）
+# 3. 建表（drizzle-kit 迁移，本地从零起库）
+pnpm --filter @ailab/server db:migrate
 
-# 4. 内容同步（frontmatter 校验 → 元数据入库 → 搜索索引）
-pnpm --filter content-kit sync
+# 4. 注册账号：起 server 后在 web（:5173）注册（SMTP 未配置时验证码打印在
+#    server 日志）；把注册邮箱写进 .env 的 ADMIN_EMAILS 即获得管理身份
+pnpm --filter @ailab/judge-core build   # judge-core exports 指向 dist（约 1s，跑一次即可）
+pnpm --filter @ailab/server dev         # Hono API，默认 :3001
+pnpm --filter @ailab/web dev            # 门户，默认 :5173（/trpc 代理到 :3001）
+pnpm --filter @ailab/docs dev           # VitePress 内容站，默认 :4173
 
-# 5. 启动开发服务
-pnpm --filter server dev            # Hono API，默认 :3001
-pnpm --filter web dev               # 门户，默认 :5173（/trpc 代理到 :3001）
-pnpm --filter docs dev              # VitePress 内容站，默认 :4173
+# 5. 内容同步 + 种子题（CLI 身份显式化：--user <email> 或 AILAB_USER 环境变量）
+pnpm --filter @ailab/content-kit sync
+node apps/cli/bin/ailab.mjs --user you@example.com content:sync
+node apps/cli/bin/ailab.mjs --user you@example.com seed
 ```
 
-日常开发只改代码时第 1、5 步即可；改了 `packages/content/**` 才需要重跑第 4 步。
+日常开发只改代码时第 1、4 步即可；改了 `packages/content/**` 才需要重跑第 5 步。
 
 ## 4. 应用开发指南（索引）
 
@@ -159,8 +161,9 @@ judge-worker/MySQL）、镜像构建、升级流程、MySQL 备份、监控告�
 - **加依赖先确认**：优先复用现有栈（Hono/tRPC/Drizzle/React/VitePress），新依赖在 PR 描述里说明理由。
 - **类型安全**：server ↔ web ↔ cli 之间的数据结构必须经 `packages/contracts`，禁止各自重定义。
 - **硬编码禁令**：内容统计数、题数、URL base path、题目编号一律由 content-kit 构建期生成。
-- **单用户残留清理**：interview 拷入代码里的自动 provision 逻辑（`auth.ts` 的
-  `getCurrentUserId`）在 M2 账号体系落地时删除，勿在新代码上叠加。
+- **单用户残留清理**：~~interview 拷入代码里的自动 provision 逻辑~~ 已删除
+  （2026-09-11：`createContext` 未登录即 null，CLI 身份走 `--user`/`AILAB_USER`，
+  管理端仅认 `ADMIN_EMAILS`）；勿在新代码上重新引入隐式用户回落。
 
 ## 附：interview 仓库代码映射（起步参考）
 

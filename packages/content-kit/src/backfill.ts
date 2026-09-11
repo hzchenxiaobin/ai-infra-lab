@@ -6,7 +6,8 @@
 //   - 难度/标签从题解正文 `**难度**` / `**标签**` 行机器提取；languages 从代码块
 //     fence 语言提取；updated 用文件 mtime（首次写入后被人工值保留，稳定）。
 //   - related_problems：learn 类内容正文中的 leetgpu.com/challenges/<slug> 链接
-//     （经 SKILL.md §1.4 slug↔编号表解析）+ 指向 problems-* 分区 md 的相对链接；
+//     （经 SKILL.md §1.4 slug↔编号表解析）+ 指向 problems-* 分区 md 的相对链接 +
+//     站内统一 URL（fix-oldsite-links 产物：md 链接与 HTML <a href> 两形态）；
 //     related_learn 由反向引用对称补齐（含 GPU 题解正文指向 daily 教程的链接）。
 //   - 迁移期一次性改链：正文里指向旧仓库路径的 `(../)*aiinfra/...` 相对链接
 //     重写为新布局 learn/... 下的等价相对路径（幂等）。
@@ -299,6 +300,45 @@ function resolveChallenge(slug: string): ContentFile | null {
   return byNum ?? null;
 }
 
+/** 站内 URL → 内容文件：兼容完整形态（/learn/...、/problems/...）与分区相对
+ * 形态（/week1/day1，按文件所属渲染分区补 base） */
+const urlIndex = (() => {
+  const m = new Map<string, ContentFile>();
+  const put = (k: string, f: ContentFile) => {
+    if (k && !m.has(k)) m.set(k, f);
+  };
+  for (const f of files) {
+    if (!f.cls.url) continue;
+    put(f.cls.url, f);
+    put(f.cls.url.replace(/\/$/, ""), f);
+  }
+  return m;
+})();
+
+function urlToFile(target: string, f: ContentFile): ContentFile | undefined {
+  const t = target.split("#")[0].split("?")[0];
+  const base =
+    f.rel === "problems-gpu/cuda-interview-notes.md"
+      ? "/learn"
+      : f.cls.partition === "learn"
+        ? "/learn"
+        : f.cls.partition === "problems-gpu"
+          ? "/problems/gpu"
+          : "/problems";
+  const candidates = [
+    t,
+    t.replace(/\/$/, ""),
+    `${base}${t}`,
+    `${base}${t.replace(/\/$/, "")}`,
+  ].flatMap((c) => [c, c.replace(/index\.html$/, "").replace(/\.html$/, "")]);
+  for (const c of candidates) {
+    const hit = urlIndex.get(c);
+    if (hit) return hit;
+  }
+  return undefined;
+}
+
+
 for (const f of files) {
   if (f.cls.type === "learn" && !f.cls.id.startsWith("lc:list:")) {
     // 1) leetgpu 平台链接
@@ -333,6 +373,20 @@ for (const f of files) {
     if (f.cls.type === "learn" && t.cls.type === "problem") addEdge(f.cls.id, t.cls.id);
     else if (f.cls.type === "problem" && t.cls.type === "learn") addEdge(t.cls.id, f.cls.id);
   }
+  // 3) 站内统一 URL（fix-oldsite-links 产物）→ learn ↔ problem 边。
+  //    md 链接（同分区相对形态 /week1/day1）与 HTML <a href>（跨分区完整形态
+  //    /problems/algo/0001）两形态都识别；url 经 scanContent url 集解析到文件
+  const addEdgeByTarget = (target: string): void => {
+    const t = urlToFile(target, f);
+    if (!t || t.cls.id === f.cls.id) return;
+    if (f.cls.type === "learn" && t.cls.type === "problem") addEdge(f.cls.id, t.cls.id);
+    else if (f.cls.type === "problem" && t.cls.type === "learn") addEdge(t.cls.id, f.cls.id);
+  };
+  for (const link of extractLinks(f.body)) {
+    if (link.target.startsWith("/")) addEdgeByTarget(link.target);
+  }
+  const HTML_HREF_RE = /<a\s+href="(\/(?:learn|problems)\/[^"]*)"/g;
+  for (const m of f.body.matchAll(HTML_HREF_RE)) addEdgeByTarget(m[1]);
 }
 
 function relLinkResolve(fromDir: string, target: string): string | null {

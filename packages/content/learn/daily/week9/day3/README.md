@@ -7,7 +7,7 @@ knowledge_points: [distributed-parallelism, multi-hardware]
 updated: 2026-09-01
 week: 9
 day: 3
-related_problems: []
+related_problems: ["lc:0062", "lc:0064", "lc:0072", "lc:0120", "lc:0221", "lc:1143"]
 related_questions: []
 ---
 
@@ -304,16 +304,16 @@ print(f"Total steps: {len(steps)} (expect {2*(N-1)})")
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 9 周 Day 3）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 3（二维 DP），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 3（二维 DP），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [62. 不同路径](https://leetcode.cn/problems/unique-paths/) | 中等 | 组合数 / 二维 DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/62_不同路径.html) |
-| [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/) | 中等 | 二维 DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/64_最小路径和.html) |
-| [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/) | 中等 | 二维 DP（自底向上） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/120_三角形最小路径和.html) |
-| [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/) | 中等 | 二维 DP（LCS） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/1143_最长公共子序列.html) |
-| [72. 编辑距离](https://leetcode.cn/problems/edit-distance/) | 困难 | 二维 DP（insert/delete/replace） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/72_编辑距离.html) |
-| [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) | 中等 | DP（右下角最长边） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/221_最大正方形.html) |
+| [62. 不同路径](https://leetcode.cn/problems/unique-paths/) | 中等 | 组合数 / 二维 DP | <a href="/problems/algo/0062">题解</a> |
+| [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/) | 中等 | 二维 DP | <a href="/problems/algo/0064">题解</a> |
+| [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/) | 中等 | 二维 DP（自底向上） | <a href="/problems/algo/0120">题解</a> |
+| [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/) | 中等 | 二维 DP（LCS） | <a href="/problems/algo/1143">题解</a> |
+| [72. 编辑距离](https://leetcode.cn/problems/edit-distance/) | 困难 | 二维 DP（insert/delete/replace） | <a href="/problems/algo/0072">题解</a> |
+| [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) | 中等 | DP（右下角最长边） | <a href="/problems/algo/0221">题解</a> |
 
 ---
 

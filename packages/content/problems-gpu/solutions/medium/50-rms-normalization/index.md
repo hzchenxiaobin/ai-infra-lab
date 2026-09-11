@@ -10,7 +10,7 @@ number: 50
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w03d06"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w03d06"]
 ---
 
 # LeetGPU RMS Normalization 题解

@@ -7,7 +7,7 @@ knowledge_points: [inference-optimization, quantization]
 updated: 2026-08-28
 week: 8
 day: 5
-related_problems: ["gpu:m:085"]
+related_problems: ["gpu:m:085", "lc:0070", "lc:0118", "lc:0198", "lc:0213", "lc:0337"]
 related_questions: []
 ---
 
@@ -266,15 +266,15 @@ print(f"Graph: {bench_graph(engine, input_ids):.2f} ms")
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 8 周 Day 5）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 8 周「二分查找与动态规划基础」Day 5（一维 DP），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 5（一维 DP），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/) | 简单 | 一维 DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/70_爬楼梯.html) |
-| [118. 杨辉三角](https://leetcode.cn/problems/pascals-triangle/) | 简单 | 递推模拟 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/118_杨辉三角.html) |
-| [198. 打家劫舍](https://leetcode.cn/problems/house-robber/) | 中等 | 一维 DP（选/不选状态转移） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/198_打家劫舍.html) |
-| [213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/) | 中等 | 拆环为线 + 一维 DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/213_打家劫舍II.html) |
-| [337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/) | 中等 | 树形 DP（选/不选） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/337_打家劫舍III.html) |
+| [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/) | 简单 | 一维 DP | <a href="/problems/algo/0070">题解</a> |
+| [118. 杨辉三角](https://leetcode.cn/problems/pascals-triangle/) | 简单 | 递推模拟 | <a href="/problems/algo/0118">题解</a> |
+| [198. 打家劫舍](https://leetcode.cn/problems/house-robber/) | 中等 | 一维 DP（选/不选状态转移） | <a href="/problems/algo/0198">题解</a> |
+| [213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/) | 中等 | 拆环为线 + 一维 DP | <a href="/problems/algo/0213">题解</a> |
+| [337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/) | 中等 | 树形 DP（选/不选） | <a href="/problems/algo/0337">题解</a> |
 
 ---
 

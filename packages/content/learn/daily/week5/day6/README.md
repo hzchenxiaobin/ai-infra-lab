@@ -151,7 +151,7 @@ FA2 通过以下方式减少资源占用：
 
 FA2 的设计面向 Ampere（A100）的同步执行模型——warp 同步发射 GEMM、串行 softmax。但搬到 Hopper（H100）后，FA2 **只有 ~35% 的利用率**：H100 新增的异步 Tensor Core（WGMMA）、异步拷贝引擎（TMA）、FP8 单元全部闲置。FA3 的目标就是**让 attention kernel 原生于 Hopper 的异步执行模型**，把利用率和精度同时推到极限。
 
-> 📄 **深入阅读**：FA3 的 warp 特化、pingpong 调度、FP8 布局手术等完整分析见 [FA3 论文笔记](https://hzchenxiaobin.github.io/ai-infra-notes/paper/flashattention3/index.html)。
+> 📄 **深入阅读**：FA3 的 warp 特化、pingpong 调度、FP8 布局手术等完整分析见 [FA3 论文笔记](/papers/flashattention3)。
 
 ##### 改进一：Async Pipeline（异步数据加载）
 
@@ -329,7 +329,7 @@ ncu --metrics \
 
 FlashAttention-2 相比 FA1 的一大改进是 **更好的 work partitioning**：把 batch 维和 head 维提升到 grid 的最高维度，让每个 thread block 处理更小的子任务，从而减少同步、提高 occupancy。本题 Batched Matrix Multiplication 正是练习这种"多维 grid + batch offset 寻址"的最简场景——用 `blockIdx.z` 区分 batch，`blockIdx.x/y` 处理 M/N tile，与 FA2 官方 kernel 的 launch 策略同构。
 
-> 💡 提交后在 [LeetGPU Batched GEMM 题目](https://leetgpu.com/challenges/batched-matrix-multiplication)上记录通过耗时，重点观察 batch size 增大时 latency 的增长曲线。完整题解（含 batched kernel launch、batch offset 寻址、与单矩阵 GEMM 的对比）见 [Batched Matrix Multiplication 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-batched-matrix-multiplication-solution.html)。
+> 💡 提交后在 [LeetGPU Batched GEMM 题目](https://leetgpu.com/challenges/batched-matrix-multiplication)上记录通过耗时，重点观察 batch size 增大时 latency 的增长曲线。完整题解（含 batched kernel launch、batch offset 寻址、与单矩阵 GEMM 的对比）见 <a href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周机动补漏）
 

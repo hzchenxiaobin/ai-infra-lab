@@ -7,7 +7,7 @@ knowledge_points: [attention, flash-attention]
 updated: 2026-08-28
 week: 5
 day: 1
-related_problems: ["gpu:h:109", "gpu:m:006", "gpu:m:096"]
+related_problems: ["gpu:h:109", "gpu:m:006", "gpu:m:096", "lc:0215", "lc:0264", "lc:0295", "lc:0347", "lc:0692", "lc:0767"]
 related_questions: []
 ---
 
@@ -52,7 +52,7 @@ related_questions: []
 
 ### Attention 基础速查
 
-Attention 基础的完整讲解见 [topics/transformer 专题](https://hzchenxiaobin.github.io/ai-infra-notes/transformer/index.html)（Week 4 Day 1 也有同样处理）。这里只留面试速查口径：
+Attention 基础的完整讲解见 [topics/transformer 专题](/topics/transformer)（Week 4 Day 1 也有同样处理）。这里只留面试速查口径：
 
 | 问题 | 一句话答案 |
 |---|---|
@@ -311,7 +311,7 @@ return O
 
 ### Coding 任务：FlashAttention 简化版 Forward Kernel
 
-> ⚠️ **关于 $1/\sqrt{d}$ scale**：标准 Attention 的 score 是 $QK^\top / \sqrt{d}$。本简化版为了聚焦 online softmax 的结构，**省略了 scale**（GPU kernel 与 CPU 参考实现同步省略，数值对比仍然自洽）。LeetGPU 提交和面试手写时记得加回——在 `s` 算出后乘 `1.0f / sqrtf(D)` 即可，[LeetGPU 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-attention-solution.html)的 kernel 有完整示范。
+> ⚠️ **关于 $1/\sqrt{d}$ scale**：标准 Attention 的 score 是 $QK^\top / \sqrt{d}$。本简化版为了聚焦 online softmax 的结构，**省略了 scale**（GPU kernel 与 CPU 参考实现同步省略，数值对比仍然自洽）。LeetGPU 提交和面试手写时记得加回——在 `s` 算出后乘 `1.0f / sqrtf(D)` 即可，<a href="/problems/gpu/medium/6-softmax-attention">LeetGPU 题解</a>的 kernel 有完整示范。
 
 #### 任务 1：创建 flash_attention.cu
 
@@ -590,20 +590,20 @@ Result check: PASS
 
 本题直接对应今日（Day 1）的主题——FlashAttention。标准实现会把 $S=QK^\top$ 和 $P=\text{softmax}(S)$ 写回 HBM（$O(N^2)$ 访存）；FlashAttention 用 Online Softmax 分块计算，S/P 不落 HBM（$O(Nd)$ 访存）。注意**题目要求带 $1/\sqrt{d}$ scale**，提交时别忘了。
 
-> 💡 提交后在 [LeetGPU Softmax Attention 题目](https://leetgpu.com/challenges/softmax-attention)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 [Softmax Attention 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-attention-solution.html)。
+> 💡 提交后在 [LeetGPU Softmax Attention 题目](https://leetgpu.com/challenges/softmax-attention)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a href="/problems/gpu/medium/6-softmax-attention">Softmax Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 5 周「堆、贪心与区间」Day 1（堆），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」Day 1（堆），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [215. 数组中的第 K 个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) | 中等 | 快速选择 / 堆 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/215_数组中的第K个最大元素.html) |
-| [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/) | 中等 | 桶排序 / 快选 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/347_前K个高频元素.html) |
-| [692. 前 K 个高频单词](https://leetcode.cn/problems/top-k-frequent-words/) | 中等 | 堆 + 自定义比较 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/692_前K个高频单词.html) |
-| [295. 数据流的中位数](https://leetcode.cn/problems/find-median-from-data-stream/) | 困难 | 双堆（大顶 + 小顶） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/295_数据流的中位数.html) |
-| [264. 丑数 II](https://leetcode.cn/problems/ugly-number-ii/) | 中等 | 三指针多路归并 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/264_丑数II.html) |
-| [767. 重构字符串](https://leetcode.cn/problems/reorganize-string/) | 中等 | 大顶堆交替放置 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/767_重构字符串.html) |
+| [215. 数组中的第 K 个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) | 中等 | 快速选择 / 堆 | <a href="/problems/algo/0215">题解</a> |
+| [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/) | 中等 | 桶排序 / 快选 | <a href="/problems/algo/0347">题解</a> |
+| [692. 前 K 个高频单词](https://leetcode.cn/problems/top-k-frequent-words/) | 中等 | 堆 + 自定义比较 | <a href="/problems/algo/0692">题解</a> |
+| [295. 数据流的中位数](https://leetcode.cn/problems/find-median-from-data-stream/) | 困难 | 双堆（大顶 + 小顶） | <a href="/problems/algo/0295">题解</a> |
+| [264. 丑数 II](https://leetcode.cn/problems/ugly-number-ii/) | 中等 | 三指针多路归并 | <a href="/problems/algo/0264">题解</a> |
+| [767. 重构字符串](https://leetcode.cn/problems/reorganize-string/) | 中等 | 大顶堆交替放置 | <a href="/problems/algo/0767">题解</a> |
 
 ---
 

@@ -10,7 +10,7 @@ number: 109
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d01", "learn:w05d02", "learn:w06d04"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d01", "learn:w05d02", "learn:w06d04"]
 ---
 
 # LeetGPU Attention 题解

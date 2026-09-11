@@ -10,7 +10,7 @@ number: 47
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Subarray Sum 题解

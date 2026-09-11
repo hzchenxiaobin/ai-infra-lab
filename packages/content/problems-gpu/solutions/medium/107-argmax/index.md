@@ -10,7 +10,7 @@ number: 107
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w03d03"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w03d03"]
 ---
 
 # LeetGPU Argmax 题解

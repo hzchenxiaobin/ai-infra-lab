@@ -92,8 +92,13 @@ export function ProblemRow({
           disabled={mark.isPending}
           onClick={() => mark.mutate({ contentId: problem.id, status: "ac" })}
           className="shrink-0"
+          title={
+            problem.judgeType === "leetgpu-com"
+              ? "在 leetgpu.com 完成评测后，回站点此标记通过"
+              : "标记本题已通过"
+          }
         >
-          {mark.isPending ? "标记中…" : "标记 AC"}
+          {mark.isPending ? "标记中…" : problem.judgeType === "leetgpu-com" ? "完成后标记" : "标记 AC"}
         </Button>
       )}
     </div>

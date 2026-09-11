@@ -7,7 +7,7 @@ knowledge_points: [inference-optimization, quantization]
 updated: 2026-08-28
 week: 8
 day: 2
-related_problems: ["gpu:m:061"]
+related_problems: ["gpu:m:061", "lc:0033", "lc:0034", "lc:0153", "lc:0162", "lc:0540", "lc:0994"]
 related_questions: []
 ---
 
@@ -261,15 +261,15 @@ python kernels/fp8_gemm_benchmark.py
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 8 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 8 周「二分查找与动态规划基础」Day 2（旋转数组与峰值），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 2（旋转数组与峰值），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/) | 中等 | 旋转数组二分（比右端点） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/153_寻找旋转排序数组中的最小值.html) |
-| [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/) | 中等 | 旋转数组二分（判断哪半有序） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/33_搜索旋转排序数组.html) |
-| [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/) | 中等 | 两次二分找左/右边界 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/34_在排序数组中查找元素的第一个和最后一个位置.html) |
-| [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/) | 中等 | 非有序二分（爬坡法，顺梯度走） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/162_寻找峰值.html) |
-| [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/) | 中等 | 二分（奇偶下标配对） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/540_有序数组中的单一元素.html) |
+| [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/) | 中等 | 旋转数组二分（比右端点） | <a href="/problems/algo/0153">题解</a> |
+| [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/) | 中等 | 旋转数组二分（判断哪半有序） | <a href="/problems/algo/0033">题解</a> |
+| [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/) | 中等 | 两次二分找左/右边界 | <a href="/problems/algo/0034">题解</a> |
+| [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/) | 中等 | 非有序二分（爬坡法，顺梯度走） | <a href="/problems/algo/0162">题解</a> |
+| [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/) | 中等 | 二分（奇偶下标配对） | <a href="/problems/algo/0540">题解</a> |
 
 ---
 

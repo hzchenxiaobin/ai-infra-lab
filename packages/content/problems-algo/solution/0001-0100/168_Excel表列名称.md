@@ -10,7 +10,7 @@ number: 168
 difficulty: medium
 languages: [cpp, python]
 judge: none
-related_learn: []
+related_learn: ["learn:w03d06", "learn:w03d07"]
 ---
 
 # LeetCode Excel表列名称 题解

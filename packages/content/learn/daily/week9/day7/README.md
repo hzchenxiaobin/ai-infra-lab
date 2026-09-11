@@ -7,7 +7,7 @@ knowledge_points: [distributed-parallelism, multi-hardware]
 updated: 2026-08-28
 week: 9
 day: 7
-related_problems: []
+related_problems: ["lc:0005", "lc:0032", "lc:0062", "lc:0064", "lc:0072", "lc:0120", "lc:0139", "lc:0152", "lc:0221", "lc:0300", "lc:0312", "lc:0354", "lc:0516", "lc:0647", "lc:1143"]
 related_questions: []
 ---
 
@@ -96,7 +96,7 @@ related_questions: []
 <summary>答案</summary>
 
 - 通信量 = 2(N-1)/N × 数据量 = reduce-scatter（(N-1)/N × D）+ all-gather（(N-1)/N × D）两段，步数 2(N-1)
-- 完整两阶段推导、通信量计算与 ring 模拟器详见 [Day 3 §3.1](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day3.html)
+- 完整两阶段推导、通信量计算与 ring 模拟器详见 [Day 3 §3.1](/week9/day3)
 
 </details>
 
@@ -106,7 +106,7 @@ related_questions: []
 <summary>答案</summary>
 
 - bubble = (P-1)/(M+P-1)；增大 M（M≥4P 时 < 20%）或用 interleaved 1F1B 降低；1F1B 把显存从 O(M) 降到 O(P)
-- 完整推导、1F1B 调度模拟与推理 PP 部署形态详见 [Day 2 §2.3](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day2.html)
+- 完整推导、1F1B 调度模拟与推理 PP 部署形态详见 [Day 2 §2.3](/week9/day2)
 
 </details>
 
@@ -116,7 +116,7 @@ related_questions: []
 <summary>答案</summary>
 
 - GEMM 按输出切两半 Y1/Y2，compute_stream 算后半与 comm_stream 对前半做 all-reduce 并发重叠；CUDA Graph 捕获双流序列消除 launch overhead；收益 = min(T_comp, T_comm)
-- 代码实现、收益边界与 Sequence Parallelism 详见 [Day 4 §4.2](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day4.html)
+- 代码实现、收益边界与 Sequence Parallelism 详见 [Day 4 §4.2](/week9/day4)
 
 </details>
 
@@ -127,7 +127,7 @@ related_questions: []
 
 - decode batch 小（M=1~8）时 EP 的 all-to-all 流量小；TP all-reduce 每层都做、延迟固定，batch 小时无法被摊薄，开销占比大
 - prefill batch 大（M=N）时 TP all-reduce 被计算摊薄，且无 all-to-all
-- 通信量公式、EP vs TP 对比表与 DeepSeek 混合策略详见 [Day 5 §4](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day5.html)
+- 通信量公式、EP vs TP 对比表与 DeepSeek 混合策略详见 [Day 5 §4](/week9/day5)
 
 </details>
 
@@ -137,7 +137,7 @@ related_questions: []
 <summary>答案</summary>
 
 - Ring：步数 2(N-1) 但带宽利用率高（每步每节点都在发收），适合大消息；Tree：步数 log N、延迟低但根节点瓶颈，适合小消息；NCCL 按消息大小自适应混合
-- 拓扑细节、选择阈值与 NCCL 自适应策略详见 [Day 3 §3.5](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day3.html)
+- 拓扑细节、选择阈值与 NCCL 自适应策略详见 [Day 3 §3.5](/week9/day3)
 
 </details>
 
@@ -188,13 +188,13 @@ related_questions: []
 
 #### 任务 2：本周 LeetCode 题目回顾（10 周计划 · 第 9 周）
 
-本周 LeetCode 题目对应 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 9 周「动态规划进阶——子序列、区间与二维 DP」（点击查看题解）：
+本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 子数组与子序列 | [139. 单词拆分](https://hzchenxiaobin.github.io/leetcode/problems/139_单词拆分.html)、[152. 乘积最大子数组](https://hzchenxiaobin.github.io/leetcode/problems/152_乘积最大子数组.html)、[300. 最长递增子序列](https://hzchenxiaobin.github.io/leetcode/problems/300_最长递增子序列.html)、[354. 俄罗斯套娃信封问题](https://hzchenxiaobin.github.io/leetcode/problems/354_俄罗斯套娃信封问题.html) |
-| Day 2 | 回文与区间 DP | [647. 回文子串](https://hzchenxiaobin.github.io/leetcode/problems/647_回文子串.html)、[516. 最长回文子序列](https://hzchenxiaobin.github.io/leetcode/problems/516_最长回文子序列.html)、[5. 最长回文子串](https://hzchenxiaobin.github.io/leetcode/problems/5_最长回文子串.html)、[312. 戳气球](https://hzchenxiaobin.github.io/leetcode/problems/312_戳气球.html)、[32. 最长有效括号](https://hzchenxiaobin.github.io/leetcode/problems/32_最长有效括号.html) |
-| Day 3 | 二维 DP | [62. 不同路径](https://hzchenxiaobin.github.io/leetcode/problems/62_不同路径.html)、[64. 最小路径和](https://hzchenxiaobin.github.io/leetcode/problems/64_最小路径和.html)、[120. 三角形最小路径和](https://hzchenxiaobin.github.io/leetcode/problems/120_三角形最小路径和.html)、[1143. 最长公共子序列](https://hzchenxiaobin.github.io/leetcode/problems/1143_最长公共子序列.html)、[72. 编辑距离](https://hzchenxiaobin.github.io/leetcode/problems/72_编辑距离.html)、[221. 最大正方形](https://hzchenxiaobin.github.io/leetcode/problems/221_最大正方形.html) |
+| Day 1 | 子数组与子序列 | <a href="/problems/algo/0139">139. 单词拆分</a>、<a href="/problems/algo/0152">152. 乘积最大子数组</a>、<a href="/problems/algo/0300">300. 最长递增子序列</a>、<a href="/problems/algo/0354">354. 俄罗斯套娃信封问题</a> |
+| Day 2 | 回文与区间 DP | <a href="/problems/algo/0647">647. 回文子串</a>、<a href="/problems/algo/0516">516. 最长回文子序列</a>、<a href="/problems/algo/0005">5. 最长回文子串</a>、<a href="/problems/algo/0312">312. 戳气球</a>、<a href="/problems/algo/0032">32. 最长有效括号</a> |
+| Day 3 | 二维 DP | <a href="/problems/algo/0062">62. 不同路径</a>、<a href="/problems/algo/0064">64. 最小路径和</a>、<a href="/problems/algo/0120">120. 三角形最小路径和</a>、<a href="/problems/algo/1143">1143. 最长公共子序列</a>、<a href="/problems/algo/0072">72. 编辑距离</a>、<a href="/problems/algo/0221">221. 最大正方形</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 9 周「动态规划进阶——子序列、区间与二维 DP」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

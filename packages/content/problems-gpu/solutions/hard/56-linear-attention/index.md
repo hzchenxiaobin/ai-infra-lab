@@ -10,7 +10,7 @@ number: 56
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Linear Self-Attention 题解

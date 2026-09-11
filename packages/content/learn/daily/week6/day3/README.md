@@ -7,7 +7,7 @@ knowledge_points: [inference-system, kv-cache]
 updated: 2026-08-28
 week: 6
 day: 3
-related_problems: ["gpu:m:060", "gpu:m:072"]
+related_problems: ["gpu:m:060", "gpu:m:072", "lc:0098", "lc:0108", "lc:0111", "lc:0146", "lc:0230", "lc:0559"]
 related_questions: []
 ---
 
@@ -539,19 +539,19 @@ grep -n "_schedule_running\|_schedule_waiting\|_schedule_swapped" $(python -c "i
 
 Top-P Sampling 是 vLLM 这类推理系统每个 decode step 的**收尾 kernel**——Scheduler 拼好 batch、Worker 跑完 forward 得到 logits 后，最后一步就是在 GPU 上执行采样。这道题就是 Worker 跑的**采样 kernel**：把采样拆成 `softmax → sort → cumsum → searchsorted(p) → 重归一化 → multinomial`，本质是一条 sort + scan（prefix sum）+ CDF 查找的流水线。它直接体现了"Scheduler 决定跑谁、Worker 跑什么 kernel"的分工——采样 kernel 喂入的 batch 正是 Continuous Batching 拼出来的。
 
-> 💡 提交后在 [LeetGPU Top-P Sampling](https://leetgpu.com/challenges/top-p-sampling) 上记录通过耗时。完整题解（含 safe softmax、降序排序、prefix sum 找截断点、重归一化采样、ncu profiling）见 [Top-P Sampling 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-top-p-sampling-solution.html)。
+> 💡 提交后在 [LeetGPU Top-P Sampling](https://leetgpu.com/challenges/top-p-sampling) 上记录通过耗时。完整题解（含 safe softmax、降序排序、prefix sum 找截断点、重归一化采样、ncu profiling）见 <a href="/problems/gpu/medium/60-top-p-sampling">Top-P Sampling 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周 Day 3）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 6 周「二叉树（上）——遍历、形态与 BST」Day 3（BST 基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 3（BST 基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/) | 简单 | BFS/DFS（注意单边子树） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/111_二叉树的最小深度.html) |
-| [559. N 叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/) | 简单 | DFS/BFS | [题解](https://hzchenxiaobin.github.io/leetcode/problems/559_N叉树的最大深度.html) |
-| [108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/) | 简单 | 取中点递归构建 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/108_将有序数组转换为二叉搜索树.html) |
-| [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/) | 中等 | 中序单调性 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/98_验证二叉搜索树.html) |
-| [230. 二叉搜索树中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/) | 中等 | 中序第 k 个 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/230_二叉搜索树中第K小的元素.html) |
+| [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/) | 简单 | BFS/DFS（注意单边子树） | <a href="/problems/algo/0111">题解</a> |
+| [559. N 叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/) | 简单 | DFS/BFS | <a href="/problems/algo/0559">题解</a> |
+| [108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/) | 简单 | 取中点递归构建 | <a href="/problems/algo/0108">题解</a> |
+| [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/) | 中等 | 中序单调性 | <a href="/problems/algo/0098">题解</a> |
+| [230. 二叉搜索树中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/) | 中等 | 中序第 k 个 | <a href="/problems/algo/0230">题解</a> |
 
 ---
 

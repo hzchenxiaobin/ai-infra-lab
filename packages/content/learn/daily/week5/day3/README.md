@@ -7,7 +7,7 @@ knowledge_points: [attention, flash-attention]
 updated: 2026-08-28
 week: 5
 day: 3
-related_problems: ["gpu:h:012", "gpu:m:087"]
+related_problems: ["gpu:h:012", "gpu:m:006", "gpu:m:087", "lc:0253", "lc:0406", "lc:0435", "lc:0452", "lc:1109"]
 related_questions: []
 ---
 
@@ -502,19 +502,19 @@ ncu --metrics \
 
 今天我们手写的是**单 head 的 fused FlashAttention kernel**——把 $QK^\top$ + softmax + PV 融合成一个 kernel 消除 $O(N^2)$ IO。本题是这个 kernel 的最小扩展：把单 head fused attention 复制到 `h` 个 head 上并行（`grid = h`，一个 block 一个 head），head 间完全独立、零同步。核心考点是 head 切分寻址（列偏移乘 `d_k`，写反成 strided `i::h` 会全错）和 scale 用 `√d_k` 而非 `√d_model`。
 
-> 💡 提交后在 [LeetGPU Multi-Head Attention 题目](https://leetgpu.com/challenges/multi-head-attention)上记录通过耗时。完整题解（含 head 切分寻址、一个 block 一个 head 的 fused attention、online softmax 三公式）见 [Multi-Head Attention 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-multi-head-attention-solution.html)。
+> 💡 提交后在 [LeetGPU Multi-Head Attention 题目](https://leetgpu.com/challenges/multi-head-attention)上记录通过耗时。完整题解（含 head 切分寻址、一个 block 一个 head 的 fused attention、online softmax 三公式）见 <a href="/problems/gpu/hard/12-multi-head-attention">Multi-Head Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周 Day 3）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 5 周「堆、贪心与区间」Day 3（区间与差分），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」Day 3（区间与差分），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [253. 会议室 II](https://leetcode.cn/problems/meeting-rooms-ii/) | 中等 | 扫描线 / 小顶堆 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/253_会议室II.html) |
-| [435. 无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/) | 中等 | 贪心区间调度（按右端点） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/435_无重叠区间.html) |
-| [452. 用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/) | 中等 | 按右端点排序贪心 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/452_用最少数量的箭引爆气球.html) |
-| [406. 根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/) | 中等 | 降序排序 + 按 k 插队 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/406_根据身高重建队列.html) |
-| [1109. 航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/) | 中等 | 差分数组 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/1109_航班预订统计.html) |
+| [253. 会议室 II](https://leetcode.cn/problems/meeting-rooms-ii/) | 中等 | 扫描线 / 小顶堆 | <a href="/problems/algo/0253">题解</a> |
+| [435. 无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/) | 中等 | 贪心区间调度（按右端点） | <a href="/problems/algo/0435">题解</a> |
+| [452. 用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/) | 中等 | 按右端点排序贪心 | <a href="/problems/algo/0452">题解</a> |
+| [406. 根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/) | 中等 | 降序排序 + 按 k 插队 | <a href="/problems/algo/0406">题解</a> |
+| [1109. 航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/) | 中等 | 差分数组 | <a href="/problems/algo/1109">题解</a> |
 
 ---
 

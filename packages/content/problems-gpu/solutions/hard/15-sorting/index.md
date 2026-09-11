@@ -10,7 +10,7 @@ number: 15
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Sorting 题解

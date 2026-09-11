@@ -10,7 +10,7 @@ number: 13
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w02d03"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w02d03"]
 ---
 
 # LeetGPU Histogramming 题解

@@ -10,7 +10,7 @@ number: 80
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d02", "learn:w06d02"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d02", "learn:w06d02"]
 ---
 
 # LeetGPU Grouped Query Attention (GQA) 题解

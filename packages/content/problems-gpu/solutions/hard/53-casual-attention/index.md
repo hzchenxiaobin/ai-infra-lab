@@ -10,7 +10,7 @@ number: 53
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d04"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d04", "learn:w06d04"]
 ---
 
 # LeetGPU Causal Self-Attention 题解

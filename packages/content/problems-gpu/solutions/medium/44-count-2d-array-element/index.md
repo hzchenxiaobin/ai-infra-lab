@@ -10,7 +10,7 @@ number: 44
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Count 2D Array Element 题解

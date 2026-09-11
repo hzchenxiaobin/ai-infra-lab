@@ -7,7 +7,7 @@ knowledge_points: [batching, scheduling]
 updated: 2026-08-31
 week: 7
 day: 6
-related_problems: ["gpu:m:004"]
+related_problems: ["gpu:m:004", "lc:0022", "lc:0051", "lc:0079", "lc:0089", "lc:0093", "lc:0131", "lc:0295"]
 related_questions: []
 ---
 
@@ -266,16 +266,16 @@ tpot_s = 1.0 / (decode_total / active_seqs)                   # ③ 无退化系
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 7 周 Day 6）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 6（回溯进阶），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 6（回溯进阶），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/) | 中等 | 回溯剪枝 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/22_括号生成.html) |
-| [79. 单词搜索](https://leetcode.cn/problems/word-search/) | 中等 | DFS 回溯 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/79_单词搜索.html) |
-| [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/) | 中等 | 回溯 + 判断 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/131_分割回文串.html) |
-| [51. N 皇后](https://leetcode.cn/problems/n-queens/) | 困难 | 回溯 + 位运算 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/51_N皇后.html) |
-| [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/) | 中等 | 回溯 + 分段合法性剪枝 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/93_复原IP地址.html) |
-| [89. 格雷编码](https://leetcode.cn/problems/gray-code/) | 中等 | 回溯 / 公式法（前缀补 1） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/89_格雷编码.html) |
+| [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/) | 中等 | 回溯剪枝 | <a href="/problems/algo/0022">题解</a> |
+| [79. 单词搜索](https://leetcode.cn/problems/word-search/) | 中等 | DFS 回溯 | <a href="/problems/algo/0079">题解</a> |
+| [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/) | 中等 | 回溯 + 判断 | <a href="/problems/algo/0131">题解</a> |
+| [51. N 皇后](https://leetcode.cn/problems/n-queens/) | 困难 | 回溯 + 位运算 | <a href="/problems/algo/0051">题解</a> |
+| [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/) | 中等 | 回溯 + 分段合法性剪枝 | <a href="/problems/algo/0093">题解</a> |
+| [89. 格雷编码](https://leetcode.cn/problems/gray-code/) | 中等 | 回溯 / 公式法（前缀补 1） | <a href="/problems/algo/0089">题解</a> |
 
 ---
 ### 4. PD 分离 vs Chunked Prefill 的关系

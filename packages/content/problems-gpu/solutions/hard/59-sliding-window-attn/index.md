@@ -10,7 +10,7 @@ number: 59
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d04"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d04"]
 ---
 
 # LeetGPU Sliding Window Self-Attention 题解

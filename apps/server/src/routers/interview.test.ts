@@ -1,9 +1,15 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { _resetUserCache, getCurrentUserId } from "../auth.js";
 import { appRouter } from "./index.js";
-import { contents, problems, questions } from "../db/schema.js";
+import {
+  contents,
+  interviewReports,
+  interviewSessions,
+  problems,
+  questions,
+  users,
+} from "../db/schema.js";
 
 /**
  * 面试状态机集成测试：需要可连接的 MySQL（DATABASE_URL）。
@@ -60,16 +66,32 @@ const run = available ? describe : describe.skip;
 run("interview 状态机（集成）", () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
   let questionIds: number[] = [];
+  let testUserId: number;
 
   beforeAll(async () => {
-    _resetUserCache();
-    const userId = await getCurrentUserId();
-    caller = appRouter.createCaller({ userId });
+    // 显式建测试用户（2026-09-11 收紧后不再有自动 provision 回落）
+    const inserted = await db
+      .insert(users)
+      .values({ email: `interview-test-${Date.now()}@ailab.test`, name: "interview-test" })
+      .$returningId();
+    testUserId = inserted[0].id;
+    caller = appRouter.createCaller({ userId: testUserId });
     // 清空该用户数据，避免种子/同步数据干扰
     await caller.question.seed();
     const { items } = await caller.question.list({ page: 1, pageSize: 100 });
     questionIds = items.map((q) => q.id);
     expect(questionIds.length).toBeGreaterThan(0);
+  });
+
+  afterAll(async () => {
+    if (!testUserId) return;
+    // 无外键级联，按依赖顺序清理该测试用户的面试数据
+    await db.execute(
+      sql`DELETE m FROM interview_messages m JOIN interview_sessions s ON m.session_id = s.id WHERE s.user_id = ${testUserId}`,
+    );
+    await db.delete(interviewReports).where(eq(interviewReports.userId, testUserId));
+    await db.delete(interviewSessions).where(eq(interviewSessions.userId, testUserId));
+    await db.delete(users).where(eq(users.id, testUserId));
   });
 
   it("start → reply×N → 自动 finish → 报告", async () => {

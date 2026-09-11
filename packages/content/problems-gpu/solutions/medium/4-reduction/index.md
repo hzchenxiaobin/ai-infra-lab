@@ -10,7 +10,7 @@ number: 4
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w01d05", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d07", "learn:w07d06", "learn:w07d07"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w01d05", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review", "learn:w02d07", "learn:w07d06", "learn:w07d07"]
 ---
 
 # LeetGPU Reduction 题解

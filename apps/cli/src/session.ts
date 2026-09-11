@@ -2,13 +2,28 @@ import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { appRouter } from "@ailab/server/router";
 import type { AppRouter } from "@ailab/server/router";
-import { getCurrentUserId } from "@ailab/server/auth";
+import { getUserIdByEmail } from "@ailab/server/auth";
 import { banner, candidateMsg, dimLine, errorLine, interviewerMsg, progressLine, successLine } from "./ui.js";
 
 type Caller = ReturnType<AppRouter["createCaller"]>;
 
+/**
+ * 身份解析：--user <email>（全局 option，index.ts 的 preAction 钩子统一写入
+ * AILAB_USER）或直接设 AILAB_USER 环境变量。管理命令（content:sync / user:* /
+ * quota:*）还要求该邮箱在服务端 ADMIN_EMAILS 中（adminProcedure 校验）。
+ */
 export async function getCaller(): Promise<Caller> {
-  const userId = await getCurrentUserId();
+  const email = process.env.AILAB_USER?.trim();
+  if (!email) {
+    console.log(errorLine("未指定操作身份：--user <email> 或环境变量 AILAB_USER"));
+    console.log(dimLine("管理命令（content:sync / user:* / quota:*）还需该邮箱在服务端 ADMIN_EMAILS 中"));
+    process.exit(1);
+  }
+  const userId = await getUserIdByEmail(email);
+  if (userId == null) {
+    console.log(errorLine(`用户不存在：${email}（先在 web 注册，或核对 --user 拼写）`));
+    process.exit(1);
+  }
   return appRouter.createCaller({ userId });
 }
 

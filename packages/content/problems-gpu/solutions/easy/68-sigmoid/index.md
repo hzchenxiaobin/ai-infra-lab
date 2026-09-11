@@ -10,7 +10,7 @@ number: 68
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Sigmoid 题解

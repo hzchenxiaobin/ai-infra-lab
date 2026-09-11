@@ -7,7 +7,7 @@ knowledge_points: [inference-system, kv-cache]
 updated: 2026-08-28
 week: 6
 day: 6
-related_problems: ["gpu:m:029", "gpu:m:096"]
+related_problems: ["gpu:m:029", "gpu:m:096", "lc:0121"]
 related_questions: []
 ---
 
@@ -239,7 +239,7 @@ ncu --kernel-name regex:flash_decoding \
 
 INT8 KV-Cache Attention 正是 **FlashDecoding 服务的 decode 场景**——LLM 推理的 decode 阶段，1 个 query 对 N 个历史 key，KV cache 以 INT8 量化存储省 HBM 带宽。今天我们手写了 FlashDecoding kernel（FP32 版，KV 按 block 切分 + 跨 block 合并），这道题是它的 **量化变体**——KV cache 用 INT8 存储减少带宽压力，kernel 内反量化再做 attention。两者的核心都是"decode 阶段的 M=1 attention 优化"：FlashDecoding 切 KV 提升并行度，INT8 量化减数据量提升带宽效率，经常组合使用。
 
-> 💡 提交后在 [LeetGPU INT8 KV-Cache Attention](https://leetgpu.com/challenges/int8-kv-cache-attention) 上记录通过耗时，重点观察 INT8 KV cache 相比 FP32 的带宽节省。完整题解见 [INT8 KV-Cache Attention 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int8-kv-cache-attention-solution.html)。
+> 💡 提交后在 [LeetGPU INT8 KV-Cache Attention](https://leetgpu.com/challenges/int8-kv-cache-attention) 上记录通过耗时，重点观察 INT8 KV cache 相比 FP32 的带宽节省。完整题解见 <a href="/problems/gpu/medium/96-int8-kv-cache-attention">INT8 KV-Cache Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周机动补漏）
 

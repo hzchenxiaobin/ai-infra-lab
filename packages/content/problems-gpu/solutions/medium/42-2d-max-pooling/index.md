@@ -10,7 +10,7 @@ number: 42
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU 2D Max Pooling 题解

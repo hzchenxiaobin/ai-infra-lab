@@ -1,31 +1,28 @@
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { eq } from "drizzle-orm";
 import { db } from "./db/client.js";
 import { users } from "./db/schema.js";
 import { env } from "./env.js";
 
 // ---------------------------------------------------------------------------
-// 单用户自动 provision（遗留）
-// TODO(M2 完成后删除)：CLI 与现有 interview 流程仍依赖它；M2 全量切换到
-// session cookie 登录后，createContext 不再回落到这里，本段整体移除。
+// 按邮箱寻址（CLI --user / AILAB_USER 的身份解析，dev/cli.md §2）
 // ---------------------------------------------------------------------------
 
-let cachedUserId: number | null = null;
-
-export async function getCurrentUserId(): Promise<number> {
-  if (cachedUserId != null) return cachedUserId;
-  const existing = await db.select().from(users).limit(1);
-  if (existing.length > 0) {
-    cachedUserId = existing[0].id;
-    return cachedUserId;
-  }
-  const inserted = await db.insert(users).values({ name: "考生" }).$returningId();
-  cachedUserId = inserted[0].id;
-  return cachedUserId;
+/** 查用户 id；不存在返回 null（CLI 侧据此报错提示先在 web 注册） */
+export async function getUserIdByEmail(email: string): Promise<number | null> {
+  const rows = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, email.trim().toLowerCase()))
+    .limit(1);
+  return rows[0]?.id ?? null;
 }
 
-/** 测试用：重置缓存 */
-export function _resetUserCache() {
-  cachedUserId = null;
+/** 生成可读随机密码（无歧义字符集，12 位；user:claim 未显式传密码时用） */
+export function generatePassword(): string {
+  const alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(12);
+  return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
 }
 
 // ---------------------------------------------------------------------------

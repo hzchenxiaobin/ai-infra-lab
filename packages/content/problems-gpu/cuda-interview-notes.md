@@ -5,7 +5,7 @@ title: "CUDA 手撕题专题：AI Infra 面经总结"
 tags: [cuda, interview]
 knowledge_points: [cuda, interview-prep]
 updated: 2026-09-09
-related_problems: []
+related_problems: ["gpu:e:001", "gpu:e:002", "gpu:e:003", "gpu:e:009", "gpu:e:021", "gpu:e:023", "gpu:e:052", "gpu:e:054", "gpu:e:065", "gpu:e:066", "gpu:e:068", "gpu:h:012", "gpu:h:014", "gpu:h:015", "gpu:h:020", "gpu:h:026", "gpu:h:036", "gpu:h:039", "gpu:h:046", "gpu:h:053", "gpu:h:056", "gpu:h:059", "gpu:h:073", "gpu:h:074", "gpu:h:093", "gpu:h:109", "gpu:m:004", "gpu:m:005", "gpu:m:006", "gpu:m:010", "gpu:m:011", "gpu:m:013", "gpu:m:016", "gpu:m:017", "gpu:m:018", "gpu:m:022", "gpu:m:025", "gpu:m:027", "gpu:m:028", "gpu:m:029", "gpu:m:030", "gpu:m:032", "gpu:m:033", "gpu:m:034", "gpu:m:035", "gpu:m:037", "gpu:m:038", "gpu:m:040", "gpu:m:042", "gpu:m:043", "gpu:m:044", "gpu:m:045", "gpu:m:047", "gpu:m:050", "gpu:m:051", "gpu:m:055", "gpu:m:057", "gpu:m:058", "gpu:m:060", "gpu:m:061", "gpu:m:064", "gpu:m:067", "gpu:m:069", "gpu:m:070", "gpu:m:071", "gpu:m:072", "gpu:m:075", "gpu:m:076", "gpu:m:078", "gpu:m:080", "gpu:m:081", "gpu:m:082", "gpu:m:084", "gpu:m:085", "gpu:m:087", "gpu:m:090", "gpu:m:094", "gpu:m:096", "gpu:m:105", "gpu:m:106", "gpu:m:107a", "gpu:m:107b", "gpu:m:108", "gpu:m:109", "gpu:m:110", "gpu:m:111", "gpu:m:112", "gpu:m:113", "gpu:m:114", "gpu:m:115", "gpu:m:116"]
 related_questions: []
 ---
 
@@ -14,7 +14,7 @@ related_questions: []
 > **来源**：知乎、牛客网等平台的 AI Infra 公开面经（链接见文末参考资料），检索整理时间 2026-07
 > **适用对象**：准备 AI Infra / 推理引擎 / 高性能计算方向岗位、需要手撕 CUDA kernel 的求职者
 > **说明**：知乎页面有反爬保护，部分内容基于搜索摘要整理；小红书正文需登录，内容来自转载与面经汇总。细节请点原文链接核对
-> **相关专题**：[AI Infra 面经与面试题整理](https://hzchenxiaobin.github.io/ai-infra-notes/interview/)（面试形式与八股）、[Week 1 CUDA 基础](https://hzchenxiaobin.github.io/ai-infra-notes/week1/)（CUDA 入门教程）
+> **相关专题**：[AI Infra 面经与面试题整理](/notes/cuda-interview-notes)（面试形式与八股）、[Week 1 CUDA 基础](/week1)（CUDA 入门教程）
 
 ---
 
@@ -97,47 +97,47 @@ related_questions: []
 
 ## 五、LeetGPU 题目对照
 
-对照 [leetgpu-challenges](https://github.com/AlphaGPU/leetgpu-challenges) 题目目录（编号即 LeetGPU 题目编号），本专题各题在 LeetGPU 上的对应关系如下。刷题时可直接对照[本站题解列表](https://hzchenxiaobin.github.io/leetgpu/)。
+对照 [leetgpu-challenges](https://github.com/AlphaGPU/leetgpu-challenges) 题目目录（编号即 LeetGPU 题目编号），本专题各题在 LeetGPU 上的对应关系如下。刷题时可直接对照<a href="/problems/gpu/">本站题解列表</a>。
 
 ### 高频题
 
 | 本专题题目 | LeetGPU 对应题 |
 |------------|----------------|
-| Softmax | [#5 Softmax](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-solution.html)（medium） |
-| online softmax | 无独立题，最接近 [#6 Softmax Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-attention-solution.html) |
-| Reduce（sum/max） | [#4 Reduction](https://hzchenxiaobin.github.io/leetgpu/leetgpu-reduction-solution.html)（medium，求和归约） |
-| LayerNorm | [#115 Layer Normalization](https://hzchenxiaobin.github.io/leetgpu/leetgpu-layer-normalization-solution.html)（medium）；同类 [#40 Batch Normalization](https://hzchenxiaobin.github.io/leetgpu/leetgpu-batch-normalization-solution.html)、[#105 Group Normalization](https://hzchenxiaobin.github.io/leetgpu/leetgpu-group-normalization-solution.html) |
-| RMSNorm | [#50 RMS Normalization](https://hzchenxiaobin.github.io/leetgpu/leetgpu-rms-normalization-solution.html)（medium）、[#116 Fused Add RMSNorm](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fused-add-rmsnorm-solution.html)（融合残差加 + RMSNorm） |
+| Softmax | <a href="/problems/gpu/medium/5-softmax">#5 Softmax</a>（medium） |
+| online softmax | 无独立题，最接近 <a href="/problems/gpu/medium/6-softmax-attention">#6 Softmax Attention</a> |
+| Reduce（sum/max） | <a href="/problems/gpu/medium/4-reduction">#4 Reduction</a>（medium，求和归约） |
+| LayerNorm | <a href="/problems/gpu/medium/115-layer-normalization">#115 Layer Normalization</a>（medium）；同类 <a href="/problems/gpu/medium/40-batch-normalization">#40 Batch Normalization</a>、<a href="/problems/gpu/medium/105-group-normalization">#105 Group Normalization</a> |
+| RMSNorm | <a href="/problems/gpu/medium/50-rms-normalization">#50 RMS Normalization</a>（medium）、<a href="/problems/gpu/medium/116-fused-add-rmsnorm">#116 Fused Add RMSNorm</a>（融合残差加 + RMSNorm） |
 
 ### 中频题
 
 | 本专题题目 | LeetGPU 对应题 |
 |------------|----------------|
-| SGEMM | [#2 Matrix Multiplication](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-multiplication-solution.html)（easy，含 TF32 Tensor Core 版）、[#22 GEMM](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gemm-solution.html)（medium，带 alpha/beta）、[#30 Batched MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-batched-matrix-multiplication-solution.html)、[#57 FP16 Batched MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fp16-batched-matmul-solution.html)；量化路径 [#32 INT8 Quantized MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int8-quantized-matmul-solution.html)、[#81 INT4 MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int4-matmul-solution.html)；Split-K 无直接对应 |
-| 矩阵转置 | [#3 Matrix Transpose](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-transpose-solution.html)（easy） |
-| GEMV | [#114 GEMV](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gemv-solution.html)（medium）；同类 [#17 Dot Product](https://hzchenxiaobin.github.io/leetgpu/leetgpu-dot-product-solution.html)、[#18 Sparse Matrix-Vector Multiplication](https://hzchenxiaobin.github.io/leetgpu/leetgpu-sparse-matrix-vector-multiplication-solution.html)（SpMV）、[#75 Sparse Matrix-Dense Matrix Multiplication](https://hzchenxiaobin.github.io/leetgpu/leetgpu-sparse-matrix-dense-matrix-multiplication-solution.html) |
-| FlashAttention / attention | [#6 Softmax Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-attention-solution.html)、[#109 Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-attention-solution.html)（hard）、[#53 Causal Self-Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-causal-self-attention-solution.html)（hard）、[#12 Multi-Head Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-multi-head-attention-solution.html)（hard）、[#26 Multi-Head Cross Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-multi-head-cross-attention-solution.html)、[#80 Grouped Query Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-grouped-query-attention-solution.html)、[#59 Sliding Window Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-sliding-window-self-attention-solution.html)、[#56 Linear Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-linear-self-attention-solution.html)、[#112 Attention with Sinks](https://hzchenxiaobin.github.io/leetgpu/leetgpu-attention-with-sinks-solution.html)、[#111 Softmax Attention Backward](https://hzchenxiaobin.github.io/leetgpu/leetgpu-softmax-attention-backward-solution.html)（反向传播） |
-| Scan（前缀和） | [#16 Prefix Sum](https://hzchenxiaobin.github.io/leetgpu/leetgpu-prefix-sum-solution.html)（medium）、[#70 Segmented Prefix Sum](https://hzchenxiaobin.github.io/leetgpu/leetgpu-segmented-prefix-sum-solution.html) |
-| Top-K | [#29 Top-K Selection](https://hzchenxiaobin.github.io/leetgpu/leetgpu-top-k-selection-solution.html)（medium）、[#60 Top-P Sampling](https://hzchenxiaobin.github.io/leetgpu/leetgpu-top-p-sampling-solution.html)、[#67 MoE Top-K Gating](https://hzchenxiaobin.github.io/leetgpu/leetgpu-moe-topk-gating-solution.html) |
-| Histogram | [#13 Histogramming](https://hzchenxiaobin.github.io/leetgpu/leetgpu-histogramming-solution.html)（medium） |
+| SGEMM | <a href="/problems/gpu/easy/2-matrix-multiplication">#2 Matrix Multiplication</a>（easy，含 TF32 Tensor Core 版）、<a href="/problems/gpu/medium/22-gemm">#22 GEMM</a>（medium，带 alpha/beta）、<a href="/problems/gpu/medium/30-batched-matrix-multiplication">#30 Batched MatMul</a>、<a href="/problems/gpu/medium/57-fp16-batched-matmul">#57 FP16 Batched MatMul</a>；量化路径 <a href="/problems/gpu/medium/32-int8-quantized-matmul">#32 INT8 Quantized MatMul</a>、<a href="/problems/gpu/medium/81-int4-matmul">#81 INT4 MatMul</a>；Split-K 无直接对应 |
+| 矩阵转置 | <a href="/problems/gpu/easy/3-matrix-transpose">#3 Matrix Transpose</a>（easy） |
+| GEMV | <a href="/problems/gpu/medium/114-gemv">#114 GEMV</a>（medium）；同类 <a href="/problems/gpu/medium/17-dot-product">#17 Dot Product</a>、<a href="/problems/gpu/medium/18-sparse-matrix-vector-multiplication">#18 Sparse Matrix-Vector Multiplication</a>（SpMV）、<a href="/problems/gpu/medium/75-sparse-matrix-dense-matrix-multiplication">#75 Sparse Matrix-Dense Matrix Multiplication</a> |
+| FlashAttention / attention | <a href="/problems/gpu/medium/6-softmax-attention">#6 Softmax Attention</a>、<a href="/problems/gpu/hard/109-attention">#109 Attention</a>（hard）、<a href="/problems/gpu/hard/53-casual-attention">#53 Causal Self-Attention</a>（hard）、<a href="/problems/gpu/hard/12-multi-head-attention">#12 Multi-Head Attention</a>（hard）、<a href="/problems/gpu/hard/26-multi-head-cross-attention">#26 Multi-Head Cross Attention</a>、<a href="/problems/gpu/medium/80-grouped-query-attention">#80 Grouped Query Attention</a>、<a href="/problems/gpu/hard/59-sliding-window-attn">#59 Sliding Window Attention</a>、<a href="/problems/gpu/hard/56-linear-attention">#56 Linear Attention</a>、<a href="/problems/gpu/medium/112-attention-with-sinks">#112 Attention with Sinks</a>、<a href="/problems/gpu/medium/111-softmax-attention-backward">#111 Softmax Attention Backward</a>（反向传播） |
+| Scan（前缀和） | <a href="/problems/gpu/medium/16-prefix-sum">#16 Prefix Sum</a>（medium）、<a href="/problems/gpu/medium/70-segmented-prefix-sum">#70 Segmented Prefix Sum</a> |
+| Top-K | <a href="/problems/gpu/medium/29-top-k-selection">#29 Top-K Selection</a>（medium）、<a href="/problems/gpu/medium/60-top-p-sampling">#60 Top-P Sampling</a>、<a href="/problems/gpu/medium/67-moe-topk-gating">#67 MoE Top-K Gating</a> |
+| Histogram | <a href="/problems/gpu/medium/13-histogramming">#13 Histogramming</a>（medium） |
 
 ### 低频题
 
 | 本专题题目 | LeetGPU 对应题 |
 |------------|----------------|
-| vector add | [#1 Vector Addition](https://hzchenxiaobin.github.io/leetgpu/leetgpu-vector-addition-solution.html)（easy） |
-| relu / sigmoid | [#21 ReLU](https://hzchenxiaobin.github.io/leetgpu/leetgpu-relu-solution.html)、[#23 Leaky ReLU](https://hzchenxiaobin.github.io/leetgpu/leetgpu-leaky-relu-solution.html)、[#68 Sigmoid](https://hzchenxiaobin.github.io/leetgpu/leetgpu-sigmoid-solution.html)；同类还有 [#52 SiLU](https://hzchenxiaobin.github.io/leetgpu/leetgpu-silu-solution.html)、[#54 SwiGLU](https://hzchenxiaobin.github.io/leetgpu/leetgpu-swiglu-solution.html)、[#65 GeGLU](https://hzchenxiaobin.github.io/leetgpu/leetgpu-geglu-solution.html) |
-| avg pooling | 无 avg pooling 题；只有 [#42 2D Max Pooling](https://hzchenxiaobin.github.io/leetgpu/leetgpu-2d-max-pooling-solution.html) |
+| vector add | <a href="/problems/gpu/easy/1-vector-add">#1 Vector Addition</a>（easy） |
+| relu / sigmoid | <a href="/problems/gpu/easy/21-relu">#21 ReLU</a>、<a href="/problems/gpu/easy/23-leaky-relu">#23 Leaky ReLU</a>、<a href="/problems/gpu/easy/68-sigmoid">#68 Sigmoid</a>；同类还有 <a href="/problems/gpu/easy/52-silu">#52 SiLU</a>、<a href="/problems/gpu/easy/54-swiglu">#54 SwiGLU</a>、<a href="/problems/gpu/easy/65-geglu">#65 GeGLU</a> |
+| avg pooling | 无 avg pooling 题；只有 <a href="/problems/gpu/medium/42-2d-max-pooling">#42 2D Max Pooling</a> |
 | bbox IoU | **无对应题** |
 | NMS | **无对应题** |
-| conv2d | [#10 2D Convolution](https://hzchenxiaobin.github.io/leetgpu/leetgpu-2d-convolution-solution.html)（medium）；另有 [#9 1D Convolution](https://hzchenxiaobin.github.io/leetgpu/leetgpu-1d-convolution-solution.html)、[#11 3D Convolution](https://hzchenxiaobin.github.io/leetgpu/leetgpu-3d-convolution-solution.html) |
-| 双线性插值 | **无对应题**（图像类仅有 [#28 Gaussian Blur](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gaussian-blur-solution.html)、[#66 RGB to Grayscale](https://hzchenxiaobin.github.io/leetgpu/leetgpu-rgb-to-grayscale-solution.html)） |
-| dot product | [#17 Dot Product](https://hzchenxiaobin.github.io/leetgpu/leetgpu-dot-product-solution.html)、[#58 FP16 Dot Product](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fp16-dot-product-solution.html) |
-| 量化 / 反量化 kernel | [#64 Weight Dequantization](https://hzchenxiaobin.github.io/leetgpu/leetgpu-weight-dequantization-solution.html)、[#32 INT8 Quantized MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int8-quantized-matmul-solution.html)、[#81 INT4 MatMul](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int4-matmul-solution.html)、[#96 INT8 KV-Cache Attention](https://hzchenxiaobin.github.io/leetgpu/leetgpu-int8-kv-cache-attention-solution.html) |
-| RoPE | [#61 RoPE Embedding](https://hzchenxiaobin.github.io/leetgpu/leetgpu-rope-embedding-solution.html)（medium）；另有 [#55 Attention with Linear Bias](https://hzchenxiaobin.github.io/leetgpu/leetgpu-attn-w-linear-bias-solution.html)（ALiBi） |
-| Argmax | [#107 Argmax](https://hzchenxiaobin.github.io/leetgpu/leetgpu-argmax-solution.html)（medium） |
-| 排序 / 选择 | [#15 Sorting](https://hzchenxiaobin.github.io/leetgpu/leetgpu-sorting-solution.html)（hard）、[#36 Radix Sort](https://hzchenxiaobin.github.io/leetgpu/leetgpu-radix-sort-solution.html)、[#71 Parallel Merge](https://hzchenxiaobin.github.io/leetgpu/leetgpu-parallel-merge-solution.html)、[#72 Stream Compaction](https://hzchenxiaobin.github.io/leetgpu/leetgpu-stream-compaction-solution.html)（filter） |
-| 损失函数 | [#25 Categorical Cross Entropy](https://hzchenxiaobin.github.io/leetgpu/leetgpu-categorical-cross-entropy-loss-solution.html)、[#27 Mean Squared Error](https://hzchenxiaobin.github.io/leetgpu/leetgpu-mean-squared-error-solution.html) |
+| conv2d | <a href="/problems/gpu/medium/10-2d-convolution">#10 2D Convolution</a>（medium）；另有 <a href="/problems/gpu/easy/9-1d-convolution">#9 1D Convolution</a>、<a href="/problems/gpu/medium/11-3d-convolution">#11 3D Convolution</a> |
+| 双线性插值 | **无对应题**（图像类仅有 <a href="/problems/gpu/medium/28-gaussian-blur">#28 Gaussian Blur</a>、<a href="/problems/gpu/easy/66-rgb-to-grayscale">#66 RGB to Grayscale</a>） |
+| dot product | <a href="/problems/gpu/medium/17-dot-product">#17 Dot Product</a>、<a href="/problems/gpu/medium/58-fp16-dot-product">#58 FP16 Dot Product</a> |
+| 量化 / 反量化 kernel | <a href="/problems/gpu/medium/64-weight-dequantization">#64 Weight Dequantization</a>、<a href="/problems/gpu/medium/32-int8-quantized-matmul">#32 INT8 Quantized MatMul</a>、<a href="/problems/gpu/medium/81-int4-matmul">#81 INT4 MatMul</a>、<a href="/problems/gpu/medium/96-int8-kv-cache-attention">#96 INT8 KV-Cache Attention</a> |
+| RoPE | <a href="/problems/gpu/medium/61-rope-embedding">#61 RoPE Embedding</a>（medium）；另有 <a href="/problems/gpu/medium/55-attn-w-linear-bias">#55 Attention with Linear Bias</a>（ALiBi） |
+| Argmax | <a href="/problems/gpu/medium/107-argmax">#107 Argmax</a>（medium） |
+| 排序 / 选择 | <a href="/problems/gpu/hard/15-sorting">#15 Sorting</a>（hard）、<a href="/problems/gpu/hard/36-radix-sort">#36 Radix Sort</a>、<a href="/problems/gpu/medium/71-parallel-merge">#71 Parallel Merge</a>、<a href="/problems/gpu/medium/72-stream-compaction">#72 Stream Compaction</a>（filter） |
+| 损失函数 | <a href="/problems/gpu/medium/25-categorical-cross-entropy-loss">#25 Categorical Cross Entropy</a>、<a href="/problems/gpu/medium/27-mean-squared-error">#27 Mean Squared Error</a> |
 
 ### 大模型推理与训练方向
 
@@ -145,17 +145,17 @@ related_questions: []
 
 | 方向 | LeetGPU 对应题 |
 |------|----------------|
-| Transformer block | [#74 GPT-2 Block](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gpt-2-transformer-block-solution.html)（hard）、[#93 Llama Transformer Block](https://hzchenxiaobin.github.io/leetgpu/leetgpu-llama-transformer-block-solution.html)（hard）、[#76 Adder Transformer](https://hzchenxiaobin.github.io/leetgpu/leetgpu-adder-transformer-solution.html) |
-| 算子融合 | [#113 Fused QKV Projection](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fused-qkv-projection-solution.html)、[#116 Fused Add RMSNorm](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fused-add-rmsnorm-solution.html)、[#84 SwiGLU MLP Block](https://hzchenxiaobin.github.io/leetgpu/leetgpu-swiglu-mlp-block-solution.html)、[#85 LoRA Linear](https://hzchenxiaobin.github.io/leetgpu/leetgpu-lora-linear-solution.html) |
-| SSM / Mamba | [#94 SSM Selective Scan](https://hzchenxiaobin.github.io/leetgpu/leetgpu-ssm-selective-scan-solution.html)、[#82 Linear Recurrence](https://hzchenxiaobin.github.io/leetgpu/leetgpu-linear-recurrence-solution.html) |
-| RLHF / RL 损失 | [#107 PPO Clipped Surrogate Loss](https://hzchenxiaobin.github.io/leetgpu/leetgpu-ppo-clipped-surrogate-loss-solution.html)、[#108 DPO Sequence Loss](https://hzchenxiaobin.github.io/leetgpu/leetgpu-dpo-sequence-loss-solution.html)、[#109 GRPO Surrogate Loss](https://hzchenxiaobin.github.io/leetgpu/leetgpu-grpo-surrogate-loss-solution.html)、[#110 GAE Reverse Scan](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gae-reverse-scan-solution.html) |
-| 推测解码 | [#87 Speculative Decoding Verification](https://hzchenxiaobin.github.io/leetgpu/leetgpu-speculative-decoding-verification-solution.html) |
-| Embedding | [#106 Token Embedding Layer](https://hzchenxiaobin.github.io/leetgpu/leetgpu-token-embedding-layer-solution.html) |
-| 因果卷积 | [#90 Causal Depthwise Conv1d](https://hzchenxiaobin.github.io/leetgpu/leetgpu-causal-depthwise-conv1d-solution.html) |
-| FFT | [#39 Fast Fourier Transform](https://hzchenxiaobin.github.io/leetgpu/leetgpu-fast-fourier-transform-solution.html)（hard）、[#78 2D FFT](https://hzchenxiaobin.github.io/leetgpu/leetgpu-2d-fft-solution.html) |
-| 图算法 | [#46 BFS Shortest Path](https://hzchenxiaobin.github.io/leetgpu/leetgpu-bfs-shortest-path-solution.html)、[#73 All Pairs Shortest Paths](https://hzchenxiaobin.github.io/leetgpu/leetgpu-all-pairs-shortest-paths-solution.html) |
-| 统计 / 归约变体 | [#43 Count Array Element](https://hzchenxiaobin.github.io/leetgpu/leetgpu-count-array-element-solution.html)、[#44 Count 2D](https://hzchenxiaobin.github.io/leetgpu/leetgpu-count-2d-array-element-solution.html)、[#45 Count 3D](https://hzchenxiaobin.github.io/leetgpu/leetgpu-count-3d-array-element-solution.html)、[#47 Subarray Sum](https://hzchenxiaobin.github.io/leetgpu/leetgpu-subarray-sum-solution.html)、[#51 Max Subarray Sum](https://hzchenxiaobin.github.io/leetgpu/leetgpu-max-subarray-sum-solution.html) |
-| 数值 / 其他 | [#35 Monte Carlo Integration](https://hzchenxiaobin.github.io/leetgpu/leetgpu-monte-carlo-integration-solution.html)、[#37 Matrix Power](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-power-solution.html)、[#38 Nearest Neighbor](https://hzchenxiaobin.github.io/leetgpu/leetgpu-nearest-neighbor-solution.html)、[#20 K-Means Clustering](https://hzchenxiaobin.github.io/leetgpu/leetgpu-kmeans-clustering-solution.html)、[#14 Multi-Agent Simulation](https://hzchenxiaobin.github.io/leetgpu/leetgpu-multi-agent-simulation-solution.html)、[#69 2D Jacobi Stencil](https://hzchenxiaobin.github.io/leetgpu/leetgpu-2d-jacobi-stencil-solution.html)、[#33 Ordinary Least Squares](https://hzchenxiaobin.github.io/leetgpu/leetgpu-ordinary-least-squares-solution.html)、[#34 Logistic Regression](https://hzchenxiaobin.github.io/leetgpu/leetgpu-logistic-regression-solution.html) |
+| Transformer block | <a href="/problems/gpu/hard/74-gpt2-block">#74 GPT-2 Block</a>（hard）、<a href="/problems/gpu/hard/93-llama-transformer-block">#93 Llama Transformer Block</a>（hard）、<a href="/problems/gpu/medium/76-adder-transformer">#76 Adder Transformer</a> |
+| 算子融合 | <a href="/problems/gpu/medium/113-fused-qkv-projection">#113 Fused QKV Projection</a>、<a href="/problems/gpu/medium/116-fused-add-rmsnorm">#116 Fused Add RMSNorm</a>、<a href="/problems/gpu/medium/84-swiglu-mlp-block">#84 SwiGLU MLP Block</a>、<a href="/problems/gpu/medium/85-lora-linear">#85 LoRA Linear</a> |
+| SSM / Mamba | <a href="/problems/gpu/medium/94-ssm-selective-scan">#94 SSM Selective Scan</a>、<a href="/problems/gpu/medium/82-linear-recurrence">#82 Linear Recurrence</a> |
+| RLHF / RL 损失 | <a href="/problems/gpu/medium/107-ppo-clipped-surrogate-loss">#107 PPO Clipped Surrogate Loss</a>、<a href="/problems/gpu/medium/108-dpo-sequence-loss">#108 DPO Sequence Loss</a>、<a href="/problems/gpu/medium/109-grpo-surrogate-loss">#109 GRPO Surrogate Loss</a>、<a href="/problems/gpu/medium/110-gae-reverse-scan">#110 GAE Reverse Scan</a> |
+| 推测解码 | <a href="/problems/gpu/medium/87-speculative-decoding-verification">#87 Speculative Decoding Verification</a> |
+| Embedding | <a href="/problems/gpu/medium/106-token-embedding-layer">#106 Token Embedding Layer</a> |
+| 因果卷积 | <a href="/problems/gpu/medium/90-causal-depthwise-conv1d">#90 Causal Depthwise Conv1d</a> |
+| FFT | <a href="/problems/gpu/hard/39-fast-fourier-transform">#39 Fast Fourier Transform</a>（hard）、<a href="/problems/gpu/medium/78-2d-fft">#78 2D FFT</a> |
+| 图算法 | <a href="/problems/gpu/hard/46-bfs-shortest-path">#46 BFS Shortest Path</a>、<a href="/problems/gpu/hard/73-all-pairs-shortest-paths">#73 All Pairs Shortest Paths</a> |
+| 统计 / 归约变体 | <a href="/problems/gpu/medium/43-count-array-element">#43 Count Array Element</a>、<a href="/problems/gpu/medium/44-count-2d-array-element">#44 Count 2D</a>、<a href="/problems/gpu/medium/45-count-3d-array-element">#45 Count 3D</a>、<a href="/problems/gpu/medium/47-subarray-sum">#47 Subarray Sum</a>、<a href="/problems/gpu/medium/51-max-subarray-sum">#51 Max Subarray Sum</a> |
+| 数值 / 其他 | <a href="/problems/gpu/medium/35-monte-carlo-integration">#35 Monte Carlo Integration</a>、<a href="/problems/gpu/medium/37-matrix-power">#37 Matrix Power</a>、<a href="/problems/gpu/medium/38-nearest-neighbor">#38 Nearest Neighbor</a>、<a href="/problems/gpu/hard/20-kmeans-clustering">#20 K-Means Clustering</a>、<a href="/problems/gpu/hard/14-multi-agent-sim">#14 Multi-Agent Simulation</a>、<a href="/problems/gpu/medium/69-jacobi-stencil-2d">#69 2D Jacobi Stencil</a>、<a href="/problems/gpu/medium/33-ordinary-least-squares">#33 Ordinary Least Squares</a>、<a href="/problems/gpu/medium/34-logistic-regression">#34 Logistic Regression</a> |
 
 ### 覆盖情况小结
 

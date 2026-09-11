@@ -10,7 +10,7 @@ number: 1
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w01d01", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w01d01", "learn:w01d07", "learn:w01d07:exercise:leetgpu-week1-review"]
 ---
 
 # LeetGPU Vector Addition 题解

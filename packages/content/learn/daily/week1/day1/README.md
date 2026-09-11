@@ -7,7 +7,7 @@ knowledge_points: [gpu-execution-model, memory-hierarchy]
 updated: 2026-08-28
 week: 1
 day: 1
-related_problems: ["gpu:e:001"]
+related_problems: ["gpu:e:001", "lc:0001", "lc:0049", "lc:0128", "lc:0136", "lc:0169"]
 related_questions: []
 ---
 
@@ -151,7 +151,7 @@ AI 训练和推理中的矩阵运算、卷积、Attention 都是高度并行的�
 | Boost Clock | ~2.407 GHz |
 | FMA 折算操作数 | × 2 |
 
-> 与 RTX 5090 官方标称 ~104.8 TFLOPS 一致。详细推导见 [Day 3 实测数据](https://hzchenxiaobin.github.io/ai-infra-notes/week1/exercise/my_gpu_info.md)。
+> 与 RTX 5090 官方标称 ~104.8 TFLOPS 一致。详细推导见 [Day 3 实测数据](/week1)。
 
 需要注意：
 
@@ -546,19 +546,19 @@ dim3 block(32, 1, 1); // 32 threads/block
 
 本题要求用 1D grid/block 覆盖一维数组、正确计算 `global_tid`、处理越界边界，直接练习 Day 1 学的线程层次与 ID 映射，是"第一个真正的 CUDA kernel"。
 
-> 💡 提交后在 [LeetGPU Vector Addition 题目](https://leetgpu.com/challenges/vector-addition)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 [Vector Addition 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-vector-addition-solution.html)。
+> 💡 提交后在 [LeetGPU Vector Addition 题目](https://leetgpu.com/challenges/vector-addition)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 <a href="/problems/gpu/easy/1-vector-add">Vector Addition 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 1 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 1 周「数组、哈希与双指针（含手撕排序）」Day 1（哈希），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 1（哈希），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [1. 两数之和](https://leetcode.cn/problems/two-sum/) | 简单 | 哈希表一次遍历 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/1_两数之和.html) |
-| [49. 字母异位词分组](https://leetcode.cn/problems/group-anagrams/) | 中等 | 排序/计数作键分组 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/49_字母异位词分组.html) |
-| [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/) | 中等 | 哈希集合 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/128_最长连续序列.html) |
-| [136. 只出现一次的数字](https://leetcode.cn/problems/single-number/) | 简单 | 异或 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/136_只出现一次的数字.html) |
-| [169. 多数元素](https://leetcode.cn/problems/majority-element/) | 简单 | Boyer-Moore 投票 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/169_多数元素.html) |
+| [1. 两数之和](https://leetcode.cn/problems/two-sum/) | 简单 | 哈希表一次遍历 | <a href="/problems/algo/0001">题解</a> |
+| [49. 字母异位词分组](https://leetcode.cn/problems/group-anagrams/) | 中等 | 排序/计数作键分组 | <a href="/problems/algo/0049">题解</a> |
+| [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/) | 中等 | 哈希集合 | <a href="/problems/algo/0128">题解</a> |
+| [136. 只出现一次的数字](https://leetcode.cn/problems/single-number/) | 简单 | 异或 | <a href="/problems/algo/0136">题解</a> |
+| [169. 多数元素](https://leetcode.cn/problems/majority-element/) | 简单 | Boyer-Moore 投票 | <a href="/problems/algo/0169">题解</a> |
 
 ---
 

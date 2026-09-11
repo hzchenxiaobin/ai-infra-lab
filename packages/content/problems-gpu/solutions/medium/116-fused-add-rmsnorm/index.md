@@ -10,7 +10,7 @@ number: 116
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Fused Add and RMSNorm 题解

@@ -10,7 +10,7 @@ number: 90
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Causal Depthwise Conv1d 题解

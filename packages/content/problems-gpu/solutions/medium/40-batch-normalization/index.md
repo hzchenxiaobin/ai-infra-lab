@@ -10,7 +10,7 @@ number: 40
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d06"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d06"]
 ---
 
 # LeetGPU Batch Normalization 题解

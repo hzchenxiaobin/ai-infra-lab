@@ -10,7 +10,7 @@ number: 6
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d01"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d01", "learn:w05d03"]
 ---
 
 # LeetGPU Softmax Attention 题解
@@ -365,7 +365,7 @@ if (tid < d)
 
 §4.1 的 fused 版"一个 block 处理一行 query"——`K/V` 会被 `M` 个 query 各读一遍，HBM IO 为 `O(M·N·d)`。真正的 FlashAttention 让一个 block 处理 `Br` 行 query，把 `K/V` 的 `Bc` 行 tile 载入 shared memory 后供 `Br` 个 query 复用，把 `K/V` 的 HBM 流量降到 `O(N·d·ceil(M/Br))`。
 
-> 💡 本节代码结构与 [ai-infra-notes Week 5 Day 3](https://hzchenxiaobin.github.io/ai-infra-notes/aiinfra/daily/week5/day3/README.html) 的 `flash_attention_v2.cu` 完全一致：`Br×Bc` tiling、`warpReduceMax/Sum` 原语、每个 warp 负责 `ROWS_PER_WARP` 行 Q、`__syncthreads` 仅在 tile 加载后使用。区别仅在于去掉了 batch/head 维度（本题为单头），并适配 `solve(Q, K, V, output, M, N, d)` 签名（`M` 行 query、`N` 行 KV，可不等）。
+> 💡 本节代码结构与 <a href="/learn/week5/day3">ai-infra-notes Week 5 Day 3</a> 的 `flash_attention_v2.cu` 完全一致：`Br×Bc` tiling、`warpReduceMax/Sum` 原语、每个 warp 负责 `ROWS_PER_WARP` 行 Q、`__syncthreads` 仅在 tile 加载后使用。区别仅在于去掉了 batch/head 维度（本题为单头），并适配 `solve(Q, K, V, output, M, N, d)` 签名（`M` 行 query、`N` 行 KV，可不等）。
 
 #### 4.3.1 线程配置与 work partitioning
 

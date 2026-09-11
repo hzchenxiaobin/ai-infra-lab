@@ -7,7 +7,7 @@ knowledge_points: [cutlass, tensor-core]
 updated: 2026-08-28
 week: 3
 day: 5
-related_problems: []
+related_problems: ["lc:0023", "lc:0146", "lc:0148"]
 related_questions: []
 ---
 
@@ -428,13 +428,13 @@ Size     | Day1_naive  Day2_tiled  Day3_mma   Day5_dbuf  | Best%   Best_impl
 
 #### 任务 4：LeetCode 面试题（10 周计划 · 第 3 周 Day 5）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 3 周「链表与数学技巧」Day 5（排序与设计），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 5（排序与设计），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [148. 排序链表](https://leetcode.cn/problems/sort-list/) | 中等 | 归并排序 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/148_排序链表.html) |
-| [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) | 困难 | 小顶堆 k 路归并 / 分治 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/23_合并K个升序链表.html) |
-| [146. LRU 缓存](https://leetcode.cn/problems/lru-cache/) | 中等 | 哈希 + 双向链表 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/146_LRU缓存.html) |
+| [148. 排序链表](https://leetcode.cn/problems/sort-list/) | 中等 | 归并排序 | <a href="/problems/algo/0148">题解</a> |
+| [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) | 困难 | 小顶堆 k 路归并 / 分治 | <a href="/problems/algo/0023">题解</a> |
+| [146. LRU 缓存](https://leetcode.cn/problems/lru-cache/) | 中等 | 哈希 + 双向链表 | <a href="/problems/algo/0146">题解</a> |
 
 ---
 

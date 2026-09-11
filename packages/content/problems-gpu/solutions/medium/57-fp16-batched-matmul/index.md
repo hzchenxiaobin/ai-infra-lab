@@ -10,7 +10,7 @@ number: 57
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes", "learn:w03d02"]
 ---
 
 # LeetGPU FP16 Batched Matrix Multiplication 题解

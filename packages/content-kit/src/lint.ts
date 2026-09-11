@@ -2,9 +2,11 @@
 //
 // 检查项（dev/content-kit.md §4）：
 //   error: frontmatter 结构（缺字段即失败）、ID 全局唯一、目录名 ↔ id 一致性、
-//          重复标题（同分区同类型）、悬空链接（相对 md/图片/文件引用）、
+//          重复标题（同分区同类型）、悬空链接（相对 md/图片/文件引用 +
+//          站内统一 URL 按 url 集校验）、
 //          related_problems ↔ related_learn 对称性与悬空统一 ID 引用
-//   warning: 手写统计数（陈旧口径）、GPU 题解 6 段式结构、词表外知识点（汇总）、
+//   warning: 手写统计数（陈旧口径）、GPU 题解 6 段式结构、每日教程 8 段骨架、
+//            论文精读 17 节骨架、词表外知识点（汇总）、
 //            GPU 目录序号 ↔ 官方题号错位、GPU 难度目录 ↔ 正文难度不一致、
 //            孤儿图片、GPU 题目录缺同名 .cu、旧站点外链（汇总）
 import fs from "node:fs";
@@ -54,8 +56,23 @@ for (const f of files) {
 }
 
 // ── 4. 悬空链接 ──
-// 相对链接相对文件目录解析；站点根绝对路径（/images/...）相对所属分区根解析
+// 相对链接相对文件目录解析；站点根绝对路径分两类：
+//   a) 站内统一 URL（完整 /learn/weekN/dayM、/problems/algo/NNNN 或分区相对
+//      /weekN/dayM）：按 scanContent 的 url 集校验（fix-oldsite-links 产物与
+//      learn 正文既有链接形态）
+//   b) 分区资源路径（/images/xxx.svg 等）：相对所属分区根按文件解析
 // （problems-gpu 的历史图片引用均为 /images/xxx.svg，指向 problems-gpu/images/）。
+const urlSet = new Set<string>();
+for (const f of files) {
+  if (!f.cls.url) continue;
+  urlSet.add(f.cls.url);
+  urlSet.add(f.cls.url.replace(/\/$/, ""));
+}
+/** 站内 URL 归一（去尾斜杠 / .html / index.html 变体）后查 url 集 */
+function siteUrlExists(target: string): boolean {
+  const variants = [target, target.replace(/\/$/, ""), target.replace(/index\.html$/, ""), target.replace(/\.html$/, "")];
+  return variants.some((t) => urlSet.has(t) || urlSet.has(t.replace(/\/$/, "")));
+}
 let dangling = 0;
 for (const f of files) {
   for (const link of extractLinks(f.body)) {
@@ -67,12 +84,31 @@ for (const f of files) {
     } catch {
       /* 保持原样 */
     }
-    let abs: string;
     if (target.startsWith("/")) {
-      abs = path.join(CONTENT_ROOT, f.cls.partition, target.replace(/^\/+/, ""));
-    } else {
-      abs = path.join(CONTENT_ROOT, dirnamePosix(f.rel), target);
+      // 站内统一 URL 两种形态都查 url 集（fix-oldsite-links 产物）：
+      //   完整形态 /learn/week1/day1、/problems/algo/0001；
+      //   分区相对形态 /week1/day1（learn 正文，vitepress 渲染自动补 base）
+      // cuda-interview-notes 渲染在 learn 分区（url /learn/notes/...）
+      const base =
+        f.rel === "problems-gpu/cuda-interview-notes.md"
+          ? "/learn"
+          : f.cls.partition === "learn"
+            ? "/learn"
+            : f.cls.partition === "problems-gpu"
+              ? "/problems/gpu"
+              : "/problems";
+      if (target === "/problems" || target === "/problems/gpu/") continue; // 应用/分区首页
+      if (siteUrlExists(target) || siteUrlExists(`${base}${target}`)) continue;
+      // 其余按分区资源路径解析（/images/xxx.svg 等）
+      const abs = path.join(CONTENT_ROOT, f.cls.partition, target.replace(/^\/+/, ""));
+      if (!fs.existsSync(abs)) {
+        dangling++;
+        err(`${f.rel}:${link.line}: 悬空链接 ${link.target}`);
+      }
+      continue;
     }
+    let abs: string;
+    abs = path.join(CONTENT_ROOT, dirnamePosix(f.rel), target);
     if (!fs.existsSync(abs)) {
       dangling++;
       err(`${f.rel}:${link.line}: 悬空链接 ${link.target}`);
@@ -165,6 +201,52 @@ for (const f of files) {
     }
   }
   if (bad) warn(`GPU 6 段式不完整共 ${bad} 篇（告警级）`);
+}
+
+// ── 7b. 每日教程 8 段骨架（daily/SKILL.md §3，告警）──
+// 教学日（day1-day6）严格 8 段；总结日（day7）骨架不同，跳过。
+{
+  const SECTIONS: [RegExp, string][] = [
+    [/^## Day \d+：/m, "Day 标题"],
+    [/^### 🎯 目标/m, "🎯 目标"],
+    [/^### 学前导读/m, "学前导读"],
+    [/^### 理论学习/m, "理论学习"],
+    [/^### Coding 任务/m, "Coding 任务"],
+    [/^### 扩展实验/m, "扩展实验"],
+    [/^### 今日总结/m, "今日总结"],
+    [/^### 面试要点/m, "面试要点"],
+  ];
+  let bad = 0;
+  for (const f of files) {
+    const m = /^learn\/daily\/week\d+\/day(\d)\/README\.md$/.exec(f.rel);
+    if (!m || m[1] === "7") continue; // 总结日不套用 8 段骨架
+    const missing = SECTIONS.filter(([re]) => !re.test(f.body)).map(([, name]) => name);
+    if (missing.length) {
+      bad++;
+      warn(`${f.rel}: 教学日 8 段骨架缺段: ${missing.join("、")}`);
+    }
+  }
+  if (bad) warn(`教学日 8 段骨架不完整共 ${bad} 篇（告警级）`);
+}
+
+// ── 7c. 论文精读 17 节骨架（paper/SKILL.md §3 阅读流程，告警）──
+// 仅检查已成文（有 README.md）的论文；只有 PDF 的骨架目录见 stats 的显式计数。
+{
+  const SECTIONS = [
+    "Metadata", "Summary", "Background", "Core Idea", "Method", "Formula Explanation",
+    "Algorithm", "Figures", "Experiments", "Contributions", "Limitations", "Related Work",
+    "Reproducibility", "Reading Notes", "Interview Version", "Engineering Insights", "Future Work",
+  ] as const;
+  let bad = 0;
+  for (const f of files) {
+    if (f.cls.type !== "paper") continue;
+    const missing = SECTIONS.filter((s) => !new RegExp(`^## \\d+\\. ${s}$`, "m").test(f.body));
+    if (missing.length) {
+      bad++;
+      warn(`${f.rel}: 论文 17 节骨架缺节: ${missing.join("、")}`);
+    }
+  }
+  if (bad) warn(`论文 17 节骨架不完整共 ${bad} 篇（告警级）`);
 }
 
 // ── 8. 词表外知识点（汇总告警）──
@@ -292,5 +374,25 @@ if (warnings.length) {
   console.log("── warnings ──");
   for (const w of warnings.slice(0, MAX_SHOW)) console.log(`  ⚠ ${w}`);
   if (warnings.length > MAX_SHOW) console.log(`  …另 ${warnings.length - MAX_SHOW} 条`);
+  // 分类计数（告警超展示上限时的全量口径）
+  const CATS: [string, RegExp][] = [
+    ["手写统计数（陈旧口径）", /手写统计数/],
+    ["教学日 8 段骨架", /8 段骨架/],
+    ["论文 17 节骨架", /17 节骨架/],
+    ["GPU 6 段式", /GPU 6 段式/],
+    ["词表外知识点", /词表外 knowledge_points/],
+    ["GPU 编号错位", /目录序号|编号错位/],
+    ["GPU 难度目录不一致", /难度目录/],
+    ["题号未标注", /number=0/],
+    ["孤儿图片", /孤儿图片/],
+    ["GPU 缺 .cu", /缺少可编译的 \.cu/],
+    ["旧站点外链", /旧 GitHub Pages/],
+    ["related 不对称", /缺少反向引用/],
+  ];
+  console.log("── warnings 分类 ──");
+  for (const [name, re] of CATS) {
+    const n = warnings.filter((w) => re.test(w)).length;
+    if (n) console.log(`  ${name}: ${n}`);
+  }
 }
 process.exit(errors.length ? 1 : 0);

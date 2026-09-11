@@ -250,7 +250,7 @@ python kernels/cuda_vs_ascend_comparison.py
 
 **与今日知识的关联**：GEMM 是多硬件对比的**最佳标本**——它是两边都重点优化的算子，且正好体现今日所有对比维度。在 CUDA 侧，你用 **Tensor Core**（`wmma`/`mma`）把 GEMM 推到 80%+；在 Ascend 侧，同一个 GEMM 走 **Cube Unit** 路径（`Matmul` 接口），tiling 由 UB 容量 + Cube 指令尺寸（16×16×16）决定。两边的优化八层路径（Naive → Tiling → RegBlock → 向量化 → … → 矩阵加速单元）**结构完全同构**，只是每层的实现 API 换了。重做这道 GEMM 时，不要只盯 CUDA 优化，而是边写边问自己："这层在 Ascend 上对应什么？"
 
-> 💡 提交后在 [LeetGPU GEMM](https://leetgpu.com/challenges/general-matrix-multiplication-gemm) 上记录通过耗时。完整题解（含 Tensor Core 路径、八层优化、与 Cube Unit 的对应）见 [GEMM 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gemm-solution.html)。
+> 💡 提交后在 [LeetGPU GEMM](https://leetgpu.com/challenges/general-matrix-multiplication-gemm) 上记录通过耗时。完整题解（含 Tensor Core 路径、八层优化、与 Cube Unit 的对应）见 <a href="/problems/gpu/medium/22-gemm">GEMM 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 9 周机动补漏）
 

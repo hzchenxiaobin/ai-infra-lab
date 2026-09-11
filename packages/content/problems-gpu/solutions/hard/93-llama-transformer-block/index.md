@@ -10,7 +10,7 @@ number: 93
 difficulty: hard
 languages: [cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Llama Transformer Block 题解

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 import {
   checkVerificationCode,
   generateVerificationCode,
@@ -11,8 +11,7 @@ import {
   verifySession,
 } from "../auth.js";
 import { db } from "../db/client.js";
-import { emailVerifications, users } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { emailVerifications, interviewSessions, users } from "../db/schema.js";
 import { SlidingWindowLimiter } from "../rate-limit.js";
 import { appRouter } from "./index.js";
 
@@ -258,5 +257,95 @@ run("auth register/login 流程（集成）", () => {
 
   it("清理测试用户", async () => {
     await db.delete(users).where(eq(users.email, email));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// adminProcedure 收紧 + user:claim 遗留数据认领（2026-09-11）
+// ---------------------------------------------------------------------------
+
+run("adminProcedure 收紧与 user:claim（集成）", () => {
+  function caller(userId: number | null = null) {
+    return appRouter.createCaller({ userId, ip: "127.0.0.1" });
+  }
+
+  it("email=NULL 遗留用户不再天然是 admin（FORBIDDEN）", async () => {
+    const inserted = await db.insert(users).values({ name: "legacy-no-email" }).$returningId();
+    const legacyId = inserted[0].id;
+    try {
+      // authed 端点照常（登录态有效）
+      await expect(caller(legacyId).auth.me()).resolves.toBeTruthy();
+      // admin 端点拒绝
+      await expect(caller(legacyId).auth.userList({})).rejects.toThrow("需要管理员权限");
+    } finally {
+      await db.delete(users).where(eq(users.id, legacyId));
+    }
+  });
+
+  it("ADMIN_EMAILS 命中用户可过 admin 端点", async () => {
+    const email = "test-admin@ailab.test";
+    await db.delete(users).where(eq(users.email, email));
+    const inserted = await db
+      .insert(users)
+      .values({ email, name: "admin", emailVerified: 1 })
+      .$returningId();
+    const userId = inserted[0].id;
+    try {
+      await expect(caller(userId).auth.userList({})).resolves.toBeTruthy();
+    } finally {
+      await db.delete(users).where(eq(users.id, userId));
+    }
+  });
+
+  it("user:claim：认领遗留用户（历史数据保留、随机密码可登录、占用冲突拒绝）", async () => {
+    await db.delete(users).where(eq(users.email, "test-admin@ailab.test"));
+    const adminRow = (
+      await db
+        .insert(users)
+        .values({ email: "test-admin@ailab.test", name: "admin", emailVerified: 1 })
+        .$returningId()
+    )[0].id;
+    const legacy = (
+      await db.insert(users).values({ name: "老考生" }).$returningId()
+    )[0].id;
+    const session = (
+      await db
+        .insert(interviewSessions)
+        .values({
+          userId: legacy,
+          title: "2025 秋招复盘",
+          categories: ["knowledge"],
+          questionIds: [1, 2],
+          status: "finished",
+        })
+        .$returningId()
+    )[0].id;
+
+    try {
+      const claimEmail = `claimed-${Date.now()}@example.com`;
+      const result = await caller(adminRow).auth.userClaim({ userId: legacy, email: claimEmail });
+      expect(result.user.id).toBe(legacy);
+      expect(result.user.email).toBe(claimEmail);
+      expect(result.user.emailVerified).toBe(true);
+      expect(result.generatedPassword).toMatch(/^.{8,}$/);
+
+      // 随机密码可登录（login 校验 scrypt）
+      const login = await caller().auth.login({ email: claimEmail, password: result.generatedPassword! });
+      expect(login.user.id).toBe(legacy);
+
+      // 历史 session 原地保留且归属不变
+      const list = await caller(legacy).interview.list();
+      expect(list.some((s) => s.id === session)).toBe(true);
+
+      // 已绑定邮箱的用户不可再 claim（BAD_REQUEST）
+      await expect(caller(adminRow).auth.userClaim({ userId: legacy, email: "x@example.com" })).rejects.toThrow("已绑定");
+      await expect(
+        caller(adminRow).auth.userClaim({ userId: adminRow, email: "x@example.com" }),
+      ).rejects.toThrow("已绑定");
+    } finally {
+      await db.delete(interviewSessions).where(eq(interviewSessions.id, session));
+      await db.delete(users).where(eq(users.id, legacy));
+      await db.delete(users).where(eq(users.id, adminRow));
+    }
   });
 });

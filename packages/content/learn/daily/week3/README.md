@@ -33,10 +33,10 @@ related_questions: []
 
 | Day | 主题 | 目录 |
 |-----|------|------|
-| Day 1 | Tensor Core 与 WMMA —— 从 FMA 到 Tensor Core | [day1/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day1.html) |
-| Day 2 | 手写 WMMA GEMM 与 cuBLAS 性能对比 | [day2/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day2.html) |
-| Day 3 | mma.sync 指令与 ldmatrix —— Tensor Core 底层编程 | [day3/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day3.html) |
-| Day 4 | CUTLASS 源码分析 + CuTe 概念铺垫 | [day4/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day4.html) |
-| Day 5 | 项目推进 —— WMMA GEMM 接入 Benchmark 与 Double Buffering | [day5/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day5.html) |
-| Day 6 | Profiling —— Tensor Core 利用率与 WMMA vs FMA 对比 | [day6/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day6.html) |
-| Day 7 | 复盘与手撕 —— Tensor Core/CUTLASS 面试要点 | [day7/](https://hzchenxiaobin.github.io/ai-infra-notes/week3/day7.html) |
+| Day 1 | Tensor Core 与 WMMA —— 从 FMA 到 Tensor Core | [day1/](/week3/day1) |
+| Day 2 | 手写 WMMA GEMM 与 cuBLAS 性能对比 | [day2/](/week3/day2) |
+| Day 3 | mma.sync 指令与 ldmatrix —— Tensor Core 底层编程 | [day3/](/week3/day3) |
+| Day 4 | CUTLASS 源码分析 + CuTe 概念铺垫 | [day4/](/week3/day4) |
+| Day 5 | 项目推进 —— WMMA GEMM 接入 Benchmark 与 Double Buffering | [day5/](/week3/day5) |
+| Day 6 | Profiling —— Tensor Core 利用率与 WMMA vs FMA 对比 | [day6/](/week3/day6) |
+| Day 7 | 复盘与手撕 —— Tensor Core/CUTLASS 面试要点 | [day7/](/week3/day7) |

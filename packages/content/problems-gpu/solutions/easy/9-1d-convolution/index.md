@@ -10,7 +10,7 @@ number: 9
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w08d07", "learn:w10d07"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w08d07", "learn:w10d07"]
 ---
 
 # LeetGPU 1D Convolution 题解

@@ -10,7 +10,7 @@ number: 115
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w04d02"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w04d02"]
 ---
 
 # LeetGPU Layer Normalization 题解

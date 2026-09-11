@@ -7,7 +7,7 @@ knowledge_points: [inference-optimization, quantization]
 updated: 2026-08-28
 week: 8
 day: 7
-related_problems: ["gpu:e:009"]
+related_problems: ["gpu:e:009", "lc:0004", "lc:0033", "lc:0034", "lc:0035", "lc:0069", "lc:0070", "lc:0074", "lc:0118", "lc:0153", "lc:0162", "lc:0198", "lc:0213", "lc:0279", "lc:0322", "lc:0337", "lc:0378", "lc:0410", "lc:0416", "lc:0494", "lc:0518", "lc:0540", "lc:0704", "lc:0719", "lc:0875", "lc:1011"]
 related_questions: []
 ---
 
@@ -29,7 +29,7 @@ related_questions: []
 
 ![Week 8 推理加速技术知识地图](../images/week8_inference_acceleration_map.svg)
 
-> 📊 图中 ROI 排序与量化/CUDA Graph 数字来源见 [Week 8 Day 6 §6.4](https://hzchenxiaobin.github.io/ai-infra-notes/week8/day6.html)。
+> 📊 图中 ROI 排序与量化/CUDA Graph 数字来源见 [Week 8 Day 6 §6.4](/week8/day6)。
 > 采样 kernel 的完整实现见 [Week 10 Day 6](../../week10/day6/)。
 
 ### 加速技术 ROI 总表
@@ -176,16 +176,16 @@ related_questions: []
 
 #### 任务 1：本周 LeetCode 题目回顾（10 周计划 · 第 8 周）
 
-本周 LeetCode 题目对应 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 8 周「二分查找与动态规划基础」（点击查看题解）：
+本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 二分模板 | [704. 二分查找](https://hzchenxiaobin.github.io/leetcode/problems/704_二分查找.html)、[35. 搜索插入位置](https://hzchenxiaobin.github.io/leetcode/problems/35_搜索插入位置.html)、[69. x 的平方根](https://hzchenxiaobin.github.io/leetcode/problems/69_x的平方根.html)、[74. 搜索二维矩阵](https://hzchenxiaobin.github.io/leetcode/problems/74_搜索二维矩阵.html) |
-| Day 2 | 旋转数组与峰值 | [153. 寻找旋转排序数组中的最小值](https://hzchenxiaobin.github.io/leetcode/problems/153_寻找旋转排序数组中的最小值.html)、[33. 搜索旋转排序数组](https://hzchenxiaobin.github.io/leetcode/problems/33_搜索旋转排序数组.html)、[34. 在排序数组中查找元素的第一个和最后一个位置](https://hzchenxiaobin.github.io/leetcode/problems/34_在排序数组中查找元素的第一个和最后一个位置.html)、[162. 寻找峰值](https://hzchenxiaobin.github.io/leetcode/problems/162_寻找峰值.html)、[540. 有序数组中的单一元素](https://hzchenxiaobin.github.io/leetcode/problems/540_有序数组中的单一元素.html) |
-| Day 3 | 二分答案 | [875. 爱吃香蕉的珂珂](https://hzchenxiaobin.github.io/leetcode/problems/875_爱吃香蕉的珂珂.html)、[1011. 在 D 天内送达包裹的能力](https://hzchenxiaobin.github.io/leetcode/problems/1011_在D天内送达包裹的能力.html)、[378. 有序矩阵中第 K 小的元素](https://hzchenxiaobin.github.io/leetcode/problems/378_有序矩阵中第K小的元素.html) |
-| Day 4 | 二分进阶 | [410. 分割数组的最大值](https://hzchenxiaobin.github.io/leetcode/problems/410_分割数组的最大值.html)、[719. 找出第 K 小的数对距离](https://hzchenxiaobin.github.io/leetcode/problems/719_找出第K小的数对距离.html)、[4. 寻找两个正序数组的中位数](https://hzchenxiaobin.github.io/leetcode/problems/4_寻找两个正序数组的中位数.html) |
-| Day 5 | 一维 DP | [70. 爬楼梯](https://hzchenxiaobin.github.io/leetcode/problems/70_爬楼梯.html)、[118. 杨辉三角](https://hzchenxiaobin.github.io/leetcode/problems/118_杨辉三角.html)、[198. 打家劫舍](https://hzchenxiaobin.github.io/leetcode/problems/198_打家劫舍.html)、[213. 打家劫舍 II](https://hzchenxiaobin.github.io/leetcode/problems/213_打家劫舍II.html)、[337. 打家劫舍 III](https://hzchenxiaobin.github.io/leetcode/problems/337_打家劫舍III.html) |
-| Day 6 | 背包 DP | [279. 完全平方数](https://hzchenxiaobin.github.io/leetcode/problems/279_完全平方数.html)、[322. 零钱兑换](https://hzchenxiaobin.github.io/leetcode/problems/322_零钱兑换.html)、[518. 零钱兑换 II](https://hzchenxiaobin.github.io/leetcode/problems/518_零钱兑换II.html)、[416. 分割等和子集](https://hzchenxiaobin.github.io/leetcode/problems/416_分割等和子集.html)、[494. 目标和](https://hzchenxiaobin.github.io/leetcode/problems/494_目标和.html) |
+| Day 1 | 二分模板 | <a href="/problems/algo/0704">704. 二分查找</a>、<a href="/problems/algo/0035">35. 搜索插入位置</a>、<a href="/problems/algo/0069">69. x 的平方根</a>、<a href="/problems/algo/0074">74. 搜索二维矩阵</a> |
+| Day 2 | 旋转数组与峰值 | <a href="/problems/algo/0153">153. 寻找旋转排序数组中的最小值</a>、<a href="/problems/algo/0033">33. 搜索旋转排序数组</a>、<a href="/problems/algo/0034">34. 在排序数组中查找元素的第一个和最后一个位置</a>、<a href="/problems/algo/0162">162. 寻找峰值</a>、<a href="/problems/algo/0540">540. 有序数组中的单一元素</a> |
+| Day 3 | 二分答案 | <a href="/problems/algo/0875">875. 爱吃香蕉的珂珂</a>、<a href="/problems/algo/1011">1011. 在 D 天内送达包裹的能力</a>、<a href="/problems/algo/0378">378. 有序矩阵中第 K 小的元素</a> |
+| Day 4 | 二分进阶 | <a href="/problems/algo/0410">410. 分割数组的最大值</a>、<a href="/problems/algo/0719">719. 找出第 K 小的数对距离</a>、<a href="/problems/algo/0004">4. 寻找两个正序数组的中位数</a> |
+| Day 5 | 一维 DP | <a href="/problems/algo/0070">70. 爬楼梯</a>、<a href="/problems/algo/0118">118. 杨辉三角</a>、<a href="/problems/algo/0198">198. 打家劫舍</a>、<a href="/problems/algo/0213">213. 打家劫舍 II</a>、<a href="/problems/algo/0337">337. 打家劫舍 III</a> |
+| Day 6 | 背包 DP | <a href="/problems/algo/0279">279. 完全平方数</a>、<a href="/problems/algo/0322">322. 零钱兑换</a>、<a href="/problems/algo/0518">518. 零钱兑换 II</a>、<a href="/problems/algo/0416">416. 分割等和子集</a>、<a href="/problems/algo/0494">494. 目标和</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 8 周「二分查找与动态规划基础」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

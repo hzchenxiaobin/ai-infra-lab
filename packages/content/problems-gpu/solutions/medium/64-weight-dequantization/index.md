@@ -10,7 +10,7 @@ number: 64
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d06", "learn:w08d01"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d06", "learn:w08d01"]
 ---
 
 # LeetGPU Weight Dequantization 题解

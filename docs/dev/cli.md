@@ -16,30 +16,35 @@ apps/cli/
 └── package.json            # @ailab/cli，bin 名 ailab
 ```
 
-依赖关键点：`@interview/server` 与 `@interview/contracts` 都是 `workspace:*`——
+依赖关键点：`@ailab/server` 与 `@ailab/contracts` 都是 `workspace:*`——
 CLI 与 server 同进程模型共享 router 与 schema；根 `package.json` 用
-`"dependencies": { "@interview/cli": "link:apps/cli" }` 把 bin 链接到仓库根，
-因此全局可用 `pnpm cli <cmd>`（根 scripts 里的 `cli` 即指向它）。
+`"dependencies": { "@ailab/cli": "link:apps/cli" }` 把 bin（`ailab`，经
+`apps/cli/bin/ailab.mjs` 以 tsx 直跑 TS 源）链接到仓库根。
 
 ## 2. createCaller 模式
 
-`src/session.ts` 的核心（拷入即得）：
+`src/session.ts` 的核心（身份显式化，2026-09-11 收紧后形态）：
 
 ```ts
-import { appRouter, type AppRouter } from "@interview/server/router";
-import { getCurrentUserId } from "@interview/server/auth";
+import { appRouter, type AppRouter } from "@ailab/server/router";
+import { getUserIdByEmail } from "@ailab/server/auth";
 
 export async function getCaller() {
-  const userId = await getCurrentUserId();          // M2 后：--user <email> 指定操作对象
-  return appRouter.createCaller({ userId });        // Context 与 HTTP 请求同构
+  const email = process.env.AILAB_USER?.trim();   // --user 或环境变量
+  if (!email) /* 报错退出：未指定操作身份 */;
+  const userId = await getUserIdByEmail(email);   // 按 email 查 users 表
+  if (userId == null) /* 报错退出：用户不存在 */;
+  return appRouter.createCaller({ userId });      // Context 与 HTTP 请求同构
 }
 ```
 
+- 身份来源：全局 `--user <email>`（`ailab --user x@y start` 与 `ailab start --user x@y`
+  均可，index.ts 在 `program.parse()` 前给根命令与全部子命令统一注入该 option，
+  `preAction` 钩子落到 `AILAB_USER`）或直接设 `AILAB_USER` 环境变量。
 - caller 的 Context 与 server HTTP 链路的 Context **同构**，因此 CLI 天然复用所有
   router 的鉴权与业务逻辑——这也是"管理操作优先进 CLI"成立的原因。
-- M2 账号体系落地后，`getCurrentUserId()`（单用户 provision）删除，CLI 改为
-  `--user <email>` 显式指定操作对象用户（管理员身份由"能登录部署机"背书，
-  不在 CLI 内再做权限校验）。
+- 管理命令（`content:sync` / `user:*` / `quota:*`）走 `adminProcedure`：
+  `--user` 的邮箱必须在服务端 `ADMIN_EMAILS` 中（能登录部署机 + 邮箱白名单双背书）。
 - 环境变量（DATABASE_URL、LLM_*）由 server 的 `env.ts` 统一加载仓库根 `.env`，
   CLI 不单独读环境。
 
@@ -76,27 +81,32 @@ export async function getCaller() {
 |---|---|
 | `cli content:sync` | 触发 content-kit 同步：frontmatter → contents/problems/problem_lists 幂等 upsert（读 dist 三份 JSON，含题单 lists.json） |
 | `cli user:list [-s kw]` / `user:ban <email> --yes` / `user:unban <email>` | 用户管理（已落地；ban 打印影响范围并要求 `--yes`，封禁即登录与既有会话失效） |
+| `cli user:claim <userId> <email> [-p <pw>]` | 认领遗留用户（email 为空的单用户时代数据）：绑定邮箱 + 初始密码，历史面试/提交/进度原地保留；`-p` 缺省生成随机密码仅显示一次（已落地，2026-09-11） |
 | `cli quota:get <email>` / `quota:set <email> <kind> <n\|unlimited>` | 查看/调整用户当前周期配额（已落地） |
 | `cli db:backup [-o dir]` | mysqldump 到 `deploy/backups/`（已落地，见 [deployment](deployment.md)） |
 
 ## 4. 用法示例
 
 ```bash
-# 初始化一套新环境
-pnpm --filter server db:push
-pnpm cli seed
-pnpm cli bank:import   # 默认读 apps/cli/data/question-bank.ai-infra.json
+# 初始化一套新环境（身份显式化：所有命令都接受 --user，或设 AILAB_USER）
+pnpm --filter @ailab/server db:migrate
+pnpm --filter @ailab/content-kit sync
+node apps/cli/bin/ailab.mjs --user ops@example.com content:sync
+node apps/cli/bin/ailab.mjs --user ops@example.com seed
+
+# 认领 interview 单机版时代的遗留数据（user:list 找到 email 为空的行）
+node apps/cli/bin/ailab.mjs --user ops@example.com user:claim 3 alice@example.com
 
 # 按 week3 考察范围开一场 5 题面试
-pnpm cli start -s "ai-infra-notes:aiinfra/daily/week3/" -n 5
+node apps/cli/bin/ailab.mjs --user alice@example.com start -s "ai-infra-notes:aiinfra/daily/week3/" -n 5
 
 # 中断后继续 / 看报告
-pnpm cli resume 12
-pnpm cli report 12
+node apps/cli/bin/ailab.mjs --user alice@example.com resume 12
+node apps/cli/bin/ailab.mjs --user alice@example.com report 12
 
 # 上线后运营操作
-pnpm cli quota:set alice@example.com interview 10
-pnpm cli content:sync
+node apps/cli/bin/ailab.mjs --user ops@example.com quota:set alice@example.com interview 10
+node apps/cli/bin/ailab.mjs --user ops@example.com content:sync
 ```
 
 ## 5. 新管理操作的添加方式

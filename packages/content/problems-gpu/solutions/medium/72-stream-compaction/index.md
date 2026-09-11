@@ -10,7 +10,7 @@ number: 72
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w06d03", "learn:w07d02"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w06d03", "learn:w07d02"]
 ---
 
 # LeetGPU Stream Compaction 题解

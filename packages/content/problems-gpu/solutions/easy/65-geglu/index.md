@@ -10,7 +10,7 @@ number: 65
 difficulty: easy
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: []
+related_learn: ["learn:note:cuda-interview-notes"]
 ---
 
 # LeetGPU Gaussian Error Gated Linear Unit (GeGLU) 题解

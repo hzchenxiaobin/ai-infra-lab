@@ -76,6 +76,8 @@ function sidebarForPapers() {
   return fs
     .readdirSync(papersDir, { withFileTypes: true })
     .filter((e) => e.isDirectory() && e.name !== "images")
+    // 骨架论文（只有 PDF，无 index.md）不进侧边栏——papers 索引页有显式清单
+    .filter((e) => fs.existsSync(path.join(papersDir, e.name, "index.md")))
     .map((e) => ({
       text: fmTitle(path.join(papersDir, e.name, "index.md")) ?? e.name,
       link: `/papers/${e.name}/`,

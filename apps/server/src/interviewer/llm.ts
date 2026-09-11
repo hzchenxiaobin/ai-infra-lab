@@ -8,6 +8,7 @@ import {
   type QuestionEvaluation,
 } from "@ailab/contracts";
 import { env } from "../env.js";
+import { recordLlmCall } from "../llm-metrics.js";
 
 // reasoning 模型（如 glm-5.3）评估调用常需 20–40s，15s 会全部超时
 const TIMEOUT_MS = 60_000;
@@ -32,6 +33,7 @@ async function chatCompletion(
   if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY（系统为纯 LLM 模式，无规则引擎降级）");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const startedAt = Date.now();
   try {
     const res = await fetch(`${env.LLM_BASE_URL}/chat/completions`, {
       method: "POST",
@@ -49,10 +51,23 @@ async function chatCompletion(
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`LLM HTTP ${res.status}: ${await res.text().then((t) => t.slice(0, 200))}`);
-    const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    const data = (await res.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+      usage?: { prompt_tokens?: number; completion_tokens?: number };
+    };
     const content = data.choices?.[0]?.message?.content?.trim();
     if (!content) throw new Error("LLM 返回空内容");
+    recordLlmCall({
+      model,
+      ok: true,
+      ms: Date.now() - startedAt,
+      promptTokens: data.usage?.prompt_tokens,
+      completionTokens: data.usage?.completion_tokens,
+    });
     return content;
+  } catch (err) {
+    recordLlmCall({ model, ok: false, ms: Date.now() - startedAt });
+    throw err;
   } finally {
     clearTimeout(timer);
   }

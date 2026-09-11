@@ -7,7 +7,7 @@ knowledge_points: [kernel-optimization, profiling]
 updated: 2026-08-28
 week: 2
 day: 3
-related_problems: ["gpu:e:008", "gpu:m:013"]
+related_problems: ["gpu:e:008", "gpu:m:013", "lc:0014", "lc:0043", "lc:0151", "lc:0415"]
 related_questions: []
 ---
 
@@ -657,18 +657,18 @@ smsp__average_warps_issue_stalled_long_scoreboard.pct \
 
 本题用 atomicAdd 做 histogram，是 GEMM 之外的另一类典型 kernel。本日学了整合优化（ncu profiling 将在 Day 6 系统讲解），本题适合提前用 ncu 分析 atomic 冲突、shared memory bank conflict、occupancy，对比 global atomic vs shared memory atomic 两种实现的性能差异。
 
-> 💡 提交后在 [LeetGPU Histogramming 题目](https://leetgpu.com/challenges/histogramming)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 [Histogramming 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-histogramming-solution.html)。
+> 💡 提交后在 [LeetGPU Histogramming 题目](https://leetgpu.com/challenges/histogramming)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a href="/problems/gpu/medium/13-histogramming">Histogramming 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 2 周 Day 3）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 2 周「字符串、滑动窗口与矩阵」Day 3（字符串模拟），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 3（字符串模拟），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [415. 字符串相加](https://leetcode.cn/problems/add-strings/) | 简单 | 大数加法模拟进位 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/415_字符串相加.html) |
-| [43. 字符串相乘](https://leetcode.cn/problems/multiply-strings/) | 中等 | 竖式乘法模拟 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/43_字符串相乘.html) |
-| [151. 反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/) | 中等 | 切分逆序 / 双指针 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/151_反转字符串中的单词.html) |
-| [14. 最长公共前缀](https://leetcode.cn/problems/longest-common-prefix/) | 简单 | 纵向 / 横向扫描 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/14_最长公共前缀.html) |
+| [415. 字符串相加](https://leetcode.cn/problems/add-strings/) | 简单 | 大数加法模拟进位 | <a href="/problems/algo/0415">题解</a> |
+| [43. 字符串相乘](https://leetcode.cn/problems/multiply-strings/) | 中等 | 竖式乘法模拟 | <a href="/problems/algo/0043">题解</a> |
+| [151. 反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/) | 中等 | 切分逆序 / 双指针 | <a href="/problems/algo/0151">题解</a> |
+| [14. 最长公共前缀](https://leetcode.cn/problems/longest-common-prefix/) | 简单 | 纵向 / 横向扫描 | <a href="/problems/algo/0014">题解</a> |
 
 ---
 

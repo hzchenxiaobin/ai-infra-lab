@@ -386,6 +386,18 @@ export const adminUserBanSchema = z.object({
 });
 export type AdminUserBanInput = z.infer<typeof adminUserBanSchema>;
 
+/**
+ * user:claim：认领遗留用户（email 为 NULL 的单用户时代数据）。
+ * 绑定邮箱 + 初始密码，历史面试/提交/进度原地保留；password 缺省时服务端
+ * 生成随机密码并在返回值中给出一次（不落任何日志）。
+ */
+export const adminUserClaimSchema = z.object({
+  userId: z.number().int().positive(),
+  email: emailSchema,
+  password: z.string().min(8, "密码至少 8 位").max(72).optional(),
+});
+export type AdminUserClaimInput = z.infer<typeof adminUserClaimSchema>;
+
 // ---------------------------------------------------------------------------
 // 配额（dev/server.md §8：计量先行、限额后置；quota NULL = 不限）
 // ---------------------------------------------------------------------------

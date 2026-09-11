@@ -7,7 +7,7 @@ knowledge_points: [kernel-optimization, profiling]
 updated: 2026-08-28
 week: 2
 day: 2
-related_problems: ["gpu:m:022"]
+related_problems: ["gpu:m:022", "lc:0076", "lc:0209", "lc:0239", "lc:0424", "lc:0713"]
 related_questions: []
 ---
 
@@ -385,19 +385,19 @@ nvcc -Xptxas -v -o register_gemm kernels/register_blocking_gemm.cu -O3 -arch=sm_
 
 本题直接对应 Day 2 的主题——Register Blocking。要求每个线程计算 TM×TN 子块，累加器 acc 驻留寄存器，配合 Shared Memory Tiling 实现 K 维复用。目标达到 cuBLAS 40%+。
 
-> 💡 提交后在 [LeetGPU GEMM 题目](https://leetgpu.com/challenges/general-matrix-multiplication-gemm)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 [GEMM 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-gemm-solution.html)。
+> 💡 提交后在 [LeetGPU GEMM 题目](https://leetgpu.com/challenges/general-matrix-multiplication-gemm)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a href="/problems/gpu/medium/22-gemm">GEMM 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 2 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 2 周「字符串、滑动窗口与矩阵」Day 2（滑动窗口进阶），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 2（滑动窗口进阶），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) | 困难 | 单调队列 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/239_滑动窗口最大值.html) |
-| [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/) | 困难 | 滑动窗口 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/76_最小覆盖子串.html) |
-| [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/) | 中等 | 滑动窗口（正数单调） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/209_长度最小的子数组.html) |
-| [424. 替换后的最长重复字符](https://leetcode.cn/problems/longest-repeating-character-replacement/) | 中等 | 滑窗维护 maxCount | [题解](https://hzchenxiaobin.github.io/leetcode/problems/424_替换后的最长重复字符.html) |
-| [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/) | 中等 | 滑动窗口 + 计数(right−left+1) | [题解](https://hzchenxiaobin.github.io/leetcode/problems/713_乘积小于K的子数组.html) |
+| [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) | 困难 | 单调队列 | <a href="/problems/algo/0239">题解</a> |
+| [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/) | 困难 | 滑动窗口 | <a href="/problems/algo/0076">题解</a> |
+| [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/) | 中等 | 滑动窗口（正数单调） | <a href="/problems/algo/0209">题解</a> |
+| [424. 替换后的最长重复字符](https://leetcode.cn/problems/longest-repeating-character-replacement/) | 中等 | 滑窗维护 maxCount | <a href="/problems/algo/0424">题解</a> |
+| [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/) | 中等 | 滑动窗口 + 计数(right−left+1) | <a href="/problems/algo/0713">题解</a> |
 
 ---
 

@@ -78,21 +78,70 @@ if (existsSync(path.join(SRC, "topics"))) {
   }
 }
 
-// ---- paper/{slug}/README.md → papers/{slug}/index.md（仅完成的论文；骨架只有 PDF 不拷）----
+// ---- paper/{slug}/ → papers/{slug}/（README → index.md；PDF 走 public 进 dist）----
+// VitePress 只把 srcDir 下 .md 编页、src/public/ 原样分发：PDF 统一拷到
+// public/papers/{slug}/（README 内相对引用 xxx.pdf 与索引页 /papers/... 均命中）。
+// 骨架（只有 PDF）不建页面目录，由 papers 索引页显式列出。
+const paperSkel: string[] = [];
 if (existsSync(path.join(SRC, "paper"))) {
   const paperSrc = path.join(SRC, "paper");
   for (const e of await readdir(paperSrc, { withFileTypes: true })) {
-    if (!e.isDirectory() || !existsSync(path.join(paperSrc, e.name, "README.md"))) continue;
-    await mkdir(path.join(DEST, "papers", e.name), { recursive: true });
-    await cp(
-      path.join(paperSrc, e.name, "README.md"),
-      path.join(DEST, "papers", e.name, "index.md"),
-    );
+    if (!e.isDirectory() || e.name === "images") continue;
+    const hasReadme = existsSync(path.join(paperSrc, e.name, "README.md"));
+    if (!hasReadme) paperSkel.push(e.name);
+    if (existsSync(path.join(paperSrc, e.name, `${e.name}.pdf`))) {
+      await mkdir(path.join(DEST, "public", "papers", e.name), { recursive: true });
+      await cp(
+        path.join(paperSrc, e.name, `${e.name}.pdf`),
+        path.join(DEST, "public", "papers", e.name, `${e.name}.pdf`),
+      );
+    }
+    if (hasReadme) {
+      await mkdir(path.join(DEST, "papers", e.name), { recursive: true });
+      await cp(
+        path.join(paperSrc, e.name, "README.md"),
+        path.join(DEST, "papers", e.name, "index.md"),
+      );
+    }
   }
   // 论文共享插图（README 里 ../images/x.svg 引用）
   if (existsSync(path.join(paperSrc, "images"))) {
     await cp(path.join(paperSrc, "images"), path.join(DEST, "papers", "images"), { recursive: true });
   }
+}
+
+// ---- papers 索引页（成文可读，骨架列目录显式表达进度）----
+if (existsSync(path.join(SRC, "paper"))) {
+  const papersDest = path.join(DEST, "papers");
+  const done = (await readdir(papersDest, { withFileTypes: true }))
+    .filter((e) => e.isDirectory() && e.name !== "images" && existsSync(path.join(papersDest, e.name, "index.md")))
+    .map((e) => e.name)
+    .sort();
+  const pdfLink = (slug: string) =>
+    existsSync(path.join(DEST, "public", "papers", slug, `${slug}.pdf`))
+      ? `（[PDF](/papers/${slug}/${slug}.pdf)）`
+      : "";
+  const doneRows = done.map((slug) => `- [${slug}](/papers/${slug}/)${pdfLink(slug)}`);
+  const skelRows = paperSkel.sort().map((slug) => `- 🚧 ${slug}（精读进行中${pdfLink(slug)}）`);
+  await writeFile(
+    path.join(papersDest, "index.md"),
+    `---
+title: 论文精读
+---
+
+# 论文精读
+
+成文 ${doneRows.length} 篇 · 进行中 ${skelRows.length} 篇
+
+## 已完成
+
+${doneRows.join("\n")}
+
+## 精读进行中（骨架）
+
+${skelRows.join("\n")}
+`,
+  );
 }
 
 // ---- profiling 原样（README.md → index.md）----

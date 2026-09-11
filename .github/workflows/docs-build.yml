@@ -1,0 +1,54 @@
+# docs 三分区构建（dev/backlog P1：algo 4 批构建）。
+# 与常规检查（ci.yml）分流：algo 单批 NODE_OPTIONS 堆上限 10GB、全量 ~20 分钟，
+# 只在手动触发 / 周调度 / docs 与 content 变更时跑（PR 上不阻塞合入，
+# main 分支失败会显式暴露）。
+name: docs-build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 18 * * 0" # 每周日 02:23 CST
+  push:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - "packages/content/**"
+      - "packages/content-kit/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 16GB 内存；单批 10GB 堆上限按 build-algo.sh 现状
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: pnpm install
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: build learn + gpu
+        run: |
+          cd apps/docs
+          pnpm build:learn
+          pnpm build:gpu
+
+      - name: build algo（4 批）
+        run: |
+          cd apps/docs
+          BATCH_TOTAL=4 pnpm build:algo
+
+      - name: 产物校验（三分区页面量级）
+        run: |
+          node -e "
+          const { execSync } = require('child_process');
+          const count = (d) => parseInt(execSync('find ' + d + ' -name \"*.html\" | wc -l').toString().trim());
+          const learn = count('apps/docs/learn/dist');
+          const gpu = count('apps/docs/problems-gpu/dist');
+          const algo = count('apps/docs/problems-algo/dist');
+          console.log('learn:', learn, 'gpu:', gpu, 'algo:', algo);
+          if (learn < 250 || gpu < 100 || algo < 4000) { console.error('分区页面量级异常'); process.exit(1); }"

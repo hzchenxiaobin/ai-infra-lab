@@ -7,7 +7,7 @@ knowledge_points: [distributed-parallelism, multi-hardware]
 updated: 2026-08-28
 week: 9
 day: 1
-related_problems: ["gpu:e:031"]
+related_problems: ["gpu:e:031", "lc:0139", "lc:0152", "lc:0300", "lc:0354"]
 related_questions: []
 ---
 
@@ -241,7 +241,7 @@ python kernels/tp_inference_demo.py
 
 #### 任务 3：通信重叠编码（见 Day 4）
 
-双 CUDA Stream 通信-计算重叠的完整编码任务（`torch.cuda.Stream` + `wait_stream` + nsys 验证、TP 层内前半/后半 GEMM 切分、CUDA Graph 捕获双流序列）已归入 [Day 4](https://hzchenxiaobin.github.io/ai-infra-notes/week9/day4.html)，此处不再重复布置。本目录的 [kernels/comm_overlap_demo.py](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/week9/day1/kernels/comm_overlap_demo.py) 仍可独立运行（需 CUDA 环境），作为 Day 4 的先修 demo 参考。
+双 CUDA Stream 通信-计算重叠的完整编码任务（`torch.cuda.Stream` + `wait_stream` + nsys 验证、TP 层内前半/后半 GEMM 切分、CUDA Graph 捕获双流序列）已归入 [Day 4](/week9/day4)，此处不再重复布置。本目录的 [kernels/comm_overlap_demo.py](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/week9/day1/kernels/comm_overlap_demo.py) 仍可独立运行（需 CUDA 环境），作为 Day 4 的先修 demo 参考。
 
 #### 任务 4：LeetGPU 在线题目 —— Matrix Copy
 
@@ -249,18 +249,18 @@ python kernels/tp_inference_demo.py
 
 **与今日知识的关联**：分布式推理的核心开销是**通信**（all-reduce / send-recv），而通信的本质是**数据在 GPU 间搬运**——与 Matrix Copy 同构：都是 bandwidth-bound 的纯数据搬移。Matrix Copy 练习的是如何高效搬运（coalesced 读写、避免 bank conflict、用满显存带宽），这正是 NCCL kernel 内部的优化目标。理解 Matrix Copy 的带宽利用率分析，就能估算 all-reduce 的通信下限：`T_comm = V / bandwidth`。做好这题说明你掌握了"数据搬运的性能上限"，是分析通信开销的基础。
 
-> 💡 提交后在 [LeetGPU Matrix Copy](https://leetgpu.com/challenges/matrix-copy) 上记录通过耗时。完整题解见 [Matrix Copy 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-copy-solution.html)。
+> 💡 提交后在 [LeetGPU Matrix Copy](https://leetgpu.com/challenges/matrix-copy) 上记录通过耗时。完整题解见 <a href="/problems/gpu/easy/31-matrix-copy">Matrix Copy 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 9 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 1（子数组与子序列），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 1（子数组与子序列），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [139. 单词拆分](https://leetcode.cn/problems/word-break/) | 中等 | DP / BFS + 字典哈希 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/139_单词拆分.html) |
-| [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/) | 中等 | 滚动 DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/152_乘积最大子数组.html) |
-| [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) | 中等 | DP + 二分（patience sorting） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/300_最长递增子序列.html) |
-| [354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) | 困难 | 排序 + LIS（二分） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/354_俄罗斯套娃信封问题.html) |
+| [139. 单词拆分](https://leetcode.cn/problems/word-break/) | 中等 | DP / BFS + 字典哈希 | <a href="/problems/algo/0139">题解</a> |
+| [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/) | 中等 | 滚动 DP | <a href="/problems/algo/0152">题解</a> |
+| [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) | 中等 | DP + 二分（patience sorting） | <a href="/problems/algo/0300">题解</a> |
+| [354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) | 困难 | 排序 + LIS（二分） | <a href="/problems/algo/0354">题解</a> |
 
 ---
 

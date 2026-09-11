@@ -1,0 +1,116 @@
+# 全栈编排（dev/deployment.md §1）：caddy / web / docs / server / judge-worker / mysql。
+# 用法：docker compose -f deploy/docker-compose.yml up -d
+# 秘密经根目录 .env 注入（DATABASE_URL / SESSION_SECRET / SMTP / LLM_*，
+# 见 .env.example）；MySQL 不暴露公网，仅宿主回环（CLI/备份演练用）。
+
+name: ailab
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - web
+      - docs
+      - server
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    image: ailab/web:latest
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  docs:
+    build:
+      context: ..
+      dockerfile: apps/docs/Dockerfile
+      args:
+        # algo 分区分批数：部署机内存紧张时调大（单批 ~10GB 堆上限，build-algo.sh）
+        BATCH_TOTAL: "4"
+    image: ailab/docs:latest
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  server:
+    build:
+      context: ..
+      dockerfile: apps/server/Dockerfile
+    image: ailab/server:latest
+    restart: unless-stopped
+    expose:
+      - "3001"
+    environment:
+      # 容器网络内 DB 主机名是 mysql；由 MYSQL_* 组装，与 mysql 服务凭据保持一致
+      #（.env 里的 DATABASE_URL 面向宿主 CLI/备份演练，此处显式覆盖）
+      DATABASE_URL: mysql://${MYSQL_USER:-ailab}:${MYSQL_PASSWORD:-ailab}@mysql:3306/${MYSQL_DATABASE:-ailab}
+      # 部署形态：执行路径由独立 judge-worker 接管（dev/judge-worker.md §1）
+      JUDGE_INPROCESS_WORKER: "false"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    volumes:
+      # content:sync 输入（宿主跑 pnpm --filter @ailab/content-kit sync 产出；
+      # 243MB 内容快照不进 server 镜像，只进 docs 镜像）
+      - ../packages/content-kit/dist:/app/packages/content-kit/dist:ro
+    env_file:
+      - ../.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  judge-worker:
+    build:
+      context: ..
+      dockerfile: apps/judge-worker/Dockerfile
+    image: ailab/judge-worker:latest
+    restart: unless-stopped
+    volumes:
+      # Docker-out-of-Docker：挂宿主 docker.sock 拉起一次性评测容器
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER:-ailab}:${MYSQL_PASSWORD:-ailab}@mysql:3306/${MYSQL_DATABASE:-ailab}
+      JUDGE_IMAGE: ${JUDGE_IMAGE:-ailab/judge-algo:latest}
+      JUDGE_CONCURRENCY: ${JUDGE_CONCURRENCY:-2}
+      JUDGE_TIMEOUT_MS: ${JUDGE_TIMEOUT_MS:-8000}
+      JUDGE_MEM_MB: ${JUDGE_MEM_MB:-256}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-ailab}
+      MYSQL_USER: ${MYSQL_USER:-ailab}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ailab}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # 仅宿主回环暴露（CLI content:sync / 备份演练；不对公网）
+    ports:
+      - "127.0.0.1:3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  mysql-data:
+  caddy-data:
+  caddy-config:

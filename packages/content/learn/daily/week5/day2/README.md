@@ -7,7 +7,7 @@ knowledge_points: [attention, flash-attention]
 updated: 2026-08-28
 week: 5
 day: 2
-related_problems: ["gpu:h:109", "gpu:m:080"]
+related_problems: ["gpu:h:109", "gpu:m:080", "lc:0045", "lc:0055", "lc:0121", "lc:0155", "lc:0621", "lc:0763"]
 related_questions: []
 ---
 
@@ -99,7 +99,7 @@ FlashAttention 将 Q 按行分块（$B_r$ 行一块），K/V 按行分块（$B_c
 
 ![Online Softmax 递推更新流程](../images/flash_attention_online_update.svg)
 
-三公式的完整逐步推导（含"每步归一化 vs 末尾归一化"两种变体的等价性证明）已在 [Day 1 §5.2](https://hzchenxiaobin.github.io/ai-infra-notes/week5/day1.html) 展开，这里只回顾结论。状态定义：$m$ = 已处理块的 running max，$l$ = 以 $m$ 为参考点的 running sum，$o$ = running output；初始 $m = -\infty,\, l = 0,\, o = 0$。
+三公式的完整逐步推导（含"每步归一化 vs 末尾归一化"两种变体的等价性证明）已在 [Day 1 §5.2](/week5/day1) 展开，这里只回顾结论。状态定义：$m$ = 已处理块的 running max，$l$ = 以 $m$ 为参考点的 running sum，$o$ = running output；初始 $m = -\infty,\, l = 0,\, o = 0$。
 
 ##### 三公式汇总
 
@@ -127,7 +127,7 @@ $$o_{\text{new}} = o \times \frac{l \times \exp(m - m_{\text{new}})}{l_{\text{ne
 | FlashAttention | $O(Nd)$ | ~4 MB | ~8 MB |
 | **IO 加速比** | | **~50x** | **~100x** |
 
-> 💡 **严格界**：FlashAttention 的 HBM IO 严格界为 **$\Theta(N^2 d^2 / M)$**（M 为 SRAM 大小），当 $M = \Theta(Nd)$ 时简化为 $O(Nd)$。教程中统一使用 $O(Nd)$ 这一简化形式，详见 [FlashAttention 论文 Theorem 2](https://hzchenxiaobin.github.io/ai-infra-notes/paper/flashattention/index.html)。
+> 💡 **严格界**：FlashAttention 的 HBM IO 严格界为 **$\Theta(N^2 d^2 / M)$**（M 为 SRAM 大小），当 $M = \Theta(Nd)$ 时简化为 $O(Nd)$。教程中统一使用 $O(Nd)$ 这一简化形式，详见 [FlashAttention 论文 Theorem 2](/papers/flashattention)。
 
 ##### 为什么实际 wall-clock 加速只有 2-8x？
 
@@ -327,19 +327,19 @@ print(prof.key_averages().table(sort_by='cuda_memory_usage', row_limit=5))
 
 本题是标准 Attention 的 fused 实现——正是今天论文精读的算法本体。要求把 $QK^\top$ + softmax + $PV$ 融合成一个 kernel：每个 Q tile 维护 running $(m, l, o)$，KV tile 逐块滑入，与今天推导的 online softmax 三公式一一对应。注意**题目要求带 $1/\sqrt{d}$ scale**。Day 1 已做过 Softmax Attention，本题是无 mask 的标准版，重点在把三公式写熟。
 
-> 💡 提交后在 [LeetGPU Attention 题目](https://leetgpu.com/challenges/attention)上记录通过耗时。完整题解见 [Attention 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-attention-solution.html)。
+> 💡 提交后在 [LeetGPU Attention 题目](https://leetgpu.com/challenges/attention)上记录通过耗时。完整题解见 <a href="/problems/gpu/hard/109-attention">Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周 Day 2）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 5 周「堆、贪心与区间」Day 2（贪心），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」Day 2（贪心），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/) | 简单 | 一次遍历 / DP | [题解](https://hzchenxiaobin.github.io/leetcode/problems/121_买卖股票的最佳时机.html) |
-| [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/) | 中等 | 贪心维护最远可达 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/55_跳跃游戏.html) |
-| [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) | 中等 | 贪心 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/45_跳跃游戏%20II.html) |
-| [763. 划分字母区间](https://leetcode.cn/problems/partition-labels/) | 中等 | 最后出现位置 + 贪心 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/763_划分字母区间.html) |
-| [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/) | 中等 | 贪心（最大频数公式） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/621_任务调度器.html) |
+| [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/) | 简单 | 一次遍历 / DP | <a href="/problems/algo/0121">题解</a> |
+| [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/) | 中等 | 贪心维护最远可达 | <a href="/problems/algo/0055">题解</a> |
+| [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) | 中等 | 贪心 | <a href="/problems/algo/0045">题解</a> |
+| [763. 划分字母区间](https://leetcode.cn/problems/partition-labels/) | 中等 | 最后出现位置 + 贪心 | <a href="/problems/algo/0763">题解</a> |
+| [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/) | 中等 | 贪心（最大频数公式） | <a href="/problems/algo/0621">题解</a> |
 
 ---
 

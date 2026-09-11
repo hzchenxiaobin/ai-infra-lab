@@ -14,7 +14,7 @@ related_questions: []
 # Week 1 LeetGPU 复盘记录
 
 > 用法：每道题提交通过后，把耗时和 ncu 关键指标填进下表；综合练习（Day 7）记录在最后。
-> 题目与考点对应关系见 [Day 7 README 的本周回顾表](https://hzchenxiaobin.github.io/ai-infra-notes/week1/day7.html)。
+> 题目与考点对应关系见 [Day 7 README 的本周回顾表](/week1/day7)。
 
 ## 每日题目记录
 

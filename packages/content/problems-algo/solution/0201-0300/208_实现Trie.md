@@ -10,7 +10,7 @@ number: 208
 difficulty: medium
 languages: [cpp, python]
 judge: none
-related_learn: []
+related_learn: ["learn:w07d04", "learn:w10d02", "learn:w10d07"]
 ---
 
 # LeetCode 实现 Trie (前缀树) 题解

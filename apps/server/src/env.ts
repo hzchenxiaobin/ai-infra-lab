@@ -38,6 +38,8 @@ const envSchema = z.object({
   /** 配额默认值（缺省/空 = 不限，上线初期默认；后续仅改配置开启分层） */
   QUOTA_DEFAULT_JUDGE: optionalInt,
   QUOTA_DEFAULT_INTERVIEW: optionalInt,
+  /** LLM 日 token 预算（监控告警阈值；0 = 不设预算，见 llm-metrics.ts） */
+  LLM_DAILY_TOKEN_BUDGET: optionalInt,
   /** 评测队列并发上限（in-process worker 与独立 judge-worker 通用） */
   JUDGE_CONCURRENCY: z.coerce.number().int().positive().default(2),
   /** false 时禁用 server 内置 in-process worker（独立 judge-worker 部署模式，

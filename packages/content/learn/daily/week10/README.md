@@ -33,11 +33,11 @@ related_questions: []
 
 | Day | 主题 | 目录 |
 |-----|------|------|
-| Day 1 | 整合全部自定义 Kernel | [day1/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day1.html) |
-| Day 2 | 系统联调（六步分层验证） | [day2/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day2.html) |
-| Day 3 | 项目文档完善（README） | [day3/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day3.html) |
-| Day 4 | 高频面试题基础篇 | [day4/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day4.html) |
-| Day 5 | Mock 面试 | [day5/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day5.html) |
-| Day 6 | 诊断流程实战剧本 + 手撕限时清单 | [day6/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day6.html) |
-| Day 7 | 最终复盘 —— 10 周能力地图 | [day7/](https://hzchenxiaobin.github.io/ai-infra-notes/week10/day7.html) |
+| Day 1 | 整合全部自定义 Kernel | [day1/](/week10/day1) |
+| Day 2 | 系统联调（六步分层验证） | [day2/](/week10/day2) |
+| Day 3 | 项目文档完善（README） | [day3/](/week10/day3) |
+| Day 4 | 高频面试题基础篇 | [day4/](/week10/day4) |
+| Day 5 | Mock 面试 | [day5/](/week10/day5) |
+| Day 6 | 诊断流程实战剧本 + 手撕限时清单 | [day6/](/week10/day6) |
+| Day 7 | 最终复盘 —— 10 周能力地图 | [day7/](/week10/day7) |
 

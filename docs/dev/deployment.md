@@ -41,12 +41,14 @@
 ```
 deploy/
 ├── docker-compose.yml      # 全栈编排
-├── Caddyfile               # 路由：/learn,/problems→docs；/trpc→server；其余→web
+├── Caddyfile               # 路由：/learn,/problems→docs；/trpc,/healthz→server；其余→web
 ├── images/algo/Dockerfile  # 评测镜像（g++/python3/SQLite，见 judge-worker §4）
 ├── backups/                # mysqldump 输出（.gitignore）
 └── scripts/
+    ├── bootstrap.sh        # 首次初始化（.env → 内容产物 → 镜像 → 起栈 → content:sync → 冒烟）
     ├── backup.sh           # 备份脚本（cron 每日）
-    └── restore.sh          # 恢复演练用
+    ├── restore.sh          # 恢复演练用
+    └── monitor.sh          # 轻量监控告警（cron */5 + webhook）
 ```
 
 ## 2. 镜像构建
@@ -86,7 +88,7 @@ docker compose -f deploy/docker-compose.yml build
 docker compose -f deploy/docker-compose.yml up -d
 
 # 3. 验证
-curl -fsS http://localhost:3001/healthz        # server 探活（compose 内部网络）
+curl -fsS http://localhost/healthz        # server 探活（caddy /healthz → server:3001）
 # 浏览器过一遍冒烟：首页 → 内容页 → 登录 → 提交评测 → 面试
 ```
 
@@ -114,19 +116,20 @@ deploy/scripts/backup.sh
   submissions 行数。备份没演练过等于没有。
 - 内容无需备份（Git 即备份）；需要备份的只有 MySQL。
 
-## 5. 监控告警（M3 起）
+## 5. 监控告警（M3 起，2026-09-11 第十一批落地）
 
-| 指标 | 来源 | 告警阈值（初版） |
-|---|---|---|
-| 评测队列积压 | `SELECT count(*) FROM submissions WHERE status='pending'` | > 20 持续 10 min |
-| 评测失败率 | submissions 终态分布 | `ie`（internal error）出现即告警 |
-| LLM 成本/延迟 | server 打点（模型分级调用计数 + token 用量） | 日成本超预算 / p95 延迟 > 60s |
-| docs 构建时长/内存 | CI 构建日志 | 单区 > 15 min 或 > 8GB（换框架触发线，05） |
-| 错误率 | server 5xx 计数 | > 1% 持续 5 min |
-| 异常用量 | usage_quotas.used 增速 | 单用户日用量突增 10 倍（防滥用，05 风险清单） |
+| 指标 | 来源 | 告警阈值（初版） | 状态 |
+|---|---|---|---|
+| 评测队列积压 | `SELECT count(*) FROM submissions WHERE status='pending'` | > 20 持续 10 min | ✅ monitor.sh |
+| 评测失败率 | submissions 终态分布 | `ie`（internal error）出现即告警 | ✅ monitor.sh |
+| LLM 成本/延迟 | server 打点（`llm-metrics.ts`：模型分级计数 + token 用量 + p95，`GET /metrics/llm`） | 日 token 超 `LLM_DAILY_TOKEN_BUDGET` / p95 > 60s | ✅ monitor.sh |
+| docs 构建时长/内存 | CI 构建日志（docs-build.yml） | 单区 > 15 min 或 > 8GB（换框架触发线，05） | ✅ CI 观察 |
+| 错误率 | caddy JSON 访问日志（stdout → docker logs） | 近 10 分钟 5xx > 50 | ✅ monitor.sh |
+| 异常用量 | usage_quotas 今日 vs 昨日 | 单用户日用量突增 10 倍（防滥用，05 风险清单） | ✅ monitor.sh |
 
-初期用轻量方案（脚本 + 通知 webhook），不引入 Prometheus 全家桶；compose 服务均配
-`restart: unless-stopped` 兜底进程级可用性。
+初期用轻量方案（`deploy/scripts/monitor.sh` + 通知 webhook），不引入 Prometheus
+全家桶；compose 服务均配 `restart: unless-stopped` 兜底进程级可用性。LLM 打点为
+单实例内存态（重启清零，告警取即时值）——多实例/历史趋势需求出现时再上时序库。
 
 ## 6. 运维边界与注意事项
 

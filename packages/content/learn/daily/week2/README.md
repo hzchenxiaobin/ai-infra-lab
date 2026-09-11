@@ -33,10 +33,10 @@ related_questions: []
 
 | Day | 主题 | 目录 |
 |-----|------|------|
-| Day 1 | Warp Shuffle 原语与 Warp/Block Reduce | [day1/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day1.html) |
-| Day 2 | Register Blocking 与 2D Tiling | [day2/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day2.html) |
-| Day 3 | float4 向量化 + GEMM 七层路径（前四层） | [day3/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day3.html) |
-| Day 4 | GEMM 七层路径（后三层）+ cuBLAS 对比 | [day4/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day4.html) |
-| Day 5 | CUDA Streams 与异步执行 | [day5/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day5.html) |
-| Day 6 | Nsight Compute 性能分析 | [day6/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day6.html) |
-| Day 7 | 限时 Kernel 手撕 + GitHub 整理 + 性能对比报告 | [day7/](https://hzchenxiaobin.github.io/ai-infra-notes/week2/day7.html) |
+| Day 1 | Warp Shuffle 原语与 Warp/Block Reduce | [day1/](/week2/day1) |
+| Day 2 | Register Blocking 与 2D Tiling | [day2/](/week2/day2) |
+| Day 3 | float4 向量化 + GEMM 七层路径（前四层） | [day3/](/week2/day3) |
+| Day 4 | GEMM 七层路径（后三层）+ cuBLAS 对比 | [day4/](/week2/day4) |
+| Day 5 | CUDA Streams 与异步执行 | [day5/](/week2/day5) |
+| Day 6 | Nsight Compute 性能分析 | [day6/](/week2/day6) |
+| Day 7 | 限时 Kernel 手撕 + GitHub 整理 + 性能对比报告 | [day7/](/week2/day7) |

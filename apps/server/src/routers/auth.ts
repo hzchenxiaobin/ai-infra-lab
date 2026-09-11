@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { desc, eq, like, or, sql } from "drizzle-orm";
 import {
   adminUserBanSchema,
+  adminUserClaimSchema,
   adminUserEmailParamSchema,
   adminUserListSchema,
   authLoginSchema,
@@ -11,6 +12,7 @@ import {
 } from "@ailab/contracts";
 import {
   checkVerificationCode,
+  generatePassword,
   generateVerificationCode,
   hashPassword,
   hashVerificationCode,
@@ -202,5 +204,51 @@ export const authRouter = router({
       .limit(1);
     if (!rows[0]) throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
     return rows[0];
+  }),
+
+  /**
+   * 认领遗留用户（email 为 NULL 的单用户时代数据，dev/cli.md §3 user:claim）：
+   * 绑定邮箱 + 初始密码，历史面试/提交/进度原地保留（数据零迁移）。
+   * password 缺省时生成随机密码，仅在本次返回值中出现一次。
+   */
+  userClaim: adminProcedure.input(adminUserClaimSchema).mutation(async ({ input }) => {
+    const rows = await db.select().from(users).where(eq(users.id, input.userId)).limit(1);
+    const legacy = rows[0];
+    if (!legacy) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
+    }
+    if (legacy.email != null) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `用户 #${legacy.id} 已绑定邮箱 ${legacy.email}，仅 email 为空的遗留用户可认领`,
+      });
+    }
+    const taken = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, input.email))
+      .limit(1);
+    if (taken.length > 0) {
+      throw new TRPCError({ code: "CONFLICT", message: "该邮箱已注册，请换一个或直接登录既有账号" });
+    }
+
+    const password = input.password ?? generatePassword();
+    await db
+      .update(users)
+      .set({
+        email: input.email,
+        passwordHash: hashPassword(password),
+        // 管理员操作视同已验证；昵称保留原名（可用 web 资料页修改）
+        emailVerified: 1,
+      })
+      .where(eq(users.id, legacy.id));
+    const updated = (
+      await db.select().from(users).where(eq(users.id, legacy.id)).limit(1)
+    )[0]!;
+    return {
+      user: toCurrentUser(updated),
+      /** 仅未显式传密码时非空：生成的初始密码，只显示这一次 */
+      generatedPassword: input.password ? null : password,
+    };
   }),
 });

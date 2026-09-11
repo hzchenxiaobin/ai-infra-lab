@@ -7,7 +7,7 @@ knowledge_points: [batching, scheduling]
 updated: 2026-08-28
 week: 7
 day: 7
-related_problems: ["gpu:m:004"]
+related_problems: ["gpu:m:004", "lc:0017", "lc:0022", "lc:0039", "lc:0046", "lc:0051", "lc:0077", "lc:0078", "lc:0079", "lc:0089", "lc:0093", "lc:0112", "lc:0113", "lc:0114", "lc:0124", "lc:0129", "lc:0130", "lc:0131", "lc:0199", "lc:0200", "lc:0222", "lc:0236", "lc:0297", "lc:0437", "lc:0662", "lc:0695", "lc:0958", "lc:0994"]
 related_questions: []
 ---
 
@@ -141,20 +141,20 @@ python kernels/week7_summary.py
 
 **与本周总结的关联**：Reduction 是所有归约类 kernel（softmax 分母、LayerNorm 均值方差、dot product、attention 分数累加）的基础组件——block 内归约 + 跨 block 归约的两段式结构是通用模板。本周调度层面的"累加/统计"操作（token budget 逐请求扣减、batch 聚合、命中率统计）在 kernel 层的本质都是归约。这道题还藏着一个精度要点：大 `N` 下必须用 `double` 高精度累加、最后一步才转回 FP32，否则累加误差直接超容差——这正是 Week 8 量化专题"低精度提吞吐、但累加必须升精度控误差"的前置练习。这道题练 warp shuffle 归约 + 两阶段汇总——Week 8 量化与加速中所有统计/归约 kernel 都会用到。
 
-> 💡 完整题解（含 warp shuffle 归约、block 间两阶段汇总、double 高精度累加的精度处理）见 [Reduction 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-reduction-solution.html)。
+> 💡 完整题解（含 warp shuffle 归约、block 间两阶段汇总、double 高精度累加的精度处理）见 <a href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
 
 #### 任务 3：本周 LeetCode 题目回顾（10 周计划 · 第 7 周）
 
-本周 LeetCode 题目对应 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 7 周「二叉树（下）+ 回溯 + 网格搜索」（点击查看题解）：
+本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 路径问题 | [112. 路径总和](https://hzchenxiaobin.github.io/leetcode/problems/112_路径总和.html)、[113. 路径总和 II](https://hzchenxiaobin.github.io/leetcode/problems/113_路径总和II.html)、[129. 求根节点到叶节点数字之和](https://hzchenxiaobin.github.io/leetcode/problems/129_求根节点到叶节点数字之和.html)、[222. 完全二叉树的节点个数](https://hzchenxiaobin.github.io/leetcode/problems/222_完全二叉树的节点个数.html)、[437. 路径总和 III](https://hzchenxiaobin.github.io/leetcode/problems/437_路径总和III.html) |
-| Day 2 | LCA 与路径和 | [236. 二叉树的最近公共祖先](https://hzchenxiaobin.github.io/leetcode/problems/236_二叉树的最近公共祖先.html)、[124. 二叉树中的最大路径和](https://hzchenxiaobin.github.io/leetcode/problems/124_二叉树中的最大路径和.html)、[199. 二叉树的右视图](https://hzchenxiaobin.github.io/leetcode/problems/199_二叉树的右视图.html)、[114. 二叉树展开为链表](https://hzchenxiaobin.github.io/leetcode/problems/114_二叉树展开为链表.html) |
-| Day 3 | 序列化与宽度 | [297. 二叉树的序列化与反序列化](https://hzchenxiaobin.github.io/leetcode/problems/297_二叉树的序列化与反序列化.html)、[662. 二叉树最大宽度](https://hzchenxiaobin.github.io/leetcode/problems/662_二叉树最大宽度.html)、[958. 二叉树的完全性检验](https://hzchenxiaobin.github.io/leetcode/problems/958_二叉树的完全性检验.html) |
-| Day 4 | 网格 DFS/BFS | [200. 岛屿数量](https://hzchenxiaobin.github.io/leetcode/problems/200_岛屿数量.html)、[994. 腐烂的橘子](https://hzchenxiaobin.github.io/leetcode/problems/994_腐烂的橘子.html)、[695. 岛屿的最大面积](https://hzchenxiaobin.github.io/leetcode/problems/695_岛屿的最大面积.html)、[130. 被围绕的区域](https://hzchenxiaobin.github.io/leetcode/problems/130_被围绕的区域.html) |
-| Day 5 | 回溯基础 | [46. 全排列](https://hzchenxiaobin.github.io/leetcode/problems/46_全排列.html)、[77. 组合](https://hzchenxiaobin.github.io/leetcode/problems/77_组合.html)、[78. 子集](https://hzchenxiaobin.github.io/leetcode/problems/78_子集.html)、[39. 组合总和](https://hzchenxiaobin.github.io/leetcode/problems/39_组合总和.html)、[17. 电话号码的字母组合](https://hzchenxiaobin.github.io/leetcode/problems/17_电话号码的字母组合.html) |
-| Day 6 | 回溯进阶 | [22. 括号生成](https://hzchenxiaobin.github.io/leetcode/problems/22_括号生成.html)、[79. 单词搜索](https://hzchenxiaobin.github.io/leetcode/problems/79_单词搜索.html)、[131. 分割回文串](https://hzchenxiaobin.github.io/leetcode/problems/131_分割回文串.html)、[51. N 皇后](https://hzchenxiaobin.github.io/leetcode/problems/51_N皇后.html)、[93. 复原 IP 地址](https://hzchenxiaobin.github.io/leetcode/problems/93_复原IP地址.html)、[89. 格雷编码](https://hzchenxiaobin.github.io/leetcode/problems/89_格雷编码.html) |
+| Day 1 | 路径问题 | <a href="/problems/algo/0112">112. 路径总和</a>、<a href="/problems/algo/0113">113. 路径总和 II</a>、<a href="/problems/algo/0129">129. 求根节点到叶节点数字之和</a>、<a href="/problems/algo/0222">222. 完全二叉树的节点个数</a>、<a href="/problems/algo/0437">437. 路径总和 III</a> |
+| Day 2 | LCA 与路径和 | <a href="/problems/algo/0236">236. 二叉树的最近公共祖先</a>、<a href="/problems/algo/0124">124. 二叉树中的最大路径和</a>、<a href="/problems/algo/0199">199. 二叉树的右视图</a>、<a href="/problems/algo/0114">114. 二叉树展开为链表</a> |
+| Day 3 | 序列化与宽度 | <a href="/problems/algo/0297">297. 二叉树的序列化与反序列化</a>、<a href="/problems/algo/0662">662. 二叉树最大宽度</a>、<a href="/problems/algo/0958">958. 二叉树的完全性检验</a> |
+| Day 4 | 网格 DFS/BFS | <a href="/problems/algo/0200">200. 岛屿数量</a>、<a href="/problems/algo/0994">994. 腐烂的橘子</a>、<a href="/problems/algo/0695">695. 岛屿的最大面积</a>、<a href="/problems/algo/0130">130. 被围绕的区域</a> |
+| Day 5 | 回溯基础 | <a href="/problems/algo/0046">46. 全排列</a>、<a href="/problems/algo/0077">77. 组合</a>、<a href="/problems/algo/0078">78. 子集</a>、<a href="/problems/algo/0039">39. 组合总和</a>、<a href="/problems/algo/0017">17. 电话号码的字母组合</a> |
+| Day 6 | 回溯进阶 | <a href="/problems/algo/0022">22. 括号生成</a>、<a href="/problems/algo/0079">79. 单词搜索</a>、<a href="/problems/algo/0131">131. 分割回文串</a>、<a href="/problems/algo/0051">51. N 皇后</a>、<a href="/problems/algo/0093">93. 复原 IP 地址</a>、<a href="/problems/algo/0089">89. 格雷编码</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 7 周「二叉树（下）+ 回溯 + 网格搜索」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
@@ -328,7 +328,7 @@ Day 7 我们把 Week 7 的碎片知识连成了调度系统的完整地图：
 
 ![Week 7 目录结构](../images/week7_day7_directory_structure.svg)
 
-> 📎 LeetGPU / LeetCode 题解已迁移至独立站点：<https://hzchenxiaobin.github.io/leetgpu/> 、<https://hzchenxiaobin.github.io/leetcode/>
+> 📎 LeetGPU / LeetCode 题解已并入本站：<a href="/problems/gpu/">GPU 题解</a> · <a href="/problems">算法题解</a>
 
 ## 🔗 推荐资源
 

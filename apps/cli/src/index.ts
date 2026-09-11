@@ -399,6 +399,32 @@ program
     }
   });
 
+program
+  .command("user:claim <userId> <email>")
+  .description("认领遗留用户（email 为空的单用户时代数据）：绑定邮箱 + 初始密码，历史数据原地保留")
+  .option("-p, --password <pw>", "初始密码（缺省生成随机密码，仅显示一次）")
+  .action(async (userId: string, email: string, opts: { password?: string }) => {
+    const caller = await getCaller();
+    try {
+      const result = await caller.auth.userClaim({
+        userId: parseInt(userId, 10),
+        email,
+        password: opts.password,
+      });
+      console.log(
+        successLine(`已认领：#${result.user.id} ${result.user.email}（${result.user.name}，历史数据已保留）`),
+      );
+      if (result.generatedPassword) {
+        console.log(dimLine("初始密码（仅显示这一次，请立即保存）："));
+        console.log(`  ${result.generatedPassword}`);
+      }
+      process.exit(0);
+    } catch (err) {
+      console.log(errorLine((err as Error).message));
+      process.exit(1);
+    }
+  });
+
 // ── quota:get / quota:set（管理，dev/cli.md §3）─────────────────────────
 
 program
@@ -579,5 +605,18 @@ async function interactivePick(
 
   return { scope, categories, count };
 }
+
+// ── 全局身份 option（dev/cli.md §2：--user <email> 或 AILAB_USER）────────
+// 根命令与所有子命令都接受 --user（含 bank:*），preAction 统一落到 AILAB_USER，
+// session.ts 的 getCaller 只读这一个变量；未指定时 getCaller 报错退出。
+
+const USER_OPTION = "-u, --user <email>";
+const USER_DESC = "操作身份（email；管理命令需该邮箱在服务端 ADMIN_EMAILS 中）";
+program.option(USER_OPTION, USER_DESC);
+for (const cmd of program.commands) cmd.option(USER_OPTION, USER_DESC);
+program.hook("preAction", (thisCmd) => {
+  const email = thisCmd.opts().user ?? program.opts().user;
+  if (email) process.env.AILAB_USER = String(email);
+});
 
 program.parse();

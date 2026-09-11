@@ -10,7 +10,7 @@ number: 106
 difficulty: medium
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w05d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w05d05"]
 ---
 
 # LeetGPU Token Embedding Layer 题解

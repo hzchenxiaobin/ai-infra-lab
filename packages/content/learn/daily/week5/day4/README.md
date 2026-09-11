@@ -266,7 +266,7 @@ $$\text{IO}_{\text{bwd}} = \Theta\left(\frac{N^2 d^2}{M}\right) \quad \text{（M
 
 当 $M = \Theta(Nd)$ 时简化为 **$O(Nd)$**，与 forward 同阶。常数比 forward 大（需重读 $Q/K/V$ 算 $S/P$），但渐近类相同——这就是 FA 训练时也能省内存的原因。
 
-> ⚠️ **注意**：严格界是 $\Theta(N^2 d^2 / M)$，与 forward 一样（见 [Day 1 注释](https://hzchenxiaobin.github.io/ai-infra-notes/week5/day1.html)）。教程中统一说 $O(Nd)$ 是取 $M = \Theta(Nd)$ 的简化形式。
+> ⚠️ **注意**：严格界是 $\Theta(N^2 d^2 / M)$，与 forward 一样（见 [Day 1 注释](/week5/day1)）。教程中统一说 $O(Nd)$ 是取 $M = \Theta(Nd)$ 的简化形式。
 
 ---
 
@@ -430,11 +430,11 @@ FA 仅存 Q/K/V/O + L = O(Nd)；标准 autograd 额外物化 P = O(N²)。
 
 GEMM backward 的两个 kernel（$dA = dC\, B^T$、$dB = A^T dC$）以及 FA backward 里的 $S_{ij} = Q_i K_j^T$、$dQ_i = dS_{ij} K_j$，本质上都是**点积的批量并行**——每个输出元素就是一组向量的点积。LeetGPU 的 Dot Product 题目是这一原子操作的最纯粹练习：把两个向量的点积拆给一个 block 的多线程，每线程算一段部分和，再用 warp/block reduce 汇总。掌握了它，就能把任意 GEMM（无论 forward 还是 backward）拆成"每线程若干点积 + 归约"的模板——今天 `gemm_backward.cu` 的最内层 `for (j) sum += dC[i*N+j]*B[k*N+j]` 正是一个单线程版点积，用 Dot Product 题解的 warp reduce 替换掉就能并行加速。
 
-> 💡 提交后在 [LeetGPU Dot Product 题目](https://leetgpu.com/challenges/dot-product)上记录通过耗时。完整题解（含 `warpReduceSum` + `blockReduceSum` 两级归约、shared memory 中转、向量化加载）见 [Dot Product 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-dot-product-solution.html)。本题与 Day 3 共享，但今日视角是"反向 GEMM 的原子内核"——把题解里的 reduce 原语套到 `gemm_backward_dA_kernel` 的内层循环上，就是从 naive 走向高性能的第一步。
+> 💡 提交后在 [LeetGPU Dot Product 题目](https://leetgpu.com/challenges/dot-product)上记录通过耗时。完整题解（含 `warpReduceSum` + `blockReduceSum` 两级归约、shared memory 中转、向量化加载）见 <a href="/problems/gpu/medium/17-dot-product">Dot Product 题解</a>。本题与 Day 3 共享，但今日视角是"反向 GEMM 的原子内核"——把题解里的 reduce 原语套到 `gemm_backward_dA_kernel` 的内层循环上，就是从 naive 走向高性能的第一步。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周 Day 4 复盘）
 
-> 📅 今日为 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 5 周「堆、贪心与区间」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
+> 📅 今日为 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
 ---
 

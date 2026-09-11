@@ -10,7 +10,7 @@ number: 12
 difficulty: hard
 languages: [cpp, cuda]
 judge: leetgpu-com
-related_learn: ["learn:w04d02", "learn:w05d03", "learn:w05d05"]
+related_learn: ["learn:note:cuda-interview-notes", "learn:w04d02", "learn:w05d03", "learn:w05d05"]
 ---
 
 # LeetGPU Multi-Head Attention 题解

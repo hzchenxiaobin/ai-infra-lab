@@ -7,7 +7,7 @@ knowledge_points: [interview-prep, project-integration]
 updated: 2026-08-28
 week: 10
 day: 1
-related_problems: ["gpu:e:003"]
+related_problems: ["gpu:e:003", "lc:0122", "lc:0123", "lc:0188", "lc:0309", "lc:0698", "lc:0714"]
 related_questions: []
 ---
 
@@ -281,20 +281,20 @@ python kernels/custom_ops_module.py
 
 > 🔁 **复用**：本题首次布置于 Week 1 Day 4，此处重温以配合今天的 kernel 集成任务。
 
-> 💡 提交后在 [LeetGPU Matrix Transpose](https://leetgpu.com/challenges/matrix-transpose) 上记录通过耗时。完整题解见 [Matrix Transpose 题解](https://hzchenxiaobin.github.io/leetgpu/leetgpu-matrix-transpose-solution.html)。
+> 💡 提交后在 [LeetGPU Matrix Transpose](https://leetgpu.com/challenges/matrix-transpose) 上记录通过耗时。完整题解见 <a href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 10 周 Day 1）
 
-> 📅 今日题目来自 [10 周算法面试刷题计划](https://hzchenxiaobin.github.io/leetcode/problems/10-week-plan.html) 第 10 周「股票 DP、划分与图论」Day 1（股票与划分），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」Day 1（股票与划分），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/) | 中等 | 贪心收集所有上涨段 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/122_买卖股票的最佳时机II.html) |
-| [123. 买卖股票的最佳时机 III](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/) | 困难 | DP 状态机（至多 2 次交易） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/123_买卖股票的最佳时机III.html) |
-| [188. 买卖股票的最佳时机 IV](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/) | 困难 | DP 状态机（k 次交易） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/188_买卖股票的最佳时机IV.html) |
-| [309. 买卖股票的最佳时机含冷冻期](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/) | 中等 | DP 三状态（含冷冻期） | [题解](https://hzchenxiaobin.github.io/leetcode/problems/309_买卖股票的最佳时机含冷冻期.html) |
-| [714. 买卖股票的最佳时机含手续费](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/) | 中等 | DP 两状态 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/714_买卖股票的最佳时机含手续费.html) |
-| [698. 划分为 K 个相等的子集](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/) | 中等 | 回溯 + 排序剪枝 | [题解](https://hzchenxiaobin.github.io/leetcode/problems/698_划分为K个相等的子集.html) |
+| [122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/) | 中等 | 贪心收集所有上涨段 | <a href="/problems/algo/0122">题解</a> |
+| [123. 买卖股票的最佳时机 III](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/) | 困难 | DP 状态机（至多 2 次交易） | <a href="/problems/algo/0123">题解</a> |
+| [188. 买卖股票的最佳时机 IV](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/) | 困难 | DP 状态机（k 次交易） | <a href="/problems/algo/0188">题解</a> |
+| [309. 买卖股票的最佳时机含冷冻期](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/) | 中等 | DP 三状态（含冷冻期） | <a href="/problems/algo/0309">题解</a> |
+| [714. 买卖股票的最佳时机含手续费](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/) | 中等 | DP 两状态 | <a href="/problems/algo/0714">题解</a> |
+| [698. 划分为 K 个相等的子集](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/) | 中等 | 回溯 + 排序剪枝 | <a href="/problems/algo/0698">题解</a> |
 
 ---
 
