@@ -1,6 +1,6 @@
 // learn 分区配置（dev/content-site.md）。
 // - base /learn/：与 contents.url（/learn/...）对齐，web/docs 内不手拼路径
-// - sidebar 构建期从 src 目录扫描生成（frontmatter 是唯一元数据来源，04 已决策）
+// - 无左侧边栏（2026-09 起移除，正文加宽）；周内 day 顺序仍从 src 目录扫描，供 prev/next 用
 // - markdown 转义规则整套拷自 leetcode config.mts（content-site.md §4，少一条都会有页面编译失败）
 // - learn 区规模小（~260 页），开本地搜索：中文 bigram 分词 + 剔除代码块
 import { defineConfig } from "vitepress";
@@ -18,7 +18,7 @@ function fmTitle(abs: string): string | null {
   return m?.[1] ?? null;
 }
 
-/** weekN/dayM/index.md → sidebar 项（无 index.md 的目录跳过） */
+/** weekN/dayM/index.md → 周内页面顺序（prev/next 用；无 index.md 的目录跳过） */
 function sidebarForWeeks() {
   if (!fs.existsSync(src)) return [];
   const weeks = fs
@@ -43,54 +43,12 @@ function sidebarForWeeks() {
   });
 }
 
-function sidebarForTopics() {
-  const topicsDir = path.join(src, "topics");
-  if (!fs.existsSync(topicsDir)) return [];
-  const slugs = fs
-    .readdirSync(topicsDir, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name !== "images")
-    .map((e) => e.name)
-    .sort();
-  const items = slugs.map((slug) => {
-    const topicDir = path.join(topicsDir, slug);
-    const days = fs
-      .readdirSync(topicDir, { withFileTypes: true })
-      .filter((e) => e.isFile() && /^day\d+\.md$/.test(e.name))
-      .sort((a, b) => parseInt(a.name.slice(3)) - parseInt(b.name.slice(3)))
-      .map((d) => ({
-        text: fmTitle(path.join(topicDir, d.name)) ?? d.name.replace(/\.md$/, ""),
-        link: `/topics/${slug}/${d.name.replace(/\.md$/, "")}`,
-      }));
-    return {
-      text: fmTitle(path.join(topicDir, "index.md")) ?? slug,
-      collapsed: true,
-      items: [{ text: "概览", link: `/topics/${slug}/` }, ...days],
-    };
-  });
-  return items;
-}
-
-function sidebarForPapers() {
-  const papersDir = path.join(src, "papers");
-  if (!fs.existsSync(papersDir)) return [];
-  return fs
-    .readdirSync(papersDir, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name !== "images")
-    // 骨架论文（只有 PDF，无 index.md）不进侧边栏——papers 索引页有显式清单
-    .filter((e) => fs.existsSync(path.join(papersDir, e.name, "index.md")))
-    .map((e) => ({
-      text: fmTitle(path.join(papersDir, e.name, "index.md")) ?? e.name,
-      link: `/papers/${e.name}/`,
-    }))
-    .sort((a, b) => a.text.localeCompare(b.text));
-}
-
 // 上一页/下一页：daily 全局顺序（本周概览 → day1..day7 → 下一周概览）
 const dailyOrder: Array<{ text: string; link: string }> = [];
 for (const week of sidebarForWeeks()) {
   for (const item of week.items) dailyOrder.push(item);
 }
-/** sidebar 链接 → 对应 relativePath（"/week1/day1/" → "week1/day1/index.md"） */
+/** 导航链接 → 对应 relativePath（"/week1/day1/" → "week1/day1/index.md"） */
 const linkToRel = (link: string) => link.slice(1) + (link.endsWith("/") ? "index.md" : ".md");
 
 export default defineConfig({
@@ -99,7 +57,7 @@ export default defineConfig({
   lang: "zh-CN",
   base: "/learn/",
   srcDir: "src",
-  // INDEX.md 为题解/面经手工索引页，URL 与 README 转成的 index.md 冲突且被 sidebar 替代（leetcode 原配置同款排除）
+  // INDEX.md 为题解/面经手工索引页，URL 与 README 转成的 index.md 冲突（leetcode 原配置同款排除）
   srcExclude: ["**/SKILL.md", "**/INDEX.md"],
   outDir: "./dist",
   ignoreDeadLinks: true, // 正文里有指向仓库内非页面文件（.cu/.py 等）的相对链接
@@ -205,19 +163,7 @@ export default defineConfig({
       { text: "Profiling", link: "/profiling/" },
     ],
 
-    sidebar: {
-      "/": [
-        { text: "总览", items: [{ text: "学习地图", link: "/" }, { text: "课程总览", link: "/path" }] },
-        ...sidebarForWeeks(),
-        { text: "专题", items: sidebarForTopics() },
-        { text: "论文精读", items: sidebarForPapers() },
-        {
-          text: "Profiling",
-          items: [{ text: "ncu 训练营", link: "/profiling/" }],
-        },
-      ],
-    },
-
+    // 无左侧边栏：正文加宽由共享 custom.css 的 :not(.has-sidebar) 规则承担
     outline: { level: [2, 3], label: "本页目录" },
 
     search: {

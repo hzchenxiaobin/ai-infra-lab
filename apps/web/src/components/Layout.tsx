@@ -27,7 +27,7 @@ export function Layout() {
   return (
     <div className="min-h-screen text-ink">
       <header className="sticky top-0 z-40 border-b border-line bg-surface/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
           <NavLink to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="size-[18px] rounded-[5px] bg-accent-600" />
             <span className="flex flex-col leading-none">
@@ -80,7 +80,7 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-10">
+      <main className="mx-auto max-w-7xl px-6 py-10">
         <Outlet />
       </main>
     </div>
