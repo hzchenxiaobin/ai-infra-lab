@@ -43,7 +43,7 @@ export function QuestionCard({
   };
 
   return (
-    <div className="rounded-xl border border-line bg-white shadow-soft">
+    <div className="rounded-xl border border-line bg-surface shadow-soft">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
@@ -111,11 +111,11 @@ export function QuestionCard({
               type="button"
               onClick={onDelete}
               disabled={remove.isPending}
-              className="rounded-full px-3 py-1 text-xs text-red-600 transition-colors duration-150 hover:bg-red-50 disabled:opacity-50"
+              className="rounded-full px-3 py-1 text-xs text-accent-400 transition-colors duration-150 hover:bg-accent-600/10 disabled:opacity-50"
             >
               {remove.isPending ? "删除中…" : "删除"}
             </button>
-            {remove.error && <span className="text-xs text-red-600">{remove.error.message}</span>}
+            {remove.error && <span className="text-xs text-accent-400">{remove.error.message}</span>}
           </div>
         </div>
       )}

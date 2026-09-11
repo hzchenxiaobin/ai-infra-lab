@@ -59,7 +59,7 @@ export default function ProblemListPage() {
         {items.length === 0 ? (
           <EmptyBox text="题单成员为空（需先执行 content:sync 导入题目元数据）" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
             {items.map((p) => (
               <ProblemRow key={p.id} problem={p} />
             ))}

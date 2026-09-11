@@ -69,7 +69,7 @@ export default function HistoryPage() {
         ) : sessions.data === undefined ? null : sessions.data.length === 0 ? (
           <EmptyBox text="还没有面试记录" />
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-soft">
+          <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-soft">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-divider text-xs text-muted">
@@ -91,7 +91,7 @@ export default function HistoryPage() {
                       onClick={() =>
                         navigate(s.status === "finished" ? `/report/${s.id}` : `/interview/${s.id}`)
                       }
-                      className="cursor-pointer border-b border-divider transition-colors duration-150 last:border-0 hover:bg-[#fafbfc]"
+                      className="cursor-pointer border-b border-divider transition-colors duration-150 last:border-0 hover:bg-page"
                     >
                       <td className="whitespace-nowrap px-5 py-3 text-muted">
                         {formatDateTime(s.createdAt)}
@@ -109,7 +109,7 @@ export default function HistoryPage() {
                       </td>
                       <td className="px-5 py-3">
                         {s.status === "finished" ? (
-                          <span className="rounded-full bg-white px-2 py-0.5 text-xs text-muted ring-1 ring-inset ring-line">
+                          <span className="rounded-full bg-surface px-2 py-0.5 text-xs text-muted ring-1 ring-inset ring-line">
                             已完成
                           </span>
                         ) : (

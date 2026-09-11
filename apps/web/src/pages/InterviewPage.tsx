@@ -126,7 +126,7 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
       ))}
       {reply.isPending && (
         <div className="flex justify-start">
-          <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-white px-4 py-2.5 text-sm text-muted shadow-soft">
+          <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-4 py-2.5 text-sm text-muted shadow-soft">
             <span className="size-1.5 animate-pulse-dot rounded-full bg-accent-600" />
             面试官正在输入…
           </div>
@@ -201,7 +201,7 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
           />
         </div>
         {finish.error && (
-          <p className="mt-2 rounded-lg border border-red-100 bg-red-50/60 px-3 py-2 text-sm text-red-600">
+          <p className="mt-2 rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
             结束失败：{finish.error.message}
           </p>
         )}
@@ -329,7 +329,7 @@ function CodeEditorCard({
                   disabled={!judgeData[l].available}
                   className={`rounded-full px-2.5 py-0.5 text-xs transition-colors duration-150 ${
                     language === l
-                      ? "bg-ink font-medium text-white"
+                      ? "bg-ink font-medium text-page"
                       : judgeData[l].available
                         ? "text-muted hover:text-ink"
                         : "cursor-not-allowed text-faint"
@@ -351,7 +351,7 @@ function CodeEditorCard({
         onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
         spellCheck={false}
         placeholder="在这里编写你的代码…"
-        className="h-[45vh] w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-white/90 outline-none"
+        className="h-[45vh] w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-page/90 outline-none"
       />
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-muted">思路讨论 / 追问回答请用左侧输入框</span>
@@ -371,7 +371,7 @@ function CodeEditorCard({
         </div>
       </div>
       {submitJudge.error && (
-        <p className="mt-2 text-xs text-red-600">{submitJudge.error.message}</p>
+        <p className="mt-2 text-xs text-accent-400">{submitJudge.error.message}</p>
       )}
       {result.data && (
         <div className="mt-3 border-t border-line pt-3">

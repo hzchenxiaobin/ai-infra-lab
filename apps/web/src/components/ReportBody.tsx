@@ -104,7 +104,7 @@ function ReferenceAnswer({
   return (
     <>
       {askedQuestions.length > 0 ? (
-        <div className="mt-2 space-y-2 rounded-md border border-line bg-white p-2.5">
+        <div className="mt-2 space-y-2 rounded-md border border-line bg-surface p-2.5">
           <div className="text-xs font-medium text-muted">原问题</div>
           {askedQuestions.map((q, j) => (
             <div key={j}>
@@ -117,7 +117,7 @@ function ReferenceAnswer({
         </div>
       ) : (
         question && (
-          <div className="mt-2 rounded-md border border-line bg-white p-2.5">
+          <div className="mt-2 rounded-md border border-line bg-surface p-2.5">
             <div className="mb-1 text-xs font-medium text-muted">原问题</div>
             <Markdown
               text={question.content || question.title}
@@ -133,9 +133,9 @@ function ReferenceAnswer({
 
 const LABEL_STYLES: Record<string, string> = {
   诊断: "bg-accent-50 text-accent-700 ring-accent-600/20",
-  改进建议: "bg-white text-muted ring-line",
-  参考答案: "bg-white text-muted ring-line",
-  要点对照: "bg-white text-muted ring-line",
+  改进建议: "bg-surface text-muted ring-line",
+  参考答案: "bg-surface text-muted ring-line",
+  要点对照: "bg-surface text-muted ring-line",
 };
 
 /** 「准确性 C · 深度 C」形式的维度评分行；全部片段都匹配才认为是维度行 */
@@ -245,7 +245,7 @@ function QuestionCard({
             return (
               <div key={i} className="rounded-lg bg-page p-3">
                 <span
-                  className={`inline-block rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset ${LABEL_STYLES[b.label] ?? "bg-white text-muted ring-line"}`}
+                  className={`inline-block rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset ${LABEL_STYLES[b.label] ?? "bg-surface text-muted ring-line"}`}
                 >
                   {b.label}
                 </span>

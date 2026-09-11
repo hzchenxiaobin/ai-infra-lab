@@ -35,7 +35,7 @@ export default function ContestPage() {
               <Link
                 key={s.session}
                 to={`/problems/contest/${s.session}`}
-                className="group rounded-xl border border-line bg-white p-4 shadow-soft transition-colors duration-150 hover:border-faint"
+                className="group rounded-xl border border-line bg-surface p-4 shadow-soft transition-colors duration-150 hover:border-faint"
               >
                 <div className="flex items-baseline justify-between">
                   <span className="text-[15px] font-semibold transition-colors duration-150 group-hover:text-accent-600">

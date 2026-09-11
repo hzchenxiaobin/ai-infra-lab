@@ -35,11 +35,11 @@ export function ProblemRow({
   );
 
   return (
-    <div className="group flex items-center gap-4 px-5 py-3 transition-colors duration-150 hover:bg-[#fafbfc]">
+    <div className="group flex items-center gap-4 px-5 py-3 transition-colors duration-150 hover:bg-page">
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           {prefix ? (
-            <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[11px] font-medium text-white">
+            <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[11px] font-medium text-page">
               {prefix}
             </span>
           ) : (

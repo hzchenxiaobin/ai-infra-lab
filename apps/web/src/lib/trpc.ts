@@ -4,18 +4,29 @@ import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import type { AppRouter } from "@ailab/server";
 import superjson from "superjson";
 
+// auth.me 是登录态探测查询（登录/注册页挂载即发），匿名 401 属预期，
+// 不触发全局跳转
+const isAuthMeProbe = (error: unknown) =>
+  (error as { data?: { path?: string } }).data?.path === "auth.me";
+
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     // dev/web.md §3：认证后的 401 全局跳 /login
     onError: (error) => {
-      if ((error as { data?: { code?: string } }).data?.code === "UNAUTHORIZED") {
+      if (
+        !isAuthMeProbe(error) &&
+        (error as { data?: { code?: string } }).data?.code === "UNAUTHORIZED"
+      ) {
         window.location.href = "/login";
       }
     },
   }),
   mutationCache: new MutationCache({
     onError: (error) => {
-      if ((error as { data?: { code?: string } }).data?.code === "UNAUTHORIZED") {
+      if (
+        !isAuthMeProbe(error) &&
+        (error as { data?: { code?: string } }).data?.code === "UNAUTHORIZED"
+      ) {
         window.location.href = "/login";
       }
     },

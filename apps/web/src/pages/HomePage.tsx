@@ -106,7 +106,7 @@ export default function HomePage() {
 
       {/* 组卷卡片 */}
       <section
-        className="animate-fade-up rounded-2xl border border-line bg-white p-8 shadow-soft"
+        className="animate-fade-up rounded-2xl border border-line bg-surface p-8 shadow-soft"
         style={{ animationDelay: "0.08s" }}
       >
         {/* 01 选择方向（选中考察范围后禁用） */}
@@ -129,7 +129,7 @@ export default function HomePage() {
                 className={`relative rounded-xl border p-4 text-left transition-all duration-150 ${
                   active
                     ? "border-accent-600 bg-accent-50 ring-1 ring-inset ring-accent-600/40"
-                    : "border-line bg-white hover:border-faint"
+                    : "border-line bg-surface hover:border-faint"
                 }`}
               >
                 <div className="text-sm font-semibold">{CATEGORY_LABELS[c]}</div>
@@ -238,7 +238,7 @@ export default function HomePage() {
                     : { categories: selected, count },
                 )
               }
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent-600 px-7 text-sm font-semibold text-white transition-colors duration-150 hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-[#eceff3] disabled:text-[#b3bccb]"
+              className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent-600 px-7 text-sm font-semibold text-white transition-colors duration-150 hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-divider disabled:text-faint"
             >
               {start.isPending ? "创建中…" : "开始面试"}
               <ArrowIcon className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
@@ -247,7 +247,7 @@ export default function HomePage() {
         </div>
 
         {start.error && (
-          <p className="mt-5 rounded-lg border border-red-100 bg-red-50/60 px-3 py-2 text-sm text-red-600">
+          <p className="mt-5 rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
             {start.error.message}
           </p>
         )}
@@ -255,7 +255,7 @@ export default function HomePage() {
 
       {/* 数据统计带 */}
       <section
-        className="animate-fade-up grid grid-cols-3 divide-x divide-divider rounded-2xl border border-line bg-white shadow-soft"
+        className="animate-fade-up grid grid-cols-3 divide-x divide-divider rounded-2xl border border-line bg-surface shadow-soft"
         style={{ animationDelay: "0.16s" }}
       >
         {[
@@ -294,7 +294,7 @@ export default function HomePage() {
         ) : sessions.data === undefined ? null : sessions.data.length === 0 ? (
           <EmptyBox text="还没有面试记录，勾选方向开始第一场吧" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
             {sessions.data.slice(0, 5).map((s, i) => (
               <button
                 key={s.id}
@@ -302,7 +302,7 @@ export default function HomePage() {
                 onClick={() =>
                   navigate(s.status === "finished" ? `/report/${s.id}` : `/interview/${s.id}`)
                 }
-                className="group flex w-full items-center gap-5 px-6 py-4 text-left transition-colors duration-150 hover:bg-[#fafbfc]"
+                className="group flex w-full items-center gap-5 px-6 py-4 text-left transition-colors duration-150 hover:bg-page"
               >
                 <span className="w-6 shrink-0 text-sm font-semibold text-faint transition-colors duration-150 group-hover:text-accent-600">
                   {String(i + 1).padStart(2, "0")}

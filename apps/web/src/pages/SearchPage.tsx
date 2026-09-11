@@ -50,7 +50,7 @@ export default function SearchPage() {
               type="button"
               onClick={() => setType(t)}
               className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
-                type === t ? "bg-ink font-medium text-white" : "text-muted hover:text-ink"
+                type === t ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
               }`}
             >
               {t === "all" ? "全部" : TYPE_LABELS[t]}
@@ -73,12 +73,12 @@ export default function SearchPage() {
             <div className="text-xs text-muted">
               「{q}」共 {result.data?.total} 条结果
             </div>
-            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
               {result.data?.items.map((item) => (
                 <a
                   key={item.id}
                   href={item.url}
-                  className="block px-5 py-3.5 transition-colors duration-150 hover:bg-[#fafbfc]"
+                  className="block px-5 py-3.5 transition-colors duration-150 hover:bg-page"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-md bg-page px-1.5 py-0.5 text-[11px] text-muted">

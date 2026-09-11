@@ -4,7 +4,7 @@ import { DIFFICULTY_LABELS } from "../lib/format";
 
 export function Card({ className = "", children }: { className?: string; children: ReactNode }) {
   return (
-    <div className={`rounded-2xl border border-line bg-white p-4 shadow-soft ${className}`}>
+    <div className={`rounded-2xl border border-line bg-surface p-4 shadow-soft ${className}`}>
       {children}
     </div>
   );
@@ -13,11 +13,11 @@ export function Card({ className = "", children }: { className?: string; childre
 type ButtonVariant = "primary" | "secondary" | "danger";
 
 const BUTTON_STYLES: Record<ButtonVariant, string> = {
-  primary: "bg-accent-600 text-white hover:bg-accent-700 disabled:bg-[#eceff3] disabled:text-[#b3bccb]",
+  primary: "bg-accent-600 text-white hover:bg-accent-700 disabled:bg-divider disabled:text-faint",
   secondary:
-    "border border-line bg-white text-ink shadow-xs hover:bg-page disabled:text-muted disabled:hover:bg-white",
+    "border border-line bg-surface text-ink shadow-xs hover:bg-page disabled:text-muted disabled:hover:bg-surface",
   danger:
-    "border border-red-200 bg-white text-red-600 hover:bg-red-50 disabled:text-red-300 disabled:hover:bg-white",
+    "border border-accent-600/40 bg-surface text-accent-400 hover:bg-accent-600/10 disabled:text-accent-600/40 disabled:hover:bg-surface",
 };
 
 export function Button({
@@ -63,11 +63,11 @@ export function Modal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       onClick={onClose}
     >
       <div
-        className={`max-h-[85vh] w-full overflow-y-auto rounded-2xl bg-white p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
+        className={`max-h-[85vh] w-full overflow-y-auto rounded-2xl bg-surface p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -99,7 +99,7 @@ export function Loading({ text = "加载中…" }: { text?: string }) {
 export function ErrorBox({ error }: { error: unknown }) {
   const message = error instanceof Error ? error.message : String(error);
   return (
-    <div className="rounded-lg border border-red-100 bg-red-50/60 px-4 py-3 text-sm text-red-600">
+    <div className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-4 py-3 text-sm text-accent-400">
       出错了：{message}
     </div>
   );
@@ -115,15 +115,15 @@ export function EmptyBox({ text }: { text: string }) {
 
 /* 二值化徽章：A/B 红色描边红字，C/D 及其余一律灰系 */
 const GRADE_BADGE_STYLES: Record<string, string> = {
-  A: "bg-white text-accent-600 ring-accent-600/40",
-  B: "bg-white text-accent-600 ring-accent-600/40",
+  A: "bg-surface text-accent-600 ring-accent-600/40",
+  B: "bg-surface text-accent-600 ring-accent-600/40",
 };
 
 export function GradeBadge({ grade }: { grade: string | null | undefined }) {
   if (!grade) return <span className="text-xs text-faint">—</span>;
   return (
     <span
-      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${GRADE_BADGE_STYLES[grade] ?? "bg-white text-muted ring-faint"}`}
+      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${GRADE_BADGE_STYLES[grade] ?? "bg-surface text-muted ring-faint"}`}
     >
       {grade}
     </span>
@@ -132,7 +132,7 @@ export function GradeBadge({ grade }: { grade: string | null | undefined }) {
 
 export function DifficultyBadge({ difficulty }: { difficulty: string }) {
   return (
-    <span className="rounded-md bg-white px-1.5 py-0.5 text-muted ring-1 ring-inset ring-line">
+    <span className="rounded-md bg-surface px-1.5 py-0.5 text-muted ring-1 ring-inset ring-line">
       {DIFFICULTY_LABELS[difficulty as Difficulty] ?? difficulty}
     </span>
   );

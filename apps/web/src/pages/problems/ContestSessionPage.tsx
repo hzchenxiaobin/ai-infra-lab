@@ -44,7 +44,7 @@ export default function ContestSessionPage() {
         {items.length === 0 ? (
           <EmptyBox text="该场次暂无题目" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
             {items.map((p, i) => (
               <ProblemRow key={p.id} problem={p} prefix={`Q${i + 1}`} />
             ))}

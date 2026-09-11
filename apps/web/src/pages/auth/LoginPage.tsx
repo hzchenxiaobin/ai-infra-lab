@@ -60,7 +60,7 @@ export default function LoginPage() {
           />
         </div>
         {login.error && (
-          <p className="rounded-lg border border-red-100 bg-red-50/60 px-3 py-2 text-sm text-red-600">
+          <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
             {login.error.message}
           </p>
         )}

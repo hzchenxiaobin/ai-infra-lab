@@ -5,7 +5,7 @@ import { queryClient, trpc } from "../lib/trpc";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },
-  { to: "/learn", label: "学习", end: false },
+  { to: "/start", label: "组卷", end: false },
   { to: "/problems/algo", label: "刷题", end: false },
   { to: "/dashboard", label: "个人中心", end: false },
   { to: "/bank", label: "题库", end: false },
@@ -26,7 +26,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen text-ink">
-      <header className="sticky top-0 z-40 border-b border-line bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-line bg-surface/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
           <NavLink to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="size-[18px] rounded-[5px] bg-accent-600" />
@@ -46,7 +46,7 @@ export function Layout() {
                 className={({ isActive }) =>
                   `shrink-0 rounded-full px-4 py-1.5 text-[13px] transition-colors duration-150 ${
                     isActive
-                      ? "bg-ink font-medium text-white"
+                      ? "bg-ink font-medium text-page"
                       : "text-muted hover:text-ink"
                   }`
                 }

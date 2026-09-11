@@ -26,7 +26,8 @@ export default function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route element={<RequireAuth />}>
-            <Route index element={<HomePage />} />
+            <Route index element={<LearnPage />} />
+            <Route path="start" element={<HomePage />} />
             <Route path="learn" element={<LearnPage />} />
             <Route path="learn/path" element={<LearnPage />} />
             <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />

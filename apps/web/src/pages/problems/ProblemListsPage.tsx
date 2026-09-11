@@ -36,7 +36,7 @@ export default function ProblemListsPage() {
               <Link
                 key={l.id}
                 to={`/problems/lists/${l.slug}`}
-                className="group rounded-2xl border border-line bg-white p-5 shadow-soft transition-colors duration-150 hover:border-faint"
+                className="group rounded-2xl border border-line bg-surface p-5 shadow-soft transition-colors duration-150 hover:border-faint"
               >
                 <div className="text-[15px] font-semibold transition-colors duration-150 group-hover:text-accent-600">
                   {l.title}

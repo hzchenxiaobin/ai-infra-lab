@@ -77,7 +77,7 @@ export default function JudgePage() {
   if (problem.isLoading) return <div className="py-20 text-center text-sm text-muted">加载中…</div>;
   if (problem.error) {
     return (
-      <div className="py-20 text-center text-sm text-red-600">
+      <div className="py-20 text-center text-sm text-accent-400">
         {problem.error.message}（<Link to="/problems/algo" className="underline">返回题库</Link>）
       </div>
     );
@@ -164,7 +164,7 @@ export default function JudgePage() {
                     disabled={!data[l].available}
                     className={`rounded-full px-3 py-1 text-xs transition-colors duration-150 ${
                       language === l
-                        ? "bg-ink font-medium text-white"
+                        ? "bg-ink font-medium text-page"
                         : data[l].available
                           ? "text-muted hover:text-ink"
                           : "cursor-not-allowed text-faint"
@@ -183,7 +183,7 @@ export default function JudgePage() {
               value={code[language]}
               onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
               spellCheck={false}
-              className="h-80 w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-white/90 outline-none"
+              className="h-80 w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-page/90 outline-none"
             />
             <div className="mt-3 flex items-center gap-3">
               <button
@@ -195,7 +195,7 @@ export default function JudgePage() {
                 {running ? "评测中…" : "提交评测"}
               </button>
               {running && <span className="text-xs text-muted">已入队，等待评测完成…</span>}
-              {submit.error && <span className="text-xs text-red-600">{submit.error.message}</span>}
+              {submit.error && <span className="text-xs text-accent-400">{submit.error.message}</span>}
             </div>
           </Card>
 

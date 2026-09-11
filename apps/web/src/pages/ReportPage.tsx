@@ -95,7 +95,7 @@ function ReportView({ sessionId }: { sessionId: number }) {
             type="button"
             onClick={() => setTab(key)}
             className={`rounded-full px-4 py-1.5 text-sm transition-colors duration-150 ${
-              tab === key ? "bg-ink font-medium text-white" : "text-muted hover:text-ink"
+              tab === key ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
             }`}
           >
             {label}

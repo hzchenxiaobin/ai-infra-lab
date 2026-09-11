@@ -90,9 +90,9 @@ export function ImportModal({ onClose }: { onClose: () => void }) {
           placeholder={PLACEHOLDER}
           className="input w-full font-mono text-xs"
         />
-        {error && <p className="rounded-lg border border-red-100 bg-red-50/60 px-3 py-2 text-sm text-red-600">{error}</p>}
+        {error && <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">{error}</p>}
         {bulkImport.error && (
-          <p className="rounded-lg border border-red-100 bg-red-50/60 px-3 py-2 text-sm text-red-600">
+          <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
             导入失败：{bulkImport.error.message}
           </p>
         )}

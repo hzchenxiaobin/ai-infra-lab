@@ -101,7 +101,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
               to={`/problems/${p}`}
               replace
               className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
-                partition === p ? "bg-ink font-medium text-white" : "text-muted hover:text-ink"
+                partition === p ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
               }`}
             >
               {PARTITIONS[p].label}
@@ -203,7 +203,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             }}
             className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
               knowledgePoint === ""
-                ? "bg-ink font-medium text-white"
+                ? "bg-ink font-medium text-page"
                 : "bg-divider text-muted hover:text-ink"
             }`}
           >
@@ -220,7 +220,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
               }}
               className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
                 knowledgePoint === d.slug
-                  ? "bg-ink font-medium text-white"
+                  ? "bg-ink font-medium text-page"
                   : "bg-divider text-muted hover:text-ink"
               }`}
             >
@@ -255,7 +255,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           <EmptyBox text="没有符合条件的题目" />
         ) : (
           <>
-            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
               {list.data.items.map((p) => (
                 <ProblemRow key={p.id} problem={p} />
               ))}

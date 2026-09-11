@@ -91,7 +91,7 @@ export default function BankPage() {
       </section>
 
       {notice && (
-        <div className="animate-fade-up rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink shadow-soft">
+        <div className="animate-fade-up rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink shadow-soft">
           {notice}
         </div>
       )}
@@ -111,7 +111,7 @@ export default function BankPage() {
                 setPage(1);
               }}
               className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
-                category === c ? "bg-ink font-medium text-white" : "text-muted hover:text-ink"
+                category === c ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
               }`}
             >
               {c === "all" ? "全部" : CATEGORY_LABELS[c]}

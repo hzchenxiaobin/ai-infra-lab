@@ -6,7 +6,7 @@ import { EmptyBox, ErrorBox, Loading } from "../../components/ui";
 // 正文阅读在 docs 站（职责切分红线）：点击标题跳 contents.url，web 只做导航 + 进度标记。
 
 const STATUS_STYLES: Record<string, string> = {
-  unseen: "border-line bg-white",
+  unseen: "border-line bg-surface",
   seen: "border-accent-600/40 bg-accent-50",
   mastered: "border-accent-600 bg-accent-50",
 };
@@ -49,7 +49,7 @@ export default function LearnPage() {
           {weeks.map((w) => (
             <div
               key={w.week}
-              className="rounded-2xl border border-line bg-white p-5 shadow-soft"
+              className="rounded-2xl border border-line bg-surface p-5 shadow-soft"
             >
               <div className="mb-3 flex items-baseline justify-between gap-3">
                 <div className="min-w-0">
@@ -95,7 +95,7 @@ export default function LearnPage() {
               <a
                 key={t.slug}
                 href={t.url}
-                className="group rounded-xl border border-line bg-white p-4 shadow-soft transition-colors duration-150 hover:border-faint"
+                className="group rounded-xl border border-line bg-surface p-4 shadow-soft transition-colors duration-150 hover:border-faint"
               >
                 <div className="truncate text-sm font-semibold transition-colors duration-150 group-hover:text-accent-600">
                   {t.title}
@@ -121,12 +121,12 @@ export default function LearnPage() {
         {papers.length === 0 ? (
           <EmptyBox text="暂无论文内容" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
+          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
             {papers.map((p) => (
               <a
                 key={p.id}
                 href={p.url}
-                className="block px-5 py-3 text-[15px] transition-colors duration-150 hover:bg-[#fafbfc] hover:text-accent-600"
+                className="block px-5 py-3 text-[15px] transition-colors duration-150 hover:bg-page hover:text-accent-600"
               >
                 {p.title}
               </a>
