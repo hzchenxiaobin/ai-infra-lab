@@ -62,6 +62,7 @@ export default defineConfig({
   outDir: "./dist",
   ignoreDeadLinks: true, // 正文里有指向仓库内非页面文件（.cu/.py 等）的相对链接
   lastUpdated: false,
+  appearance: "dark", // 默认暗色（对齐主站），用户仍可切换
   buildConcurrency: 8,
 
   head: [

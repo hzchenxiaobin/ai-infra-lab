@@ -43,6 +43,7 @@ export default defineConfig({
   outDir: "./dist",
   ignoreDeadLinks: true, // 正文里有指向站外仓库与 .cu 源码的链接
   lastUpdated: false,
+  appearance: "dark", // 默认暗色（对齐主站），用户仍可切换
   buildConcurrency: 8,
 
   head: [

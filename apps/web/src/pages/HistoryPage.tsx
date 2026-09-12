@@ -11,6 +11,8 @@ import {
   MicroLabel,
   PageHeader,
   ProgressBar,
+  SectionTitle,
+  StatusPill,
 } from "../components/ui";
 import { durationMinutes, formatDateTime, formatShortDate } from "../lib/format";
 
@@ -31,9 +33,7 @@ export default function HistoryPage() {
       {/* 方向平均分 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
         <Card className="p-6">
-          <h3 className="mb-4 text-sm font-medium text-muted">
-            方向平均分（A=4 / B=3 / C=2 / D=1）
-          </h3>
+          <SectionTitle title="方向平均分" description="A=4 / B=3 / C=2 / D=1" className="mb-4" />
           {stats.isLoading ? (
             <Loading />
           ) : stats.error ? (
@@ -47,7 +47,7 @@ export default function HistoryPage() {
       {/* 近 10 场趋势 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.16s" }}>
         <Card className="p-6">
-          <h3 className="mb-4 text-sm font-medium text-muted">近 10 场趋势</h3>
+          <SectionTitle title="近 10 场趋势" className="mb-4" />
           {stats.isLoading ? (
             <Loading />
           ) : stats.error ? (
@@ -109,14 +109,9 @@ export default function HistoryPage() {
                       </td>
                       <td className="px-5 py-3">
                         {s.status === "finished" ? (
-                          <span className="rounded-full bg-surface px-2 py-0.5 text-xs text-muted ring-1 ring-inset ring-line">
-                            已完成
-                          </span>
+                          <StatusPill variant="done">已完成</StatusPill>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-100 px-2.5 py-0.5 text-xs font-medium text-accent-600">
-                            <span className="size-1.5 animate-pulse-dot rounded-full bg-accent-600" />
-                            进行中
-                          </span>
+                          <StatusPill variant="active">进行中</StatusPill>
                         )}
                       </td>
                     </tr>

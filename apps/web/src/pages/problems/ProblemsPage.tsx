@@ -91,30 +91,33 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
       {/* 标题区 */}
       <PageHeader label="Problems · 刷题" title={meta.title} description={meta.desc} />
 
-      {/* 分区切换 + 筛选 */}
+      {/* 分区切换 + 筛选（分区一行 / select 组一行 / 搜索+统计一行） */}
       <section
-        className="flex animate-fade-up flex-wrap items-center gap-3"
+        className="animate-fade-up space-y-3"
         style={{ animationDelay: "0.08s" }}
       >
-        <div className={SEGMENTED_CLASS}>
-          {(Object.keys(PARTITIONS) as Array<keyof typeof PARTITIONS>).map((p) => (
-            <Link
-              key={p}
-              to={`/problems/${p}`}
-              replace
-              className={`rounded-full px-3 py-1 text-sm ${segmentedItemClass(partition === p)}`}
-            >
-              {PARTITIONS[p].label}
-            </Link>
-          ))}
+        <div className="flex">
+          <div className={SEGMENTED_CLASS}>
+            {(Object.keys(PARTITIONS) as Array<keyof typeof PARTITIONS>).map((p) => (
+              <Link
+                key={p}
+                to={`/problems/${p}`}
+                replace
+                className={`rounded-full px-3 py-1 text-sm ${segmentedItemClass(partition === p)}`}
+              >
+                {PARTITIONS[p].label}
+              </Link>
+            ))}
+          </div>
         </div>
+        <div className="flex flex-wrap items-center gap-3">
         <select
           value={difficulty}
           onChange={(e) => {
             setDifficulty(e.target.value as "all" | Difficulty);
             setPage(1);
           }}
-          className="input"
+          className="input w-full sm:w-44"
         >
           <option value="all">全部难度</option>
           {DIFFICULTIES.map((d) => (
@@ -129,7 +132,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             setSolved(e.target.value as "all" | "ac" | "unac");
             setPage(1);
           }}
-          className="input"
+          className="input w-full sm:w-44"
         >
           <option value="all">全部状态</option>
           <option value="ac">已 AC</option>
@@ -141,7 +144,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             setTag(e.target.value);
             setPage(1);
           }}
-          className="input max-w-44"
+          className="input w-full sm:w-44"
         >
           <option value="">全部标签</option>
           {facets.data?.tags.map((t) => (
@@ -156,7 +159,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             setKnowledgePoint(e.target.value);
             setPage(1);
           }}
-          className="input max-w-44"
+          className="input w-full sm:w-44"
         >
           <option value="">全部知识点</option>
           {facets.data?.knowledgePoints.map((k) => (
@@ -171,7 +174,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             setJudgeType(e.target.value as "all" | JudgeType);
             setPage(1);
           }}
-          className="input"
+          className="input w-full sm:w-44"
         >
           <option value="all">全部评测方式</option>
           {JUDGE_TYPES.map((j) => (
@@ -180,55 +183,52 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             </option>
           ))}
         </select>
-        <input
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="搜索标题…"
-          className="input w-48"
-        />
-        <span className="ml-auto text-xs text-muted">
-          共 {list.data?.total ?? "…"} 题 · 已 AC {acTotal.data?.total ?? "…"}
-        </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="搜索标题…"
+            className="input w-full sm:w-64"
+          />
+          <span className="text-xs text-muted sm:ml-auto">
+            共 {list.data?.total ?? "…"} 题 · 已 AC {acTotal.data?.total ?? "…"}
+          </span>
+        </div>
       </section>
 
       {/* GPU 分区：知识领域 A–L 快捷分组（点击即按领域知识点筛选）；算法分区：题单/周赛入口 */}
       {partition === "gpu" ? (
-        <section className="flex animate-fade-up flex-wrap items-center gap-1.5" style={{ animationDelay: "0.12s" }}>
+        <section className="flex animate-fade-up flex-wrap items-center gap-2" style={{ animationDelay: "0.12s" }}>
           <span className="mr-1 text-xs font-medium text-muted">知识领域</span>
-          <button
-            type="button"
-            onClick={() => {
-              setKnowledgePoint("");
-              setPage(1);
-            }}
-            className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
-              knowledgePoint === ""
-                ? "bg-ink font-medium text-page"
-                : "bg-divider text-muted hover:text-ink"
-            }`}
-          >
-            全部
-          </button>
-          {GPU_DOMAINS.map((d) => (
+          <div className={`${SEGMENTED_CLASS} flex-wrap`}>
             <button
-              key={d.letter}
               type="button"
-              title={d.name}
               onClick={() => {
-                setKnowledgePoint(knowledgePoint === d.slug ? "" : d.slug);
+                setKnowledgePoint("");
                 setPage(1);
               }}
-              className={`rounded-full px-2.5 py-1 text-xs transition-colors duration-150 ${
-                knowledgePoint === d.slug
-                  ? "bg-ink font-medium text-page"
-                  : "bg-divider text-muted hover:text-ink"
-              }`}
+              className={`rounded-full px-2.5 py-1 text-xs ${segmentedItemClass(knowledgePoint === "")}`}
             >
-              {d.letter}
+              全部
             </button>
-          ))}
+            {GPU_DOMAINS.map((d) => (
+              <button
+                key={d.letter}
+                type="button"
+                title={d.name}
+                onClick={() => {
+                  setKnowledgePoint(knowledgePoint === d.slug ? "" : d.slug);
+                  setPage(1);
+                }}
+                className={`rounded-full px-2.5 py-1 text-xs ${segmentedItemClass(knowledgePoint === d.slug)}`}
+              >
+                {d.letter}
+              </button>
+            ))}
+          </div>
           {knowledgePoint && (
-            <span className="ml-2 text-xs text-faint">
+            <span className="ml-1 text-xs text-faint">
               {GPU_DOMAINS.find((d) => d.slug === knowledgePoint)?.name ?? knowledgePoint}
             </span>
           )}
@@ -236,12 +236,20 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
       ) : (
         <section className="flex animate-fade-up flex-wrap items-center gap-2" style={{ animationDelay: "0.12s" }}>
           <span className="mr-1 text-xs font-medium text-muted">专题导航</span>
-          <Link to="/problems/lists" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
-            题单
-          </Link>
-          <Link to="/problems/contest" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
-            周赛
-          </Link>
+          <div className={SEGMENTED_CLASS}>
+            <Link
+              to="/problems/lists"
+              className={`rounded-full px-3 py-1 text-xs ${segmentedItemClass(false)}`}
+            >
+              题单
+            </Link>
+            <Link
+              to="/problems/contest"
+              className={`rounded-full px-3 py-1 text-xs ${segmentedItemClass(false)}`}
+            >
+              周赛
+            </Link>
+          </div>
         </section>
       )}
 

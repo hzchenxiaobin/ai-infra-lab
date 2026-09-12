@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, trpc, type LearnOverviewData } from "../../lib/trpc";
 import {
+  Card,
   EmptyBox,
   ErrorBox,
   ListCard,
@@ -112,17 +113,14 @@ export default function LearnPage() {
               const w = weekByNo.get(no);
               if (!w) return null;
               return (
-                <div
-                  key={w.week}
-                  className="rounded-2xl border border-line bg-surface p-5 shadow-soft"
-                >
+                <Card key={w.week}>
                   <div className="flex items-baseline gap-3">
                     <span className="shrink-0 font-mono text-sm font-bold text-accent-600">
                       W{w.week}→
                     </span>
                     <a
                       href={w.url}
-                      className="min-w-0 text-[15px] font-semibold transition-colors duration-150 hover:text-accent-600"
+                      className="min-w-0 text-base font-semibold transition-colors duration-150 hover:text-accent-600"
                     >
                       {w.title.replace(/^Week\s*\d+\s*[:：]?\s*/i, "")}
                     </a>
@@ -135,7 +133,7 @@ export default function LearnPage() {
                       {WEEK_BLURBS[w.week]}
                     </p>
                   )}
-                  <div className="mt-3 grid grid-cols-7 gap-1.5">
+                  <div className="mt-3 grid grid-cols-4 gap-1.5 sm:grid-cols-7">
                     {w.days.map((d) => (
                       <DayCell
                         key={d.id}
@@ -150,7 +148,7 @@ export default function LearnPage() {
                       />
                     ))}
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
@@ -165,14 +163,11 @@ export default function LearnPage() {
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {WEEK_RHYTHM.map((r) => (
-            <div
-              key={r.days}
-              className="rounded-xl border border-line bg-surface p-4 shadow-soft"
-            >
-              <div className="text-[11px] font-semibold text-muted">{r.days}</div>
+            <Card key={r.days}>
+              <div className="text-xs font-semibold text-muted">{r.days}</div>
               <div className="mt-1.5 text-sm font-semibold">{r.title}</div>
-              <div className="mt-1 text-[11px] leading-relaxed text-faint">{r.desc}</div>
-            </div>
+              <div className="mt-1 text-xs leading-relaxed text-faint">{r.desc}</div>
+            </Card>
           ))}
         </div>
       </section>
@@ -188,12 +183,12 @@ export default function LearnPage() {
               <a
                 key={t.slug}
                 href={t.url}
-                className="group rounded-xl border border-line bg-surface p-4 shadow-soft transition-colors duration-150 hover:border-faint"
+                className="group rounded-2xl border border-line bg-surface p-5 shadow-soft transition-colors duration-150 hover:border-faint"
               >
                 <div className="truncate text-sm font-semibold transition-colors duration-150 group-hover:text-accent-600">
                   {t.title}
                 </div>
-                <div className="mt-1 text-[11px] text-muted">
+                <div className="mt-1 text-xs text-muted">
                   {t.slug} · {t.seenDays}/{t.totalDays} 天已学
                 </div>
                 <ProgressBar
@@ -218,7 +213,7 @@ export default function LearnPage() {
               <a
                 key={p.id}
                 href={p.url}
-                className="block px-5 py-3 text-[15px] transition-colors duration-150 hover:bg-page hover:text-accent-600"
+                className="block px-5 py-3 text-base font-semibold transition-colors duration-150 hover:bg-page hover:text-accent-600"
               >
                 {p.title}
               </a>
@@ -251,7 +246,7 @@ function DayCell({
         <div className={`text-xs font-semibold ${day.status === "unseen" ? "text-muted" : "text-accent-600"}`}>
           {day.status === "mastered" ? "✓" : `D${day.day}`}
         </div>
-        <div className="truncate text-[10px] text-faint">{day.title.replace(/^Day\s*\d+[：:]?\s*/, "")}</div>
+        <div className="truncate text-xs text-faint">{day.title.replace(/^Day\s*\d+[：:]?\s*/, "")}</div>
       </a>
       {day.status !== "mastered" && (
         <button
@@ -259,7 +254,7 @@ function DayCell({
           title={label}
           disabled={marking}
           onClick={onMark}
-          className="absolute -top-1.5 -right-1.5 hidden size-4 place-items-center rounded-full bg-accent-600 text-[9px] font-bold text-white shadow-xs group-hover:grid"
+          className="absolute -top-1.5 -right-1.5 hidden size-4 place-items-center rounded-full bg-accent-600 text-xs font-bold text-white shadow-xs group-hover:grid"
         >
           ✓
         </button>

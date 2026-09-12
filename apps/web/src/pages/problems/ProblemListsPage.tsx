@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { trpc } from "../../lib/trpc";
-import { EmptyBox, ErrorBox, Loading, PageHeader } from "../../components/ui";
+import { Card, EmptyBox, ErrorBox, Loading, PageHeader } from "../../components/ui";
 
 // ---------------------------------------------------------------------------
 // 题单索引（/problems/lists）：hot-interview / 10 周计划等题单卡片。
@@ -29,16 +29,13 @@ export default function ProblemListsPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {lists.data.map((l) => (
-              <Link
-                key={l.id}
-                to={`/problems/lists/${l.slug}`}
-                className="group rounded-2xl border border-line bg-surface p-5 shadow-soft transition-colors duration-150 hover:border-faint"
-              >
-                <div className="text-[15px] font-semibold transition-colors duration-150 group-hover:text-accent-600">
-                  {l.title}
-                </div>
-                <div className="mt-2 text-xs text-muted">{l.problemCount} 道题</div>
-                <div className="mt-3 text-xs text-faint">点击进入题单 →</div>
+              <Link key={l.id} to={`/problems/lists/${l.slug}`} className="group">
+                <Card className="h-full transition-colors duration-150 group-hover:border-faint">
+                  <div className="text-base font-semibold transition-colors duration-150 group-hover:text-accent-600">
+                    {l.title}
+                  </div>
+                  <div className="mt-2 text-xs text-muted">{l.problemCount} 道题</div>
+                </Card>
               </Link>
             ))}
           </div>

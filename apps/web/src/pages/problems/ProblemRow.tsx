@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { queryClient, trpc } from "../../lib/trpc";
-import { Button, DifficultyBadge } from "../../components/ui";
+import { Button, Chip, DifficultyBadge, StatusPill } from "../../components/ui";
 
 // ---------------------------------------------------------------------------
 // 题目行（题库/题单/周赛共用）：标题跳 docs 题解页，leetgpu-com 题附外站评测链接，
@@ -39,7 +39,7 @@ export function ProblemRow({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           {prefix ? (
-            <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[11px] font-medium text-page">
+            <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-xs font-medium text-page">
               {prefix}
             </span>
           ) : (
@@ -49,18 +49,16 @@ export function ProblemRow({
           )}
           <a
             href={problem.url}
-            className="text-[15px] font-medium transition-colors duration-150 hover:text-accent-600"
+            className="text-base font-semibold transition-colors duration-150 hover:text-accent-600"
           >
             {problem.title}
           </a>
           <DifficultyBadge difficulty={problem.difficulty} />
           {problem.tags.slice(0, 3).map((t) => (
-            <span key={t} className="rounded-md bg-page px-1.5 py-0.5 text-[11px] text-muted">
-              {t}
-            </span>
+            <Chip key={t}>{t}</Chip>
           ))}
         </div>
-        <div className="mt-1 flex items-center gap-3 text-[11px] text-faint">
+        <div className="mt-1 flex items-center gap-3 text-xs text-faint">
           <span className="font-mono">{problem.id}</span>
           {problem.judgeType === "internal" && (
             <Link
@@ -83,8 +81,8 @@ export function ProblemRow({
         </div>
       </div>
       {problem.ac ? (
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-100 px-3 py-1 text-xs font-medium text-accent-600">
-          ✓ AC
+        <span className="shrink-0">
+          <StatusPill variant="ac">✓ AC</StatusPill>
         </span>
       ) : (
         <Button

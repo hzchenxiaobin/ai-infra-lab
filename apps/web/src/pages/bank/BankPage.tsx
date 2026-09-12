@@ -73,7 +73,7 @@ export default function BankPage() {
               批量导入
             </Button>
             <Button
-              variant="secondary"
+              variant="ghost"
               disabled={seed.isPending}
               onClick={() => {
                 setNotice(null);
@@ -87,7 +87,7 @@ export default function BankPage() {
       />
 
       {notice && (
-        <div className="animate-fade-up rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink shadow-soft">
+        <div className="animate-fade-up rounded-2xl border border-line bg-surface px-4 py-3 text-sm text-ink">
           {notice}
         </div>
       )}

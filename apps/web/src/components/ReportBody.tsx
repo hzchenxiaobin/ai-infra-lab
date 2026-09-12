@@ -1,5 +1,5 @@
 import { CATEGORY_LABELS, type Category, type InterviewMessage, type Question } from "@ailab/contracts";
-import { Card, GradeBadge } from "./ui";
+import { Card, Chip, GradeBadge } from "./ui";
 import { Markdown } from "./Markdown";
 import { MessageBubble } from "./MessageBubble";
 
@@ -81,10 +81,10 @@ function ReferenceAnswer({
           <div key={j}>
             {j < askedQuestions.length && (
               <>
-                <div className="mb-1 text-[11px] text-faint">
+                <div className="mb-1 text-xs text-faint">
                   {j === 0 ? "主问题" : `追问 ${j}`}
                 </div>
-                <MessageBubble role="interviewer" content={askedQuestions[j]} />
+                <MessageBubble role="interviewer" content={askedQuestions[j]} flat />
               </>
             )}
             {j < answers.length && (
@@ -104,24 +104,24 @@ function ReferenceAnswer({
   return (
     <>
       {askedQuestions.length > 0 ? (
-        <div className="mt-2 space-y-2 rounded-md border border-line bg-surface p-2.5">
+        <div className="mt-2 space-y-2 rounded-md border border-line p-2.5">
           <div className="text-xs font-medium text-muted">原问题</div>
           {askedQuestions.map((q, j) => (
             <div key={j}>
-              <div className="mb-1 mt-1 text-[11px] text-faint first:mt-0">
+              <div className="mb-1 mt-1 text-xs text-faint first:mt-0">
                 {j === 0 ? "主问题" : `追问 ${j}`}
               </div>
-              <MessageBubble role="interviewer" content={q} />
+              <MessageBubble role="interviewer" content={q} flat />
             </div>
           ))}
         </div>
       ) : (
         question && (
-          <div className="mt-2 rounded-md border border-line bg-surface p-2.5">
+          <div className="mt-2 rounded-md border border-line p-2.5">
             <div className="mb-1 text-xs font-medium text-muted">原问题</div>
             <Markdown
               text={question.content || question.title}
-              className="space-y-2 text-[13px] leading-relaxed text-muted"
+              className="space-y-2 text-sm leading-relaxed text-muted"
             />
           </div>
         )
@@ -131,12 +131,8 @@ function ReferenceAnswer({
   );
 }
 
-const LABEL_STYLES: Record<string, string> = {
-  诊断: "bg-accent-50 text-accent-700 ring-accent-600/20",
-  改进建议: "bg-surface text-muted ring-line",
-  参考答案: "bg-surface text-muted ring-line",
-  要点对照: "bg-surface text-muted ring-line",
-};
+/** 「诊断」是报告的核心结论，用 Chip accent 强调；其余标签用默认 Chip */
+const ACCENT_LABELS = new Set(["诊断"]);
 
 /** 「准确性 C · 深度 C」形式的维度评分行；全部片段都匹配才认为是维度行 */
 function parseDims(content: string): { name: string; grade: string }[] | null {
@@ -200,11 +196,7 @@ function QuestionHeading({ heading }: { heading: string }) {
   return (
     <>
       <span>第 {m[1]} 题：{m[2]}</span>
-      {catLabel && (
-        <span className="ml-2 rounded-full bg-divider px-2 py-0.5 align-middle text-xs font-normal text-muted">
-          {catLabel}
-        </span>
-      )}
+      {catLabel && <Chip className="ml-2 align-middle font-normal">{catLabel}</Chip>}
     </>
   );
 }
@@ -230,25 +222,18 @@ function QuestionCard({
             return (
               <div key={i} className="flex flex-wrap gap-1.5">
                 {b.dims.map((d) => (
-                  <span
-                    key={d.name}
-                    className="inline-flex items-center gap-1 rounded-full bg-divider py-0.5 pl-2.5 pr-1 text-xs text-muted"
-                  >
+                  <Chip key={d.name} className="inline-flex items-center gap-1">
                     {d.name}
                     <GradeBadge grade={d.grade} />
-                  </span>
+                  </Chip>
                 ))}
               </div>
             );
           }
           if (b.kind === "labeled") {
             return (
-              <div key={i} className="rounded-lg bg-page p-3">
-                <span
-                  className={`inline-block rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset ${LABEL_STYLES[b.label] ?? "bg-surface text-muted ring-line"}`}
-                >
-                  {b.label}
-                </span>
+              <div key={i} className="border-l-2 border-line pl-3">
+                <Chip accent={ACCENT_LABELS.has(b.label)}>{b.label}</Chip>
                 {b.label === "参考答案" ? (
                   <ReferenceAnswer
                     text={b.text}

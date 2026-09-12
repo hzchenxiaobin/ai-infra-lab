@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CONTENT_TYPES, type ContentType } from "@ailab/contracts";
 import { trpc } from "../lib/trpc";
-import { EmptyBox, ErrorBox, ListCard, Loading, PageHeader, SegmentedControl } from "../components/ui";
+import { Chip, EmptyBox, ErrorBox, ListCard, Loading, PageHeader, SegmentedControl } from "../components/ui";
 
 const TYPE_LABELS: Record<ContentType, string> = {
   learn: "学习",
@@ -72,16 +72,14 @@ export default function SearchPage() {
                   className="block px-5 py-3.5 transition-colors duration-150 hover:bg-page"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-md bg-page px-1.5 py-0.5 text-[11px] text-muted">
-                      {TYPE_LABELS[item.type]}
-                    </span>
-                    <span className="text-[15px] font-medium transition-colors duration-150 hover:text-accent-600">
+                    <Chip>{TYPE_LABELS[item.type]}</Chip>
+                    <span className="text-base font-semibold transition-colors duration-150 hover:text-accent-600">
                       {item.title}
                     </span>
                     {item.knowledgePoints.slice(0, 3).map((kp) => (
-                      <span key={kp} className="rounded-md bg-accent-50 px-1.5 py-0.5 text-[11px] text-accent-600">
+                      <Chip key={kp} accent>
                         {kp}
-                      </span>
+                      </Chip>
                     ))}
                   </div>
                   {item.summary && (

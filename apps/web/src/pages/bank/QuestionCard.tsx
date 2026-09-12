@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { CATEGORY_LABELS, judgeProblemIdFromSourceKey } from "@ailab/contracts";
 import { queryClient, trpc, type QuestionListItem } from "../../lib/trpc";
-import { ChevronIcon, DifficultyBadge } from "../../components/ui";
+import { Button, buttonClass, ChevronIcon, Chip, DifficultyBadge } from "../../components/ui";
 import { formatDateTime } from "../../lib/format";
 
 export function QuestionCard({
@@ -27,7 +27,7 @@ export function QuestionCard({
   };
 
   return (
-    <div className="rounded-xl border border-line bg-surface shadow-soft">
+    <div className="rounded-2xl border border-line bg-surface shadow-soft">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
@@ -36,9 +36,7 @@ export function QuestionCard({
         <div className="min-w-0">
           <div className="truncate text-sm font-medium">{question.title}</div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
-            <span className="rounded-md bg-divider px-1.5 py-0.5 text-ink">
-              {CATEGORY_LABELS[question.category]}
-            </span>
+            <Chip>{CATEGORY_LABELS[question.category]}</Chip>
             <DifficultyBadge difficulty={question.difficulty} />
             {question.tags && <span>标签：{question.tags}</span>}
             <span>更新于 {formatDateTime(question.updatedAt)}</span>
@@ -76,29 +74,17 @@ export function QuestionCard({
               // judge 数据源已切 problems（统一 ID）：仅 leetcode 同步题有映射可评测
               const judgeProblemId = judgeProblemIdFromSourceKey(question.sourceKey);
               return judgeProblemId ? (
-                <Link
-                  to={`/judge/${judgeProblemId}`}
-                  className="rounded-full bg-accent-50 px-3 py-1 text-xs text-accent-700 ring-1 ring-inset ring-accent-600/20 transition-colors duration-150 hover:bg-accent-100"
-                >
+                <Link to={`/judge/${judgeProblemId}`} className={buttonClass("secondary", "sm")}>
                   在线评测
                 </Link>
               ) : null;
             })()}
-            <button
-              type="button"
-              onClick={onEdit}
-              className="rounded-full bg-divider px-3 py-1 text-xs text-ink transition-colors duration-150 hover:bg-line"
-            >
+            <Button variant="ghost" size="sm" onClick={onEdit}>
               编辑
-            </button>
-            <button
-              type="button"
-              onClick={onDelete}
-              disabled={remove.isPending}
-              className="rounded-full px-3 py-1 text-xs text-accent-400 transition-colors duration-150 hover:bg-accent-600/10 disabled:opacity-50"
-            >
+            </Button>
+            <Button variant="danger" size="sm" onClick={onDelete} disabled={remove.isPending}>
               {remove.isPending ? "删除中…" : "删除"}
-            </button>
+            </Button>
             {remove.error && <span className="text-xs text-accent-400">{remove.error.message}</span>}
           </div>
         </div>

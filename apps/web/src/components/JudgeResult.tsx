@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import { isJudgeVerdict } from "../lib/judge";
+import { Spinner } from "./ui";
 
 export interface JudgeResultData {
   status: string;
@@ -23,7 +24,7 @@ export function JudgeResultView({ result }: { result: JudgeResultData }) {
   if (status === "pending" || status === "running") {
     return (
       <div className="flex items-center gap-2 text-sm text-muted">
-        <span className="size-3.5 animate-spin rounded-full border-2 border-line border-t-muted" />
+        <Spinner />
         {status === "pending" ? "排队中…" : "评测运行中…"}
       </div>
     );

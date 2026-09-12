@@ -188,7 +188,7 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
                 <Button>查看评估报告 →</Button>
               </Link>
             ) : (
-              <Button variant="danger" disabled={finish.isPending} onClick={confirmFinish}>
+              <Button variant="danger" size="sm" disabled={finish.isPending} onClick={confirmFinish}>
                 {finish.isPending ? "生成报告中…" : "结束本场"}
               </Button>
             )}
@@ -208,7 +208,7 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
                 <span className="text-sm font-semibold">{codeQ.title}</span>
                 <DifficultyBadge difficulty={codeQ.difficulty} />
               </div>
-              <div className="max-h-[45vh] overflow-y-auto pr-1">
+              <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[45vh]">
                 <Markdown
                   text={codeQ.content}
                   className="space-y-2 text-sm leading-relaxed text-ink"
@@ -333,7 +333,7 @@ function CodeEditorCard({
         onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
         spellCheck={false}
         placeholder="在这里编写你的代码…"
-        className="input h-[45vh] w-full resize-y font-mono text-xs leading-relaxed"
+        className="input h-56 w-full resize-y font-mono text-xs leading-relaxed sm:h-[45vh]"
       />
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-muted">思路讨论 / 追问回答请用左侧输入框</span>

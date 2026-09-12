@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { CATEGORIES, DIFFICULTIES, type QuestionInput } from "@ailab/contracts";
 import { queryClient, trpc } from "../../lib/trpc";
-import { Button, InlineError, Modal } from "../../components/ui";
+import { Button, InlineError, Modal, SuccessBox } from "../../components/ui";
 
 const PLACEHOLDER = `[
   {
@@ -95,9 +95,7 @@ export function ImportModal({ onClose }: { onClose: () => void }) {
           <InlineError>导入失败：{bulkImport.error.message}</InlineError>
         )}
         {bulkImport.isSuccess ? (
-          <p className="rounded-lg border border-accent-200 bg-accent-50/60 px-3 py-2 text-sm text-accent-700">
-            成功导入 {bulkImport.data.imported} 题。
-          </p>
+          <SuccessBox>成功导入 {bulkImport.data.imported} 题。</SuccessBox>
         ) : (
           <div className="flex justify-end gap-2">
             <Button variant="secondary" onClick={onClose}>

@@ -28,7 +28,7 @@ const RADAR_MAX_POINTS = 8;
 /** 信号徽标：掌握度三路信号（学习/刷题/面试），null 显示 — */
 function SignalChip({ label, value }: { label: string; value: number | null }) {
   return (
-    <span className="rounded-md bg-page px-1.5 py-0.5 text-[11px] text-muted">
+    <span className="rounded-md bg-page px-1.5 py-0.5 text-xs text-muted">
       {label} {value == null ? "—" : `${Math.round(value * 100)}%`}
     </span>
   );
@@ -136,7 +136,7 @@ export default function DashboardPage() {
       <section className="animate-fade-up grid gap-4 lg:grid-cols-2" style={{ animationDelay: "0.08s" }}>
         <Card className="p-6">
           <div className="flex items-baseline justify-between">
-            <h2 className="text-[15px] font-semibold">学习路径</h2>
+            <h2 className="text-base font-semibold">学习路径</h2>
             <Link
               to="/learn/path"
               className="group inline-flex items-center gap-1 text-xs font-medium text-accent-600 transition-colors duration-150 hover:text-accent-700"
@@ -146,7 +146,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="mt-5 flex items-baseline gap-1">
-            <span className="text-[32px] leading-none font-bold">{learnPct}%</span>
+            <span className="text-3xl font-bold leading-none">{learnPct}%</span>
             <span className="text-xs text-muted">已学</span>
           </div>
           <ProgressBar className="mt-3" size="lg" value={learnPct} />
@@ -158,7 +158,7 @@ export default function DashboardPage() {
 
         <Card className="p-6">
           <div className="flex items-baseline justify-between">
-            <h2 className="text-[15px] font-semibold">刷题统计</h2>
+            <h2 className="text-base font-semibold">刷题统计</h2>
             <span className="text-xs text-muted">
               AC <span className="font-semibold text-accent-600">{practice.ac}</span> / {practice.total}
             </span>
@@ -192,7 +192,7 @@ export default function DashboardPage() {
           </Card>
           <Card className="p-6 lg:col-span-3">
             <div className="mb-4 flex items-baseline justify-between">
-              <h3 className="text-[15px] font-semibold">薄弱知识点</h3>
+              <h3 className="text-base font-semibold">薄弱知识点</h3>
               <span className="text-xs text-muted">三路信号加权（学习 0.2 · 刷题 0.5 · 面试 0.3）</span>
             </div>
             {radarPoints.length === 0 ? (
@@ -255,7 +255,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-[11px] text-faint">统计周期：按天（UTC），每日重置。</p>
+            <p className="mt-4 text-xs text-faint">统计周期：按天（UTC），每日重置。</p>
           </Card>
         )}
       </section>

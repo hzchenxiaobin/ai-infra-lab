@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "../lib/trpc";
-import { BackArrowIcon, Button, Card, DifficultyBadge, SegmentedControl } from "../components/ui";
+import { BackArrowIcon, Button, Card, DifficultyBadge, ErrorBox, Loading, PageHeader, SegmentedControl, buttonClass } from "../components/ui";
 import { JudgeResultView } from "../components/JudgeResult";
 import { POLL_INTERVAL_MS } from "../lib/judge";
 
@@ -57,11 +57,15 @@ export default function JudgePage() {
       </div>
     );
   }
-  if (problem.isLoading) return <div className="py-20 text-center text-sm text-muted">加载中…</div>;
+  if (problem.isLoading) return <Loading text="加载题目…" />;
   if (problem.error) {
     return (
-      <div className="py-20 text-center text-sm text-accent-400">
-        {problem.error.message}（<Link to="/problems/algo" className="underline">返回题库</Link>）
+      <div className="space-y-3">
+        <ErrorBox error={problem.error} />
+        <Link to="/problems/algo" className="inline-flex items-center gap-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
+          <BackArrowIcon className="size-3.5" />
+          返回题库
+        </Link>
       </div>
     );
   }
@@ -82,31 +86,30 @@ export default function JudgePage() {
   const running = submit.isPending || result.data?.status === "pending" || result.data?.status === "running";
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/problems/algo"
-            className="inline-flex items-center gap-1 text-xs text-muted transition-colors duration-150 hover:text-ink"
-          >
-            <BackArrowIcon className="size-3.5" />
-            题库
-          </Link>
-          <h1 className="text-lg font-semibold tracking-tight">
+    <div className="space-y-6">
+      <PageHeader
+        label="Judge · 评测"
+        title={
+          <span className="inline-flex flex-wrap items-center gap-3">
             {data.problem.number > 0 && (
-              <span className="mr-1 font-mono text-sm text-faint">#{data.problem.number}</span>
+              <span className="font-mono text-base font-normal text-faint">#{data.problem.number}</span>
             )}
             {data.problem.title}
-          </h1>
-          <DifficultyBadge difficulty={data.problem.difficulty} />
-        </div>
-        <span className="text-xs text-muted">评测用例为题面示例（LeetCode 不公开完整测试集）</span>
-      </div>
+            <DifficultyBadge difficulty={data.problem.difficulty} />
+          </span>
+        }
+        description="评测用例为题面示例（LeetCode 不公开完整测试集）"
+        actions={
+          <Link to="/problems/algo" className={buttonClass("ghost", "sm")}>
+            返回题库
+          </Link>
+        }
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* 左：示例用例 + 题面入口 */}
         <div className="space-y-4">
-          <Card className="p-5">
+          <Card>
             <div className="mb-2 flex items-center justify-between">
               <span className="text-xs font-medium text-muted">
                 示例用例（{data.examples.length}）
@@ -118,7 +121,7 @@ export default function JudgePage() {
                 题面与完整题解（docs 站）↗
               </a>
             </div>
-            <div className="max-h-[55vh] overflow-y-auto pr-1">
+            <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[55vh]">
               <div className="space-y-2">
                 {data.examples.map((c, i) => (
                   <div key={i} className="rounded-lg bg-page p-2 font-mono text-xs text-ink">
@@ -136,7 +139,7 @@ export default function JudgePage() {
 
         {/* 右：编辑器 + 结果 */}
         <div className="space-y-4">
-          <Card className="p-5">
+          <Card>
             <div className="mb-2 flex items-center justify-between">
               <SegmentedControl
                 value={language}
@@ -172,7 +175,7 @@ export default function JudgePage() {
           </Card>
 
           {result.data && (
-            <Card className="p-5">
+            <Card>
               <JudgeResultView result={result.data} />
             </Card>
           )}

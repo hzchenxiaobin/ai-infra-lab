@@ -27,6 +27,7 @@ export default defineConfig({
   outDir: batching ? `./dist_${batchIndex}` : "./dist",
   ignoreDeadLinks: true,
   lastUpdated: false,
+  appearance: "dark", // 默认暗色（对齐主站），用户仍可切换
   buildConcurrency: 8,
 
   head: [
