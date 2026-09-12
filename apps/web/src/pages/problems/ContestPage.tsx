@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { trpc } from "../../lib/trpc";
-import { EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import { EmptyBox, ErrorBox, Loading, PageHeader } from "../../components/ui";
 
 // ---------------------------------------------------------------------------
 // 周赛列表（/problems/contest）：按场次（新 → 旧）聚合 lc:contest:{场次}q{n} 题解。
@@ -12,17 +12,13 @@ export default function ContestPage() {
 
   return (
     <div className="space-y-10">
-      <section className="animate-fade-up">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-          Problems · 周赛
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">周赛题解</h1>
-        <p className="mt-2 text-sm text-muted">
-          LeetCode 周赛 / 双周赛题目按场次浏览，进度与题库互通。
-        </p>
-      </section>
+      <PageHeader
+        label="Problems · 周赛"
+        title="周赛题解"
+        description="LeetCode 周赛 / 双周赛题目按场次浏览，进度与题库互通。"
+      />
 
-      <section className="animate-fade-up" style={{ animationDelay: "0.16s" }}>
+      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
         {sessions.isLoading ? (
           <Loading />
         ) : sessions.error ? (

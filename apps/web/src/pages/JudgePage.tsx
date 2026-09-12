@@ -2,30 +2,13 @@ import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "../lib/trpc";
-import { Card, DifficultyBadge } from "../components/ui";
+import { BackArrowIcon, Button, Card, DifficultyBadge, SegmentedControl } from "../components/ui";
 import { JudgeResultView } from "../components/JudgeResult";
 import { POLL_INTERVAL_MS } from "../lib/judge";
 
 type Language = "cpp" | "python";
 
 const LANG_LABELS: Record<Language, string> = { cpp: "C++", python: "Python" };
-
-function BackArrowIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M13.5 8h-10" />
-      <path d="M7 4l-4 4 4 4" />
-    </svg>
-  );
-}
 
 export default function JudgePage() {
   const { id } = useParams();
@@ -155,26 +138,17 @@ export default function JudgePage() {
         <div className="space-y-4">
           <Card className="p-5">
             <div className="mb-2 flex items-center justify-between">
-              <div className="flex gap-0.5 rounded-full bg-divider p-1">
-                {(Object.keys(LANG_LABELS) as Language[]).map((l) => (
-                  <button
-                    key={l}
-                    type="button"
-                    onClick={() => setLanguage(l)}
-                    disabled={!data[l].available}
-                    className={`rounded-full px-3 py-1 text-xs transition-colors duration-150 ${
-                      language === l
-                        ? "bg-ink font-medium text-page"
-                        : data[l].available
-                          ? "text-muted hover:text-ink"
-                          : "cursor-not-allowed text-faint"
-                    }`}
-                    title={data[l].available ? undefined : (data[l].reason ?? "")}
-                  >
-                    {LANG_LABELS[l]}
-                  </button>
-                ))}
-              </div>
+              <SegmentedControl
+                value={language}
+                onChange={setLanguage}
+                itemClassName="px-3 py-1 text-xs"
+                options={(Object.keys(LANG_LABELS) as Language[]).map((l) => ({
+                  value: l,
+                  label: LANG_LABELS[l],
+                  disabled: !data[l].available,
+                  title: data[l].available ? undefined : (data[l].reason ?? ""),
+                }))}
+              />
             </div>
             {!langState.available && (
               <div className="mb-2 rounded-lg border border-line bg-page px-3 py-2 text-xs text-muted">{langState.reason}</div>
@@ -183,17 +157,15 @@ export default function JudgePage() {
               value={code[language]}
               onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
               spellCheck={false}
-              className="h-80 w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-page/90 outline-none"
+              className="input h-80 w-full resize-y font-mono text-xs leading-relaxed"
             />
             <div className="mt-3 flex items-center gap-3">
-              <button
-                type="button"
+              <Button
                 onClick={onSubmit}
                 disabled={running || !langState.available || data.examples.length === 0}
-                className="rounded-full bg-accent-600 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-700 disabled:bg-accent-300"
               >
                 {running ? "评测中…" : "提交评测"}
-              </button>
+              </Button>
               {running && <span className="text-xs text-muted">已入队，等待评测完成…</span>}
               {submit.error && <span className="text-xs text-accent-400">{submit.error.message}</span>}
             </div>

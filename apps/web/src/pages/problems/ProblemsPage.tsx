@@ -9,7 +9,15 @@ import {
   type JudgeType,
 } from "@ailab/contracts";
 import { trpc } from "../../lib/trpc";
-import { Button, EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import {
+  Button,
+  EmptyBox,
+  ErrorBox,
+  ListCard,
+  Loading,
+  PageHeader,
+} from "../../components/ui";
+import { SEGMENTED_CLASS, segmentedItemClass } from "../../lib/segmented";
 import { DIFFICULTY_LABELS, JUDGE_TYPE_LABELS } from "../../lib/format";
 import { ProblemRow } from "./ProblemRow";
 
@@ -81,28 +89,20 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-          Problems · 刷题
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">{meta.title}</h1>
-        <p className="mt-2 text-sm text-muted">{meta.desc}</p>
-      </section>
+      <PageHeader label="Problems · 刷题" title={meta.title} description={meta.desc} />
 
       {/* 分区切换 + 筛选 */}
       <section
         className="flex animate-fade-up flex-wrap items-center gap-3"
-        style={{ animationDelay: "0.16s" }}
+        style={{ animationDelay: "0.08s" }}
       >
-        <div className="flex gap-0.5 rounded-full bg-divider p-1">
+        <div className={SEGMENTED_CLASS}>
           {(Object.keys(PARTITIONS) as Array<keyof typeof PARTITIONS>).map((p) => (
             <Link
               key={p}
               to={`/problems/${p}`}
               replace
-              className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
-                partition === p ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
-              }`}
+              className={`rounded-full px-3 py-1 text-sm ${segmentedItemClass(partition === p)}`}
             >
               {PARTITIONS[p].label}
             </Link>
@@ -193,7 +193,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
 
       {/* GPU 分区：知识领域 A–L 快捷分组（点击即按领域知识点筛选）；算法分区：题单/周赛入口 */}
       {partition === "gpu" ? (
-        <section className="flex animate-fade-up flex-wrap items-center gap-1.5" style={{ animationDelay: "0.2s" }}>
+        <section className="flex animate-fade-up flex-wrap items-center gap-1.5" style={{ animationDelay: "0.12s" }}>
           <span className="mr-1 text-xs font-medium text-muted">知识领域</span>
           <button
             type="button"
@@ -234,19 +234,19 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           )}
         </section>
       ) : (
-        <section className="flex animate-fade-up flex-wrap items-center gap-2" style={{ animationDelay: "0.2s" }}>
+        <section className="flex animate-fade-up flex-wrap items-center gap-2" style={{ animationDelay: "0.12s" }}>
           <span className="mr-1 text-xs font-medium text-muted">专题导航</span>
           <Link to="/problems/lists" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
-            📋 题单
+            题单
           </Link>
           <Link to="/problems/contest" className="rounded-full bg-divider px-3 py-1 text-xs text-muted transition-colors duration-150 hover:text-ink">
-            🏆 周赛
+            周赛
           </Link>
         </section>
       )}
 
       {/* 列表 */}
-      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.24s" }}>
+      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.16s" }}>
         {list.isLoading ? (
           <Loading />
         ) : list.error ? (
@@ -255,11 +255,11 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           <EmptyBox text="没有符合条件的题目" />
         ) : (
           <>
-            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+            <ListCard>
               {list.data.items.map((p) => (
                 <ProblemRow key={p.id} problem={p} />
               ))}
-            </div>
+            </ListCard>
             <div className="flex items-center justify-between text-sm text-muted">
               <span>
                 共 {list.data.total} 题 · 第 {list.data.page}/{totalPages} 页

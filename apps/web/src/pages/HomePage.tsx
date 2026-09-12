@@ -3,7 +3,18 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@ailab/contracts";
 import { queryClient, trpc } from "../lib/trpc";
-import { EmptyBox, ErrorBox, Loading } from "../components/ui";
+import {
+  ArrowIcon,
+  Button,
+  CheckIcon,
+  EmptyBox,
+  ErrorBox,
+  InlineError,
+  ListCard,
+  Loading,
+  MicroLabel,
+  PageHeader,
+} from "../components/ui";
 import { formatDateTime } from "../lib/format";
 
 /** 方向卡片的英文小标签 */
@@ -12,48 +23,6 @@ const CATEGORY_EN: Record<Category, string> = {
   cuda: "Parallel Computing",
   knowledge: "Domain Knowledge",
 };
-
-function ArrowIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M2.5 8h10" />
-      <path d="M9 4l4 4-4 4" />
-    </svg>
-  );
-}
-
-function CheckIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M2.5 6.5l2.5 2.5 4.5-5" />
-    </svg>
-  );
-}
-
-/** 微型区块标签：大写、宽字距、强调色 */
-function MicroLabel({ children }: { children: string }) {
-  return (
-    <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-      {children}
-    </div>
-  );
-}
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -94,19 +63,15 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <MicroLabel>Start · 组卷</MicroLabel>
-        <h1 className="mt-3 text-[40px] leading-tight font-bold tracking-tight">
-          开始一场新面试
-        </h1>
-        <p className="mt-3 text-sm text-muted">
-          勾选方向、定好范围与题量，系统即刻为你生成一场限时问答。
-        </p>
-      </section>
+      <PageHeader
+        label="Start · 组卷"
+        title="开始一场新面试"
+        description="勾选方向、定好范围与题量，系统即刻为你生成一场限时问答。"
+      />
 
       {/* 组卷卡片 */}
       <section
-        className="animate-fade-up rounded-2xl border border-line bg-surface p-8 shadow-soft"
+        className="animate-fade-up rounded-2xl border border-line bg-surface p-5 shadow-soft sm:p-8"
         style={{ animationDelay: "0.08s" }}
       >
         {/* 01 选择方向（选中考察范围后禁用） */}
@@ -228,8 +193,8 @@ export default function HomePage() {
             <p className="text-xs text-muted">
               {canStart ? `已就绪，共 ${count} 题` : "请至少勾选一个方向，或选择一个考察范围"}
             </p>
-            <button
-              type="button"
+            <Button
+              size="lg"
               disabled={!canStart || start.isPending}
               onClick={() =>
                 start.mutate(
@@ -238,24 +203,24 @@ export default function HomePage() {
                     : { categories: selected, count },
                 )
               }
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent-600 px-7 text-sm font-semibold text-white transition-colors duration-150 hover:bg-accent-700 disabled:cursor-not-allowed disabled:bg-divider disabled:text-faint"
+              className="group inline-flex items-center gap-2"
             >
               {start.isPending ? "创建中…" : "开始面试"}
               <ArrowIcon className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
-            </button>
+            </Button>
           </div>
         </div>
 
         {start.error && (
-          <p className="mt-5 rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
-            {start.error.message}
-          </p>
+          <div className="mt-5">
+            <InlineError>{start.error.message}</InlineError>
+          </div>
         )}
       </section>
 
       {/* 数据统计带 */}
       <section
-        className="animate-fade-up grid grid-cols-3 divide-x divide-divider rounded-2xl border border-line bg-surface shadow-soft"
+        className="animate-fade-up grid grid-cols-1 divide-y divide-divider rounded-2xl border border-line bg-surface shadow-soft sm:grid-cols-3 sm:divide-x sm:divide-y-0"
         style={{ animationDelay: "0.16s" }}
       >
         {[
@@ -278,7 +243,7 @@ export default function HomePage() {
       <section className="animate-fade-up" style={{ animationDelay: "0.24s" }}>
         <MicroLabel>Recent Sessions</MicroLabel>
         <div className="mt-2 mb-5 flex items-end justify-between">
-          <h2 className="text-[22px] font-bold tracking-tight">最近场次</h2>
+          <h2 className="text-lg font-semibold tracking-tight">最近场次</h2>
           <Link
             to="/history"
             className="group inline-flex items-center gap-1 text-sm font-medium text-accent-600 transition-colors duration-150 hover:text-accent-700"
@@ -294,7 +259,7 @@ export default function HomePage() {
         ) : sessions.data === undefined ? null : sessions.data.length === 0 ? (
           <EmptyBox text="还没有面试记录，勾选方向开始第一场吧" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+          <ListCard>
             {sessions.data.slice(0, 5).map((s, i) => (
               <button
                 key={s.id}
@@ -335,7 +300,7 @@ export default function HomePage() {
                 )}
               </button>
             ))}
-          </div>
+          </ListCard>
         )}
       </section>
     </div>

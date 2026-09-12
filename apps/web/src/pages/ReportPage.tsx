@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { CATEGORY_LABELS, type Category } from "@ailab/contracts";
 import { trpc } from "../lib/trpc";
-import { Card, ErrorBox, Loading } from "../components/ui";
+import { Card, ErrorBox, Loading, PageHeader, SegmentedControl } from "../components/ui";
 import { ReportBody } from "../components/ReportBody";
 import { MessageBubble } from "../components/MessageBubble";
 import { durationMinutes, formatDateTime, gradeTextColor } from "../lib/format";
@@ -53,16 +53,11 @@ function ReportView({ sessionId }: { sessionId: number }) {
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-          Report · 报告
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">{session.title}</h1>
-        <p className="mt-2 text-sm text-muted">
-          方向：{cats} · 题数：{session.questionIds.length}
-          {duration != null ? ` · 时长：${duration} 分钟` : ""}
-        </p>
-      </section>
+      <PageHeader
+        label="Report · 报告"
+        title={session.title}
+        description={`方向：${cats} · 题数：${session.questionIds.length}${duration != null ? ` · 时长：${duration} 分钟` : ""}`}
+      />
 
       {/* 总评卡片 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
@@ -83,25 +78,16 @@ function ReportView({ sessionId }: { sessionId: number }) {
       </section>
 
       {/* Tab 切换 */}
-      <div className="flex w-fit animate-fade-up gap-0.5 rounded-full bg-divider p-1" style={{ animationDelay: "0.16s" }}>
-        {(
-          [
-            ["report", "评估报告"],
-            ["transcript", "对话回放"],
-          ] as const
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setTab(key)}
-            className={`rounded-full px-4 py-1.5 text-sm transition-colors duration-150 ${
-              tab === key ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <SegmentedControl
+        className="w-fit animate-fade-up"
+        value={tab}
+        onChange={setTab}
+        itemClassName="px-4 py-1.5"
+        options={[
+          { value: "report", label: "评估报告" },
+          { value: "transcript", label: "对话回放" },
+        ]}
+      />
 
       {tab === "report" ? (
         report?.report ? (

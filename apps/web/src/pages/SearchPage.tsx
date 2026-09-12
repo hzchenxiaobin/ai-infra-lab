@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CONTENT_TYPES, type ContentType } from "@ailab/contracts";
 import { trpc } from "../lib/trpc";
-import { EmptyBox, ErrorBox, Loading } from "../components/ui";
+import { EmptyBox, ErrorBox, ListCard, Loading, PageHeader, SegmentedControl } from "../components/ui";
 
 const TYPE_LABELS: Record<ContentType, string> = {
   learn: "学习",
@@ -30,12 +30,8 @@ export default function SearchPage() {
   );
 
   return (
-    <div className="space-y-8">
-      <section className="animate-fade-up">
-        <div className="text-[11px] font-semibold uppercase tracking-[.22em] text-accent-600">
-          Search · 全站搜索
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">搜索</h1>
+    <div className="space-y-10">
+      <PageHeader label="Search · 全站搜索" title="搜索">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -43,21 +39,16 @@ export default function SearchPage() {
           className="input mt-4 w-full text-base"
           autoFocus
         />
-        <div className="mt-3 flex gap-0.5 rounded-full bg-divider p-1">
-          {(["all", ...CONTENT_TYPES] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setType(t)}
-              className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
-                type === t ? "bg-ink font-medium text-page" : "text-muted hover:text-ink"
-              }`}
-            >
-              {t === "all" ? "全部" : TYPE_LABELS[t]}
-            </button>
-          ))}
-        </div>
-      </section>
+        <SegmentedControl
+          className="mt-3 w-fit"
+          value={type}
+          onChange={setType}
+          options={(["all", ...CONTENT_TYPES] as const).map((t) => ({
+            value: t,
+            label: t === "all" ? "全部" : TYPE_LABELS[t],
+          }))}
+        />
+      </PageHeader>
 
       <section className="animate-fade-up space-y-2" style={{ animationDelay: "0.08s" }}>
         {!q ? (
@@ -73,7 +64,7 @@ export default function SearchPage() {
             <div className="text-xs text-muted">
               「{q}」共 {result.data?.total} 条结果
             </div>
-            <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+            <ListCard>
               {result.data?.items.map((item) => (
                 <a
                   key={item.id}
@@ -98,7 +89,7 @@ export default function SearchPage() {
                   )}
                 </a>
               ))}
-            </div>
+            </ListCard>
           </>
         )}
       </section>

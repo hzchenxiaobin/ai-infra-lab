@@ -1,6 +1,129 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import type { Difficulty } from "@ailab/contracts";
 import { DIFFICULTY_LABELS } from "../lib/format";
+import { SEGMENTED_CLASS, segmentedItemClass } from "../lib/segmented";
+
+// ---------------------------------------------------------------------------
+// 设计系统公共组件：页面一律复用这里的组件，不要在页面内重复实现样式。
+// 令牌（颜色/阴影/动效）见 index.css 的 @theme。
+// ---------------------------------------------------------------------------
+
+/* ---------------------------------- 图标 ---------------------------------- */
+
+function SvgIcon({
+  className = "",
+  viewBox = "0 0 16 16",
+  strokeWidth = 1.5,
+  path,
+}: {
+  className?: string;
+  viewBox?: string;
+  strokeWidth?: number;
+  path: string;
+}) {
+  return (
+    <svg
+      viewBox={viewBox}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d={path} />
+    </svg>
+  );
+}
+
+export function ArrowIcon({ className = "" }: { className?: string }) {
+  return <SvgIcon className={className} path="M2.5 8h10M9 4l4 4-4 4" />;
+}
+
+export function BackArrowIcon({ className = "" }: { className?: string }) {
+  return <SvgIcon className={className} path="M13.5 8h-10M7 4l-4 4 4 4" />;
+}
+
+export function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <SvgIcon className={className} viewBox="0 0 12 12" strokeWidth={2} path="M2.5 6.5l2.5 2.5 4.5-5" />
+  );
+}
+
+export function ChevronIcon({ className = "" }: { className?: string }) {
+  return (
+    <SvgIcon className={className} viewBox="0 0 12 12" path="M3 4.5l3 3 3-3" />
+  );
+}
+
+function CloseIcon({ className = "" }: { className?: string }) {
+  return (
+    <SvgIcon className={className} viewBox="0 0 12 12" path="M2.5 2.5l7 7M9.5 2.5l-7 7" />
+  );
+}
+
+/* --------------------------------- 页面骨架 --------------------------------- */
+
+/** 微型区块标签：大写、宽字距、强调色 */
+export function MicroLabel({ children }: { children: ReactNode }) {
+  return (
+    <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
+      {children}
+    </div>
+  );
+}
+
+/** 统一页面标题区：MicroLabel + 页标题 + 描述，actions 放右侧次要操作 */
+export function PageHeader({
+  label,
+  title,
+  description,
+  actions,
+  children,
+  className = "",
+}: {
+  label: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+  /** 额外内容（如进度条），渲染在标题区内部 */
+  children?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`animate-fade-up ${className}`}>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
+          <MicroLabel>{label}</MicroLabel>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight">{title}</h1>
+          {description != null && <p className="mt-2 text-sm text-muted">{description}</p>}
+        </div>
+        {actions != null && <div className="flex flex-wrap gap-2">{actions}</div>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/** 区块标题（页面内 section）：统一字号层级 */
+export function SectionTitle({
+  title,
+  description,
+  className = "",
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      {description != null && <p className="mt-1 text-xs text-muted">{description}</p>}
+    </div>
+  );
+}
+
+/* ---------------------------------- 容器 ---------------------------------- */
 
 export function Card({ className = "", children }: { className?: string; children: ReactNode }) {
   return (
@@ -10,45 +133,162 @@ export function Card({ className = "", children }: { className?: string; childre
   );
 }
 
-type ButtonVariant = "primary" | "secondary" | "danger";
+/** 行式列表容器：divide-y 分隔的卡片（题目列表、场次列表等共用） */
+export function ListCard({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ---------------------------------- 按钮 ---------------------------------- */
+
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonSize = "sm" | "md" | "lg";
 
 const BUTTON_STYLES: Record<ButtonVariant, string> = {
   primary: "bg-accent-600 text-white hover:bg-accent-700 disabled:bg-divider disabled:text-faint",
   secondary:
     "border border-line bg-surface text-ink shadow-xs hover:bg-page disabled:text-muted disabled:hover:bg-surface",
+  ghost: "text-muted hover:bg-divider hover:text-ink disabled:text-faint disabled:hover:bg-transparent",
   danger:
     "border border-accent-600/40 bg-surface text-accent-400 hover:bg-accent-600/10 disabled:text-accent-600/40 disabled:hover:bg-surface",
 };
 
+const BUTTON_SIZES: Record<ButtonSize, string> = {
+  sm: "px-3 py-1 text-xs",
+  md: "px-4 py-1.5 text-sm",
+  lg: "h-12 px-7 text-sm font-semibold",
+};
+
 export function Button({
   variant = "primary",
+  size = "md",
   className = "",
   type = "button",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant; size?: ButtonSize }) {
   return (
     <button
       type={type}
-      className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_STYLES[variant]} ${className}`}
+      className={`rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_SIZES[size]} ${BUTTON_STYLES[variant]} ${className}`}
       {...props}
     />
   );
 }
 
-function CloseIcon({ className = "" }: { className?: string }) {
+/* ------------------------------- 分段选择器 ------------------------------- */
+
+export interface SegmentedOption<T extends string> {
+  value: T;
+  label: ReactNode;
+  disabled?: boolean;
+  title?: string;
+}
+
+export function SegmentedControl<T extends string>({
+  options,
+  value,
+  onChange,
+  className = "",
+  itemClassName = "px-3 py-1 text-sm",
+}: {
+  options: readonly SegmentedOption<T>[];
+  value: T;
+  onChange: (value: T) => void;
+  className?: string;
+  itemClassName?: string;
+}) {
   return (
-    <svg
-      viewBox="0 0 12 12"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      className={className}
-    >
-      <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" />
-    </svg>
+    <div className={`${SEGMENTED_CLASS} ${className}`}>
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          disabled={o.disabled}
+          title={o.title}
+          onClick={() => onChange(o.value)}
+          className={`rounded-full transition-colors duration-150 ${itemClassName} ${segmentedItemClass(value === o.value, o.disabled)}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
   );
 }
+
+/* --------------------------------- 进度条 --------------------------------- */
+
+export function ProgressBar({
+  value,
+  size = "md",
+  className = "",
+}: {
+  /** 0–100 的百分比 */
+  value: number;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  const pct = Math.max(0, Math.min(100, value));
+  const height = size === "sm" ? "h-1" : size === "lg" ? "h-2" : "h-1.5";
+  return (
+    <div className={`overflow-hidden rounded-full bg-divider ${height} ${className}`}>
+      <div
+        className="h-full rounded-full bg-accent-600 transition-all duration-200"
+        style={{ width: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
+/* --------------------------------- 状态反馈 --------------------------------- */
+
+const ERROR_BOX_CLASS =
+  "rounded-lg border border-accent-600/30 bg-accent-600/10 text-sm text-accent-400";
+
+export function Loading({ text = "加载中…" }: { text?: string }) {
+  return (
+    <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted">
+      <span className="size-3.5 animate-spin rounded-full border-2 border-line border-t-muted" />
+      {text}
+    </div>
+  );
+}
+
+export function ErrorBox({ error }: { error: unknown }) {
+  const message = error instanceof Error ? error.message : String(error);
+  return <div className={`${ERROR_BOX_CLASS} px-4 py-3`}>出错了：{message}</div>;
+}
+
+/** 表单/操作内的内联错误提示（与 ErrorBox 同族，更紧凑） */
+export function InlineError({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <p className={`${ERROR_BOX_CLASS} px-3 py-2 ${className}`}>{children}</p>;
+}
+
+export function EmptyBox({ text }: { text: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-line py-12 text-center text-sm text-muted">
+      {text}
+    </div>
+  );
+}
+
+/* ---------------------------------- 弹窗 ---------------------------------- */
 
 export function Modal({
   title,
@@ -67,7 +307,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className={`max-h-[85vh] w-full overflow-y-auto rounded-2xl bg-surface p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
+        className={`max-h-[85vh] w-full animate-fade-up overflow-y-auto rounded-2xl bg-surface p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -87,31 +327,7 @@ export function Modal({
   );
 }
 
-export function Loading({ text = "加载中…" }: { text?: string }) {
-  return (
-    <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted">
-      <span className="size-3.5 animate-spin rounded-full border-2 border-line border-t-muted" />
-      {text}
-    </div>
-  );
-}
-
-export function ErrorBox({ error }: { error: unknown }) {
-  const message = error instanceof Error ? error.message : String(error);
-  return (
-    <div className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-4 py-3 text-sm text-accent-400">
-      出错了：{message}
-    </div>
-  );
-}
-
-export function EmptyBox({ text }: { text: string }) {
-  return (
-    <div className="rounded-xl border border-dashed border-line py-12 text-center text-sm text-muted">
-      {text}
-    </div>
-  );
-}
+/* ---------------------------------- 徽章 ---------------------------------- */
 
 /* 二值化徽章：A/B 红色描边红字，C/D 及其余一律灰系 */
 const GRADE_BADGE_STYLES: Record<string, string> = {
@@ -132,7 +348,7 @@ export function GradeBadge({ grade }: { grade: string | null | undefined }) {
 
 export function DifficultyBadge({ difficulty }: { difficulty: string }) {
   return (
-    <span className="rounded-md bg-surface px-1.5 py-0.5 text-muted ring-1 ring-inset ring-line">
+    <span className="rounded-md bg-surface px-1.5 py-0.5 text-xs text-muted ring-1 ring-inset ring-line">
       {DIFFICULTY_LABELS[difficulty as Difficulty] ?? difficulty}
     </span>
   );

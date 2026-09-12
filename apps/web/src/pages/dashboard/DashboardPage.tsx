@@ -2,7 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { DIFFICULTIES, type KnowledgePointMastery } from "@ailab/contracts";
 import { trpc, type QuotaMeData } from "../../lib/trpc";
-import { Card, EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import {
+  ArrowIcon,
+  Card,
+  EmptyBox,
+  ErrorBox,
+  Loading,
+  PageHeader,
+  ProgressBar,
+  SectionTitle,
+} from "../../components/ui";
 import { DIFFICULTY_LABELS } from "../../lib/format";
 
 // 个人中心（dev/web.md §2：/dashboard 进度 / 统计 / 掌握度雷达）。
@@ -15,31 +24,6 @@ const QUOTA_KIND_LABELS: Record<string, string> = {
 
 /** 雷达图最多展示的知识点数量（overview 已按薄弱在前排序） */
 const RADAR_MAX_POINTS = 8;
-
-function MicroLabel({ children }: { children: string }) {
-  return (
-    <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-      {children}
-    </div>
-  );
-}
-
-function ArrowIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M2.5 8h10" />
-      <path d="M9 4l4 4-4 4" />
-    </svg>
-  );
-}
 
 /** 信号徽标：掌握度三路信号（学习/刷题/面试），null 显示 — */
 function SignalChip({ label, value }: { label: string; value: number | null }) {
@@ -137,14 +121,16 @@ export default function DashboardPage() {
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <MicroLabel>Dashboard · 个人中心</MicroLabel>
-        <h1 className="mt-3 text-[40px] leading-tight font-bold tracking-tight">学习与练习总览</h1>
-        <p className="mt-3 text-sm text-muted">
-          连续活跃 <span className="font-semibold text-accent-600">{streakDays}</span> 天 · 已学{" "}
-          {learning.seen}/{learning.total} 篇 · 已 AC {practice.ac}/{practice.total} 题
-        </p>
-      </section>
+      <PageHeader
+        label="Dashboard · 个人中心"
+        title="学习与练习总览"
+        description={
+          <>
+            连续活跃 <span className="font-semibold text-accent-600">{streakDays}</span> 天 · 已学{" "}
+            {learning.seen}/{learning.total} 篇 · 已 AC {practice.ac}/{practice.total} 题
+          </>
+        }
+      />
 
       {/* 学习路径 + 刷题统计 */}
       <section className="animate-fade-up grid gap-4 lg:grid-cols-2" style={{ animationDelay: "0.08s" }}>
@@ -163,12 +149,7 @@ export default function DashboardPage() {
             <span className="text-[32px] leading-none font-bold">{learnPct}%</span>
             <span className="text-xs text-muted">已学</span>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-divider">
-            <div
-              className="h-full rounded-full bg-accent-600 transition-all"
-              style={{ width: `${learnPct}%` }}
-            />
-          </div>
+          <ProgressBar className="mt-3" size="lg" value={learnPct} />
           <div className="mt-3 flex gap-4 text-xs text-muted">
             <span>已学 {learning.seen} / {learning.total}</span>
             <span>已掌握 {learning.mastered}</span>
@@ -194,12 +175,7 @@ export default function DashboardPage() {
                       {bucket.ac}/{bucket.total}（{pct}%）
                     </span>
                   </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-divider">
-                    <div
-                      className="h-full rounded-full bg-accent-600 transition-all"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
+                  <ProgressBar value={pct} />
                 </div>
               );
             })}
@@ -209,7 +185,7 @@ export default function DashboardPage() {
 
       {/* 掌握度雷达 + 薄弱知识点 */}
       <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.16s" }}>
-        <h2 className="text-[18px] font-bold tracking-tight">掌握度</h2>
+        <SectionTitle title="掌握度" />
         <div className="grid gap-4 lg:grid-cols-5">
           <Card className="p-6 lg:col-span-2">
             <MasteryRadar points={mastery} />
@@ -248,7 +224,7 @@ export default function DashboardPage() {
 
       {/* 配额用量 */}
       <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.24s" }}>
-        <h2 className="text-[18px] font-bold tracking-tight">配额用量</h2>
+        <SectionTitle title="配额用量" />
         {quota.isLoading ? (
           <Loading />
         ) : quota.error ? (
@@ -272,12 +248,7 @@ export default function DashboardPage() {
                           </span>
                           <span>{Math.round(Math.min(u.used / u.quota, 1) * 100)}%</span>
                         </div>
-                        <div className="h-1.5 overflow-hidden rounded-full bg-divider">
-                          <div
-                            className="h-full rounded-full bg-accent-600 transition-all"
-                            style={{ width: `${Math.min((u.used / u.quota) * 100, 100)}%` }}
-                          />
-                        </div>
+                        <ProgressBar value={Math.min((u.used / u.quota) * 100, 100)} />
                       </>
                     )}
                   </div>

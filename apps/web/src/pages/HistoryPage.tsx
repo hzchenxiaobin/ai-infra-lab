@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@ailab/contracts";
 import { trpc, type InterviewStatsData } from "../lib/trpc";
-import { Card, EmptyBox, ErrorBox, GradeBadge, Loading } from "../components/ui";
+import {
+  Card,
+  EmptyBox,
+  ErrorBox,
+  GradeBadge,
+  Loading,
+  MicroLabel,
+  PageHeader,
+  ProgressBar,
+} from "../components/ui";
 import { durationMinutes, formatDateTime, formatShortDate } from "../lib/format";
-
-/** 微型区块标签：大写、宽字距、强调色 */
-function MicroLabel({ children }: { children: string }) {
-  return (
-    <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-      {children}
-    </div>
-  );
-}
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -22,11 +22,11 @@ export default function HistoryPage() {
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <MicroLabel>History · 历史</MicroLabel>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">历史统计</h1>
-        <p className="mt-2 text-sm text-muted">各方向均分、近期趋势与全部场次一览。</p>
-      </section>
+      <PageHeader
+        label="History · 历史"
+        title="历史统计"
+        description="各方向均分、近期趋势与全部场次一览。"
+      />
 
       {/* 方向平均分 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
@@ -61,7 +61,7 @@ export default function HistoryPage() {
       {/* 场次表格 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.24s" }}>
         <MicroLabel>All Sessions</MicroLabel>
-        <h3 className="mt-2 mb-5 text-[22px] font-bold tracking-tight">全部场次</h3>
+        <h3 className="mt-2 mb-5 text-lg font-semibold tracking-tight">全部场次</h3>
         {sessions.isLoading ? (
           <Loading />
         ) : sessions.error ? (
@@ -140,12 +140,7 @@ function CategoryBars({ data }: { data: InterviewStatsData["categoryAverages"] }
         return (
           <div key={c} className="flex items-center gap-3">
             <div className="w-14 shrink-0 text-sm">{CATEGORY_LABELS[c]}</div>
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-divider">
-              <div
-                className="h-full rounded-full bg-accent-600 transition-all"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+            <ProgressBar className="flex-1" value={pct} />
             <div className="w-36 shrink-0 text-right text-xs text-muted">
               {entry ? `均分 ${entry.average.toFixed(2)} · ${entry.sessions} 场` : "暂无数据"}
             </div>
@@ -185,8 +180,8 @@ function TrendChart({ trend }: { trend: InterviewStatsData["trend"] }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="近 10 场等级趋势">
       {GRADE_LINES.map(({ g, s }) => (
         <g key={g}>
-          <line x1={padL} x2={W - padR} y1={y(s)} y2={y(s)} stroke="#eef1f5" strokeWidth={1} />
-          <text x={padL - 8} y={y(s) + 4} textAnchor="end" fontSize={11} fill="#98a4b7">
+          <line x1={padL} x2={W - padR} y1={y(s)} y2={y(s)} className="stroke-divider" strokeWidth={1} />
+          <text x={padL - 8} y={y(s) + 4} textAnchor="end" className="fill-muted text-[11px]">
             {g}
           </text>
         </g>
@@ -195,7 +190,7 @@ function TrendChart({ trend }: { trend: InterviewStatsData["trend"] }) {
         <polyline
           points={points.map((p, i) => `${x(i)},${y(p.score)}`).join(" ")}
           fill="none"
-          stroke="#ee2200"
+          className="stroke-accent-600"
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -203,10 +198,10 @@ function TrendChart({ trend }: { trend: InterviewStatsData["trend"] }) {
       )}
       {points.map((p, i) => (
         <g key={p.sessionId}>
-          <circle cx={x(i)} cy={y(p.score)} r={4} fill="#ee2200" stroke="#fff" strokeWidth={1.5}>
+          <circle cx={x(i)} cy={y(p.score)} r={4} className="fill-accent-600 stroke-surface" strokeWidth={1.5}>
             <title>{`${p.title} · ${p.overallGrade ?? "—"}${p.durationMinutes != null ? ` · ${p.durationMinutes} 分钟` : ""}`}</title>
           </circle>
-          <text x={x(i)} y={H - 8} textAnchor="middle" fontSize={10} fill="#98a4b7">
+          <text x={x(i)} y={H - 8} textAnchor="middle" className="fill-muted text-[10px]">
             {formatShortDate(p.createdAt)}
           </text>
         </g>

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { queryClient, trpc } from "../../lib/trpc";
-import { Button, Card } from "../../components/ui";
+import { Button, Card, InlineError, MicroLabel } from "../../components/ui";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -46,10 +46,8 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto max-w-md space-y-6 py-10">
       <div className="text-center">
-        <div className="text-[11px] font-semibold uppercase tracking-[.22em] text-accent-600">
-          Sign up
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">注册</h1>
+        <MicroLabel>Sign up</MicroLabel>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">注册</h1>
         <p className="mt-2 text-sm text-muted">
           开放注册制；验证码发送有频次限制（每分钟 1 次 / 每日 20 次）。
         </p>
@@ -116,9 +114,7 @@ export default function RegisterPage() {
           />
         </div>
         {(sendCode.error || register.error) && (
-          <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
-            {(sendCode.error ?? register.error)?.message}
-          </p>
+          <InlineError>{(sendCode.error ?? register.error)?.message}</InlineError>
         )}
         <Button
           className="w-full py-2"

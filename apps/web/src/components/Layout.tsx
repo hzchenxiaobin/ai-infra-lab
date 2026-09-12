@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { queryClient, trpc } from "../lib/trpc";
+import { SEGMENTED_CLASS, segmentedItemClass } from "../lib/segmented";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },
@@ -37,18 +38,14 @@ export function Layout() {
               </span>
             </span>
           </NavLink>
-          <nav className="flex gap-0.5 overflow-x-auto rounded-full bg-divider p-1">
+          <nav className={`overflow-x-auto ${SEGMENTED_CLASS}`}>
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `shrink-0 rounded-full px-4 py-1.5 text-[13px] transition-colors duration-150 ${
-                    isActive
-                      ? "bg-ink font-medium text-page"
-                      : "text-muted hover:text-ink"
-                  }`
+                  `shrink-0 rounded-full px-4 py-1.5 text-[13px] ${segmentedItemClass(isActive)}`
                 }
               >
                 {item.label}
@@ -64,7 +61,7 @@ export function Layout() {
                 <button
                   type="button"
                   onClick={() => logout.mutate()}
-                  className="text-[13px] text-muted transition-colors duration-150 hover:text-ink"
+                  className="rounded-full px-3 py-1.5 text-[13px] text-muted transition-colors duration-150 hover:bg-divider hover:text-ink"
                 >
                   退出
                 </button>

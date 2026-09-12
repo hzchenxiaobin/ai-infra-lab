@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { trpc } from "../../lib/trpc";
-import { Card, EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import { Card, EmptyBox, ErrorBox, ListCard, Loading, PageHeader, ProgressBar } from "../../components/ui";
 import { ProblemRow } from "./ProblemRow";
 
 // ---------------------------------------------------------------------------
@@ -26,24 +26,22 @@ export default function ProblemListPage() {
   return (
     <div className="space-y-10">
       {/* 标题区 */}
-      <section className="animate-fade-up">
-        <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-600">
-          <Link to="/problems/lists" className="transition-colors hover:text-accent-700">
-            Problems · 题单
-          </Link>
-          <span className="text-faint">/</span>
-        </div>
-        <h1 className="mt-3 text-[22px] font-bold tracking-tight">{list.title}</h1>
-        <p className="mt-2 text-sm text-muted">
-          共 {list.problemCount} 道题 · 已 AC {acCount}
-          {list.problemCount > 0 && `（${Math.round((acCount / list.problemCount) * 100)}%）`}
-        </p>
-        <div className="mt-2 h-1.5 max-w-xs overflow-hidden rounded-full bg-divider">
-          <div
-            className="h-full rounded-full bg-accent-600 transition-all"
-            style={{ width: `${list.problemCount ? (acCount / list.problemCount) * 100 : 0}%` }}
-          />
-        </div>
+      <PageHeader
+        label={
+          <>
+            <Link to="/problems/lists" className="transition-colors hover:text-accent-700">
+              Problems · 题单
+            </Link>
+            <span className="text-faint"> /</span>
+          </>
+        }
+        title={list.title}
+        description={`共 ${list.problemCount} 道题 · 已 AC ${acCount}${list.problemCount > 0 ? `（${Math.round((acCount / list.problemCount) * 100)}%）` : ""}`}
+      >
+        <ProgressBar
+          className="mt-3 max-w-xs"
+          value={list.problemCount ? (acCount / list.problemCount) * 100 : 0}
+        />
         {list.url && (
           <a
             href={list.url}
@@ -52,18 +50,18 @@ export default function ProblemListPage() {
             查看题单编排说明（学习节奏与分组） →
           </a>
         )}
-      </section>
+      </PageHeader>
 
       {/* 成员列表（题库同款行） */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.16s" }}>
+      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
         {items.length === 0 ? (
           <EmptyBox text="题单成员为空（需先执行 content:sync 导入题目元数据）" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+          <ListCard>
             {items.map((p) => (
               <ProblemRow key={p.id} problem={p} />
             ))}
-          </div>
+          </ListCard>
         )}
       </section>
 

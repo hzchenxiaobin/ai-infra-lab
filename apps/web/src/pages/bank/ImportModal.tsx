@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { CATEGORIES, DIFFICULTIES, type QuestionInput } from "@ailab/contracts";
 import { queryClient, trpc } from "../../lib/trpc";
-import { Button, Modal } from "../../components/ui";
+import { Button, InlineError, Modal } from "../../components/ui";
 
 const PLACEHOLDER = `[
   {
@@ -90,11 +90,9 @@ export function ImportModal({ onClose }: { onClose: () => void }) {
           placeholder={PLACEHOLDER}
           className="input w-full font-mono text-xs"
         />
-        {error && <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">{error}</p>}
+        {error && <InlineError>{error}</InlineError>}
         {bulkImport.error && (
-          <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
-            导入失败：{bulkImport.error.message}
-          </p>
+          <InlineError>导入失败：{bulkImport.error.message}</InlineError>
         )}
         {bulkImport.isSuccess ? (
           <p className="rounded-lg border border-accent-200 bg-accent-50/60 px-3 py-2 text-sm text-accent-700">

@@ -8,7 +8,7 @@ import {
   type Difficulty,
 } from "@ailab/contracts";
 import { queryClient, trpc, type QuestionListItem } from "../../lib/trpc";
-import { Button, Modal } from "../../components/ui";
+import { Button, InlineError, Modal } from "../../components/ui";
 import { DIFFICULTY_LABELS } from "../../lib/format";
 
 const inputCls = "input w-full";
@@ -147,9 +147,7 @@ export function QuestionFormModal({
         </div>
 
         {(error || mutationError) && (
-          <p className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
-            {error ?? mutationError?.message}
-          </p>
+          <InlineError>{error ?? mutationError?.message}</InlineError>
         )}
         <div className="flex justify-end gap-2 pt-1">
           <Button variant="secondary" onClick={onClose}>

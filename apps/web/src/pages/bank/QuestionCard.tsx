@@ -3,24 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { CATEGORY_LABELS, judgeProblemIdFromSourceKey } from "@ailab/contracts";
 import { queryClient, trpc, type QuestionListItem } from "../../lib/trpc";
-import { DifficultyBadge } from "../../components/ui";
+import { ChevronIcon, DifficultyBadge } from "../../components/ui";
 import { formatDateTime } from "../../lib/format";
-
-function ChevronIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M3 4.5l3 3 3-3" />
-    </svg>
-  );
-}
 
 export function QuestionCard({
   question,

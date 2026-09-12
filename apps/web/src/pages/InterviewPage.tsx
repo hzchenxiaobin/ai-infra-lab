@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router";
 import { CATEGORY_LABELS, MAX_FOLLOW_UPS, type InterviewState } from "@ailab/contracts";
 import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
-import { Button, Card, DifficultyBadge, ErrorBox, Loading } from "../components/ui";
+import { Button, Card, DifficultyBadge, ErrorBox, InlineError, Loading, ProgressBar, SegmentedControl } from "../components/ui";
 import { Markdown } from "../components/Markdown";
 import { MessageBubble } from "../components/MessageBubble";
 import { JudgeResultView } from "../components/JudgeResult";
@@ -194,17 +194,8 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
             )}
           </div>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-divider">
-          <div
-            className="h-full rounded-full bg-accent-600 transition-all"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-        {finish.error && (
-          <p className="mt-2 rounded-lg border border-accent-600/30 bg-accent-600/10 px-3 py-2 text-sm text-accent-400">
-            结束失败：{finish.error.message}
-          </p>
-        )}
+        <ProgressBar className="mt-3" value={progressPct} />
+        {finish.error && <InlineError className="mt-2">结束失败：{finish.error.message}</InlineError>}
       </Card>
 
       {/* 算法题 / leetgpu 题：左题面 + 对话，右代码编辑器 */}
@@ -320,26 +311,17 @@ function CodeEditorCard({
         <span className="text-sm font-semibold">代码作答</span>
         {judgable ? (
           <div className="flex items-center gap-2">
-            <div className="flex gap-0.5 rounded-full bg-divider p-1">
-              {(Object.keys(LANG_LABELS) as Language[]).map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => setLanguage(l)}
-                  disabled={!judgeData[l].available}
-                  className={`rounded-full px-2.5 py-0.5 text-xs transition-colors duration-150 ${
-                    language === l
-                      ? "bg-ink font-medium text-page"
-                      : judgeData[l].available
-                        ? "text-muted hover:text-ink"
-                        : "cursor-not-allowed text-faint"
-                  }`}
-                  title={judgeData[l].available ? undefined : (judgeData[l].reason ?? "")}
-                >
-                  {LANG_LABELS[l]}
-                </button>
-              ))}
-            </div>
+            <SegmentedControl
+              value={language}
+              onChange={setLanguage}
+              itemClassName="px-2.5 py-0.5 text-xs"
+              options={(Object.keys(LANG_LABELS) as Language[]).map((l) => ({
+                value: l,
+                label: LANG_LABELS[l],
+                disabled: !judgeData[l].available,
+                title: judgeData[l].available ? undefined : (judgeData[l].reason ?? ""),
+              }))}
+            />
             <span className="text-xs text-muted">{categoryLabel} · 评测/提交均可用</span>
           </div>
         ) : (
@@ -351,7 +333,7 @@ function CodeEditorCard({
         onChange={(e) => setCode((prev) => ({ ...prev, [language]: e.target.value }))}
         spellCheck={false}
         placeholder="在这里编写你的代码…"
-        className="h-[45vh] w-full resize-y rounded-lg bg-ink p-3 font-mono text-xs leading-relaxed text-page/90 outline-none"
+        className="input h-[45vh] w-full resize-y font-mono text-xs leading-relaxed"
       />
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-muted">思路讨论 / 追问回答请用左侧输入框</span>

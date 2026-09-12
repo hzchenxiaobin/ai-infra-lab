@@ -1,6 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, trpc, type LearnOverviewData } from "../../lib/trpc";
-import { EmptyBox, ErrorBox, Loading } from "../../components/ui";
+import {
+  EmptyBox,
+  ErrorBox,
+  ListCard,
+  Loading,
+  PageHeader,
+  ProgressBar,
+  SectionTitle,
+} from "../../components/ui";
 
 // 学习路径页（dev/web.md §2）：三阶段 × 10 周主线 + 每周节奏 + 专题 + 论文精读。
 // 版式参考 ai-infra-notes 首页：阶段分组 + W 卡片（一句话描述）。
@@ -46,11 +54,11 @@ const WEEK_BLURBS: Record<number, string> = {
 
 // 每周 7 天固定节奏：理论 → 进阶 → 项目 → Profiling → 复盘
 const WEEK_RHYTHM = [
-  { days: "Day 1-2", icon: "🔬", title: "理论 + 基础 Kernel", desc: "概念建模 + 最简实现" },
-  { days: "Day 3-4", icon: "📖", title: "进阶实现 / 源码", desc: "进阶优化或开源源码导读" },
-  { days: "Day 5", icon: "🛠", title: "项目推进", desc: "接入 Mini 引擎或 benchmark" },
-  { days: "Day 6", icon: "📊", title: "Profiling", desc: "ncu / nsys 实测 + Roofline" },
-  { days: "Day 7", icon: "🧘", title: "复盘 + 面试", desc: "知识地图 / 手撕清单 / 面试 Q&A" },
+  { days: "Day 1-2", title: "理论 + 基础 Kernel", desc: "概念建模 + 最简实现" },
+  { days: "Day 3-4", title: "进阶实现 / 源码", desc: "进阶优化或开源源码导读" },
+  { days: "Day 5", title: "项目推进", desc: "接入 Mini 引擎或 benchmark" },
+  { days: "Day 6", title: "Profiling", desc: "ncu / nsys 实测 + Roofline" },
+  { days: "Day 7", title: "复盘 + 面试", desc: "知识地图 / 手撕清单 / 面试 Q&A" },
 ] as const;
 
 export default function LearnPage() {
@@ -69,22 +77,27 @@ export default function LearnPage() {
 
   const totalDays = weeks.reduce((a, w) => a + w.days.length, 0);
   const seenDays = weeks.reduce((a, w) => a + w.seenDays, 0);
+  const learnPct = totalDays > 0 ? Math.round((seenDays / totalDays) * 100) : 0;
   const weekByNo = new Map(weeks.map((w) => [w.week, w]));
 
   return (
-    <div className="space-y-12">
-      {/* 标题区 */}
-      <section className="animate-fade-up">
-        <div className="text-[11px] font-semibold uppercase tracking-[.22em] text-accent-600">
-          Learn · 学习路线
+    <div className="space-y-10">
+      {/* 标题区 + 整体进度 */}
+      <PageHeader
+        label="Learn · 学习路线"
+        title="AI Infra 学习路线"
+        description="三个阶段、十个主题，从 GPU 执行本质一路走到分布式推理与面试冲刺。"
+      >
+        <div className="mt-5 max-w-md">
+          <div className="mb-1.5 flex items-baseline justify-between text-xs text-muted">
+            <span>整体进度</span>
+            <span>
+              已学 {seenDays}/{totalDays} 天（{learnPct}%）
+            </span>
+          </div>
+          <ProgressBar value={learnPct} size="lg" />
         </div>
-        <h1 className="mt-3 text-[40px] leading-tight font-bold tracking-tight">AI Infra 学习路线</h1>
-        <p className="mt-3 text-sm text-muted">
-          三个阶段、十个主题，从 GPU 执行本质一路走到分布式推理与面试冲刺。 已学{" "}
-          {seenDays}/{totalDays} 天
-          {totalDays > 0 && `（${Math.round((seenDays / totalDays) * 100)}%）`}。
-        </p>
-      </section>
+      </PageHeader>
 
       {/* 三阶段 × 10 周主线 */}
       {PHASES.map((phase, i) => (
@@ -93,10 +106,7 @@ export default function LearnPage() {
           className="animate-fade-up space-y-4"
           style={{ animationDelay: `${0.08 * (i + 1)}s` }}
         >
-          <div>
-            <h2 className="text-[18px] font-bold tracking-tight">{phase.name}</h2>
-            <p className="mt-1 text-xs text-muted">{phase.tagline}</p>
-          </div>
+          <SectionTitle title={phase.name} description={phase.tagline} />
           <div className="grid gap-4 lg:grid-cols-2">
             {phase.weeks.map((no) => {
               const w = weekByNo.get(no);
@@ -148,13 +158,11 @@ export default function LearnPage() {
       ))}
 
       {/* 每周节奏 */}
-      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.32s" }}>
-        <div>
-          <h2 className="text-[18px] font-bold tracking-tight">每周节奏</h2>
-          <p className="mt-1 text-xs text-muted">
-            每周 7 天固定循环：理论 → 进阶 → 项目 → Profiling → 复盘。
-          </p>
-        </div>
+      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.16s" }}>
+        <SectionTitle
+          title="每周节奏"
+          description="每周 7 天固定循环：理论 → 进阶 → 项目 → Profiling → 复盘。"
+        />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {WEEK_RHYTHM.map((r) => (
             <div
@@ -162,9 +170,7 @@ export default function LearnPage() {
               className="rounded-xl border border-line bg-surface p-4 shadow-soft"
             >
               <div className="text-[11px] font-semibold text-muted">{r.days}</div>
-              <div className="mt-1.5 text-sm font-semibold">
-                {r.icon} {r.title}
-              </div>
+              <div className="mt-1.5 text-sm font-semibold">{r.title}</div>
               <div className="mt-1 text-[11px] leading-relaxed text-faint">{r.desc}</div>
             </div>
           ))}
@@ -172,8 +178,8 @@ export default function LearnPage() {
       </section>
 
       {/* 专题 */}
-      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.4s" }}>
-        <h2 className="text-[18px] font-bold tracking-tight">专题</h2>
+      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.2s" }}>
+        <SectionTitle title="专题" />
         {topics.length === 0 ? (
           <EmptyBox text="暂无专题内容" />
         ) : (
@@ -190,12 +196,11 @@ export default function LearnPage() {
                 <div className="mt-1 text-[11px] text-muted">
                   {t.slug} · {t.seenDays}/{t.totalDays} 天已学
                 </div>
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-divider">
-                  <div
-                    className="h-full rounded-full bg-accent-600 transition-all"
-                    style={{ width: `${t.totalDays ? (t.seenDays / t.totalDays) * 100 : 0}%` }}
-                  />
-                </div>
+                <ProgressBar
+                  className="mt-3"
+                  size="sm"
+                  value={t.totalDays ? (t.seenDays / t.totalDays) * 100 : 0}
+                />
               </a>
             ))}
           </div>
@@ -203,12 +208,12 @@ export default function LearnPage() {
       </section>
 
       {/* 论文精读 */}
-      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.48s" }}>
-        <h2 className="text-[18px] font-bold tracking-tight">论文精读</h2>
+      <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.24s" }}>
+        <SectionTitle title="论文精读" />
         {papers.length === 0 ? (
           <EmptyBox text="暂无论文内容" />
         ) : (
-          <div className="divide-y divide-divider overflow-hidden rounded-2xl border border-line bg-surface shadow-soft">
+          <ListCard>
             {papers.map((p) => (
               <a
                 key={p.id}
@@ -218,7 +223,7 @@ export default function LearnPage() {
                 {p.title}
               </a>
             ))}
-          </div>
+          </ListCard>
         )}
       </section>
     </div>
