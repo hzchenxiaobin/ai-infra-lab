@@ -2,7 +2,7 @@
 // - base /learn/：与 contents.url（/learn/...）对齐，web/docs 内不手拼路径
 // - 无左侧边栏（2026-09 起移除，正文加宽）；周内 day 顺序仍从 src 目录扫描，供 prev/next 用
 // - markdown 转义规则整套拷自 leetcode config.mts（content-site.md §4，少一条都会有页面编译失败）
-// - learn 区规模小（~260 页），开本地搜索：中文 bigram 分词 + 剔除代码块
+// - 顶栏搜索已移除（2026-09）：docs 内搜索统一走主站 /search，顶栏改放主站入口（theme/NavActions.vue）
 import { defineConfig } from "vitepress";
 import fs from "node:fs";
 import path from "node:path";
@@ -51,9 +51,47 @@ for (const week of sidebarForWeeks()) {
 /** 导航链接 → 对应 relativePath（"/week1/day1/" → "week1/day1/index.md"） */
 const linkToRel = (link: string) => link.slice(1) + (link.endsWith("/") ? "index.md" : ".md");
 
+/**
+ * topics/{slug}/ 下的直接 md 文档清单（TopicNav 组件「顶栏专题导航」用）：
+ * index.md 作「专题概览」置顶，dayN 按数字序，其余按文件名字典序；仅 1 篇的专题不收录。
+ * 标题取 frontmatter title，无则取首个 H1（topics 文档普遍无 frontmatter）；
+ * short 为顶栏紧凑标签（概览 / Day N / 文件名），完整标题放 tooltip。
+ */
+function topicDocs(): Record<string, Array<{ text: string; short: string; link: string }>> {
+  const dir = path.join(src, "topics");
+  const result: Record<string, Array<{ text: string; short: string; link: string }>> = {};
+  if (!fs.existsSync(dir)) return result;
+  const pageTitle = (abs: string, fallback: string): string => {
+    const md = fs.readFileSync(abs, "utf8");
+    return fmTitle(abs) ?? md.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? fallback;
+  };
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (!e.isDirectory()) continue;
+    const topicDir = path.join(dir, e.name);
+    const docs = fs
+      .readdirSync(topicDir)
+      .filter((f) => f.endsWith(".md") && f !== "INDEX.md")
+      .sort((a, b) => {
+        const rank = (f: string) => (f === "index.md" ? -1 : /^day(\d+)\.md$/.test(f) ? Number(f.match(/\d+/)![0]) : 1000);
+        return rank(a) - rank(b) || a.localeCompare(b);
+      })
+      .map((f) => {
+        const stem = f.replace(/\.md$/, "");
+        const day = /^day(\d+)$/.exec(stem);
+        return {
+          text: f === "index.md" ? "专题概览" : pageTitle(path.join(topicDir, f), stem),
+          short: f === "index.md" ? "概览" : day ? `Day ${day[1]}` : stem,
+          link: f === "index.md" ? `/topics/${e.name}/` : `/topics/${e.name}/${stem}.html`,
+        };
+      });
+    if (docs.length > 1) result[e.name] = docs;
+  }
+  return result;
+}
+
 export default defineConfig({
-  title: "AI Infra 学习路径",
-  description: "AI Infra 学习路径 · 10 周主线 · 专题 · 论文精读 · Profiling 实战",
+  title: "AI Infra Lab",
+  description: "AI Infra Lab · 10 周主线 · 专题 · 论文精读 · Profiling 实战",
   lang: "zh-CN",
   base: "/learn/",
   srcDir: "src",
@@ -156,58 +194,30 @@ export default defineConfig({
   },
 
   themeConfig: {
+    // 顶栏只留「面试速查」下拉（收纳 reference/notes/面经专题）；
+    // 主线/专题/论文/Profiling 从首页与文档内链进入，不再占顶栏；
+    // 主站功能入口（刷题/题库/组卷面试/搜索）在顶栏右侧 NavActions。
     nav: [
-      { text: "首页", link: "/" },
-      { text: "10 周主线", link: "/path" },
-      { text: "专题", link: "/topics/" },
-      { text: "论文", link: "/papers/" },
-      { text: "Profiling", link: "/profiling/" },
+      {
+        text: "面试速查",
+        items: [
+          { text: "面试必背数字清单", link: "/reference/key_numbers" },
+          { text: "硬件参数速查", link: "/reference/hardware_specs" },
+          { text: "CUDA 手撕题面经", link: "/notes/cuda-interview-notes" },
+          { text: "AI Infra 面经专题", link: "/topics/interview/" },
+        ],
+      },
     ],
 
     // 无左侧边栏：正文加宽由共享 custom.css 的 :not(.has-sidebar) 规则承担
     outline: { level: [2, 3], label: "本页目录" },
 
-    search: {
-      provider: "local" as const,
-      options: {
-        _render(src: string, env: any, md: any) {
-          const html: string = md.render(src, env);
-          if (env.frontmatter?.search === false) return "";
-          return html.replace(/<pre[\s\S]*?<\/pre>/g, " ").replace(/<code>[\s\S]*?<\/code>/g, " ");
-        },
-        miniSearch: {
-          options: {
-            // 中文按二元组（bigram）切分，英文/数字整词索引（leetcode 血泪经验）
-            tokenize: (str: string): string[] => {
-              const tokens: string[] = [];
-              for (const word of str.toLowerCase().split(/[^\p{L}\p{N}]+/u)) {
-                if (!word) continue;
-                if (/^[\x00-\x7f]+$/.test(word)) {
-                  tokens.push(word);
-                  continue;
-                }
-                const chars = [...word];
-                if (chars.length === 1) {
-                  tokens.push(chars[0]);
-                  continue;
-                }
-                for (let i = 0; i < chars.length - 1; i++) tokens.push(chars[i] + chars[i + 1]);
-              }
-              return tokens;
-            },
-          },
-        },
-        translations: {
-          button: { buttonText: "搜索", buttonAriaLabel: "搜索" },
-          modal: {
-            displayDetails: "显示详细列表",
-            noResultsText: "无法找到相关结果",
-            resetButtonTitle: "清除查询条件",
-            footer: { selectText: "选择", navigateText: "切换", closeText: "关闭" },
-          },
-        },
-      },
-    },
+    // 顶栏站点名（AI Infra Lab）指向主站首页 /，而非 docs base 首页 /learn/；
+    // target=_self 让 vitepress 前端路由跳过拦截（跨分区/SPA 链接统一约定）
+    logoLink: { link: "/", target: "_self" },
+
+    // 本专题文档清单（右栏「本页目录」下方，theme/TopicSiblings.vue 渲染）
+    topicDocs: topicDocs(),
 
     docFooter: { prev: "上一页", next: "下一页" },
     darkModeSwitchLabel: "外观",

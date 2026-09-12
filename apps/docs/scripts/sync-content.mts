@@ -204,7 +204,7 @@ title: AI Infra 学习路径
 - [论文精读](/papers/) —— FlashAttention / vLLM / Speculative Decoding 等
 - [Profiling 实战](/profiling/) —— ncu / nsys 性能分析训练营
 
-> 进度标记、刷题记录与模拟面试请在 [web 应用](/) 中进行。
+> 进度标记、刷题记录与模拟面试请在 <a href="/" target="_self">web 应用</a> 中进行。
 `,
 );
 

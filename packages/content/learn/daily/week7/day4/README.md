@@ -238,20 +238,20 @@ python3 -m cProfile -s cumtime kernels/prefix_cache_engine.py | head -20
 
 #### 任务 4：LeetGPU 在线题目
 
-<a href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication</a>
+<a target="_self" href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication</a>
 
 chunked prefill 把多个请求的 chunk 凑批执行，本质就是把多个小 GEMM 合并成 batched GEMM——每个 batch 对应一个请求的 chunk，用 `blockIdx.z` 区分请求、`blockIdx.x/y` 处理 M/N tile。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 7 周 Day 4）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 4（网格 DFS/BFS），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 4（网格 DFS/BFS），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/) | 中等 | DFS / BFS / 并查集 | <a href="/problems/algo/0200">题解</a> |
-| [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/) | 中等 | 多源 BFS | <a href="/problems/algo/0994">题解</a> |
-| [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/) | 中等 | DFS/BFS 连通块面积 | <a href="/problems/algo/0695">题解</a> |
-| [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/) | 中等 | 从边界 DFS/BFS 标记 | <a href="/problems/algo/0130">题解</a> |
+| [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/) | 中等 | DFS / BFS / 并查集 | <a target="_self" href="/problems/algo/0200">题解</a> |
+| [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/) | 中等 | 多源 BFS | <a target="_self" href="/problems/algo/0994">题解</a> |
+| [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/) | 中等 | DFS/BFS 连通块面积 | <a target="_self" href="/problems/algo/0695">题解</a> |
+| [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/) | 中等 | 从边界 DFS/BFS 标记 | <a target="_self" href="/problems/algo/0130">题解</a> |
 
 ---
 

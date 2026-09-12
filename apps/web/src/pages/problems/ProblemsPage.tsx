@@ -28,13 +28,15 @@ const PARTITIONS = {
     label: "GPU",
     title: "GPU 题库",
     source: "leetgpu" as const,
+    interview: false,
     desc: "CUDA 编程题（LeetGPU 106 题），按知识领域分组浏览，评测跳转 leetgpu.com。",
   },
   algo: {
     label: "算法",
-    title: "算法题库",
+    title: "算法面试题",
     source: "leetcode" as const,
-    desc: "LeetCode 算法题解（4042 题），按题号浏览，标记刷题进度。",
+    interview: true,
+    desc: "面试题库中的 LeetCode 高频题，按题号浏览，标记刷题进度。",
   },
 };
 
@@ -58,7 +60,10 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
   }, [searchInput]);
 
   const facets = useQuery(
-    trpc.problem.facets.queryOptions({ source: meta.source }),
+    trpc.problem.facets.queryOptions({
+      source: meta.source,
+      interview: meta.interview || undefined,
+    }),
   );
 
   const list = useQuery(
@@ -70,6 +75,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
       knowledgePoint: knowledgePoint || undefined,
       judgeType: judgeType === "all" ? undefined : judgeType,
       search: search || undefined,
+      interview: meta.interview || undefined,
       page,
       pageSize: PAGE_SIZE,
     }),
@@ -79,6 +85,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
     trpc.problem.list.queryOptions({
       source: meta.source,
       solved: true,
+      interview: meta.interview || undefined,
       page: 1,
       pageSize: 1,
     }),

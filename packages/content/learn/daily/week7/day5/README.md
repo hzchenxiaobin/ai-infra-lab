@@ -325,19 +325,19 @@ Iter | Batch | W/R | Batch 内容
 
 Top K Selection 是**推理引擎 v1 的 sampling 出口**——每个 token 生成后，需要从 vocab logits 里选 top-k 再采样。Day 5 的 Mini 引擎 v1 多请求并发，每个请求的 decode 循环最后一步就是 **top-k sampling**。理解 top-k 的 CUDA 实现（**bitonic sort / radix select**）是推理引擎全链路的收尾。
 
-> 💡 提交后在 [LeetGPU Top K Selection](https://leetgpu.com/challenges/top-k-selection) 上记录通过耗时。完整题解（含 bitonic sort / radix select 实现、与 Mini 引擎 v1 sampling 出口的类比）见 <a href="/problems/gpu/medium/29-top-k-selection">Top K Selection 题解</a>。
+> 💡 提交后在 [LeetGPU Top K Selection](https://leetgpu.com/challenges/top-k-selection) 上记录通过耗时。完整题解（含 bitonic sort / radix select 实现、与 Mini 引擎 v1 sampling 出口的类比）见 <a target="_self" href="/problems/gpu/medium/29-top-k-selection">Top K Selection 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 7 周 Day 5）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 5（回溯基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 5（回溯基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [46. 全排列](https://leetcode.cn/problems/permutations/) | 中等 | 回溯模板 | <a href="/problems/algo/0046">题解</a> |
-| [77. 组合](https://leetcode.cn/problems/combinations/) | 中等 | 回溯（选/不选两种视角） | <a href="/problems/algo/0077">题解</a> |
-| [78. 子集](https://leetcode.cn/problems/subsets/) | 中等 | 回溯 | <a href="/problems/algo/0078">题解</a> |
-| [39. 组合总和](https://leetcode.cn/problems/combination-sum/) | 中等 | 回溯 | <a href="/problems/algo/0039">题解</a> |
-| [17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/) | 中等 | 回溯 / 队列 BFS | <a href="/problems/algo/0017">题解</a> |
+| [46. 全排列](https://leetcode.cn/problems/permutations/) | 中等 | 回溯模板 | <a target="_self" href="/problems/algo/0046">题解</a> |
+| [77. 组合](https://leetcode.cn/problems/combinations/) | 中等 | 回溯（选/不选两种视角） | <a target="_self" href="/problems/algo/0077">题解</a> |
+| [78. 子集](https://leetcode.cn/problems/subsets/) | 中等 | 回溯 | <a target="_self" href="/problems/algo/0078">题解</a> |
+| [39. 组合总和](https://leetcode.cn/problems/combination-sum/) | 中等 | 回溯 | <a target="_self" href="/problems/algo/0039">题解</a> |
+| [17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/) | 中等 | 回溯 / 队列 BFS | <a target="_self" href="/problems/algo/0017">题解</a> |
 
 ---
 

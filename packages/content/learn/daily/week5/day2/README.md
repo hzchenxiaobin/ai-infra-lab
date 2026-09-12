@@ -327,19 +327,19 @@ print(prof.key_averages().table(sort_by='cuda_memory_usage', row_limit=5))
 
 本题是标准 Attention 的 fused 实现——正是今天论文精读的算法本体。要求把 $QK^\top$ + softmax + $PV$ 融合成一个 kernel：每个 Q tile 维护 running $(m, l, o)$，KV tile 逐块滑入，与今天推导的 online softmax 三公式一一对应。注意**题目要求带 $1/\sqrt{d}$ scale**。Day 1 已做过 Softmax Attention，本题是无 mask 的标准版，重点在把三公式写熟。
 
-> 💡 提交后在 [LeetGPU Attention 题目](https://leetgpu.com/challenges/attention)上记录通过耗时。完整题解见 <a href="/problems/gpu/hard/109-attention">Attention 题解</a>。
+> 💡 提交后在 [LeetGPU Attention 题目](https://leetgpu.com/challenges/attention)上记录通过耗时。完整题解见 <a target="_self" href="/problems/gpu/hard/109-attention">Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周 Day 2）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」Day 2（贪心），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」Day 2（贪心），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/) | 简单 | 一次遍历 / DP | <a href="/problems/algo/0121">题解</a> |
-| [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/) | 中等 | 贪心维护最远可达 | <a href="/problems/algo/0055">题解</a> |
-| [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) | 中等 | 贪心 | <a href="/problems/algo/0045">题解</a> |
-| [763. 划分字母区间](https://leetcode.cn/problems/partition-labels/) | 中等 | 最后出现位置 + 贪心 | <a href="/problems/algo/0763">题解</a> |
-| [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/) | 中等 | 贪心（最大频数公式） | <a href="/problems/algo/0621">题解</a> |
+| [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/) | 简单 | 一次遍历 / DP | <a target="_self" href="/problems/algo/0121">题解</a> |
+| [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/) | 中等 | 贪心维护最远可达 | <a target="_self" href="/problems/algo/0055">题解</a> |
+| [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) | 中等 | 贪心 | <a target="_self" href="/problems/algo/0045">题解</a> |
+| [763. 划分字母区间](https://leetcode.cn/problems/partition-labels/) | 中等 | 最后出现位置 + 贪心 | <a target="_self" href="/problems/algo/0763">题解</a> |
+| [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/) | 中等 | 贪心（最大频数公式） | <a target="_self" href="/problems/algo/0621">题解</a> |
 
 ---
 

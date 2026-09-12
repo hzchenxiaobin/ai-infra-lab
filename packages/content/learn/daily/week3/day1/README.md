@@ -381,20 +381,20 @@ sm__throughput.avg.pct_of_peak_sustained_elapsed \
 
 #### 任务 4：LeetGPU 在线题目
 
-本题与 Tensor Core 强相关：<a href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication</a>
+本题与 Tensor Core 强相关：<a target="_self" href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication</a>
 
 Batched GEMM 是推理中 Multi-Head Attention 的核心操作。用 WMMA 实现 batched GEMM 可以充分利用 Tensor Core。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 3 周 Day 1）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 1（反转与合并），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 1（反转与合并），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/) | 简单 | 指针翻转 | <a href="/problems/algo/0206">题解</a> |
-| [21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/) | 简单 | 哑节点 + 双指针 | <a href="/problems/algo/0021">题解</a> |
-| [83. 删除排序链表中的重复元素](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/) | 简单 | 一次遍历去重 | <a href="/problems/algo/0083">题解</a> |
-| [876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/) | 简单 | 快慢指针 | <a href="/problems/algo/0876">题解</a> |
+| [206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/) | 简单 | 指针翻转 | <a target="_self" href="/problems/algo/0206">题解</a> |
+| [21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/) | 简单 | 哑节点 + 双指针 | <a target="_self" href="/problems/algo/0021">题解</a> |
+| [83. 删除排序链表中的重复元素](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/) | 简单 | 一次遍历去重 | <a target="_self" href="/problems/algo/0083">题解</a> |
+| [876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/) | 简单 | 快慢指针 | <a target="_self" href="/problems/algo/0876">题解</a> |
 
 ---
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client.js";
-import { contents, problemLists, problems, userProgress } from "../db/schema.js";
+import { contents, problemLists, problems, questions, userProgress } from "../db/schema.js";
 import { appRouter } from "./index.js";
 
 // ---------------------------------------------------------------------------
@@ -186,6 +186,91 @@ run("problem router（集成）", () => {
     }
   });
 
+  it("interview：只返回面试题库（questions.source = LeetCode N → lc:NNNN）对应的题", async () => {
+    // 9990/9991 远离真实题号段（leetcode ≤ 4xxx，contest 9xxxx），避免撞库内数据
+    const IV_ID = "lc:9990";
+    const Q_KEY = "zz-test:interview";
+    await db.delete(questions).where(eq(questions.sourceKey, Q_KEY));
+    await db.delete(problems).where(eq(problems.id, IV_ID));
+    await db.delete(contents).where(eq(contents.id, IV_ID));
+    await seed();
+    try {
+      await db.insert(contents).values({
+        id: IV_ID,
+        type: "problem" as const,
+        title: "测试题-面试过滤",
+        tags: ["zz-test-array"],
+        knowledgePoints: [],
+        url: "/problems/9990",
+        contentHash: "zz-test-hash-iv",
+      });
+      await db.insert(problems).values({
+        id: IV_ID,
+        source: "leetcode" as const,
+        number: 9990,
+        difficulty: "easy" as const,
+        languages: [],
+        judgeType: "internal" as const,
+        testcases: [],
+        externalUrl: "",
+      });
+      // 共享面试题：source 解析出 lc:9990；另插一道无对应题的（9991）不影响结果
+      await db.insert(questions).values([
+        {
+          category: "leetcode" as const,
+          title: "9990. 测试面试题",
+          content: "内容",
+          difficulty: "easy" as const,
+          tags: "zz-test-array",
+          followUps: [],
+          keyPoints: "",
+          source: "LeetCode 9990",
+          sourceKey: Q_KEY,
+        },
+        {
+          category: "leetcode" as const,
+          title: "9991. 无对应题的面试题",
+          content: "内容",
+          difficulty: "easy" as const,
+          tags: "",
+          followUps: [],
+          keyPoints: "",
+          source: "LeetCode 9991",
+          sourceKey: `${Q_KEY}-missing`,
+        },
+      ]);
+
+      // interview + tag：zz-test 题中只命中 lc:9990（lc:zztest1/2 的 id 不匹配 lc:NNNN）
+      const list = await caller.problem.list({
+        source: "leetcode",
+        tag: "zz-test-array",
+        interview: true,
+        page: 1,
+        pageSize: 50,
+      });
+      expect(list.total).toBe(1);
+      expect(list.items[0].id).toBe(IV_ID);
+
+      // 不传 interview 时同标签有 2 条，确认过滤确实生效
+      const all = await caller.problem.list({
+        source: "leetcode",
+        tag: "zz-test-array",
+        page: 1,
+        pageSize: 50,
+      });
+      expect(all.total).toBe(2);
+
+      // facets 同样只统计子集
+      const facets = await caller.problem.facets({ source: "leetcode", interview: true });
+      expect(facets.tags.find((t) => t.value === "zz-test-array")?.count).toBe(1);
+    } finally {
+      await db.delete(questions).where(eq(questions.sourceKey, Q_KEY));
+      await db.delete(questions).where(eq(questions.sourceKey, `${Q_KEY}-missing`));
+      await db.delete(problems).where(eq(problems.id, IV_ID));
+      await db.delete(contents).where(eq(contents.id, IV_ID));
+      await cleanup();
+    }
+  });
   it("题单与周赛：lists/getList 成员有序 + contestSessions/contestProblems 聚合", async () => {
     await seed();
     const CONTEST_IDS = ["lc:contest:998877q1", "lc:contest:998877q2", "lc:contest:998878q1"];

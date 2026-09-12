@@ -330,19 +330,19 @@ ncu --kernel-name regex:paged_attention_kernel \
 
 Causal Self-Attention 正是 **PagedAttention 服务的 attention 变体**——LLM 推理的 prefill 阶段跑的就是 causal self-attention（生成第 i 个 token 时只能看到前 i 个 token）。今天我们手写了 PagedAttention kernel（decode 场景：1 query 对 N key），这道题是它的 prefill 对偶——M 个 query 互相做 causal masked attention。PagedAttention 的 block table 机制同样适用于 causal attention：prefill 时把 prompt 的 KV 按 block 分块存入 paged pool，kernel 通过 block table 间接寻址。两者的核心都是"间接寻址 + online softmax 融合"。
 
-> 💡 提交后在 [LeetGPU Causal Self-Attention](https://leetgpu.com/challenges/causal-self-attention) 上记录通过耗时。完整题解（含 causal mask 的 online softmax 实现、上三角屏蔽、与 PagedAttention 的 prefill 对偶关系）见 <a href="/problems/gpu/hard/53-casual-attention">Causal Self-Attention 题解</a>。
+> 💡 提交后在 [LeetGPU Causal Self-Attention](https://leetgpu.com/challenges/causal-self-attention) 上记录通过耗时。完整题解（含 causal mask 的 online softmax 实现、上三角屏蔽、与 PagedAttention 的 prefill 对偶关系）见 <a target="_self" href="/problems/gpu/hard/53-casual-attention">Causal Self-Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周 Day 4）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 4（BST 进阶与构造），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 4（BST 进阶与构造），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/) | 中等 | 利用 BST 性质遍历 | <a href="/problems/algo/0235">题解</a> |
-| [173. 二叉搜索树迭代器](https://leetcode.cn/problems/binary-search-tree-iterator/) | 中等 | 栈模拟中序迭代 | <a href="/problems/algo/0173">题解</a> |
-| [1008. 前序遍历构造二叉搜索树](https://leetcode.cn/problems/construct-binary-search-tree-from-preorder-traversal/) | 中等 | 递归 / 二分定插入界 | <a href="/problems/algo/1008">题解</a> |
-| [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) | 中等 | 递归分治 | <a href="/problems/algo/0105">题解</a> |
-| [889. 根据前序与后序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/) | 中等 | 递归分治（前后序互定界） | <a href="/problems/algo/0889">题解</a> |
+| [235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/) | 中等 | 利用 BST 性质遍历 | <a target="_self" href="/problems/algo/0235">题解</a> |
+| [173. 二叉搜索树迭代器](https://leetcode.cn/problems/binary-search-tree-iterator/) | 中等 | 栈模拟中序迭代 | <a target="_self" href="/problems/algo/0173">题解</a> |
+| [1008. 前序遍历构造二叉搜索树](https://leetcode.cn/problems/construct-binary-search-tree-from-preorder-traversal/) | 中等 | 递归 / 二分定插入界 | <a target="_self" href="/problems/algo/1008">题解</a> |
+| [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) | 中等 | 递归分治 | <a target="_self" href="/problems/algo/0105">题解</a> |
+| [889. 根据前序与后序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/) | 中等 | 递归分治（前后序互定界） | <a target="_self" href="/problems/algo/0889">题解</a> |
 
 ---
 

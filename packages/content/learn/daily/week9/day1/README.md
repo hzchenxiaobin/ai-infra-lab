@@ -249,18 +249,18 @@ python kernels/tp_inference_demo.py
 
 **与今日知识的关联**：分布式推理的核心开销是**通信**（all-reduce / send-recv），而通信的本质是**数据在 GPU 间搬运**——与 Matrix Copy 同构：都是 bandwidth-bound 的纯数据搬移。Matrix Copy 练习的是如何高效搬运（coalesced 读写、避免 bank conflict、用满显存带宽），这正是 NCCL kernel 内部的优化目标。理解 Matrix Copy 的带宽利用率分析，就能估算 all-reduce 的通信下限：`T_comm = V / bandwidth`。做好这题说明你掌握了"数据搬运的性能上限"，是分析通信开销的基础。
 
-> 💡 提交后在 [LeetGPU Matrix Copy](https://leetgpu.com/challenges/matrix-copy) 上记录通过耗时。完整题解见 <a href="/problems/gpu/easy/31-matrix-copy">Matrix Copy 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Copy](https://leetgpu.com/challenges/matrix-copy) 上记录通过耗时。完整题解见 <a target="_self" href="/problems/gpu/easy/31-matrix-copy">Matrix Copy 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 9 周 Day 1）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 1（子数组与子序列），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 1（子数组与子序列），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [139. 单词拆分](https://leetcode.cn/problems/word-break/) | 中等 | DP / BFS + 字典哈希 | <a href="/problems/algo/0139">题解</a> |
-| [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/) | 中等 | 滚动 DP | <a href="/problems/algo/0152">题解</a> |
-| [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) | 中等 | DP + 二分（patience sorting） | <a href="/problems/algo/0300">题解</a> |
-| [354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) | 困难 | 排序 + LIS（二分） | <a href="/problems/algo/0354">题解</a> |
+| [139. 单词拆分](https://leetcode.cn/problems/word-break/) | 中等 | DP / BFS + 字典哈希 | <a target="_self" href="/problems/algo/0139">题解</a> |
+| [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/) | 中等 | 滚动 DP | <a target="_self" href="/problems/algo/0152">题解</a> |
+| [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) | 中等 | DP + 二分（patience sorting） | <a target="_self" href="/problems/algo/0300">题解</a> |
+| [354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) | 困难 | 排序 + LIS（二分） | <a target="_self" href="/problems/algo/0354">题解</a> |
 
 ---
 

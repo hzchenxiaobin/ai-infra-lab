@@ -598,15 +598,15 @@ print(f"dB match: {torch.allclose(B.grad, dB_expected, atol=1e-5)}")
 
 #### 任务 4：LeetCode 面试题（10 周计划 · 第 4 周 Day 3）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 3（单调栈），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 3（单调栈），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/) | 中等 | 单调栈 | <a href="/problems/algo/0739">题解</a> |
-| [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/) | 简单 | 单调栈 + 哈希 | <a href="/problems/algo/0496">题解</a> |
-| [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/) | 中等 | 单调栈 + 循环数组 | <a href="/problems/algo/0503">题解</a> |
-| [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) | 中等 | 单调栈 + 跨度合并 | <a href="/problems/algo/0901">题解</a> |
-| [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/) | 困难 | 单调栈 | <a href="/problems/algo/0084">题解</a> |
+| [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/) | 中等 | 单调栈 | <a target="_self" href="/problems/algo/0739">题解</a> |
+| [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/) | 简单 | 单调栈 + 哈希 | <a target="_self" href="/problems/algo/0496">题解</a> |
+| [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/) | 中等 | 单调栈 + 循环数组 | <a target="_self" href="/problems/algo/0503">题解</a> |
+| [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) | 中等 | 单调栈 + 跨度合并 | <a target="_self" href="/problems/algo/0901">题解</a> |
+| [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/) | 困难 | 单调栈 | <a target="_self" href="/problems/algo/0084">题解</a> |
 
 ---
 

@@ -533,6 +533,8 @@ export const problemFilterSchema = z.object({
   search: z.string().trim().min(1).max(200).optional(),
   /** true 只看已 AC；false 只看未 AC；不传为全部 */
   solved: z.boolean().optional(),
+  /** true 时只返回面试题库（questions 表 category=leetcode 共享题，source 形如 "LeetCode N"）对应的题 */
+  interview: z.boolean().optional(),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(100).default(20),
 });
@@ -541,6 +543,8 @@ export type ProblemFilter = z.infer<typeof problemFilterSchema>;
 /** problem.facets 入参：题库筛选候选项（标签/知识点）按分区枚举 */
 export const problemFacetsSchema = z.object({
   source: problemSourceSchema.optional(),
+  /** true 时只统计面试题库子集（与 problemFilterSchema.interview 同义） */
+  interview: z.boolean().optional(),
 });
 export type ProblemFacetsInput = z.infer<typeof problemFacetsSchema>;
 

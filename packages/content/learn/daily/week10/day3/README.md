@@ -328,20 +328,20 @@ N=    16,000,000  time=0.1156 ms  BW=1107.3 GB/s
 
 **与今日知识的关联**：Matrix Addition 是**最简单的 element-wise kernel**，正好用 Day 3 的 benchmark 方法论实测它的带宽——naive 版本就能接近峰值带宽（**纯 memory-bound，算术强度极低**），是验证 cudaEvent 计时流程是否正确的最佳练手对象。README 的 Benchmark 表里该有这类基线算子的带宽数据。
 
-> 💡 提交后在 [LeetGPU Matrix Addition](https://leetgpu.com/challenges/matrix-addition) 上记录通过耗时。完整题解（含 naive element-wise kernel、带宽测量、与今日 benchmark 方法论的对应）见 <a href="/problems/gpu/easy/8-matrix-addition">Matrix Addition 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Addition](https://leetgpu.com/challenges/matrix-addition) 上记录通过耗时。完整题解（含 naive element-wise kernel、带宽测量、与今日 benchmark 方法论的对应）见 <a target="_self" href="/problems/gpu/easy/8-matrix-addition">Matrix Addition 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 10 周 Day 3）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」Day 3（最短路与 BFS），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」Day 3（最短路与 BFS），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/) | 中等 | 堆优化 Dijkstra 单源最短路 | <a href="/problems/algo/0743">题解</a> |
-| [787. K 站中转内最便宜的航班](https://leetcode.cn/problems/cheapest-flights-within-k-stops/) | 中等 | Bellman-Ford / DP 状态机 | <a href="/problems/algo/0787">题解</a> |
-| [399. 除法求值](https://leetcode.cn/problems/evaluate-division/) | 中等 | 带权并查集 / 图搜索 | <a href="/problems/algo/0399">题解</a> |
-| [752. 打开转盘锁](https://leetcode.cn/problems/open-the-lock/) | 中等 | BFS 最短路 | <a href="/problems/algo/0752">题解</a> |
-| [127. 单词接龙](https://leetcode.cn/problems/word-ladder/) | 困难 | BFS 最短路 | <a href="/problems/algo/0127">题解</a> |
-| [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/) | 困难 | 记忆化搜索 | <a href="/problems/algo/0329">题解</a> |
+| [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/) | 中等 | 堆优化 Dijkstra 单源最短路 | <a target="_self" href="/problems/algo/0743">题解</a> |
+| [787. K 站中转内最便宜的航班](https://leetcode.cn/problems/cheapest-flights-within-k-stops/) | 中等 | Bellman-Ford / DP 状态机 | <a target="_self" href="/problems/algo/0787">题解</a> |
+| [399. 除法求值](https://leetcode.cn/problems/evaluate-division/) | 中等 | 带权并查集 / 图搜索 | <a target="_self" href="/problems/algo/0399">题解</a> |
+| [752. 打开转盘锁](https://leetcode.cn/problems/open-the-lock/) | 中等 | BFS 最短路 | <a target="_self" href="/problems/algo/0752">题解</a> |
+| [127. 单词接龙](https://leetcode.cn/problems/word-ladder/) | 困难 | BFS 最短路 | <a target="_self" href="/problems/algo/0127">题解</a> |
+| [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/) | 困难 | 记忆化搜索 | <a target="_self" href="/problems/algo/0329">题解</a> |
 
 ---
 

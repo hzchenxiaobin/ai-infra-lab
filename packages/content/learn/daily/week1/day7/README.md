@@ -351,7 +351,7 @@ __shared__ float tile[32][33]; // 列维度 +1 padding
 // 行 stride 从 32×4=128B 变成 33×4=132B，132/4=33，33%32=1，相邻行错开 bank
 ```
 
-**注意**：padding 会浪费一点 shared memory，需评估是否影响 occupancy。对 16×16 方形 tile + block(16,16) 配置，warp 跨相邻两行且 broadcast，实际不触发 conflict（详见 <a href="/problems/gpu/easy/2-matrix-multiplication">matmul 题解</a> 的 bank conflict 分析）。
+**注意**：padding 会浪费一点 shared memory，需评估是否影响 occupancy。对 16×16 方形 tile + block(16,16) 配置，warp 跨相邻两行且 broadcast，实际不触发 conflict（详见 <a target="_self" href="/problems/gpu/easy/2-matrix-multiplication">matmul 题解</a> 的 bank conflict 分析）。
 
 参见 [Day 4](/week1/day4)、[Day 5](/week1/day5)。
 
@@ -534,16 +534,16 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 
 #### 任务 5：本周 LeetCode 题目回顾（10 周计划 · 第 1 周）
 
-本周 LeetCode 题目对应 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 哈希 | <a href="/problems/algo/0001">1. 两数之和</a>、<a href="/problems/algo/0049">49. 字母异位词分组</a>、<a href="/problems/algo/0128">128. 最长连续序列</a>、<a href="/problems/algo/0136">136. 只出现一次的数字</a>、<a href="/problems/algo/0169">169. 多数元素</a> |
-| Day 2 | 双指针 | <a href="/problems/algo/0283">283. 移动零</a>、<a href="/problems/algo/0011">11. 盛最多水的容器</a>、<a href="/problems/algo/0015">15. 三数之和</a>、<a href="/problems/algo/0042">42. 接雨水</a> |
-| Day 3 | 数组 DP / 前缀和 | <a href="/problems/algo/0053">53. 最大子数组和</a>、<a href="/problems/algo/0056">56. 合并区间</a>、<a href="/problems/algo/0238">238. 除自身以外数组的乘积</a>、<a href="/problems/algo/0041">41. 缺失的第一个正数</a> |
-| Day 4 | 手撕排序 | <a href="/problems/algo/0912">912. 排序数组</a>、<a href="/problems/algo/0088">88. 合并两个有序数组</a>、<a href="/problems/algo/0179">179. 最大数</a>、<a href="/problems/algo/0274">274. H 指数</a> |
-| Day 5 | 数组技巧 | <a href="/problems/algo/0075">75. 颜色分类</a>、<a href="/problems/algo/0031">31. 下一个排列</a>、<a href="/problems/algo/0287">287. 寻找重复数</a>、<a href="/problems/algo/0189">189. 轮转数组</a> |
-| Day 6 | 位运算与其他 | <a href="/problems/algo/0137">137. 只出现一次的数字 II</a>、<a href="/problems/algo/0260">260. 只出现一次的数字 III</a>、<a href="/problems/algo/0338">338. 比特位计数</a>、<a href="/problems/algo/0349">349. 两个数组的交集</a>、<a href="/problems/algo/0581">581. 最短无序连续子数组</a> |
+| Day 1 | 哈希 | <a target="_self" href="/problems/algo/0001">1. 两数之和</a>、<a target="_self" href="/problems/algo/0049">49. 字母异位词分组</a>、<a target="_self" href="/problems/algo/0128">128. 最长连续序列</a>、<a target="_self" href="/problems/algo/0136">136. 只出现一次的数字</a>、<a target="_self" href="/problems/algo/0169">169. 多数元素</a> |
+| Day 2 | 双指针 | <a target="_self" href="/problems/algo/0283">283. 移动零</a>、<a target="_self" href="/problems/algo/0011">11. 盛最多水的容器</a>、<a target="_self" href="/problems/algo/0015">15. 三数之和</a>、<a target="_self" href="/problems/algo/0042">42. 接雨水</a> |
+| Day 3 | 数组 DP / 前缀和 | <a target="_self" href="/problems/algo/0053">53. 最大子数组和</a>、<a target="_self" href="/problems/algo/0056">56. 合并区间</a>、<a target="_self" href="/problems/algo/0238">238. 除自身以外数组的乘积</a>、<a target="_self" href="/problems/algo/0041">41. 缺失的第一个正数</a> |
+| Day 4 | 手撕排序 | <a target="_self" href="/problems/algo/0912">912. 排序数组</a>、<a target="_self" href="/problems/algo/0088">88. 合并两个有序数组</a>、<a target="_self" href="/problems/algo/0179">179. 最大数</a>、<a target="_self" href="/problems/algo/0274">274. H 指数</a> |
+| Day 5 | 数组技巧 | <a target="_self" href="/problems/algo/0075">75. 颜色分类</a>、<a target="_self" href="/problems/algo/0031">31. 下一个排列</a>、<a target="_self" href="/problems/algo/0287">287. 寻找重复数</a>、<a target="_self" href="/problems/algo/0189">189. 轮转数组</a> |
+| Day 6 | 位运算与其他 | <a target="_self" href="/problems/algo/0137">137. 只出现一次的数字 II</a>、<a target="_self" href="/problems/algo/0260">260. 只出现一次的数字 III</a>、<a target="_self" href="/problems/algo/0338">338. 比特位计数</a>、<a target="_self" href="/problems/algo/0349">349. 两个数组的交集</a>、<a target="_self" href="/problems/algo/0581">581. 最短无序连续子数组</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 1 周「数组、哈希与双指针（含手撕排序）」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
@@ -559,7 +559,7 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 3. **Bank conflict**（Day 5）：tile 内按列访问会产生 32-way conflict，用 padding（`[32][33]`）消除
 4. **Roofline 判定**（Day 6）：AI << Ridge Point → memory-bound，优化方向是最大化带宽利用率
 
-> 💡 完整题解见 <a href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
+> 💡 完整题解见 <a target="_self" href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 综合练习 2：Matrix Multiplication —— naive GEMM + ncu 定位瓶颈
 
@@ -572,7 +572,7 @@ Week 1 每天都做了一道 LeetGPU 题目，今天用两道**综合练习**把
 2. **Coalesced Access 分析**（Day 4）：观察 naive 实现中 A、B 的访问模式，思考 B 的按列读取能否合并
 3. **Roofline 判定**（Day 6）：大矩阵理论 AI（按每矩阵只读一次的最小流量口径 ≈ N/6）远大于 Ridge Point 58.45，属于 compute-bound；但 naive 实现没有数据复用，实际有效 AI 低得多——用 ncu 测 `dram__throughput` 和 `sm__throughput`，看实际瓶颈落在哪一侧
 
-> ⚠️ shared memory tiling、register blocking 等 GEMM 优化属于 **Week 2** 内容，本周不作要求；学有余力可作为 Week 2 预习。完整题解（含 Naive / Tiled / Tiled-nobc / Register Tiling 四个版本 + bank conflict 实测分析）见 <a href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
+> ⚠️ shared memory tiling、register blocking 等 GEMM 优化属于 **Week 2** 内容，本周不作要求；学有余力可作为 Week 2 预习。完整题解（含 Naive / Tiled / Tiled-nobc / Register Tiling 四个版本 + bank conflict 实测分析）见 <a target="_self" href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 练习提交记录
 

@@ -392,11 +392,11 @@ print(prof.key_averages().table(sort_by='cuda_time', row_limit=6))
 
 GPT-2 Transformer Block 正是 MiniLLM 中 `n_layers` 层 transformer 的**单层手写 CUDA 版**——今天用 PyTorch 搭的 Pre-LN + self-attention + FFN 结构，这道题要求把 LN、GEMM、softmax attention、GELU、残差连接五类 kernel 正确串成一条推理管线。Week 7 替换 PyTorch 后端时，引擎的 transformer 层就要换成这样的手写 kernel 链。它体现了"引擎的每个组件都能从框架调用换成自定义 kernel"的工程演进路径。
 
-> 💡 提交后在 [LeetGPU GPT-2 Transformer Block](https://leetgpu.com/challenges/gpt-2-transformer-block) 上记录通过耗时。完整题解（含 LN/Attention/FFN 多 kernel 流水线、GELU tanh 近似、权重 offset 拆分、ncu profiling）见 <a href="/problems/gpu/hard/74-gpt2-block">GPT-2 Transformer Block 题解</a>。
+> 💡 提交后在 [LeetGPU GPT-2 Transformer Block](https://leetgpu.com/challenges/gpt-2-transformer-block) 上记录通过耗时。完整题解（含 LN/Attention/FFN 多 kernel 流水线、GELU tanh 近似、权重 offset 拆分、ncu profiling）见 <a target="_self" href="/problems/gpu/hard/74-gpt2-block">GPT-2 Transformer Block 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周 Day 5 复盘）
 
-> 📅 今日为 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
+> 📅 今日为 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
 ---
 

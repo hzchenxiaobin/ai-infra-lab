@@ -331,20 +331,20 @@ sm__throughput.avg.pct_of_peak_sustained_elapsed \
 
 **题目链接**：<https://leetgpu.com/challenges/batched-matrix-multiplication>
 
-本题与今日内容强相关：batched GEMM 正是在单矩阵 GEMM 的三级 tiling 之上再加一维 batch 调度。完整题解见 <a href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication 题解</a>（与 Day 1 同题，今日视角是用 CUTLASS 的思路重新审视）。
+本题与今日内容强相关：batched GEMM 正是在单矩阵 GEMM 的三级 tiling 之上再加一维 batch 调度。完整题解见 <a target="_self" href="/problems/gpu/medium/30-batched-matrix-multiplication">Batched Matrix Multiplication 题解</a>（与 Day 1 同题，今日视角是用 CUTLASS 的思路重新审视）。
 
 思考：CUTLASS 的 batched GEMM 接口 `cutlass::gemm::device::GemmBatched` 如何利用三级 tiling 处理 batch 维度？
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 3 周 Day 4）
 
-> 📅 今日题目来自 <a href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 4（相加与复制），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 4（相加与复制），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/) | 中等 | 模拟进位 | <a href="/problems/algo/0002">题解</a> |
-| [445. 两数相加 II](https://leetcode.cn/problems/add-two-numbers-ii/) | 中等 | 栈逆序相加 | <a href="/problems/algo/0445">题解</a> |
-| [138. 随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/) | 中等 | 哈希 / 拼接拆分 | <a href="/problems/algo/0138">题解</a> |
-| [430. 扁平化多级双向链表](https://leetcode.cn/problems/flatten-a-multilevel-doubly-linked-list/) | 中等 | DFS 栈扁平化 | <a href="/problems/algo/0430">题解</a> |
+| [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/) | 中等 | 模拟进位 | <a target="_self" href="/problems/algo/0002">题解</a> |
+| [445. 两数相加 II](https://leetcode.cn/problems/add-two-numbers-ii/) | 中等 | 栈逆序相加 | <a target="_self" href="/problems/algo/0445">题解</a> |
+| [138. 随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/) | 中等 | 哈希 / 拼接拆分 | <a target="_self" href="/problems/algo/0138">题解</a> |
+| [430. 扁平化多级双向链表](https://leetcode.cn/problems/flatten-a-multilevel-doubly-linked-list/) | 中等 | DFS 栈扁平化 | <a target="_self" href="/problems/algo/0430">题解</a> |
 
 ---
 

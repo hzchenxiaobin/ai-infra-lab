@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { and, asc, eq, inArray, like, sql, type SQL } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, like, sql, type SQL } from "drizzle-orm";
 import {
   contestSessionParamSchema,
   problemFacetsSchema,
@@ -8,11 +8,38 @@ import {
   unifiedIdParamSchema,
 } from "@ailab/contracts";
 import { db } from "../db/client.js";
-import { contents, problemLists, problems, userProgress } from "../db/schema.js";
+import { contents, problemLists, problems, questions, userProgress } from "../db/schema.js";
 import { authedProcedure, router } from "../trpc.js";
 
 function jsonContains(column: SQL | unknown, value: string): SQL {
   return sql`JSON_CONTAINS(${column as SQL}, JSON_QUOTE(${value}))`;
+}
+
+/** 面试题库（共享 questions，category=leetcode）对应的题目统一 ID：从 source "LeetCode N" 解析为 lc:NNNN。
+ *  按 id 而非 number 过滤：lc:lcof:N（剑指 Offer）与 lc:NNNN 会撞 number，但 id 不撞。 */
+async function interviewProblemIds(): Promise<string[]> {
+  const rows = await db
+    .select({ source: questions.source })
+    .from(questions)
+    .where(
+      and(
+        isNull(questions.userId),
+        eq(questions.category, "leetcode"),
+        eq(questions.stale, 0),
+      ),
+    );
+  const ids = new Set<string>();
+  for (const { source } of rows) {
+    const m = /^LeetCode (\d+)$/.exec(source);
+    if (m) ids.add(`lc:${m[1].padStart(4, "0")}`);
+  }
+  return [...ids];
+}
+
+/** interview 过滤条件：只保留面试题库子集；题库为空时返回永假条件（inArray 不接受空数组） */
+async function interviewCondition(): Promise<SQL> {
+  const ids = await interviewProblemIds();
+  return ids.length > 0 ? inArray(problems.id, ids) : sql`1 = 0`;
 }
 
 /** 按统一 ID 列表取题目（保持传入顺序，联 contents + user_progress） */
@@ -49,7 +76,8 @@ async function problemRowsByIds(ids: string[], userId: number) {
 }
 
 export const problemRouter = router({
-  /** 题目列表：难度 / 来源 / 评测方式 / 标签 / 知识点筛选，并联 user_progress 标记是否已 AC */
+  /** 题目列表：难度 / 来源 / 评测方式 / 标签 / 知识点筛选，并联 user_progress 标记是否已 AC；
+   *  interview=true 时限制在面试题库（questions 表 leetcode 共享题）对应的题号子集内 */
   list: authedProcedure.input(problemFilterSchema).query(async ({ input, ctx }) => {
     const conditions: SQL[] = [eq(contents.status, "active")];
     if (input.difficulty) conditions.push(eq(problems.difficulty, input.difficulty));
@@ -58,6 +86,7 @@ export const problemRouter = router({
     if (input.tag) conditions.push(jsonContains(contents.tags, input.tag));
     if (input.knowledgePoint) conditions.push(jsonContains(contents.knowledgePoints, input.knowledgePoint));
     if (input.search) conditions.push(like(contents.title, `%${input.search}%`));
+    if (input.interview) conditions.push(await interviewCondition());
     const where = and(...conditions);
 
     const rows = await db
@@ -124,10 +153,11 @@ export const problemRouter = router({
       };
     }),
 
-  /** 筛选候选项：题库（可按分区）出现过的标签与知识点及计数，供下拉筛选 */
+  /** 筛选候选项：题库（可按分区）出现过的标签与知识点及计数，供下拉筛选；interview=true 时只统计面试题库子集 */
   facets: authedProcedure.input(problemFacetsSchema).query(async ({ input }) => {
     const conditions: SQL[] = [eq(contents.status, "active")];
     if (input.source) conditions.push(eq(problems.source, input.source));
+    if (input.interview) conditions.push(await interviewCondition());
     const rows = await db
       .select({ tags: contents.tags, knowledgePoints: contents.knowledgePoints })
       .from(problems)
