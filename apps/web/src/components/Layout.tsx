@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { queryClient, trpc } from "../lib/trpc";
 import { SEGMENTED_CLASS, segmentedItemClass } from "../lib/segmented";
+import { buttonClass } from "./ui";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },
@@ -28,7 +29,7 @@ export function Layout() {
   return (
     <div className="min-h-screen text-ink">
       <header className="sticky top-0 z-40 border-b border-line bg-surface/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <NavLink to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="size-[18px] rounded-[5px] bg-accent-600" />
             <span className="flex flex-col leading-none">
@@ -38,14 +39,16 @@ export function Layout() {
               </span>
             </span>
           </NavLink>
-          <nav className={`overflow-x-auto ${SEGMENTED_CLASS}`}>
+          <nav
+            className={`overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${SEGMENTED_CLASS}`}
+          >
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `shrink-0 rounded-full px-4 py-1.5 text-[13px] ${segmentedItemClass(isActive)}`
+                  `shrink-0 rounded-full px-4 py-1.5 text-sm ${segmentedItemClass(isActive)}`
                 }
               >
                 {item.label}
@@ -55,29 +58,26 @@ export function Layout() {
           <div className="shrink-0 text-sm">
             {me.isLoading ? null : loggedIn ? (
               <div className="flex items-center gap-3">
-                <span className="max-w-28 truncate text-[13px] font-medium" title={user.email ?? undefined}>
+                <span className="max-w-28 truncate text-sm font-medium" title={user.email ?? undefined}>
                   {user.name}
                 </span>
                 <button
                   type="button"
                   onClick={() => logout.mutate()}
-                  className="rounded-full px-3 py-1.5 text-[13px] text-muted transition-colors duration-150 hover:bg-divider hover:text-ink"
+                  className={buttonClass("ghost", "sm")}
                 >
                   退出
                 </button>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="rounded-full bg-accent-600 px-4 py-1.5 text-[13px] font-medium text-white transition-colors duration-150 hover:bg-accent-700"
-              >
+              <Link to="/login" className={buttonClass("primary", "sm")}>
                 登录
               </Link>
             )}
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <Outlet />
       </main>
     </div>

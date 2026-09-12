@@ -127,7 +127,7 @@ export function SectionTitle({
 
 export function Card({ className = "", children }: { className?: string; children: ReactNode }) {
   return (
-    <div className={`rounded-2xl border border-line bg-surface p-4 shadow-soft ${className}`}>
+    <div className={`rounded-2xl border border-line bg-surface p-5 shadow-soft ${className}`}>
       {children}
     </div>
   );
@@ -170,6 +170,11 @@ const BUTTON_SIZES: Record<ButtonSize, string> = {
   lg: "h-12 px-7 text-sm font-semibold",
 };
 
+/** 按钮类名拼接：供 Link 等非 button 元素复用按钮样式 */
+export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md"): string {
+  return `rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_SIZES[size]} ${BUTTON_STYLES[variant]}`;
+}
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -178,11 +183,7 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant; size?: ButtonSize }) {
   return (
-    <button
-      type={type}
-      className={`rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_SIZES[size]} ${BUTTON_STYLES[variant]} ${className}`}
-      {...props}
-    />
+    <button type={type} className={`${buttonClass(variant, size)} ${className}`} {...props} />
   );
 }
 
@@ -255,10 +256,19 @@ export function ProgressBar({
 const ERROR_BOX_CLASS =
   "rounded-lg border border-accent-600/30 bg-accent-600/10 text-sm text-accent-400";
 
+/** 加载 spinner（Loading 与行内加载态共用） */
+export function Spinner({ className = "size-3.5" }: { className?: string }) {
+  return (
+    <span
+      className={`animate-spin rounded-full border-2 border-line border-t-muted ${className}`}
+    />
+  );
+}
+
 export function Loading({ text = "加载中…" }: { text?: string }) {
   return (
     <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted">
-      <span className="size-3.5 animate-spin rounded-full border-2 border-line border-t-muted" />
+      <Spinner />
       {text}
     </div>
   );
@@ -267,6 +277,15 @@ export function Loading({ text = "加载中…" }: { text?: string }) {
 export function ErrorBox({ error }: { error: unknown }) {
   const message = error instanceof Error ? error.message : String(error);
   return <div className={`${ERROR_BOX_CLASS} px-4 py-3`}>出错了：{message}</div>;
+}
+
+/** 成功反馈（与 ErrorBox 同族，accent 亮文字档语义） */
+export function SuccessBox({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-4 py-3 text-sm text-accent-300">
+      {children}
+    </div>
+  );
 }
 
 /** 表单/操作内的内联错误提示（与 ErrorBox 同族，更紧凑） */
@@ -307,7 +326,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className={`max-h-[85vh] w-full animate-fade-up overflow-y-auto rounded-2xl bg-surface p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
+        className={`max-h-[85vh] w-full animate-fade-up overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-lift ${wide ? "max-w-2xl" : "max-w-md"}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -328,6 +347,50 @@ export function Modal({
 }
 
 /* ---------------------------------- 徽章 ---------------------------------- */
+
+/** 状态 pill：进行中（active，带脉冲点）/ 已完成（done）/ 评测通过（ac） */
+export function StatusPill({
+  variant,
+  children,
+}: {
+  variant: "active" | "done" | "ac";
+  children?: ReactNode;
+}) {
+  const styles = {
+    active: "bg-accent-100 font-medium text-accent-600",
+    done: "bg-surface text-muted ring-1 ring-inset ring-line",
+    ac: "bg-accent-100 font-medium text-accent-600",
+  } as const;
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs ${styles[variant]}`}
+    >
+      {variant === "active" && (
+        <span className="size-1.5 animate-pulse-dot rounded-full bg-accent-600" />
+      )}
+      {children}
+    </span>
+  );
+}
+
+/** 标签/知识点小片；accent 变体用于强调标签 */
+export function Chip({
+  accent,
+  className = "",
+  children,
+}: {
+  accent?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <span
+      className={`rounded-md px-1.5 py-0.5 text-xs ${accent ? "bg-accent-50 text-accent-600" : "bg-page text-muted"} ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
 
 /* 二值化徽章：A/B 红色描边红字，C/D 及其余一律灰系 */
 const GRADE_BADGE_STYLES: Record<string, string> = {
