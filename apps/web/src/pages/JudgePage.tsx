@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "../lib/trpc";
-import { BackArrowIcon, Button, Card, DifficultyBadge, ErrorBox, Loading, PageHeader, SegmentedControl, buttonClass } from "../components/ui";
+import { BackArrowIcon, Button, Card, DifficultyBadge, ErrorBox, Loading, PageHeader, SegmentedControl } from "../components/ui";
+import { buttonClass } from "../lib/button";
 import { JudgeResultView } from "../components/JudgeResult";
 import { POLL_INTERVAL_MS } from "../lib/judge";
 

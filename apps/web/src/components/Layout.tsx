@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { queryClient, trpc } from "../lib/trpc";
 import { SEGMENTED_CLASS, segmentedItemClass } from "../lib/segmented";
-import { buttonClass } from "./ui";
+import { buttonClass } from "../lib/button";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },

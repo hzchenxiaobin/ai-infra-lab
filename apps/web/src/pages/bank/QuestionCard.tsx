@@ -3,7 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { CATEGORY_LABELS, judgeProblemIdFromSourceKey } from "@ailab/contracts";
 import { queryClient, trpc, type QuestionListItem } from "../../lib/trpc";
-import { Button, buttonClass, ChevronIcon, Chip, DifficultyBadge } from "../../components/ui";
+import { Button, ChevronIcon, Chip, DifficultyBadge } from "../../components/ui";
+import { buttonClass } from "../../lib/button";
 import { formatDateTime } from "../../lib/format";
 
 export function QuestionCard({
