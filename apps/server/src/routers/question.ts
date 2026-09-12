@@ -1,4 +1,4 @@
-import { and, desc, eq, like, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, like, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import {
   bankImportSchema,
@@ -15,9 +15,13 @@ import { authedProcedure, router } from "../trpc.js";
 import { contentHash } from "../sync/index.js";
 import { SEED_QUESTIONS } from "../seed.js";
 
+/** 题目可见范围：本人私有题 + 全站共享题库（user_id IS NULL，bank:/seed: 导入的内置题） */
+const visibleTo = (userId: number) =>
+  or(eq(questions.userId, userId), isNull(questions.userId));
+
 export const questionRouter = router({
   list: authedProcedure.input(questionListFilterSchema).query(async ({ input, ctx }) => {
-    const conditions = [eq(questions.userId, ctx.userId), eq(questions.stale, 0)];
+    const conditions = [visibleTo(ctx.userId), eq(questions.stale, 0)];
     if (input.category) conditions.push(eq(questions.category, input.category));
     if (input.difficulty) conditions.push(eq(questions.difficulty, input.difficulty));
     if (input.search) conditions.push(like(questions.title, `%${input.search}%`));
@@ -40,7 +44,7 @@ export const questionRouter = router({
     const rows = await db
       .select({ category: questions.category, count: sql<number>`count(*)` })
       .from(questions)
-      .where(and(eq(questions.userId, ctx.userId), eq(questions.stale, 0)))
+      .where(and(visibleTo(ctx.userId), eq(questions.stale, 0)))
       .groupBy(questions.category);
     const byCategory: Record<string, number> = Object.fromEntries(CATEGORIES.map((c) => [c, 0]));
     for (const r of rows) byCategory[r.category] = Number(r.count);
@@ -55,7 +59,7 @@ export const questionRouter = router({
       .from(questions)
       .where(
         and(
-          eq(questions.userId, ctx.userId),
+          visibleTo(ctx.userId),
           eq(questions.stale, 0),
           like(questions.sourceKey, "%ai-infra-notes:aiinfra/%"),
         ),
@@ -126,17 +130,17 @@ export const questionRouter = router({
       return { imported: input.items.length };
     }),
 
-  /** 播种内置题库（幂等，README §7.5） */
-  seed: authedProcedure.mutation(async ({ ctx }) => {
+  /** 播种内置题库（幂等，README §7.5）；种子题属全站共享题库（user_id NULL），所有账户可见 */
+  seed: authedProcedure.mutation(async () => {
     const existing = await db
       .select({ sourceKey: questions.sourceKey })
       .from(questions)
-      .where(eq(questions.userId, ctx.userId));
+      .where(isNull(questions.userId));
     const existingKeys = new Set(existing.map((r) => r.sourceKey));
     const toInsert = SEED_QUESTIONS.filter((q) => !existingKeys.has(`seed:${q.title}`));
     if (toInsert.length > 0) {
       await db.insert(questions).values(
-        toInsert.map((q) => ({ ...q, userId: ctx.userId, sourceKey: `seed:${q.title}` })),
+        toInsert.map((q) => ({ ...q, userId: null, sourceKey: `seed:${q.title}` })),
       );
     }
     return { seeded: toInsert.length, skipped: SEED_QUESTIONS.length - toInsert.length };
@@ -144,10 +148,11 @@ export const questionRouter = router({
 
   /**
    * LLM 题库导入（cli bank:import 调用，dev/server.md §7 sourceKey+contentHash 幂等）：
+   * 题库属全站共享（user_id NULL），对所有账户可见，与调用身份无关；
    * 未变跳过、变了更新、源里消失标 stale（不物理删除，保护历史场次快照）；
    * 落库后把同源规则解析题标记 stale（LLM 版替代规则版）。
    */
-  bankImport: authedProcedure.input(bankImportSchema).mutation(async ({ input, ctx }) => {
+  bankImport: authedProcedure.input(bankImportSchema).mutation(async ({ input }) => {
     const { items, bankSourceKeyPrefix, replaceSourceKeyPrefix } = input;
     const STALE_PREFIX = "[已失效] ";
     const INSERT_CHUNK = 100;
@@ -156,7 +161,7 @@ export const questionRouter = router({
       .select()
       .from(questions)
       .where(
-        and(eq(questions.userId, ctx.userId), like(questions.sourceKey, `${bankSourceKeyPrefix}%`)),
+        and(isNull(questions.userId), like(questions.sourceKey, `${bankSourceKeyPrefix}%`)),
       );
     const bySourceKey = new Map(existing.map((row) => [row.sourceKey, row]));
 
@@ -189,10 +194,10 @@ export const questionRouter = router({
             contentHash: hash,
             stale: 0,
           })
-          .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+          .where(eq(questions.id, row.id));
         updated += 1;
       } else {
-        toInsert.push({ ...q, userId: ctx.userId, contentHash: hash });
+        toInsert.push({ ...q, userId: null, contentHash: hash });
       }
     }
     for (let i = 0; i < toInsert.length; i += INSERT_CHUNK) {
@@ -210,7 +215,7 @@ export const questionRouter = router({
           stale: 1,
           source: row.source.startsWith(STALE_PREFIX) ? row.source : `${STALE_PREFIX}${row.source}`,
         })
-        .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+        .where(eq(questions.id, row.id));
       bankStale += 1;
     }
 
@@ -222,7 +227,7 @@ export const questionRouter = router({
         .from(questions)
         .where(
           and(
-            eq(questions.userId, ctx.userId),
+            isNull(questions.userId),
             like(questions.sourceKey, `${replaceSourceKeyPrefix}%`),
             eq(questions.stale, 0),
           ),
@@ -234,7 +239,7 @@ export const questionRouter = router({
             stale: 1,
             source: row.source.startsWith(STALE_PREFIX) ? row.source : `${STALE_PREFIX}${row.source}`,
           })
-          .where(and(eq(questions.id, row.id), eq(questions.userId, ctx.userId)));
+          .where(eq(questions.id, row.id));
       }
       replacedStale = ruleRows.length;
     }

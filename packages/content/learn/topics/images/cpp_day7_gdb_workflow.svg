@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="37" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="540" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">崩溃三分钟定位：core dump + gdb 全流程</text>
+  <path d="M 290 41 Q 500 49 710 41" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ================= 左：流程 ================= -->
+  <!-- 1 崩溃 -->
+  <g filter="url(#sk)"><rect x="30" y="70" width="540" height="52" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.5"/></g>
+  <text x="50" y="92" font-size="11" font-weight="bold" fill="#7a2828">① 程序崩溃（Segmentation fault / abort）</text>
+  <text x="50" y="110" font-size="9" fill="#888">现场被内核拍成快照 —— 这就是 core dump</text>
+  <path d="M 300 122 L 300 136" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- 2 core 文件 -->
+  <g filter="url(#sk)"><rect x="30" y="140" width="540" height="52" rx="8" fill="#f0f0f0" stroke="#9e9e9e" stroke-width="1.5"/></g>
+  <text x="50" y="162" font-size="11" font-weight="bold" fill="#555">② 生成 core 文件</text>
+  <text x="50" y="180" font-size="9" fill="#888">前提：ulimit -c unlimited（默认限制 0！）+ 编译加 -g -O0</text>
+  <path d="M 300 192 L 300 206" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- 3 gdb -->
+  <g filter="url(#sk)"><rect x="30" y="210" width="540" height="52" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="50" y="232" font-size="11" font-weight="bold" fill="#2b6e9e">③ gdb ./app core —— 进入“案发现场”</text>
+  <text x="50" y="250" font-size="9" fill="#888">systemd 系统：coredumpctl list 查看，coredumpctl gdb 直接进</text>
+  <path d="M 300 262 L 300 276" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- 4 bt -->
+  <g filter="url(#sk)"><rect x="30" y="280" width="540" height="52" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="50" y="302" font-size="11" font-weight="bold" fill="#2b6e9e">④ bt —— 打印崩溃调用栈</text>
+  <text x="50" y="320" font-size="9" fill="#888">栈顶就是挂掉的那一行，带 #0 #1 #2 帧号</text>
+  <path d="M 300 332 L 300 346" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- 5 frame -->
+  <g filter="url(#sk)"><rect x="30" y="350" width="540" height="52" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="50" y="372" font-size="11" font-weight="bold" fill="#2b6e9e">⑤ frame N → info locals → p *ptr</text>
+  <text x="50" y="390" font-size="9" fill="#888">跳到出错帧，检查变量 —— 大概率是空指针 / 野指针 / 越界</text>
+  <path d="M 300 402 L 300 416" stroke="#5a5a5a" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- 6 修复 -->
+  <g filter="url(#sk)"><rect x="30" y="420" width="540" height="52" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="50" y="442" font-size="11" font-weight="bold" fill="#2e6e2e">⑥ 定位根因 → 修复 → 回归验证</text>
+  <text x="50" y="460" font-size="9" fill="#888">顺手想一层：这个坑怎么防？（智能指针 / assert / 边界检查）</text>
+
+  <!-- ================= 右：命令速查 ================= -->
+  <g filter="url(#sk)"><rect x="600" y="70" width="370" height="402" rx="8" fill="#f3eaf7" stroke="#8e5db8" stroke-width="1.5"/></g>
+  <text x="785" y="96" text-anchor="middle" font-size="13" font-weight="bold" fill="#5a3a7a">gdb 常用命令速查</text>
+
+  <text x="622" y="128" font-size="10" font-weight="bold" fill="#5a3a7a">bt  /  bt full</text>
+  <text x="622" y="144" font-size="9" fill="#666">崩溃调用栈（后者带局部变量）</text>
+  <text x="622" y="176" font-size="10" font-weight="bold" fill="#5a3a7a">frame N</text>
+  <text x="622" y="192" font-size="9" fill="#666">跳到第 N 帧，看它的代码上下文</text>
+  <text x="622" y="224" font-size="10" font-weight="bold" fill="#5a3a7a">info locals</text>
+  <text x="622" y="240" font-size="9" fill="#666">当前帧的全部局部变量</text>
+  <text x="622" y="272" font-size="10" font-weight="bold" fill="#5a3a7a">p 表达式</text>
+  <text x="622" y="288" font-size="9" fill="#666">打印变量 / 结构体：p *this, p arr[3]</text>
+  <text x="622" y="320" font-size="10" font-weight="bold" fill="#5a3a7a">break N  /  watch var</text>
+  <text x="622" y="336" font-size="9" fill="#666">第 N 行断点 / 变量变化时停下</text>
+  <text x="622" y="368" font-size="10" font-weight="bold" fill="#5a3a7a">info threads</text>
+  <text x="622" y="384" font-size="9" fill="#666">列出所有线程，thread N 切换</text>
+  <text x="622" y="416" font-size="10" font-weight="bold" fill="#5a3a7a">thread apply all bt</text>
+  <text x="622" y="432" font-size="9" fill="#666">所有线程的调用栈（查死锁）</text>
+  <text x="622" y="464" font-size="10" font-weight="bold" fill="#5a3a7a">run  /  continue</text>
+  <text x="622" y="480" font-size="9" fill="#666">从头跑 / 断点处继续</text>
+
+  <!-- bottom note -->
+  <text x="500" y="512" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">现场工具箱：top（CPU/内存）· ss -tlnp（连接/端口）· strace -p（系统调用）· pmap（内存布局）· lsof（fd 泄漏）· addr2line（地址→行号）</text>
+</svg>

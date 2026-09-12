@@ -10,6 +10,7 @@ import { stdin as input, stdout as output } from "node:process";
 import {
   CATEGORIES,
   CATEGORY_LABELS,
+  MAX_QUESTIONS_PER_SESSION,
   QUOTA_KINDS,
   type Category,
   type ContentImportInput,
@@ -35,14 +36,15 @@ program
   .description("开始一场新面试")
   .option("-c, --categories <cats>", "方向，逗号分隔（leetcode,cuda,knowledge）")
   .option("-s, --scope <scope>", "考察范围前缀（如 ai-infra-notes:aiinfra/daily/week1/）")
-  .option("-n, --count <n>", "题量", "5")
+  .option("-n, --count <n>", "题量", "1")
   .action(async (opts) => {
     const caller = await getCaller();
 
     let categories: Category[] = [];
     let scope: string | undefined;
     let count = parseInt(opts.count, 10);
-    if (isNaN(count) || count < 1) count = 5;
+    if (isNaN(count) || count < 1) count = 1;
+    if (count > MAX_QUESTIONS_PER_SESSION) count = MAX_QUESTIONS_PER_SESSION;
 
     if (opts.scope) {
       scope = opts.scope;
@@ -599,9 +601,9 @@ async function interactivePick(
     }
   }
 
-  const countStr = await rl.question("题量（默认 5）：");
+  const countStr = await rl.question(`题量（默认 1，最多 ${MAX_QUESTIONS_PER_SESSION}）：`);
   rl.close();
-  const count = parseInt(countStr, 10) || 5;
+  const count = Math.min(parseInt(countStr, 10) || 1, MAX_QUESTIONS_PER_SESSION);
 
   return { scope, categories, count };
 }

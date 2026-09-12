@@ -162,7 +162,8 @@ if (existsSync(path.join(SRC, "profiling"))) {
   for (const slug of slugs) {
     const md = await readFile(path.join(topicsDest, slug, "index.md"), "utf8");
     const title = md.match(/^title:\s*"?([^"\n]+)"?/m)?.[1] ?? slug;
-    entries.push(`- [${title}](/learn/topics/${slug}/)`);
+    // 链接不写 /learn 前缀：vitepress base（/learn/）会自动补齐，写死会双前缀 404
+    entries.push(`- [${title}](/topics/${slug}/)`);
   }
   await writeFile(
     path.join(topicsDest, "index.md"),
@@ -192,16 +193,16 @@ title: AI Infra 学习路径
 
 10 周主线 · 18 专题 · 论文精读 · ncu Profiling 实战
 
-[开始学习 →](/learn/week1/day1/)
+[开始学习 →](/week1/day1/)
 
 </div>
 
 ## 学习地图
 
-- [10 周主线](/learn/path) —— 从 GPU 执行模型到分布式推理系统
-- [专题](/learn/topics/) —— CUDA / Triton / CUTLASS / vLLM / 昇腾 NPU 等 18 个专项
-- [论文精读](/learn/papers/) —— FlashAttention / vLLM / Speculative Decoding 等
-- [Profiling 实战](/learn/profiling/) —— ncu / nsys 性能分析训练营
+- [10 周主线](/path) —— 从 GPU 执行模型到分布式推理系统
+- [专题](/topics/) —— CUDA / Triton / CUTLASS / vLLM / 昇腾 NPU 等 18 个专项
+- [论文精读](/papers/) —— FlashAttention / vLLM / Speculative Decoding 等
+- [Profiling 实战](/profiling/) —— ncu / nsys 性能分析训练营
 
 > 进度标记、刷题记录与模拟面试请在 [web 应用](/) 中进行。
 `,

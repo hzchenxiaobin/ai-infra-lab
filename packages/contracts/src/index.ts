@@ -34,7 +34,7 @@ export type MessageRole = (typeof MESSAGE_ROLES)[number];
 export const MAX_FOLLOW_UPS = 4;
 
 /** 单场面试题量上限（README §5.2） */
-export const MAX_QUESTIONS_PER_SESSION = 10;
+export const MAX_QUESTIONS_PER_SESSION = 5;
 
 // ---------------------------------------------------------------------------
 // 题库（README §4.2 questions + 附录 A）

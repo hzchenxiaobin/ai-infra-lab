@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="47" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="450" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">手写 shared_ptr：两个指针 + 控制块（原子引用计数）</text>
+  <path d="M 270 41 Q 500 49 730 41" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ================= 左：结构 ================= -->
+  <!-- sp1 -->
+  <g filter="url(#sk)"><rect x="40" y="70" width="250" height="66" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="52" y="88" font-size="11" font-weight="bold" fill="#2b6e9e">SharedPtr sp1</text>
+  <g filter="url(#sk)">
+    <rect x="52" y="96" width="226" height="17" fill="#faf6fd" stroke="#b9cfe8" stroke-width="1"/>
+    <rect x="52" y="113" width="226" height="17" fill="#faf6fd" stroke="#b9cfe8" stroke-width="1"/>
+  </g>
+  <text x="60" y="109" font-size="9" fill="#444">T* ptr</text>
+  <text x="60" y="126" font-size="9" fill="#444">ControlBlock* ctrl</text>
+
+  <!-- 拷贝箭头 sp1 → sp2 -->
+  <path d="M 130 138 L 130 166" stroke="#4a8e4a" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="142" y="157" font-size="9" fill="#2e6e2e" font-weight="bold">sp2 = sp1（拷贝）</text>
+
+  <!-- sp2 -->
+  <g filter="url(#sk)"><rect x="40" y="170" width="250" height="66" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="52" y="188" font-size="11" font-weight="bold" fill="#2b6e9e">SharedPtr sp2（sp1 的副本）</text>
+  <g filter="url(#sk)">
+    <rect x="52" y="196" width="226" height="17" fill="#faf6fd" stroke="#b9cfe8" stroke-width="1"/>
+    <rect x="52" y="213" width="226" height="17" fill="#faf6fd" stroke="#b9cfe8" stroke-width="1"/>
+  </g>
+  <text x="60" y="209" font-size="9" fill="#444">T* ptr（同一个对象）</text>
+  <text x="60" y="226" font-size="9" fill="#444">ControlBlock* ctrl（同一个块）</text>
+
+  <!-- T 对象 -->
+  <g filter="url(#sk)"><rect x="420" y="72" width="175" height="58" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="507" y="96" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">堆上的 T 对象</text>
+  <text x="507" y="116" text-anchor="middle" font-size="9" fill="#888">0x1000</text>
+
+  <!-- 控制块 -->
+  <g filter="url(#sk)"><rect x="420" y="172" width="175" height="100" rx="6" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.5"/></g>
+  <text x="507" y="194" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a5415">控制块 0x2000</text>
+  <text x="507" y="218" text-anchor="middle" font-size="9" fill="#555">T* ptr</text>
+  <text x="507" y="240" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">atomic&lt;int&gt; refs = 2</text>
+  <text x="507" y="260" text-anchor="middle" font-size="9" fill="#555">atomic&lt;int&gt; weak = 0</text>
+
+  <!-- 指针箭头 -->
+  <path d="M 292 106 L 414 98" stroke="#5a5a5a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 292 202 Q 350 160 414 112" stroke="#5a5a5a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 292 124 Q 350 170 414 212" stroke="#5a5a5a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 292 220 L 414 228" stroke="#5a5a5a" stroke-width="1.3" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <text x="40" y="262" font-size="9" fill="#2e6e2e" font-weight="bold">拷贝 = 两个指针一起抄，refs 1→2</text>
+
+  <!-- 生命周期三步 -->
+  <g filter="url(#sk)"><rect x="40" y="296" width="175" height="72" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="127" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">① 拷贝 / 赋值</text>
+  <text x="127" y="338" text-anchor="middle" font-size="9" fill="#666">refs 原子 +1</text>
+  <text x="127" y="356" text-anchor="middle" font-size="9" fill="#888">所有副本共享控制块</text>
+  <path d="M 217 332 L 228 332" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="230" y="296" width="175" height="72" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="317" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a5415">② 析构（release）</text>
+  <text x="317" y="338" text-anchor="middle" font-size="9" fill="#666">refs 原子 -1</text>
+  <text x="317" y="356" text-anchor="middle" font-size="9" fill="#888">fetch_sub 返回旧值</text>
+  <path d="M 407 332 L 418 332" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="420" y="296" width="175" height="72" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="507" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">③ 旧值为 1（最后一个）</text>
+  <text x="507" y="338" text-anchor="middle" font-size="9" fill="#666">delete 对象；weak 也为 0</text>
+  <text x="507" y="356" text-anchor="middle" font-size="9" fill="#888">→ 连控制块一起释放</text>
+
+  <!-- 线程安全口径 -->
+  <text x="30" y="404" font-size="9.5" fill="#666" font-weight="bold">线程安全口径：计数是原子的 → 多线程拷贝 / 析构不同副本安全；</text>
+  <text x="30" y="422" font-size="9.5" fill="#666" font-weight="bold">但指向的对象本身不安全，读写要自己加锁</text>
+
+  <!-- ================= 右：循环引用 ================= -->
+  <g filter="url(#sk)"><rect x="620" y="62" width="350" height="342" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.5"/></g>
+  <text x="795" y="86" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a2828">追问必挂：循环引用</text>
+
+  <!-- A -->
+  <g filter="url(#sk)"><rect x="700" y="98" width="150" height="58" rx="6" fill="#fff" stroke="#b03a3a" stroke-width="1.3"/></g>
+  <text x="775" y="120" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a2828">A 对象</text>
+  <text x="775" y="140" text-anchor="middle" font-size="9" fill="#666">shared_ptr&lt;B&gt; b_</text>
+
+  <!-- B -->
+  <g filter="url(#sk)"><rect x="700" y="196" width="150" height="58" rx="6" fill="#fff" stroke="#b03a3a" stroke-width="1.3"/></g>
+  <text x="775" y="218" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a2828">B 对象</text>
+  <text x="775" y="238" text-anchor="middle" font-size="9" fill="#666">shared_ptr&lt;A&gt; a_</text>
+
+  <!-- 双向箭头 -->
+  <path d="M 745 158 L 745 192" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="736" y="180" text-anchor="end" font-size="9" fill="#b03a3a" font-weight="bold">b_：B 的计数 +1</text>
+  <path d="M 805 194 L 805 162" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="816" y="184" font-size="9" fill="#b03a3a" font-weight="bold">a_：A 的计数 +1</text>
+
+  <text x="636" y="284" font-size="9" fill="#666">外部 sp 析构后：A、B 的计数都停在 1，</text>
+  <text x="636" y="302" font-size="9" fill="#666">永远到不了 0 —— 互相抱着对方，双双泄漏</text>
+
+  <!-- 解法 -->
+  <g filter="url(#sk)"><rect x="636" y="320" width="318" height="68" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="652" y="342" font-size="10" font-weight="bold" fill="#2e6e2e">解法：B 里改 weak_ptr&lt;A&gt;（不加计数）</text>
+  <text x="652" y="362" font-size="9" fill="#666">weak 观察不拥有，对象可正常释放；</text>
+  <text x="652" y="380" font-size="9" fill="#666">用前 a_.lock() 探活 —— 空指针即已销毁</text>
+</svg>

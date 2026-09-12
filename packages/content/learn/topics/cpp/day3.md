@@ -1,405 +1,546 @@
----
-id: "learn:topic:cpp:d3"
-type: learn
-title: "Day 3（周三）：移动语义与完美转发"
-tags: [cpp]
-knowledge_points: [cpp]
-updated: 2026-08-28
-day: 3
-topic: cpp
-related_problems: []
-related_questions: []
----
+# Day 3（周三）：面向对象 + 类机制
 
-# Day 3（周三）：移动语义与完美转发
-
-> **本周定位**：C++ 面试系统化准备，今日聚焦 C++11 最重要的特性——移动语义
-> **前置要求**：已完成 Day 1（值类别）与 Day 2（智能指针用到了移动语义）
-> **今日目标**：理解右值引用、`std::move` 的本质（只是类型转换）、移动构造/赋值的实现、`std::forward` 与完美转发、引用折叠规则、RVO/NRVO 返回值优化，能回答"`std::move` 做了什么"这一分水岭问题
-> **时间投入**：2.5h（早间 1.5h 精读移动语义 + 晚间 1h 跑代码与引用折叠实验）
-> **考察度**：⭐⭐⭐⭐⭐ 核心考点，区分 C++ 水平的分水岭
+> **今日目标**：掌握构造/析构顺序、深拷贝 vs 浅拷贝、虚函数与多态原理、手写 String 类
+> **面试考察度**：⭐⭐⭐⭐⭐ 虚函数机制和深拷贝是每场必考，String 类是最高频手写题
+> **建议节奏**：上午学理论（2~3h）→ 下午刷题自测（2h）→ 晚上手写 String 类到默写程度（1~2h）
 
 ---
 
-## 本日在本周知识图谱中的位置
+## 学习任务 1：构造 / 析构 / 拷贝构造 / 赋值运算符（30 分钟）
 
-| 本日产出 | 对应本周验收标准 |
-|----------|-----------------|
-| `std::move` 本质理解（`static_cast` 到右值引用） | ③ 能解释 `std::move`/`std::forward` 区别 |
-| 移动构造/赋值实现与 `noexcept` 重要性 | ③ 同上 |
-| 引用折叠规则表 | ③ 同上（完美转发的语言基础） |
-| `std::forward` 实现与完美转发 demo | ③ 同上 |
-| RVO/NRVO 机制与移动的协作 | ③ 同上 |
-
----
-
-### 学习任务 1：右值引用与 std::move 的本质（45 分钟）
-
-#### 右值引用是什么
-
-C++11 引入右值引用 `T&&`，用于绑定**即将销毁的对象**（右值），是实现移动语义的语言基础：
-
-| 引用类型 | 绑定对象 | 用途 |
-|----------|----------|------|
-| `T&`（左值引用） | 左值 | 普通引用 |
-| `const T&` | 左值 + 右值 | 避免拷贝（旧方案） |
-| `T&&`（右值引用） | 右值 | 移动语义 |
-
-#### std::move 到底做了什么
-
-**面试标准答案**：`std::move` 不移动任何东西，它只是一个到右值引用的 `static_cast`。
+### 四大特殊成员函数
 
 ```cpp
-// move_semantics.cpp —— 移动语义与完美转发
-// 编译: g++ -std=c++20 -o move_semantics move_semantics.cpp && ./move_semantics
+class Widget {
+    int* data_;
+    int size_;
+public:
+    Widget(int size);                          // 构造函数
+    ~Widget();                                 // 析构函数
+    Widget(const Widget& other);               // 拷贝构造函数
+    Widget& operator=(const Widget& other);    // 拷贝赋值运算符
+};
+```
 
+| 函数 | 触发时机 | 签名 |
+|------|---------|------|
+| 构造函数 | 创建对象时 | `Widget(args)` |
+| 析构函数 | 对象销毁时 | `~Widget()` |
+| 拷贝构造 | 用已有对象初始化新对象 | `Widget(const Widget&)` |
+| 拷贝赋值 | 将已有对象赋给另一个已有对象 | `Widget& operator=(const Widget&)` |
+
+### 区分拷贝构造 vs 拷贝赋值
+
+```cpp
+Widget a(10);           // 构造函数
+Widget b(a);            // 拷贝构造（初始化新对象）
+Widget c = a;           // 拷贝构造（不是赋值！）
+Widget d(20);
+d = a;                  // 拷贝赋值（已有对象被赋值）
+```
+
+### 如果不自定义，编译器自动生成默认版本
+
+- 默认构造：调用成员的默认构造
+- 默认析构：调用成员的析构（逆序）
+- 默认拷贝构造/赋值：**逐成员浅拷贝**（这就是坑所在）
+
+---
+
+## 学习任务 2：继承中的构造 / 析构顺序（20 分钟）
+
+### 调用顺序图
+
+![继承中的构造/析构调用顺序](../images/cpp_day3_construct_order.svg)
+
+### 代码验证
+
+```cpp
 #include <iostream>
-#include <string>
-#include <utility>
-#include <vector>
 
-// std::move 的等价实现（C++11 起）
-template <typename T>
-constexpr typename std::remove_reference<T>::type&& my_move(T&& arg) noexcept {
-    return static_cast<typename std::remove_reference<T>::type&&>(arg);
-}
-// C++14 简化版：
-// template <typename T>
-// constexpr std::remove_reference_t<T>&& my_move(T&& arg) noexcept {
-//     return static_cast<std::remove_reference_t<T>&&>(arg);
-// }
+class Base {
+public:
+    Base()  { std::cout << "Base()" << std::endl; }
+    ~Base() { std::cout << "~Base()" << std::endl; }
+};
 
-void demo_move_essence() {
-    std::cout << "=== std::move 的本质 ===" << std::endl;
-    std::string s = "hello world";
-    std::cout << "  移动前: s = \"" << s << "\"" << std::endl;
+class Middle : public Base {
+public:
+    Middle()  { std::cout << "Middle()" << std::endl; }
+    ~Middle() { std::cout << "~Middle()" << std::endl; }
+};
 
-    // std::move(s) 只是产生一个 std::string&& 类型的表达式
-    // 真正的"移动"发生在 string 的移动构造函数中
-    std::string s2 = std::move(s);
+class Derived : public Middle {
+public:
+    Derived()  { std::cout << "Derived()" << std::endl; }
+    ~Derived() { std::cout << "~Derived()" << std::endl; }
+};
 
-    std::cout << "  移动后: s = \"" << s << "\" (处于有效但未指定状态)" << std::endl;
-    std::cout << "         s2 = \"" << s2 << "\"" << std::endl;
+int main() {
+    Derived d;
+    // 输出：
+    // Base()
+    // Middle()
+    // Derived()
+    // ~Derived()
+    // ~Middle()
+    // ~Base()
 }
 ```
 
-> ⚠️ **关键**：`std::move` 之后，源对象处于**有效但未指定（valid but unspecified）**的状态——可以对它赋值或析构，但不应该读取它的值。这是移动语义的约定。
+### 关键规则
 
-#### 为什么需要移动语义
+- **构造顺序**：基类 → 成员变量（按声明顺序）→ 派生类构造函数体
+- **析构顺序**：与构造严格相反——派生类析构体 → 成员变量（逆序）→ 基类
+- **成员变量初始化顺序**：按类中**声明顺序**，不是初始化列表顺序！
 
-| 方案 | 拷贝开销 | 说明 |
-|------|----------|------|
-| 值传递（拷贝构造） | 深拷贝所有数据 | 昂贵（如 `std::vector` 拷贝整个数组） |
-| 左值引用传递 | 无拷贝 | 但不能接受临时对象（非 const 引用） |
-| `const` 引用 | 无拷贝 | 接受临时对象但不能修改 |
-| **右值引用（移动）** | **无深拷贝** | **"偷走"源对象的数据，源变空壳** |
+---
 
-### 学习任务 2：移动构造与移动赋值（45 分钟）
+## 学习任务 3：深拷贝 vs 浅拷贝 ⭐（30 分钟）
 
-#### 移动构造函数实现
+### 对比图
+
+![深拷贝 vs 浅拷贝](../images/cpp_day3_deep_vs_shallow.svg)
+
+### 浅拷贝的问题
 
 ```cpp
-// move_semantics.cpp（续）—— 移动构造/赋值
-
-class StringVector {
-    int* data_;
-    size_t size_;
-    size_t cap_;
+class BadString {
+    char* data_;
 public:
-    // 构造
-    explicit StringVector(size_t n) : data_(new int[n]()), size_(0), cap_(n) {}
+    BadString(const char* s) {
+        data_ = new char[strlen(s) + 1];
+        strcpy(data_, s);
+    }
+    ~BadString() { delete[] data_; }
+    // 没有自定义拷贝构造 → 编译器生成默认浅拷贝
+};
 
-    // 拷贝构造（深拷贝，昂贵）
-    StringVector(const StringVector& other)
-        : data_(new int[other.cap_]), size_(other.size_), cap_(other.cap_) {
-        std::copy(other.data_, other.data_ + size_, data_);
-        std::cout << "  拷贝构造（深拷贝 " << size_ << " 元素）" << std::endl;
+void foo() {
+    BadString a("hello");
+    BadString b = a;       // 浅拷贝：b.data_ = a.data_（指向同一块内存）
+}
+// b 析构 → delete[] data_
+// a 析构 → delete[] data_ → double free → 崩溃！
+```
+
+### 深拷贝的实现
+
+```cpp
+class GoodString {
+    char* data_;
+public:
+    GoodString(const char* s) {
+        data_ = new char[strlen(s) + 1];
+        strcpy(data_, s);
     }
 
-    // 移动构造（偷取资源，O(1)）
-    StringVector(StringVector&& other) noexcept
-        : data_(other.data_), size_(other.size_), cap_(other.cap_) {
-        other.data_ = nullptr;  // 关键：置空源对象，防止 double free
-        other.size_ = 0;
-        other.cap_ = 0;
-        std::cout << "  移动构造（O(1) 偷取）" << std::endl;
+    // 深拷贝构造：分配新内存 + 复制内容
+    GoodString(const GoodString& other) {
+        data_ = new char[strlen(other.data_) + 1];
+        strcpy(data_, other.data_);
     }
 
-    // 拷贝赋值
-    StringVector& operator=(const StringVector& other) {
+    // 深拷贝赋值（注意自赋值检查）
+    GoodString& operator=(const GoodString& other) {
+        if (this != &other) {           // 自赋值检查
+            delete[] data_;             // 释放旧内存
+            data_ = new char[strlen(other.data_) + 1];
+            strcpy(data_, other.data_);
+        }
+        return *this;
+    }
+
+    ~GoodString() { delete[] data_; }
+};
+```
+
+### 面试追问
+
+> **Q：赋值运算符为什么要检查自赋值？**
+> A：如果不检查 `if (this != &other)`，自赋值时先 `delete[] data_`，再 `strcpy(data_, other.data_)`——但 `other.data_` 就是 `this->data_`，已经被 delete 了，是悬空指针 → 未定义行为。
+
+> **Q：copy-and-swap 惯用法是什么？**
+> A：更安全的赋值实现方式，利用拷贝构造 + swap 自动处理自赋值和异常安全：
+> ```cpp
+> GoodString& operator=(GoodString other) {  // 传值，自动调用拷贝构造
+>     swap(*this, other);                     // 交换
+>     return *this;                           // other 析构时释放旧资源
+> }
+> ```
+
+---
+
+## 学习任务 4：虚函数机制 ⭐⭐⭐（45 分钟）
+
+### 虚表（vtable）与虚表指针（vptr）
+
+![虚函数表与多态机制](../images/cpp_day3_vtable.svg)
+
+### 虚函数调用过程
+
+```cpp
+class Base {
+public:
+    virtual void speak() { cout << "Base speak" << endl; }
+    virtual void walk()  { cout << "Base walk" << endl; }
+};
+
+class Derived : public Base {
+public:
+    void speak() override { cout << "Derived speak" << endl; }
+    void walk() override  { cout << "Derived walk" << endl; }
+};
+
+Base* p = new Derived;
+p->speak();    // 输出 "Derived speak"（动态绑定）
+```
+
+**底层执行过程**：
+1. 取 `p` 指向对象的 **vptr**（虚表指针）
+2. 通过 vptr 找到 **Derived::vtable**
+3. 查 vtable 中 `speak` 的槽位（第 0 个）→ 得到 `Derived::speak` 的地址
+4. 间接调用该地址的函数
+
+### 虚函数 vs 非虚函数的区别
+
+| 维度 | 虚函数（virtual） | 非虚函数 |
+|------|-------------------|---------|
+| 绑定时机 | 运行时（动态绑定） | 编译时（静态绑定） |
+| 调用方式 | vptr → vtable → 间接调用 | 直接调用（编译器可内联） |
+| 性能开销 | 两次间接寻址 + 不能内联 | 无额外开销 |
+| 多态 | ✅ 支持 | ❌ 不支持 |
+| 对象大小 | 增加 vptr 大小（8 字节/64位） | 不增加 |
+
+### 为什么析构函数要声明成 virtual？
+
+```cpp
+class Base {
+    int* data_ = new int[100];
+public:
+    ~Base() { delete[] data_; }   // ❌ 非虚析构
+};
+
+class Derived : public Base {
+    int* extra_ = new int[200];
+public:
+    ~Derived() { delete[] extra_; }
+};
+
+Base* p = new Derived;
+delete p;    // 只调用 ~Base()，~Derived() 不调用！
+             // extra_ 泄漏！
+```
+
+**规则**：只要类有虚函数，就应该把析构函数声明为 virtual。
+
+### 虚函数调用开销
+
+```
+非虚函数调用：call 指令直接跳转 → 1 次跳转
+虚函数调用：  取 vptr → 查 vtable → 间接跳转 → 2~3 次内存访问
+```
+
+- 无法内联优化
+- 无法在编译期确定目标
+- 在性能敏感的循环中应避免虚函数调用
+
+---
+
+## 学习任务 5：纯虚函数、抽象类、接口（15 分钟）
+
+```cpp
+// 纯虚函数：只有声明，没有实现（= 0）
+class Shape {
+public:
+    virtual double area() const = 0;     // 纯虚函数
+    virtual double perimeter() const = 0; // 纯虚函数
+    virtual ~Shape() = default;
+};
+
+// 抽象类：含有纯虚函数的类，不能实例化
+// Shape s;  // ❌ 编译错误
+
+// 具体类：必须实现所有纯虚函数
+class Circle : public Shape {
+    double radius_;
+public:
+    Circle(double r) : radius_(r) {}
+    double area() const override { return 3.14159 * radius_ * radius_; }
+    double perimeter() const override { return 2 * 3.14159 * radius_; }
+};
+
+// 接口：全部由纯虚函数组成的抽象类（类似 Java 的 interface）
+class Drawable {
+public:
+    virtual void draw() const = 0;
+    virtual void resize(double factor) = 0;
+    virtual ~Drawable() = default;
+};
+```
+
+### 构造函数里能调用虚函数吗？
+
+**能调用，但不会发生多态！**
+
+```cpp
+class Base {
+public:
+    Base() {
+        speak();   // 调用的是 Base::speak()，不是 Derived::speak()
+    }
+    virtual void speak() { cout << "Base" << endl; }
+};
+
+class Derived : public Base {
+public:
+    void speak() override { cout << "Derived" << endl; }
+};
+
+Derived d;   // 输出 "Base"（构造 Base 时，Derived 部分还没构造）
+```
+
+**原因**：构造 Base 时，对象的 vptr 指向 Base::vtable，Derived::vtable 还没设置。构造期间虚函数是静态绑定的。
+
+---
+
+## 学习任务 6：重载 vs 覆盖 vs 隐藏（20 分钟）
+
+![重载 vs 覆盖 vs 隐藏](../images/cpp_day3_override_overload_hide.svg)
+
+| 维度 | 重载（Overload） | 覆盖（Override） | 隐藏（Hide） |
+|------|-----------------|------------------|-------------|
+| 作用域 | 同一个类 | 基类 vs 派生类 | 基类 vs 派生类 |
+| 函数名 | 相同 | 相同 | 相同 |
+| 参数列表 | **必须不同** | **必须相同** | 不要求 |
+| virtual | 不要求 | **必须是 virtual** | **不是 virtual** |
+| 绑定时机 | 编译期（静态） | 运行期（动态） | 编译期（静态） |
+| 本质 | 同名不同参 | 多态重写 | 名字遮蔽 |
+
+### 隐藏的坑
+
+```cpp
+class Base {
+public:
+    void show() { cout << "Base::show()" << endl; }
+    void show(int x) { cout << "Base::show(" << x << ")" << endl; }
+};
+
+class Derived : public Base {
+public:
+    void show() { cout << "Derived::show()" << endl; }
+    // Base::show(int) 被隐藏了！
+};
+
+Derived d;
+d.show();       // OK: Derived::show()
+d.show(42);     // ❌ 编译错误！Base::show(int) 被隐藏
+```
+
+**解决**：用 `using Base::show;` 引入基类的所有同名函数。
+
+---
+
+## 学习任务 7：菱形继承与虚继承（20 分钟）
+
+![菱形继承问题与虚继承解决方案](../images/cpp_day3_diamond_inheritance.svg)
+
+### 菱形继承的问题
+
+```cpp
+class Animal { public: int age; };
+class Bird : public Animal {};
+class Fish : public Animal {};
+class Sparrow : public Bird, public Fish {};
+
+Sparrow s;
+s.age;       // ❌ 编译错误：age 有二义性（Bird::Animal::age vs Fish::Animal::age）
+```
+
+**问题**：Sparrow 中有两份 Animal 子对象，浪费空间 + 二义性。
+
+### 虚继承解决
+
+```cpp
+class Animal { public: int age; };
+class Bird : virtual public Animal {};
+class Fish : virtual public Animal {};
+class Sparrow : public Bird, public Fish {};
+
+Sparrow s;
+s.age;       // ✅ 无歧义，只有一份 Animal
+```
+
+### 虚继承的构造规则
+
+- 虚基类由**最底层派生类**直接构造（跳过中间类）
+- 中间类的构造函数中对虚基类的初始化会被忽略
+
+```cpp
+class Bird : virtual public Animal {
+public:
+    Bird() : Animal(1) {}    // 当 Bird 作为虚继承的一部分时，这个初始化被忽略
+};
+
+class Sparrow : public Bird, public Fish {
+public:
+    Sparrow() : Animal(5), Bird(), Fish() {}  // Sparrow 负责构造 Animal
+};
+```
+
+---
+
+## 学习任务 8：友元（10 分钟）
+
+```cpp
+class Widget {
+    int secret_ = 42;
+    friend void peek(const Widget& w);    // 友元函数
+    friend class Inspector;               // 友元类
+public:
+    int getSecret() const { return secret_; }
+};
+
+void peek(const Widget& w) {
+    cout << w.secret_;    // ✅ 友元函数可以访问 private 成员
+}
+
+class Inspector {
+public:
+    void inspect(const Widget& w) {
+        cout << w.secret_;    // ✅ 友元类的所有成员函数都可以访问
+    }
+};
+```
+
+**注意**：友元破坏了封装性，应谨慎使用。常见用途：运算符重载（如 `operator<<`）。
+
+---
+
+## 高频面试题自测
+
+### Q1：虚函数表存在哪？每个类几个？对象几个虚表指针？
+
+<details>
+<summary>点击查看答案</summary>
+
+- **vtable 存在哪**：只读数据区（.rodata），编译期生成，每个类一份
+- **每个类几个 vtable**：通常一个（含虚函数的类各一个）；多继承时每个含虚函数的基类各一个
+- **对象几个 vptr**：单继承 1 个，N 重继承 N 个（每个含虚函数的基类子对象各一个）
+
+</details>
+
+### Q2：构造函数里能调用虚函数吗？会发生什么？
+
+<details>
+<summary>点击查看答案</summary>
+
+能调用，但**不会发生多态**。构造基类时，对象的类型"就是"基类（vptr 指向基类的 vtable），派生类部分还没构造。所以构造函数中调用虚函数等价于静态绑定。
+
+同理，析构函数中调用虚函数也不会多态——派生类部分已经析构。
+
+</details>
+
+### Q3：为什么 C++ 默认析构函数不是虚的？
+
+<details>
+<summary>点击查看答案</summary>
+
+因为虚函数有开销（需要 vptr，增加对象大小，调用时多一次间接寻址）。C++ 哲学是"不为不用的特性付出代价"。只有基类需要被多态删除时才需要虚析构。如果类不打算被继承或多态删除，非虚析构是正确选择。
+
+</details>
+
+---
+
+## 动手练习 ⭐：手写 String 类
+
+这是 C++ 面试**最高频**的手写题，必须练到不看资料 10 分钟写完。
+
+```cpp
+#include <cstring>
+#include <algorithm>
+#include <iostream>
+
+class String {
+    char* data_;
+
+public:
+    // 构造函数
+    String(const char* s = "") {
+        data_ = new char[strlen(s) + 1];
+        strcpy(data_, s);
+    }
+
+    // 析构函数
+    ~String() {
+        delete[] data_;
+    }
+
+    // 拷贝构造函数（深拷贝）
+    String(const String& other) {
+        data_ = new char[strlen(other.data_) + 1];
+        strcpy(data_, other.data_);
+    }
+
+    // 拷贝赋值运算符（深拷贝 + 自赋值检查）
+    String& operator=(const String& other) {
         if (this != &other) {
             delete[] data_;
-            data_ = new int[other.cap_];
-            size_ = other.size_;
-            cap_ = other.cap_;
-            std::copy(other.data_, other.data_ + size_, data_);
-            std::cout << "  拷贝赋值" << std::endl;
+            data_ = new char[strlen(other.data_) + 1];
+            strcpy(data_, other.data_);
         }
         return *this;
     }
 
-    // 移动赋值
-    StringVector& operator=(StringVector&& other) noexcept {
-        if (this != &other) {
-            delete[] data_;       // 释放自己的旧资源
-            data_ = other.data_;  // 偷取
-            size_ = other.size_;
-            cap_ = other.cap_;
-            other.data_ = nullptr;
-            other.size_ = 0;
-            other.cap_ = 0;
-            std::cout << "  移动赋值" << std::endl;
-        }
-        return *this;
+    // 获取 C 字符串
+    const char* c_str() const { return data_; }
+
+    // 获取长度
+    size_t length() const { return strlen(data_); }
+
+    // 友元：输出运算符
+    friend std::ostream& operator<<(std::ostream& os, const String& s) {
+        return os << s.data_;
     }
 
-    ~StringVector() { delete[] data_; }
-
-    void push(int v) { if (size_ < cap_) data_[size_++] = v; }
-    size_t size() const { return size_; }
-};
-
-void demo_move_constructor() {
-    std::cout << "\n=== 移动构造/赋值 ===" << std::endl;
-    StringVector v1(100);
-    for (int i = 0; i < 100; i++) v1.push(i);
-
-    StringVector v2 = std::move(v1);  // 调用移动构造
-    std::cout << "  v2.size = " << v2.size() << std::endl;
-
-    StringVector v3(10);
-    v3 = std::move(v2);  // 调用移动赋值
-    std::cout << "  v3.size = " << v3.size() << std::endl;
-}
-```
-
-#### 为什么移动操作要 noexcept
-
-这是面试高频追问点——`std::vector` 扩容时，如果元素类型的移动构造是 `noexcept`，则用移动；否则用拷贝（保证异常安全）。
-
-```cpp
-// move_semantics.cpp（续）—— noexcept 的重要性
-
-void demo_noexcept_matters() {
-    std::cout << "\n=== noexcept 对 vector 扩容的影响 ===" << std::endl;
-
-    // 带 noexcept 移动构造的类 → vector 扩容用移动
-    std::vector<StringVector> vec;
-    for (int i = 0; i < 10; i++) {
-        vec.emplace_back(1000);  // 扩容时会用移动构造（noexcept）
+    // 比较运算符
+    bool operator==(const String& other) const {
+        return strcmp(data_, other.data_) == 0;
     }
 
-    // 如果移除 noexcept，vector 会用拷贝构造（更安全但更慢）
-    // 可以用 noexcept(false) 版本对比
-}
-```
-
-> 💡 **面试要点**：移动构造/赋值**应该**标记为 `noexcept`。因为移动操作通常只是交换指针，不会抛异常。标记 `noexcept` 后，`std::vector` 扩容时才会使用移动而非拷贝，大幅提升性能。
-
-### 学习任务 3：引用折叠规则（30 分钟）
-
-引用折叠是完美转发的语言基础，面试中"引用折叠规则"是移动语义的进阶题。
-
-#### 四条折叠规则
-
-当模板参数推导产生"引用的引用"时，C++ 规定**右值引用的右值引用折叠为右值引用，其余折叠为左值引用**：
-
-| 组合 | 折叠结果 |
-|------|----------|
-| `T& &` | `T&` |
-| `T& &&` | `T&` |
-| `T&& &` | `T&` |
-| `T&& &&` | `T&&` |
-
-> 💡 **记忆口诀**：只有 `&&` + `&&` = `&&`，其余都是 `&`。或者"只要有一个 `&` 就折叠成 `&`"。
-
-#### 转发引用（Forwarding Reference）
-
-模板中的 `T&&` 不是右值引用，而是**转发引用**（旧称万能引用 universal reference），它能根据实参类型推导为左值引用或右值引用：
-
-```cpp
-// move_semantics.cpp（续）—— 转发引用与引用折叠
-
-template <typename T>
-void show_type(T&& param) {
-    // T&& 是转发引用，不是右值引用
-    // 传入左值 → T 推导为 T&，param 类型为 T&（引用折叠）
-    // 传入右值 → T 推导为 T，param 类型为 T&&
-}
-
-void demo_forwarding_reference() {
-    std::cout << "\n=== 转发引用与引用折叠 ===" << std::endl;
-    int x = 42;
-
-    show_type(x);            // 传入左值 → T = int&, param = int& && → int&
-    show_type(std::move(x)); // 传入右值 → T = int,  param = int&&
-    show_type(42);           // 传入右值 → T = int,  param = int&&
-}
-```
-
-> ⚠️ **注意**：`T&&` 是转发引用**当且仅当**在模板参数推导上下文中。以下情况 `T&&` 是真正的右值引用，不是转发引用：
-> - `void f(std::string&& s)` —— 非模板，是右值引用
-> - `template <typename T> class C { void f(T&&); }` —— T 已确定，不是推导，是右值引用
-
-### 学习任务 4：std::forward 与完美转发（30 分钟）
-
-#### 完美转发的问题
-
-转发引用会丢失原始值类别——传入左值后 `param` 变成左值引用，再传递给别人时始终是左值：
-
-```cpp
-void target(int& x)       { std::cout << "  左值引用" << std::endl; }
-void target(int&& x)      { std::cout << "  右值引用" << std::endl; }
-
-template <typename T>
-void bad_forward(T&& param) {
-    target(param);  // param 是左值（有名字），永远调用 target(int&)
-}
-
-void demo_bad_forward() {
-    bad_forward(42);  // 期望调用 target(int&&)，实际调用 target(int&)
-}
-```
-
-#### std::forward 解决方案
-
-`std::forward` 根据模板参数 T 恢复原始值类别：
-
-```cpp
-// move_semantics.cpp（续）—— 完美转发
-
-template <typename T>
-void perfect_forward(T&& param) {
-    target(std::forward<T>(param));  // 恢复原始值类别
-}
-
-// std::forward 的简化实现
-template <typename T>
-constexpr T&& my_forward(typename std::remove_reference<T>::type& arg) noexcept {
-    return static_cast<T&&>(arg);
-}
-// 如果 T = int&   → static_cast<int& &&> → int&  （折叠）→ 左值
-// 如果 T = int    → static_cast<int&&>   → int&&       → 右值
-
-void demo_perfect_forward() {
-    std::cout << "\n=== 完美转发 ===" << std::endl;
-    int x = 42;
-    perfect_forward(x);            // 传入左值 → target(int&)
-    perfect_forward(std::move(x)); // 传入右值 → target(int&&)
-    perfect_forward(42);           // 传入右值 → target(int&&)
-}
-```
-
-> 💡 **一句话总结**：`std::move` 无条件转右值，`std::forward` 条件转右值（保持原始值类别）。`std::move` 用于"我想移动它"，`std::forward` 用于"我想转发它，保持它原来的左值/右值属性"。
-
-#### 完美转发的实际应用
-
-```cpp
-// make_shared 的完美转发
-template <typename T, typename... Args>
-std::shared_ptr<T> my_make_shared(Args&&... args) {
-    return std::shared_ptr<T>(new T(std::forward<Args>(args)...));
-}
-
-// emplace_back 的完美转发
-// std::vector<T>::emplace_back(Args&&... args) 把参数完美转发给 T 的构造函数
-
-// 应用：避免不必要的临时对象
-struct Widget {
-    Widget(const std::string& s) { /* 拷贝 */ }
-    Widget(std::string&& s) { /* 移动 */ }
+    // 拼接运算符
+    String operator+(const String& other) const {
+        char* buf = new char[strlen(data_) + strlen(other.data_) + 1];
+        strcpy(buf, data_);
+        strcat(buf, other.data_);
+        String result(buf);
+        delete[] buf;
+        return result;
+    }
 };
-
-void demo_emplace_vs_push() {
-    std::vector<Widget> vec;
-    std::string s = "hello";
-
-    // push_back 先构造临时 Widget 再移动/拷贝入 vector
-    vec.push_back(Widget(s));
-
-    // emplace_back 直接在 vector 内存中构造，完美转发参数
-    vec.emplace_back(s);          // 转发左值 → 拷贝构造
-    vec.emplace_back(std::move(s)); // 转发右值 → 移动构造
-}
 ```
 
-### 学习任务 5：RVO/NRVO 返回值优化（15 分钟）
+### 默写检查清单
 
-| 优化 | 全称 | 说明 |
-|------|------|------|
-| **RVO** | Return Value Optimization | 返回临时对象（prvalue）时省略拷贝 |
-| **NRVO** | Named Return Value Optimization | 返回局部变量（具名）时省略拷贝 |
-| **C++17 强制 RVO** | Guaranteed Copy Elision | prvalue 返回**保证**省略拷贝（不是优化，是标准要求） |
-
-```cpp
-// move_semantics.cpp（续）—— RVO/NRVO
-
-StringVector create_vector() {
-    StringVector v(100);  // 局部变量
-    for (int i = 0; i < 100; i++) v.push(i);
-    return v;  // NRVO：可能省略拷贝/移动，直接在调用者栈上构造
-}
-
-StringVector create_vector_rvo() {
-    return StringVector(100);  // RVO：C++17 起保证省略，无拷贝无移动
-}
-
-void demo_rvo() {
-    std::cout << "\n=== RVO/NRVO ===" << std::endl;
-    auto v1 = create_vector();       // NRVO（编译器可能省略）
-    auto v2 = create_vector_rvo();   // RVO（C++17 保证省略）
-    std::cout << "  v1.size = " << v1.size() << ", v2.size = " << v2.size() << std::endl;
-}
-```
-
-> ⚠️ **不要对返回值用 `std::move`**：`return std::move(local_var)` 会**阻止** NRVO！因为 `std::move` 把它变成右值，编译器只能用移动而非省略。正确写法是 `return local_var;`，让编译器自动应用 NRVO。
-
-```cpp
-StringVector bad_return() {
-    StringVector v(100);
-    return std::move(v);  // 坏！阻止 NRVO，强制移动
-}
-
-StringVector good_return() {
-    StringVector v(100);
-    return v;  // 好！NRVO 可能完全省略拷贝/移动
-}
-```
-
-### 面试题积累（今日 6 道）
-
-**Q1：`std::move` 做了什么？它移动了什么？**
-> 答：`std::move` 不移动任何东西，它只是一个到右值引用的无条件 `static_cast`。它把表达式标记为"可移动"（右值），真正的移动发生在移动构造函数/赋值运算符中。`std::move` 之后源对象处于"有效但未指定"状态——可以赋值或析构，但不应读取其值。
-
-**Q2：`std::move` 和 `std::forward` 有什么区别？**
-> 答：`std::move` 无条件转换为右值引用（用于"我想移动它"）；`std::forward` 条件转换——根据模板参数 T 恢复原始值类别（用于"我想转发它，保持它原来是左值还是右值"）。`std::move` 用于不需要保留值类别的场景，`std::forward` 用于完美转发（如 `make_shared`、`emplace_back`）。
-
-**Q3：什么是引用折叠？**
-> 答：当模板参数推导产生"引用的引用"时，C++ 按四条规则折叠：`T& &`→`T&`、`T& &&`→`T&`、`T&& &`→`T&`、`T&& &&`→`T&&`。口诀："只有右值引用的右值引用还是右值引用，其余都折叠成左值引用"。引用折叠是转发引用（`T&&`）和完美转发的语言基础。
-
-**Q4：为什么移动构造函数要标记 `noexcept`？**
-> 答：`std::vector` 扩容时需要把旧元素迁移到新内存。如果移动构造是 `noexcept`，vector 用移动（快）；否则用拷贝（安全——如果中途抛异常，已拷贝的可以回滚）。不标 `noexcept` 的移动构造可能反而导致 vector 用更慢的拷贝。所以移动操作通常应标 `noexcept`（移动只交换指针，不会失败）。
-
-**Q5：什么是完美转发？为什么需要它？**
-> 答：完美转发是指函数模板将参数传递给另一个函数时，保持参数的原始值类别（左值/右值）和 `const` 属性不变。需要它是因为转发引用 `T&&` 会丢失值类别——传入右值后 `param` 变成具名变量（左值），再传递时变成左值。`std::forward<T>(param)` 通过引用折叠恢复原始类别。典型应用：`make_shared`、`emplace_back`、工厂函数。
-
-**Q6：`return std::move(local_var)` 有什么问题？**
-> 答：它会阻止 NRVO（命名返回值优化）。`std::move` 把局部变量变成右值，编译器只能用移动构造；而直接 `return local_var` 时，编译器可以完全省略拷贝/移动（NRVO），直接在调用者栈上构造对象。C++17 起，返回 prvalue（如 `return T(args)`）保证省略（RVO），但返回具名局部变量（NRVO）仍由编译器决定，`std::move` 会阻止这个优化。
-
-### 今日检查清单
-
-- [ ] 能解释 `std::move` 的本质（`static_cast` 到右值引用，不移动任何东西）
-- [ ] 能写出移动构造函数（偷取资源 + 置空源对象 + `noexcept`）
-- [ ] 能解释为什么移动操作要标 `noexcept`（vector 扩容用移动而非拷贝）
-- [ ] 能说出引用折叠的四条规则
-- [ ] 能区分转发引用 `T&&` 和右值引用 `T&&`
-- [ ] 能解释 `std::forward` 的工作原理（条件转换 + 引用折叠）
-- [ ] 能说出 `std::move` vs `std::forward` 的区别
-- [ ] 能解释 RVO/NRVO 以及为什么不要 `return std::move(local)`
-- [ ] `move_semantics.cpp` 编译运行通过
-
-#### 明日预告
-
-Day 4 将深入**模板与泛型编程**——函数/类模板、模板特化与偏特化、变参模板、SFINAE 与 C++20 concepts。今天的完美转发用到了变参模板（`Args&&... args`），明天从模板基础讲起。模板是 [CUTLASS 专题](../cutlass/README.md) 的核心——CUTLASS 的三层抽象全是模板参数。建议今晚先看看 `std::vector` 的声明，感受模板的复杂度。
+- [ ] 构造函数：`new char[strlen+1]` + `strcpy`
+- [ ] 析构函数：`delete[] data_`
+- [ ] 拷贝构造：深拷贝（new + strcpy）
+- [ ] 拷贝赋值：自赋值检查 + delete + 深拷贝 + return *this
+- [ ] 能否加上移动构造和移动赋值？（Day 5 升级）
 
 ---
+
+## 今日小结
+
+| 主题 | 核心要点 | 面试频率 |
+|------|---------|---------|
+| 构造/析构顺序 | 构造：基类→成员→派生类；析构严格相反 | ⭐⭐⭐⭐ |
+| 深拷贝 vs 浅拷贝 | 有裸指针必须自定义拷贝构造和赋值 | ⭐⭐⭐⭐⭐ |
+| 虚函数机制 | vptr → vtable → 间接调用 | ⭐⭐⭐⭐⭐ |
+| 虚析构 | 有虚函数的基类必须虚析构 | ⭐⭐⭐⭐⭐ |
+| 纯虚/抽象类 | `= 0`，不能实例化，接口设计 | ⭐⭐⭐⭐ |
+| 重载/覆盖/隐藏 | 同作用域+不同参 / virtual+同签名 / 同名遮蔽 | ⭐⭐⭐⭐ |
+| 菱形继承/虚继承 | `virtual public`，最底层派生类构造虚基类 | ⭐⭐⭐ |
+| String 类 | 构造/析构/拷贝构造/赋值 四件套 | ⭐⭐⭐⭐⭐ |
+
+> **明日预告**：Day 4 STL 容器与算法——vector 扩容机制、迭代器失效、红黑树 vs 哈希表、LRU 缓存。

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 648" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="64" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="648" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">死锁：环形等待的形成与拆解</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== 左：事故现场 ===== -->
+  <text x="245" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a">事故现场：两边反着加锁</text>
+  <g filter="url(#sk)"><rect x="20" y="90" width="450" height="86" rx="6" fill="#fffdf3" stroke="#b03a3a" stroke-width="1.2" stroke-dasharray="6 4"/></g>
+  <text x="36" y="112" font-size="10" fill="#444">// 线程 T1　　　　　　　　// 线程 T2</text>
+  <text x="36" y="130" font-size="10" fill="#444">lock(A);　　　　　　　　  lock(B);</text>
+  <text x="36" y="148" font-size="10" fill="#b03a3a">lock(B);  ← 卡住！　　　  lock(A);  ← 卡住！</text>
+  <text x="36" y="166" font-size="10" fill="#444">// 互相等对方放手 → 永久阻塞</text>
+
+  <!-- 环形等待图 -->
+  <g filter="url(#sk)"><rect x="50" y="200" width="100" height="40" rx="6" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="100" y="225" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">线程 T1</text>
+  <g filter="url(#sk)"><rect x="330" y="200" width="100" height="40" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="380" y="225" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">线程 T2</text>
+  <g filter="url(#sk)"><rect x="50" y="350" width="100" height="40" rx="20" fill="#ececec" stroke="#666" stroke-width="1.4"/></g>
+  <text x="100" y="375" text-anchor="middle" font-size="11" font-weight="bold" fill="#444">mutex A</text>
+  <g filter="url(#sk)"><rect x="330" y="350" width="100" height="40" rx="20" fill="#ececec" stroke="#666" stroke-width="1.4"/></g>
+  <text x="380" y="375" text-anchor="middle" font-size="11" font-weight="bold" fill="#444">mutex B</text>
+
+  <path d="M 100 242 L 100 344" stroke="#4a8e4a" stroke-width="1.8" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="94" y="300" text-anchor="end" font-size="9" fill="#2e6e2e">持有</text>
+  <path d="M 380 242 L 380 344" stroke="#4a8e4a" stroke-width="1.8" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="386" y="300" text-anchor="start" font-size="9" fill="#2e6e2e">持有</text>
+
+  <path d="M 152 216 C 280 216 400 240 412 344" stroke="#b03a3a" stroke-width="1.6" fill="none" stroke-dasharray="5 4" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="300" y="228" text-anchor="middle" font-size="9" fill="#b03a3a">想拿 B（被 T2 占着）</text>
+  <path d="M 328 216 C 200 216 80 240 68 344" stroke="#b03a3a" stroke-width="1.6" fill="none" stroke-dasharray="5 4" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="185" y="228" text-anchor="middle" font-size="9" fill="#b03a3a">想拿 A（被 T1 占着）</text>
+
+  <text x="230" y="308" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a">循环等待</text>
+  <text x="230" y="326" text-anchor="middle" font-size="9" fill="#666">等待链成环 → 谁也动不了</text>
+  <text x="230" y="414" text-anchor="middle" font-size="9" fill="#666">图例：绿实线 = 持有　红虚线 = 想拿（正被对方持有）</text>
+
+  <!-- ===== 右：四个必要条件 ===== -->
+  <text x="740" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#444">四个必要条件（缺一不可）</text>
+  <g filter="url(#sk)"><rect x="500" y="90" width="460" height="64" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <circle cx="528" cy="122" r="14" fill="#4a8edb"/>
+  <text x="528" y="127" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">1</text>
+  <text x="556" y="118" font-size="11" font-weight="bold" fill="#444">互斥</text>
+  <text x="556" y="138" font-size="9" fill="#666">资源同一时刻只归一个线程所有（锁的本质，没法破）</text>
+
+  <g filter="url(#sk)"><rect x="500" y="164" width="460" height="64" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <circle cx="528" cy="196" r="14" fill="#4a8e4a"/>
+  <text x="528" y="201" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">2</text>
+  <text x="556" y="192" font-size="11" font-weight="bold" fill="#444">持有并等待</text>
+  <text x="556" y="212" font-size="9" fill="#666">拿着 A 不放，还想去等 B → 破法：一次申请全部</text>
+
+  <g filter="url(#sk)"><rect x="500" y="238" width="460" height="64" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <circle cx="528" cy="270" r="14" fill="#c98a2b"/>
+  <text x="528" y="275" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">3</text>
+  <text x="556" y="266" font-size="11" font-weight="bold" fill="#444">不可剥夺</text>
+  <text x="556" y="286" font-size="9" fill="#666">谁也不能硬抢你手里的锁 → 破法：try_lock 失败先放掉</text>
+
+  <g filter="url(#sk)"><rect x="500" y="312" width="460" height="64" rx="6" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <circle cx="528" cy="344" r="14" fill="#b03a3a"/>
+  <text x="528" y="349" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">4</text>
+  <text x="556" y="340" font-size="11" font-weight="bold" fill="#444">循环等待</text>
+  <text x="556" y="360" font-size="9" fill="#666">T1 等 T2、T2 等 T1 成环 → 破法：全局统一加锁顺序</text>
+
+  <text x="740" y="404" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">→ 四条同时成立才会死锁，破坏任意一条即可预防</text>
+
+  <!-- ===== 底部：三招预防 ===== -->
+  <g filter="url(#sk)"><rect x="20" y="428" width="310" height="190" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="175" y="454" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2b6e9e">① 统一加锁顺序（最常用）</text>
+  <text x="36" y="480" font-size="9" fill="#555">所有代码路径都按同一顺序拿锁</text>
+  <text x="36" y="498" font-size="9" fill="#555">（如永远先 A 后 B / 按 mutex 地址排序）</text>
+  <text x="36" y="516" font-size="9" fill="#555">或定义锁层级：上层不得嵌套下层锁</text>
+  <text x="175" y="552" text-anchor="middle" font-size="9" fill="#2b6e9e" font-weight="bold">破坏「循环等待」</text>
+
+  <g filter="url(#sk)"><rect x="345" y="428" width="310" height="190" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="500" y="454" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#2e6e2e">② 一次拿全（推荐写法）</text>
+  <text x="361" y="480" font-size="9" fill="#555">std::scoped_lock lk(m1, m2);（C++17）</text>
+  <text x="361" y="498" font-size="9" fill="#555">老写法：std::lock(m1, m2);</text>
+  <text x="361" y="516" font-size="9" fill="#555">　　+ lock_guard(m, adopt_lock) 接管释放</text>
+  <text x="500" y="552" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">内部试锁回退，破坏「循环等待」</text>
+
+  <g filter="url(#sk)"><rect x="670" y="428" width="310" height="190" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="825" y="454" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#7a5415">③ 少持有、少嵌套</text>
+  <text x="686" y="480" font-size="9" fill="#555">临界区尽量短；锁内别调未知回调</text>
+  <text x="686" y="498" font-size="9" fill="#555">（回调可能反过来拿你的锁）</text>
+  <text x="686" y="516" font-size="9" fill="#555">需要时 try_lock_for：超时就放掉已有锁重试</text>
+  <text x="825" y="552" text-anchor="middle" font-size="9" fill="#7a5415" font-weight="bold">破坏「持有并等待」</text>
+
+  <text x="500" y="638" text-anchor="middle" font-size="9.5" fill="#888" font-style="italic">排查工具：gdb attach 后 info threads + thread apply all bt，看到两条栈互相等 lock 就是它</text>
+</svg>

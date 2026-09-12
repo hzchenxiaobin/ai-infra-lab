@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@ailab/contracts";
-import { trpc, type InterviewStatsData } from "../lib/trpc";
+import { queryClient, trpc, type InterviewStatsData } from "../lib/trpc";
 import {
+  Button,
   Card,
   EmptyBox,
   ErrorBox,
@@ -20,6 +21,17 @@ export default function HistoryPage() {
   const navigate = useNavigate();
   const stats = useQuery(trpc.interview.stats.queryOptions());
   const sessions = useQuery(trpc.interview.list.queryOptions());
+  const remove = useMutation(
+    trpc.interview.remove.mutationOptions({
+      onSuccess: () => queryClient.invalidateQueries(),
+    }),
+  );
+
+  const onDelete = (id: number, title: string) => {
+    if (window.confirm(`确定删除场次「${title}」？聊天记录与报告将一并删除，不可恢复。`)) {
+      remove.mutate({ sessionId: id });
+    }
+  };
 
   return (
     <div className="space-y-10">
@@ -80,6 +92,7 @@ export default function HistoryPage() {
                   <th className="px-5 py-3 font-medium">等级</th>
                   <th className="px-5 py-3 font-medium">时长</th>
                   <th className="px-5 py-3 font-medium">状态</th>
+                  <th className="px-5 py-3 font-medium">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,6 +126,19 @@ export default function HistoryPage() {
                         ) : (
                           <StatusPill variant="active">进行中</StatusPill>
                         )}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          disabled={remove.isPending}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(s.id, s.title);
+                          }}
+                        >
+                          删除
+                        </Button>
                       </td>
                     </tr>
                   );

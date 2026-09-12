@@ -35,7 +35,14 @@ export default function InterviewPage() {
 
 function InterviewRoom({ sessionId }: { sessionId: number }) {
   const navigate = useNavigate();
-  const get = useQuery(trpc.interview.get.queryOptions({ sessionId }));
+  const get = useQuery({
+    ...trpc.interview.get.queryOptions({ sessionId }),
+    // 服务端已标记 finished 但报告未落库时轮询，实时刷新生成进度
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      return d && d.session.status === "finished" && !d.report ? 2000 : false;
+    },
+  });
   const [messages, setMessages] = useState<MessageItem[] | null>(null);
   const [stateOverride, setStateOverride] = useState<InterviewState | null>(null);
   const [input, setInput] = useState("");
@@ -54,10 +61,22 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
     trpc.interview.reply.mutationOptions({
       onSuccess: (res) => {
         setStateOverride(res.state);
-        setMessages((m) => [
-          ...(m ?? []),
-          makeLocalMessage(sessionId, "interviewer", res.interviewerMessage),
-        ]);
+        setMessages((m) => {
+          const next = [
+            ...(m ?? []),
+            makeLocalMessage(sessionId, "interviewer", res.interviewerMessage),
+          ];
+          if (res.state.status === "finished") {
+            next.push(
+              makeLocalMessage(
+                sessionId,
+                "system",
+                "本场面试已结束，感谢参与。评估报告生成后可在报告页查看。",
+              ),
+            );
+          }
+          return next;
+        });
         if (res.state.status === "finished") queryClient.invalidateQueries();
       },
       onError: (err) => {
@@ -71,9 +90,25 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
 
   const finish = useMutation(
     trpc.interview.finish.mutationOptions({
+      onMutate: () => {
+        // 服务端已先落库 finished，这里同步切换界面，报告生成期间不再等待
+        const s = get.data?.session;
+        if (!s) return;
+        setStateOverride({
+          sessionId,
+          status: "finished",
+          currentIndex: stateOverride?.currentIndex ?? s.currentIndex,
+          followUpIndex: stateOverride?.followUpIndex ?? s.followUpIndex,
+          totalQuestions: s.questionIds.length,
+        });
+      },
       onSuccess: () => {
         queryClient.invalidateQueries();
         navigate(`/report/${sessionId}`);
+      },
+      // 评估失败时面试也已结束：刷新缓存以同步真实状态
+      onError: () => {
+        queryClient.invalidateQueries();
       },
     }),
   );
@@ -124,7 +159,7 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
       {msgs.map((m) => (
         <MessageBubble key={m.id} role={m.role} content={m.content} />
       ))}
-      {reply.isPending && (
+      {reply.isPending && status !== "finished" && (
         <div className="flex justify-start">
           <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-4 py-2.5 text-sm text-muted shadow-soft">
             <span className="size-1.5 animate-pulse-dot rounded-full bg-accent-600" />
@@ -140,6 +175,20 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
     status === "finished" ? (
       <Card className="py-6 text-center text-sm text-muted">
         本场面试已结束。
+        {(() => {
+          const progress = get.data.reportProgress;
+          if (progress.stage === "done" || get.data.report) return null;
+          if (progress.stage === "failed") {
+            return <span className="mx-1">评估失败，可在报告页重新生成。</span>;
+          }
+          const detail =
+            progress.stage === "rendering"
+              ? "正在生成报告…"
+              : progress.stage === "evaluating"
+                ? "正在评估你的回答…"
+                : "排队中";
+          return <span className="mx-1">报告生成中（{detail}）</span>;
+        })()}
         <Link to={`/report/${sessionId}`} className="ml-1 text-accent-600 transition-colors hover:text-accent-700">
           查看评估报告 →
         </Link>

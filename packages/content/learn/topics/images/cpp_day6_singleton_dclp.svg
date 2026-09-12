@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="66" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="640" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">线程安全单例：Meyers 与 DCLP 两种姿势</text>
+  <path d="M 310 40 Q 500 48 690 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== 左：Meyers ===== -->
+  <g filter="url(#sk)"><rect x="20" y="64" width="460" height="400" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="240" y="92" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2e6e2e">写法一：Meyers 单例（局部 static）</text>
+  <g filter="url(#sk)"><rect x="408" y="74" width="60" height="22" rx="11" fill="#4a8e4a"/></g>
+  <text x="438" y="89" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#fff">推荐</text>
+  <g filter="url(#sk)"><rect x="40" y="124" width="420" height="110" rx="4" fill="#fdfcf7" stroke="#4a8e4a" stroke-width="0.9"/></g>
+  <text x="54" y="150" font-size="10" fill="#444">static Singleton&amp; instance() {</text>
+  <text x="54" y="172" font-size="10" fill="#444">    static Singleton inst;   // 懒汉：首次调用才构造</text>
+  <text x="54" y="194" font-size="10" fill="#444">    return inst;</text>
+  <text x="54" y="216" font-size="10" fill="#444">}</text>
+  <text x="44" y="262" font-size="9.5" fill="#555">· 首次调用才构造（懒汉），此后直接返回</text>
+  <text x="44" y="284" font-size="9.5" fill="#555">· C++11 起标准保证：并发首次调用时</text>
+  <text x="44" y="302" font-size="9.5" fill="#555">  初始化只执行一次（magic static，</text>
+  <text x="44" y="320" font-size="9.5" fill="#555">  编译器自动用锁 / CAS 实现）</text>
+  <text x="44" y="352" font-size="9.5" fill="#b03a3a">· 弱点：静态对象销毁顺序不受你控制</text>
+  <text x="44" y="370" font-size="9.5" fill="#b03a3a">  （跨编译单元的析构顺序不保证）</text>
+  <text x="44" y="402" font-size="9.5" fill="#555">· 三件套别漏：构造 private、拷贝 / 赋值 = delete</text>
+
+  <!-- ===== 右：DCLP ===== -->
+  <g filter="url(#sk)"><rect x="520" y="64" width="460" height="400" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="750" y="92" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#2b6e9e">写法二：双重检查锁 DCLP（atomic 版）</text>
+
+  <g filter="url(#sk)"><rect x="540" y="108" width="420" height="50" rx="4" fill="#fdfcf7" stroke="#4a8edb" stroke-width="1.1"/></g>
+  <text x="554" y="128" font-size="9.5" font-weight="bold" fill="#2b6e9e">① 第一次检查（无锁读，relaxed）</text>
+  <text x="554" y="146" font-size="8.5" fill="#666">非 null → 直接 return：热路径零锁开销</text>
+
+  <g filter="url(#sk)"><rect x="540" y="166" width="420" height="50" rx="4" fill="#fdfcf7" stroke="#4a8edb" stroke-width="1.1"/></g>
+  <text x="554" y="186" font-size="9.5" font-weight="bold" fill="#2b6e9e">② 加锁 std::unique_lock&lt;std::mutex&gt; lk(m_);</text>
+  <text x="554" y="204" font-size="8.5" fill="#666">为 null 才走到这——只有开局那几个线程会抢锁</text>
+
+  <g filter="url(#sk)"><rect x="540" y="224" width="420" height="50" rx="4" fill="#fdfcf7" stroke="#4a8edb" stroke-width="1.1"/></g>
+  <text x="554" y="244" font-size="9.5" font-weight="bold" fill="#2b6e9e">③ 第二次检查（持锁读）</text>
+  <text x="554" y="262" font-size="8.5" fill="#666">等锁期间可能已被别的线程构造完 → 防重复 new</text>
+
+  <g filter="url(#sk)"><rect x="540" y="282" width="420" height="50" rx="4" fill="#fdfcf7" stroke="#4a8edb" stroke-width="1.1"/></g>
+  <text x="554" y="302" font-size="9.5" font-weight="bold" fill="#2b6e9e">④ tmp = new Singleton; instance_.store(tmp, release);</text>
+  <text x="554" y="320" font-size="8.5" fill="#666">先构造完再"发布"，然后解锁返回</text>
+
+  <path d="M 750 158 L 750 164" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 750 216 L 750 222" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 750 274 L 750 280" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+
+  <g filter="url(#sk)"><rect x="540" y="346" width="420" height="104" rx="6" fill="#fdecec" stroke="#b03a3a" stroke-width="1.2" stroke-dasharray="6 4"/></g>
+  <text x="750" y="368" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#b03a3a">⚠ 历史坑：为什么裸指针版 DCLP 是错的</text>
+  <text x="554" y="388" font-size="8.5" fill="#7a2020">instance_ = new Singleton; 实际是三步：</text>
+  <text x="554" y="404" font-size="8.5" fill="#7a2020">①分配内存 ②地址写回 instance_ ③执行构造</text>
+  <text x="554" y="420" font-size="8.5" fill="#7a2020">若 ②③ 被重排：别人第一次检查看到非 null，</text>
+  <text x="554" y="436" font-size="8.5" fill="#7a2020">却拿到"没构造完"的半成品 → 必须 atomic + release</text>
+
+  <!-- ===== 底部速记 ===== -->
+  <g filter="url(#sk)"><rect x="20" y="488" width="960" height="118" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <text x="44" y="512" font-size="10" fill="#666">饿汉 vs 懒汉：饿汉 = 启动就构造（static Singleton g;），天生安全但可能白造 + 初始化顺序坑；懒汉 = 首次使用才造 → 才需要上面两种写法</text>
+  <text x="44" y="534" font-size="10" fill="#666">两种都要会写：Meyers 三行是"会写"，DCLP + atomic 是"懂原理"，面试常从前者追问到后者</text>
+  <text x="44" y="556" font-size="10" font-weight="bold" fill="#444">面试剧本：先写 Meyers → 被问"为什么安全"答 magic static → 追问 DCLP 就讲两次检查各防什么 + 重排坑</text>
+  <text x="44" y="580" font-size="10" fill="#b03a3a" font-style="italic">细节加分：第一次检查用 relaxed 就够（只是提示"可能建好了"）；正式发布必须 release，读取端配 acquire</text>
+</svg>

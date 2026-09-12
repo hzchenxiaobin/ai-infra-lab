@@ -39,6 +39,7 @@ export function QuestionCard({
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
             <Chip>{CATEGORY_LABELS[question.category]}</Chip>
             <DifficultyBadge difficulty={question.difficulty} />
+            {question.userId == null && <Chip>共享题库</Chip>}
             {question.tags && <span>标签：{question.tags}</span>}
             <span>更新于 {formatDateTime(question.updatedAt)}</span>
           </div>
@@ -80,13 +81,17 @@ export function QuestionCard({
                 </Link>
               ) : null;
             })()}
-            <Button variant="ghost" size="sm" onClick={onEdit}>
-              编辑
-            </Button>
-            <Button variant="danger" size="sm" onClick={onDelete} disabled={remove.isPending}>
-              {remove.isPending ? "删除中…" : "删除"}
-            </Button>
-            {remove.error && <span className="text-xs text-accent-400">{remove.error.message}</span>}
+            {question.userId != null && (
+              <>
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                  编辑
+                </Button>
+                <Button variant="danger" size="sm" onClick={onDelete} disabled={remove.isPending}>
+                  {remove.isPending ? "删除中…" : "删除"}
+                </Button>
+                {remove.error && <span className="text-xs text-accent-400">{remove.error.message}</span>}
+              </>
+            )}
           </div>
         </div>
       )}

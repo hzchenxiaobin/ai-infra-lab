@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="45" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="600" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">循环引用：为什么 shared_ptr 还会泄漏</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== bad: both shared_ptr ===== -->
+  <text x="30" y="76" font-size="12" font-weight="bold" fill="#b03a3a">❌ 双方都用 shared_ptr</text>
+  <text x="370" y="96" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">use_count = 2</text>
+  <text x="650" y="96" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">use_count = 2</text>
+  <g filter="url(#sk)">
+    <rect x="60" y="110" width="90" height="36" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="850" y="110" width="90" height="36" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="280" y="106" width="180" height="92" rx="6" fill="#fdecec" stroke="#b03a3a" stroke-width="1.5"/>
+    <rect x="560" y="106" width="180" height="92" rx="6" fill="#fdecec" stroke="#b03a3a" stroke-width="1.5"/>
+  </g>
+  <text x="105" y="132" text-anchor="middle" font-size="10" fill="#2b6e9e">a（栈）</text>
+  <text x="895" y="132" text-anchor="middle" font-size="10" fill="#2b6e9e">b（栈）</text>
+  <text x="370" y="134" text-anchor="middle" font-size="11" font-weight="bold" fill="#b03a3a">Node A</text>
+  <text x="370" y="158" text-anchor="middle" font-size="8.5" fill="#666">shared_ptr&lt;Node&gt; next_</text>
+  <text x="370" y="178" text-anchor="middle" font-size="8" fill="#999">1(栈上的 a) + 1(b 的 next_) = 2</text>
+  <text x="650" y="134" text-anchor="middle" font-size="11" font-weight="bold" fill="#b03a3a">Node B</text>
+  <text x="650" y="158" text-anchor="middle" font-size="8.5" fill="#666">shared_ptr&lt;Node&gt; next_</text>
+  <text x="650" y="178" text-anchor="middle" font-size="8" fill="#999">1(栈上的 b) + 1(a 的 next_) = 2</text>
+  <path d="M 152 128 L 276 128" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 848 128 L 744 128" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 462 140 L 556 140" stroke="#b03a3a" stroke-width="1.6" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="509" y="132" text-anchor="middle" font-size="8" fill="#b03a3a">a-&gt;next_ = b</text>
+  <path d="M 556 196 C 516 252 424 252 384 196" stroke="#b03a3a" stroke-width="1.6" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="470" y="244" text-anchor="middle" font-size="8" fill="#b03a3a">b-&gt;next_ = a</text>
+  <text x="500" y="278" text-anchor="middle" font-size="10" fill="#666">作用域结束：栈上 a、b 析构 → 两个计数 2 → 1，仍被对方的 next_ 牵着</text>
+  <text x="500" y="298" text-anchor="middle" font-size="11" font-weight="bold" fill="#b03a3a">计数永远到不了 0 → ~Node 永不执行 → 泄漏（看析构打印即可验证）</text>
+
+  <!-- ===== good: one side weak_ptr ===== -->
+  <text x="30" y="346" font-size="12" font-weight="bold" fill="#2e6e2e">✅ 一侧改成 weak_ptr</text>
+  <text x="370" y="366" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">use_count = 1</text>
+  <text x="650" y="366" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">use_count = 1</text>
+  <g filter="url(#sk)">
+    <rect x="60" y="380" width="90" height="36" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="850" y="380" width="90" height="36" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.2"/>
+    <rect x="280" y="376" width="180" height="92" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/>
+    <rect x="560" y="376" width="180" height="92" rx="6" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/>
+  </g>
+  <text x="105" y="402" text-anchor="middle" font-size="10" fill="#2b6e9e">a（栈）</text>
+  <text x="895" y="402" text-anchor="middle" font-size="10" fill="#2b6e9e">b（栈）</text>
+  <text x="370" y="404" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">Node A</text>
+  <text x="370" y="428" text-anchor="middle" font-size="8.5" fill="#666">shared_ptr&lt;Node&gt; next_</text>
+  <text x="650" y="404" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">Node B</text>
+  <text x="650" y="428" text-anchor="middle" font-size="8.5" fill="#666">weak_ptr&lt;Node&gt; next_</text>
+  <text x="650" y="448" text-anchor="middle" font-size="8" fill="#999">不参与计数 → 环被打破</text>
+  <path d="M 152 398 L 276 398" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 848 398 L 744 398" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 462 410 L 556 410" stroke="#4a8e4a" stroke-width="1.6" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="509" y="402" text-anchor="middle" font-size="8" fill="#2e6e2e">shared_ptr（计数）</text>
+  <path d="M 556 466 C 516 518 424 518 384 466" stroke="#9e9e9e" stroke-width="1.5" fill="none" stroke-dasharray="5 3" filter="url(#sk)"/>
+  <text x="470" y="510" text-anchor="middle" font-size="8.5" fill="#666">weak_ptr（不计数 · 只观察）</text>
+  <text x="500" y="546" text-anchor="middle" font-size="10" fill="#2e6e2e" font-weight="bold">作用域结束：a 的计数 1 → 0，~Node() 正常执行，b 同理 —— 环被打破</text>
+  <text x="500" y="568" text-anchor="middle" font-size="9.5" fill="#555">存活检测：if (auto p = node.next_.lock()) { 对象存活 } else { 已销毁 }</text>
+  <text x="500" y="590" text-anchor="middle" font-size="10" fill="#888" font-style="italic">经验：父持有子用 shared_ptr，子回望父只用 weak_ptr —— 树 / 图 / 缓存同理</text>
+</svg>

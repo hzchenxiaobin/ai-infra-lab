@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 555" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="48" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="555" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">lambda 的底层原理：编译器生成的仿函数</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== lambda source ===== -->
+  <g filter="url(#sk)"><rect x="150" y="60" width="700" height="66" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="500" y="88" text-anchor="middle" font-size="12" fill="#2b6e9e" font-weight="bold">auto f = [x, &amp;y](int z) { return x + y + z; };</text>
+  <text x="500" y="110" text-anchor="middle" font-size="9" fill="#666">[ 捕获列表 ]（参数）{ 函数体 }</text>
+
+  <!-- ===== arrow ===== -->
+  <path d="M 500 130 L 500 170" stroke="#5a5a5a" stroke-width="1.8" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="515" y="155" font-size="9.5" fill="#888">编译器展开为一个等价的无名类</text>
+
+  <!-- ===== expanded functor ===== -->
+  <g filter="url(#sk)"><rect x="150" y="178" width="700" height="244" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="500" y="204" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">等价展开（仿函数类）</text>
+  <text x="210" y="230" font-size="10" fill="#444">class __lambda {</text>
+  <text x="210" y="250" font-size="10" fill="#444">    int  x_;      <tspan fill="#888">// 按值捕获 → 成员变量（副本）</tspan></text>
+  <text x="210" y="270" font-size="10" fill="#444">    int&amp; y_;      <tspan fill="#888">// 按引用捕获 → 成员引用</tspan></text>
+  <text x="210" y="290" font-size="10" fill="#444">public:</text>
+  <text x="210" y="310" font-size="10" fill="#444">    __lambda(int x, int&amp; y) : x_(x), y_(y) {}  <tspan fill="#888">// 捕获 = 构造参数</tspan></text>
+  <text x="210" y="330" font-size="10" fill="#444">    int operator()(int z) const { return x_ + y_ + z; }</text>
+  <text x="210" y="350" font-size="10" fill="#444">};</text>
+  <text x="210" y="376" font-size="9.5" fill="#2e6e2e">f(1);  ≈  f.operator()(1) —— const 成员函数里值捕获的成员只读（除非 mutable）</text>
+  <text x="500" y="404" text-anchor="middle" font-size="9" fill="#666">空捕获（无状态）lambda 可隐式转换为普通函数指针；可内联 → 常比 std::function 快</text>
+
+  <!-- ===== annotations: capture = member ===== -->
+  <path d="M 462 76 C 340 96 240 180 284 242" stroke="#4a8edb" stroke-width="1.1" fill="none" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="180" y="152" font-size="8.5" fill="#4a8edb">捕获列表 → 成员变量</text>
+  <path d="M 545 76 C 690 100 720 200 548 322" stroke="#4a8e4a" stroke-width="1.1" fill="none" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="740" y="152" font-size="8.5" fill="#4a8e4a">调用 → operator()</text>
+
+  <!-- ===== bottom notes ===== -->
+  <text x="500" y="452" text-anchor="middle" font-size="10" fill="#666">mutable：去掉 operator() 的 const → 可修改按值捕获的副本（仍是副本，不影响外界）</text>
+  <text x="500" y="478" text-anchor="middle" font-size="10" fill="#b03a3a">陷阱① [&amp;] 捕获 + 异步 / 存储 → 局部变量析构，成员引用悬空；陷阱② 捕获 this 同为引用，注意对象存活</text>
+  <text x="500" y="504" text-anchor="middle" font-size="10" fill="#888">C++14 初始化捕获 [obj = std::move(obj)] —— 唯一能把对象"移动进" lambda 的写法</text>
+  <text x="500" y="530" text-anchor="middle" font-size="10" fill="#888" font-style="italic">面试一句话：lambda 就是编译器替你写的仿函数，捕获即成员，调用即 operator()</text>
+</svg>

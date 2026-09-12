@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 612" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="44" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+    <marker id="arO" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#c98a2b"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="612" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">shared_ptr 内部结构：对象 + 控制块</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== stack ===== -->
+  <text x="95" y="84" text-anchor="middle" font-size="9" font-weight="bold" fill="#888">栈</text>
+  <g filter="url(#sk)">
+    <rect x="30" y="92" width="130" height="56" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="30" y="180" width="130" height="56" rx="4" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/>
+  </g>
+  <text x="95" y="114" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">sp1</text>
+  <text x="95" y="134" text-anchor="middle" font-size="8" fill="#666">ptr | ctrl</text>
+  <text x="95" y="202" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">sp2</text>
+  <text x="95" y="222" text-anchor="middle" font-size="8" fill="#666">ptr | ctrl</text>
+
+  <!-- ===== heap ===== -->
+  <g filter="url(#sk)"><rect x="330" y="76" width="250" height="320" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <text x="455" y="100" text-anchor="middle" font-size="10" font-weight="bold" fill="#7a5415">堆（make_shared 一次分配）</text>
+  <g filter="url(#sk)">
+    <rect x="370" y="116" width="170" height="64" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.6"/>
+    <rect x="370" y="204" width="170" height="130" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.6"/>
+    <rect x="386" y="236" width="138" height="26" fill="#fdf3df" stroke="#c98a2b" stroke-width="1"/>
+    <rect x="386" y="266" width="138" height="26" fill="#fdf3df" stroke="#c98a2b" stroke-width="1"/>
+    <rect x="386" y="296" width="138" height="26" fill="#fdf3df" stroke="#c98a2b" stroke-width="1"/>
+  </g>
+  <text x="455" y="142" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">Widget 对象</text>
+  <text x="455" y="162" text-anchor="middle" font-size="8" fill="#666">use_count → 0 时调 ~Widget()</text>
+  <text x="455" y="226" text-anchor="middle" font-size="10" font-weight="bold" fill="#7a5415">控制块（control block）</text>
+  <text x="455" y="253" text-anchor="middle" font-size="9" fill="#7a5415">use_count（强计数）</text>
+  <text x="455" y="283" text-anchor="middle" font-size="9" fill="#7a5415">weak_count（弱计数）</text>
+  <text x="455" y="313" text-anchor="middle" font-size="9" fill="#7a5415">deleter / allocator</text>
+  <text x="455" y="362" text-anchor="middle" font-size="8.5" fill="#888">计数为原子加减（线程安全）</text>
+
+  <!-- ===== arrows ===== -->
+  <path d="M 160 106 C 250 106 290 118 362 126" stroke="#4a8edb" stroke-width="1.5" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 160 136 C 250 140 290 200 362 228" stroke="#c98a2b" stroke-width="1.5" fill="none" marker-end="url(#arO)" filter="url(#sk)"/>
+  <path d="M 160 194 C 250 192 300 170 362 152" stroke="#4a8edb" stroke-width="1.5" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 160 224 C 250 226 300 244 362 250" stroke="#c98a2b" stroke-width="1.5" fill="none" marker-end="url(#arO)" filter="url(#sk)"/>
+
+  <!-- ===== legend ===== -->
+  <path d="M 40 300 L 84 300" stroke="#4a8edb" stroke-width="2" filter="url(#sk)"/>
+  <text x="92" y="304" font-size="9" fill="#666">对象指针（T* ptr）</text>
+  <path d="M 40 322 L 84 322" stroke="#c98a2b" stroke-width="2" filter="url(#sk)"/>
+  <text x="92" y="326" font-size="9" fill="#666">控制块指针（ctrl）</text>
+
+  <!-- ===== rules ===== -->
+  <g filter="url(#sk)"><rect x="620" y="76" width="360" height="150" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="800" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">计数规则</text>
+  <text x="800" y="126" text-anchor="middle" font-size="10" fill="#555">拷贝构造 / 赋值：use_count +1（原子）</text>
+  <text x="800" y="146" text-anchor="middle" font-size="10" fill="#555">析构：use_count −1（原子）</text>
+  <text x="800" y="166" text-anchor="middle" font-size="10" fill="#555">use_count == 0 → 析构对象（调 ~Widget）</text>
+  <text x="800" y="186" text-anchor="middle" font-size="10" fill="#555">weak_count == 0 → 释放控制块</text>
+
+  <g filter="url(#sk)"><rect x="620" y="246" width="360" height="150" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="800" y="272" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">生命周期时间线</text>
+  <text x="800" y="296" text-anchor="middle" font-size="10" fill="#555">use_count： 2 → 1 → 0  →  ~Widget() 执行</text>
+  <text x="800" y="316" text-anchor="middle" font-size="10" fill="#555">weak_count：1 → 0    →  控制块释放</text>
+  <text x="800" y="342" text-anchor="middle" font-size="10" fill="#b03a3a" font-weight="bold">weak_ptr 还活着 → 对象销毁后整块内存仍不还</text>
+  <text x="800" y="360" text-anchor="middle" font-size="9" fill="#666">（make_shared 单块分配的代价）</text>
+
+  <g filter="url(#sk)"><rect x="620" y="416" width="360" height="120" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="800" y="442" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415">线程安全三段式</text>
+  <text x="800" y="466" text-anchor="middle" font-size="10" fill="#555">① 计数是原子操作 ✓ 线程安全</text>
+  <text x="800" y="486" text-anchor="middle" font-size="10" fill="#555">② 指向的对象不自动线程安全</text>
+  <text x="800" y="506" text-anchor="middle" font-size="10" fill="#555">③ 同一个 sp 变量并发读写需同步</text>
+
+  <!-- ===== bottom notes ===== -->
+  <text x="500" y="568" text-anchor="middle" font-size="10" fill="#888">make_shared：对象 + 控制块一次分配、局部性好；shared_ptr&lt;T&gt;(new T) 要两次分配</text>
+  <text x="500" y="592" text-anchor="middle" font-size="10" fill="#b03a3a">enable_shared_from_this：类内用 shared_from_this() 共享计数；直接构造 shared_ptr&lt;T&gt;(this) → 两套独立计数 → double free！</text>
+</svg>

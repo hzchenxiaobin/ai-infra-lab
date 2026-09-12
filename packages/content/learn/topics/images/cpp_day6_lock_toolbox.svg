@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="62" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+  </defs>
+  <rect width="1000" height="660" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">互斥锁工具箱：能用 RAII 就别裸调</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== 反面教材 ===== -->
+  <g filter="url(#sk)"><rect x="20" y="54" width="960" height="92" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.4"/></g>
+  <text x="40" y="78" font-size="12" font-weight="bold" fill="#b03a3a">❌ 裸调 lock / unlock：任何一条提前退出的路径都会漏解锁</text>
+  <text x="40" y="100" font-size="10" fill="#7a2020">m.lock();</text>
+  <text x="40" y="117" font-size="10" fill="#7a2020">if (err) return;   // ← 锁没还！后面还有 throw / break 同样翻车</text>
+  <text x="40" y="134" font-size="10" fill="#7a2020">m.unlock();        // 永远执行不到 → 等这把锁的线程全部陪葬（死锁）</text>
+
+  <!-- ===== 卡片 1：lock_guard ===== -->
+  <g filter="url(#sk)"><rect x="22" y="162" width="296" height="176" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="170" y="186" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">lock_guard：默认首选</text>
+  <g filter="url(#sk)"><rect x="36" y="200" width="268" height="70" fill="#fffdf3" stroke="#4a8edb" stroke-width="0.8"/></g>
+  <text x="46" y="216" font-size="9" fill="#444">{</text>
+  <text x="46" y="231" font-size="9" fill="#444">    std::lock_guard lk(m);  // C++17 起可省模板参数</text>
+  <text x="46" y="246" font-size="9" fill="#444">    ...               // 临界区</text>
+  <text x="46" y="261" font-size="9" fill="#444">}                   // ← 析构自动解锁</text>
+  <text x="38" y="288" font-size="9" fill="#666">· 构造加锁、析构解锁，异常也安全</text>
+  <text x="38" y="305" font-size="9" fill="#666">· 零额外状态，开销最小</text>
+  <text x="38" y="322" font-size="9" fill="#666">· 不能中途解锁 → 简单就是优势</text>
+
+  <!-- ===== 卡片 2：unique_lock ===== -->
+  <g filter="url(#sk)"><rect x="352" y="162" width="296" height="176" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="500" y="186" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">unique_lock：灵活版</text>
+  <g filter="url(#sk)"><rect x="366" y="200" width="268" height="70" fill="#fffdf3" stroke="#4a8e4a" stroke-width="0.8"/></g>
+  <text x="376" y="216" font-size="9" fill="#444">std::unique_lock&lt;std::mutex&gt; lk(m);</text>
+  <text x="376" y="231" font-size="9" fill="#444">lk.unlock();    // 中途放锁</text>
+  <text x="376" y="246" font-size="9" fill="#444">lk.lock();      // 需要时再拿</text>
+  <text x="376" y="261" font-size="9" fill="#444">cv.wait(lk);    // 只收 unique_lock</text>
+  <text x="368" y="288" font-size="9" fill="#666">· 可延迟加锁 / 中途解锁 / 移动转让</text>
+  <text x="368" y="305" font-size="9" fill="#666">· condition_variable::wait 必须用它</text>
+  <text x="368" y="322" font-size="9" fill="#666">· 多记一个状态，比 lock_guard 略贵</text>
+
+  <!-- ===== 卡片 3：读写锁 ===== -->
+  <g filter="url(#sk)"><rect x="682" y="162" width="296" height="176" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="830" y="186" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415">shared_mutex：读写锁（C++17）</text>
+  <g filter="url(#sk)"><rect x="696" y="200" width="268" height="70" fill="#fffdf3" stroke="#c98a2b" stroke-width="0.8"/></g>
+  <text x="706" y="216" font-size="9" fill="#444">std::shared_mutex rw;</text>
+  <text x="706" y="231" font-size="9" fill="#444">{ std::shared_lock r(rw); }  // 读·可多人</text>
+  <text x="706" y="246" font-size="9" fill="#444">{ std::unique_lock w(rw); }  // 写·独占</text>
+  <text x="706" y="261" font-size="9" fill="#444">// shared_lock=读锁  unique_lock=写锁</text>
+  <text x="698" y="288" font-size="9" fill="#666">· 读共享、写独占，读多写少才划算</text>
+  <text x="698" y="305" font-size="9" fill="#666">· 写者可能饿死（取决于实现）</text>
+  <text x="698" y="322" font-size="9" fill="#666">· 大多数场景 mutex 反而更简单</text>
+
+  <!-- ===== 卡片 4：std::lock ===== -->
+  <g filter="url(#sk)"><rect x="22" y="352" width="296" height="176" rx="8" fill="#f3eaf7" stroke="#8e5db8" stroke-width="1.4"/></g>
+  <text x="170" y="376" text-anchor="middle" font-size="12" font-weight="bold" fill="#5a3a7a">std::lock：一次锁多把（C++11）</text>
+  <g filter="url(#sk)"><rect x="36" y="390" width="268" height="70" fill="#fffdf3" stroke="#8e5db8" stroke-width="0.8"/></g>
+  <text x="46" y="406" font-size="9" fill="#444">std::lock(m1, m2);   // 一次拿全</text>
+  <text x="46" y="421" font-size="9" fill="#444">std::lock_guard l1(m1, std::adopt_lock);</text>
+  <text x="46" y="436" font-size="9" fill="#444">std::lock_guard l2(m2, std::adopt_lock);</text>
+  <text x="46" y="451" font-size="9" fill="#444">// adopt_lock：锁已持有，只接管释放</text>
+  <text x="38" y="478" font-size="9" fill="#666">· 内部"试锁 + 失败回退"，怎么都不会卡死</text>
+  <text x="38" y="495" font-size="9" fill="#666">· 常和 lock_guard(adopt_lock) 搭档用</text>
+  <text x="38" y="512" font-size="9" fill="#666">· 专治两把锁顺序不一致的死锁</text>
+
+  <!-- ===== 卡片 5：scoped_lock ===== -->
+  <g filter="url(#sk)"><rect x="352" y="352" width="296" height="176" rx="8" fill="#e8f0fa" stroke="#2b6e9e" stroke-width="1.4"/></g>
+  <text x="500" y="376" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e4e75">scoped_lock：多锁一行（C++17）</text>
+  <g filter="url(#sk)"><rect x="366" y="390" width="268" height="70" fill="#fffdf3" stroke="#2b6e9e" stroke-width="0.8"/></g>
+  <text x="376" y="406" font-size="9" fill="#444">{</text>
+  <text x="376" y="421" font-size="9" fill="#444">    std::scoped_lock lk(m1, m2);</text>
+  <text x="376" y="436" font-size="9" fill="#444">    ...        // 临界区</text>
+  <text x="376" y="451" font-size="9" fill="#444">}             // 全部解锁</text>
+  <text x="368" y="478" font-size="9" fill="#666">· std::lock + RAII 的语法糖</text>
+  <text x="368" y="495" font-size="9" fill="#666">· 同时拿多把锁时的首选写法</text>
+  <text x="368" y="512" font-size="9" fill="#666">· 零开销，还自动按逆序释放</text>
+
+  <!-- ===== 卡片 6：recursive_mutex ===== -->
+  <g filter="url(#sk)"><rect x="682" y="352" width="296" height="176" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.4"/></g>
+  <text x="830" y="376" text-anchor="middle" font-size="12" font-weight="bold" fill="#b03a3a">recursive_mutex：能不用就不用</text>
+  <g filter="url(#sk)"><rect x="696" y="390" width="268" height="70" fill="#fffdf3" stroke="#b03a3a" stroke-width="0.8"/></g>
+  <text x="706" y="406" font-size="9" fill="#444">std::recursive_mutex m;</text>
+  <text x="706" y="421" font-size="9" fill="#444">// 同一线程可重复 lock（内部计数）</text>
+  <text x="706" y="436" font-size="9" fill="#444">// unlock 够次数才真正释放</text>
+  <text x="706" y="451" font-size="9" fill="#444">// ⚠ 不同线程之间照样互斥</text>
+  <text x="698" y="478" font-size="9" fill="#666">· 场景：递归函数中途必须持锁</text>
+  <text x="698" y="495" font-size="9" fill="#666">· 更多时候是设计坏味道</text>
+  <text x="698" y="512" font-size="9" fill="#666">· 先想：能不能拆函数 / 缩小锁粒度</text>
+
+  <!-- ===== 底部速记 ===== -->
+  <g filter="url(#sk)"><rect x="20" y="548" width="960" height="88" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <text x="44" y="572" font-size="10" fill="#666">选型速记：默认 lock_guard ｜ 要 wait / 中途解锁 → unique_lock ｜ 一次拿多把 → scoped_lock（或 std::lock + adopt_lock）</text>
+  <text x="44" y="592" font-size="10" fill="#666">读多写少 → shared_mutex + shared_lock ｜ 递归锁出现前，先想想能不能重构掉</text>
+  <text x="44" y="618" font-size="10" fill="#b03a3a" font-style="italic">临界区三原则：短（别在锁里干活）、不嵌套、别在锁内调用陌生代码（回调可能反过来拿你的锁 → 死锁）</text>
+</svg>

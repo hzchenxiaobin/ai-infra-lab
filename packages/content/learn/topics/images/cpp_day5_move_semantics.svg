@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 570" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="46" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="570" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">拷贝构造 vs 移动构造（以 String 为例）</text>
+  <path d="M 330 40 Q 500 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== copy panel ===== -->
+  <g filter="url(#sk)"><rect x="20" y="60" width="460" height="272" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="250" y="88" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">拷贝构造（深拷贝）</text>
+  <text x="250" y="108" text-anchor="middle" font-size="9.5" fill="#666">String dst(src);</text>
+  <g filter="url(#sk)">
+    <rect x="50" y="126" width="110" height="48" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="310" y="126" width="110" height="48" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="60" y="214" width="130" height="40" fill="#fdfcf7" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="280" y="214" width="130" height="40" fill="#fdfcf7" stroke="#b03a3a" stroke-width="1.4"/>
+  </g>
+  <text x="105" y="146" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">src</text>
+  <text x="105" y="164" text-anchor="middle" font-size="8" fill="#666">data_ ●</text>
+  <text x="365" y="146" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">dst</text>
+  <text x="365" y="164" text-anchor="middle" font-size="8" fill="#666">data_ ●</text>
+  <text x="125" y="238" text-anchor="middle" font-size="10" fill="#2b6e9e">"hello"</text>
+  <text x="345" y="238" text-anchor="middle" font-size="10" fill="#b03a3a">"hello"</text>
+  <path d="M 105 176 L 116 212" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <path d="M 365 176 L 352 212" stroke="#4a8edb" stroke-width="1.4" fill="none" marker-end="url(#arB)" filter="url(#sk)"/>
+  <text x="84" y="198" font-size="8" fill="#666">data_</text>
+  <text x="372" y="198" font-size="8" fill="#666">data_</text>
+  <path d="M 192 234 L 278 234" stroke="#9e9e9e" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="235" y="226" text-anchor="middle" font-size="8" fill="#666">strcpy 逐字节复制</text>
+  <text x="125" y="270" text-anchor="middle" font-size="8" fill="#666">原来的堆内存</text>
+  <text x="345" y="270" text-anchor="middle" font-size="8" fill="#b03a3a">new 出来的新堆内存</text>
+  <text x="250" y="296" text-anchor="middle" font-size="10" font-weight="bold" fill="#b03a3a">代价：new char[6] + 复制 6 字节，O(n)</text>
+  <text x="250" y="316" text-anchor="middle" font-size="9" fill="#666">源、目标各自拥有一份内存</text>
+
+  <!-- ===== move panel ===== -->
+  <g filter="url(#sk)"><rect x="510" y="60" width="470" height="272" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="745" y="88" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">移动构造（偷资源）</text>
+  <text x="745" y="108" text-anchor="middle" font-size="9.5" fill="#666">String dst(std::move(src));</text>
+  <g filter="url(#sk)">
+    <rect x="540" y="126" width="110" height="48" fill="#dcebf9" stroke="#9e9e9e" stroke-width="1.2"/>
+    <rect x="810" y="126" width="110" height="48" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="690" y="214" width="130" height="40" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.6"/>
+  </g>
+  <text x="595" y="146" text-anchor="middle" font-size="11" font-weight="bold" fill="#666">src</text>
+  <text x="595" y="164" text-anchor="middle" font-size="7.5" fill="#888">data_ = nullptr</text>
+  <text x="865" y="146" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e6e2e">dst</text>
+  <text x="865" y="164" text-anchor="middle" font-size="8" fill="#666">data_ ●</text>
+  <text x="755" y="238" text-anchor="middle" font-size="10" fill="#2e6e2e">"hello"</text>
+  <text x="755" y="270" text-anchor="middle" font-size="8" fill="#666">还是原来那块堆内存（0 次分配）</text>
+  <path d="M 595 176 L 716 212" stroke="#9e9e9e" stroke-width="1.2" fill="none" stroke-dasharray="4 3" filter="url(#sk)"/>
+  <text x="648" y="196" font-size="8" fill="#999">原指针作废 ✗</text>
+  <path d="M 865 176 L 792 212" stroke="#4a8e4a" stroke-width="1.6" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="852" y="196" font-size="8" fill="#2e6e2e" font-weight="bold">偷走指针 ✓</text>
+  <text x="745" y="296" text-anchor="middle" font-size="9.5" fill="#555">① dst.data_ = src.data_（偷指针）  ② src.data_ = nullptr（防 double free）</text>
+  <text x="745" y="318" text-anchor="middle" font-size="10" font-weight="bold" fill="#2e6e2e">代价：两次指针赋值，O(1)</text>
+
+  <!-- ===== std::move panel ===== -->
+  <g filter="url(#sk)"><rect x="20" y="352" width="960" height="118" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <text x="500" y="378" text-anchor="middle" font-size="12" font-weight="bold" fill="#555">std::move 到底做了什么？</text>
+  <text x="500" y="402" text-anchor="middle" font-size="10" fill="#555">std::move(x) ≡ static_cast&lt;T&amp;&amp;&gt;(x) —— 什么都没移动，只是把 x 从左值重贴为亡值（右值）</text>
+  <text x="500" y="424" text-anchor="middle" font-size="10" fill="#666">强转的唯一目的：让重载决议选中移动构造 / 移动赋值</text>
+  <text x="500" y="446" text-anchor="middle" font-size="10" fill="#666">被移动后的源处于"有效但未指定"状态：可析构、可重新赋值，但不要假设它的值</text>
+
+  <!-- ===== bottom notes ===== -->
+  <text x="500" y="500" text-anchor="middle" font-size="10" font-weight="bold" fill="#b03a3a">移动构造记得标 noexcept —— 否则 vector 扩容走 move_if_noexcept 退化成拷贝，移动白写</text>
+  <text x="500" y="522" text-anchor="middle" font-size="10" fill="#666">移动语义发光的地方：vector&lt;String&gt; 扩容、按值返回大对象、unique_ptr 放进容器</text>
+  <text x="500" y="546" text-anchor="middle" font-size="10" fill="#888" font-style="italic">一句话对比：拷贝 = 把邻居的书买来手抄一份；移动 = 邻居要搬家，把书直接送你</text>
+</svg>

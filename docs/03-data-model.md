@@ -94,6 +94,7 @@ submissions            # 评测提交（judge-worker 的任务队列也是它）
   runtime_ms  memory_kb  created_at
 
 questions              # 面试题库（已存在，729 题；补 knowledge_points 列）
+                       # user_id NULL = 全站共享内置题（bank:/seed:），否则为用户私有手工题
 interview_sessions     # 面试场次（已存在；补 scope 快照关联 knowledge_points）
 interview_reports      # 评估报告（已存在；新增 weak_points → knowledge_points 映射列）
 

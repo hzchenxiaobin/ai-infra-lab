@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="17" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8e4a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="600" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">I/O 多路复用：select / poll / epoll</text>
+  <path d="M 310 41 Q 500 49 690 41" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ================= select ================= -->
+  <g filter="url(#sk)"><rect x="30" y="62" width="304" height="316" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="182" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b6e9e">select</text>
+  <!-- user space -->
+  <g filter="url(#sk)">
+    <rect x="52" y="100" width="260" height="44" fill="#faf6fd" stroke="#b9cfe8" stroke-width="1.1"/>
+    <rect x="64" y="112" width="20" height="20" fill="#4a8edb"/>
+    <rect x="88" y="112" width="20" height="20" fill="#fff"/>
+    <rect x="112" y="112" width="20" height="20" fill="#4a8edb"/>
+    <rect x="136" y="112" width="20" height="20" fill="#fff"/>
+    <rect x="160" y="112" width="20" height="20" fill="#fff"/>
+    <text x="196" y="127" font-size="9" fill="#555">…fd_set 位图</text>
+  </g>
+  <text x="182" y="160" text-anchor="middle" font-size="9" fill="#888">用户每次重置 + 传入全部 fd</text>
+  <!-- copy down -->
+  <path d="M 130 168 L 130 196" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="182" y="188" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">每次全量拷贝</text>
+  <!-- kernel -->
+  <g filter="url(#sk)"><rect x="52" y="200" width="260" height="44" fill="#fdf3f3" stroke="#e0b6b6" stroke-width="1.1"/></g>
+  <text x="182" y="227" text-anchor="middle" font-size="10" fill="#7a2828">内核：逐个扫描全部 fd —— O(n)</text>
+  <!-- result up -->
+  <path d="M 234 252 L 234 280" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="182" y="276" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">就绪结果拷回</text>
+  <text x="182" y="300" text-anchor="middle" font-size="9" fill="#666">用户再遍历一遍找就绪 —— 又一个 O(n)</text>
+  <text x="182" y="326" text-anchor="middle" font-size="9" fill="#888" font-weight="bold">fd 上限 1024（FD_SETSIZE）</text>
+  <text x="182" y="344" text-anchor="middle" font-size="9" fill="#888">优点：跨平台，连接少时够用</text>
+  <text x="182" y="364" text-anchor="middle" font-size="9" fill="#2b6e9e" font-weight="bold">两次 O(n) + 1024 上限</text>
+
+  <!-- ================= poll ================= -->
+  <g filter="url(#sk)"><rect x="348" y="62" width="304" height="316" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.5"/></g>
+  <text x="500" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#7a5415">poll</text>
+  <g filter="url(#sk)">
+    <rect x="370" y="100" width="260" height="44" fill="#fffdf3" stroke="#e8d5ae" stroke-width="1.1"/>
+    <rect x="382" y="112" width="68" height="20" fill="#fff" stroke="#c98a2b" stroke-width="1"/>
+    <rect x="454" y="112" width="68" height="20" fill="#fff" stroke="#c98a2b" stroke-width="1"/>
+    <rect x="526" y="112" width="68" height="20" fill="#fff" stroke="#c98a2b" stroke-width="1"/>
+    <text x="416" y="126" text-anchor="middle" font-size="8" fill="#7a5415">{fd,ev}</text>
+    <text x="488" y="126" text-anchor="middle" font-size="8" fill="#7a5415">{fd,ev}</text>
+    <text x="560" y="126" text-anchor="middle" font-size="8" fill="#7a5415">…</text>
+  </g>
+  <text x="500" y="160" text-anchor="middle" font-size="9" fill="#888">pollfd 数组 —— 无 1024 上限</text>
+  <path d="M 448 168 L 448 196" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="500" y="188" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">每次仍全量拷贝</text>
+  <g filter="url(#sk)"><rect x="370" y="200" width="260" height="44" fill="#fdf3f3" stroke="#e0b6b6" stroke-width="1.1"/></g>
+  <text x="500" y="227" text-anchor="middle" font-size="10" fill="#7a2828">内核线性扫描 —— 还是 O(n)</text>
+  <path d="M 552 252 L 552 280" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="500" y="276" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">结果拷回再遍历</text>
+  <text x="500" y="300" text-anchor="middle" font-size="9" fill="#666">突破位图上限，数组可任意大</text>
+  <text x="500" y="326" text-anchor="middle" font-size="9" fill="#888">连接多但仍不活跃时照样慢</text>
+  <text x="500" y="344" text-anchor="middle" font-size="9" fill="#888">触发模式：LT</text>
+  <text x="500" y="364" text-anchor="middle" font-size="9" fill="#7a5415" font-weight="bold">只是“select 的数组版”</text>
+
+  <!-- ================= epoll ================= -->
+  <g filter="url(#sk)"><rect x="666" y="62" width="304" height="316" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.5"/></g>
+  <text x="818" y="86" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e6e2e">epoll（Linux 2.6+）</text>
+  <!-- register once -->
+  <path d="M 700 106 L 700 134" stroke="#4a8e4a" stroke-width="1.4" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="828" y="116" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">epoll_ctl：注册一次，常驻内核</text>
+  <!-- rbtree -->
+  <g filter="url(#sk)"><rect x="688" y="138" width="260" height="44" fill="#f4faf5" stroke="#bcd9be" stroke-width="1.1"/></g>
+  <text x="818" y="156" text-anchor="middle" font-size="9" fill="#2e6e2e">红黑树：fd 一次挂好</text>
+  <text x="818" y="172" text-anchor="middle" font-size="9" fill="#2e6e2e">不再每次全量拷贝</text>
+  <!-- callback -->
+  <path d="M 818 184 L 818 212" stroke="#4a8e4a" stroke-width="1.4" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="818" y="204" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">事件就绪 → 回调挂入</text>
+  <!-- ready list -->
+  <g filter="url(#sk)"><rect x="688" y="216" width="260" height="44" fill="#f4faf5" stroke="#bcd9be" stroke-width="1.1"/></g>
+  <text x="818" y="234" text-anchor="middle" font-size="9" fill="#2e6e2e">就绪链表（只放就绪的 fd）</text>
+  <text x="818" y="250" text-anchor="middle" font-size="9" fill="#2e6e2e">epoll_wait 只取走这一小撮</text>
+  <path d="M 818 262 L 818 288" stroke="#4a8e4a" stroke-width="1.4" fill="none" marker-end="url(#arG)" filter="url(#sk)"/>
+  <text x="818" y="308" text-anchor="middle" font-size="9" fill="#666">复杂度与总连接数无关 —— O(1)</text>
+  <text x="818" y="330" text-anchor="middle" font-size="9" fill="#888">触发模式：LT + ET（边缘触发）</text>
+  <text x="818" y="348" text-anchor="middle" font-size="9" fill="#888">ET 要配非阻塞 fd，一次读到 EAGAIN</text>
+  <text x="818" y="366" text-anchor="middle" font-size="9" fill="#2e6e2e" font-weight="bold">高并发长连接首选（nginx / Redis）</text>
+
+  <!-- ================= 对比表 ================= -->
+  <g filter="url(#sk)">
+    <rect x="40" y="398" width="150" height="28" fill="#2b2b2b"/>
+    <rect x="200" y="398" width="250" height="28" fill="#4a8edb"/>
+    <rect x="460" y="398" width="250" height="28" fill="#c98a2b"/>
+    <rect x="720" y="398" width="240" height="28" fill="#4a8e4a"/>
+    <rect x="40" y="426" width="150" height="28" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+    <rect x="200" y="426" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="460" y="426" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="720" y="426" width="240" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="40" y="454" width="150" height="28" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+    <rect x="200" y="454" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="460" y="454" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="720" y="454" width="240" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="40" y="482" width="150" height="28" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+    <rect x="200" y="482" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="460" y="482" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="720" y="482" width="240" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="40" y="510" width="150" height="28" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+    <rect x="200" y="510" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="460" y="510" width="250" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+    <rect x="720" y="510" width="240" height="28" fill="#fff" stroke="#ccc" stroke-width="1"/>
+  </g>
+  <text x="115" y="417" text-anchor="middle" font-size="10" font-weight="bold" fill="#fdfcf7">维度</text>
+  <text x="325" y="417" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">select</text>
+  <text x="585" y="417" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">poll</text>
+  <text x="840" y="417" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">epoll</text>
+  <text x="115" y="444" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">fd 上限</text>
+  <text x="325" y="444" text-anchor="middle" font-size="9" fill="#b03a3a">1024</text>
+  <text x="585" y="444" text-anchor="middle" font-size="9" fill="#666">无硬限</text>
+  <text x="840" y="444" text-anchor="middle" font-size="9" fill="#2e6e2e">无硬限</text>
+  <text x="115" y="472" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">fd 传递</text>
+  <text x="325" y="472" text-anchor="middle" font-size="9" fill="#b03a3a">每次全量拷贝</text>
+  <text x="585" y="472" text-anchor="middle" font-size="9" fill="#b03a3a">每次全量拷贝</text>
+  <text x="840" y="472" text-anchor="middle" font-size="9" fill="#2e6e2e">注册一次</text>
+  <text x="115" y="500" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">就绪扫描</text>
+  <text x="325" y="500" text-anchor="middle" font-size="9" fill="#b03a3a">O(n) × 2</text>
+  <text x="585" y="500" text-anchor="middle" font-size="9" fill="#b03a3a">O(n) × 2</text>
+  <text x="840" y="500" text-anchor="middle" font-size="9" fill="#2e6e2e">O(1) 只回就绪</text>
+  <text x="115" y="528" text-anchor="middle" font-size="9" fill="#555" font-weight="bold">触发模式</text>
+  <text x="325" y="528" text-anchor="middle" font-size="9" fill="#666">LT</text>
+  <text x="585" y="528" text-anchor="middle" font-size="9" fill="#666">LT</text>
+  <text x="840" y="528" text-anchor="middle" font-size="9" fill="#2e6e2e">LT + ET</text>
+
+  <!-- bottom note -->
+  <text x="500" y="568" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">一句话：select/poll 每次都“全员点名”，epoll 只“叫号就绪者” —— 连接越多差距越大</text>
+  <text x="500" y="588" text-anchor="middle" font-size="9" fill="#888">追问预警：ET vs LT 区别、epoll 一定更快吗（连接少时 select 开销更小）</text>
+</svg>

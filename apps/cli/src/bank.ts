@@ -252,9 +252,10 @@ interface BankFile {
 
 async function runImport(file: string): Promise<void> {
   const bank = JSON.parse(await readFile(file, "utf8")) as BankFile;
-  // 生成产物按旧四分类（cpp/cuda/project）抽取；现行分类体系下 ai-infra-notes
-  // 全部归 knowledge（cuda 分类仅收 leetgpu 编程题），导入时统一改写
-  for (const q of bank.questions) q.category = "knowledge";
+  // 仅 ai-infra-notes 生成产物按旧四分类（cpp/cuda/project）抽取，现行分类体系下
+  // 全部归 knowledge（cuda 分类仅收 leetgpu 编程题），导入时统一改写；
+  // 其他题库（如 leetcode-10w）保留文件内分类
+  if (bank.repo === REPO) for (const q of bank.questions) q.category = "knowledge";
   const items = bank.questions.map((q) => bankImportItemSchema.parse(q));
 
   const caller = await getCaller();

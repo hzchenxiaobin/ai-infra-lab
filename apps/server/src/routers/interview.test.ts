@@ -20,6 +20,8 @@ import {
 const mockState = { evalGrade: "B" as "A" | "B" | "C" | "D" };
 
 // mock OpenAI 兼容 /chat/completions：按 system prompt 区分开场/追问/评估
+// evalGate 非空时评估调用会被阻塞，用于验证「先结束、后出报告」的时序
+let evalGate: Promise<void> | null = null;
 vi.stubGlobal("fetch", async (_url: unknown, init?: { body?: unknown }) => {
   const body = JSON.parse(String(init?.body ?? "{}")) as {
     messages?: Array<{ role: string; content: string }>;
@@ -28,6 +30,7 @@ vi.stubGlobal("fetch", async (_url: unknown, init?: { body?: unknown }) => {
   const user = body.messages?.find((m) => m.role === "user")?.content ?? "";
   let content: string;
   if (system.includes("结构化评估")) {
+    if (evalGate) await evalGate;
     const ids = [...user.matchAll(/questionId=(\d+)/g)].map((m) => Number(m[1]));
     content = JSON.stringify({
       overallGrade: mockState.evalGrade,
@@ -131,6 +134,82 @@ run("interview 状态机（集成）", () => {
     expect(detail.session.followUpIndex).toBeGreaterThanOrEqual(1);
     expect(detail.messages.filter((m) => m.role === "candidate")).toHaveLength(1);
     await caller.interview.finish({ sessionId: start.state.sessionId });
+  }, 30_000);
+
+  it("remove 删除历史场次及其消息与报告", async () => {
+    const start = await caller.interview.start({ categories: ["leetcode"], count: 1 });
+    const sessionId = start.state.sessionId;
+    await caller.interview.remove({ sessionId });
+    await expect(caller.interview.get({ sessionId })).rejects.toThrow();
+    const list = await caller.interview.list();
+    expect(list.some((s) => s.id === sessionId)).toBe(false);
+    // 重复删除报 NOT_FOUND
+    await expect(caller.interview.remove({ sessionId })).rejects.toThrow();
+  }, 30_000);
+
+  it("finish 先结束面试再生成报告：评估进行中状态已是 finished", async () => {
+    const start = await caller.interview.start({ categories: ["leetcode"], count: 1 });
+    await caller.interview.reply({ sessionId: start.state.sessionId, content: "回答一" });
+
+    let release!: () => void;
+    evalGate = new Promise<void>((r) => (release = r));
+    const pending = caller.interview.finish({ sessionId: start.state.sessionId });
+    try {
+      // 评估被阻塞期间，轮询直到状态落库为 finished
+      let mid = await caller.interview.get({ sessionId: start.state.sessionId });
+      for (let i = 0; i < 50 && mid.session.status !== "finished"; i++) {
+        await new Promise((r) => setTimeout(r, 50));
+        mid = await caller.interview.get({ sessionId: start.state.sessionId });
+      }
+      expect(mid.session.status).toBe("finished");
+      expect(mid.session.finishedAt).toBeTruthy();
+      expect(mid.report).toBeNull();
+      expect(mid.reportProgress.stage).toBe("evaluating");
+    } finally {
+      release();
+      evalGate = null;
+    }
+    await pending;
+    const done = await caller.interview.get({ sessionId: start.state.sessionId });
+    expect(done.report?.report).toContain("面试评估报告");
+    expect(done.session.overallGrade).toMatch(/^[ABCD]$/);
+    expect(done.reportProgress.stage).toBe("done");
+  }, 30_000);
+
+  it("选题去重：优先未考过的题，全部考过后才允许重复", async () => {
+    // 用 cuda 方向做隔离池：清空后只留 3 道新建题
+    const { items } = await caller.question.list({ category: "cuda", page: 1, pageSize: 100 });
+    for (const q of items) await caller.question.remove({ id: q.id });
+    const ids: number[] = [];
+    for (let i = 1; i <= 3; i++) {
+      const q = await caller.question.create({
+        category: "cuda",
+        title: `去重测试题 ${i}`,
+        content: "去重测试内容",
+        difficulty: "medium",
+      });
+      ids.push(q.id);
+    }
+
+    // 第一场抽 2 题
+    const s1 = await caller.interview.start({ categories: ["cuda"], count: 2 });
+    const q1 = (await caller.interview.get({ sessionId: s1.state.sessionId })).session.questionIds;
+    expect(q1).toHaveLength(2);
+    expect(new Set(q1).size).toBe(2);
+
+    // 第二场再抽 2 题：必须包含唯一没考过的那道，另 1 题才是重复
+    const s2 = await caller.interview.start({ categories: ["cuda"], count: 2 });
+    const q2 = (await caller.interview.get({ sessionId: s2.state.sessionId })).session.questionIds;
+    const remaining = ids.filter((id) => !q1.includes(id));
+    expect(remaining).toHaveLength(1);
+    expect(q2).toContain(remaining[0]);
+    expect(q2.filter((id) => q1.includes(id))).toHaveLength(1);
+
+    // 第三场：3 题全部考过，允许从考过的题中抽取
+    const s3 = await caller.interview.start({ categories: ["cuda"], count: 2 });
+    const q3 = (await caller.interview.get({ sessionId: s3.state.sessionId })).session.questionIds;
+    expect(q3).toHaveLength(2);
+    expect(q3.every((id) => ids.includes(id))).toBe(true);
   }, 30_000);
 
   it("空方向题库报 PRECONDITION_FAILED", async () => {

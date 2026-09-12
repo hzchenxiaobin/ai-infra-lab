@@ -179,7 +179,8 @@ export const submissions = mysqlTable("submissions", {
 
 export const questions = mysqlTable("questions", {
   id: serial("id").primaryKey(),
-  userId: bigint("user_id", { mode: "number" }).notNull(),
+  /** 题目属主；NULL 表示全站共享题库（bank:/seed: 前缀导入的内置题），对所有账户可见 */
+  userId: bigint("user_id", { mode: "number" }),
   category: mysqlEnum("category", ["leetcode", "cuda", "knowledge"]).notNull(),
   title: varchar("title", { length: 500 }).notNull(),
   content: text("content").notNull(),

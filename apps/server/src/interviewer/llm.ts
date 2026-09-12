@@ -12,6 +12,8 @@ import { recordLlmCall } from "../llm-metrics.js";
 
 // reasoning 模型（如 glm-5.3）评估调用常需 20–40s，15s 会全部超时
 const TIMEOUT_MS = 60_000;
+// 评估是一次性长输出（多题 + 8192 max_tokens），reasoning 模型常超过 60s，单独放宽
+const EVAL_TIMEOUT_MS = 300_000;
 const MAX_TOKENS = 1024;
 
 /** 发言类（开场/追问）模型：LLM_MODEL_FOLLOWUP，缺省回落 LLM_MODEL */
@@ -29,10 +31,11 @@ async function chatCompletion(
   messages: ChatMessage[],
   maxTokens = MAX_TOKENS,
   model: string = env.LLM_MODEL,
+  timeoutMs = TIMEOUT_MS,
 ): Promise<string> {
   if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY（系统为纯 LLM 模式，无规则引擎降级）");
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   const startedAt = Date.now();
   try {
     const res = await fetch(`${env.LLM_BASE_URL}/chat/completions`, {
@@ -223,7 +226,7 @@ export class LlmInterviewer implements IInterviewer {
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const raw = await chatCompletion(messages, 8192, evalModel());
+        const raw = await chatCompletion(messages, 8192, evalModel(), EVAL_TIMEOUT_MS);
         const parsed = evaluationJsonSchema.parse(extractJson(raw));
         const byId = new Map(transcript.groups.map((g) => [g.question.id, g.question]));
         const questions: QuestionEvaluation[] = parsed.questions

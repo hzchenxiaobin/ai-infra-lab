@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, like, or, sql, type SQL } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import {
   CATEGORY_LABELS,
@@ -29,6 +29,7 @@ import {
 import { authedProcedure, router } from "../trpc.js";
 import { getInterviewer } from "../interviewer/factory.js";
 import { quotaFor } from "../middleware/quota.js";
+import { getReportProgress, setReportProgress, type ReportProgress } from "../reportProgress.js";
 
 type SessionRow = typeof interviewSessions.$inferSelect;
 type MessageRow = typeof interviewMessages.$inferSelect;
@@ -119,6 +120,26 @@ function allocateCounts(pool: Map<Category, number>, count: number): Map<Categor
     i += 1;
   }
   return alloc;
+}
+
+/** 从候选题中按方向比例随机抽取 count 题（受各方向库存限制） */
+function pickByCategory(
+  rows: (typeof questions.$inferSelect)[],
+  count: number,
+): (typeof questions.$inferSelect)[] {
+  const byCat = new Map<Category, typeof rows>();
+  for (const r of rows) {
+    const arr = byCat.get(r.category) ?? [];
+    arr.push(r);
+    byCat.set(r.category, arr);
+  }
+  const alloc = allocateCounts(new Map([...byCat].map(([c, arr]) => [c, arr.length])), count);
+  const picked: (typeof rows)[number][] = [];
+  for (const [cat, n] of alloc) {
+    const pool = [...byCat.get(cat)!].sort(() => Math.random() - 0.5);
+    picked.push(...pool.slice(0, n));
+  }
+  return picked;
 }
 
 /** scope 前缀 → 展示名（"ai-infra-notes:aiinfra/daily/week1/" → "Week 1"，
@@ -242,13 +263,15 @@ export const interviewRouter = router({
     if (scope && !scope.startsWith("ai-infra-notes:")) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "非法的考察范围" });
     }
+    // 选题范围：本人私有题 + 全站共享题库（user_id IS NULL）
+    const visible = or(eq(questions.userId, ctx.userId), isNull(questions.userId));
     const rows = await db
       .select()
       .from(questions)
       .where(
         scope
           ? and(
-              eq(questions.userId, ctx.userId),
+              visible,
               eq(questions.stale, 0),
               // scope 同时匹配规则同步（ai-infra-notes:）与 LLM 题库（bank:ai-infra-notes:）题目
               or(
@@ -256,7 +279,7 @@ export const interviewRouter = router({
                 like(questions.sourceKey, `bank:${scope}%`),
               ),
             )
-          : and(eq(questions.userId, ctx.userId), eq(questions.stale, 0), inArray(questions.category, input.categories)),
+          : and(visible, eq(questions.stale, 0), inArray(questions.category, input.categories)),
       );
     if (rows.length === 0) {
       throw new TRPCError({
@@ -267,17 +290,18 @@ export const interviewRouter = router({
       });
     }
 
-    const byCat = new Map<Category, typeof rows>();
-    for (const r of rows) {
-      const arr = byCat.get(r.category) ?? [];
-      arr.push(r);
-      byCat.set(r.category, arr);
-    }
-    const alloc = allocateCounts(new Map([...byCat].map(([c, arr]) => [c, arr.length])), input.count);
-    const picked: (typeof rows)[number][] = [];
-    for (const [cat, n] of alloc) {
-      const pool = [...byCat.get(cat)!].sort(() => Math.random() - 0.5);
-      picked.push(...pool.slice(0, n));
+    // 历史去重：优先抽取未在历史面试中出现过的题；
+    // 未考过的题不足（或全部都已考过）时才从考过的题中补足
+    const pastSessions = await db
+      .select({ questionIds: interviewSessions.questionIds })
+      .from(interviewSessions)
+      .where(eq(interviewSessions.userId, ctx.userId));
+    const usedIds = new Set(pastSessions.flatMap((s) => s.questionIds));
+    const freshRows = rows.filter((r) => !usedIds.has(r.id));
+    const usedRows = rows.filter((r) => usedIds.has(r.id));
+    const picked = pickByCategory(freshRows, Math.min(input.count, freshRows.length));
+    if (picked.length < input.count) {
+      picked.push(...pickByCategory(usedRows, input.count - picked.length));
     }
     // 题目顺序：方向间交替打乱不如按方向聚类清晰，此处按抽取顺序随机排序
     picked.sort(() => Math.random() - 0.5);
@@ -418,6 +442,29 @@ export const interviewRouter = router({
       return finishSession(input.sessionId, ctx.userId);
     }),
 
+  /** 删除历史场次：连同消息与报告一起删除（无 FK 级联，事务内先删子表再删场次） */
+  remove: authedProcedure
+    .input(sessionIdParamSchema)
+    .mutation(async ({ input, ctx }) => {
+      const affected = await db.transaction(async (tx) => {
+        await tx
+          .delete(interviewMessages)
+          .where(eq(interviewMessages.sessionId, input.sessionId));
+        await tx
+          .delete(interviewReports)
+          .where(eq(interviewReports.sessionId, input.sessionId));
+        const result = await tx
+          .delete(interviewSessions)
+          .where(
+            and(eq(interviewSessions.id, input.sessionId), eq(interviewSessions.userId, ctx.userId)),
+          );
+        return Number(result[0].affectedRows);
+      });
+      if (affected === 0) throw new TRPCError({ code: "NOT_FOUND", message: "场次不存在" });
+      setReportProgress(input.sessionId, "done");
+      return { ok: true as const };
+    }),
+
   list: authedProcedure.query(async ({ ctx }) => {
     return db
       .select()
@@ -479,22 +526,40 @@ export const interviewRouter = router({
         loadQuestionsByIds(session.questionIds),
         session.status === "finished" ? loadReport(session.id) : Promise.resolve(null),
       ]);
+      // 报告未落库时返回当前生成进度，前端据此轮询展示「评估中 / 生成中 / 失败」
+      const reportProgress: ReportProgress = report
+        ? { stage: "done" }
+        : (getReportProgress(session.id) ?? { stage: "pending" });
       return {
         session,
         /** 评估报告（拆表后）；active 场次为 null */
         report,
         messages: messages.map(toMessage),
         questions: Object.fromEntries(questionMap),
+        reportProgress,
       };
     }),
 });
 
-/** 结束流程（README §5.2）：聚合消息 → 评分 → 薄弱点推荐 → 写 interview_reports 拆表 */
+/** 结束流程（README §5.2）：先标记结束 → 聚合消息 → 评分 → 薄弱点推荐 → 写 interview_reports 拆表。
+ *  状态先于评估落库，保证点击「结束本场」后面试立即结束，报告生成（可能数十秒）不阻塞状态翻转；
+ *  已结束但报告缺失时（上次评估失败/进程重启）重新走评估流程，即前端的「重新生成报告」。 */
 async function finishSession(sessionId: number, userId: number) {
   const session = await loadSession(sessionId, userId);
   if (session.status === "finished") {
     const existing = await loadReport(sessionId);
-    return { report: existing?.report ?? null, overallGrade: session.overallGrade };
+    if (existing) return { report: existing.report, overallGrade: session.overallGrade };
+  } else {
+    await db
+      .update(interviewSessions)
+      .set({ status: "finished", finishedAt: new Date() })
+      .where(eq(interviewSessions.id, sessionId));
+    await db.insert(interviewMessages).values({
+      sessionId,
+      questionId: null,
+      role: "system",
+      content: "本场面试已结束，感谢参与。评估报告生成后可在报告页查看。",
+    });
   }
   const messageRows = await db
     .select()
@@ -530,8 +595,17 @@ async function finishSession(sessionId: number, userId: number) {
     durationMinutes,
   };
 
-  // 纯 LLM 模式：评估失败直接抛错（LLM 内部已重试一次）
-  const result = await getInterviewer().evaluate(transcript);
+  // 纯 LLM 模式：评估失败直接抛错（LLM 内部已重试一次）；失败阶段写入进度供前端展示原因
+  setReportProgress(sessionId, "evaluating");
+  let result: EvaluationResult;
+  try {
+    result = await getInterviewer().evaluate(transcript);
+  } catch (err) {
+    setReportProgress(sessionId, "failed", err instanceof Error ? err.message : String(err));
+    throw err;
+  }
+
+  setReportProgress(sessionId, "rendering");
 
   // 薄弱点推导 + 学习/练习推荐（SQL 匹配 contents/problems，不调 LLM）
   const metaRows = await db
@@ -575,12 +649,11 @@ async function finishSession(sessionId: number, userId: number) {
     await tx
       .update(interviewSessions)
       .set({
-        status: "finished",
         overallGrade: result.overallGrade,
-        finishedAt: new Date(),
       })
       .where(eq(interviewSessions.id, sessionId));
   });
 
+  setReportProgress(sessionId, "done");
   return { report, overallGrade: result.overallGrade };
 }

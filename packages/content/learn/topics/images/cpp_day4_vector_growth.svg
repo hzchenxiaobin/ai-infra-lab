@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 570" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="42" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#b03a3a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="570" fill="#fdfcf7"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#2b2b2b">vector 扩容机制（以 GCC 2 倍增长为例）</text>
+  <path d="M 320 40 Q 500 48 680 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- ===== 扩容前 ===== -->
+  <text x="30" y="74" font-size="12" font-weight="bold" fill="#b03a3a">扩容前：capacity 已满，再 push_back(50) 无处安放</text>
+  <g filter="url(#sk)">
+    <rect x="40" y="90" width="52" height="38" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="92" y="90" width="52" height="38" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="144" y="90" width="52" height="38" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="196" y="90" width="52" height="38" fill="#dcebf9" stroke="#4a8edb" stroke-width="1.4"/>
+    <rect x="248" y="90" width="52" height="38" fill="none" stroke="#b03a3a" stroke-width="1.4" stroke-dasharray="4 3"/>
+  </g>
+  <text x="66" y="114" text-anchor="middle" font-size="11" fill="#2b6e9e">10</text>
+  <text x="118" y="114" text-anchor="middle" font-size="11" fill="#2b6e9e">20</text>
+  <text x="170" y="114" text-anchor="middle" font-size="11" fill="#2b6e9e">30</text>
+  <text x="222" y="114" text-anchor="middle" font-size="11" fill="#2b6e9e">40</text>
+  <path d="M 316 109 L 356 109" stroke="#b03a3a" stroke-width="1.4" fill="none" marker-end="url(#arR)" filter="url(#sk)"/>
+  <text x="362" y="106" font-size="10" fill="#b03a3a" font-weight="bold">50 → 触发扩容</text>
+  <text x="362" y="122" font-size="9" fill="#888">（finish == end_of_storage）</text>
+
+  <path d="M 40 140 L 248 140 L 248 144 L 40 144" stroke="#666" stroke-width="1" fill="none" filter="url(#sk)"/>
+  <text x="144" y="158" text-anchor="middle" font-size="9" fill="#666">size = 4</text>
+  <path d="M 40 168 L 300 168 L 300 172 L 40 172" stroke="#666" stroke-width="1" fill="none" filter="url(#sk)"/>
+  <text x="170" y="186" text-anchor="middle" font-size="9" fill="#666">capacity = 4（三个指针：start / finish / end_of_storage）</text>
+
+  <!-- ===== 扩容三步 ===== -->
+  <g filter="url(#sk)"><rect x="25" y="212" width="290" height="96" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4"/></g>
+  <text x="170" y="238" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">1. 申请新内存</text>
+  <text x="170" y="262" text-anchor="middle" font-size="9" fill="#555">新 capacity = 2 × 旧 = 8</text>
+  <text x="170" y="280" text-anchor="middle" font-size="9" fill="#666">提前 reserve 可避免反复扩容</text>
+
+  <g filter="url(#sk)"><rect x="355" y="212" width="290" height="96" rx="8" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.4"/></g>
+  <text x="500" y="238" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e6e2e">2. 搬移旧元素</text>
+  <text x="500" y="262" text-anchor="middle" font-size="9" fill="#555">旧元素逐个拷贝 / 移动到新内存</text>
+  <text x="500" y="280" text-anchor="middle" font-size="9" fill="#666">元素有移动语义 → 偷资源而非拷贝</text>
+
+  <g filter="url(#sk)"><rect x="685" y="212" width="290" height="96" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4"/></g>
+  <text x="830" y="238" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415">3. 释放旧内存 + 更新指针</text>
+  <text x="830" y="262" text-anchor="middle" font-size="9" fill="#555">start / finish / end_of_storage 指向新地址</text>
+  <text x="830" y="280" text-anchor="middle" font-size="9" fill="#666">旧内存归还堆，50 构造在 finish 处</text>
+
+  <path d="M 315 260 L 355 260" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 645 260 L 685 260" stroke="#5a5a5a" stroke-width="1.4" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <!-- ===== 扩容后 ===== -->
+  <text x="30" y="342" font-size="12" font-weight="bold" fill="#2e6e2e">扩容后：新地址上继续尾插（旧地址作废）</text>
+  <g filter="url(#sk)">
+    <rect x="40" y="358" width="52" height="38" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="92" y="358" width="52" height="38" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="144" y="358" width="52" height="38" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="196" y="358" width="52" height="38" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="248" y="358" width="52" height="38" fill="#cfe8d2" stroke="#4a8e4a" stroke-width="1.4"/>
+    <rect x="300" y="358" width="52" height="38" fill="none" stroke="#9e9e9e" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <rect x="352" y="358" width="52" height="38" fill="none" stroke="#9e9e9e" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <rect x="404" y="358" width="52" height="38" fill="none" stroke="#9e9e9e" stroke-width="1.2" stroke-dasharray="4 3"/>
+  </g>
+  <text x="66" y="382" text-anchor="middle" font-size="11" fill="#2e6e2e">10</text>
+  <text x="118" y="382" text-anchor="middle" font-size="11" fill="#2e6e2e">20</text>
+  <text x="170" y="382" text-anchor="middle" font-size="11" fill="#2e6e2e">30</text>
+  <text x="222" y="382" text-anchor="middle" font-size="11" fill="#2e6e2e">40</text>
+  <text x="274" y="382" text-anchor="middle" font-size="11" fill="#2e6e2e">50</text>
+
+  <path d="M 40 408 L 300 408 L 300 412 L 40 412" stroke="#666" stroke-width="1" fill="none" filter="url(#sk)"/>
+  <text x="170" y="426" text-anchor="middle" font-size="9" fill="#666">size = 5</text>
+  <path d="M 40 436 L 456 436 L 456 440 L 40 440" stroke="#666" stroke-width="1" fill="none" filter="url(#sk)"/>
+  <text x="248" y="454" text-anchor="middle" font-size="9" fill="#666">capacity = 8</text>
+
+  <!-- ===== 均摊分析 ===== -->
+  <g filter="url(#sk)"><rect x="560" y="336" width="415" height="130" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1.2"/></g>
+  <text x="767" y="362" text-anchor="middle" font-size="12" font-weight="bold" fill="#555">为什么均摊 O(1)？</text>
+  <text x="767" y="386" text-anchor="middle" font-size="10" fill="#666">n 次 push_back 的总搬移量：</text>
+  <text x="767" y="404" text-anchor="middle" font-size="10" fill="#666">n/2 + n/4 + … + 2 + 1 &lt; n</text>
+  <text x="767" y="422" text-anchor="middle" font-size="10" fill="#666">→ 平均每次只多搬 1 个元素</text>
+  <text x="767" y="446" text-anchor="middle" font-size="9" fill="#b03a3a" font-weight="bold">代价：扩容瞬间迭代器 / 指针 / 引用全部失效！</text>
+
+  <!-- ===== bottom notes ===== -->
+  <text x="500" y="506" text-anchor="middle" font-size="10" fill="#888">增长因子：GCC/libstdc++ 取 2 倍，MSVC 取约 1.5 倍 —— 太小频繁搬家，太大浪费内存</text>
+  <text x="500" y="528" text-anchor="middle" font-size="10" fill="#888">1.5 倍的妙处：若干轮后之前释放的空闲块可能被复用；2 倍则永远不够用（已释放总量 &lt; 下次请求）</text>
+  <text x="500" y="550" text-anchor="middle" font-size="10" fill="#888" font-style="italic">工程习惯：能预估规模就 reserve(n)，既省扩容又保住迭代器</text>
+</svg>

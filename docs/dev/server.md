@@ -155,6 +155,9 @@ knowledge_points/tags SQL 匹配 contents/problems 生成"薄弱点 → 学习�
 
 - **幂等键**：`sourceKey`（如 `bank:ai-infra-notes:aiinfra/daily/week3/...`，
   手工题 `manual:<uuid>`、种子题 `seed:<title>`）。
+- **共享题库**：`bankImport`/`seed` 写入的行 `user_id = NULL`，属全站共享题库，
+  所有账户的 list/stats/scopes/组卷选题均可见（查询条件 `user_id = 本人 OR user_id IS NULL`）；
+  手工题（`manual:`）仍为用户私有，编辑/删除仅限属主。
 - **变更判定**：`contentHash` = sha256(title + content + followUps + keyPoints)，
   未变跳过、变了更新、源里消失标 `stale=1`（**不物理删除**，保护历史场次快照，
   source 加「[已失效]」前缀）。

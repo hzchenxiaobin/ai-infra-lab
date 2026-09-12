@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import { CATEGORIES, CATEGORY_LABELS, type Category } from "@ailab/contracts";
+import { CATEGORIES, CATEGORY_LABELS, MAX_QUESTIONS_PER_SESSION, type Category } from "@ailab/contracts";
 import { queryClient, trpc } from "../lib/trpc";
 import {
   ArrowIcon,
@@ -33,7 +33,7 @@ export default function HomePage() {
   const scopes = useQuery(trpc.question.scopes.queryOptions());
   const sessions = useQuery(trpc.interview.list.queryOptions());
   const [selected, setSelected] = useState<Category[]>([]);
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(1);
   const [scope, setScope] = useState("");
   const [day, setDay] = useState("");
 
@@ -182,7 +182,7 @@ export default function HomePage() {
                 onChange={(e) => setCount(Number(e.target.value))}
                 className="input w-full sm:w-24"
               >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                {Array.from({ length: MAX_QUESTIONS_PER_SESSION }, (_, i) => i + 1).map((n) => (
                   <option key={n} value={n}>
                     {n} 题
                   </option>

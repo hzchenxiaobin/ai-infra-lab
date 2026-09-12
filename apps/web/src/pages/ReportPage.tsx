@@ -1,12 +1,93 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { CATEGORY_LABELS, type Category } from "@ailab/contracts";
-import { trpc } from "../lib/trpc";
-import { Card, ErrorBox, Loading, PageHeader, SegmentedControl } from "../components/ui";
+import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
+import { Button, Card, ErrorBox, Loading, PageHeader, SegmentedControl } from "../components/ui";
 import { ReportBody } from "../components/ReportBody";
 import { MessageBubble } from "../components/MessageBubble";
 import { durationMinutes, formatDateTime, gradeTextColor } from "../lib/format";
+
+type ReportProgress = InterviewGetData["reportProgress"];
+
+const PROGRESS_STEPS = ["评估对话", "生成报告"] as const;
+const PROGRESS_TEXT: Record<string, string> = {
+  pending: "报告排队生成中，请稍候…",
+  evaluating: "正在评估你的回答…（LLM 推理，可能需要数十秒）",
+  rendering: "正在生成报告…",
+};
+
+/** 报告未落库时的进度卡片：展示当前阶段；失败时给出原因和「重新生成」入口 */
+function ReportPendingCard({
+  sessionId,
+  progress,
+}: {
+  sessionId: number;
+  progress: ReportProgress;
+}) {
+  const regenerate = useMutation(
+    trpc.interview.finish.mutationOptions({
+      onSuccess: () => queryClient.invalidateQueries(),
+    }),
+  );
+
+  if (progress.stage === "failed") {
+    return (
+      <Card className="py-8 text-center">
+        <p className="text-sm text-accent-400">评估失败：{progress.error ?? "未知错误"}</p>
+        <Button
+          className="mt-4"
+          disabled={regenerate.isPending}
+          onClick={() => regenerate.mutate({ sessionId })}
+        >
+          {regenerate.isPending ? "生成中…" : "重新生成报告"}
+        </Button>
+        {regenerate.error && (
+          <p className="mt-3 text-sm text-accent-400">生成失败：{regenerate.error.message}</p>
+        )}
+      </Card>
+    );
+  }
+
+  const activeStep = progress.stage === "rendering" ? 1 : 0;
+  return (
+    <Card className="py-8 text-center">
+      <div className="flex items-center justify-center gap-2 text-sm text-muted">
+        <span className="size-1.5 animate-pulse-dot rounded-full bg-accent-600" />
+        {PROGRESS_TEXT[progress.stage] ?? PROGRESS_TEXT.pending}
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-3 text-xs">
+        {PROGRESS_STEPS.map((label, i) => (
+          <span
+            key={label}
+            className={
+              i < activeStep
+                ? "text-accent-600"
+                : i === activeStep
+                  ? "font-medium text-ink"
+                  : "text-faint"
+            }
+          >
+            {i + 1}. {label}
+          </span>
+        ))}
+      </div>
+      {/* 进度丢失（如服务端重启）时允许手动触发 */}
+      {progress.stage === "pending" && (
+        <Button
+          className="mt-4"
+          disabled={regenerate.isPending}
+          onClick={() => regenerate.mutate({ sessionId })}
+        >
+          {regenerate.isPending ? "生成中…" : "重新生成报告"}
+        </Button>
+      )}
+      {regenerate.error && (
+        <p className="mt-3 text-sm text-accent-400">生成失败：{regenerate.error.message}</p>
+      )}
+    </Card>
+  );
+}
 
 export default function ReportPage() {
   const { id } = useParams();
@@ -19,7 +100,14 @@ export default function ReportPage() {
 
 function ReportView({ sessionId }: { sessionId: number }) {
   const [tab, setTab] = useState<"report" | "transcript">("report");
-  const get = useQuery(trpc.interview.get.queryOptions({ sessionId }));
+  const get = useQuery({
+    ...trpc.interview.get.queryOptions({ sessionId }),
+    // 报告未落库时轮询，实时刷新生成进度
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      return d && d.session.status === "finished" && !d.report ? 2000 : false;
+    },
+  });
 
   if (get.isLoading) return <Loading text="加载报告…" />;
   if (get.error) return <ErrorBox error={get.error} />;
@@ -98,9 +186,7 @@ function ReportView({ sessionId }: { sessionId: number }) {
             messages={messages}
           />
         ) : (
-          <Card>
-            <p className="text-sm text-muted">报告内容为空。</p>
-          </Card>
+          <ReportPendingCard sessionId={sessionId} progress={get.data.reportProgress} />
         )
       ) : (
         <div className="space-y-3">

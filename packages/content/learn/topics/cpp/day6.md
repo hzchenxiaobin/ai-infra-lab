@@ -1,481 +1,472 @@
----
-id: "learn:topic:cpp:d6"
-type: learn
-title: "Day 6（周六）：并发编程基础"
-tags: [cpp]
-knowledge_points: [cpp]
-updated: 2026-08-28
-day: 6
-topic: cpp
-related_problems: []
-related_questions: []
----
+# Day 6（周六）：多线程与并发
 
-# Day 6（周六）：并发编程基础
-
-> **本周定位**：C++ 面试系统化准备，今日聚焦多线程并发——系统岗位必问
-> **前置要求**：已完成 Day 1-5，理解 RAII（`lock_guard` 也是 RAII）、移动语义（`unique_lock` 可移动）
-> **今日目标**：掌握 `std::thread` 基础、`mutex`/`lock_guard`/`unique_lock`、`condition_variable`、`std::atomic` 与 6 种 memory order、死锁预防、thread-safe singleton，能手写生产者-消费者模型
-> **时间投入**：2.5h（早间 1.5h 精读并发原语 + 晚间 1h 跑代码与死锁实验）
-> **考察度**：⭐⭐⭐⭐ 实战考点，系统/后端/AI Infra 方向必问
+> **今日目标**：掌握进程/线程区别、std::thread、锁家族、条件变量、死锁预防、atomic 与内存序概念；手写线程安全单例和生产者-消费者队列到默写程度
+> **面试考察度**：⭐⭐⭐⭐ 中大厂 C++ 岗必考；单例与生产者-消费者是并发手写题双雄
+> **建议节奏**：上午学理论（2~3h）→ 下午刷题自测（2h）→ 晚上手写两个模型 + 复述（1~2h）
 
 ---
 
-## 本日在本周知识图谱中的位置
+## 学习任务 1：进程 vs 线程 + std::thread（40 分钟）
 
-| 本日产出 | 对应本周验收标准 |
-|----------|-----------------|
-| `std::thread` 创建与 join/detach | ⑤ 能解释并发原语 |
-| `mutex` + RAII 锁管理 | ② 能手写 RAII 资源管理类（`lock_guard`） |
-| `condition_variable` 生产者-消费者 | ⑤ 同上 |
-| `std::atomic` 与 6 种 memory order | ⑤ 同上（核心难点） |
-| Thread-safe singleton 实现 | ⑤ 同上（面试高频手撕） |
+### 核心对比
 
----
+![进程 vs 线程：内存布局视角](../images/cpp_day6_process_vs_thread.svg)
 
-### 学习任务 1：std::thread 基础（30 分钟）
+| 维度 | 进程 | 线程 |
+|------|------|------|
+| 地址空间 | 独立，互相隔离 | 同进程内**共享** |
+| 通信方式 | IPC：管道 / 消息队列 / 共享内存 / socket | 直接读写共享变量（**需要同步**） |
+| 切换开销 | 大：切页表、刷 TLB | 小：换寄存器和栈 |
+| 崩溃影响 | 一个挂了别人照常 | 一个段错误 → **整个进程挂** |
+| 定位 | 资源分配的基本单位 | CPU 调度的基本单位 |
 
-#### 创建与管理线程
+**面试一句话**：线程共享代码区、全局/静态区、堆；私有栈、寄存器、TLS（`thread_local`、errno、信号掩码）。
+
+### std::thread 基本用法
 
 ```cpp
-// concurrency_basics.cpp —— 并发编程基础
-// 编译: g++ -std=c++20 -pthread -o concurrency concurrency_basics.cpp && ./concurrency
-
-#include <iostream>
 #include <thread>
-#include <mutex>
-#include <atomic>
-#include <condition_variable>
-#include <queue>
-#include <vector>
-#include <chrono>
-#include <string>
 
-void demo_thread_basics() {
-    std::cout << "=== std::thread 基础 ===" << std::endl;
+void hello(int id) { std::cout << "hi from " << id << "\n"; }
 
-    // 1. 用函数指针创建线程
-    auto func = [](int id) {
-        std::cout << "  线程 " << id << " 运行中" << std::endl;
-    };
-    std::thread t1(func, 1);
-    t1.join();  // 等待线程结束
-
-    // 2. 用 lambda 创建线程
-    std::thread t2([]() {
-        std::cout << "  lambda 线程运行中" << std::endl;
-    });
-    t2.join();
-
-    // 3. detach：分离线程（后台运行，不等待）
-    std::thread t3([]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        // 注意：detach 后线程在后台运行，主线程结束时可能被强制终止
-    });
-    t3.detach();
-
-    // 4. 获取硬件并发数
-    std::cout << "  硬件并发线程数: " << std::thread::hardware_concurrency() << std::endl;
+int main() {
+    std::thread t1(hello, 1);        // 构造即启动，参数默认按值拷贝
+    std::thread t2([]{ hello(2); }); // lambda 也行
+    t1.join();                       // 等 t1 跑完
+    t2.join();                       // join / detach 二选一
 }
 ```
 
-> ⚠️ **注意**：`std::thread` 对象必须在 `join()` 或 `detach()` 之前销毁——否则程序终止（调用 `std::terminate`）。`join` 等待线程完成，`detach` 分离到后台。通常优先 `join`；`detach` 要确保线程不访问已销毁的变量。
+### 三条铁律
 
-#### 线程传参的陷阱
+1. **join / detach 二选一**：线程对象析构时若仍 joinable，直接 `std::terminate()` 崩给你看
+2. **参数默认拷贝**：想传真引用必须 `std::ref(x)`
+3. **异常不会跨线程传播**：线程函数内的异常必须就地 try-catch，否则 `std::terminate()`
 
 ```cpp
-void demo_thread_params() {
-    std::cout << "\n=== 线程传参陷阱 ===" << std::endl;
+void inc(int& n) { ++n; }
+int x = 0;
+// std::thread t(inc, x);            // ❌ 改的是拷贝，x 不变
+std::thread t(inc, std::ref(x));     // ✅ 真引用
+t.join();
+```
 
-    // 陷阱 1：传引用需要 std::ref
-    int x = 0;
-    // std::thread t([&x] { x = 42; });  // 用 lambda 捕获引用更安全
-    std::thread t([](int& ref) { ref = 42; }, std::ref(x));  // 显式 ref
-    t.join();
-    std::cout << "  x = " << x << std::endl;  // 42
+### 面试追问
 
-    // 陷阱 2：传指针到局部变量（悬空指针）
-    // auto bad = []() {
-    //     int local = 42;
-    //     std::thread t([](int* p) { /* use p */ }, &local);
-    //     t.detach();  // local 可能已销毁！
-    // };
+> **Q：什么时候用多进程，什么时候用多线程？**
+> A：要强隔离（一个模块崩不能拖垮全局，如 Chrome 每个 tab 一个进程）→ 多进程；要共享数据、低切换成本 → 多线程。
 
-    // 安全做法：传值或用智能指针
-    auto safe = [](std::shared_ptr<int> sp) {
-        std::cout << "  *sp = " << *sp << std::endl;
-    };
-    std::thread t2(safe, std::make_shared<int>(100));
-    t2.join();
+> **Q：线程越多越好吗？**
+> A：不是。CPU 密集型任务线程数 ≈ 核数即可；线程过多反而上下文切换和锁争用吃掉吞吐——所以有线程池。
+
+---
+
+## 学习任务 2：互斥锁家族（40 分钟）
+
+### 互斥锁工具箱
+
+![互斥锁工具箱](../images/cpp_day6_lock_toolbox.svg)
+
+### 从裸调到 RAII
+
+```cpp
+std::mutex m;
+m.lock();
+if (error) return;   // ❌ 锁没还 → 等这把锁的线程全部永久阻塞
+m.unlock();
+
+{
+    std::lock_guard<std::mutex> lk(m);  // ✅ 构造加锁
+    // 临界区
+}                                      // ✅ 析构解锁，return / 抛异常都能安全释放
+```
+
+### lock_guard vs unique_lock（必考对比）
+
+| 维度 | lock_guard | unique_lock |
+|------|-----------|-------------|
+| 加锁时机 | 构造时立即 | 可延迟（`std::defer_lock`） |
+| 中途解锁 | ❌ | ✅ `unlock()` / `lock()` 随意 |
+| 所有权转移 | ❌ 不可移动 | ✅ 可移动（可放进容器、函数返回） |
+| 配合条件变量 | ❌ | ✅ `wait()` 只收 unique_lock |
+| 开销 | 零额外状态 | 多记一个状态，略大 |
+
+**选型**：默认 `lock_guard`；要 `wait` / 中途解锁 / 转移所有权，才换 `unique_lock`。
+
+### 读写锁与多把锁
+
+```cpp
+// 读写锁（C++17）：读共享、写独占，读多写少才划算
+std::shared_mutex rw;
+{
+    std::shared_lock<std::shared_mutex> lk(rw);   // 多个读者可同时进入
+    // 只读操作
+}
+{
+    std::unique_lock<std::shared_mutex> lk(rw);   // 写者独占
+    // 写操作
+}
+
+// 同时拿多把锁：C++17 一行（内部死锁避免算法）
+std::scoped_lock lk(m1, m2);
+
+// C++11 老写法：std::lock 一次性拿全，再交给 lock_guard 接管释放
+std::lock(m1, m2);
+std::lock_guard<std::mutex> l1(m1, std::adopt_lock);
+std::lock_guard<std::mutex> l2(m2, std::adopt_lock);
+```
+
+### 面试追问
+
+> **Q：lock() 抢不到锁会怎样？**
+> A：阻塞挂起（让出 CPU）；`try_lock()` 抢不到立即返回 false；`timed_mutex` 提供带超时的 `try_lock_for()`。
+
+> **Q：锁的粒度怎么把握？**
+> A：临界区三原则——**短**（别在锁里做耗时操作）、**不嵌套**（嵌套是死锁温床）、**别在锁内调用未知代码**（回调可能反过来拿你的锁）。
+
+---
+
+## 学习任务 3：条件变量 condition_variable ⭐⭐⭐（35 分钟）
+
+### 为什么需要它
+
+```cpp
+// ❌ 轮询：99% 的自旋都在白白烧 CPU
+while (!ready) { /* 睡 10ms？延迟高；不睡？CPU 100% */ }
+
+// ✅ 条件变量：条件不满足就睡，"可能有事"时被叫醒
+```
+
+### 标准骨架（生产者-消费者，必须默写）
+
+![条件变量：wait 的三步舞 + 虚假唤醒](../images/cpp_day6_condition_variable.svg)
+
+```cpp
+std::mutex m;
+std::condition_variable cv;
+std::queue<int> q;
+
+// 消费者
+void consumer() {
+    std::unique_lock<std::mutex> lk(m);        // ① wait 前必须先持锁
+    cv.wait(lk, []{ return !q.empty(); });     // ② 谓词版 = 自动套 while
+    int x = q.front(); q.pop();                // ③ 醒来时锁已回到手上
+}
+
+// 生产者
+void producer(int x) {
+    {
+        std::lock_guard<std::mutex> lk(m);
+        q.push(x);                             // 改共享状态必须持锁
+    }
+    cv.notify_one();                           // 叫醒一个睡眠的消费者
 }
 ```
 
-### 学习任务 2：mutex 与 RAII 锁管理（40 分钟）
+### wait 内部三步（面试要能拆开讲）
 
-#### 三种锁管理器
+1. **释放锁**——否则生产者进不来，永远没人 notify → 死锁
+2. **挂起自己**——进入睡眠队列，不占 CPU
+3. **被 notify 后重新抢锁**，抢到才从 wait 返回
 
-| 工具 | 特点 | 适用场景 |
-|------|------|----------|
-| `std::lock_guard<M>` | 构造加锁、析构解锁，不可中途解锁 | 简单临界区 |
-| `std::unique_lock<M>` | 可中途解锁、可移动、支持延迟加锁/条件变量 | 灵活场景、`condition_variable` |
-| `std::scoped_lock<M...>` | 可同时锁多个 mutex（避免死锁） | 多锁场景 |
+### 虚假唤醒（必考）
+
+`wait(lk, pred)` 等价于：
 
 ```cpp
-// concurrency_basics.cpp（续）—— mutex 与 RAII
+while (!pred()) cv.wait(lk);   // 醒来必须重查条件
+// 若用 if：虚假唤醒 / notify_all 后货被别人抢光 → 空队列上 pop = 未定义行为
+```
 
-class ThreadSafeCounter {
-    mutable std::mutex mtx_;  // mutable：const 函数中也能锁
-    int count_ = 0;
+### notify_one vs notify_all
+
+- `notify_one`：叫醒一个，适合"单消费者 / 每次只新增一件活"
+- `notify_all`：全叫醒，适合"多消费者 / 等待的条件各不相同"（醒了还得抢锁，抢不到的接着睡）
+
+---
+
+## 学习任务 4：死锁的四个必要条件与避免（25 分钟）
+
+![死锁：环形等待的形成与拆解](../images/cpp_day6_deadlock.svg)
+
+### 事故现场
+
+```cpp
+// T1                      // T2
+lock(A);                   lock(B);
+lock(B);  // 卡住！等 T2 放 B
+                           lock(A);  // 卡住！等 T1 放 A
+// 循环等待 → 永久阻塞
+```
+
+### 四个必要条件（背 + 会拆）
+
+| 条件 | 含义 | 破坏方法 |
+|------|------|---------|
+| 互斥 | 资源一次只能一个线程持有 | 锁的本质，没法破 |
+| 持有并等待 | 拿着 A 还想等 B | 一次性申请全部资源 |
+| 不可剥夺 | 别人不能硬抢你手里的锁 | `try_lock` 失败先放掉已有的 |
+| 循环等待 | 等待链成环 | **全局统一加锁顺序** |
+
+**四条同时成立才会死锁 → 破坏任意一条即可预防。**
+
+### 三招预防
+
+```cpp
+// ① 全局固定加锁顺序（最常用）：所有代码路径都先锁 A 再锁 B
+// ② 一次拿全（推荐写法）
+std::scoped_lock lk(A, B);            // C++17
+// ③ 减少嵌套、缩小临界区；锁内别调未知回调 / 虚函数
+```
+
+### 面试追问
+
+> **Q：线上怀疑死锁怎么排查？**
+> A：gdb attach 后 `info threads` + `thread apply all bt`，两条栈互相等 lock 就是死锁；工程上还可用 `pthread_mutex_timedlock` / 超时重试兜底。
+
+---
+
+## 学习任务 5：atomic 与内存序（25 分钟，概念级）
+
+![volatile ≠ atomic：原子性 · 可见性 · 有序性](../images/cpp_day6_memory_order.svg)
+
+### volatile vs atomic（回收 Day 1 伏笔）
+
+| 维度 | volatile | std::atomic |
+|------|----------|-------------|
+| 原子性 | ❌ `x++` 仍是"读-改-写"三步，并发丢更新 | ✅ 单条原子指令 |
+| 可见性 | ❌ 只防编译器缓存进寄存器，不刷缓存 | ✅ 带内存栅栏，写入对全核可见 |
+| 有序性 | ❌ 不阻止重排 | ✅ memory_order 约束重排 |
+| 用途 | 硬件 MMIO 寄存器、信号处理 | **线程间同步** |
+
+```cpp
+std::atomic<int> counter{0};
+++counter;    // 原子自增，无需加锁（比 mutex 快得多）
+
+// CAS：无锁数据结构的基石
+int expected = 0;
+bool ok = counter.compare_exchange_weak(expected, 1);
+// counter == expected 则改为 1 返回 true；否则把当前值写回 expected 返回 false
+```
+
+### 为什么会有内存序——重排事故
+
+```cpp
+// 线程 1                    // 线程 2
+data = 42;                   if (flag)
+flag = true;                     use(data);   // 可能读到 0！
+// 两句普通赋值可能被编译器 / CPU 重排，或缓存延迟可见
+```
+
+### 内存序谱系（概念级，说得出即可）
+
+- `relaxed`：只保证原子性，不管顺序——纯计数统计
+- `release`（写端）/ `acquire`（读端）：配对使用建立 happens-before——"发布数据"
+- `seq_cst`：**默认**，所有线程看到的操作全局总顺序一致，最稳
+- **工程建议**：默认 seq_cst；profile 证明有瓶颈再降级 acquire/release
+
+---
+
+## 学习任务 6：线程安全单例 ⭐（30 分钟）
+
+![线程安全单例：Meyers 与 DCLP 两种姿势](../images/cpp_day6_singleton_dclp.svg)
+
+### 饿汉 vs 懒汉
+
+- **饿汉**：启动就构造（`static Singleton g;`），天生线程安全，但可能白造 + 静态初始化顺序坑
+- **懒汉**：首次使用才构造 → 必须处理并发 → 两种标准写法
+
+### 写法一：Meyers 单例（C++11 起推荐）
+
+```cpp
+class Singleton {
 public:
-    void increment() {
-        std::lock_guard<std::mutex> lock(mtx_);  // RAII：构造加锁，析构解锁
-        ++count_;
-    }
-
-    int get() const {
-        std::lock_guard<std::mutex> lock(mtx_);
-        return count_;
-    }
-
-    // 需要灵活控制时用 unique_lock
-    int get_and_reset() {
-        std::unique_lock<std::mutex> lock(mtx_);
-        int val = count_;
-        count_ = 0;
-        lock.unlock();  // 可以中途解锁（lock_guard 不行）
-        // 做一些不需要锁的操作...
-        return val;
-    }
-};
-
-void demo_mutex() {
-    std::cout << "\n=== mutex 与 RAII 锁 ===" << std::endl;
-    ThreadSafeCounter counter;
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < 10; i++) {
-        threads.emplace_back([&counter]() {
-            for (int j = 0; j < 1000; j++) counter.increment();
-        });
-    }
-    for (auto& t : threads) t.join();
-
-    std::cout << "  最终计数: " << counter.get() << " (期望 10000)" << std::endl;
-}
-```
-
-#### 死锁与预防
-
-```cpp
-// concurrency_basics.cpp（续）—— 死锁预防
-
-// 死锁场景：两个线程以不同顺序锁两个 mutex
-class DeadlockDemo {
-    std::mutex mtx1_, mtx2_;
-public:
-    void func_a() {
-        std::lock_guard<std::mutex> l1(mtx1_);  // 先锁 1
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        std::lock_guard<std::mutex> l2(mtx2_);  // 再锁 2 ← 可能死锁
-    }
-    void func_b() {
-        std::lock_guard<std::mutex> l2(mtx2_);  // 先锁 2
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        std::lock_guard<std::mutex> l1(mtx1_);  // 再锁 1 ← 可能死锁
-    }
-
-    // 解决方案 1：std::scoped_lock 同时锁多个（原子操作，不会死锁）
-    void func_safe() {
-        std::scoped_lock lock(mtx1_, mtx2_);  // 同时锁，避免死锁
-        // ...
-    }
-
-    // 解决方案 2：固定加锁顺序（所有线程都按同一顺序锁）
-    void func_ordered() {
-        std::lock_guard<std::mutex> l1(mtx1_);  // 总是先锁 1
-        std::lock_guard<std::mutex> l2(mtx2_);  // 再锁 2
-        // ...
-    }
-};
-```
-
-| 死锁预防策略 | 说明 |
-|-------------|------|
-| **固定顺序** | 所有线程按相同顺序获取锁 |
-| **scoped_lock** | `std::scoped_lock` 原子地锁多个 mutex |
-| **try_lock + 回退** | `std::try_lock` 尝试加锁，失败则释放已有锁重试 |
-| **避免嵌套锁** | 持有锁时不调用未知代码（可能间接获取其他锁） |
-
-> 💡 **RAII 与锁**：`lock_guard` 是 RAII 的经典应用——构造时加锁，析构时自动解锁。即使临界区内抛异常，锁也会正确释放。永远不要手动 `lock()`/`unlock()`，用 RAII 包装器。
-
-### 学习任务 3：condition_variable（30 分钟）
-
-`condition_variable` 用于线程间通知，经典应用是生产者-消费者模型：
-
-```cpp
-// concurrency_basics.cpp（续）—— 生产者-消费者
-
-template <typename T>
-class ThreadSafeQueue {
-    std::queue<T> queue_;
-    mutable std::mutex mtx_;
-    std::condition_variable cv_;
-    bool done_ = false;
-
-public:
-    void push(T value) {
-        {
-            std::lock_guard<std::mutex> lock(mtx_);
-            queue_.push(std::move(value));
-        }
-        cv_.notify_one();  // 通知一个等待的消费者
-    }
-
-    bool pop(T& value) {
-        std::unique_lock<std::mutex> lock(mtx_);
-        cv_.wait(lock, [this] { return !queue_.empty() || done_; });  // 等待条件
-        if (queue_.empty() && done_) return false;  // 队列空且生产结束
-        value = std::move(queue_.front());
-        queue_.pop();
-        return true;
-    }
-
-    void set_done() {
-        {
-            std::lock_guard<std::mutex> lock(mtx_);
-            done_ = true;
-        }
-        cv_.notify_all();  // 通知所有等待的消费者
-    }
-};
-
-void demo_producer_consumer() {
-    std::cout << "\n=== 生产者-消费者 ===" << std::endl;
-    ThreadSafeQueue<int> queue;
-
-    // 生产者
-    auto producer = [&queue]() {
-        for (int i = 0; i < 5; i++) {
-            queue.push(i);
-            std::cout << "  生产: " << i << std::endl;
-        }
-        queue.set_done();
-    };
-
-    // 消费者
-    auto consumer = [&queue]() {
-        int val;
-        while (queue.pop(val)) {
-            std::cout << "  消费: " << val << std::endl;
-        }
-    };
-
-    std::thread p(producer);
-    std::thread c(consumer);
-    p.join();
-    c.join();
-}
-```
-
-> ⚠️ **注意**：`cv_.wait(lock, predicate)` 内部用循环防止**虚假唤醒（spurious wakeup）**——即使没有 `notify`，`wait` 也可能返回。带谓词的 `wait` 会自动处理虚假唤醒。如果用无谓词版本 `cv_.wait(lock)`，需要手动 `while (!condition) cv_.wait(lock);`。
-
-### 学习任务 4：std::atomic 与 memory order（40 分钟）
-
-#### atomic 基础
-
-`std::atomic` 提供无锁原子操作，避免 mutex 开销：
-
-```cpp
-// concurrency_basics.cpp（续）—— atomic
-
-void demo_atomic() {
-    std::cout << "\n=== std::atomic ===" << std::endl;
-
-    // atomic 计数器（无锁线程安全）
-    std::atomic<int> counter{0};
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < 10; i++) {
-        threads.emplace_back([&counter]() {
-            for (int j = 0; j < 10000; j++) {
-                counter.fetch_add(1, std::memory_order_relaxed);  // 原子自增
-            }
-        });
-    }
-    for (auto& t : threads) t.join();
-    std::cout << "  atomic 计数: " << counter.load() << " (期望 100000)" << std::endl;
-
-    // 常用操作
-    std::atomic<int> a{10};
-    a.store(20);              // 原子写
-    int v = a.load();         // 原子读
-    int old = a.exchange(30); // 原子交换，返回旧值
-    int expected = 30;
-    bool ok = a.compare_exchange_strong(expected, 40);  // CAS：如果 a==30 则 a=40
-    std::cout << "  CAS 结果: " << (ok ? "成功" : "失败")
-              << ", a = " << a.load() << std::endl;
-}
-```
-
-#### 6 种 memory order（核心难点）
-
-| Memory Order | 语义 | 保证 | 适用场景 |
-|--------------|------|------|----------|
-| `memory_order_relaxed` | 无排序约束 | 仅原子性 | 计数器（不需同步） |
-| `memory_order_acquire` | 读操作 | 后续读写不能重排到此操作之前 | 读取同步标志 |
-| `memory_order_release` | 写操作 | 之前的读写不能重排到此操作之后 | 写入同步标志 |
-| `memory_order_acq_rel` | 读写操作 | acquire + release | CAS 操作 |
-| `memory_order_seq_cst` | 全局顺序一致 | acquire + release + 全局顺序 | 默认（最强） |
-| `memory_order_consume` | 数据依赖排序 | 类似 acquire（已不推荐） | 几乎不用 |
-
-```cpp
-// concurrency_basics.cpp（续）—— memory order 与同步
-
-// 经典模式：release-acquire 配对实现同步
-int payload = 0;
-std::atomic<bool> ready{false};
-
-void producer_release() {
-    payload = 42;  // 非原子写
-    // release：确保 payload 的写在此操作之前完成
-    ready.store(true, std::memory_order_release);
-}
-
-void consumer_acquire() {
-    // acquire：确保后续对 payload 的读在此操作之后
-    while (!ready.load(std::memory_order_acquire)) {
-        std::this_thread::yield();
-    }
-    // 这里读到的 payload 一定是 42（release-acquire 同步保证）
-    std::cout << "  payload = " << payload << std::endl;
-}
-
-void demo_memory_order() {
-    std::cout << "\n=== memory order（release-acquire 同步）===" << std::endl;
-    payload = 0;
-    ready.store(false);
-
-    std::thread c(consumer_acquire);
-    std::thread p(producer_release);
-    p.join();
-    c.join();
-}
-```
-
-> 💡 **面试要点**：`release` 和 `acquire` 配对可以建立**happens-before**关系——release 之前的所有写操作对 acquire 之后的读操作可见。`seq_cst`（默认）最强但最慢，`relaxed` 最快但无同步。大多数场景用默认 `seq_cst`，性能敏感的计数器用 `relaxed`，同步标志用 `release`/`acquire`。
-
-### 学习任务 5：Thread-safe Singleton（20 分钟）
-
-这是面试高频手撕题，考察双重检查锁、`call_once`、Meyers' Singleton 三种实现：
-
-```cpp
-// concurrency_basics.cpp（续）—— Thread-safe Singleton
-
-// 方式 1：Meyers' Singleton（C++11 起线程安全，推荐）
-class Singleton1 {
-public:
-    static Singleton1& instance() {
-        static Singleton1 inst;  // C++11 保证局部 static 初始化线程安全
+    static Singleton& instance() {
+        static Singleton inst;    // magic static：C++11 保证并发下只初始化一次
         return inst;
     }
-    Singleton1(const Singleton1&) = delete;
-    Singleton1& operator=(const Singleton1&) = delete;
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
 private:
-    Singleton1() { std::cout << "  Singleton1 构造" << std::endl; }
-    ~Singleton1() = default;
+    Singleton() = default;
+    ~Singleton() = default;
 };
+```
 
-// 方式 2：双重检查锁（DCLP，C++11 前，现已不推荐）
-class Singleton2 {
-    static std::atomic<Singleton2*> instance_;
-    static std::mutex mtx_;
+### 写法二：DCLP 双重检查锁（atomic 版）
+
+```cpp
+class Singleton {
 public:
-    static Singleton2* instance() {
-        Singleton2* p = instance_.load(std::memory_order_acquire);
-        if (!p) {
-            std::lock_guard<std::mutex> lock(mtx_);
-            p = instance_.load(std::memory_order_relaxed);
-            if (!p) {
-                p = new Singleton2();
-                instance_.store(p, std::memory_order_release);
+    static Singleton* instance() {
+        Singleton* p = instance_.load(std::memory_order_acquire); // 第一次检查：无锁，热路径零开销
+        if (p == nullptr) {
+            std::lock_guard<std::mutex> lk(m_);
+            p = instance_.load(std::memory_order_relaxed);        // 第二次检查：等锁期间可能已被别人构造
+            if (p == nullptr) {
+                p = new Singleton;
+                instance_.store(p, std::memory_order_release);    // 发布：构造完成后才对别人可见
             }
         }
         return p;
     }
 private:
-    Singleton2() { std::cout << "  Singleton2 构造" << std::endl; }
+    Singleton() = default;
+    static std::atomic<Singleton*> instance_;
+    static std::mutex m_;
 };
-std::atomic<Singleton2*> Singleton2::instance_{nullptr};
-std::mutex Singleton2::mtx_;
+std::atomic<Singleton*> Singleton::instance_{nullptr};
+std::mutex Singleton::m_;
+```
 
-// 方式 3：std::call_once
-class Singleton3 {
-    static std::once_flag flag_;
-    static Singleton3* instance_;
-public:
-    static Singleton3* instance() {
-        std::call_once(flag_, []() { instance_ = new Singleton3(); });
-        return instance_;
-    }
-private:
-    Singleton3() { std::cout << "  Singleton3 构造" << std::endl; }
-};
-std::once_flag Singleton3::flag_;
-Singleton3* Singleton3::instance_ = nullptr;
+### 两次检查各自防什么（面试追问点）
 
-void demo_singleton() {
-    std::cout << "\n=== Thread-safe Singleton ===" << std::endl;
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 3; i++) {
-        threads.emplace_back([]() { Singleton1::instance(); });
-    }
-    for (auto& t : threads) t.join();
+- **第一次（无锁）**：99% 的调用走到这就返回了，避免每次抢锁
+- **第二次（持锁）**：两个线程同时通过第一次检查，一个构造完，另一个拿到锁后发现已存在
+
+### DCLP 的历史坑
+
+`instance_ = new Singleton;` 可能被拆成 ①分配内存 ②地址写回指针 ③执行构造，②③ 一旦重排，别的线程第一次检查会拿到"没构造完的半成品"——所以必须 atomic + acquire/release（裸指针、Java 式 volatile 都救不了）。
+
+---
+
+## 高频面试题自测
+
+### Q1：如何实现一个线程安全的单例？
+
+<details>
+<summary>点击查看答案</summary>
+
+三层递进作答：
+
+1. **Meyers 单例（首选）**：局部 static，C++11 起标准保证并发首次调用初始化只执行一次（magic static），编译器自动用锁/CAS 实现；代码只有三行
+2. **DCLP + atomic**：第一次无锁检查（热路径零开销）→ 加锁 → 第二次检查（防等锁期间被重复构造）→ `new` 后 release 发布；坑在于裸指针版会被指令重排出"半成品"
+3. **饿汉式**：启动即构造，天生安全，但可能白造、有静态初始化顺序问题
+
+别忘了三件套：构造函数 private、拷贝/赋值 `=delete`、静态成员类外定义。
+
+</details>
+
+### Q2：生产者-消费者模型怎么写？
+
+<details>
+<summary>点击查看答案</summary>
+
+一个队列 + 一把锁 + 一个条件变量：
+
+- 消费者：`unique_lock` 持锁 → `cv.wait(lk, pred)` 带谓词（防虚假唤醒）→ 取数据
+- 生产者：持锁 push → 解锁后 `notify_one`
+- 退出协作：`done` 标志（同样受锁保护）+ `notify_all` 唤醒所有阻塞在 wait 的线程退出
+
+关键点：wait 内部"释放锁-挂起-醒来抢锁"三步；谓词里查的条件和 push 修改的必须是同一个 mutex 保护的数据。
+
+</details>
+
+### Q3：volatile 和 atomic 的区别？
+
+<details>
+<summary>点击查看答案</summary>
+
+- **volatile**：只禁止编译器把读写缓存到寄存器（每次都真的访存），用于硬件寄存器、信号处理；**不保证原子性**（`x++` 仍是三步）、**不保证可见性**（不刷 CPU 缓存）、**不禁止重排**——不是线程同步工具
+- **std::atomic**：原子性（读-改-写不可分）+ 可见性（内存栅栏）+ 有序性（memory_order 约束重排），专用于线程间同步
+
+一句话：volatile 给编译器看，atomic 给多线程看。
+
+</details>
+
+---
+
+## 动手练习
+
+### 练习 1 ⭐：手写生产者-消费者队列（可编译运行版）
+
+```cpp
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
+
+int main() {
+    std::queue<int> q;
+    std::mutex m;
+    std::condition_variable cv;
+    bool done = false;
+
+    std::thread producer([&] {
+        for (int i = 1; i <= 10; ++i) {
+            {
+                std::lock_guard<std::mutex> lk(m);
+                q.push(i);
+            }
+            cv.notify_one();
+        }
+        {
+            std::lock_guard<std::mutex> lk(m);
+            done = true;
+        }
+        cv.notify_all();                  // 唤醒所有消费者：该退出了
+    });
+
+    std::thread consumer([&] {
+        while (true) {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait(lk, [&]{ return !q.empty() || done; });   // 谓词：有货 或 该收工
+            while (!q.empty()) {
+                std::cout << q.front() << " ";
+                q.pop();
+            }
+            if (done) break;
+        }
+    });
+
+    producer.join();
+    consumer.join();
+    std::cout << "\n";
 }
 ```
 
-| 实现 | 线程安全 | 推荐度 | 备注 |
-|------|----------|--------|------|
-| Meyers' Singleton | ✅（C++11 保证） | ⭐ 推荐 | 最简洁，编译器保证线程安全 |
-| 双重检查锁 (DCLP) | ✅（需 atomic） | 不推荐 | C++11 前容易写错 |
-| `std::call_once` | ✅ | ⭐ 推荐 | 明确、可读 |
-| 简单加锁 | ✅ | 可用 | 每次调用都加锁，性能差 |
+```text
+编译运行：g++ -std=c++17 -pthread main.cpp && ./a.out
+输出：1 2 3 4 5 6 7 8 9 10（顺序稳定；把 notify_one 改 notify_all 也能跑，理解为什么）
 
-### 面试题积累（今日 6 道）
+进阶改造：
+① 加容量上限（有界队列）：push 侧也要 wait(not_full)，用同一个 cv + notify_all 或两个 cv
+② 泛化成模板类 BlockingQueue<T>（见默写清单）
+```
 
-**Q1：`std::thread` 的 `join` 和 `detach` 有什么区别？**
-> 答：`join` 等待线程完成并回收资源（阻塞调用线程）；`detach` 将线程分离到后台运行（不等待，线程独立执行）。`std::thread` 对象必须在 `join` 或 `detach` 之前处理，否则析构时调用 `std::terminate`。通常优先 `join`；`detach` 需确保线程不访问已销毁的局部变量。
+### 练习 2 ⭐：手写线程安全的懒汉单例
 
-**Q2：`lock_guard` 和 `unique_lock` 有什么区别？**
-> 答：`lock_guard` 在构造时加锁、析构时解锁，不可中途解锁，不可移动，开销最小；`unique_lock` 更灵活——支持延迟加锁（`defer_lock`）、中途解锁/重新加锁、可以移动、可以配合 `condition_variable`。简单临界区用 `lock_guard`，需要灵活控制或条件变量用 `unique_lock`。
+见学习任务 6 的两段代码——Meyers 版 5 分钟、DCLP 版 10 分钟，限时默写，编译验证：
 
-**Q3：什么是虚假唤醒？如何处理？**
-> 答：虚假唤醒是指 `condition_variable::wait` 在没有 `notify` 的情况下也可能返回。处理方法：① 用带谓词的 `wait(lock, predicate)`，内部自动循环检查；② 手动 `while (!condition) cv.wait(lock)`。永远不要用 `if` 判断条件后直接 `wait`——虚假唤醒会导致错误。
+```text
+验证多线程安全（g++ -std=c++17 -pthread）：
+开 8 个线程各调用 instance() 一万次，统计构造函数调用次数必须为 1。
+```
 
-**Q4：`std::atomic` 的 6 种 memory order 是什么？默认是哪个？**
-> 答：① `relaxed`：只保证原子性，无排序约束；② `acquire`：后续读写不能重排到此之前；③ `release`：之前读写不能重排到此之后；④ `acq_rel`：acquire + release；⑤ `seq_cst`：全局顺序一致（最强，默认）；⑥ `consume`：数据依赖排序（已不推荐）。默认是 `seq_cst`。`release`/`acquire` 配对可以建立 happens-before 关系；计数器用 `relaxed`；同步标志用 `release`/`acquire`。
+### 默写检查清单
 
-**Q5：如何实现线程安全的单例模式？**
-> 答：推荐 Meyers' Singleton——局部 `static` 变量，C++11 标准保证其初始化是线程安全的（编译器内部用 `call_once` 或等价机制）。代码简洁：`static T& instance() { static T inst; return inst; }`。其他方案：`std::call_once`（明确可控）或双重检查锁（DCLP，C++11 前使用，需 atomic 保证正确性，现已不推荐）。
-
-**Q6：如何预防死锁？**
-> 答：四种策略——① 固定加锁顺序：所有线程按相同顺序获取锁；② `std::scoped_lock`：原子地锁多个 mutex，避免循环等待；③ `std::try_lock` + 回退：尝试加锁，失败则释放已有锁重试；④ 避免嵌套锁：持有锁时不调用未知代码（可能间接获取其他锁）。最常用的是 `scoped_lock` 和固定顺序。
-
-### 今日检查清单
-
-- [ ] 能创建 `std::thread` 并正确 `join`/`detach`
-- [ ] 知道线程传引用需要 `std::ref`
-- [ ] 能用 `lock_guard` 管理临界区
-- [ ] 能说出 `lock_guard` vs `unique_lock` 的区别
-- [ ] 能用 `condition_variable` 实现生产者-消费者
-- [ ] 知道虚假唤醒及其处理方法
-- [ ] 能说出 6 种 memory order 的语义
-- [ ] 能用 `release`/`acquire` 配对实现线程间同步
-- [ ] 能实现线程安全的单例模式（Meyers' Singleton）
-- [ ] 能说出 3 种以上死锁预防策略
-- [ ] `concurrency_basics.cpp` 编译运行通过
-
-#### 明日预告
-
-Day 7 将做**全周总结与高频题复盘**——汇总 C++11~23 关键新特性、整理 40+ 道高频面试题答案、完成个人面试 cheat sheet。今天学完并发，明天把 7 天的知识串联起来，查漏补缺。建议今晚先回顾本周前 6 天的检查清单，标记还不熟悉的知识点。
+- [ ] wait 内部三步：释放锁 / 挂起 / 醒来重新抢锁
+- [ ] `cv.wait(lk, pred)` ≡ `while (!pred()) cv.wait(lk);`——为什么必须 while
+- [ ] push 用 lock_guard、pop 用 unique_lock，能说出为什么（wait 只收 unique_lock）
+- [ ] 退出机制三件：done 标志 + 谓词里判断 done + notify_all
+- [ ] Meyers 单例三行 + magic static 的保证是什么
+- [ ] DCLP：两次检查各自的作用；为什么第一次检查可用 relaxed、store 必须 release
+- [ ] 死锁四条件 + 对应的三招预防
+- [ ] volatile 和 atomic 三维对比（原子性 / 可见性 / 有序性）
 
 ---
+
+## 今日小结
+
+| 主题 | 核心要点 | 面试频率 |
+|------|---------|---------|
+| 进程 vs 线程 | 线程共享代码区/全局区/堆，私有栈和寄存器 | ⭐⭐⭐⭐ |
+| 锁家族 | RAII 优先；lock_guard 默认、unique_lock 灵活、scoped_lock 多锁 | ⭐⭐⭐⭐ |
+| 条件变量 | wait 三步；谓词 / while 防虚假唤醒 | ⭐⭐⭐⭐⭐ |
+| 死锁 | 四条件缺一不可；统一顺序 / scoped_lock / 减少嵌套 | ⭐⭐⭐⭐ |
+| atomic | 原子 + 可见 + 有序；默认 seq_cst；volatile 不是同步工具 | ⭐⭐⭐⭐ |
+| 单例 | Meyers 首选；DCLP 讲清两次检查和重排坑 | ⭐⭐⭐⭐⭐ |
+| 生产者-消费者 | 一队列一锁一 cv + 谓词 wait + 退出协作 | ⭐⭐⭐⭐⭐ |
+
+> **明日预告**：Day 7 综合冲刺 + 模拟面试——查漏补缺、五大手写题限时白板练习（String / shared_ptr / 单例 / LRU / 生产者-消费者）、完整模拟面试。
