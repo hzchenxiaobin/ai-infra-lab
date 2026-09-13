@@ -370,17 +370,17 @@ python kernels/shape_bucketing.py
 
 **与今日知识的关联**：Matrix Transpose 是 **CUDA Graph 录制的最佳练手对象**——它 shape 静态、kernel 简单，多次 launch 的累积 overhead（如 320 次 × ~7μs ≈ 2.2ms）用 CUDA Graph 捕获后降为一次 replay ~10μs。naive 转置有一侧 uncoalesced，用 shared memory tile 修复后带宽接近上限。Day 4 的 CUDA Graph 实操就该用这类 **shape 固定的 kernel** 做演示。本题在 week1/day4 已首次布置，这里作为 shape 静态 kernel 的 CUDA Graph 练习复用。
 
-> 💡 提交后在 [LeetGPU Matrix Transpose](https://leetgpu.com/challenges/matrix-transpose) 上记录通过耗时。完整题解（含 shared memory tile 转置、CUDA Graph 捕获/replay、与今日 CUDA Graph 实操的对应）见 <a target="_self" href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Transpose](https://leetgpu.com/challenges/matrix-transpose) 上记录通过耗时。完整题解（含 shared memory tile 转置、CUDA Graph 捕获/replay、与今日 CUDA Graph 实操的对应）见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 8 周 Day 4）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 4（二分进阶），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 4（二分进阶），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/) | 困难 | 二分答案 + 贪心划分 | <a target="_self" href="/problems/algo/0410">题解</a> |
-| [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/) | 困难 | 二分答案 + 双指针计数 | <a target="_self" href="/problems/algo/0719">题解</a> |
-| [4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/) | 困难 | 二分划分（合并第 k 小） | <a target="_self" href="/problems/algo/0004">题解</a> |
+| [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/) | 困难 | 二分答案 + 贪心划分 | <a target="_blank" rel="noopener" href="/problems/algo/0410">题解</a> |
+| [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/) | 困难 | 二分答案 + 双指针计数 | <a target="_blank" rel="noopener" href="/problems/algo/0719">题解</a> |
+| [4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/) | 困难 | 二分划分（合并第 k 小） | <a target="_blank" rel="noopener" href="/problems/algo/0004">题解</a> |
 
 ---
 

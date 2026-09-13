@@ -188,13 +188,13 @@ related_questions: []
 
 #### 任务 2：本周 LeetCode 题目回顾（10 周计划 · 第 9 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 子数组与子序列 | <a target="_self" href="/problems/algo/0139">139. 单词拆分</a>、<a target="_self" href="/problems/algo/0152">152. 乘积最大子数组</a>、<a target="_self" href="/problems/algo/0300">300. 最长递增子序列</a>、<a target="_self" href="/problems/algo/0354">354. 俄罗斯套娃信封问题</a> |
-| Day 2 | 回文与区间 DP | <a target="_self" href="/problems/algo/0647">647. 回文子串</a>、<a target="_self" href="/problems/algo/0516">516. 最长回文子序列</a>、<a target="_self" href="/problems/algo/0005">5. 最长回文子串</a>、<a target="_self" href="/problems/algo/0312">312. 戳气球</a>、<a target="_self" href="/problems/algo/0032">32. 最长有效括号</a> |
-| Day 3 | 二维 DP | <a target="_self" href="/problems/algo/0062">62. 不同路径</a>、<a target="_self" href="/problems/algo/0064">64. 最小路径和</a>、<a target="_self" href="/problems/algo/0120">120. 三角形最小路径和</a>、<a target="_self" href="/problems/algo/1143">1143. 最长公共子序列</a>、<a target="_self" href="/problems/algo/0072">72. 编辑距离</a>、<a target="_self" href="/problems/algo/0221">221. 最大正方形</a> |
+| Day 1 | 子数组与子序列 | <a target="_blank" rel="noopener" href="/problems/algo/0139">139. 单词拆分</a>、<a target="_blank" rel="noopener" href="/problems/algo/0152">152. 乘积最大子数组</a>、<a target="_blank" rel="noopener" href="/problems/algo/0300">300. 最长递增子序列</a>、<a target="_blank" rel="noopener" href="/problems/algo/0354">354. 俄罗斯套娃信封问题</a> |
+| Day 2 | 回文与区间 DP | <a target="_blank" rel="noopener" href="/problems/algo/0647">647. 回文子串</a>、<a target="_blank" rel="noopener" href="/problems/algo/0516">516. 最长回文子序列</a>、<a target="_blank" rel="noopener" href="/problems/algo/0005">5. 最长回文子串</a>、<a target="_blank" rel="noopener" href="/problems/algo/0312">312. 戳气球</a>、<a target="_blank" rel="noopener" href="/problems/algo/0032">32. 最长有效括号</a> |
+| Day 3 | 二维 DP | <a target="_blank" rel="noopener" href="/problems/algo/0062">62. 不同路径</a>、<a target="_blank" rel="noopener" href="/problems/algo/0064">64. 最小路径和</a>、<a target="_blank" rel="noopener" href="/problems/algo/0120">120. 三角形最小路径和</a>、<a target="_blank" rel="noopener" href="/problems/algo/1143">1143. 最长公共子序列</a>、<a target="_blank" rel="noopener" href="/problems/algo/0072">72. 编辑距离</a>、<a target="_blank" rel="noopener" href="/problems/algo/0221">221. 最大正方形</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 9 周「动态规划进阶——子序列、区间与二维 DP」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

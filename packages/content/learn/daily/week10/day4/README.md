@@ -494,11 +494,11 @@ Naive 10.6% → Tiling 13.3% → RegBlk 30.8% → float4 64.3%
 
 **与今日知识的关联**：SiLU（Sigmoid Linear Unit）是 LLaMA 等现代模型的激活函数，是 **element-wise + fused kernel** 的典型案例。面试问"算子融合"时，SiLU = x * sigmoid(x) 融合成一个 kernel 是经典例子——**减少一次 HBM 读写**。同时它算术强度极低（~0.25 FLOP/Byte），是 **memory-bound 的教科书案例**，用 Day 4 学的 Roofline + ncu 分析能秒判瓶颈。
 
-> 💡 提交后在 [LeetGPU SiLU](https://leetgpu.com/challenges/silu) 上记录通过耗时。完整题解（含 fused SiLU kernel、算术强度分析、与 Roofline 面试题的对应）见 <a target="_self" href="/problems/gpu/easy/52-silu">SiLU 题解</a>。
+> 💡 提交后在 [LeetGPU SiLU](https://leetgpu.com/challenges/silu) 上记录通过耗时。完整题解（含 fused SiLU kernel、算术强度分析、与 Roofline 面试题的对应）见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/52-silu">SiLU 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 10 周 Day 4 复盘）
 
-> 📅 今日为 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
+> 📅 今日为 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
 ---
 

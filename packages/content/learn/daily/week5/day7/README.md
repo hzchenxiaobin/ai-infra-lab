@@ -350,13 +350,13 @@ __global__ void flash_attention_forward_kernel(
 
 #### 任务 2：本周 LeetCode 题目回顾（10 周计划 · 第 5 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 5 周「堆、贪心与区间」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 堆 | <a target="_self" href="/problems/algo/0215">215. 数组中的第 K 个最大元素</a>、<a target="_self" href="/problems/algo/0347">347. 前 K 个高频元素</a>、<a target="_self" href="/problems/algo/0692">692. 前 K 个高频单词</a>、<a target="_self" href="/problems/algo/0295">295. 数据流的中位数</a>、<a target="_self" href="/problems/algo/0264">264. 丑数 II</a>、<a target="_self" href="/problems/algo/0767">767. 重构字符串</a> |
-| Day 2 | 贪心 | <a target="_self" href="/problems/algo/0121">121. 买卖股票的最佳时机</a>、<a target="_self" href="/problems/algo/0055">55. 跳跃游戏</a>、<a target="_self" href="/problems/algo/0045">45. 跳跃游戏 II</a>、<a target="_self" href="/problems/algo/0763">763. 划分字母区间</a>、<a target="_self" href="/problems/algo/0621">621. 任务调度器</a> |
-| Day 3 | 区间与差分 | <a target="_self" href="/problems/algo/0253">253. 会议室 II</a>、<a target="_self" href="/problems/algo/0435">435. 无重叠区间</a>、<a target="_self" href="/problems/algo/0452">452. 用最少数量的箭引爆气球</a>、<a target="_self" href="/problems/algo/0406">406. 根据身高重建队列</a>、<a target="_self" href="/problems/algo/1109">1109. 航班预订统计</a> |
+| Day 1 | 堆 | <a target="_blank" rel="noopener" href="/problems/algo/0215">215. 数组中的第 K 个最大元素</a>、<a target="_blank" rel="noopener" href="/problems/algo/0347">347. 前 K 个高频元素</a>、<a target="_blank" rel="noopener" href="/problems/algo/0692">692. 前 K 个高频单词</a>、<a target="_blank" rel="noopener" href="/problems/algo/0295">295. 数据流的中位数</a>、<a target="_blank" rel="noopener" href="/problems/algo/0264">264. 丑数 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0767">767. 重构字符串</a> |
+| Day 2 | 贪心 | <a target="_blank" rel="noopener" href="/problems/algo/0121">121. 买卖股票的最佳时机</a>、<a target="_blank" rel="noopener" href="/problems/algo/0055">55. 跳跃游戏</a>、<a target="_blank" rel="noopener" href="/problems/algo/0045">45. 跳跃游戏 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0763">763. 划分字母区间</a>、<a target="_blank" rel="noopener" href="/problems/algo/0621">621. 任务调度器</a> |
+| Day 3 | 区间与差分 | <a target="_blank" rel="noopener" href="/problems/algo/0253">253. 会议室 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0435">435. 无重叠区间</a>、<a target="_blank" rel="noopener" href="/problems/algo/0452">452. 用最少数量的箭引爆气球</a>、<a target="_blank" rel="noopener" href="/problems/algo/0406">406. 根据身高重建队列</a>、<a target="_blank" rel="noopener" href="/problems/algo/1109">1109. 航班预订统计</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 5 周「堆、贪心与区间」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

@@ -272,18 +272,18 @@ ncu \
 
 > 💡 **Warp Shuffle 最小铺垫**：`__shfl_down_sync(mask, val, offset)` 让 warp 内线程直接读取其他 lane 的寄存器值，不经过 shared memory。本题用它把 warp 内 32 个部分和在 log₂32 = 5 步内归约成 1 个；更系统的 warp 原语讲解见 Week 2 Day 1，今天照着题解用即可。
 
-> 💡 提交后在 [LeetGPU Reduction 题目](https://leetgpu.com/challenges/reduction)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 <a target="_self" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
+> 💡 提交后在 [LeetGPU Reduction 题目](https://leetgpu.com/challenges/reduction)上记录通过耗时，用 ncu 对比不同 block size 的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 1 周 Day 5）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 5（数组技巧），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 5（数组技巧），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [75. 颜色分类](https://leetcode.cn/problems/sort-colors/) | 中等 | 三指针 Dutch Flag | <a target="_self" href="/problems/algo/0075">题解</a> |
-| [31. 下一个排列](https://leetcode.cn/problems/next-permutation/) | 中等 | 从右找降序 + 交换反转 | <a target="_self" href="/problems/algo/0031">题解</a> |
-| [287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/) | 中等 | Floyd 判圈 / 二分 | <a target="_self" href="/problems/algo/0287">题解</a> |
-| [189. 轮转数组](https://leetcode.cn/problems/rotate-array/) | 中等 | 三次翻转 | <a target="_self" href="/problems/algo/0189">题解</a> |
+| [75. 颜色分类](https://leetcode.cn/problems/sort-colors/) | 中等 | 三指针 Dutch Flag | <a target="_blank" rel="noopener" href="/problems/algo/0075">题解</a> |
+| [31. 下一个排列](https://leetcode.cn/problems/next-permutation/) | 中等 | 从右找降序 + 交换反转 | <a target="_blank" rel="noopener" href="/problems/algo/0031">题解</a> |
+| [287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/) | 中等 | Floyd 判圈 / 二分 | <a target="_blank" rel="noopener" href="/problems/algo/0287">题解</a> |
+| [189. 轮转数组](https://leetcode.cn/problems/rotate-array/) | 中等 | 三次翻转 | <a target="_blank" rel="noopener" href="/problems/algo/0189">题解</a> |
 
 ---
 

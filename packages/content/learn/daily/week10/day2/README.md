@@ -284,19 +284,19 @@ engine = MiniEngine(forward_time=0.1, ...)
 
 **与今日知识的关联**：Element Reversal 是最简单的 element-wise 符号反转 kernel（`output[i] = -input[i]`），与系统联调中的**结果一致性验证**同构——联调时需要对比自定义 kernel 与 PyTorch 的输出，逐元素比较是否一致。Element Reversal 的验证正是联调验证的基础操作：`assert (custom_output - pytorch_output).abs().max() < threshold`；而其 float4 向量化优化版与朴素版的输出一致性对比，也正是"优化不改变语义"的验证范式。理解这种逐元素对比是联调精度验证的核心方法。
 
-> 💡 提交后在 [LeetGPU Element Reversal](https://leetgpu.com/challenges/element-reversal) 上记录通过耗时。完整题解见 <a target="_self" href="/problems/gpu/easy/111-element-reversal">Element Reversal 题解</a>。
+> 💡 提交后在 [LeetGPU Element Reversal](https://leetgpu.com/challenges/element-reversal) 上记录通过耗时。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/111-element-reversal">Element Reversal 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 10 周 Day 2）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」Day 2（图论基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」Day 2（图论基础），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [207. 课程表](https://leetcode.cn/problems/course-schedule/) | 中等 | 拓扑排序 / BFS | <a target="_self" href="/problems/algo/0207">题解</a> |
-| [208. 实现 Trie（前缀树）](https://leetcode.cn/problems/implement-trie-prefix-tree/) | 中等 | 字典树 | <a target="_self" href="/problems/algo/0208">题解</a> |
-| [547. 省份数量](https://leetcode.cn/problems/number-of-provinces/) | 中等 | 并查集模板 | <a target="_self" href="/problems/algo/0547">题解</a> |
-| [785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/) | 中等 | 二着色 BFS/DFS | <a target="_self" href="/problems/algo/0785">题解</a> |
-| [133. 克隆图](https://leetcode.cn/problems/clone-graph/) | 中等 | DFS/BFS + 哈希克隆 | <a target="_self" href="/problems/algo/0133">题解</a> |
+| [207. 课程表](https://leetcode.cn/problems/course-schedule/) | 中等 | 拓扑排序 / BFS | <a target="_blank" rel="noopener" href="/problems/algo/0207">题解</a> |
+| [208. 实现 Trie（前缀树）](https://leetcode.cn/problems/implement-trie-prefix-tree/) | 中等 | 字典树 | <a target="_blank" rel="noopener" href="/problems/algo/0208">题解</a> |
+| [547. 省份数量](https://leetcode.cn/problems/number-of-provinces/) | 中等 | 并查集模板 | <a target="_blank" rel="noopener" href="/problems/algo/0547">题解</a> |
+| [785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/) | 中等 | 二着色 BFS/DFS | <a target="_blank" rel="noopener" href="/problems/algo/0785">题解</a> |
+| [133. 克隆图](https://leetcode.cn/problems/clone-graph/) | 中等 | DFS/BFS + 哈希克隆 | <a target="_blank" rel="noopener" href="/problems/algo/0133">题解</a> |
 
 ---
 

@@ -69,8 +69,169 @@ export const SEED_QUESTIONS: QuestionInput[] = [
       "BFS+队列，按层 size 切片分组；自底向上最后 reverse 或头插；之字形按层奇偶翻转；DFS 记录 depth 写入 res[depth]；N 叉树仅把左右孩子换成 children 列表。",
     source: "LeetCode 102",
   },
+  // ------------------------------------------------- CUDA 手撕（面经高频+中频）
+  // 选自 packages/content/problems-gpu/cuda-interview-notes.md §二/§三；
+  // 对应 LeetGPU 练习题见该文档 §五（刷题 GPU 分区已按同一选题集过滤）
+  {
+    category: "cuda",
+    title: "手写 Softmax CUDA kernel（含按行 2D 与 online softmax）",
+    content:
+      "给定一维数组（及 M×N 矩阵按行）实现 softmax：数值稳定版本，并说明 warp 级归约写法。进阶：online softmax 的分块递推。",
+    difficulty: "medium",
+    tags: "softmax,归约,warp shuffle",
+    followUps: [
+      "为什么要先减最大值？数值上解决什么问题？",
+      "block 内归约怎么用 warp shuffle 写？和 shared memory 折半归约差在哪？",
+      "M×N 按行 softmax 怎么分配 block/warp？",
+      "online softmax 的递推公式是什么？为什么能把两遍扫描变一遍？",
+    ],
+    keyPoints:
+      "减 max 防 exp 溢出；warp shuffle（__shfl_down_sync/__shfl_xor_sync）免 __syncthreads；按行 softmax 一行一个 warp/block；online softmax 维护 running max/sum，correction factor exp(m_old - m_new)。",
+    source: "CUDA 手撕面经 · 高频",
+  },
+  {
+    category: "cuda",
+    title: "手写 Reduce（sum / max）并讲清优化链路",
+    content:
+      "实现数组归约求和/求最大值，并能逐级给出优化：naive atomicAdd → shared memory 折半归约 → warp shuffle → float4 向量化访存。",
+    difficulty: "medium",
+    tags: "reduce,归约,向量化",
+    followUps: [
+      "naive 版本用 atomicAdd 为什么慢？",
+      "shared memory 折半归约为什么需要 __syncthreads()？",
+      "warp shuffle 相比 shared memory 省掉了什么？",
+      "float4 向量化带来的收益是什么？对 grid/block 配置有什么影响？",
+    ],
+    keyPoints:
+      "优化链路：atomicAdd 全局归约（线程串行化）→ shared memory 折半（需同步）→ warp shuffle（warp 内免同步）→ float4 向量化访存；每级收益要能量化说清。",
+    source: "CUDA 手撕面经 · 高频",
+  },
+  {
+    category: "cuda",
+    title: "手写 LayerNorm / RMSNorm CUDA kernel",
+    content:
+      "对 M×N 输入按行做 LayerNorm（减均值除方差）或 RMSNorm（只除 RMS）。本质是逐行归约 + 归一化。",
+    difficulty: "medium",
+    tags: "layernorm,rmsnorm,归约",
+    followUps: [
+      "LayerNorm 和 RMSNorm 的计算差别是什么？RMSNorm 为什么更快？",
+      "一行数据怎么分给一个 block/warp 做两遍归约（均值、方差）？能不能一遍？",
+      "如果要求用 SIMD 向量指令写且不提供 sqrt，怎么办？",
+    ],
+    keyPoints:
+      "本质是 reduce 的延伸：每行求均值/方差（Welford 或两遍法）；RMSNorm 省略减均值；SIMD 变形需牛顿迭代求 sqrt；融合残差加（Fused Add RMSNorm）是常见加分项。",
+    source: "CUDA 手撕面经 · 高频",
+  },
+  {
+    category: "cuda",
+    title: "手写 SGEMM（矩阵乘）：naive → block tile → thread tile",
+    content:
+      "实现 C = A×B 的 CUDA kernel，并逐级优化：naive → shared memory 分块（block tile）→ 寄存器分块（thread tile）。",
+    difficulty: "hard",
+    tags: "gemm,sgemm,分块,Tensor Core",
+    followUps: [
+      "block tile 中 shared memory 的索引怎么算？如何避免 bank conflict？",
+      "thread tile 为什么能提升计算访存比？",
+      "Split-K 是什么？什么场景用？",
+      "float4 向量化和双缓冲分别解决什么问题？",
+    ],
+    keyPoints:
+      "block tile：shared memory 缓存 A/B 子块；thread tile：寄存器累加提升 arithmetic intensity；follow-up 三件套：Split-K、float4 向量化、双缓冲；Tensor Core（TF32/FP16）路径。面试官能分辨背诵与理解，索引要自己推。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写矩阵转置 transpose kernel",
+    content: "实现矩阵转置：读 (x,y) 写 (y,x)，优化全局内存访存模式。",
+    difficulty: "easy",
+    tags: "transpose,合并访存,bank conflict",
+    followUps: [
+      "naive 转置为什么读或写必有一边不合并？优先合并哪一边？",
+      "shared memory 中转怎么写？",
+      "padding（如 tile[32][33]）消除 bank conflict 的原理？",
+    ],
+    keyPoints:
+      "读写不能同时合并时优先合并写入；shared memory tile 中转；padding 错位消除 bank conflict。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写 GEMV（矩阵乘向量）kernel",
+    content: "实现 y = A×v：一个 warp 负责一行，行内归约求和。",
+    difficulty: "medium",
+    tags: "gemv,归约,warp",
+    followUps: [
+      "为什么一个 warp 负责一行是自然的划分？",
+      "行内归约怎么做？warp shuffle 还是 shared memory？",
+      "怎么拓展到「二维矩阵按行归约」这类变形题？",
+    ],
+    keyPoints:
+      "一个 warp 一行 + warp shuffle 行内归约；访存连续合并；是按行归约类题目的通用模板。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写 FlashAttention / online softmax 分块递推",
+    content:
+      "至少能手写 online softmax 的分块递推；进阶：FlashAttention 的分块 KV 遍历与边算边归一化。",
+    difficulty: "hard",
+    tags: "flashattention,online softmax,分块",
+    followUps: [
+      "online softmax 里 running max / running sum 怎么更新？correction factor 是什么？",
+      "为什么说分块递推把显存从 O(N²) 降到 O(N)？",
+      "FlashAttention 相对朴素 attention 省的到底是什么（时间还是显存访问）？",
+    ],
+    keyPoints:
+      "m_new=max(m_old,x)，l_new=l_old*exp(m_old-m_new)+exp(x-m_new)；分块 KV、边算边归一化；IO 复杂度从 O(N²) 降到 O(N²/M) 级别、显存 O(N)。推理岗越来越常考。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写 Scan（前缀和）kernel",
+    content: "实现数组前缀和（exclusive/inclusive scan），block 内并行扫描 + 跨 block 进位传递。",
+    difficulty: "medium",
+    tags: "scan,前缀和,并行模式",
+    followUps: [
+      "block 内 scan 怎么并行化（Hillis-Steele / Blelloch）？",
+      "跨 block 的前缀怎么传递？",
+      "scan 的时间/工作复杂度是多少？",
+    ],
+    keyPoints:
+      "block 内并行 scan（shared memory），跨 block 用进位数组二次扫描或 decoupled look-back；面经中出现频率标注为两次。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写 Top-K kernel",
+    content: "从大规模数组中找出前 K 大元素：堆 / 部分排序思路，说明并行化方案。",
+    difficulty: "medium",
+    tags: "top-k,堆,采样",
+    followUps: [
+      "全排序再取前 K 为什么不可取？",
+      "并行 Top-K 怎么设计（分段局部 Top-K + 合并）？",
+      "变形：Top-P 采样、MoE Top-K 路由怎么做？",
+    ],
+    keyPoints:
+      "堆/部分排序；并行方案分段局部 Top-K 再归并；变形题：Top-P（nucleus）采样、MoE Top-K gating。",
+    source: "CUDA 手撕面经 · 中频",
+  },
+  {
+    category: "cuda",
+    title: "手写 Histogram kernel",
+    content: "统计数据分布直方图：shared memory 私有化（privatization）+ 原子操作合并。",
+    difficulty: "medium",
+    tags: "histogram,atomic,privatization",
+    followUps: [
+      "直接 atomicAdd 全局直方图的问题是什么？",
+      "shared memory 私有化怎么减少 atomic 冲突？",
+      "bin 数很多或很少时分别怎么权衡？",
+    ],
+    keyPoints:
+      "shared memory 私有化 + 原子合并是核心考点；atomic 冲突优化（多副本私有化、聚合）；CV/部署岗常见。",
+    source: "CUDA 手撕面经 · 中频",
+  },
   // ------------------------------------------------- 专业知识（CUDA 八股）
-  // 注意：cuda 分类只保留 leetgpu 编程题，概念/八股题一律归 knowledge
+  // 注意：cuda 分类只保留 kernel 手撕/编程题（上方面经选题），概念/八股题一律归 knowledge
   {
     category: "knowledge",
     title: "Shared Memory Bank Conflict 如何排查与消除",

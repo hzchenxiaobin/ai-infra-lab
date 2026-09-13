@@ -422,19 +422,19 @@ assert(addr % 16 == 0);  // 调试时验证
 
 **题目链接**：<https://leetgpu.com/challenges/fp16-dot-product>
 
-本题与今日内容强相关：FP16 存储 + FP32 累加正是 `mma.sync.aligned.m16n8k16.row.col.f16.f16.f32.f32` 的精度策略——输入 `half`、累加器 `float`，最后才转回 `half`。本题是 memory-bound 归约（N=10⁸），Tensor Core 帮不上忙，但"读 half → FP32 累加 → 写 half"的精度链路与今天学的完全一致，可以亲手体会 FP16 直接累加为什么不可接受（10 bit 尾数在大数组上迅速丢精度）。完整题解见 <a target="_self" href="/problems/gpu/medium/58-fp16-dot-product">FP16 Dot Product 题解</a>。
+本题与今日内容强相关：FP16 存储 + FP32 累加正是 `mma.sync.aligned.m16n8k16.row.col.f16.f16.f32.f32` 的精度策略——输入 `half`、累加器 `float`，最后才转回 `half`。本题是 memory-bound 归约（N=10⁸），Tensor Core 帮不上忙，但"读 half → FP32 累加 → 写 half"的精度链路与今天学的完全一致，可以亲手体会 FP16 直接累加为什么不可接受（10 bit 尾数在大数组上迅速丢精度）。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/58-fp16-dot-product">FP16 Dot Product 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 3 周 Day 3）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 3（链表变换），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 3（链表变换），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/) | 中等 | 哑节点 + 三指针交换 | <a target="_self" href="/problems/algo/0024">题解</a> |
-| [25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/) | 困难 | 分段翻转 | <a target="_self" href="/problems/algo/0025">题解</a> |
-| [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/) | 中等 | 区间反转（头插法） | <a target="_self" href="/problems/algo/0092">题解</a> |
-| [143. 重排链表](https://leetcode.cn/problems/reorder-list/) | 中等 | 中点 + 反转 + 交错合并 | <a target="_self" href="/problems/algo/0143">题解</a> |
-| [328. 奇偶链表](https://leetcode.cn/problems/odd-even-linked-list/) | 中等 | 奇偶指针重接 | <a target="_self" href="/problems/algo/0328">题解</a> |
+| [24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/) | 中等 | 哑节点 + 三指针交换 | <a target="_blank" rel="noopener" href="/problems/algo/0024">题解</a> |
+| [25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/) | 困难 | 分段翻转 | <a target="_blank" rel="noopener" href="/problems/algo/0025">题解</a> |
+| [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/) | 中等 | 区间反转（头插法） | <a target="_blank" rel="noopener" href="/problems/algo/0092">题解</a> |
+| [143. 重排链表](https://leetcode.cn/problems/reorder-list/) | 中等 | 中点 + 反转 + 交错合并 | <a target="_blank" rel="noopener" href="/problems/algo/0143">题解</a> |
+| [328. 奇偶链表](https://leetcode.cn/problems/odd-even-linked-list/) | 中等 | 奇偶指针重接 | <a target="_blank" rel="noopener" href="/problems/algo/0328">题解</a> |
 
 ---
 

@@ -5,6 +5,7 @@ import {
   GRADE_SCORES,
   MASTERY_WEIGHTS,
   progressMarkSchema,
+  progressSetNoteSchema,
   type Difficulty,
   type Grade,
   type KnowledgePointMastery,
@@ -14,7 +15,8 @@ import { contents, interviewSessions, problems, questions, userProgress } from "
 import { authedProcedure, router } from "../trpc.js";
 
 export const progressRouter = router({
-  /** 进度标记（seen / mastered / ac），每用户 × 每内容一行，upsert 幂等 */
+  /** 进度标记（unseen / seen / mastered / ac），每用户 × 每内容一行，upsert 幂等；
+   *  status=unseen 回到「没写过」：有备注的行仅重置状态（备注保留），无备注的行删除（保持 unseen=无记录） */
   mark: authedProcedure.input(progressMarkSchema).mutation(async ({ input, ctx }) => {
     const exists = await db
       .select({ id: contents.id })
@@ -22,6 +24,17 @@ export const progressRouter = router({
       .where(eq(contents.id, input.contentId))
       .limit(1);
     if (!exists[0]) throw new TRPCError({ code: "NOT_FOUND", message: "内容不存在" });
+
+    if (input.status === "unseen") {
+      const where = and(eq(userProgress.userId, ctx.userId), eq(userProgress.contentId, input.contentId));
+      const rows = await db.select({ note: userProgress.note }).from(userProgress).where(where).limit(1);
+      if (rows[0]?.note) {
+        await db.update(userProgress).set({ status: "unseen", score: null }).where(where);
+      } else {
+        await db.delete(userProgress).where(where);
+      }
+      return { ok: true as const };
+    }
 
     await db
       .insert(userProgress)
@@ -39,6 +52,23 @@ export const progressRouter = router({
           lastAt: new Date(),
         },
       });
+    return { ok: true as const };
+  }),
+
+  /** 个人备注（刷题页「备注」）：upsert，空串即清除；无进度行时以 status=unseen 建行（只记备注不改状态） */
+  setNote: authedProcedure.input(progressSetNoteSchema).mutation(async ({ input, ctx }) => {
+    const exists = await db
+      .select({ id: contents.id })
+      .from(contents)
+      .where(eq(contents.id, input.contentId))
+      .limit(1);
+    if (!exists[0]) throw new TRPCError({ code: "NOT_FOUND", message: "内容不存在" });
+
+    const note = input.note.trim() || null;
+    await db
+      .insert(userProgress)
+      .values({ userId: ctx.userId, contentId: input.contentId, status: "unseen", note })
+      .onDuplicateKeyUpdate({ set: { note } });
     return { ok: true as const };
   }),
 

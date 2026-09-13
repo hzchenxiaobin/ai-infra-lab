@@ -1,20 +1,18 @@
 <script setup lang="ts">
-// docs 顶栏右侧：主站快捷入口（对齐主站导航：刷题 / 题库 / 组卷面试 / 搜索）。
+// docs 顶栏右侧：主站快捷入口（对齐主站导航：刷题 / 面试 / 搜索；题库已归入面试板块）。
 // 注意必须用原生 <a href="/...">：vitepress 的 nav link 会被加上 base（/learn/）前缀，
 // 跳主站 SPA 路由（/problems/algo 等）需要裸路径；
-// target="_self" 让 vitepress 前端路由跳过拦截（router.js: hasAttribute("target") 即放行），
-// 否则点击会被当成 docs 页面加载而 404。
+// 全站约定所有链接新标签页打开（theme/newTabLinks.ts 的 capture 拦截统一处理）。
 const APP_LINKS = [
   { text: "刷题", href: "/problems/algo" },
-  { text: "题库", href: "/bank" },
-  { text: "组卷面试", href: "/dashboard" },
+  { text: "面试", href: "/start" },
   { text: "全站搜索", href: "/search" },
 ];
 </script>
 
 <template>
   <nav class="docs-app-links" aria-label="主站入口">
-    <a v-for="l in APP_LINKS" :key="l.href" :href="l.href" target="_self" class="docs-app-link">{{ l.text }}</a>
+    <a v-for="l in APP_LINKS" :key="l.href" :href="l.href" target="_blank" rel="noopener" class="docs-app-link">{{ l.text }}</a>
   </nav>
 </template>
 

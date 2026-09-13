@@ -26,10 +26,10 @@ const PAGE_SIZE = 50;
 const PARTITIONS = {
   gpu: {
     label: "GPU",
-    title: "GPU 题库",
+    title: "GPU 面试题",
     source: "leetgpu" as const,
-    interview: false,
-    desc: "CUDA 编程题（LeetGPU 106 题），按知识领域分组浏览，评测跳转 leetgpu.com。",
+    interview: true,
+    desc: "选自 CUDA 手撕面经的高频 + 中频题（34 题），评测跳转 leetgpu.com。",
   },
   algo: {
     label: "算法",
@@ -43,7 +43,7 @@ const PARTITIONS = {
 export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS }) {
   const meta = PARTITIONS[partition];
   const [difficulty, setDifficulty] = useState<"all" | Difficulty>("all");
-  const [solved, setSolved] = useState<"all" | "ac" | "unac">("all");
+  const [progress, setProgress] = useState<"all" | "unseen" | "seen" | "ac">("all");
   const [tag, setTag] = useState("");
   const [knowledgePoint, setKnowledgePoint] = useState("");
   const [judgeType, setJudgeType] = useState<"all" | JudgeType>("all");
@@ -70,7 +70,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
     trpc.problem.list.queryOptions({
       source: meta.source,
       difficulty: difficulty === "all" ? undefined : difficulty,
-      solved: solved === "all" ? undefined : solved === "ac",
+      progress: progress === "all" ? undefined : progress,
       tag: tag || undefined,
       knowledgePoint: knowledgePoint || undefined,
       judgeType: judgeType === "all" ? undefined : judgeType,
@@ -134,16 +134,17 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           ))}
         </select>
         <select
-          value={solved}
+          value={progress}
           onChange={(e) => {
-            setSolved(e.target.value as "all" | "ac" | "unac");
+            setProgress(e.target.value as "all" | "unseen" | "seen" | "ac");
             setPage(1);
           }}
           className="input w-full sm:w-44"
         >
           <option value="all">全部状态</option>
-          <option value="ac">已 AC</option>
-          <option value="unac">未 AC</option>
+          <option value="unseen">没写过</option>
+          <option value="seen">需复习</option>
+          <option value="ac">已完全掌握</option>
         </select>
         <select
           value={tag}
@@ -199,7 +200,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             className="input w-full sm:w-64"
           />
           <span className="text-xs text-muted sm:ml-auto">
-            共 {list.data?.total ?? "…"} 题 · 已 AC {acTotal.data?.total ?? "…"}
+            共 {list.data?.total ?? "…"} 题 · 已完全掌握 {acTotal.data?.total ?? "…"}
           </span>
         </div>
       </section>

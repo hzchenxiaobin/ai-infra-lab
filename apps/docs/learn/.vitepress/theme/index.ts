@@ -8,8 +8,11 @@ import { h } from "vue";
 import ImageLightbox from "../../../theme/ImageLightbox.vue";
 import NavActions from "../../../theme/NavActions.vue";
 import TopicNav from "../../../theme/TopicNav.vue";
+import { installNewTabLinks } from "../../../theme/newTabLinks";
 import "katex/dist/katex.min.css";
 import "../../../theme/custom.css";
+
+installNewTabLinks();
 
 export default {
   extends: DefaultTheme,

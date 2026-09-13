@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client.js";
 import { contents, interviewSessions, problems, userProgress } from "../db/schema.js";
 import { appRouter } from "./index.js";
@@ -150,6 +150,31 @@ run("progress.overview（集成）", () => {
       const otherTp = other.mastery.find((m) => m.knowledgePoint === "zz-prog-kp-tp");
       expect(otherTp?.signals.problem).toBe(0);
       expect(otherTp?.mastery).toBe(0);
+    } finally {
+      await cleanup();
+    }
+  });
+
+  it("mark：seen/ac upsert 幂等；unseen 删除记录行回到「没写过」", async () => {
+    await seed();
+    const rowCount = async () =>
+      db
+        .select({ status: userProgress.status })
+        .from(userProgress)
+        .where(and(eq(userProgress.userId, TEST_USER), eq(userProgress.contentId, "lc:zzprog1")));
+    try {
+      const caller = appRouter.createCaller({ userId: TEST_USER });
+      expect((await rowCount())[0]?.status).toBe("ac");
+
+      await caller.progress.mark({ contentId: "lc:zzprog1", status: "seen" });
+      expect((await rowCount())[0]?.status).toBe("seen");
+
+      await caller.progress.mark({ contentId: "lc:zzprog1", status: "unseen" });
+      expect(await rowCount()).toHaveLength(0);
+
+      // 无记录时标 unseen 为幂等空操作
+      await caller.progress.mark({ contentId: "lc:zzprog1", status: "unseen" });
+      expect(await rowCount()).toHaveLength(0);
     } finally {
       await cleanup();
     }

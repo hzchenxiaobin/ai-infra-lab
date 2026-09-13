@@ -481,18 +481,18 @@ nsys profile -o multi_stream_timeline ./multi_stream
 
 本题是 CUDA Streams 的典型应用场景——大矩阵分块，每块 H2D/Compute/D2H 在独立 Stream 上重叠执行。每个 block 内部用 Shared Memory tiling 减少对全局内存的重复访问。
 
-> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_self" href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 2 周 Day 5）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 5（矩阵），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 5（矩阵），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [73. 矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/) | 中等 | 首行首列原地标记 | <a target="_self" href="/problems/algo/0073">题解</a> |
-| [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/) | 中等 | 边界收缩模拟 | <a target="_self" href="/problems/algo/0054">题解</a> |
-| [48. 旋转图像](https://leetcode.cn/problems/rotate-image/) | 中等 | 转置 + 翻转 | <a target="_self" href="/problems/algo/0048">题解</a> |
-| [240. 搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/) | 中等 | 右上起点单调性排除 | <a target="_self" href="/problems/algo/0240">题解</a> |
+| [73. 矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/) | 中等 | 首行首列原地标记 | <a target="_blank" rel="noopener" href="/problems/algo/0073">题解</a> |
+| [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/) | 中等 | 边界收缩模拟 | <a target="_blank" rel="noopener" href="/problems/algo/0054">题解</a> |
+| [48. 旋转图像](https://leetcode.cn/problems/rotate-image/) | 中等 | 转置 + 翻转 | <a target="_blank" rel="noopener" href="/problems/algo/0048">题解</a> |
+| [240. 搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/) | 中等 | 右上起点单调性排除 | <a target="_blank" rel="noopener" href="/problems/algo/0240">题解</a> |
 
 ---
 

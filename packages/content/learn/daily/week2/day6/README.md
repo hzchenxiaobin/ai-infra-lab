@@ -243,11 +243,11 @@ dram__throughput.avg.pct_of_peak_sustained_elapsed \
 
 本题是典型的 memory-bound kernel，适合用今日学的 Nsight Compute 做完整 profiling。用 ncu 分析 memory throughput、occupancy、warp stall reasons，判断瓶颈在内存带宽还是计算，并据此优化。
 
-> 💡 提交后在 [LeetGPU Softmax 题目](https://leetgpu.com/challenges/softmax)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_self" href="/problems/gpu/medium/5-softmax">Softmax 题解</a>。
+> 💡 提交后在 [LeetGPU Softmax 题目](https://leetgpu.com/challenges/softmax)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/5-softmax">Softmax 题解</a>。
 
 #### 任务 6：LeetCode 面试题（10 周计划 · 第 2 周 Day 6 复盘）
 
-> 📅 今日为 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
+> 📅 今日为 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」复盘日。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
 ---
 

@@ -5,8 +5,11 @@ import SolutionList from "./SolutionList.vue";
 import ContestList from "./ContestList.vue";
 import BackLink from "./BackLink.vue";
 import ImageLightbox from "../../../theme/ImageLightbox.vue";
+import { installNewTabLinks } from "../../../theme/newTabLinks";
 import "katex/dist/katex.min.css";
 import "../../../theme/custom.css";
+
+installNewTabLinks();
 
 export default {
   extends: DefaultTheme,

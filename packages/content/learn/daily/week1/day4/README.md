@@ -492,18 +492,18 @@ ncu --metrics dram__throughput.avg.pct_of_peak_sustained_elapsed ./transpose
 
 > ⚠️ 这是 Matrix Transpose 本周**唯一一次正式布置**（Day 1–3 分别为 Vector Addition / ReLU / Matrix Addition），请把 tiling + padding 版本做透，Day 5 还会在它的基础上分析 bank conflict。
 
-> 💡 提交后在 [LeetGPU Matrix Transpose 题目](https://leetgpu.com/challenges/matrix-transpose)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a target="_self" href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Transpose 题目](https://leetgpu.com/challenges/matrix-transpose)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/3-matrix-transpose">Matrix Transpose 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 1 周 Day 4）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 4（手撕排序），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 4（手撕排序），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) | 中等 | 手撕快排 / 归并 / 堆排 | <a target="_self" href="/problems/algo/0912">题解</a> |
-| [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) | 简单 | 三指针从后往前 | <a target="_self" href="/problems/algo/0088">题解</a> |
-| [179. 最大数](https://leetcode.cn/problems/largest-number/) | 中等 | 自定义排序（拼接比较） | <a target="_self" href="/problems/algo/0179">题解</a> |
-| [274. H 指数](https://leetcode.cn/problems/h-index/) | 中等 | 计数排序 | <a target="_self" href="/problems/algo/0274">题解</a> |
+| [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) | 中等 | 手撕快排 / 归并 / 堆排 | <a target="_blank" rel="noopener" href="/problems/algo/0912">题解</a> |
+| [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) | 简单 | 三指针从后往前 | <a target="_blank" rel="noopener" href="/problems/algo/0088">题解</a> |
+| [179. 最大数](https://leetcode.cn/problems/largest-number/) | 中等 | 自定义排序（拼接比较） | <a target="_blank" rel="noopener" href="/problems/algo/0179">题解</a> |
+| [274. H 指数](https://leetcode.cn/problems/h-index/) | 中等 | 计数排序 | <a target="_blank" rel="noopener" href="/problems/algo/0274">题解</a> |
 
 ---
 

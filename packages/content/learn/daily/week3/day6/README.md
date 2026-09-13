@@ -267,15 +267,15 @@ ncu --set roofline --kernel-name regex:wmma_gemm_tiled ./wmma_tiled
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 3 周 Day 6）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 6（数学技巧），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」Day 6（数学技巧），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/) | 中等 | 快速幂 | <a target="_self" href="/problems/algo/0050">题解</a> |
-| [470. 用 Rand7() 实现 Rand10()](https://leetcode.cn/problems/implement-rand10-using-rand7/) | 中等 | 拒绝采样（Rand49 → 取模） | <a target="_self" href="/problems/algo/0470">题解</a> |
-| [289. 生命游戏](https://leetcode.cn/problems/game-of-life/) | 中等 | 原地状态编码 | <a target="_self" href="/problems/algo/0289">题解</a> |
-| [166. 分数到小数](https://leetcode.cn/problems/fraction-to-recurring-decimal/) | 中等 | 长除法 + 哈希查循环 | <a target="_self" href="/problems/algo/0166">题解</a> |
-| [168. Excel 表列名称](https://leetcode.cn/problems/excel-sheet-column-title/) | 简单 | 26 进制转换 | <a target="_self" href="/problems/algo/0168">题解</a> |
+| [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/) | 中等 | 快速幂 | <a target="_blank" rel="noopener" href="/problems/algo/0050">题解</a> |
+| [470. 用 Rand7() 实现 Rand10()](https://leetcode.cn/problems/implement-rand10-using-rand7/) | 中等 | 拒绝采样（Rand49 → 取模） | <a target="_blank" rel="noopener" href="/problems/algo/0470">题解</a> |
+| [289. 生命游戏](https://leetcode.cn/problems/game-of-life/) | 中等 | 原地状态编码 | <a target="_blank" rel="noopener" href="/problems/algo/0289">题解</a> |
+| [166. 分数到小数](https://leetcode.cn/problems/fraction-to-recurring-decimal/) | 中等 | 长除法 + 哈希查循环 | <a target="_blank" rel="noopener" href="/problems/algo/0166">题解</a> |
+| [168. Excel 表列名称](https://leetcode.cn/problems/excel-sheet-column-title/) | 简单 | 26 进制转换 | <a target="_blank" rel="noopener" href="/problems/algo/0168">题解</a> |
 
 ---
 

@@ -552,17 +552,17 @@ for cs in [4, 8, 16, 24]:
 
 这道题的**分段扫描 + 段间边界 carry** 与 Chunked Prefill 把长 prompt 拆成多个 chunk 的处理同构——Chunked Prefill 把一个长 prompt（一个"大段"）拆成多个 chunk（多个"小段"），每个 chunk 独立做 attention（段内 prefix sum），chunk 之间通过 KV Cache 累积（段间边界 carry）。segmented prefix sum 的"段内独立 + 段间修正"两阶段，正是 chunked prefill 的"per-chunk attention + cross-chunk KV 传递"。这道题的 GPU 实现用 warp scan 做段内前缀和 + 段边界处理，对应推理系统里 chunk 内计算 + chunk 间状态累积。
 
-> 💡 提交后在 [LeetGPU Segmented Prefix Sum](https://leetgpu.com/challenges/segmented-prefix-sum) 上记录通过耗时。完整题解（含分段 scan kernel、段边界 carry、与 Chunked Prefill 分块累积的类比）见 <a target="_self" href="/problems/gpu/medium/70-segmented-prefix-sum">Segmented Prefix Sum 题解</a>。
+> 💡 提交后在 [LeetGPU Segmented Prefix Sum](https://leetgpu.com/challenges/segmented-prefix-sum) 上记录通过耗时。完整题解（含分段 scan kernel、段边界 carry、与 Chunked Prefill 分块累积的类比）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/70-segmented-prefix-sum">Segmented Prefix Sum 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 7 周 Day 3）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 3（序列化与宽度），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 3（序列化与宽度），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [297. 二叉树的序列化与反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/) | 困难 | 前序 + 队列 | <a target="_self" href="/problems/algo/0297">题解</a> |
-| [662. 二叉树最大宽度](https://leetcode.cn/problems/maximum-width-of-binary-tree/) | 中等 | BFS/DFS + 节点编号 | <a target="_self" href="/problems/algo/0662">题解</a> |
-| [958. 二叉树的完全性检验](https://leetcode.cn/problems/check-completeness-of-a-binary-tree/) | 中等 | 层序遍历判空节点 | <a target="_self" href="/problems/algo/0958">题解</a> |
+| [297. 二叉树的序列化与反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/) | 困难 | 前序 + 队列 | <a target="_blank" rel="noopener" href="/problems/algo/0297">题解</a> |
+| [662. 二叉树最大宽度](https://leetcode.cn/problems/maximum-width-of-binary-tree/) | 中等 | BFS/DFS + 节点编号 | <a target="_blank" rel="noopener" href="/problems/algo/0662">题解</a> |
+| [958. 二叉树的完全性检验](https://leetcode.cn/problems/check-completeness-of-a-binary-tree/) | 中等 | 层序遍历判空节点 | <a target="_blank" rel="noopener" href="/problems/algo/0958">题解</a> |
 
 ---
 

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Layout } from "./components/Layout";
+import { InterviewSection } from "./components/InterviewSection";
 import { RequireAuth } from "./components/RequireAuth";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
@@ -27,7 +28,12 @@ export default function App() {
           <Route path="register" element={<RegisterPage />} />
           <Route element={<RequireAuth />}>
             <Route index element={<LearnPage />} />
-            <Route path="start" element={<HomePage />} />
+            {/* 面试板块：开始面试 / 题库 / 历史（共用 InterviewSection 子导航） */}
+            <Route element={<InterviewSection />}>
+              <Route path="start" element={<HomePage />} />
+              <Route path="bank" element={<BankPage />} />
+              <Route path="history" element={<HistoryPage />} />
+            </Route>
             <Route path="learn" element={<LearnPage />} />
             <Route path="learn/path" element={<LearnPage />} />
             <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
@@ -37,12 +43,10 @@ export default function App() {
             <Route path="problems/contest" element={<ContestPage />} />
             <Route path="problems/contest/:session" element={<ContestSessionPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="bank" element={<BankPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="interview/:id" element={<InterviewPage />} />
             <Route path="judge/:id" element={<JudgePage />} />
             <Route path="report/:id" element={<ReportPage />} />
-            <Route path="history" element={<HistoryPage />} />
           </Route>
           <Route
             path="*"

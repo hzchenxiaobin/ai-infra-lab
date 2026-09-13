@@ -398,18 +398,18 @@ grid-stride loop 的好处：
 
 本题是 scan（扫描）问题，核心是 `__shfl_up_sync` 原语的应用。Day 1 学了 `__shfl_down_sync` 做归约，本题用 `__shfl_up_sync` 做前缀和，两者是对称的 butterfly 操作。需要 block 内 scan + 跨 block 偏移累加。
 
-> 💡 提交后在 [LeetGPU Prefix Sum 题目](https://leetgpu.com/challenges/prefix-sum)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_self" href="/problems/gpu/medium/16-prefix-sum">Prefix Sum 题解</a>。
+> 💡 提交后在 [LeetGPU Prefix Sum 题目](https://leetgpu.com/challenges/prefix-sum)上记录通过耗时，用 ncu 对比不同参数的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/16-prefix-sum">Prefix Sum 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 2 周 Day 1）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 1（滑动窗口基础），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 1（滑动窗口基础），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/) | 中等 | 滑动窗口 + 哈希 | <a target="_self" href="/problems/algo/0003">题解</a> |
-| [438. 找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/) | 中等 | 定长滑窗计数 | <a target="_self" href="/problems/algo/0438">题解</a> |
-| [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/) | 中等 | 前缀和 + 哈希 | <a target="_self" href="/problems/algo/0560">题解</a> |
-| [974. 和可被 K 整除的子数组](https://leetcode.cn/problems/subarray-sums-divisible-by-k/) | 中等 | 前缀和 + 同余计数 | <a target="_self" href="/problems/algo/0974">题解</a> |
+| [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/) | 中等 | 滑动窗口 + 哈希 | <a target="_blank" rel="noopener" href="/problems/algo/0003">题解</a> |
+| [438. 找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/) | 中等 | 定长滑窗计数 | <a target="_blank" rel="noopener" href="/problems/algo/0438">题解</a> |
+| [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/) | 中等 | 前缀和 + 哈希 | <a target="_blank" rel="noopener" href="/problems/algo/0560">题解</a> |
+| [974. 和可被 K 整除的子数组](https://leetcode.cn/problems/subarray-sums-divisible-by-k/) | 中等 | 前缀和 + 同余计数 | <a target="_blank" rel="noopener" href="/problems/algo/0974">题解</a> |
 
 ---
 

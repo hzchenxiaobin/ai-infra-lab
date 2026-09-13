@@ -220,13 +220,13 @@ Softmax 三方对比则验证了 memory-bound 判定：`dram__throughput` 85%+ �
 
 #### 任务 4：本周 LeetCode 题目回顾（10 周计划 · 第 4 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 栈基础与设计 | <a target="_self" href="/problems/algo/0020">20. 有效的括号</a>、<a target="_self" href="/problems/algo/0155">155. 最小栈</a>、<a target="_self" href="/problems/algo/0232">232. 用栈实现队列</a>、<a target="_self" href="/problems/algo/0150">150. 逆波兰表达式求值</a>、<a target="_self" href="/problems/algo/0380">380. O(1) 时间插入、删除和获取随机元素</a>、<a target="_self" href="/problems/algo/0946">946. 验证栈序列</a> |
-| Day 2 | 表达式与计算器 | <a target="_self" href="/problems/algo/0394">394. 字符串解码</a>、<a target="_self" href="/problems/algo/0224">224. 基本计算器</a>、<a target="_self" href="/problems/algo/0227">227. 基本计算器 II</a>、<a target="_self" href="/problems/algo/0402">402. 移掉 K 位数字</a>、<a target="_self" href="/problems/algo/0316">316. 去除重复字母</a> |
-| Day 3 | 单调栈 | <a target="_self" href="/problems/algo/0739">739. 每日温度</a>、<a target="_self" href="/problems/algo/0496">496. 下一个更大元素 I</a>、<a target="_self" href="/problems/algo/0503">503. 下一个更大元素 II</a>、<a target="_self" href="/problems/algo/0901">901. 股票价格跨度</a>、<a target="_self" href="/problems/algo/0084">84. 柱状图中最大的矩形</a> |
+| Day 1 | 栈基础与设计 | <a target="_blank" rel="noopener" href="/problems/algo/0020">20. 有效的括号</a>、<a target="_blank" rel="noopener" href="/problems/algo/0155">155. 最小栈</a>、<a target="_blank" rel="noopener" href="/problems/algo/0232">232. 用栈实现队列</a>、<a target="_blank" rel="noopener" href="/problems/algo/0150">150. 逆波兰表达式求值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0380">380. O(1) 时间插入、删除和获取随机元素</a>、<a target="_blank" rel="noopener" href="/problems/algo/0946">946. 验证栈序列</a> |
+| Day 2 | 表达式与计算器 | <a target="_blank" rel="noopener" href="/problems/algo/0394">394. 字符串解码</a>、<a target="_blank" rel="noopener" href="/problems/algo/0224">224. 基本计算器</a>、<a target="_blank" rel="noopener" href="/problems/algo/0227">227. 基本计算器 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0402">402. 移掉 K 位数字</a>、<a target="_blank" rel="noopener" href="/problems/algo/0316">316. 去除重复字母</a> |
+| Day 3 | 单调栈 | <a target="_blank" rel="noopener" href="/problems/algo/0739">739. 每日温度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0496">496. 下一个更大元素 I</a>、<a target="_blank" rel="noopener" href="/problems/algo/0503">503. 下一个更大元素 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0901">901. 股票价格跨度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0084">84. 柱状图中最大的矩形</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 4 周「栈、队列与单调栈」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

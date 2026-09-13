@@ -176,16 +176,16 @@ related_questions: []
 
 #### 任务 1：本周 LeetCode 题目回顾（10 周计划 · 第 8 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 二分模板 | <a target="_self" href="/problems/algo/0704">704. 二分查找</a>、<a target="_self" href="/problems/algo/0035">35. 搜索插入位置</a>、<a target="_self" href="/problems/algo/0069">69. x 的平方根</a>、<a target="_self" href="/problems/algo/0074">74. 搜索二维矩阵</a> |
-| Day 2 | 旋转数组与峰值 | <a target="_self" href="/problems/algo/0153">153. 寻找旋转排序数组中的最小值</a>、<a target="_self" href="/problems/algo/0033">33. 搜索旋转排序数组</a>、<a target="_self" href="/problems/algo/0034">34. 在排序数组中查找元素的第一个和最后一个位置</a>、<a target="_self" href="/problems/algo/0162">162. 寻找峰值</a>、<a target="_self" href="/problems/algo/0540">540. 有序数组中的单一元素</a> |
-| Day 3 | 二分答案 | <a target="_self" href="/problems/algo/0875">875. 爱吃香蕉的珂珂</a>、<a target="_self" href="/problems/algo/1011">1011. 在 D 天内送达包裹的能力</a>、<a target="_self" href="/problems/algo/0378">378. 有序矩阵中第 K 小的元素</a> |
-| Day 4 | 二分进阶 | <a target="_self" href="/problems/algo/0410">410. 分割数组的最大值</a>、<a target="_self" href="/problems/algo/0719">719. 找出第 K 小的数对距离</a>、<a target="_self" href="/problems/algo/0004">4. 寻找两个正序数组的中位数</a> |
-| Day 5 | 一维 DP | <a target="_self" href="/problems/algo/0070">70. 爬楼梯</a>、<a target="_self" href="/problems/algo/0118">118. 杨辉三角</a>、<a target="_self" href="/problems/algo/0198">198. 打家劫舍</a>、<a target="_self" href="/problems/algo/0213">213. 打家劫舍 II</a>、<a target="_self" href="/problems/algo/0337">337. 打家劫舍 III</a> |
-| Day 6 | 背包 DP | <a target="_self" href="/problems/algo/0279">279. 完全平方数</a>、<a target="_self" href="/problems/algo/0322">322. 零钱兑换</a>、<a target="_self" href="/problems/algo/0518">518. 零钱兑换 II</a>、<a target="_self" href="/problems/algo/0416">416. 分割等和子集</a>、<a target="_self" href="/problems/algo/0494">494. 目标和</a> |
+| Day 1 | 二分模板 | <a target="_blank" rel="noopener" href="/problems/algo/0704">704. 二分查找</a>、<a target="_blank" rel="noopener" href="/problems/algo/0035">35. 搜索插入位置</a>、<a target="_blank" rel="noopener" href="/problems/algo/0069">69. x 的平方根</a>、<a target="_blank" rel="noopener" href="/problems/algo/0074">74. 搜索二维矩阵</a> |
+| Day 2 | 旋转数组与峰值 | <a target="_blank" rel="noopener" href="/problems/algo/0153">153. 寻找旋转排序数组中的最小值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0033">33. 搜索旋转排序数组</a>、<a target="_blank" rel="noopener" href="/problems/algo/0034">34. 在排序数组中查找元素的第一个和最后一个位置</a>、<a target="_blank" rel="noopener" href="/problems/algo/0162">162. 寻找峰值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0540">540. 有序数组中的单一元素</a> |
+| Day 3 | 二分答案 | <a target="_blank" rel="noopener" href="/problems/algo/0875">875. 爱吃香蕉的珂珂</a>、<a target="_blank" rel="noopener" href="/problems/algo/1011">1011. 在 D 天内送达包裹的能力</a>、<a target="_blank" rel="noopener" href="/problems/algo/0378">378. 有序矩阵中第 K 小的元素</a> |
+| Day 4 | 二分进阶 | <a target="_blank" rel="noopener" href="/problems/algo/0410">410. 分割数组的最大值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0719">719. 找出第 K 小的数对距离</a>、<a target="_blank" rel="noopener" href="/problems/algo/0004">4. 寻找两个正序数组的中位数</a> |
+| Day 5 | 一维 DP | <a target="_blank" rel="noopener" href="/problems/algo/0070">70. 爬楼梯</a>、<a target="_blank" rel="noopener" href="/problems/algo/0118">118. 杨辉三角</a>、<a target="_blank" rel="noopener" href="/problems/algo/0198">198. 打家劫舍</a>、<a target="_blank" rel="noopener" href="/problems/algo/0213">213. 打家劫舍 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0337">337. 打家劫舍 III</a> |
+| Day 6 | 背包 DP | <a target="_blank" rel="noopener" href="/problems/algo/0279">279. 完全平方数</a>、<a target="_blank" rel="noopener" href="/problems/algo/0322">322. 零钱兑换</a>、<a target="_blank" rel="noopener" href="/problems/algo/0518">518. 零钱兑换 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0416">416. 分割等和子集</a>、<a target="_blank" rel="noopener" href="/problems/algo/0494">494. 目标和</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 8 周「二分查找与动态规划基础」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

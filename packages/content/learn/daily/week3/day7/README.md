@@ -402,16 +402,16 @@ compute_mma(smem[cur]);
 
 ### 本周 LeetCode 题目回顾（10 周计划 · 第 3 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 3 周「链表与数学技巧」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 反转与合并 | <a target="_self" href="/problems/algo/0206">206. 反转链表</a>、<a target="_self" href="/problems/algo/0021">21. 合并两个有序链表</a>、<a target="_self" href="/problems/algo/0083">83. 删除排序链表中的重复元素</a>、<a target="_self" href="/problems/algo/0876">876. 链表的中间结点</a> |
-| Day 2 | 快慢指针 | <a target="_self" href="/problems/algo/0141">141. 环形链表</a>、<a target="_self" href="/problems/algo/0142">142. 环形链表 II</a>、<a target="_self" href="/problems/algo/0160">160. 相交链表</a>、<a target="_self" href="/problems/algo/0019">19. 删除链表的倒数第 N 个结点</a>、<a target="_self" href="/problems/algo/0234">234. 回文链表</a> |
-| Day 3 | 链表变换 | <a target="_self" href="/problems/algo/0024">24. 两两交换链表中的节点</a>、<a target="_self" href="/problems/algo/0025">25. K 个一组翻转链表</a>、<a target="_self" href="/problems/algo/0092">92. 反转链表 II</a>、<a target="_self" href="/problems/algo/0143">143. 重排链表</a>、<a target="_self" href="/problems/algo/0328">328. 奇偶链表</a> |
-| Day 4 | 相加与复制 | <a target="_self" href="/problems/algo/0002">2. 两数相加</a>、<a target="_self" href="/problems/algo/0445">445. 两数相加 II</a>、<a target="_self" href="/problems/algo/0138">138. 随机链表的复制</a>、<a target="_self" href="/problems/algo/0430">430. 扁平化多级双向链表</a> |
-| Day 5 | 排序与设计 | <a target="_self" href="/problems/algo/0148">148. 排序链表</a>、<a target="_self" href="/problems/algo/0023">23. 合并 K 个升序链表</a>、<a target="_self" href="/problems/algo/0146">146. LRU 缓存</a> |
-| Day 6 | 数学技巧 | <a target="_self" href="/problems/algo/0050">50. Pow(x, n)</a>、<a target="_self" href="/problems/algo/0470">470. 用 Rand7() 实现 Rand10()</a>、<a target="_self" href="/problems/algo/0289">289. 生命游戏</a>、<a target="_self" href="/problems/algo/0166">166. 分数到小数</a>、<a target="_self" href="/problems/algo/0168">168. Excel 表列名称</a> |
+| Day 1 | 反转与合并 | <a target="_blank" rel="noopener" href="/problems/algo/0206">206. 反转链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0021">21. 合并两个有序链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0083">83. 删除排序链表中的重复元素</a>、<a target="_blank" rel="noopener" href="/problems/algo/0876">876. 链表的中间结点</a> |
+| Day 2 | 快慢指针 | <a target="_blank" rel="noopener" href="/problems/algo/0141">141. 环形链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0142">142. 环形链表 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0160">160. 相交链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0019">19. 删除链表的倒数第 N 个结点</a>、<a target="_blank" rel="noopener" href="/problems/algo/0234">234. 回文链表</a> |
+| Day 3 | 链表变换 | <a target="_blank" rel="noopener" href="/problems/algo/0024">24. 两两交换链表中的节点</a>、<a target="_blank" rel="noopener" href="/problems/algo/0025">25. K 个一组翻转链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0092">92. 反转链表 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0143">143. 重排链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0328">328. 奇偶链表</a> |
+| Day 4 | 相加与复制 | <a target="_blank" rel="noopener" href="/problems/algo/0002">2. 两数相加</a>、<a target="_blank" rel="noopener" href="/problems/algo/0445">445. 两数相加 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0138">138. 随机链表的复制</a>、<a target="_blank" rel="noopener" href="/problems/algo/0430">430. 扁平化多级双向链表</a> |
+| Day 5 | 排序与设计 | <a target="_blank" rel="noopener" href="/problems/algo/0148">148. 排序链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0023">23. 合并 K 个升序链表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0146">146. LRU 缓存</a> |
+| Day 6 | 数学技巧 | <a target="_blank" rel="noopener" href="/problems/algo/0050">50. Pow(x, n)</a>、<a target="_blank" rel="noopener" href="/problems/algo/0470">470. 用 Rand7() 实现 Rand10()</a>、<a target="_blank" rel="noopener" href="/problems/algo/0289">289. 生命游戏</a>、<a target="_blank" rel="noopener" href="/problems/algo/0166">166. 分数到小数</a>、<a target="_blank" rel="noopener" href="/problems/algo/0168">168. Excel 表列名称</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 3 周「链表与数学技巧」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

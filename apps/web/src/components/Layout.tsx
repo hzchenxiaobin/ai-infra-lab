@@ -7,12 +7,10 @@ import { buttonClass } from "../lib/button";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },
-  { to: "/start", label: "组卷", end: false },
+  { to: "/start", label: "面试", end: false },
   { to: "/problems/algo", label: "刷题", end: false },
   { to: "/dashboard", label: "个人中心", end: false },
-  { to: "/bank", label: "题库", end: false },
   { to: "/search", label: "搜索", end: false },
-  { to: "/history", label: "历史", end: false },
 ];
 
 export function Layout() {

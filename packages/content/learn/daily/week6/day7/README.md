@@ -207,18 +207,18 @@ python kernels/week6_summary.py
 
 Week 6 核心主题是**推理系统**：Prefill/Decode、KV Cache、vLLM、PagedAttention、Continuous Batching。这些优化最终都落在"transformer block 的前向怎么跑得更快"上——Prefill 阶段 GPU 执行的主体就是这条算子链的批量版本。本题 GPT-2 Transformer Block 是 Week 6 的综合压轴：它要求把 LN、GEMM、softmax attention、GELU、残差连接五类 kernel 串成完整推理管线。先用 PyTorch 参考实现对齐精度，再逐 kernel 替换为 CUDA 版，就是"框架算子 → 自定义 kernel"工程路径的微缩演练。
 
-> 💡 提交后在 [LeetGPU GPT-2 Transformer Block](https://leetgpu.com/challenges/gpt-2-transformer-block) 上记录通过耗时，重点对比 `seq_len=1`（Decode）与 `seq_len=1024`（Prefill）的耗时差异。完整题解（含多 kernel 流水线串联、GELU tanh 近似、权重 offset 拆分、与 Prefill/Decode 算术强度的关联）见 <a target="_self" href="/problems/gpu/hard/74-gpt2-block">GPT-2 Transformer Block 题解</a>。
+> 💡 提交后在 [LeetGPU GPT-2 Transformer Block](https://leetgpu.com/challenges/gpt-2-transformer-block) 上记录通过耗时，重点对比 `seq_len=1`（Decode）与 `seq_len=1024`（Prefill）的耗时差异。完整题解（含多 kernel 流水线串联、GELU tanh 近似、权重 offset 拆分、与 Prefill/Decode 算术强度的关联）见 <a target="_blank" rel="noopener" href="/problems/gpu/hard/74-gpt2-block">GPT-2 Transformer Block 题解</a>。
 
 #### 任务 3：本周 LeetCode 题目回顾（10 周计划 · 第 6 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 遍历 | <a target="_self" href="/problems/algo/0094">94. 二叉树的中序遍历</a>、<a target="_self" href="/problems/algo/0144">144. 二叉树的前序遍历</a>、<a target="_self" href="/problems/algo/0145">145. 二叉树的后序遍历</a>、<a target="_self" href="/problems/algo/0102">102. 二叉树的层序遍历</a>、<a target="_self" href="/problems/algo/0103">103. 二叉树的锯齿形层序遍历</a> |
-| Day 2 | 形态与深度 | <a target="_self" href="/problems/algo/0104">104. 二叉树的最大深度</a>、<a target="_self" href="/problems/algo/0226">226. 翻转二叉树</a>、<a target="_self" href="/problems/algo/0101">101. 对称二叉树</a>、<a target="_self" href="/problems/algo/0543">543. 二叉树的直径</a>、<a target="_self" href="/problems/algo/0110">110. 平衡二叉树</a> |
-| Day 3 | BST 基础 | <a target="_self" href="/problems/algo/0111">111. 二叉树的最小深度</a>、<a target="_self" href="/problems/algo/0559">559. N 叉树的最大深度</a>、<a target="_self" href="/problems/algo/0108">108. 将有序数组转换为二叉搜索树</a>、<a target="_self" href="/problems/algo/0098">98. 验证二叉搜索树</a>、<a target="_self" href="/problems/algo/0230">230. 二叉搜索树中第 K 小的元素</a> |
-| Day 4 | BST 进阶与构造 | <a target="_self" href="/problems/algo/0235">235. 二叉搜索树的最近公共祖先</a>、<a target="_self" href="/problems/algo/0173">173. 二叉搜索树迭代器</a>、<a target="_self" href="/problems/algo/1008">1008. 前序遍历构造二叉搜索树</a>、<a target="_self" href="/problems/algo/0105">105. 从前序与中序遍历序列构造二叉树</a>、<a target="_self" href="/problems/algo/0889">889. 根据前序与后序遍历构造二叉树</a> |
+| Day 1 | 遍历 | <a target="_blank" rel="noopener" href="/problems/algo/0094">94. 二叉树的中序遍历</a>、<a target="_blank" rel="noopener" href="/problems/algo/0144">144. 二叉树的前序遍历</a>、<a target="_blank" rel="noopener" href="/problems/algo/0145">145. 二叉树的后序遍历</a>、<a target="_blank" rel="noopener" href="/problems/algo/0102">102. 二叉树的层序遍历</a>、<a target="_blank" rel="noopener" href="/problems/algo/0103">103. 二叉树的锯齿形层序遍历</a> |
+| Day 2 | 形态与深度 | <a target="_blank" rel="noopener" href="/problems/algo/0104">104. 二叉树的最大深度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0226">226. 翻转二叉树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0101">101. 对称二叉树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0543">543. 二叉树的直径</a>、<a target="_blank" rel="noopener" href="/problems/algo/0110">110. 平衡二叉树</a> |
+| Day 3 | BST 基础 | <a target="_blank" rel="noopener" href="/problems/algo/0111">111. 二叉树的最小深度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0559">559. N 叉树的最大深度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0108">108. 将有序数组转换为二叉搜索树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0098">98. 验证二叉搜索树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0230">230. 二叉搜索树中第 K 小的元素</a> |
+| Day 4 | BST 进阶与构造 | <a target="_blank" rel="noopener" href="/problems/algo/0235">235. 二叉搜索树的最近公共祖先</a>、<a target="_blank" rel="noopener" href="/problems/algo/0173">173. 二叉搜索树迭代器</a>、<a target="_blank" rel="noopener" href="/problems/algo/1008">1008. 前序遍历构造二叉搜索树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0105">105. 从前序与中序遍历序列构造二叉树</a>、<a target="_blank" rel="noopener" href="/problems/algo/0889">889. 根据前序与后序遍历构造二叉树</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 6 周「二叉树（上）——遍历、形态与 BST」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
@@ -346,7 +346,7 @@ Day 7 我们把 Week 6 的碎片知识连成了推理系统的完整地图：
 
 ![Week 6 目录结构](../images/week6_directory_structure.svg)
 
-> 📎 LeetGPU / LeetCode 题解已并入本站：<a target="_self" href="/problems/gpu/">GPU 题解</a> · <a target="_self" href="/problems">算法题解</a>
+> 📎 LeetGPU / LeetCode 题解已并入本站：<a target="_blank" rel="noopener" href="/problems/gpu/">GPU 题解</a> · <a target="_blank" rel="noopener" href="/problems">算法题解</a>
 
 ## 🔗 推荐资源
 

@@ -285,7 +285,7 @@ N=4096: 理论 FA IO = 4×4096×64×4 = 4 MB, 实测应约为 N=512 的 8x
 
 本题是 FlashAttention 的完整多 head 版本——正是今天 benchmark 的核心对象。Day 3 我们手写了单 head 版 FA，今天 benchmark 对比的就是它。本题要求支持 batch + multi-head，用 `gridDim=(N/Br, H, B)` 并行，内部复用 FA 的 tiling + online softmax。这是 Week 5 的收官 CUDA 题，融合了本周所有知识点。
 
-> 💡 提交后在 [LeetGPU Multi-Head Attention 题目](https://leetgpu.com/challenges/multi-head-attention)上记录通过耗时。完整题解（含 batched kernel launch、online softmax 三公式、与标准 MHA 的 HBM IO 对比）见 <a target="_self" href="/problems/gpu/hard/12-multi-head-attention">Multi-Head Attention 题解</a>。
+> 💡 提交后在 [LeetGPU Multi-Head Attention 题目](https://leetgpu.com/challenges/multi-head-attention)上记录通过耗时。完整题解（含 batched kernel launch、online softmax 三公式、与标准 MHA 的 HBM IO 对比）见 <a target="_blank" rel="noopener" href="/problems/gpu/hard/12-multi-head-attention">Multi-Head Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 5 周机动补漏）
 

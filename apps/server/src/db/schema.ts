@@ -148,6 +148,8 @@ export const userProgress = mysqlTable(
       .notNull()
       .default("unseen"),
     score: int("score"),
+    /** 个人备注（刷题页「备注」：注意事项/易错点提醒），与状态无关可独立存在 */
+    note: text("note"),
     lastAt: timestamp("last_at").notNull().defaultNow().onUpdateNow(),
   },
   (t) => [uniqueIndex("uq_user_progress").on(t.userId, t.contentId)],

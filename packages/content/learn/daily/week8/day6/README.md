@@ -229,15 +229,15 @@ for quant in ['fp16', 'w8a16', 'int8_kv']:
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 8 周 Day 6）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 6（背包 DP），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 6（背包 DP），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [279. 完全平方数](https://leetcode.cn/problems/perfect-squares/) | 中等 | 完全背包 / BFS | <a target="_self" href="/problems/algo/0279">题解</a> |
-| [322. 零钱兑换](https://leetcode.cn/problems/coin-change/) | 中等 | 完全背包 DP（求最少硬币） | <a target="_self" href="/problems/algo/0322">题解</a> |
-| [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/) | 中等 | 完全背包求方案数 | <a target="_self" href="/problems/algo/0518">题解</a> |
-| [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) | 中等 | 0-1 背包 DP（求能否装满） | <a target="_self" href="/problems/algo/0416">题解</a> |
-| [494. 目标和](https://leetcode.cn/problems/target-sum/) | 中等 | 01 背包（正负分组） | <a target="_self" href="/problems/algo/0494">题解</a> |
+| [279. 完全平方数](https://leetcode.cn/problems/perfect-squares/) | 中等 | 完全背包 / BFS | <a target="_blank" rel="noopener" href="/problems/algo/0279">题解</a> |
+| [322. 零钱兑换](https://leetcode.cn/problems/coin-change/) | 中等 | 完全背包 DP（求最少硬币） | <a target="_blank" rel="noopener" href="/problems/algo/0322">题解</a> |
+| [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/) | 中等 | 完全背包求方案数 | <a target="_blank" rel="noopener" href="/problems/algo/0518">题解</a> |
+| [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) | 中等 | 0-1 背包 DP（求能否装满） | <a target="_blank" rel="noopener" href="/problems/algo/0416">题解</a> |
+| [494. 目标和](https://leetcode.cn/problems/target-sum/) | 中等 | 01 背包（正负分组） | <a target="_blank" rel="noopener" href="/problems/algo/0494">题解</a> |
 
 ---
 

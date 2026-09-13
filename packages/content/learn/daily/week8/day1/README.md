@@ -542,18 +542,18 @@ Note: 软件模拟 FP8, 无 Tensor Core 加速。生产用 __nv_fp8_e4m3 + FP8 T
 
 Weight Dequantization 正是 **W8A16 的核心子算子**——把 INT8 权重 + per-channel scale 反量化为 FP16，供后续 GEMM 使用。今天我们在 [w8a16_dequant.cu](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/week8/day1/kernels/w8a16_dequant.cu) 里做了"更激进"的版本——**不单独反量化**，而是把 dequant 融进 GEMM（在线反量化，scale 提到点积外）。这道题则是"显式反量化"版本：单独写一个 kernel 把 INT8 权重展开成 FP16。两者是同一思想的两种实现策略：fused（在线，省中间带宽）vs unfused（显式，便于复用现有 FP16 GEMM）。工业界两条路线都用——fused 性能更好，unfused 工程更简单（可接 cuBLAS FP16 GEMM）。
 
-> 💡 提交后在 [LeetGPU Weight Dequantization](https://leetgpu.com/challenges/weight-dequantization) 上记录通过耗时，重点对比"fused 在线反量化"（今日 kernel）vs "unfused 显式反量化"（本题）的带宽差异。完整题解（含 per-channel scale 处理、向量化加载、ncu 带宽分析）见 <a target="_self" href="/problems/gpu/medium/64-weight-dequantization">Weight Dequantization 题解</a>。
+> 💡 提交后在 [LeetGPU Weight Dequantization](https://leetgpu.com/challenges/weight-dequantization) 上记录通过耗时，重点对比"fused 在线反量化"（今日 kernel）vs "unfused 显式反量化"（本题）的带宽差异。完整题解（含 per-channel scale 处理、向量化加载、ncu 带宽分析）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/64-weight-dequantization">Weight Dequantization 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 8 周 Day 1）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 1（二分模板），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 1（二分模板），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [704. 二分查找](https://leetcode.cn/problems/binary-search/) | 简单 | 二分模板（闭区间 / 左闭右开） | <a target="_self" href="/problems/algo/0704">题解</a> |
-| [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/) | 简单 | 二分模板（左闭右开，找第一个 ≥ target） | <a target="_self" href="/problems/algo/0035">题解</a> |
-| [69. x 的平方根](https://leetcode.cn/problems/sqrtx/) | 简单 | 二分答案 | <a target="_self" href="/problems/algo/0069">题解</a> |
-| [74. 搜索二维矩阵](https://leetcode.cn/problems/search-a-2d-matrix/) | 中等 | 二分（二维展平为一维，$O(\log mn)$） | <a target="_self" href="/problems/algo/0074">题解</a> |
+| [704. 二分查找](https://leetcode.cn/problems/binary-search/) | 简单 | 二分模板（闭区间 / 左闭右开） | <a target="_blank" rel="noopener" href="/problems/algo/0704">题解</a> |
+| [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/) | 简单 | 二分模板（左闭右开，找第一个 ≥ target） | <a target="_blank" rel="noopener" href="/problems/algo/0035">题解</a> |
+| [69. x 的平方根](https://leetcode.cn/problems/sqrtx/) | 简单 | 二分答案 | <a target="_blank" rel="noopener" href="/problems/algo/0069">题解</a> |
+| [74. 搜索二维矩阵](https://leetcode.cn/problems/search-a-2d-matrix/) | 中等 | 二分（二维展平为一维，$O(\log mn)$） | <a target="_blank" rel="noopener" href="/problems/algo/0074">题解</a> |
 
 ---
 

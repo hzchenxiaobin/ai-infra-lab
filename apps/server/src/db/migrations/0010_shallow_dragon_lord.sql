@@ -1,0 +1,1 @@
+ALTER TABLE `user_progress` ADD `note` text;

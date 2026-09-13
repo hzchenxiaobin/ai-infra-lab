@@ -196,7 +196,7 @@ export default defineConfig({
   themeConfig: {
     // 顶栏只留「面试速查」下拉（收纳 reference/notes/面经专题）；
     // 主线/专题/论文/Profiling 从首页与文档内链进入，不再占顶栏；
-    // 主站功能入口（刷题/题库/组卷面试/搜索）在顶栏右侧 NavActions。
+    // 主站功能入口（刷题/面试/搜索）在顶栏右侧 NavActions。
     nav: [
       {
         text: "面试速查",
@@ -213,8 +213,8 @@ export default defineConfig({
     outline: { level: [2, 3], label: "本页目录" },
 
     // 顶栏站点名（AI Infra Lab）指向主站首页 /，而非 docs base 首页 /learn/；
-    // target=_self 让 vitepress 前端路由跳过拦截（跨分区/SPA 链接统一约定）
-    logoLink: { link: "/", target: "_self" },
+    // 全站约定链接新标签页打开（theme/newTabLinks.ts）
+    logoLink: { link: "/", target: "_blank" },
 
     // 本专题文档清单（右栏「本页目录」下方，theme/TopicSiblings.vue 渲染）
     topicDocs: topicDocs(),

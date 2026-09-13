@@ -344,19 +344,19 @@ ncu \
 
 本题是 GEMM 的基础版，适合用 ncu 做完整 profiling。用 Day 6 学的 Nsight Compute 分析 SM throughput、memory throughput、occupancy，画出 Roofline 图，判断 kernel 是 memory-bound 还是 compute-bound。
 
-> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a target="_self" href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
+> 💡 提交后在 [LeetGPU Matrix Multiplication 题目](https://leetgpu.com/challenges/matrix-multiplication)上记录通过耗时，用 ncu 对比不同 block size / tile size 的性能差异。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/2-matrix-multiplication">Matrix Multiplication 题解</a>。
 
 #### 任务 6：LeetCode 面试题（10 周计划 · 第 1 周 Day 6）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 6（位运算与其他），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 1 周「数组、哈希与双指针（含手撕排序）」Day 6（位运算与其他），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/) | 中等 | 位运算按位计数 | <a target="_self" href="/problems/algo/0137">题解</a> |
-| [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/) | 中等 | 异或 + lowbit 分组 | <a target="_self" href="/problems/algo/0260">题解</a> |
-| [338. 比特位计数](https://leetcode.cn/problems/counting-bits/) | 简单 | DP + lowbit | <a target="_self" href="/problems/algo/0338">题解</a> |
-| [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/) | 简单 | 哈希集合 | <a target="_self" href="/problems/algo/0349">题解</a> |
-| [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/) | 中等 | 双指针找乱序边界 | <a target="_self" href="/problems/algo/0581">题解</a> |
+| [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/) | 中等 | 位运算按位计数 | <a target="_blank" rel="noopener" href="/problems/algo/0137">题解</a> |
+| [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/) | 中等 | 异或 + lowbit 分组 | <a target="_blank" rel="noopener" href="/problems/algo/0260">题解</a> |
+| [338. 比特位计数](https://leetcode.cn/problems/counting-bits/) | 简单 | DP + lowbit | <a target="_blank" rel="noopener" href="/problems/algo/0338">题解</a> |
+| [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/) | 简单 | 哈希集合 | <a target="_blank" rel="noopener" href="/problems/algo/0349">题解</a> |
+| [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/) | 中等 | 双指针找乱序边界 | <a target="_blank" rel="noopener" href="/problems/algo/0581">题解</a> |
 
 ---
 

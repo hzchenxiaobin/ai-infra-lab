@@ -227,18 +227,18 @@ M        N        K        Our(ms)    cuBLAS(ms) GFLOPS    Percent
 
 Day 2 已做过本题的 Register Blocking 版本；今天复用同题做进阶改造——把 global→shared 加载改成 `cp.async` 双缓冲，对比改造前后的通过耗时，亲手验证"同步双缓冲收益在噪声内、异步拷贝才是关键"的实测结论。
 
-> 💡 完整题解见 <a target="_self" href="/problems/gpu/medium/22-gemm">GEMM 题解</a>。
+> 💡 完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/22-gemm">GEMM 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 2 周 Day 4）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 4（字符串匹配），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」Day 4（字符串匹配），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [165. 比较版本号](https://leetcode.cn/problems/compare-version-numbers/) | 中等 | 字符串切分 + 逐段比较 | <a target="_self" href="/problems/algo/0165">题解</a> |
-| [8. 字符串转换整数（atoi）](https://leetcode.cn/problems/string-to-integer-atoi/) | 中等 | 模拟 + 溢出边界处理 | <a target="_self" href="/problems/algo/0008">题解</a> |
-| [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/) | 简单 | KMP / 内置查找 | <a target="_self" href="/problems/algo/0028">题解</a> |
-| [468. 验证 IP 地址](https://leetcode.cn/problems/validate-ip-address/) | 中等 | 分段 + 规则校验 | <a target="_self" href="/problems/algo/0468">题解</a> |
+| [165. 比较版本号](https://leetcode.cn/problems/compare-version-numbers/) | 中等 | 字符串切分 + 逐段比较 | <a target="_blank" rel="noopener" href="/problems/algo/0165">题解</a> |
+| [8. 字符串转换整数（atoi）](https://leetcode.cn/problems/string-to-integer-atoi/) | 中等 | 模拟 + 溢出边界处理 | <a target="_blank" rel="noopener" href="/problems/algo/0008">题解</a> |
+| [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/) | 简单 | KMP / 内置查找 | <a target="_blank" rel="noopener" href="/problems/algo/0028">题解</a> |
+| [468. 验证 IP 地址](https://leetcode.cn/problems/validate-ip-address/) | 中等 | 分段 + 规则校验 | <a target="_blank" rel="noopener" href="/problems/algo/0468">题解</a> |
 
 ---
 

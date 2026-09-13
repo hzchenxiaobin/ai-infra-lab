@@ -42,6 +42,30 @@ async function interviewCondition(): Promise<SQL> {
   return ids.length > 0 ? inArray(problems.id, ids) : sql`1 = 0`;
 }
 
+/**
+ * GPU 面试选题（leetcode 分区的 interview 过滤走 questions 表动态推导；
+ * GPU 没有对应的面试题↔题目映射列，这里静态维护，来源：
+ * packages/content/problems-gpu/cuda-interview-notes.md §五 LeetGPU 对照表的高频+中频题，共 34 题）
+ */
+const GPU_INTERVIEW_IDS = [
+  // 高频：Softmax / online softmax / Reduce / LayerNorm / RMSNorm
+  "gpu:m:005", "gpu:m:006", "gpu:m:004", "gpu:m:115", "gpu:m:040", "gpu:m:105", "gpu:m:050", "gpu:m:116",
+  // 中频：SGEMM（含量化路径）
+  "gpu:e:002", "gpu:m:022", "gpu:m:030", "gpu:m:057", "gpu:m:032", "gpu:m:081",
+  // 中频：transpose / GEMV
+  "gpu:e:003", "gpu:m:114", "gpu:m:017", "gpu:m:018", "gpu:m:075",
+  // 中频：attention 各变体
+  "gpu:h:109", "gpu:h:053", "gpu:h:012", "gpu:h:026", "gpu:m:080", "gpu:h:059", "gpu:h:056", "gpu:m:112", "gpu:m:111",
+  // 中频：scan / top-k / histogram
+  "gpu:m:016", "gpu:m:070", "gpu:m:029", "gpu:m:060", "gpu:m:067", "gpu:m:013",
+];
+
+/** interview 过滤分发：leetcode → 面试题库动态推导；leetgpu → 静态选题集 */
+async function interviewFilter(source?: string): Promise<SQL> {
+  if (source === "leetgpu") return inArray(problems.id, GPU_INTERVIEW_IDS);
+  return interviewCondition();
+}
+
 /** 按统一 ID 列表取题目（保持传入顺序，联 contents + user_progress） */
 async function problemRowsByIds(ids: string[], userId: number) {
   if (ids.length === 0) return [];
@@ -59,6 +83,7 @@ async function problemRowsByIds(ids: string[], userId: number) {
       tags: contents.tags,
       knowledgePoints: contents.knowledgePoints,
       progressStatus: userProgress.status,
+      note: userProgress.note,
     })
     .from(problems)
     .innerJoin(contents, eq(problems.id, contents.id))
@@ -86,7 +111,7 @@ export const problemRouter = router({
     if (input.tag) conditions.push(jsonContains(contents.tags, input.tag));
     if (input.knowledgePoint) conditions.push(jsonContains(contents.knowledgePoints, input.knowledgePoint));
     if (input.search) conditions.push(like(contents.title, `%${input.search}%`));
-    if (input.interview) conditions.push(await interviewCondition());
+    if (input.interview) conditions.push(await interviewFilter(input.source));
     const where = and(...conditions);
 
     const rows = await db
@@ -103,6 +128,7 @@ export const problemRouter = router({
         tags: contents.tags,
         knowledgePoints: contents.knowledgePoints,
         progressStatus: userProgress.status,
+        note: userProgress.note,
       })
       .from(problems)
       .innerJoin(contents, eq(problems.id, contents.id))
@@ -119,6 +145,7 @@ export const problemRouter = router({
       ac: r.progressStatus === "ac",
     }));
     if (input.solved != null) items = items.filter((i) => i.ac === input.solved);
+    if (input.progress) items = items.filter((i) => i.progressStatus === input.progress);
 
     const total = items.length;
     const start = (input.page - 1) * input.pageSize;
@@ -157,7 +184,7 @@ export const problemRouter = router({
   facets: authedProcedure.input(problemFacetsSchema).query(async ({ input }) => {
     const conditions: SQL[] = [eq(contents.status, "active")];
     if (input.source) conditions.push(eq(problems.source, input.source));
-    if (input.interview) conditions.push(await interviewCondition());
+    if (input.interview) conditions.push(await interviewFilter(input.source));
     const rows = await db
       .select({ tags: contents.tags, knowledgePoints: contents.knowledgePoints })
       .from(problems)

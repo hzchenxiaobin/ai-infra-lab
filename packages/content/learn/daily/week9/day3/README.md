@@ -304,16 +304,16 @@ print(f"Total steps: {len(steps)} (expect {2*(N-1)})")
 
 #### 任务 3：LeetCode 面试题（10 周计划 · 第 9 周 Day 3）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 3（二维 DP），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 9 周「动态规划进阶——子序列、区间与二维 DP」Day 3（二维 DP），共 6 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [62. 不同路径](https://leetcode.cn/problems/unique-paths/) | 中等 | 组合数 / 二维 DP | <a target="_self" href="/problems/algo/0062">题解</a> |
-| [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/) | 中等 | 二维 DP | <a target="_self" href="/problems/algo/0064">题解</a> |
-| [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/) | 中等 | 二维 DP（自底向上） | <a target="_self" href="/problems/algo/0120">题解</a> |
-| [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/) | 中等 | 二维 DP（LCS） | <a target="_self" href="/problems/algo/1143">题解</a> |
-| [72. 编辑距离](https://leetcode.cn/problems/edit-distance/) | 困难 | 二维 DP（insert/delete/replace） | <a target="_self" href="/problems/algo/0072">题解</a> |
-| [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) | 中等 | DP（右下角最长边） | <a target="_self" href="/problems/algo/0221">题解</a> |
+| [62. 不同路径](https://leetcode.cn/problems/unique-paths/) | 中等 | 组合数 / 二维 DP | <a target="_blank" rel="noopener" href="/problems/algo/0062">题解</a> |
+| [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/) | 中等 | 二维 DP | <a target="_blank" rel="noopener" href="/problems/algo/0064">题解</a> |
+| [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/) | 中等 | 二维 DP（自底向上） | <a target="_blank" rel="noopener" href="/problems/algo/0120">题解</a> |
+| [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/) | 中等 | 二维 DP（LCS） | <a target="_blank" rel="noopener" href="/problems/algo/1143">题解</a> |
+| [72. 编辑距离](https://leetcode.cn/problems/edit-distance/) | 困难 | 二维 DP（insert/delete/replace） | <a target="_blank" rel="noopener" href="/problems/algo/0072">题解</a> |
+| [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) | 中等 | DP（右下角最长边） | <a target="_blank" rel="noopener" href="/problems/algo/0221">题解</a> |
 
 ---
 

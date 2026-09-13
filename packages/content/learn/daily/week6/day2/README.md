@@ -325,19 +325,19 @@ ncu --kernel-name regex:memcpy \
 
 GQA 是 **KV Cache 内存优化的核心手段之一**——标准 MHA（Multi-Head Attention）每个 query 头都有独立的 K/V 头，cache 大小正比于 `num_q_heads`；GQA 让多个 query 头**共享同一组 K/V 头**，把 KV cache 的 `num_heads` 维从 `num_q_heads` 降到 `num_kv_heads`。LLaMA-3 8B 用 `32` 个 Q 头 + `8` 个 KV 头，KV cache 直接缩小到 1/4。今天我们手写了 KV Cache 的存储结构，GQA 回答的是"能不能少存一些头"——它是从模型结构层面削减 cache 大小，比 Day 1 的 int8 量化（从精度层面削减）更根本。
 
-> 💡 提交后在 [LeetGPU Grouped Query Attention](https://leetgpu.com/challenges/grouped-query-attention) 上记录通过耗时。完整题解（含 GQA 的 KV 头共享映射、attention kernel、与 MHA 的 cache 大小对比）见 <a target="_self" href="/problems/gpu/medium/80-grouped-query-attention">Grouped Query Attention 题解</a>。
+> 💡 提交后在 [LeetGPU Grouped Query Attention](https://leetgpu.com/challenges/grouped-query-attention) 上记录通过耗时。完整题解（含 GQA 的 KV 头共享映射、attention kernel、与 MHA 的 cache 大小对比）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/80-grouped-query-attention">Grouped Query Attention 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 6 周 Day 2）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 2（形态与深度），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 6 周「二叉树（上）——遍历、形态与 BST」Day 2（形态与深度），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/) | 简单 | DFS / BFS | <a target="_self" href="/problems/algo/0104">题解</a> |
-| [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/) | 简单 | 递归 | <a target="_self" href="/problems/algo/0226">题解</a> |
-| [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/) | 简单 | 递归 / 队列 | <a target="_self" href="/problems/algo/0101">题解</a> |
-| [543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/) | 简单 | DFS 左右深度和 | <a target="_self" href="/problems/algo/0543">题解</a> |
-| [110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/) | 简单 | 后序 DFS 返回高度 | <a target="_self" href="/problems/algo/0110">题解</a> |
+| [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/) | 简单 | DFS / BFS | <a target="_blank" rel="noopener" href="/problems/algo/0104">题解</a> |
+| [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/) | 简单 | 递归 | <a target="_blank" rel="noopener" href="/problems/algo/0226">题解</a> |
+| [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/) | 简单 | 递归 / 队列 | <a target="_blank" rel="noopener" href="/problems/algo/0101">题解</a> |
+| [543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/) | 简单 | DFS 左右深度和 | <a target="_blank" rel="noopener" href="/problems/algo/0543">题解</a> |
+| [110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/) | 简单 | 后序 DFS 返回高度 | <a target="_blank" rel="noopener" href="/problems/algo/0110">题解</a> |
 
 ---
 

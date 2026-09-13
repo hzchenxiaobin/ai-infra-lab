@@ -839,18 +839,18 @@ python kernels/vllm_scheduler_analyzer.py
 
 Stream Compaction（剔除无效元素）是 **Continuous Batching 的底层操作**——每轮调度后，完成的请求需要从 batch 中"剔除"，剩下的请求"压实"成新 batch。这正是 stream compaction 的工程应用：用 **prefix sum 算出目标位置**，再 scatter 写回。Day 2 的 vLLM Scheduler 分析能直接对应本题的算法。
 
-> 💡 提交后在 [LeetGPU Stream Compaction](https://leetgpu.com/challenges/stream-compaction) 上记录通过耗时。完整题解（含谓词标记 + 前缀和 + scatter 三段式、与 Scheduler 过滤/重排 running 队列的类比）见 <a target="_self" href="/problems/gpu/medium/72-stream-compaction">Stream Compaction 题解</a>。
+> 💡 提交后在 [LeetGPU Stream Compaction](https://leetgpu.com/challenges/stream-compaction) 上记录通过耗时。完整题解（含谓词标记 + 前缀和 + scatter 三段式、与 Scheduler 过滤/重排 running 队列的类比）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/72-stream-compaction">Stream Compaction 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 7 周 Day 2）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 2（LCA 与路径和），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」Day 2（LCA 与路径和），共 4 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/) | 中等 | 后序 DFS | <a target="_self" href="/problems/algo/0236">题解</a> |
-| [124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/) | 困难 | 后序 DFS（单边贡献） | <a target="_self" href="/problems/algo/0124">题解</a> |
-| [199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/) | 中等 | BFS/DFS 取每层最右 | <a target="_self" href="/problems/algo/0199">题解</a> |
-| [114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/) | 中等 | 后序 / 迭代 | <a target="_self" href="/problems/algo/0114">题解</a> |
+| [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/) | 中等 | 后序 DFS | <a target="_blank" rel="noopener" href="/problems/algo/0236">题解</a> |
+| [124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/) | 困难 | 后序 DFS（单边贡献） | <a target="_blank" rel="noopener" href="/problems/algo/0124">题解</a> |
+| [199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/) | 中等 | BFS/DFS 取每层最右 | <a target="_blank" rel="noopener" href="/problems/algo/0199">题解</a> |
+| [114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/) | 中等 | 后序 / 迭代 | <a target="_blank" rel="noopener" href="/problems/algo/0114">题解</a> |
 
 ---
 

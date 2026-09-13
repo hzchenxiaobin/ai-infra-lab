@@ -246,17 +246,17 @@ python kernels/week10_summary.py
 
 **与本周知识的关联**：1D Convolution 是 shared memory tiling + boundary 处理的经典综合题，检验 Week 1–2 的 shared memory 基本功与 Week 10 的整合能力。它对应能力地图中 Kernel 优化层的强项。
 
-> 💡 完整题解见 <a target="_self" href="/problems/gpu/easy/9-1d-convolution">1D Convolution 题解</a>。
+> 💡 完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/easy/9-1d-convolution">1D Convolution 题解</a>。
 
 #### 任务 3：本周 LeetCode 题目回顾（10 周计划 · 第 10 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 10 周「股票 DP、划分与图论」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 股票与划分 | <a target="_self" href="/problems/algo/0122">122. 买卖股票的最佳时机 II</a>、<a target="_self" href="/problems/algo/0123">123. 买卖股票的最佳时机 III</a>、<a target="_self" href="/problems/algo/0188">188. 买卖股票的最佳时机 IV</a>、<a target="_self" href="/problems/algo/0309">309. 买卖股票的最佳时机含冷冻期</a>、<a target="_self" href="/problems/algo/0714">714. 买卖股票的最佳时机含手续费</a>、<a target="_self" href="/problems/algo/0698">698. 划分为 K 个相等的子集</a> |
-| Day 2 | 图论基础 | <a target="_self" href="/problems/algo/0207">207. 课程表</a>、<a target="_self" href="/problems/algo/0208">208. 实现 Trie（前缀树）</a>、<a target="_self" href="/problems/algo/0547">547. 省份数量</a>、<a target="_self" href="/problems/algo/0785">785. 判断二分图</a>、<a target="_self" href="/problems/algo/0133">133. 克隆图</a> |
-| Day 3 | 最短路与 BFS | <a target="_self" href="/problems/algo/0743">743. 网络延迟时间</a>、<a target="_self" href="/problems/algo/0787">787. K 站中转内最便宜的航班</a>、<a target="_self" href="/problems/algo/0399">399. 除法求值</a>、<a target="_self" href="/problems/algo/0752">752. 打开转盘锁</a>、<a target="_self" href="/problems/algo/0127">127. 单词接龙</a>、<a target="_self" href="/problems/algo/0329">329. 矩阵中的最长递增路径</a> |
+| Day 1 | 股票与划分 | <a target="_blank" rel="noopener" href="/problems/algo/0122">122. 买卖股票的最佳时机 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0123">123. 买卖股票的最佳时机 III</a>、<a target="_blank" rel="noopener" href="/problems/algo/0188">188. 买卖股票的最佳时机 IV</a>、<a target="_blank" rel="noopener" href="/problems/algo/0309">309. 买卖股票的最佳时机含冷冻期</a>、<a target="_blank" rel="noopener" href="/problems/algo/0714">714. 买卖股票的最佳时机含手续费</a>、<a target="_blank" rel="noopener" href="/problems/algo/0698">698. 划分为 K 个相等的子集</a> |
+| Day 2 | 图论基础 | <a target="_blank" rel="noopener" href="/problems/algo/0207">207. 课程表</a>、<a target="_blank" rel="noopener" href="/problems/algo/0208">208. 实现 Trie（前缀树）</a>、<a target="_blank" rel="noopener" href="/problems/algo/0547">547. 省份数量</a>、<a target="_blank" rel="noopener" href="/problems/algo/0785">785. 判断二分图</a>、<a target="_blank" rel="noopener" href="/problems/algo/0133">133. 克隆图</a> |
+| Day 3 | 最短路与 BFS | <a target="_blank" rel="noopener" href="/problems/algo/0743">743. 网络延迟时间</a>、<a target="_blank" rel="noopener" href="/problems/algo/0787">787. K 站中转内最便宜的航班</a>、<a target="_blank" rel="noopener" href="/problems/algo/0399">399. 除法求值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0752">752. 打开转盘锁</a>、<a target="_blank" rel="noopener" href="/problems/algo/0127">127. 单词接龙</a>、<a target="_blank" rel="noopener" href="/problems/algo/0329">329. 矩阵中的最长递增路径</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 10 周「股票 DP、划分与图论」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 

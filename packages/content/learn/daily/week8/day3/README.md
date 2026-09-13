@@ -270,17 +270,17 @@ result = simulate_speculative_decoding(num_tokens=100, draft_k=4, accept_rate=0.
 
 **与今日知识的关联**：这道题就是 verify 阶段的 kernel 实现——大模型一次 forward 验证 k+1 个 draft token。Q 是 k+1 个 token（draft + 1），K/V 是历史 + draft 的 K/V；causal mask 的关键细节：draft token 之间是 causal、与历史是 full attention，块级跳过可省一半计算。学完今天的理论再手写这个 kernel，正好把"接受/拒绝采样"和"verify kernel 要点"（面试题 5）落到代码上。
 
-> 💡 提交后在 [LeetGPU Speculative Decoding Verification](https://leetgpu.com/challenges/speculative-decoding-verification) 上记录通过耗时。完整题解见 <a target="_self" href="/problems/gpu/medium/87-speculative-decoding-verification">Speculative Decoding Verification 题解</a>。
+> 💡 提交后在 [LeetGPU Speculative Decoding Verification](https://leetgpu.com/challenges/speculative-decoding-verification) 上记录通过耗时。完整题解见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/87-speculative-decoding-verification">Speculative Decoding Verification 题解</a>。
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 8 周 Day 3）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 3（二分答案），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 8 周「二分查找与动态规划基础」Day 3（二分答案），共 3 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/) | 中等 | 二分答案 + O(n) 验证 | <a target="_self" href="/problems/algo/0875">题解</a> |
-| [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/) | 中等 | 二分答案 + 贪心验证 | <a target="_self" href="/problems/algo/1011">题解</a> |
-| [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/) | 中等 | 二分值域 + 左下角计数 / 小顶堆 k 路归并 | <a target="_self" href="/problems/algo/0378">题解</a> |
+| [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/) | 中等 | 二分答案 + O(n) 验证 | <a target="_blank" rel="noopener" href="/problems/algo/0875">题解</a> |
+| [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/) | 中等 | 二分答案 + 贪心验证 | <a target="_blank" rel="noopener" href="/problems/algo/1011">题解</a> |
+| [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/) | 中等 | 二分值域 + 左下角计数 / 小顶堆 k 路归并 | <a target="_blank" rel="noopener" href="/problems/algo/0378">题解</a> |
 
 ---
 

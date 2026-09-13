@@ -141,20 +141,20 @@ python kernels/week7_summary.py
 
 **与本周总结的关联**：Reduction 是所有归约类 kernel（softmax 分母、LayerNorm 均值方差、dot product、attention 分数累加）的基础组件——block 内归约 + 跨 block 归约的两段式结构是通用模板。本周调度层面的"累加/统计"操作（token budget 逐请求扣减、batch 聚合、命中率统计）在 kernel 层的本质都是归约。这道题还藏着一个精度要点：大 `N` 下必须用 `double` 高精度累加、最后一步才转回 FP32，否则累加误差直接超容差——这正是 Week 8 量化专题"低精度提吞吐、但累加必须升精度控误差"的前置练习。这道题练 warp shuffle 归约 + 两阶段汇总——Week 8 量化与加速中所有统计/归约 kernel 都会用到。
 
-> 💡 完整题解（含 warp shuffle 归约、block 间两阶段汇总、double 高精度累加的精度处理）见 <a target="_self" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
+> 💡 完整题解（含 warp shuffle 归约、block 间两阶段汇总、double 高精度累加的精度处理）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
 
 #### 任务 3：本周 LeetCode 题目回顾（10 周计划 · 第 7 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 7 周「二叉树（下）+ 回溯 + 网格搜索」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 路径问题 | <a target="_self" href="/problems/algo/0112">112. 路径总和</a>、<a target="_self" href="/problems/algo/0113">113. 路径总和 II</a>、<a target="_self" href="/problems/algo/0129">129. 求根节点到叶节点数字之和</a>、<a target="_self" href="/problems/algo/0222">222. 完全二叉树的节点个数</a>、<a target="_self" href="/problems/algo/0437">437. 路径总和 III</a> |
-| Day 2 | LCA 与路径和 | <a target="_self" href="/problems/algo/0236">236. 二叉树的最近公共祖先</a>、<a target="_self" href="/problems/algo/0124">124. 二叉树中的最大路径和</a>、<a target="_self" href="/problems/algo/0199">199. 二叉树的右视图</a>、<a target="_self" href="/problems/algo/0114">114. 二叉树展开为链表</a> |
-| Day 3 | 序列化与宽度 | <a target="_self" href="/problems/algo/0297">297. 二叉树的序列化与反序列化</a>、<a target="_self" href="/problems/algo/0662">662. 二叉树最大宽度</a>、<a target="_self" href="/problems/algo/0958">958. 二叉树的完全性检验</a> |
-| Day 4 | 网格 DFS/BFS | <a target="_self" href="/problems/algo/0200">200. 岛屿数量</a>、<a target="_self" href="/problems/algo/0994">994. 腐烂的橘子</a>、<a target="_self" href="/problems/algo/0695">695. 岛屿的最大面积</a>、<a target="_self" href="/problems/algo/0130">130. 被围绕的区域</a> |
-| Day 5 | 回溯基础 | <a target="_self" href="/problems/algo/0046">46. 全排列</a>、<a target="_self" href="/problems/algo/0077">77. 组合</a>、<a target="_self" href="/problems/algo/0078">78. 子集</a>、<a target="_self" href="/problems/algo/0039">39. 组合总和</a>、<a target="_self" href="/problems/algo/0017">17. 电话号码的字母组合</a> |
-| Day 6 | 回溯进阶 | <a target="_self" href="/problems/algo/0022">22. 括号生成</a>、<a target="_self" href="/problems/algo/0079">79. 单词搜索</a>、<a target="_self" href="/problems/algo/0131">131. 分割回文串</a>、<a target="_self" href="/problems/algo/0051">51. N 皇后</a>、<a target="_self" href="/problems/algo/0093">93. 复原 IP 地址</a>、<a target="_self" href="/problems/algo/0089">89. 格雷编码</a> |
+| Day 1 | 路径问题 | <a target="_blank" rel="noopener" href="/problems/algo/0112">112. 路径总和</a>、<a target="_blank" rel="noopener" href="/problems/algo/0113">113. 路径总和 II</a>、<a target="_blank" rel="noopener" href="/problems/algo/0129">129. 求根节点到叶节点数字之和</a>、<a target="_blank" rel="noopener" href="/problems/algo/0222">222. 完全二叉树的节点个数</a>、<a target="_blank" rel="noopener" href="/problems/algo/0437">437. 路径总和 III</a> |
+| Day 2 | LCA 与路径和 | <a target="_blank" rel="noopener" href="/problems/algo/0236">236. 二叉树的最近公共祖先</a>、<a target="_blank" rel="noopener" href="/problems/algo/0124">124. 二叉树中的最大路径和</a>、<a target="_blank" rel="noopener" href="/problems/algo/0199">199. 二叉树的右视图</a>、<a target="_blank" rel="noopener" href="/problems/algo/0114">114. 二叉树展开为链表</a> |
+| Day 3 | 序列化与宽度 | <a target="_blank" rel="noopener" href="/problems/algo/0297">297. 二叉树的序列化与反序列化</a>、<a target="_blank" rel="noopener" href="/problems/algo/0662">662. 二叉树最大宽度</a>、<a target="_blank" rel="noopener" href="/problems/algo/0958">958. 二叉树的完全性检验</a> |
+| Day 4 | 网格 DFS/BFS | <a target="_blank" rel="noopener" href="/problems/algo/0200">200. 岛屿数量</a>、<a target="_blank" rel="noopener" href="/problems/algo/0994">994. 腐烂的橘子</a>、<a target="_blank" rel="noopener" href="/problems/algo/0695">695. 岛屿的最大面积</a>、<a target="_blank" rel="noopener" href="/problems/algo/0130">130. 被围绕的区域</a> |
+| Day 5 | 回溯基础 | <a target="_blank" rel="noopener" href="/problems/algo/0046">46. 全排列</a>、<a target="_blank" rel="noopener" href="/problems/algo/0077">77. 组合</a>、<a target="_blank" rel="noopener" href="/problems/algo/0078">78. 子集</a>、<a target="_blank" rel="noopener" href="/problems/algo/0039">39. 组合总和</a>、<a target="_blank" rel="noopener" href="/problems/algo/0017">17. 电话号码的字母组合</a> |
+| Day 6 | 回溯进阶 | <a target="_blank" rel="noopener" href="/problems/algo/0022">22. 括号生成</a>、<a target="_blank" rel="noopener" href="/problems/algo/0079">79. 单词搜索</a>、<a target="_blank" rel="noopener" href="/problems/algo/0131">131. 分割回文串</a>、<a target="_blank" rel="noopener" href="/problems/algo/0051">51. N 皇后</a>、<a target="_blank" rel="noopener" href="/problems/algo/0093">93. 复原 IP 地址</a>、<a target="_blank" rel="noopener" href="/problems/algo/0089">89. 格雷编码</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 7 周「二叉树（下）+ 回溯 + 网格搜索」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
@@ -328,7 +328,7 @@ Day 7 我们把 Week 7 的碎片知识连成了调度系统的完整地图：
 
 ![Week 7 目录结构](../images/week7_day7_directory_structure.svg)
 
-> 📎 LeetGPU / LeetCode 题解已并入本站：<a target="_self" href="/problems/gpu/">GPU 题解</a> · <a target="_self" href="/problems">算法题解</a>
+> 📎 LeetGPU / LeetCode 题解已并入本站：<a target="_blank" rel="noopener" href="/problems/gpu/">GPU 题解</a> · <a target="_blank" rel="noopener" href="/problems">算法题解</a>
 
 ## 🔗 推荐资源
 

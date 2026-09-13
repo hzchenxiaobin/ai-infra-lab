@@ -440,15 +440,15 @@ ncu --metrics \
 
 #### 任务 5：LeetCode 面试题（10 周计划 · 第 4 周 Day 2）
 
-> 📅 今日题目来自 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 2（表达式与计算器），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
+> 📅 今日题目来自 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 4 周「栈、队列与单调栈」Day 2（表达式与计算器），共 5 题。简单题快速过、中等题精做、困难题吃透；卡壳 20 分钟就看题解，看懂后自己默写一遍。
 
 | 题目 | 难度 | 核心套路 | 题解 |
 |------|------|---------|------|
-| [394. 字符串解码](https://leetcode.cn/problems/decode-string/) | 中等 | 栈 / 递归解码 | <a target="_self" href="/problems/algo/0394">题解</a> |
-| [224. 基本计算器](https://leetcode.cn/problems/basic-calculator/) | 困难 | 栈处理括号与一元符号 | <a target="_self" href="/problems/algo/0224">题解</a> |
-| [227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/) | 中等 | 栈处理乘除优先级 | <a target="_self" href="/problems/algo/0227">题解</a> |
-| [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) | 中等 | 单调栈删大留小 | <a target="_self" href="/problems/algo/0402">题解</a> |
-| [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/) | 中等 | 单调栈 + 贪心 | <a target="_self" href="/problems/algo/0316">题解</a> |
+| [394. 字符串解码](https://leetcode.cn/problems/decode-string/) | 中等 | 栈 / 递归解码 | <a target="_blank" rel="noopener" href="/problems/algo/0394">题解</a> |
+| [224. 基本计算器](https://leetcode.cn/problems/basic-calculator/) | 困难 | 栈处理括号与一元符号 | <a target="_blank" rel="noopener" href="/problems/algo/0224">题解</a> |
+| [227. 基本计算器 II](https://leetcode.cn/problems/basic-calculator-ii/) | 中等 | 栈处理乘除优先级 | <a target="_blank" rel="noopener" href="/problems/algo/0227">题解</a> |
+| [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) | 中等 | 单调栈删大留小 | <a target="_blank" rel="noopener" href="/problems/algo/0402">题解</a> |
+| [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/) | 中等 | 单调栈 + 贪心 | <a target="_blank" rel="noopener" href="/problems/algo/0316">题解</a> |
 
 ---
 

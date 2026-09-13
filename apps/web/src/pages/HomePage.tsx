@@ -67,12 +67,12 @@ export default function HomePage() {
     <div className="space-y-10">
       {/* 标题区 */}
       <PageHeader
-        label="Start · 组卷"
+        label="Start · 面试"
         title="开始一场新面试"
         description="勾选方向、定好范围与题量，系统即刻为你生成一场限时问答。"
       />
 
-      {/* 组卷卡片 */}
+      {/* 面试卡片 */}
       <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
         <Card className="p-6 sm:p-8">
           {/* 01 选择方向（选中考察范围后禁用） */}

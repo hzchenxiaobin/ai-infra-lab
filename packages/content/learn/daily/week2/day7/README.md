@@ -378,7 +378,7 @@ o_new = o * (l * exp(m - m_new) / l_new) + (exp(xj - m_new) / l_new) * vj
 
 **与本周知识的关联**：本题综合了 Week2 的 Reduction 主线（Week1 Day4/Day5 + Week2 Day1 的 Warp Shuffle），是 reduction 最纯粹的形态。kernel 采用两阶段归约：每个线程用 grid-stride 循环累加局部和（`double`）→ Warp Shuffle 归约 → Shared Memory 中转 → `atomicAdd` 跨 block 汇总。适合在验收日限时完成，检验 block reduce + 跨 block 汇总的综合掌握程度。
 
-> 💡 完整题解（含 grid-stride 累加、warp shuffle sum 归约、atomicAdd 跨 block 汇总）见 <a target="_self" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
+> 💡 完整题解（含 grid-stride 累加、warp shuffle sum 归约、atomicAdd 跨 block 汇总）见 <a target="_blank" rel="noopener" href="/problems/gpu/medium/4-reduction">Reduction 题解</a>。
 
 #### 任务 5：GitHub 仓库整理
 
@@ -447,15 +447,15 @@ GFLOPS = 2.0 * M * N * K / (time_ms * 1e6)
 
 #### 任务 7：本周 LeetCode 题目回顾（10 周计划 · 第 2 周）
 
-本周 LeetCode 题目对应 <a target="_self" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」（点击查看题解）：
+本周 LeetCode 题目对应 <a target="_blank" rel="noopener" href="/problems/lists/10-week-plan">10 周算法面试刷题计划</a> 第 2 周「字符串、滑动窗口与矩阵」（点击查看题解）：
 
 | Day | 主题 | LeetCode 题目 |
 |---|---|---|
-| Day 1 | 滑动窗口基础 | <a target="_self" href="/problems/algo/0003">3. 无重复字符的最长子串</a>、<a target="_self" href="/problems/algo/0438">438. 找到字符串中所有字母异位词</a>、<a target="_self" href="/problems/algo/0560">560. 和为 K 的子数组</a>、<a target="_self" href="/problems/algo/0974">974. 和可被 K 整除的子数组</a> |
-| Day 2 | 滑动窗口进阶 | <a target="_self" href="/problems/algo/0239">239. 滑动窗口最大值</a>、<a target="_self" href="/problems/algo/0076">76. 最小覆盖子串</a>、<a target="_self" href="/problems/algo/0209">209. 长度最小的子数组</a>、<a target="_self" href="/problems/algo/0424">424. 替换后的最长重复字符</a>、<a target="_self" href="/problems/algo/0713">713. 乘积小于 K 的子数组</a> |
-| Day 3 | 字符串模拟 | <a target="_self" href="/problems/algo/0415">415. 字符串相加</a>、<a target="_self" href="/problems/algo/0043">43. 字符串相乘</a>、<a target="_self" href="/problems/algo/0151">151. 反转字符串中的单词</a>、<a target="_self" href="/problems/algo/0014">14. 最长公共前缀</a> |
-| Day 4 | 字符串匹配 | <a target="_self" href="/problems/algo/0165">165. 比较版本号</a>、<a target="_self" href="/problems/algo/0008">8. 字符串转换整数（atoi）</a>、<a target="_self" href="/problems/algo/0028">28. 找出字符串中第一个匹配项的下标</a>、<a target="_self" href="/problems/algo/0468">468. 验证 IP 地址</a> |
-| Day 5 | 矩阵 | <a target="_self" href="/problems/algo/0073">73. 矩阵置零</a>、<a target="_self" href="/problems/algo/0054">54. 螺旋矩阵</a>、<a target="_self" href="/problems/algo/0048">48. 旋转图像</a>、<a target="_self" href="/problems/algo/0240">240. 搜索二维矩阵 II</a> |
+| Day 1 | 滑动窗口基础 | <a target="_blank" rel="noopener" href="/problems/algo/0003">3. 无重复字符的最长子串</a>、<a target="_blank" rel="noopener" href="/problems/algo/0438">438. 找到字符串中所有字母异位词</a>、<a target="_blank" rel="noopener" href="/problems/algo/0560">560. 和为 K 的子数组</a>、<a target="_blank" rel="noopener" href="/problems/algo/0974">974. 和可被 K 整除的子数组</a> |
+| Day 2 | 滑动窗口进阶 | <a target="_blank" rel="noopener" href="/problems/algo/0239">239. 滑动窗口最大值</a>、<a target="_blank" rel="noopener" href="/problems/algo/0076">76. 最小覆盖子串</a>、<a target="_blank" rel="noopener" href="/problems/algo/0209">209. 长度最小的子数组</a>、<a target="_blank" rel="noopener" href="/problems/algo/0424">424. 替换后的最长重复字符</a>、<a target="_blank" rel="noopener" href="/problems/algo/0713">713. 乘积小于 K 的子数组</a> |
+| Day 3 | 字符串模拟 | <a target="_blank" rel="noopener" href="/problems/algo/0415">415. 字符串相加</a>、<a target="_blank" rel="noopener" href="/problems/algo/0043">43. 字符串相乘</a>、<a target="_blank" rel="noopener" href="/problems/algo/0151">151. 反转字符串中的单词</a>、<a target="_blank" rel="noopener" href="/problems/algo/0014">14. 最长公共前缀</a> |
+| Day 4 | 字符串匹配 | <a target="_blank" rel="noopener" href="/problems/algo/0165">165. 比较版本号</a>、<a target="_blank" rel="noopener" href="/problems/algo/0008">8. 字符串转换整数（atoi）</a>、<a target="_blank" rel="noopener" href="/problems/algo/0028">28. 找出字符串中第一个匹配项的下标</a>、<a target="_blank" rel="noopener" href="/problems/algo/0468">468. 验证 IP 地址</a> |
+| Day 5 | 矩阵 | <a target="_blank" rel="noopener" href="/problems/algo/0073">73. 矩阵置零</a>、<a target="_blank" rel="noopener" href="/problems/algo/0054">54. 螺旋矩阵</a>、<a target="_blank" rel="noopener" href="/problems/algo/0048">48. 旋转图像</a>、<a target="_blank" rel="noopener" href="/problems/algo/0240">240. 搜索二维矩阵 II</a> |
 
 > 💡 回顾重点：本周 LeetCode 题对应 10 周刷题计划第 2 周「字符串、滑动窗口与矩阵」。重做本周错题、总结模板笔记；没做完的题目今天补上。
 
