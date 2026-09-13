@@ -261,7 +261,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
         </section>
       )}
 
-      {/* 列表 */}
+      {/* 列表（GPU 分区按 高频/中频 分组，其余分区平铺） */}
       <section className="animate-fade-up space-y-4" style={{ animationDelay: "0.16s" }}>
         {list.isLoading ? (
           <Loading />
@@ -271,11 +271,38 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
           <EmptyBox text="没有符合条件的题目" />
         ) : (
           <>
-            <ListCard>
-              {list.data.items.map((p) => (
-                <ProblemRow key={p.id} problem={p} />
-              ))}
-            </ListCard>
+            {partition === "gpu" ? (
+              (
+                [
+                  { tier: "high" as const, label: "高频题 · 面经几乎必考", items: list.data.items.filter((p) => p.tier === "high") },
+                  { tier: "mid" as const, label: "中频题", items: list.data.items.filter((p) => p.tier === "mid") },
+                ] as const
+              )
+                .filter((g) => g.items.length > 0)
+                .map((g) => (
+                  <div key={g.tier} className="space-y-2">
+                    <div className="flex items-baseline gap-2 px-1">
+                      <span
+                        className={`text-sm font-semibold ${g.tier === "high" ? "text-accent-600" : "text-ink"}`}
+                      >
+                        {g.label}
+                      </span>
+                      <span className="text-xs text-faint">{g.items.length} 题</span>
+                    </div>
+                    <ListCard>
+                      {g.items.map((p) => (
+                        <ProblemRow key={p.id} problem={p} />
+                      ))}
+                    </ListCard>
+                  </div>
+                ))
+            ) : (
+              <ListCard>
+                {list.data.items.map((p) => (
+                  <ProblemRow key={p.id} problem={p} />
+                ))}
+              </ListCard>
+            )}
             <div className="flex items-center justify-between text-sm text-muted">
               <span>
                 共 {list.data.total} 题 · 第 {list.data.page}/{totalPages} 页

@@ -47,18 +47,24 @@ async function interviewCondition(): Promise<SQL> {
  * GPU 没有对应的面试题↔题目映射列，这里静态维护，来源：
  * packages/content/problems-gpu/cuda-interview-notes.md §五 LeetGPU 对照表的高频+中频题，共 34 题）
  */
-const GPU_INTERVIEW_IDS = [
-  // 高频：Softmax / online softmax / Reduce / LayerNorm / RMSNorm
+/** 高频（面经几乎必考，8 题）：Softmax / online softmax / Reduce / LayerNorm / RMSNorm */
+const GPU_INTERVIEW_HIGH = [
   "gpu:m:005", "gpu:m:006", "gpu:m:004", "gpu:m:115", "gpu:m:040", "gpu:m:105", "gpu:m:050", "gpu:m:116",
-  // 中频：SGEMM（含量化路径）
+];
+/** 中频（26 题）：SGEMM / transpose / GEMV / attention 变体 / scan / top-k / histogram */
+const GPU_INTERVIEW_MID = [
   "gpu:e:002", "gpu:m:022", "gpu:m:030", "gpu:m:057", "gpu:m:032", "gpu:m:081",
-  // 中频：transpose / GEMV
   "gpu:e:003", "gpu:m:114", "gpu:m:017", "gpu:m:018", "gpu:m:075",
-  // 中频：attention 各变体
   "gpu:h:109", "gpu:h:053", "gpu:h:012", "gpu:h:026", "gpu:m:080", "gpu:h:059", "gpu:h:056", "gpu:m:112", "gpu:m:111",
-  // 中频：scan / top-k / histogram
   "gpu:m:016", "gpu:m:070", "gpu:m:029", "gpu:m:060", "gpu:m:067", "gpu:m:013",
 ];
+const GPU_INTERVIEW_IDS = [...GPU_INTERVIEW_HIGH, ...GPU_INTERVIEW_MID];
+
+/** GPU 面试题频次档：high = 高频 / mid = 中频（刷题 GPU 分区分组与行徽标用） */
+const GPU_TIER = new Map<string, "high" | "mid">([
+  ...GPU_INTERVIEW_HIGH.map((id) => [id, "high" as const] as const),
+  ...GPU_INTERVIEW_MID.map((id) => [id, "mid" as const] as const),
+]);
 
 /** interview 过滤分发：leetcode → 面试题库动态推导；leetgpu → 静态选题集 */
 async function interviewFilter(source?: string): Promise<SQL> {
@@ -141,6 +147,7 @@ export const problemRouter = router({
 
     let items = rows.map((r) => ({
       ...r,
+      tier: GPU_TIER.get(r.id) ?? null,
       progressStatus: r.progressStatus ?? ("unseen" as const),
       ac: r.progressStatus === "ac",
     }));

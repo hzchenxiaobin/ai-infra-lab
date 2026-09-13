@@ -22,6 +22,8 @@ export interface ProblemRowData {
   tags: string[];
   progressStatus: "unseen" | "seen" | "mastered" | "ac";
   note: string | null;
+  /** GPU 面试题频次档（仅刷题 GPU 分区有值）：high 高频 / mid 中频 */
+  tier?: "high" | "mid" | null;
 }
 
 const PROGRESS_STATES = [
@@ -80,6 +82,12 @@ export function ProblemRow({
               {problem.title}
             </a>
             <DifficultyBadge difficulty={problem.difficulty} />
+            {problem.tier === "high" && (
+              <span className="rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-600">
+                高频
+              </span>
+            )}
+            {problem.tier === "mid" && <Chip>中频</Chip>}
             {problem.tags.slice(0, 3).map((t) => (
               <Chip key={t}>{t}</Chip>
             ))}
