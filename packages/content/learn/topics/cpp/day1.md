@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d1"
+type: learn
+title: "Day 1（周一）：语言基础 + 关键字"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 1
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 1（周一）：语言基础 + 关键字
 
 > **今日目标**：把最常被"随口一问"的 C++ 基础题答扎实——指针/引用、const、static、类型转换

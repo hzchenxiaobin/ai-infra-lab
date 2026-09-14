@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d5"
+type: learn
+title: "Day 5（周五）：现代 C++（C++11/14/17）"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 5
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 5（周五）：现代 C++（C++11/14/17）
 
 > **今日目标**：拿下区分度最高的三大件——智能指针、移动语义、lambda，吃透万能引用与完美转发；晚上手写带移动语义的 String 和简易版 shared_ptr

@@ -1,3 +1,15 @@
+---
+id: "learn:topic:cpp"
+type: learn
+title: "C++ 面试一周冲刺学习计划"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # C++ 面试一周冲刺学习计划
 
 > 适用对象：有一定 C++ 基础，目标为 1~5 年经验岗位的中高频面试题

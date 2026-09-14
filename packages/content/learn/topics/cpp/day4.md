@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d4"
+type: learn
+title: "Day 4（周四）：STL 容器与算法"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 4
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 4（周四）：STL 容器与算法
 
 > **今日目标**：掌握常用容器的底层数据结构、vector 扩容机制、迭代器失效规则、哈希冲突与红黑树选型，手写 LRU 缓存

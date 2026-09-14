@@ -177,9 +177,13 @@ run("interview 状态机（集成）", () => {
   }, 30_000);
 
   it("选题去重：优先未考过的题，全部考过后才允许重复", async () => {
-    // 用 cuda 方向做隔离池：清空后只留 3 道新建题
+    // 用 cuda 方向做隔离池：清空后只留 3 道新建题。
+    // 共享题（seed/bank 导入，user_id NULL）list 可见但 remove 仅限本人题
+    // （删除属全站行为，见 0009 迁移），故这里直接按方向清测试库构造隔离池
     const { items } = await caller.question.list({ category: "cuda", page: 1, pageSize: 100 });
-    for (const q of items) await caller.question.remove({ id: q.id });
+    const shared = items.find((q) => q.userId === null);
+    if (shared) await expect(caller.question.remove({ id: shared.id })).rejects.toThrow();
+    await db.delete(questions).where(eq(questions.category, "cuda"));
     const ids: number[] = [];
     for (let i = 1; i <= 3; i++) {
       const q = await caller.question.create({
@@ -213,9 +217,9 @@ run("interview 状态机（集成）", () => {
   }, 30_000);
 
   it("空方向题库报 PRECONDITION_FAILED", async () => {
-    // 先清空 knowledge 方向制造空题库场景（beforeAll 的 seed 幂等，下次运行会自动补回）
-    const { items } = await caller.question.list({ category: "knowledge", page: 1, pageSize: 100 });
-    for (const q of items) await caller.question.remove({ id: q.id });
+    // 共享种子题（user_id NULL）remove 不可删，直接清 knowledge 方向制造空题库
+    // （beforeAll 的 seed 幂等，下次运行会自动补回）
+    await db.delete(questions).where(eq(questions.category, "knowledge"));
     await expect(caller.interview.start({ categories: ["knowledge"], count: 1 })).rejects.toThrow();
   });
 

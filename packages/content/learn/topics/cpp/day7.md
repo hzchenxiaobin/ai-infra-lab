@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d7"
+type: learn
+title: "Day 7（周日）：综合冲刺 + 模拟面试"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 7
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 7（周日）：综合冲刺 + 模拟面试
 
 > **今日目标**：前 6 天查漏补缺 + 网络编程 / Linux 调试扩展考点速览 + 5 道手写题白板限时练 + 完整模拟面试

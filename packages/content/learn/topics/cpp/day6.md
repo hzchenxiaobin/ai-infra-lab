@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d6"
+type: learn
+title: "Day 6（周六）：多线程与并发"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 6
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 6（周六）：多线程与并发
 
 > **今日目标**：掌握进程/线程区别、std::thread、锁家族、条件变量、死锁预防、atomic 与内存序概念；手写线程安全单例和生产者-消费者队列到默写程度

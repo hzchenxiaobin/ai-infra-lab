@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d2"
+type: learn
+title: "Day 2（周二）：内存管理 ⭐（重中之重，必考）"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 2
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 2（周二）：内存管理 ⭐（重中之重，必考）
 
 > **今日目标**：掌握 C++ 内存分区模型、new/delete 底层原理、常见内存错误及排查手段、内存对齐计算

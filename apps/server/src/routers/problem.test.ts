@@ -251,14 +251,14 @@ run("problem router（集成）", () => {
       expect(list.total).toBe(1);
       expect(list.items[0].id).toBe(IV_ID);
 
-      // 不传 interview 时同标签有 2 条，确认过滤确实生效
+      // 不传 interview 时同标签共 3 条（lc:zztest1/2 + lc:9990 自身也带该标签），确认过滤确实收窄
       const all = await caller.problem.list({
         source: "leetcode",
         tag: "zz-test-array",
         page: 1,
         pageSize: 50,
       });
-      expect(all.total).toBe(2);
+      expect(all.total).toBe(3);
 
       // facets 同样只统计子集
       const facets = await caller.problem.facets({ source: "leetcode", interview: true });

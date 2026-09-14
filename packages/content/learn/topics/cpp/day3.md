@@ -1,3 +1,16 @@
+---
+id: "learn:topic:cpp:d3"
+type: learn
+title: "Day 3（周三）：面向对象 + 类机制"
+tags: [cpp]
+knowledge_points: [cpp]
+updated: 2026-09-12
+day: 3
+topic: cpp
+related_problems: []
+related_questions: []
+---
+
 # Day 3（周三）：面向对象 + 类机制
 
 > **今日目标**：掌握构造/析构顺序、深拷贝 vs 浅拷贝、虚函数与多态原理、手写 String 类
