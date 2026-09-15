@@ -26,6 +26,8 @@ related_learn: []
 
 **示例 1**：
 
+![示例1](https://assets.leetcode.com/uploads/2020/09/21/sum_tree_1.jpg)
+
 ```text
 输入：root = [5,3,6,2,4,null,7], k = 9
 输出：true
@@ -33,6 +35,8 @@ related_learn: []
 ```
 
 **示例 2**：
+
+![示例2](https://assets.leetcode.com/uploads/2020/09/21/sum_tree_2.jpg)
 
 ```text
 输入：root = [5,3,6,2,4,null,7], k = 28

@@ -26,6 +26,8 @@ related_learn: []
 
 **示例 1**：
 
+![示例1](https://assets.leetcode.com/uploads/2020/11/13/queens.jpg)
+
 ```text
 输入：n = 4
 输出：2

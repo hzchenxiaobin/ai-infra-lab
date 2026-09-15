@@ -26,6 +26,8 @@ related_learn: []
 
 **示例 1**：
 
+![示例1](https://assets.leetcode.com/uploads/2022/02/08/ex1drawio.png)
+
 ```text
 输入：s = "K1:L2"
 输出：["K1","K2","L1","L2"]
@@ -33,6 +35,8 @@ related_learn: []
 ```
 
 **示例 2**：
+
+![示例2](https://assets.leetcode.com/uploads/2022/02/09/exam2drawio.png)
 
 ```text
 输入：s = "A1:F1"

@@ -35,6 +35,8 @@ related_learn: []
 
 **示例 1**：
 
+![示例1](https://assets.leetcode.com/uploads/2025/08/27/3021.png)
+
 ```text
 输入：n = 3, m = 2
 输出：3
