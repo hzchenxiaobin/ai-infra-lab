@@ -9,6 +9,7 @@ ai-infra-lab/
 ├── apps/
 │   ├── server/          # API 服务（Hono + tRPC + Drizzle）
 │   ├── web/             # 门户前端（React 19）
+│   ├── ios/             # iOS 原生客户端（SwiftUI，功能对等 web）
 │   ├── docs/            # docs 内容站（VitePress）
 │   ├── judge-worker/    # 评测沙箱
 │   └── cli/             # 管理 CLI
@@ -43,8 +44,9 @@ pnpm db:migrate   # 执行数据库迁移
 | [05-roadmap.md](docs/05-roadmap.md) | 里程碑与验收标准 |
 | [06-development.md](docs/06-development.md) | 开发环境、约定 |
 | [07-backlog.md](docs/07-backlog.md) | 待办清单 |
+| [08-ios-app-design.md](docs/08-ios-app-design.md) | iOS App 设计（架构 / 功能映射 / 里程碑） |
 
-模块开发文档：[server](docs/dev/server.md) · [web](docs/dev/web.md) · [content-site](docs/dev/content-site.md) · [cli](docs/dev/cli.md) · [judge-worker](docs/dev/judge-worker.md) · [content-kit](docs/dev/content-kit.md) · [database](docs/dev/database.md) · [deployment](docs/dev/deployment.md)
+模块开发文档：[server](docs/dev/server.md) · [web](docs/dev/web.md) · [content-site](docs/dev/content-site.md) · [cli](docs/dev/cli.md) · [judge-worker](docs/dev/judge-worker.md) · [content-kit](docs/dev/content-kit.md) · [database](docs/dev/database.md) · [deployment](docs/dev/deployment.md) · [iOS App](../apps/ios/README.md)
 
 ## 技术栈
 
