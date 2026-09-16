@@ -29,14 +29,31 @@ struct RootView: View {
                 MainTabView()
             }
         }
-        .sheet(
+        // docs 正文 → 原生阅读器（fullScreenCover）；外部域 → 内置浏览器（sheet）
+        .fullScreenCover(
             isPresented: Binding(
-                get: { links.active != nil },
+                get: {
+                    if case .doc = links.active { return true }
+                    return false
+                },
                 set: { if !$0 { links.active = nil } }
             )
         ) {
-            if let target = links.active {
-                InAppBrowserView(target: target) { links.active = nil }
+            if case .doc(let title, let url) = links.active {
+                DocReaderScreen(url: url, title: title)
+            }
+        }
+        .sheet(
+            isPresented: Binding(
+                get: {
+                    if case .browser = links.active { return true }
+                    return false
+                },
+                set: { if !$0 { links.active = nil } }
+            )
+        ) {
+            if case .browser(let title, let url) = links.active {
+                InAppBrowserView(title: title, url: url) { links.active = nil }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .sessionExpired)) { _ in
