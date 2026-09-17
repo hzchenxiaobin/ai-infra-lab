@@ -244,3 +244,14 @@ export const interviewMessages = mysqlTable("interview_messages", {
   content: text("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+/** 复盘笔记：用户以 markdown 记录每次面试过程（模拟面试复盘 / 真实面经） */
+export const interviewNotes = mysqlTable("interview_notes", {
+  id: serial("id").primaryKey(),
+  userId: bigint("user_id", { mode: "number" }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  /** markdown 正文 */
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+});

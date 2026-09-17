@@ -5,6 +5,7 @@ import { healthRouter } from "./health.js";
 import { interviewRouter } from "./interview.js";
 import { judgeRouter } from "./judge.js";
 import { learnRouter } from "./learn.js";
+import { noteRouter } from "./note.js";
 import { problemRouter } from "./problem.js";
 import { progressRouter } from "./progress.js";
 import { questionRouter } from "./question.js";
@@ -22,6 +23,7 @@ export const appRouter = router({
   progress: progressRouter,
   quota: quotaRouter,
   learn: learnRouter,
+  note: noteRouter,
   search: searchRouter,
 });
 

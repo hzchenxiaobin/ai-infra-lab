@@ -11,7 +11,7 @@
 配额域        usage_quotas
 内容元数据域   contents · problems · knowledge_points
 用户数据域     user_progress · submissions
-面试域        questions · interview_sessions · interview_messages · interview_reports
+面试域        questions · interview_sessions · interview_messages · interview_reports · interview_notes
 ```
 
 迁移工作流（改 schema 必走）见 [server §9](server.md#9-db-迁移工作流)；
@@ -57,6 +57,7 @@
 | `interview_sessions` | `id`, `user_id`, `title`, `categories`(json), `question_ids`(json), `current_index`, `follow_up_index`, `status(active/finished)`, `overall_grade`, `scope_knowledge_points`(json，建场时题目知识点并集快照), 时间戳 | `report`/`evaluated_by` 已拆到 interview_reports（迁移 0006，2026-09-10）；状态机字段说明见 [server §6](server.md#6-关键实现面试状态机断点续面) |
 | `interview_messages` | `id`, `session_id`, `question_id`(可空), `role(interviewer/candidate/system)`, `content`, `created_at` | 不变 |
 | `interview_reports` | `id`, `session_id`(unique), `user_id`, `overall_grade`, `evaluated_by`, `report`(text), `weak_points`(json), `created_at` | 已落地（迁移 0006）：报告自 sessions 拆出，`weak_points` 为 C/D 维度题目 knowledge_points 并集（缺标签回落题目 tags），驱动"报告 → 学习章节/练习题"推荐 |
+| `interview_notes` | `id`, `user_id`, `title`, `content`(text, markdown), 时间戳 | 复盘笔记（迁移 0011）：面试板块「复盘笔记」页，用户以 markdown 记录每次面试过程，仅本人可见 |
 
 `repo_syncs`（GitHub 同步记录）已随迁移 0008 删除（2026-09-10，judge 数据源切换，
 无写入方）。`src/sync/` 模块保留——它服务 CLI bank 管线（github.ts 拉仓库、

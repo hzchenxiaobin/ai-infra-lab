@@ -695,6 +695,23 @@ export const interviewReplySchema = z.object({
 });
 export type InterviewReplyInput = z.infer<typeof interviewReplySchema>;
 
+// ---------------------------------------------------------------------------
+// 面试复盘笔记（面试板块「复盘笔记」页：markdown 记录每次面试过程）
+// ---------------------------------------------------------------------------
+
+export const interviewNoteCreateSchema = z.object({
+  title: z.string().trim().min(1).max(255),
+  /** markdown 正文 */
+  content: z.string().min(1).max(100_000),
+});
+export type InterviewNoteCreateInput = z.infer<typeof interviewNoteCreateSchema>;
+
+export const interviewNoteUpdateSchema = z.object({
+  id: z.number().int().min(1),
+  data: interviewNoteCreateSchema.partial(),
+});
+export type InterviewNoteUpdateInput = z.infer<typeof interviewNoteUpdateSchema>;
+
 /** 在线评测支持的语言 */
 export const JUDGE_LANGUAGES = ["cpp", "python"] as const;
 export type JudgeLanguage = (typeof JUDGE_LANGUAGES)[number];

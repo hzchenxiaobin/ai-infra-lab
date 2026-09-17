@@ -54,6 +54,7 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({
 export type QuestionListData = Awaited<ReturnType<typeof trpcClient.question.list.query>>;
 export type QuestionListItem = QuestionListData["items"][number];
 export type SessionListItem = Awaited<ReturnType<typeof trpcClient.interview.list.query>>[number];
+export type NoteListItem = Awaited<ReturnType<typeof trpcClient.note.list.query>>[number];
 export type InterviewGetData = Awaited<ReturnType<typeof trpcClient.interview.get.query>>;
 export type InterviewStatsData = Awaited<ReturnType<typeof trpcClient.interview.stats.query>>;
 export type ProblemListData = Awaited<ReturnType<typeof trpcClient.problem.list.query>>;

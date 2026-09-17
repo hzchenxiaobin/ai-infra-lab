@@ -18,6 +18,7 @@ import InterviewPage from "./pages/InterviewPage";
 import JudgePage from "./pages/JudgePage";
 import ReportPage from "./pages/ReportPage";
 import HistoryPage from "./pages/HistoryPage";
+import NotesPage from "./pages/NotesPage";
 
 export default function App() {
   return (
@@ -28,11 +29,12 @@ export default function App() {
           <Route path="register" element={<RegisterPage />} />
           <Route element={<RequireAuth />}>
             <Route index element={<LearnPage />} />
-            {/* 面试板块：开始面试 / 题库 / 历史（共用 InterviewSection 子导航） */}
+            {/* 面试板块：开始面试 / 题库 / 历史 / 复盘笔记（共用 InterviewSection 子导航） */}
             <Route element={<InterviewSection />}>
               <Route path="start" element={<HomePage />} />
               <Route path="bank" element={<BankPage />} />
               <Route path="history" element={<HistoryPage />} />
+              <Route path="notes" element={<NotesPage />} />
             </Route>
             <Route path="learn" element={<LearnPage />} />
             <Route path="learn/path" element={<LearnPage />} />
