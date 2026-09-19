@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import { parseBlocks } from "../lib/markdown-blocks";
 
 // ---------------------------------------------------------------------------
-// 轻量 Markdown 渲染器：支持 #/##/### 标题、- 列表、数字列表、> 引用、
-// ``` 代码块、**加粗**、`行内代码`、$行内公式$ / $$块级公式$$（KaTeX）、段落。
+// 轻量 Markdown 渲染器：支持 #/##/### 标题、GFM 表格、- 列表、数字列表、
+// > 引用、``` 代码块、**加粗**、`行内代码`、$行内公式$ / $$块级公式$$（KaTeX）、段落。
 // 不引入 react-markdown。
 // ---------------------------------------------------------------------------
 
@@ -67,95 +68,6 @@ function renderInline(text: string): ReactNode[] {
   return nodes;
 }
 
-type Block =
-  | { type: "heading"; level: number; text: string }
-  | { type: "ul"; items: string[] }
-  | { type: "ol"; items: string[] }
-  | { type: "quote"; text: string }
-  | { type: "code"; text: string }
-  | { type: "p"; text: string };
-
-const RE_HEADING = /^(#{1,4})\s+(.*)$/;
-const RE_UL = /^\s*[-*]\s+/;
-const RE_OL = /^\s*\d+\.\s+/;
-const RE_QUOTE = /^>\s?/;
-const RE_FENCE = /^\s*```/;
-
-function isBlockStart(line: string): boolean {
-  return (
-    RE_HEADING.test(line) ||
-    RE_UL.test(line) ||
-    RE_OL.test(line) ||
-    RE_QUOTE.test(line) ||
-    RE_FENCE.test(line)
-  );
-}
-
-function parseBlocks(text: string): Block[] {
-  const lines = text.split("\n");
-  const blocks: Block[] = [];
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    if (line.trim() === "") {
-      i++;
-      continue;
-    }
-    if (RE_FENCE.test(line)) {
-      const buf: string[] = [];
-      i++;
-      while (i < lines.length && !RE_FENCE.test(lines[i])) {
-        buf.push(lines[i]);
-        i++;
-      }
-      i++; // 跳过收尾 ```
-      blocks.push({ type: "code", text: buf.join("\n") });
-      continue;
-    }
-    const h = RE_HEADING.exec(line);
-    if (h) {
-      blocks.push({ type: "heading", level: h[1].length, text: h[2] });
-      i++;
-      continue;
-    }
-    if (RE_UL.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && RE_UL.test(lines[i])) {
-        items.push(lines[i].replace(RE_UL, ""));
-        i++;
-      }
-      blocks.push({ type: "ul", items });
-      continue;
-    }
-    if (RE_OL.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && RE_OL.test(lines[i])) {
-        items.push(lines[i].replace(RE_OL, ""));
-        i++;
-      }
-      blocks.push({ type: "ol", items });
-      continue;
-    }
-    if (RE_QUOTE.test(line)) {
-      const buf: string[] = [];
-      while (i < lines.length && RE_QUOTE.test(lines[i])) {
-        buf.push(lines[i].replace(RE_QUOTE, ""));
-        i++;
-      }
-      blocks.push({ type: "quote", text: buf.join(" ") });
-      continue;
-    }
-    // 段落：连续的非空、非块起始行
-    const buf: string[] = [];
-    while (i < lines.length && lines[i].trim() !== "" && !isBlockStart(lines[i])) {
-      buf.push(lines[i]);
-      i++;
-    }
-    blocks.push({ type: "p", text: buf.join("\n") });
-  }
-  return blocks;
-}
-
 const HEADING_STYLES: Record<number, string> = {
   1: "text-xl font-bold",
   2: "text-lg font-semibold",
@@ -163,7 +75,16 @@ const HEADING_STYLES: Record<number, string> = {
   4: "text-sm font-semibold",
 };
 
-export function Markdown({ text, className }: { text: string; className?: string }) {
+export function Markdown({
+  text,
+  className,
+  headingIdPrefix,
+}: {
+  text: string;
+  className?: string;
+  /** 提供时标题块渲染 id={`${prefix}-${blockIndex}`} 锚点，供大纲跳转 */
+  headingIdPrefix?: string;
+}) {
   const blocks = parseBlocks(text);
   return (
     <div className={className ?? "space-y-3 text-sm leading-relaxed text-ink"}>
@@ -171,7 +92,11 @@ export function Markdown({ text, className }: { text: string; className?: string
         switch (b.type) {
           case "heading":
             return (
-              <div key={i} className={`${HEADING_STYLES[b.level] ?? HEADING_STYLES[4]} mt-2 first:mt-0`}>
+              <div
+                key={i}
+                id={headingIdPrefix ? `${headingIdPrefix}-${i}` : undefined}
+                className={`${HEADING_STYLES[b.level] ?? HEADING_STYLES[4]} mt-2 scroll-mt-24 first:mt-0`}
+              >
                 {renderInline(b.text)}
               </div>
             );
@@ -205,6 +130,36 @@ export function Markdown({ text, className }: { text: string; className?: string
               >
                 {b.text}
               </pre>
+            );
+          case "table":
+            return (
+              <div key={i} className="overflow-x-auto rounded-lg border border-line">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr>
+                      {b.header.map((cell, j) => (
+                        <th
+                          key={j}
+                          className="border-b border-line bg-page px-3 py-2 text-left font-semibold whitespace-nowrap"
+                        >
+                          {renderInline(cell)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {b.rows.map((row, ri) => (
+                      <tr key={ri} className="border-b border-line last:border-b-0">
+                        {row.map((cell, ci) => (
+                          <td key={ci} className="px-3 py-2 align-top">
+                            {renderInline(cell)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             );
           case "p":
             return (

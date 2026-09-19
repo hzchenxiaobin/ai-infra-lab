@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useLocation } from "react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { queryClient, trpc } from "../lib/trpc";
@@ -23,11 +23,14 @@ export function Layout() {
   );
   const user = me.data?.user;
   const loggedIn = user?.email != null;
+  // 复盘笔记是三栏文档布局，放宽页面容器以利用两侧空间；其余页面保持 max-w-7xl
+  const { pathname } = useLocation();
+  const containerCls = pathname.startsWith("/notes") ? "max-w-[1760px]" : "max-w-7xl";
 
   return (
     <div className="min-h-screen text-ink">
       <header className="sticky top-0 z-40 border-b border-line bg-surface/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        <div className={`mx-auto flex h-16 items-center justify-between gap-4 px-4 sm:px-6 ${containerCls}`}>
           <NavLink to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="size-[18px] rounded-[5px] bg-accent-600" />
             <span className="flex flex-col leading-none">
@@ -75,7 +78,7 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <main className={`mx-auto px-4 py-10 sm:px-6 ${containerCls}`}>
         <Outlet />
       </main>
     </div>
