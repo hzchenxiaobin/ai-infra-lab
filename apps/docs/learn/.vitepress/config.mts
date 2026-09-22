@@ -43,10 +43,28 @@ function sidebarForWeeks() {
   });
 }
 
+// 周内页面分组（本周概览 → day1..day7），daily 顺序与顶栏 Tab 共用
+const weekGroups = sidebarForWeeks();
+
 // 上一页/下一页：daily 全局顺序（本周概览 → day1..day7 → 下一周概览）
 const dailyOrder: Array<{ text: string; link: string }> = [];
-for (const week of sidebarForWeeks()) {
+for (const week of weekGroups) {
   for (const item of week.items) dailyOrder.push(item);
+}
+
+/** weekN → 顶栏 Tab 清单（TopicNav 组件用）：概览 + Day N，完整标题放 tooltip */
+const weekDocsMap: Record<string, Array<{ text: string; short: string; link: string }>> = {};
+for (const week of weekGroups) {
+  const slug = week.items[0].link.replaceAll("/", ""); // "/week9/" → "week9"
+  const docs = week.items.map((item) => {
+    const day = /\/day(\d+)\/$/.exec(item.link);
+    return {
+      text: day ? item.text : week.text,
+      short: day ? `Day ${day[1]}` : "概览",
+      link: item.link,
+    };
+  });
+  if (docs.length > 1) weekDocsMap[slug] = docs;
 }
 /** 导航链接 → 对应 relativePath（"/week1/day1/" → "week1/day1/index.md"） */
 const linkToRel = (link: string) => link.slice(1) + (link.endsWith("/") ? "index.md" : ".md");
@@ -218,6 +236,9 @@ export default defineConfig({
 
     // 本专题文档清单（右栏「本页目录」下方，theme/TopicSiblings.vue 渲染）
     topicDocs: topicDocs(),
+
+    // weekN → 周内 Tab 清单（顶栏 theme/TopicNav.vue 渲染，与 topics 专题共用组件）
+    weekDocs: weekDocsMap,
 
     docFooter: { prev: "上一页", next: "下一页" },
     darkModeSwitchLabel: "外观",

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// 顶栏专题导航：当前 topic 下其它 md 文档的紧凑链接（概览 / Day N），
-// 数据来自 config.mts 的 themeConfig.topicDocs；完整标题放 tooltip。
-// 仅在 /topics/{slug}/ 且该专题有 2 篇以上文档时渲染；当前页高亮。
+// 顶栏专题导航：当前 topic/week 下其它文档的紧凑链接（概览 / Day N），
+// 数据来自 config.mts 的 themeConfig.topicDocs / weekDocs；完整标题放 tooltip。
+// 仅在 /topics/{slug}/ 或 /weekN/ 且对应分组有 2 篇以上文档时渲染；当前页高亮。
 // 链接为 docs 站内页面，走 vitepress 前端路由（不要加 target）。
 import { computed } from "vue";
 import { useData, useRoute, withBase } from "vitepress";
@@ -15,18 +15,22 @@ interface TopicDoc {
 const route = useRoute();
 const { theme } = useData();
 
-const slug = computed(() => /\/topics\/([^/]+)\//.exec(route.path)?.[1] ?? "");
+const key = computed(() => /\/(topics\/[^/]+|week\d+)\//.exec(route.path)?.[1] ?? "");
 
 const docs = computed<TopicDoc[]>(() => {
-  const all = (theme.value.topicDocs ?? {}) as Record<string, TopicDoc[]>;
-  return all[slug.value] ?? [];
+  if (key.value.startsWith("topics/")) {
+    const all = (theme.value.topicDocs ?? {}) as Record<string, TopicDoc[]>;
+    return all[key.value.slice("topics/".length)] ?? [];
+  }
+  const all = (theme.value.weekDocs ?? {}) as Record<string, TopicDoc[]>;
+  return all[key.value] ?? [];
 });
 
 const current = computed(() => decodeURIComponent(route.path));
 </script>
 
 <template>
-  <nav v-if="docs.length > 1" class="topic-nav" aria-label="本专题文档">
+  <nav v-if="docs.length > 1" class="topic-nav" aria-label="本组文档">
     <a
       v-for="d in docs"
       :key="d.link"
