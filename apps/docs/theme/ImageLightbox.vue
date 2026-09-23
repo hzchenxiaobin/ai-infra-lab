@@ -173,7 +173,6 @@ onBeforeUnmount(() => {
   cursor: grab;
   touch-action: none;
   user-select: none;
-  will-change: transform;
 }
 
 .lb-grabbing { cursor: grabbing; }

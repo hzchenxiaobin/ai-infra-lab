@@ -7,6 +7,8 @@ import { buttonClass } from "../lib/button";
 
 const NAV_ITEMS = [
   { to: "/", label: "首页", end: true },
+  // 首页改为落地页后，学习路径页（原首页内容）仍需在应用内一键可达
+  { to: "/learn", label: "学习", end: false },
   { to: "/start", label: "面试", end: false },
   { to: "/problems/algo", label: "刷题", end: false },
   { to: "/dashboard", label: "个人中心", end: false },

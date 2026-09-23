@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { Layout } from "./components/Layout";
 import { InterviewSection } from "./components/InterviewSection";
 import { RequireAuth } from "./components/RequireAuth";
+import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import BankPage from "./pages/bank/BankPage";
@@ -24,11 +25,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 首页落地页：独立壳（自带导航/页脚，版式对齐 ai-infra-notes），沿用原首页的登录守卫 */}
+        <Route element={<RequireAuth />}>
+          <Route index element={<LandingPage />} />
+        </Route>
         <Route element={<Layout />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route element={<RequireAuth />}>
-            <Route index element={<LearnPage />} />
             {/* 面试板块：开始面试 / 题库 / 历史 / 复盘笔记（共用 InterviewSection 子导航） */}
             <Route element={<InterviewSection />}>
               <Route path="start" element={<HomePage />} />

@@ -38,7 +38,7 @@ apps/server/
 │   │   ├── schema.ts       # 全部表定义（见 database.md）
 │   │   └── migrations/     # drizzle-kit 生成的迁移
 │   ├── seed.ts             # 【已有】15 道内置种子题
-│   └── sync/               # sync/index.ts contentHash；github.ts 在线拉仓库（CLI bank:generate 用）
+│   └── sync/               # sync/index.ts contentHash（bankImport 幂等入库用）
 ├── drizzle.config.ts
 └── package.json            # @ailab/server（bank 管线已收编进 apps/cli，见 dev/cli.md）
 ```

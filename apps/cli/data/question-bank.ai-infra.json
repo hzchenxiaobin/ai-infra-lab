@@ -1,8 +1,8 @@
 {
   "repo": "ai-infra-notes",
-  "commitSha": "469fb40bba774e5c0444c20157a16168264690a4",
-  "generatedAt": "2026-08-29T15:26:41.939Z",
-  "model": "glm-5.3",
+  "commitSha": "1ec78d337f566d9843e3dd20cfdc86368b78c354",
+  "generatedAt": "2026-09-22T09:13:55.962Z",
+  "model": "kimi-for-coding",
   "questions": [
     {
       "category": "cuda",
@@ -5787,587 +5787,705 @@
     },
     {
       "category": "knowledge",
-      "title": "C++ 内存区域划分与栈、堆的区别",
-      "content": "C++ 程序运行时内存通常划分为栈、堆、全局/静态区、常量区、代码区五大区域。请说明栈和堆在分配方式、速度、空间大小、碎片、线程安全等方面的区别，并谈谈实际开发中如何选择在栈上还是堆上分配对象。",
-      "difficulty": "easy",
-      "tags": "内存模型,栈,堆,C++",
+      "title": "shared_ptr 引用计数机制与线程安全",
+      "content": "C++ 面试高频题：请讲解 std::shared_ptr 的引用计数是如何实现的？它的线程安全性如何？多个线程同时拷贝同一个 shared_ptr 是否安全？多个线程同时读写 shared_ptr 指向的对象本身又如何？",
+      "difficulty": "medium",
+      "tags": "智能指针,shared_ptr,线程安全,现代C++",
       "followUps": [
-        "一个局部定义的指针变量本身存放在哪个内存区域？它指向的 new 出来的对象又在哪里？",
-        "栈空间一般有多大？如果发生栈溢出，有哪些应对办法？",
-        "C++ 定义了哪四种存储期？分别对应什么生命周期的对象？",
-        "为什么堆分配比栈分配慢？从分配器的工作方式解释一下。",
-        "在高性能/系统级开发（如 GPU 计算或推理框架）中，你会如何权衡栈分配和堆分配？"
+        "shared_ptr 的引用计数存放在哪里，为什么不在对象里也不在栈上？",
+        "引用计数的增减使用什么机制保证原子性？",
+        "shared_ptr 管理的对象本身为什么不是线程安全的？",
+        "多个线程同时对同一个 shared_ptr 实例做 reset 和拷贝会发生什么？",
+        "如何用 atomic<shared_ptr>（C++20）或互斥锁保护 shared_ptr 实例本身？"
       ],
-      "keyPoints": "能列出五大内存区域及各自存储内容与生命周期；栈：编译器自动分配释放、函数返回即销毁、O(1) 只需移动栈指针、空间有限（Linux 默认约 8MB）、无碎片、每线程独立栈所以线程安全；堆：new/delete 或智能指针手动管理、需搜索空闲块可能触发系统调用所以较慢、空间大但受物理内存限制、有外部碎片、多线程需同步；指针变量本身（局部时）在栈上占 8 字节，其指向的对象在堆上；四种存储期：自动、静态、动态（delete 时销毁）、线程（thread_local）；实践上优先用栈，必须用堆时用智能指针/RAII 管理。",
+      "keyPoints": "引用计数存储在堆上的控制块（control block）中；控制块内有一个 use_count 强引用计数和一个 weak_count 弱引用计数；计数操作是原子的（atomic），多个线程同时拷贝/销毁不同的 shared_ptr 实例（共享同一控制块）时，计数增减是线程安全的；但计数原子只保证计数本身正确，shared_ptr 指向的对象的普通读写没有任何同步保护，不是线程安全的；对同一个 shared_ptr 实例的并发读写（一边拷贝一边 reset）不是线程安全的，需要额外同步",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/README.md#0"
+    },
+    {
+      "category": "knowledge",
+      "title": "虚函数表机制与多态实现原理",
+      "content": "C++ 面试必考题：请解释 C++ 运行时多态的实现原理。虚函数表（vtable）存储在哪里？每个类有几张虚表，每个对象有几个虚表指针？通过基类指针调用虚函数和普通函数在开销上有什么区别？",
+      "difficulty": "medium",
+      "tags": "多态,虚函数,虚表,面向对象",
+      "followUps": [
+        "虚表指针 vptr 是在什么时候被初始化的？",
+        "构造函数和析构函数中调用虚函数会发生什么？为什么？",
+        "为什么基类的析构函数需要声明为 virtual？不声明会有什么后果？",
+        "菱形继承会带来什么问题？虚继承是如何解决的？",
+        "静态绑定和动态绑定分别在什么情况下发生？"
+      ],
+      "keyPoints": "含虚函数的类在编译期生成一张虚函数表（vtable），存放在只读数据段（常量区）；同一个类所有对象共享一张虚表；每个含虚函数的对象在对象头部（由编译器隐含插入）持有一个虚表指针 vptr，即一个对象一个 vptr；vptr 在构造函数中初始化，指向所属类的虚表；通过基类指针/引用调用虚函数时，运行时通过 vptr 找到 vtable，再查表跳转，比普通静态绑定的直接函数调用多一次间接寻址，带来轻微开销；构造/析构函数中调用虚函数不发生多态，调用的是当前类自己的版本；基类析构函数不声明 virtual 时，通过基类指针 delete 派生类对象会导致派生类析构不被调用，产生未定义行为/资源泄漏",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/README.md#1"
+    },
+    {
+      "category": "knowledge",
+      "title": "vector 扩容机制与迭代器失效",
+      "content": "C++ 面试高频题：std::vector 的底层存储结构是什么？当 push_back 触发扩容时会发生什么？为什么说 vector 的迭代器可能失效？请说明扩容场景和 erase 场景下迭代器失效的具体情况，以及如何安全地删除 vector 中的元素。",
+      "difficulty": "medium",
+      "tags": "STL,vector,迭代器失效,内存管理",
+      "followUps": [
+        "为什么扩容策略采用倍数增长（如 2 倍或 1.5 倍）而不是固定步长增长？",
+        "reserve 和 resize 有什么区别？",
+        "在遍历过程中 erase 元素，正确的写法是什么？",
+        "vector 的 push_back 平摊时间复杂度是多少？如何分析？",
+        "什么场景下 shrink_to_fit 有用？"
+      ],
+      "keyPoints": "vector 底层是一段连续内存的动态数组，通过 size 和 capacity 管理；push_back 时若 size == capacity 则触发扩容：分配一块更大的新内存（通常 1.5 倍或 2 倍），将旧元素逐一拷贝或移动到新内存，释放旧内存，再插入新元素；扩容后所有指向旧内存的迭代器、指针、引用全部失效；erase 中间元素时，被删元素及其之后的所有迭代器/引用失效，常见正确写法是 it = vec.erase(it) 或 erase-remove 惯用法；倍数增长可使 push_back 平摊复杂度为 O(1)，固定步长增长则为 O(n)；reserve 只改容量不改大小，resize 改大小并可能构造新元素",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/README.md#2"
+    },
+    {
+      "category": "knowledge",
+      "title": "手写线程安全的懒汉单例（DCLP）",
+      "content": "C++ 面试经典手写题：请手写一个线程安全的懒汉式单例模式，要求延迟初始化且 getInstance 的后续调用不加锁。谈谈为什么经典的双重检查锁（DCLP）在 C++ 中有问题，以及如何用局部静态变量或原子操作正确实现。",
+      "difficulty": "hard",
+      "tags": "单例模式,并发,双重检查锁,静态变量",
+      "followUps": [
+        "经典 DCLP 中第一个 if 判断和第二个 if 判断分别起什么作用？",
+        "为什么经典 DCLP（指针判空 + 裸 new）在多线程下会出问题？",
+        "C++11 局部静态变量的初始化为什么是线程安全的？",
+        "std::atomic 配合 memory_order 如何修复 DCLP？",
+        "单例对象什么时候销毁？如何优雅地释放资源？"
+      ],
+      "keyPoints": "懒汉式指首次调用 getInstance 时才创建实例；经典 DCLP：外层 if (instance == nullptr) 避免每次调用都加锁，内层加锁后再次检查并 new；经典实现的问题在于编译器可能重排 new 的指令（先分配内存、再赋值指针、最后才调用构造函数），导致其他线程拿到指针时对象尚未构造完成；C++11 起 magic statics 保证函数内局部静态变量初始化是线程安全的，因此最简洁可靠的写法是 getInstance 中直接 static Singleton instance; return instance;；若必须用指针，应使用 std::atomic<Singleton*> 配合 acquire/release 内存序，或直接用 std::call_once；还需说明拷贝构造和赋值运算符应删除（= delete）防止复制",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/README.md#3"
+    },
+    {
+      "category": "knowledge",
+      "title": "深拷贝与浅拷贝及 Rule of Three/Five",
+      "content": "C++ 面试经典题：什么是浅拷贝和深拷贝？默认拷贝构造函数在什么情况下会导致问题？请结合手写 String 类说明：一个管理堆内存的类为什么需要自己实现拷贝构造函数、拷贝赋值运算符和析构函数？C++11 之后 Rule of Three 为什么扩展成了 Rule of Five？",
+      "difficulty": "medium",
+      "tags": "深拷贝浅拷贝,拷贝构造,移动语义,内存管理",
+      "followUps": [
+        "拷贝赋值运算符为什么要处理自赋值？",
+        "拷贝赋值运算符中为什么要先释放原有资源再深拷贝？",
+        "移动构造和移动赋值解决了什么问题？std::move 本身做了什么？",
+        "什么情况下编译器会默认生成这些特殊成员函数？",
+        "如果类里只持有 unique_ptr 成员，还需要自己写拷贝控制吗？"
+      ],
+      "keyPoints": "浅拷贝只逐成员复制指针值，多个对象共享同一块堆内存，析构时 double free 或一方修改影响另一方；深拷贝为指针成员重新分配内存并复制内容；默认拷贝构造是浅拷贝，管理资源的类（如持有 char* 的 String）必须自实现拷贝构造、拷贝赋值、析构三件套（Rule of Three）；拷贝赋值需检查自赋值（this != &other），先释放旧资源再深拷贝，通常可借助 copy-and-swap 实现强异常安全；C++11 引入移动语义后，按需还应实现移动构造和移动赋值，构成 Rule of Five；std::move 本身不移动任何东西，只是无条件转换为右值引用，真正的资源转移发生在移动构造函数中；unique_ptr 不可拷贝，封装它可让编译器禁用拷贝、默认移动，从而免去手写拷贝控制",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/README.md#4"
+    },
+    {
+      "category": "knowledge",
+      "title": "指针与引用的区别及使用场景",
+      "content": "C++ 中指针和引用都可以用来间接访问对象。请从内存本质、初始化要求、能否重新绑定、是否可为空等角度说明指针与引用的核心区别，并说明在什么场景下应该优先使用指针、什么场景下优先使用引用。",
+      "difficulty": "medium",
+      "tags": "C++,指针,引用,语言基础",
+      "followUps": [
+        "引用在底层是如何实现的？它是否真的不占内存？",
+        "函数返回局部变量的引用会发生什么？为什么？",
+        "引用是否有引用数组或二级引用的概念？为什么不允许？",
+        "函数参数传递时，什么情况下你会选择传指针而不是传引用？"
+      ],
+      "keyPoints": "指针是独立变量、存储目标地址（64 位下 sizeof 为 8）；引用是别名、无独立内存。指针可以先声明后赋值、可为 nullptr、可重新绑定、支持多级（int**）；引用必须定义时初始化、不能为 nullptr、初始化后不可更改绑定、没有多级引用。用指针的场景：需要表示无指向、需要重新绑定、兼容 C 风格 API；用引用的场景：函数参数避免拷贝、运算符重载、保证非空。引用的 r = y 是赋值而非重新绑定。大多数编译器用指针实现引用，但编译器优化后引用通常不占额外内存；不能返回局部变量的引用，否则成为悬空引用。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day1.md#0"
     },
     {
       "category": "knowledge",
-      "title": "指针和引用的本质区别及使用场景",
-      "content": "指针与引用的对比是 C++ 面试最经典的问题之一。请从本质、初始化、可否为空、可否重新绑定、算术运算、sizeof 等角度说出 5 个以上区别，并说明什么场景下应该选指针、什么场景下应该选引用。",
+      "title": "常量指针与指针常量的区分",
+      "content": "C++ 中 `const int* p`、`int* const p`、`const int* const p` 三种声明分别表示什么含义？请说明每种声明中指针本身和所指对象哪些可以修改，并分享一种不容易记混的判断方法。",
       "difficulty": "easy",
-      "tags": "指针,引用,C++,函数参数",
+      "tags": "C++,const,指针,语言基础",
       "followUps": [
-        "引用在底层是如何实现的？编译器会做哪些优化？",
-        "已有 int& ref = a，执行 ref = b，这是把 ref 重新绑定到 b，还是给 a 赋值？",
-        "const std::string& s = std::string(\"temp\") 为什么合法？临时对象的生命周期会怎样？",
-        "函数需要一个\"可能不存在\"的可选参数时，用指针还是引用？为什么？",
-        "返回局部变量的引用会发生什么？正确做法有哪些？"
+        "`int const* p` 和 `const int* p` 是等价的吗？为什么？",
+        "const 成员函数中为什么不能修改成员变量？",
+        "mutable 关键字的作用是什么？请举一个实际使用场景。",
+        "const 常量相比 #define 宏有哪些优势？宏 SQUARE(x) x*x 有什么坑？"
       ],
-      "keyPoints": "引用是对象别名、必须声明时初始化、绑定后不可改变、不能为空、不占独立存储、不支持算术、无多级引用、sizeof 结果是被引用对象大小；指针是存储地址的独立变量（64 位下 8 字节）、可不初始化（野指针风险）、可为 nullptr、可重新赋值、支持指针算术、有多级指针（int**）；访问方式 ptr->member vs ref.member；场景：只读参数用 const T&，需修改实参用 T&，可选参数用 T*（可为 nullptr），所有权转移用 T* 或 unique_ptr，返回可能无效时返回指针；ref = b 是赋值不是重新绑定；const 引用可绑定临时对象并延长其生命周期；引用底层通常用指针实现但语义上禁止空值和重绑定。",
+      "keyPoints": "const int* p：指向 const int 的指针，*p 不可改、p 可改；int* const p：const 指针指向 int，p 不可改、*p 可改；const int* const p：都不可改。记忆技巧：从右往左读，const 修饰它紧左边的东西，若 const 在最左边则修饰右边的东西。int const* p 与 const int* p 等价。const 成员函数承诺不修改成员变量；const 对象只能调用 const 成员函数。mutable 成员可以在 const 成员函数中修改，常用于惰性缓存。const 相比宏有类型检查、有作用域、可调试；宏是纯文本替换，如 SQUARE(1+2) 展开为 1+2*1+2=5 而非 9。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day1.md#1"
     },
     {
       "category": "knowledge",
-      "title": "const 与 constexpr 的语义区别",
-      "content": "在 C++ 中 const 表示只读，constexpr 表示编译期常量表达式。请解释两者的核心区别，说明 const 变量能否用运行时值初始化、constexpr 有什么额外要求，以及 constexpr 修饰函数时的行为。",
+      "title": "static 关键字的四种用法",
+      "content": "C++ 中 static 关键字有多种含义。请分别说明 static 用于局部变量、静态成员变量、静态成员函数、全局变量/函数（文件作用域）时的作用，以及它们各自的生命周期特点。",
       "difficulty": "medium",
-      "tags": "const,constexpr,编译期求值,C++",
+      "tags": "C++,static,作用域,生命周期",
       "followUps": [
-        "const int* p、int* const p、const int* const p 三者分别约束什么？有什么记忆口诀？",
-        "const 成员函数保证什么？mutable 关键字在这里起什么作用？",
-        "constexpr 函数传入运行时参数还能正常调用吗？它一定在编译期执行吗？",
-        "为什么声明数组大小时 constexpr 变量可以而运行时初始化的 const 变量不行？",
-        "constexpr 在模板非类型参数或性能敏感场景中有什么实际价值？"
+        "静态局部变量是在什么时候初始化的？和全局变量相比初始化时机有区别吗？",
+        "静态成员函数为什么不能访问非静态成员？",
+        "static 成员变量为什么需要在类外定义？C++17 的 inline 变量能解决这个问题吗？",
+        "如何在头文件中定义 static 全局变量？多个 .cpp 包含该头文件会发生什么？"
       ],
-      "keyPoints": "const 表示只读，可用运行时值初始化（如 const int x = get_runtime_value() 合法）；constexpr 必须编译期可求值（用运行时值初始化会编译错误），constexpr 变量隐式是 const，反之不然；constexpr 函数在输入为编译期常量时可编译期求值（如递归 factorial），但也可以在运行时以运行时参数调用；const 与指针组合：const 在 * 左边修饰数据（const int* p 不能通过 p 改数据、指针可变），在 * 右边修饰指针（int* const p 指针本身不可变、数据可改），const int* const p 两者都不可变；const 成员函数承诺不修改对象状态，mutable 成员例外（用于缓存、计数器等逻辑 const 场景，但会打破 const 保证，不应滥用）。",
+      "keyPoints": "四种用法：1) 静态局部变量：函数内只初始化一次，跨调用保持值，生命周期为程序运行期；2) 静态成员变量：属于类而非对象，所有对象共享，需在类外定义（如 int Singleton::objCount_ = 0;）；3) 静态成员函数：属于类，不能访问非静态成员（没有 this 指针）；4) 文件作用域 static：限制变量/函数只在本 .cpp 文件可见，实现内部链接。静态局部变量在第一次执行到定义处时初始化。头文件中的 static 变量被多个 .cpp 包含时每个编译单元各有一份独立副本。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day1.md#2"
     },
     {
       "category": "knowledge",
-      "title": "C++11 值类别：lvalue、rvalue、xvalue 与 std::move",
-      "content": "C++11 将表达式按值类别划分为 lvalue、xvalue、prvalue，并有 glvalue、rvalue 两个聚合概念。请解释这套体系，说明如何快速判断一个表达式是左值还是右值，以及 std::move 到底做了什么。",
+      "title": "volatile 能保证线程安全吗",
+      "content": "在多线程编程中，有人用 volatile 修饰共享变量来保证线程安全。volatile 关键字的作用是什么？它能否替代 std::atomic 实现线程同步？请说明原因。",
       "difficulty": "medium",
-      "tags": "值类别,左值,右值,std::move",
+      "tags": "C++,volatile,多线程,原子性",
       "followUps": [
-        "std::move(a) 本身是哪个值类别？它会真的移动数据吗？",
-        "int& r = 42 编译不过，为什么 const int& cref = 42 却合法？",
-        "函数分别返回 T、T&、T&& 时，函数调用表达式 func() 的值类别分别是什么？",
-        "a[0] 和 *ptr 是左值还是右值？为什么？",
-        "值类别体系是如何支撑移动语义和完美转发的？"
+        "volatile 主要防止编译器做什么样的优化？",
+        "volatile 变量执行 i++ 这样的读-改-写操作为什么不是原子的？",
+        "在实际工程中，volatile 适合用在哪些场景？",
+        "std::atomic 相比 volatile 额外提供了什么保证？"
       ],
-      "keyPoints": "lvalue 有身份、可取地址（变量名 a、a[0]、*ptr、返回 T& 的函数调用）；prvalue 纯右值、无身份不可取地址（字面量 42、a+b、临时对象、返回非引用的函数调用）；xvalue 将亡值、有身份且可移动（std::move(a)、返回 T&& 的函数调用）；glvalue = lvalue + xvalue（有身份），rvalue = xvalue + prvalue（可移动）；简化判断：能取地址的是 lvalue，不能取地址的是 rvalue；std::move 本质是 static_cast 到右值引用，不执行任何移动操作，只是把表达式标记为可移动，真正的移动发生在移动构造/移动赋值中；lvalue 引用不能绑定 prvalue，const lvalue 引用可以（并延长临时对象生命周期），rvalue 引用可绑定 prvalue 和 xvalue；该体系是移动语义的前置知识。",
+      "keyPoints": "volatile 的作用是告诉编译器不要优化对该变量的访问（如不要将其缓存到寄存器、不要省略重复读写），它不提供：1) 原子性——读-改-写不是原子的，可能被中断打断；2) 内存序保证——不阻止 CPU 指令重排序。因此 volatile 不能保证线程安全，多线程应使用 std::atomic 或 std::mutex。volatile 适用的场景：内存映射的硬件寄存器、信号处理函数中的标志变量、阻止编译器对可能被外部改变变量的优化。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day1.md#3"
     },
     {
       "category": "knowledge",
-      "title": "返回局部变量的引用会发生什么",
-      "content": "考虑一个函数在其内部定义了局部变量 x，然后返回 int& 指向 x。请说明这样写会发生什么、为什么，以及在工程上有哪些正确的替代方案。",
-      "difficulty": "medium",
-      "tags": "悬空引用,未定义行为,生命周期,C++",
+      "title": "C++ 四种类型转换的使用场景",
+      "content": "C++ 提供了 static_cast、dynamic_cast、const_cast、reinterpret_cast 四种类型转换运算符，分别用于替代 C 风格强转。请说明每一种转换的典型使用场景，以及为什么应该避免使用 C 风格的强制转换。",
+      "difficulty": "hard",
+      "tags": "C++,类型转换,RTTI,const_cast",
       "followUps": [
-        "为什么这段代码在某些编译选项下可能\"看似正常\"运行？这能说明它安全吗？",
-        "返回值（按值返回）为什么没有这个问题？RVO 在其中起了什么作用？",
-        "如果确实需要返回一个生命周期超出函数的对象，有哪些做法？各自的权衡是什么？",
-        "悬空引用和悬空指针如何尽量避免？智能指针能解决这里的问题吗？",
-        "在代码评审中，你还会重点检查哪些类似的 UB 场景？"
+        "static_cast 做向下转型（基类转派生类）安全吗？和 dynamic_cast 的区别是什么？",
+        "dynamic_cast 转换失败时会发生什么？对基类有什么要求？",
+        "const_cast 去掉一个原本是 const 对象的 const 属性会发生什么？",
+        "请举出 const_cast 的一个合理合法的使用场景。"
       ],
-      "keyPoints": "局部变量具有自动存储期，函数返回时销毁，返回其引用导致悬空引用（dangling reference），属于未定义行为（UB）；编译器优化下可能\"看似正常\"，但随时可能崩溃，不能视为安全；正确方案：按值返回并依赖 RVO（返回值优化）、返回 std::unique_ptr、或返回静态/堆上生命周期可控的对象；应结合 RAII 与智能指针避免手动生命周期管理错误。",
+      "keyPoints": "static_cast：数值类型转换、类层次间向上转型（安全）和向下转型（不安全、无运行时检查）；dynamic_cast：安全的向下转型，运行时检查，转换指针失败返回 nullptr（引用失败抛异常），要求基类有虚函数；const_cast：去除指针或引用的 const 属性，对原本就是 const 的对象去除 const 后修改是未定义行为；reinterpret_cast：按位重新解释内存，用于指针与整数互转等底层操作。C 风格强转不做检查且可混用多种语义，无法搜索、易隐藏错误，应使用语义明确的四种 cast。const_cast 合理使用场景：重载消除——在非常量版本函数中用 const_cast 复用 const 版本逻辑。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day1.md#4"
     },
     {
       "category": "knowledge",
-      "title": "RAII 原则：含义与 C++ 资源管理的核心价值",
-      "content": "C++ 中 RAII（Resource Acquisition Is Initialization）是资源管理的核心范式。请解释 RAII 的含义：它如何把资源的生命周期与对象的生命周期绑定？为什么说 C++ 的这种方式比依赖垃圾回收的语言更精确？请结合抛出异常时的场景说明 RAII 如何保证资源被正确释放。",
+      "title": "C++ 进程内存分区模型与栈堆对比",
+      "content": "请描述一个 C++ 进程运行时的内存布局，包括代码区、只读数据区、全局/静态区、堆区和栈区各自存放什么内容、由谁管理、生命周期如何。并对比栈和堆在分配方式、速度、大小限制和碎片问题上的差异。",
       "difficulty": "easy",
-      "tags": "C++, RAII, 资源管理, 异常安全",
+      "tags": "C++,内存布局,栈与堆",
       "followUps": [
-        "当函数执行中途抛出异常时，已构造完成的 RAII 对象如何保证资源被释放？",
-        "除了智能指针，标准库中还有哪些设施体现了 RAII 思想？",
-        "RAII 的确定性析构与 Java/C# 的垃圾回收相比，各有什么优势和劣势？",
-        "在 GPU/CUDA 编程场景中，RAII 思想可以用来管理哪些资源？"
+        "全局未初始化变量放在哪个段？它的初始值是什么？",
+        "栈和堆的增长方向分别是怎样的？",
+        "为什么说栈的分配速度远快于堆？",
+        "局部静态变量 staticLocal 存放在哪里？它的生命周期和初始化时机是什么？",
+        "字符串字面量\"hello\"和它对应的 const char* 指针分别存放在哪个区域？"
       ],
-      "keyPoints": "RAII 即资源获取就是对象初始化、资源释放就是对象析构：构造函数中获取资源（分配内存、打开文件、加锁），析构函数中释放；栈对象离开作用域时析构必定发生、时间点确定，即使异常展开也会调用；因此自动管理避免忘记释放、天然异常安全；典型应用包括智能指针、lock_guard/unique_lock、fstream；与 GC 语言相比析构时机确定是关键优势。",
+      "keyPoints": "内存布局：代码区放机器指令、只读区放字符串字面量和const全局常量、全局/静态区放全局变量和static变量（.data已初始化/.bss未初始化自动清零）、堆由new/malloc手动管理向高地址增长、栈放局部变量/函数参数/返回地址向低地址增长由编译器自动管理；栈快（移动栈指针）、默认约8MB、无碎片；堆慢（搜索空闲内存）、受虚拟内存限制、有碎片问题；局部静态变量在静态区只初始化一次。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day2.md#0"
     },
     {
       "category": "knowledge",
-      "title": "shared_ptr 循环引用问题与 weak_ptr 解决方案",
-      "content": "假设两个对象通过 std::shared_ptr 互相持有对方（例如双向链表中 next 和 prev 都是 shared_ptr），当这两个对象离开作用域后会发生什么？请解释循环引用导致内存泄漏的具体机制，并说明如何用 std::weak_ptr 打破循环引用。",
+      "title": "new/delete 底层原理与 malloc/free 的区别",
+      "content": "执行 `Widget* w = new Widget(42);` 时底层发生了什么？delete 呢？请说明 new/delete 与 malloc/free 的主要区别，并解释为什么二者分配的内存不能混用释放。",
       "difficulty": "medium",
-      "tags": "C++, 智能指针, 循环引用, weak_ptr",
+      "tags": "C++,new/delete,malloc/free",
       "followUps": [
-        "请具体描述循环引用发生时两个对象的强引用计数如何变化，为什么析构函数永远不会被调用？",
-        "weak_ptr 不能直接解引用，应如何安全地访问它指向的对象？lock() 失败意味着什么？",
-        "在父子节点结构中，shared_ptr 和 weak_ptr 应该如何分配？为什么通常是父持有子用 shared_ptr？",
-        "除了打破循环引用，weak_ptr 还有哪些典型使用场景？",
-        "当强引用计数已归零但仍存在 weak_ptr 时，对象内存和控制块分别何时释放？"
+        "operator new 分配内存失败时会发生什么？malloc 失败呢？",
+        "new 返回的类型和 malloc 返回的类型有什么区别？",
+        "operator new/delete 是否可以重载？什么场景下需要重载？",
+        "placement new 是什么？它和 operator new 是什么关系？",
+        "malloc/free 配对但中间用 new 构造了对象，直接 free 会有什么问题？"
       ],
-      "keyPoints": "两个对象互相用 shared_ptr 指向对方，各自强引用计数为 2，离开作用域后仅从 2 减到 1，计数永不归零，析构不被调用，导致内存泄漏；解决方案是把其中一个方向改为 weak_ptr，weak_ptr 只增加弱引用计数、不影响对象释放；使用时需 lock() 提升为 shared_ptr，对象已销毁则提升失败；经验规则：父持有子用 shared_ptr，子引用父用 weak_ptr；weak_ptr 还用于观察者模式、缓存等场景。",
+      "keyPoints": "new 分两步：operator new(size) 分配原始内存（类似malloc，失败抛std::bad_alloc），然后在分配的内存上调用构造函数（placement new）；delete 分两步：先调用析构函数清理资源，再 operator delete 释放内存；区别：new是C++运算符自动调用构造/析构、类型安全返回T*、失败抛异常、可重载、自动计算大小、有new[]/delete[]区分；malloc是C函数返回void*需强转、失败返回NULL、不调用构造析构；不能混用，否则未定义行为（不同分配器实现的内部元数据结构不同，且构造/析构未正确配对）。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day2.md#1"
     },
     {
       "category": "knowledge",
-      "title": "shared_ptr 控制块结构与 make_shared vs new 的取舍",
-      "content": "std::shared_ptr 内部除了指向对象的指针外，还维护一个控制块（Control Block）。请描述控制块包含哪些字段。另外，用 std::make_shared 创建 shared_ptr 与先用 new 再构造 shared_ptr 相比有什么区别？各自的优劣和适用场景是什么？",
+      "title": "为什么 new[] 必须搭配 delete[] 使用",
+      "content": "请解释为什么 `Widget* arr = new Widget[10];` 分配的内存必须用 delete[] 释放，而不是 delete。如果误用了 delete 会发生什么？对 POD 类型（如 int 数组）混用是否安全？",
       "difficulty": "medium",
-      "tags": "C++, shared_ptr, make_shared, 内存管理",
+      "tags": "C++,new[],delete[],对象析构",
       "followUps": [
-        "控制块中的强引用计数和弱引用计数分别由哪些操作增减？",
-        "make_shared 把两次内存分配合并为一次，带来了哪些具体好处？",
-        "make_shared 的主要缺点是什么？什么样的对象不适合用它创建？",
-        "C++17 之前，为什么用 new 构造 shared_ptr 直接传参可能存在内存泄漏？"
+        "new[] 把元素个数存在哪里？delete[] 如何利用这个信息？",
+        "如果 Widget 的析构函数是 trivial 的（比如只含 int 成员），用 delete 代替 delete[] 实际会有什么后果？",
+        "实现 new[]/delete[] 时为什么不能简单复用 malloc/free 而不加任何额外信息？",
+        "你在实际项目中遇到过因 new[]/delete[] 不匹配导致的内存问题吗？是如何排查的？"
       ],
-      "keyPoints": "控制块包含四个字段：强引用计数（多少个 shared_ptr 共享对象）、弱引用计数（多少个 weak_ptr 观察对象）、自定义 deleter、分配器；new 方式有两次内存分配（对象+控制块），make_shared 合并为一次，更高效、缓存局部性好、异常安全；C++17 前参数求值顺序未指定，new A() 成功而 new B() 抛异常时 A 会泄漏，make_ 系列无此问题；make_shared 缺点：对象内存与控制块合并分配，只要 weak_ptr 还在控制块就不释放，对象内存也跟着延迟释放，因此大对象且有长期 weak_ptr 的场景更适合 shared_ptr(new T)。",
+      "keyPoints": "new[] 在分配内存前部额外存储元素个数（实现相关，通常8字节header）；delete[] 读取该个数，循环对每个元素调用析构函数；误用delete只析构第一个元素，其余元素析构函数不被调用导致资源泄漏；对POD类型虽不析构也无资源可释放，但仍是未定义行为，不应依赖实现；必须严格配对。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day2.md#2"
     },
     {
       "category": "knowledge",
-      "title": "shared_ptr 的线程安全性辨析",
-      "content": "关于 std::shared_ptr 的线程安全性是面试中最容易混淆的点。请说明：shared_ptr 的哪些操作是线程安全的，哪些不是？'引用计数操作是原子的'与'shared_ptr 是线程安全的'这两种说法的区别在哪里？",
+      "title": "内存对齐规则与结构体 sizeof 计算",
+      "content": "请说明 CPU 需要内存对齐的原因，然后给出结构体成员对齐的规则，并计算以下结构体的 sizeof：`struct A { char a; int b; char c; double d; char e; };`。如何优化这个结构体以减少内存占用？",
       "difficulty": "medium",
-      "tags": "C++, shared_ptr, 线程安全, 原子操作",
+      "tags": "C++,内存对齐,sizeof",
       "followUps": [
-        "控制块的引用计数增减是如何做到线程安全的？",
-        "不同线程同时拷贝同一个 shared_ptr 变量（例如各线程读同一个全局 sp）安全吗？应该怎么处理？",
-        "不同线程各自持有指向同一对象的不同 shared_ptr 副本，并发拷贝安全吗？",
-        "多个线程通过 shared_ptr 读写其指向的对象本身，需要做什么？",
-        "引用计数用了原子操作，为什么仍不能说 shared_ptr 指向的对象是线程安全的？"
+        "请逐一说明结构体 A 中每个成员的偏移量以及填充字节的位置。",
+        "为什么某些硬件平台（如 ARM）上访问未对齐地址会直接异常，而 x86 只是性能下降？",
+        "`__attribute__((packed))` 取消对齐有什么副作用？什么场景下会用？",
+        "结构体的总大小为什么要对齐到最大成员对齐值的整数倍，而不是某个成员的大小？",
+        "在 AI Infra 场景中（如 GPU kernel 的参数结构体、通信协议结构体），你如何看待内存对齐与带宽利用率的关系？"
       ],
-      "keyPoints": "shared_ptr 的'线程安全'仅指控制块引用计数操作是原子的；具体来说：引用计数增减线程安全；不同线程操作各自持有的不同 shared_ptr（即使指向同一对象）安全；不同线程并发读写同一个 shared_ptr 变量不安全，需外部同步；通过 shared_ptr 并发读指向的对象安全（无人写时），但并发写指向的对象不安全，对象本身需要自己加锁保护。",
+      "keyPoints": "对齐原因：CPU按字(4/8字节)访问内存，对齐则一次读取，否则需两次访问拼接性能下降；部分平台(如ARM)不对齐直接硬件异常；规则：每个成员起始偏移是alignof(成员)的整数倍，结构体总大小是最大对齐值的整数倍，编译器插入padding；struct A 的sizeof为32：a在offset 0，b在offset 4（3字节padding），c在offset 8，d在offset 16（7字节padding），e在offset 24，尾部7字节padding凑成8的倍数；优化方式：大成员优先排列（double提前）可减少padding、提高空间利用率。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day2.md#3"
     },
     {
       "category": "knowledge",
-      "title": "手写简化版 unique_ptr 的实现要点",
-      "content": "手写一个简化版的 unique_ptr 是 C++ 面试高频手撕题。请描述实现思路：需要定义哪些成员函数？拷贝和移动语义分别如何处理？移动赋值运算符有哪些必须注意的边界情况？另外请说明为什么移动构造和移动赋值要标记 noexcept。",
-      "difficulty": "hard",
-      "tags": "C++, unique_ptr, 移动语义, 手撕代码",
+      "title": "内存泄漏的常见场景与检测手段",
+      "content": "请列举 C++ 中常见的内存泄漏场景（至少三种），并说明如何用工具检测内存泄漏。对比 Valgrind 和 AddressSanitizer（ASan）的原理与适用场景。",
+      "difficulty": "medium",
+      "tags": "C++,内存泄漏,调试工具",
       "followUps": [
-        "为什么拷贝构造和拷贝赋值必须用 = delete 删除？",
-        "移动构造/移动赋值不标记 noexcept 会有什么后果？请结合 std::vector 扩容行为说明。",
-        "实现移动赋值运算符时，需要处理哪些边界情况（提示：自赋值与旧资源释放）？",
-        "unique_ptr 和 shared_ptr 在内存开销和适用场景上如何取舍？",
-        "如果要用 unique_ptr 管理 fopen 打开的文件句柄或 CUDA 显存（cudaFree），需要什么机制支持？"
+        "异常路径导致的泄漏（函数中途 throw）有什么编程层面的防御手段？",
+        "为什么基类析构函数不是 virtual 时，`Base* p = new Derived; delete p;` 会导致泄漏？",
+        "Valgrind 慢 20~50 倍而 ASan 只慢约 2 倍，从原理上解释这个差距的来源。",
+        "ASan 能检测 double free 和 use-after-free 吗？Valgrind 呢？",
+        "在高性能服务中不方便全程开 ASan，你会采用什么策略在上线前后排查内存问题？"
       ],
-      "keyPoints": "核心实现要点：构造函数接收裸指针；拷贝构造和拷贝赋值用 = delete 禁止（保证独占所有权、避免 double free）；移动构造接管指针后将源指针置 nullptr；移动赋值需检查自赋值（this != &other）、先 delete 旧资源再接管新资源、并将源置空；析构函数 delete 指针；重载 operator*/operator->/get()/operator bool；移动操作标记 noexcept 的原因：否则 std::vector 扩容时会 fallback 到拷贝（而 unique_ptr 不可拷贝导致无法用于容器）；unique_ptr 零开销（默认 deleter 下大小等于裸指针），支持自定义 deleter 管理非内存资源如 FILE* 或 CUDA 显存。",
+      "keyPoints": "常见泄漏场景：忘记delete、异常路径泄漏（doSomething抛异常导致delete不执行）、指针被覆盖（p重新赋值导致原内存丢失）、基类析构函数非虚导致delete基类指针时不调用派生类析构（派生类资源泄漏）；检测工具：Valgrind动态插桩拦截所有内存操作，慢20-50x，无需重编译，检测全面；ASan编译期插桩(-fsanitize=address -g)，慢约2x，需重编译，可检测泄漏/越界/double free/UAF，是开发阶段首选；此外还有RAII智能指针从机制上预防泄漏。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day2.md#4"
     },
     {
       "category": "knowledge",
-      "title": "std::move 的本质：它真的移动了什么吗？",
-      "content": "C++ 代码中常见 auto s2 = std::move(s); 这样的写法。请解释 std::move 到底做了什么：它是否真的执行了对象的移动？真正的移动发生在哪里？执行之后源对象处于什么状态、还能怎样使用？",
+      "title": "深拷贝与浅拷贝的区别及实现",
+      "content": "在 C++ 中定义一个包含裸指针成员（如 char* data_）的类时，如果只依赖编译器默认生成的拷贝构造和拷贝赋值运算符，会发生什么危险？请解释深拷贝与浅拷贝的区别，并说明正确的拷贝构造和拷贝赋值运算符应如何实现，以及为什么需要自赋值检查。",
       "difficulty": "medium",
-      "tags": "std::move, 移动语义, 右值引用, C++11",
+      "tags": "深拷贝,浅拷贝,拷贝构造,自赋值",
       "followUps": [
-        "std::move(s) 之后的 s 处于什么状态？还能对它赋新值或析构吗？",
-        "真正的移动操作发生在哪里？移动构造函数里一般要做哪两件关键事情？",
-        "请描述 std::move 的实现思路，为什么说它本质上只是一个 static_cast？",
-        "对一个 const 对象调用 std::move 会发生什么？",
-        "为什么对按值传入的函数参数，在返回或转移所有权时可以放心使用 std::move？"
+        "默认生成的拷贝构造和拷贝赋值运算符对指针成员做了什么？",
+        "为什么拷贝赋值运算符中要先检查 if (this != &other) 再 delete？不检查会发生什么？",
+        "copy-and-swap 惯用法是什么？它如何保证自赋值安全和异常安全？",
+        "如果一个类只包含 int、double 等值类型成员，还需要自定义拷贝构造和赋值运算符吗？"
       ],
-      "keyPoints": "std::move 不移动任何东西，只是一个到右值引用的无条件 static_cast；它把表达式标记为可移动（右值）；真正的移动发生在移动构造函数/移动赋值运算符中；移动后源对象处于有效但未指定状态——可以对它赋值或析构，但不应读取其值；等价实现是 remove_reference 加 static_cast 到右值引用。",
-      "source": "",
+      "keyPoints": "默认拷贝构造/赋值是逐成员浅拷贝，指针成员会被简单复制导致两个对象共享同一块堆内存，析构时 double free 崩溃；深拷贝构造需 new 新内存并 strcpy 复制内容；拷贝赋值需自赋值检查、先释放旧内存再深拷贝、返回 *this；自赋值时若不检查，delete 后 other.data_ 已成为悬空指针导致未定义行为；copy-and-swap 利用按值传参触发拷贝构造再 swap，异常安全；纯值类型成员默认浅拷贝即正确。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day3.md#0"
     },
     {
       "category": "knowledge",
-      "title": "std::move 与 std::forward 的区别及适用场景",
-      "content": "在泛型代码中 std::move 和 std::forward 都与右值引用相关，但用途不同。请说明二者的区别，分别在什么场景下应该使用哪一个？并举例说明完美转发的典型应用。",
+      "title": "虚函数底层实现：vtable 与 vptr",
+      "content": "C++ 通过虚函数表（vtable）和虚表指针（vptr）实现运行时多态。请描述 Base* p = new Derived; p->speak() 这条虚函数调用在底层的完整执行过程，并说明虚表存放在哪里、每个类有几份虚表、每个对象有几个虚表指针。",
       "difficulty": "medium",
-      "tags": "std::move, std::forward, 完美转发, 泛型编程",
+      "tags": "虚函数,vtable,vptr,动态绑定",
       "followUps": [
-        "为什么说 std::move 是无条件转换，而 std::forward 是条件转换？",
-        "std::forward 为什么必须显式写模板参数 std::forward<T>(param)？",
-        "emplace_back 和 push_back 的区别与完美转发有什么关系？",
-        "实现 my_make_shared(Args&&... args) 时，为什么要配合 std::forward<Args>(args)... 转发参数？",
-        "在普通非模板函数里误用 std::forward 会有什么风险？"
+        "虚函数调用相比普通非虚函数调用，性能开销体现在哪？",
+        "非虚函数和虚函数在绑定时机上有什么区别？为什么虚函数更难被内联优化？",
+        "对象中有虚函数时，对象大小会增加多少？64 位系统下是多少字节？",
+        "多继承场景下，一个对象会有几个 vptr？虚表又有几份？"
       ],
-      "keyPoints": "std::move 无条件转换为右值引用，语义是我想移动它；std::forward 条件转换，根据模板参数 T 恢复原始值类别，语义是转发时保持参数原来是左值还是右值；std::forward 用于完美转发场景，典型应用是 make_shared、emplace_back、工厂函数；一句话总结：move 无条件转右值，forward 条件转右值。",
-      "source": "",
+      "keyPoints": "调用过程：取对象中的 vptr → 通过 vptr 找到对应类的 vtable → 按槽位索引找到函数地址 → 间接跳转调用；vtable 存储在只读数据区（.rodata），编译期生成，每个含虚函数的类一份；对象中 vptr 数量：单继承 1 个，N 重继承 N 个（每个含虚函数的基类子对象各一个）；虚函数为运行时动态绑定，非虚函数为编译期静态绑定；虚函数有两次间接寻址、无法内联的开销；含虚函数的对象增加一个指针大小（64 位下 8 字节）。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day3.md#1"
     },
     {
       "category": "knowledge",
-      "title": "为什么移动构造函数要标记 noexcept？",
-      "content": "编写管理资源的类时，移动构造/移动赋值通常建议标记为 noexcept。请解释 noexcept 对性能的影响，特别是它如何改变 std::vector 扩容时的行为，以及这背后是基于怎样的异常安全考虑。",
+      "title": "为什么含虚函数的基类必须声明虚析构",
+      "content": "有这样一个继承体系：Base 有虚函数但析构函数不是 virtual，Derived 中有自己的堆资源成员。当通过 Base* p = new Derived; delete p; 删除对象时会发生什么？请解释为什么需要虚析构函数，以及 C++ 默认析构函数为什么不是虚的。",
       "difficulty": "medium",
-      "tags": "noexcept, 移动构造, vector扩容, 异常安全",
+      "tags": "虚析构,内存泄漏,多态删除",
       "followUps": [
-        "vector 扩容迁移旧元素时，如何判断该用移动还是拷贝？",
-        "如果移动构造中途可能抛异常，为什么 vector 宁愿选择更慢的拷贝？",
-        "不标 noexcept 的移动构造在实际运行中会带来怎样的性能后果？",
-        "为什么移动操作通常可以放心标为 noexcept？",
-        "在自定义大数组的 vector 中，如何验证扩容到底走了移动还是拷贝？"
+        "delete p 时只调用 ~Base() 会发生什么具体问题？",
+        "C++ 的设计哲学是'不为不用的特性付出代价'，这句话如何体现在虚析构的取舍上？",
+        "什么情况下析构函数可以不声明为 virtual？",
+        "如果一个抽象基类的析构函数是纯虚的，是否需要提供函数体？为什么？"
       ],
-      "keyPoints": "std::vector 扩容时需要把旧元素迁移到新内存：若元素类型的移动构造是 noexcept，则用移动（快）；否则用拷贝（更安全，中途抛异常时已拷贝的部分可回滚，保证异常安全）；移动操作通常只交换指针、不会失败，所以应该标 noexcept；不标 noexcept 的移动构造可能导致 vector 扩容退化为更慢的深拷贝。",
-      "source": "",
+      "keyPoints": "非虚析构时通过基类指针 delete 派生类对象只调用 ~Base()，派生类析构函数不会执行，Derived 的资源（如 extra_）泄漏；规则：只要类有虚函数就可能被多态删除，析构函数应声明为 virtual；C++ 默认析构非虚是因为虚函数需要 vptr，增加对象大小和调用开销，不为不用的特性付出代价；不打算被继承或不会被多态删除的类用非虚析构是正确的。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day3.md#2"
     },
     {
       "category": "knowledge",
-      "title": "引用折叠规则与转发引用的识别",
-      "content": "模板函数中的 T&& 与普通函数中的 T&& 含义不同。请说出引用折叠的四条规则，并解释什么是转发引用：什么情况下 T&& 是转发引用（万能引用），什么情况下它只是普通的右值引用？",
-      "difficulty": "hard",
-      "tags": "引用折叠, 转发引用, 模板参数推导, C++11",
+      "title": "继承体系中构造与析构的调用顺序",
+      "content": "假设继承链为 Base → Middle → Derived，且 Derived 中有多个成员变量。请详细描述创建和销毁一个 Derived 对象时，构造与析构的完整调用顺序，并特别说明成员变量的初始化顺序是由什么决定的。",
+      "difficulty": "easy",
+      "tags": "构造函数,析构函数,继承,初始化顺序",
       "followUps": [
-        "四条折叠规则分别是什么？有什么记忆口诀？",
-        "向模板函数传入左值 int x 时，T 被推导为什么？param 的类型经过怎样的折叠？",
-        "类模板成员函数 void f(T&&) 中的 T&& 为什么不是转发引用？",
-        "为什么说引用折叠是完美转发的语言基础？",
-        "std::forward 的简化实现里 static_cast<T&&>(arg) 是如何借助折叠恢复值类别的？"
+        "构造函数的调用顺序是基类到派生类，析构顺序是什么？为什么必须这样设计？",
+        "成员变量的初始化顺序由初始化列表的书写顺序决定，还是由声明顺序决定？",
+        "如果基类构造函数抛出异常，已构造的部分会如何处理？",
+        "虚基类的构造规则有什么特殊之处？由谁负责构造虚基类？"
       ],
-      "keyPoints": "四条规则：T& &、T& &&、T&& & 都折叠为 T&，只有 T&& && 折叠为 T&&；口诀：只要有一个 & 就折叠成左值引用；仅当处于模板参数推导上下文时 T&& 才是转发引用，能根据实参推导为左值引用或右值引用；非模板的 std::string&& 或 T 已确定的类模板成员 T&& 是真正的右值引用；转发引用传入左值时 T 推导为 T&、param 为 int&，传入右值时 T 为 int、param 为 int&&。",
-      "source": "",
+      "keyPoints": "构造顺序：基类 → 成员变量（按声明顺序）→ 派生类构造函数体；析构顺序与构造严格相反：派生类析构体 → 成员变量（逆序）→ 基类析构；成员变量初始化顺序按类中声明顺序，与初始化列表书写顺序无关；虚基类由最底层派生类直接构造，中间类对虚基类的初始化被忽略。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day3.md#3"
     },
     {
       "category": "knowledge",
-      "title": "RVO/NRVO 返回值优化与 return std::move 的陷阱",
-      "content": "C++17 引入 Guaranteed Copy Elision 后，返回值的行为发生了变化。请解释 RVO 与 NRVO 的区别、C++17 在哪种情况下保证省略拷贝，并说明为什么在返回具名局部变量时写 return std::move(local_var) 反而是反模式。",
-      "difficulty": "medium",
-      "tags": "RVO, NRVO, 拷贝省略, 返回值优化",
+      "title": "手写带深拷贝的 String 类",
+      "content": "请现场手写一个简化版 String 类：内部用 char* 管理一段动态分配的字符串。要求实现构造函数、析构函数、深拷贝构造函数、拷贝赋值运算符（含自赋值检查），以及 c_str() 和 length() 访问接口。写完后说明每个成员函数为什么是必须的。",
+      "difficulty": "hard",
+      "tags": "手写String,深拷贝,运算符重载,RAII",
       "followUps": [
-        "RVO 和 NRVO 分别针对什么形式的返回语句？C++17 强制保证的是哪一种？",
-        "return std::move(v) 为什么会阻止 NRVO？编译器此时只能做什么？",
-        "直接 return local_var 时编译器可以做哪些优化？",
-        "如果返回的是右值临时对象（如 return T(args)），C++17 前后行为有何区别？",
-        "在写返回大对象（如包含堆内存的自定义容器）的工厂函数时，你会怎么写 return 语句？"
+        "拷贝赋值运算符中为什么必须先 delete[] data_ 再重新 new？顺序可以颠倒吗？",
+        "如果还要支持 operator+ 拼接，你的实现中如何避免内存泄漏？",
+        "这个 String 类还缺什么？移动构造和移动赋值能带来什么好处？",
+        "写出 operator<< 作为友元函数时，为什么声明为友元而不是成员函数？"
       ],
-      "keyPoints": "RVO 指返回 prvalue 临时对象时省略拷贝，C++17 起是标准强制要求而非可选优化；NRVO 指返回具名局部变量时省略拷贝/移动，仍由编译器决定、非强制；return std::move(local_var) 会把局部变量变成右值，从而阻止 NRVO，编译器只能退化为移动构造；正确写法是直接 return local_var，让编译器自动应用 NRVO（可能在调用者栈上直接构造）。",
-      "source": "",
+      "keyPoints": "构造函数：new char[strlen(s)+1] 并 strcpy；析构函数：delete[] data_ 释放资源；拷贝构造：深拷贝（new 新内存 + strcpy），不能共享指针；拷贝赋值：自赋值检查 if (this != &other)、释放旧内存、深拷贝、返回 *this；c_str 返回 const char*、length 用 strlen；这是 RAII 的体现，资源获取即初始化、析构自动释放；operator<< 用友元是因为左操作数是 ostream，不能作为成员函数；后续可补充移动构造/移动赋值避免拷贝开销。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day3.md#4"
     },
     {
       "category": "knowledge",
-      "title": "模板编译模型：为什么模板通常写在头文件里",
-      "content": "C++ 模板本身不是代码，而是生成代码的\"蓝图\"，只有实例化后才产生机器码。请解释模板的两阶段编译模型分别检查什么，以及为什么模板通常必须写在头文件中而不是 .cpp 文件里。如果确实想把模板实现放在 .cpp 中，有什么可行办法？",
+      "title": "vector 扩容机制与增长因子",
+      "content": "请解释 std::vector 的扩容流程：push_back 触发扩容时内部发生了什么？为什么平均复杂度是 O(1)？不同编译器的增长因子（如 GCC 约 2 倍、MSVC 约 1.5 倍）有什么讲究？reserve 在工程中有什么作用？",
       "difficulty": "medium",
-      "tags": "C++,模板,编译模型,头文件",
+      "tags": "vector,扩容,均摊复杂度",
       "followUps": [
-        "模板的两阶段编译中，哪些错误在定义时就能发现，哪些要等到实例化时才报错？",
-        "显式实例化（如 template class Foo<int>;）是如何工作的？它有什么代价？",
-        "如果在模板定义里调用了 T 的某个不存在的方法，什么时候会编译报错？",
-        "像 CUTLASS 这样模板密集的库全部放在头文件里，会带来什么工程上的问题？"
+        "size 和 capacity 有什么区别？",
+        "为什么增长因子不能取 1.1 或 4 这样的极端值？",
+        "为什么说 1.5 倍增长在内存复用上比 2 倍更有优势？",
+        "如何真正释放 vector 占用的内存？clear() 能做到吗？",
+        "如果要频繁 push_back 一万个元素，怎样避免迭代器失效和反复搬移？"
       ],
-      "keyPoints": "模板是生成代码的蓝图，本身不产生机器码，实例化后才生成代码；两阶段编译：①定义时检查不依赖 T 的部分，②实例化时检查依赖 T 的部分；编译器在每个使用点需要看到完整定义才能实例化，因此模板写在头文件；显式实例化可在 .cpp 中强制生成特定类型版本，但会增加编译耦合。",
-      "source": "",
+      "keyPoints": "扩容三步：申请新内存（旧容量×增长因子）、搬移元素（支持移动语义时移动构造）、释放旧内存；均摊 O(1)：n 次 push_back 总搬移量约 1+2+…+n/2 < 2n；增长因子过小导致频繁搬移，过大浪费内存；1.5 倍时历史释放的空闲块总和可能覆盖下次请求可被堆复用，2 倍时已释放总量恒小于下次请求不可能复用；reserve 预分配可避免扩容，保证迭代器/指针/引用稳定；释放内存用 shrink_to_fit()（非强制）或 std::vector<int>().swap(v) 惯用法，clear() 只析构元素不释放 capacity",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day4.md#0"
     },
     {
       "category": "knowledge",
-      "title": "模板特化与偏特化的区别，函数模板能否偏特化",
-      "content": "C++ 类模板支持全特化和偏特化，而函数模板的支持情况不同。请解释全特化和偏特化分别是什么，两者的关键区别在哪里；函数模板支持偏特化吗？如果需要针对指针类型 T* 提供不同的函数实现，应该用什么手段替代？",
+      "title": "迭代器失效与安全删除元素",
+      "content": "在遍历 std::vector 的过程中按条件删除元素，为什么 `for (it = v.begin(); ...; ++it) { if (...) v.erase(it); }` 是错的？请给出正确的写法，并说明 vector、list、map 在插入和删除时的迭代器失效规则有何不同。",
       "difficulty": "medium",
-      "tags": "C++,模板特化,偏特化,函数重载",
+      "tags": "迭代器失效,erase,STL",
       "followUps": [
-        "全特化后的模板还保留模板参数吗？偏特化呢？",
-        "同时存在通用版本 TypeName<T> 和偏特化版本 TypeName<T*> 时，TypeName<int*> 会匹配哪一个？",
-        "函数模板重载和函数模板特化同时存在时，编译器的选择规则有什么坑？",
-        "在 CUTLASS 这类模板库中，偏特化通常用来解决什么问题？"
+        "erase 返回什么？为什么删除后不能再 ++it？",
+        "erase-remove 惯用法相比循环逐个 erase 在复杂度上有什么优势？",
+        "map 中删除节点为什么其他迭代器不受影响？旧代码里的 m.erase(it++) 是什么原理？",
+        "unordered_map 在 rehash 时哪些东西失效、哪些仍然有效？",
+        "如果必须在遍历时频繁插入删除，容器选型上有什么建议？"
       ],
-      "keyPoints": "全特化是为特定类型参数提供完整实现，特化后不再有模板参数；偏特化是为部分参数（如指针类型 T*）提供实现，仍保留部分模板参数；类模板支持全特化和偏特化；函数模板只支持全特化、不支持偏特化，需要时用函数重载代替；类模板不支持重载。",
-      "source": "",
+      "keyPoints": "erase 使被删位置之后的迭代器全部失效，++it 是未定义行为；正确写法 it = v.erase(it)（删除后不前进），或未删除时才 ++it；批量删除用 v.erase(std::remove_if(...), v.end()) 一次搬移避免 O(n²)，C++20 可用 std::erase_if；失效本质：迭代器底层是指针，内存被搬走（扩容）或释放（erase）即成悬空指针；连续内存容器（vector/deque/string）失效多，节点式容器（list/map/set）插入不失效、删除仅失效被删节点；deque 两端插入迭代器全失效但引用仍有效；unordered_map rehash 时迭代器全失效但引用/指针仍有效",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day4.md#1"
     },
     {
       "category": "knowledge",
-      "title": "变参模板与 C++17 折叠表达式",
-      "content": "变参模板（variadic templates）允许函数接受任意数量、任意类型的参数。请说明 C++17 之前如何用\"终止函数 + 递归\"的方式展开 parameter pack，C++17 折叠表达式如何简化这一过程，并写出至少两种折叠表达式的形式。另外，如何在编译期获取参数包中参数的个数？",
+      "title": "map、unordered_map 与红黑树选型",
+      "content": "请对比 std::map 和 std::unordered_map 的底层结构、复杂度、有序性和迭代器失效规则，并说明什么场景下选哪个。进一步追问：STL 的有序关联容器为什么选红黑树而不是 AVL 树或哈希表？",
       "difficulty": "medium",
-      "tags": "C++,变参模板,折叠表达式,parameter pack",
+      "tags": "红黑树,哈希表,容器选型",
       "followUps": [
-        "sizeof...(Args) 返回的结果是编译期常量还是运行期值？",
-        "对于不满足结合律的运算（如减法），一元左折叠和一元右折叠的结果有什么区别？",
-        "空参数包时一元折叠会有什么问题？二元折叠的初值如何解决？",
-        "为什么说理解变参模板是读懂 CUTLASS 中 CuTe 的 make_layout/make_shape 源码的前提？"
+        "unordered_map 采用的哈希冲突解决方案是什么？负载因子和 rehash 是怎么工作的？",
+        "红黑树最差情况下树高是多少？由哪条性质推导出来？",
+        "红黑树的五条性质你能说出几条？",
+        "AVL 和红黑树在插入删除时的旋转次数上限分别是多少？",
+        "自定义类型做 key 时，map 和 unordered_map 各需要提供什么？"
       ],
-      "keyPoints": "变参模板用 typename... Args 接受任意数量参数；C++17 前需定义终止函数（空参数版本）+ 递归版本展开；C++17 折叠表达式如 (args + ...) 一行展开，逗号折叠 ((cout << args), ...) 可逐个处理；折叠有四种形式：一元/二元 × 左/右折叠；sizeof...(Args) 获取参数包大小；CUTLASS 的 CollectiveBuilder 和 CuTe 的 make_layout 大量使用变参模板。",
-      "source": "",
+      "keyPoints": "map 底层红黑树：增删查稳定 O(log n)，按 key 有序，支持 lower_bound/范围查询，插入不失效迭代器、删除只失效被删节点；unordered_map 底层哈希表（拉链法）：均摊 O(1)、最坏 O(n)，无序，rehash 时迭代器全失效；选型：要有序遍历/范围查询/最坏情况保证用 map，纯点查追求平均性能用 unordered_map；红黑树性质推出最长路径 ≤ 2×最短路径，树高 ≤ 2log₂(n+1)；选红黑树因其近似平衡且插入至多 2 次、删除至多 3 次旋转（O(1) 维护），AVL 严格平衡但增删可能 O(log n) 次旋转，哈希表无序不支持范围查询；负载因子 = size/bucket_count，超过默认 1.0 触发 rehash，桶数扩为约 2 倍素数并全部重新散列；自定义 key：map 只需 operator<，unordered_map 需 hash 仿函数 + operator==",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day4.md#2"
     },
     {
       "category": "knowledge",
-      "title": "SFINAE 原理及与 if constexpr 的区别",
-      "content": "SFINAE 是 C++11/14 中实现编译期条件选择的主要手段。请解释 SFINAE 的全称和工作原理，以及如何用 enable_if 结合类型特征为整型和浮点型选择不同的重载。另外，C++17 的 if constexpr 与 SFINAE 在作用层面和编译行为上有什么区别？",
+      "title": "手写 LRU 缓存（哈希表 + 双向链表）",
+      "content": "请手写一个 LRU 缓存：支持 capacity 限制的 get(key) 和 put(key, value)，两个操作都要求 O(1) 时间复杂度。要求讲清楚整体结构设计和每个操作的具体实现。",
       "difficulty": "hard",
-      "tags": "C++,SFINAE,if constexpr,enable_if",
+      "tags": "LRU缓存,双向链表,哈希表,手写题",
       "followUps": [
-        "\"替换失败不是错误\"具体指什么？失败的候选函数会怎样？",
-        "如何用 SFINAE 检测一个类型是否拥有 size() 成员函数？",
-        "if constexpr 的 false 分支为什么可以包含对当前实例化类型无效的代码，而普通 if 不行？",
-        "CUTLASS 为什么大量使用 SFINAE 和 if constexpr，而不是直接用 C++20 Concepts？"
+        "为什么用双向链表而不是单向链表或 vector 维护使用顺序？",
+        "list::splice 在本题中的作用是什么？它的复杂度是多少？",
+        "put 时如果 key 已存在，需要做什么？淘汰逻辑具体在哪一步执行？",
+        "哈希表里存的 value 类型为什么是 list::iterator 而不是直接存值？",
+        "如果要求 LRU 支持多线程访问，你会怎么改？"
       ],
-      "keyPoints": "SFINAE = Substitution Failure Is Not An Error，模板参数替换失败不是错误，而是将该候选从重载集中移除；典型用法是 enable_if + is_integral/is_floating_point 等类型特征选择重载；可用 declval + decltype 检测类型是否有 size() 成员；if constexpr 在编译期求值，false 分支不会被编译，可包含对当前类型无效的操作，普通 if 两个分支都会编译；SFINAE 作用于函数签名/重载选择层面，if constexpr 作用于函数体内分支；CUTLASS 因需兼容 C++14/17 而大量使用 SFINAE 和 if constexpr。",
-      "source": "",
+      "keyPoints": "结构：std::list<std::pair<int,int>>（头=最新，尾=最久未用）+ std::unordered_map<int, list::iterator>（key → 链表节点迭代器）；get：哈希表 O(1) 查找，未命中返回 -1，命中后 splice 到链表头部并返回值；put：已存在则更新 value 并 splice 到头部；不存在则先检查容量，满时淘汰 tail 侧（back() 取 key → 哈希表 erase → pop_back()），再 emplace_front 插入并记录 index_[key] = items_.begin()；splice 把节点摘下接到头部，不拷贝不析构，O(1)，是本题实现 O(1) 的关键；哈希表存迭代器使得定位节点和交给 splice 都是 O(1)",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day4.md#3"
     },
     {
       "category": "knowledge",
-      "title": "C++20 Concepts 解决了什么问题",
-      "content": "C++ 模板约束经历了 SFINAE（C++11/14）→ if constexpr（C++17）→ Concepts（C++20）的演进。请说明 Concepts 解决了 SFINAE 的哪两个主要痛点，并演示如何定义一个约束（如要求类型为数值类型或拥有 size() 成员函数）并应用到模板参数上。相比 SFINAE，Concepts 的报错信息有什么优势？",
-      "difficulty": "medium",
-      "tags": "C++,Concepts,C++20,requires",
+      "title": "容器底层结构与选型（vector/list/deque）",
+      "content": "请说出 std::vector、std::list、std::deque 的底层数据结构，以及随机访问和插入删除的复杂度。追问：list 中间插入是 O(1)，为什么实践中多数场景仍然推荐 vector？deque 的随机访问为什么也能做到 O(1)？",
+      "difficulty": "easy",
+      "tags": "STL容器,底层结构,复杂度",
       "followUps": [
-        "concept 定义和 requires 子句分别怎么写？有什么简化语法？",
-        "requires(T t) { { t.size() } -> std::convertible_to<size_t>; } 这段约束表达了什么？",
-        "if constexpr 相比 Concepts 有什么局限？两者的适用场景有何不同？",
-        "CUTLASS 从哪个版本开始引入 C++20 Concepts？之前为什么不用？"
+        "vector 为什么缓存友好而 list 不友好？这对实际性能有什么影响？",
+        "什么场景下 deque 比 vector 更合适？",
+        "list 的 O(1) 插入有什么前提条件？",
+        "什么场景你会真正考虑用 list（如 splice 场景）？",
+        "为什么 std::sort 不能用于 list？list 应该怎么排序？"
       ],
-      "keyPoints": "Concepts 对模板参数提供命名约束（如 template <Numeric T>），声明式地表达约束；解决 SFINAE 两个痛点：①语法繁琐（enable_if 嵌套）、②报错信息不可读（几百行模板展开错误）；requires 表达式可检测类型是否有特定成员函数，如 requires(T t) { t.size(); }；约束不满足时报错直接指出\"不满足 Numeric concept\"；演进路线：SFINAE（功能完整但语法繁琐）→ if constexpr（简洁但只适用于函数体内分支）→ Concepts（语法清晰、报错友好但需 C++20）；CUTLASS 4.x 开始引入 Concepts。",
-      "source": "",
+      "keyPoints": "vector：动态数组，连续内存，随机访问 O(1)，尾部插入均摊 O(1)、中间 O(n)，缓存友好；list：双向循环链表，随机访问 O(n)，已有指向位置的迭代器时任意位置插入删除 O(1)，节点分散缓存命中率低；deque：中控器+定长缓冲区分段连续，随机访问 O(1)（先算第几段再算段内偏移，常数比 vector 大），首尾插入 O(1)；选 vector 的原因：list 的 O(1) 前提是已有迭代器，先定位就是 O(n)，且链表节点散布堆上缓存不命中，实践中 vector 即使搬移也常更快，除非有特殊需求（频繁 splice、迭代器不能失效）；std::sort 需要随机访问迭代器，list 用成员函数 l.sort()（归并排序，稳定）",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day4.md#4"
     },
     {
       "category": "knowledge",
-      "title": "虚函数的底层实现：虚函数表与虚表指针",
-      "content": "C++ 中通过基类指针或引用调用虚函数时，实际执行的是派生类的重写版本，这就是运行时多态。请解释虚函数的底层实现机制：虚函数表（vtable）和虚表指针（vptr）分别是什么？一次虚函数调用在底层是如何完成的？并说明虚函数相比普通函数有哪些额外开销。",
+      "title": "shared_ptr 的控制块与引用计数机制",
+      "content": "请解释 std::shared_ptr 的内部实现原理：它是如何管理对象生命周期的？引用计数如何变化？为什么需要有强计数和弱计数两个计数器？",
       "difficulty": "medium",
-      "tags": "C++, 虚函数, vtable, 动态绑定",
+      "tags": "智能指针,shared_ptr,引用计数",
       "followUps": [
-        "静态绑定和动态绑定有什么区别？普通成员函数和虚函数在调用方式上有何不同？",
-        "虚函数有哪些空间和运行时上的开销？为什么编译器难以内联虚函数？",
-        "构造函数可以是虚函数吗？为什么？",
-        "vptr 是在什么时候被设置的？这和虚析构函数为什么能正常工作有什么关系？",
-        "在性能敏感的场景（如 GPU 计算的 host 端调用链）中，你会怎么权衡是否使用虚函数？"
+        "shared_ptr 拷贝构造和析构时分别发生了什么？",
+        "use_count 归零和 weak_count 归零分别触发什么操作？",
+        "make_shared 和 shared_ptr(new T) 在内存分配上有什么区别？这会带来什么副作用？",
+        "enable_shared_from_this 是做什么的？为什么不能在成员函数里直接 shared_ptr<T>(this)？",
+        "如果要你手写一个简易版 shared_ptr，你会如何设计拷贝赋值和自赋值处理？"
       ],
-      "keyPoints": "每个含虚函数的类有一张 vtable，存放该类所有虚函数的地址；每个对象有一个 vptr，指向所属类的 vtable。虚函数调用分两步：①通过对象的 vptr 找到 vtable；②在 vtable 中按偏移找到函数地址并间接调用。因为 vptr 指向实际类型的 vtable，所以基类指针也能调用派生类实现，这是运行时多态的本质。静态绑定在编译期由静态类型决定、直接调用地址、无额外开销；动态绑定在运行时由动态类型决定、通过 vtable 间接调用。虚函数代价：每对象多一个指针（64 位系统 8 字节）、每次调用一次间接跳转（额外内存访问）、可能 cache miss、编译器难以内联（Devirtualization 优化除外）。",
+      "keyPoints": "shared_ptr 含两个指针：指向对象的 ptr 和指向堆上控制块的指针；控制块含原子强计数 use_count、弱计数 weak_count、删除器；拷贝原子+1、析构原子-1；use_count 归零析构对象，weak_count 归零释放控制块；make_shared 一次分配对象+控制块、局部性好、异常安全，但 weak_ptr 存活期间整块内存不能归还；shared_from_this 与现有控制块共享计数，直接包装 this 会导致独立计数、双重释放；可用 copy-and-swap 统一处理赋值与自赋值。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#0"
     },
     {
       "category": "knowledge",
-      "title": "为什么基类析构函数要声明为 virtual",
-      "content": "假设派生类 Derived 在构造函数中分配了一块堆内存，并在析构函数中释放；代码通过基类指针 Base* 指向一个 new 出来的 Derived 对象并执行 delete。请说明：如果 Base 的析构函数不是 virtual，会发生什么？为什么？正确的做法是什么？",
-      "difficulty": "easy",
-      "tags": "C++, 虚析构函数, 资源泄漏, 继承",
+      "title": "shared_ptr 的线程安全性",
+      "content": "shared_ptr 是线程安全的吗？请分几个层次完整回答这个问题，并说明实际多线程使用 shared_ptr 时需要注意什么。",
+      "difficulty": "medium",
+      "tags": "智能指针,线程安全,并发",
       "followUps": [
-        "基类析构声明为 virtual 后，delete 时析构函数的调用顺序是怎样的？",
-        "什么样的类不需要把析构声明为 virtual？虚析构会引入什么开销？",
-        "如果不希望一个类被继承，C++11 之后你会用什么关键字表达？",
-        "如果不需要多态但仍想通过基类指针安全地管理对象生命周期，除了虚析构还有别的方案吗？",
-        "你在实际项目中有没有排查过或见到过非虚析构导致的资源泄漏？"
+        "多个线程同时拷贝同一个 shared_ptr 实例，计数操作会发生什么？",
+        "两个线程并发读写 shared_ptr 所指向的同一个对象，需要额外做什么？",
+        "多线程同时对同一个 shared_ptr 变量进行读写（而非各自拷贝），是否安全？",
+        "C++ 标准为此提供了什么解决方案？"
       ],
-      "keyPoints": "基类析构非 virtual 时，通过基类指针 delete 派生类对象只会调用基类析构，派生类析构不被调用，导致派生类持有的资源（如 new 出来的内存）泄漏。声明为 virtual 后，析构调用是动态绑定的：先调用派生类析构，再调用基类析构，资源正确释放。规则：只要类可能被继承且会通过基类指针删除，析构函数必须声明为 virtual；不打算被继承的类（如 final 类或工具类）不需要，因为虚析构会引入 vtable 开销。",
+      "keyPoints": "三段式回答：1) 计数本身是线程安全的，use_count 加减是原子操作；2) 被指向的对象不自动线程安全，多个线程读写同一 Widget 仍需加锁；3) 同一个 shared_ptr 变量的并发读写不安全，需要外部同步，C++20 提供 std::atomic<std::shared_ptr<T>>。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#1"
     },
     {
       "category": "knowledge",
-      "title": "多重继承的对象内存布局与指针偏移调整",
-      "content": "类 Button 同时继承自 Drawable 和 Clickable，两个基类都含有虚函数和自己的成员变量。请描述一个 Button 对象的内存布局（vptr 和各成员如何排列），并回答：把 Button 对象地址分别转换为 Drawable* 和 Clickable* 后，两个指针的值相同吗？为什么多重继承下的指针转换不是简单的地址复制？",
-      "difficulty": "hard",
-      "tags": "C++, 多重继承, 内存布局, vptr",
+      "title": "移动语义与 std::move 的本质",
+      "content": "C++11 为什么要引入移动语义？请解释 std::move 的实现原理和作用，以及移动构造之后源对象处于什么状态。",
+      "difficulty": "medium",
+      "tags": "移动语义,右值引用,性能优化",
       "followUps": [
-        "多重继承的派生类为什么会有多个 vptr？每个 vptr 分别指向什么？",
-        "相比单继承，多重继承会让对象和虚函数调用各多出什么开销？",
-        "什么是菱形继承？它有什么问题，虚继承是如何解决的？",
-        "虚继承本身会带来什么额外开销？",
-        "为什么像 CUTLASS 这类性能敏感的工程几乎不用多重继承和虚继承？"
+        "左值和右值如何区分？std::move 之后变量的类型变了吗？",
+        "std::move 本身真的执行了资源转移吗？转移动作发生在哪一步？",
+        "被移动后的源对象处于什么状态？可以对它做什么、不可以做什么？",
+        "移动构造函数为什么要标记 noexcept？不标会发生什么？",
+        "写一个 String 类的移动构造函数和移动赋值运算符，需要注意哪些细节？"
       ],
-      "keyPoints": "多重继承的派生类对象中有多个 vptr——每个含虚函数的基类各一个；对象内存按继承声明顺序排列各基类子对象，再接派生类自身成员（Button 示例：vptr₁ + Drawable 成员 → vptr₂ + Clickable 成员 + padding → Button 自身成员）。第一个基类子对象与对象起始地址相同（Drawable* 与 Button 地址一致），转换为第二个基类指针（Clickable*）时需要调整偏移指向对应子对象位置，所以不是简单的地址复制。菱形继承中 D 会包含两个 A 子对象，访问 A 成员有歧义；虚继承让 D 只有一个 A 子对象，但需要 vbase pointer/table 带来额外开销。性能敏感代码（如 CUDA/CUTLASS 工程）应避免多重继承的开销。",
+      "keyPoints": "动机：深拷贝大对象代价是分配+逐字节复制，而源常是即将销毁的临时对象，移动直接偷走堆指针，O(n) 降为 O(1)；std::move 本质是 static_cast<T&&>，只做类型转换把左值变为亡值，不移动任何东西，作用是使重载决议选中移动构造/赋值；被移动源处于有效但未指定状态，可析构、可重新赋值，但不能假设其值；移动构造/赋值要标 noexcept，否则 vector 扩容为保证强异常安全走 move_if_noexcept 退化为拷贝；手写移动成员要点：偷指针、源置空防 double free、移动赋值先释放自己资源并防自移动。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#2"
     },
     {
       "category": "knowledge",
-      "title": "Rule of 3/5/0：特殊成员函数的设计规则",
-      "content": "C++ 中管理资源的类在设计特殊成员函数时需要遵循一些经验规则。请分别解释 Rule of 3、Rule of 5、Rule of 0 的内容和适用场景，并说明现代 C++ 推荐哪种实践，什么情况下才需要手写完整的 Rule of 5。",
-      "difficulty": "medium",
-      "tags": "C++, Rule of Five, 资源管理, 移动语义",
+      "title": "万能引用、引用折叠与完美转发",
+      "content": "什么是万能引用（转发引用）？请解释引用折叠规则，并说明 std::forward 为什么能保留实参的值类别，它在工厂函数中如何使用。",
+      "difficulty": "hard",
+      "tags": "模板,完美转发,右值引用",
       "followUps": [
-        "Rule of 3 说定义了三者之一通常就要定义全部三个，背后的原因是什么？",
-        "移动构造和移动赋值为什么通常要标记 noexcept？",
-        "拷贝赋值运算符里先分配并拷贝新资源、再释放旧资源的写法是为了解决什么问题？",
-        "一个只持有 unique_ptr 的类，它的拷贝和移动行为是怎样的？",
-        "如果要封装 cudaMalloc/cudaFree 管理的 GPU 资源，你会按哪条 Rule 来设计这个类？"
+        "void f(T&& x) 是万能引用，那 void f(Widget&& x) 呢？两者的区别是什么？",
+        "请背出引用折叠规则：T& 和 T&& 分别与 &、&& 组合时折叠成什么？",
+        "在模板函数内部，万能引用参数 arg 有名字，它本身是左值还是右值？直接转发会发生什么？",
+        "std::forward<T>(arg) 是如何还原原始值类别的？",
+        "用万能引用 + std::forward 实现一个 make_unique，写出代码并解释展开过程。"
       ],
-      "keyPoints": "Rule of 3（C++98）：管理资源的类需要自定义析构函数、拷贝构造、拷贝赋值。Rule of 5（C++11）：在 Rule of 3 基础上增加移动构造和移动赋值，适用于管理资源且需要移动语义的类。Rule of 0（现代 C++ 推荐）：不定义任何特殊成员函数，用智能指针/STL 容器管理资源，让编译器自动生成；只有直接管理裸资源（如 new/delete、fopen/fclose、cudaMalloc/cudaFree）时才需要 Rule of 5。拷贝赋值中先分配新资源再释放旧资源是为了异常安全。持有 unique_ptr 的类自动不可拷贝，并自动获得移动语义。",
+      "keyPoints": "只有 T 是待推导模板参数时 T&& 才是万能引用，具体类型的 && 只是普通右值引用；引用折叠规则：只要出现左值引用就折叠为左值引用，只有 &&+&& 仍为 &&；传左值时 T 推导为 int&，传右值时 T 推导为 int；模板内部有名字的 arg 永远是左值，直接转发会丢失右值属性；std::forward<T>(arg) 返回 T&&，T=int 时为右值、T=int& 时折叠为左值，从而还原传入时的值类别；工厂函数中万能引用 + forward 是可变参完美转发的标配组合。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#3"
     },
     {
       "category": "knowledge",
-      "title": "对象切片：按值传递多态对象的陷阱",
-      "content": "Animal 类有虚函数 speak()，Dog 继承 Animal 并重写了 speak()。现在把一个 Dog 对象分别传给两个函数：一个按值接收 Animal 参数，一个按 const 引用接收 Animal 参数，两个函数内部都调用 a.speak()。请说明两种传参方式下调用行为的区别及其底层原因，并给出避免该问题的方法。",
+      "title": "shared_ptr 循环引用与 weak_ptr 破解",
+      "content": "两个 Node 互相持有 shared_ptr 会发生什么？请分析引用计数的变化过程，说明为什么会造成内存泄漏，以及如何修复。",
       "difficulty": "medium",
-      "tags": "C++, 对象切片, 多态, 值传递",
+      "tags": "智能指针,weak_ptr,内存泄漏",
       "followUps": [
-        "按值传递发生切片时，拷贝出来的对象的 vptr 指向什么？这对虚函数调用意味着什么？",
-        "除了函数按值传参，还有哪些写法也可能触发对象切片？",
-        "为什么传指针或引用就能保留多态行为？",
-        "设计一个接收多态对象的 API 时，你会如何选择参数类型来避免调用方踩坑？",
-        "你在实际项目中是否遇到过因切片导致的隐蔽 bug？"
+        "写出 a->next = b; b->next = a; 之后两个节点的计数分别是多少？main 结束时计数如何变化？",
+        "为什么计数停在 1 时析构函数不会执行？",
+        "把哪一侧改成 weak_ptr 可以打破循环？依据什么原则决定哪一侧改？",
+        "weak_ptr 不能解引用，如何安全地访问被观察对象并检测其存活？expired() 和 lock() 用哪个更好？",
+        "缓存场景中如何利用 weak_ptr 设计不阻止对象析构的缓存？"
       ],
-      "keyPoints": "按值传递派生类对象给基类参数时发生对象切片：只拷贝对象的基类部分，派生类特有部分丢失，vptr 也变成基类的 vptr，函数内虚函数永远调用基类版本（Animal::speak）。按引用（或指针）传递不切片：引用指向完整的派生类对象，虚函数动态绑定到派生类版本（Dog::speak）。避免方法：多态对象用指针或引用传递，不要按值传递。",
+      "keyPoints": "双方都用 shared_ptr 时形成环：a、b 各自计数为 2，栈上对象析构后计数各降为 1 但不再变化，~Node 永不执行导致泄漏；修复原则：父子/双向结构中父持有子用 shared_ptr、子回望父用 weak_ptr，缓存本体持 shared_ptr、使用者拿 weak_ptr；weak_ptr 必须由 shared_ptr 构造、不改变强计数、不能直接解引用；标准用法是 if (auto sp = w.lock())，存活则返回计数+1 的 shared_ptr 保证使用期间对象不被销毁，已销毁返回 nullptr；expired() 结果返回后即可能过期存在竞态，应优先 lock()。",
       "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#4"
     },
     {
       "category": "knowledge",
-      "title": "std::thread 的 join 与 detach 的区别",
-      "content": "在 C++ 多线程编程中，std::thread 对象创建后需要正确管理其生命周期。请解释 join() 和 detach() 的区别，各自适用什么场景，以及如果两者都不调用就析构线程对象会发生什么。",
-      "difficulty": "easy",
-      "tags": "std::thread, join, detach, 线程生命周期",
+      "title": "Lambda 捕获方式与悬空陷阱",
+      "content": "C++ lambda 的底层实现原理是什么？请对比 [&]、[=]、[this] 等捕获方式的语义，并说明各自的危险场景。",
+      "difficulty": "medium",
+      "tags": "lambda,闭包,陷阱",
       "followUps": [
-        "如果 std::thread 对象在既没有 join 也没有 detach 的情况下被析构，会发生什么？",
-        "detach 之后线程如果访问主线程已销毁的局部变量，会有什么风险？如何避免？",
-        "向线程函数传引用参数时为什么需要 std::ref？相比用 lambda 捕获引用有什么差异？",
-        "在实际项目中如果必须使用 detach，你会如何保证线程访问的数据生命周期是安全的？"
+        "编译器会把 lambda 展开成什么？捕获列表对应生成的类中的什么成员？",
+        "按值捕获 [x] 后想在 lambda 内修改 x 需要什么关键字？默认 operator() 是什么限定？",
+        "[&] 捕获在什么情况下会产生悬空引用？",
+        "[=] 为什么也不是万能保险？在成员函数里 [=] 捕获 this 会发生什么？",
+        "如果想把一个不可拷贝对象（如 unique_ptr）移入 lambda，应该用什么语法？"
       ],
-      "keyPoints": "join 阻塞调用线程等待目标线程完成并回收资源；detach 将线程分离到后台独立运行、不等待；std::thread 对象在两者都未调用时析构会触发 std::terminate；通常优先 join；detach 需确保线程不访问已销毁的局部变量（悬空指针风险）；向线程传引用需 std::ref，安全做法是传值或传 shared_ptr。",
-      "source": "",
+      "keyPoints": "lambda 本质是编译器生成的匿名仿函数类：捕获列表对应构造参数和成员变量（按值捕获为成员副本、按引用捕获为成员引用），调用对应 operator()，默认 const 故值捕获不可改，mutable 可修改副本；空捕获 lambda 可隐式转换为函数指针，可内联、常比 std::function 快；[&] 在 lambda 被存储/异步执行/作为返回值、超出局部变量生命周期时悬空；[=] 对大对象有拷贝代价，且拷贝的是 this 指针本质仍是引用对象，对象销毁后照样悬空（C++20 起需显式 [this] 或用 [*this] 拷贝整个对象）；C++14 初始化捕获 [obj = std::move(obj)] 是唯一能把对象移入 lambda 的方式。",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day5.md#5"
+    },
+    {
+      "category": "knowledge",
+      "title": "手写线程安全生产者-消费者模型",
+      "content": "请用 C++ 手写一个生产者-消费者模型：一个共享队列、一把互斥锁、一个条件变量，生产者往队列 push 数据后通知消费者，消费者在无数据时阻塞等待而不是轮询。要求：使用谓词版本的 wait 防止虚假唤醒，并实现退出协作机制（所有数据处理完后消费者能正常退出）。",
+      "difficulty": "medium",
+      "tags": "条件变量,生产者消费者,互斥锁",
+      "followUps": [
+        "为什么 wait 必须配合 unique_lock 使用，而 push 可以用 lock_guard？",
+        "请讲清 wait 内部的三个步骤：释放锁、挂起、醒来重新抢锁，为什么第一步必须先释放锁？",
+        "什么是虚假唤醒？为什么用 if 判断条件代替 while/谓词会产生未定义行为？",
+        "如果队列有容量上限（有界队列），push 侧也需要等待，应该怎么改？用几个条件变量？",
+        "notify_one 和 notify_all 各适合什么场景？多个消费者时用 notify_one 会不会丢通知？"
+      ],
+      "keyPoints": "一个队列+一把锁+一个条件变量；消费者 unique_lock 持锁后 cv.wait(lk, pred) 带谓词（等价于 while(!pred()) cv.wait(lk)）防虚假唤醒；生产者 lock_guard 持锁 push、解锁后 notify_one；wait 内部三步：释放锁（否则生产者进不来死锁）、挂起不占 CPU、被 notify 后重新抢到锁才返回；退出机制：done 标志受同一 mutex 保护、谓词判断 !q.empty() || done、退出前 notify_all；谓词检查的条件和 push 修改的必须是同一把锁保护的数据。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day6.md#0"
     },
     {
       "category": "knowledge",
-      "title": "lock_guard、unique_lock 与 scoped_lock 的区别与选择",
-      "content": "C++ 提供 lock_guard、unique_lock、scoped_lock 三种 RAII 锁管理工具。请对比三者的特点与适用场景，并解释为什么推荐使用 RAII 包装器而不是手动调用 lock()/unlock()。",
+      "title": "线程安全单例的两种写法：Meyers 与 DCLP",
+      "content": "请手写一个线程安全的懒汉单例类，给出至少两种实现方式，并说明各自原理。要求构造函数私有、拷贝构造和赋值运算符删除，且能在多线程并发首次调用时保证只构造一次。",
       "difficulty": "medium",
-      "tags": "mutex, lock_guard, unique_lock, RAII",
+      "tags": "单例模式,原子操作,magic static",
       "followUps": [
-        "为什么 ThreadSafeCounter 的 get() 是 const 成员函数却仍然能加锁？mutable 的作用是什么？",
-        "condition_variable::wait 为什么必须配合 unique_lock 而不能用 lock_guard？",
-        "如果临界区内的代码抛出异常，锁如何保证被正确释放？",
-        "两个线程以相反顺序获取两个 mutex 会发生什么？有哪些预防死锁的策略？",
-        "scoped_lock 同时锁多个 mutex 为什么能避免死锁？相比固定加锁顺序有什么优劣？"
+        "Meyers 单例中局部 static 变量在 C++11 标准下如何保证并发只初始化一次？这叫什么特性？",
+        "DCLP 为什么要检查两次 instance 是否为 nullptr？两次检查各自防什么问题？",
+        "为什么说裸指针版本的 DCLP 会被指令重排出\"半成品\"？new 操作可能被拆成哪几步？",
+        "为什么 store 必须用 memory_order_release，而第一次检查可以用 acquire？",
+        "饿汉式单例为什么天生线程安全？它有什么缺点？"
       ],
-      "keyPoints": "lock_guard：构造加锁、析构解锁，不可中途解锁、不可移动，开销最小，适合简单临界区；unique_lock：支持延迟加锁（defer_lock）、中途解锁/重新加锁、可移动、可配合 condition_variable；scoped_lock：可同时原子地锁多个 mutex，避免死锁；RAII 保证临界区抛异常时锁也会正确释放；死锁预防四策略：固定加锁顺序、scoped_lock、try_lock+回退、避免嵌套锁（持有锁时不调用未知代码）。",
-      "source": "",
+      "keyPoints": "Meyers 单例：instance() 内定义局部 static 对象，C++11 起 magic static 保证并发首次调用初始化只执行一次，编译器用锁/CAS 实现，代码三行最简；DCLP：atomic 指针第一次无锁检查（热路径零开销）→ 加锁 → 第二次检查（防等锁期间已被其他线程构造）→ new 后用 memory_order_release 发布；重排坑：new 可拆为分配内存、地址写回指针、执行构造，②③ 重排后其他线程会拿到未构造完的半成品，必须 atomic+acquire/release 解决；三件套：构造函数 private、拷贝/赋值 =delete、静态成员类外定义；饿汉式启动即构造天生安全但有白造和静态初始化顺序问题。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day6.md#1"
     },
     {
       "category": "knowledge",
-      "title": "虚假唤醒与 condition_variable 的正确用法",
-      "content": "condition_variable 是线程间通知的经典工具，最典型的应用是生产者-消费者模型。请解释什么是虚假唤醒（spurious wakeup），为什么 wait 在没有 notify 的情况下也可能返回，以及正确的处理方法是什么。",
+      "title": "lock_guard、unique_lock、scoped_lock 选型对比",
+      "content": "C++ 标准库提供了多种 RAII 锁包装器：std::lock_guard、std::unique_lock、std::scoped_lock、std::shared_lock。请对比它们的能力差异（加锁时机、能否中途解锁、能否转移所有权、能否配合条件变量、开销），并说明什么场景选哪个。",
       "difficulty": "medium",
-      "tags": "condition_variable, 虚假唤醒, 生产者消费者, 多线程",
+      "tags": "互斥锁,RAII,锁选型",
       "followUps": [
-        "带谓词的 wait(lock, predicate) 与不带谓词的 wait(lock) 在行为上有什么区别？",
-        "如果手动检查条件，应该用 if 还是 while？用 if 会导致什么后果？",
-        "notify_one 和 notify_all 有什么区别？在 set_done 结束通知时应该用哪个？",
-        "线程安全队列中的 done_ 标志起什么作用？如果没有它，消费者会遇到什么问题？",
-        "请描述如何用 condition_variable 手写一个完整的生产者-消费者模型，包括生产结束后的退出机制。"
+        "为什么 std::condition_variable::wait 只接受 unique_lock 而不接受 lock_guard？",
+        "需要同时持有两把互斥锁时，直接先后 lock 会有什么风险？C++17 提供了什么方案？",
+        "std::shared_mutex 的读写语义是什么？什么情况下使用它反而比 mutex 更差？",
+        "为什么推荐用 RAII 锁而不是手动 lock/unlock？手动管理在异常或提前 return 时会出什么问题？",
+        "锁的粒度设计有哪些原则？为什么不能在持锁期间调用未知回调或虚函数？"
       ],
-      "keyPoints": "虚假唤醒指 wait 在没有 notify 时也可能返回；正确处理：用带谓词的 wait(lock, predicate)（内部自动循环检查条件）或手动 while (!condition) cv.wait(lock)，绝不能用 if 判断后直接 wait；notify_one 唤醒一个等待的消费者（push 后使用），notify_all 唤醒所有等待线程（set_done 后使用）；线程安全队列需要 done_ 标志，消费者在队列空且生产结束时退出；wait 需配合 unique_lock 使用。",
-      "source": "",
+      "keyPoints": "lock_guard：构造即加锁、不可中途解锁、不可移动、零额外状态，默认首选；unique_lock：可延迟加锁（defer_lock）、可中途 lock/unlock、可移动（可入容器/函数返回）、唯一能与条件变量 wait 配合，代价是多记一个状态开销略大；scoped_lock：C++17 同时锁住多把互斥锁，内部使用死锁避免算法（等价 std::lock + adopt_lock）；shared_lock/shared_mutex：读共享写独占，仅读多写少场景划算；手动 lock/unlock 在 return 或抛异常时漏 unlock 导致等待线程永久阻塞，RAII 析构自动释放；临界区原则：短、不嵌套、锁内不调未知代码。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day6.md#2"
     },
     {
       "category": "knowledge",
-      "title": "std::atomic 的 6 种 memory order",
-      "content": "std::atomic 提供无锁原子操作，其 API 可以指定 memory order，这是 C++ 并发的核心难点。请列举 6 种 memory order 并说明各自的语义保证，指出默认的是哪一种，以及不同场景下应如何选择。",
-      "difficulty": "hard",
-      "tags": "std::atomic, memory_order, happens-before, C++内存模型",
+      "title": "死锁的四个必要条件与预防手段",
+      "content": "有两个线程 T1 和 T2：T1 先锁 A 再锁 B，T2 先锁 B 再锁 A，二者可能永久阻塞。请解释死锁产生的四个必要条件，并给出至少三种工程上的预防方法。",
+      "difficulty": "medium",
+      "tags": "死锁,互斥锁,并发排查",
       "followUps": [
-        "relaxed、acquire、release 各自提供什么保证？分别适合什么场景？",
-        "release-acquire 配对如何建立 happens-before 关系？请举例说明同步标志的经典使用模式。",
-        "为什么说 seq_cst 最强但最慢？它相比 acquire/release 额外保证了什么？",
-        "一个仅用于统计、不参与同步的计数器应该用哪种 memory order？为什么？",
-        "在多线程任务调度或无锁数据结构中，你会如何权衡 memory order 的选择？"
+        "四个条件中哪几个是可以通过编码手段破坏的？分别怎么破坏？",
+        "std::scoped_lock 同时锁 A、B 两把锁时，内部是靠什么算法避免死锁的？",
+        "如果怀疑线上服务发生死锁，你会用什么工具和步骤排查？",
+        "破坏循环等待的\"全局统一加锁顺序\"在大型代码库中为什么难以落地？",
+        "try_lock 失败先释放已有锁的方案为什么能破坏\"持有并等待\"？有什么缺点？"
       ],
-      "keyPoints": "六种：relaxed（仅原子性、无排序约束，适合计数器）；acquire（后续读写不能重排到此操作之前，读同步标志）；release（之前的读写不能重排到此操作之后，写同步标志）；acq_rel（acquire+release，适合 CAS）；seq_cst（全局顺序一致，默认，最强）；consume（数据依赖排序，已不推荐）。默认是 seq_cst。release/acquire 配对建立 happens-before 关系：release 之前的所有写对 acquire 之后的读可见（如先写 payload 再 release 存 ready 标志的经典模式）。选择：大多数场景用默认 seq_cst，性能敏感计数器用 relaxed，同步标志用 release/acquire。",
-      "source": "",
+      "keyPoints": "四条件：互斥（锁本质，无法破坏）、持有并等待（破坏法：一次性申请全部资源，如 scoped_lock）、不可剥夺（破坏法：try_lock 失败先放掉已有锁再重试）、循环等待（破坏法：全局统一加锁顺序，最常用）；四者同时成立才死锁，破坏任意一条即可预防；其他手段：减少锁嵌套、缩小临界区、锁内不调用未知回调/虚函数；线上排查：gdb attach 后 info threads + thread apply all bt，两条线程栈互相等待对方持有的锁即死锁，工程上可用 pthread_mutex_timedlock/超时重试兜底。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day6.md#3"
     },
     {
       "category": "knowledge",
-      "title": "线程安全单例模式的实现",
-      "content": "线程安全的单例模式是 C++ 面试高频手撕题。请描述或手写至少两种线程安全的单例实现（如 Meyers' Singleton、std::call_once、双重检查锁），并说明每种方案的线程安全保证来自哪里。",
+      "title": "volatile 与 std::atomic 的本质区别",
+      "content": "有人说\"volatile 变量是线程安全的\"。请从原子性、可见性、有序性三个维度对比 volatile 和 std::atomic，并说明为什么并发计数器应该用 std::atomic<int> 而不是 volatile int。",
       "difficulty": "medium",
-      "tags": "单例模式, call_once, 线程安全, C++",
+      "tags": "原子操作,内存序,可见性",
       "followUps": [
-        "Meyers' Singleton 为什么在 C++11 之后是线程安全的？这一保证由谁提供？",
-        "双重检查锁（DCLP）为什么容易写错？其中 atomic 的 acquire/release 起什么作用？",
-        "std::call_once 方案相比 Meyers' Singleton 有什么特点？",
-        "为什么单例类要删除拷贝构造函数和拷贝赋值运算符？",
-        "如果单例构造涉及动态分配和初始化顺序问题，你会选哪种实现方案？"
+        "std::atomic 的 counter++ 为什么不需要加锁？它底层通常如何实现？",
+        "compare_exchange_weak 的语义是什么？expected 参数在失败时会发生什么？",
+        "解释一下 relaxed、release/acquire、seq_cst 各自保证什么，分别适合什么场景？",
+        "请描述\"data=42; flag=true;\"被重排导致线程 2 读到未初始化数据的事故场景，怎么用 acquire/release 修复？",
+        "工程上为什么建议默认用 seq_cst，只在 profile 证明有瓶颈时才降级？"
       ],
-      "keyPoints": "Meyers' Singleton（推荐）：函数内局部 static 变量，C++11 标准保证其初始化线程安全（编译器内部用 call_once 或等价机制），最简洁；std::call_once + once_flag：明确、可读，推荐；DCLP：需要 atomic 指针 + acquire/release 语义才能保证正确性，C++11 之前容易写错，现已不推荐；简单加锁版：每次调用都加锁，性能差；单例需 delete 拷贝构造与拷贝赋值。",
-      "source": "",
+      "keyPoints": "volatile 只禁止编译器把读写缓存进寄存器（每次都真实访存），不保证原子性（x++ 仍是读-改-写三步会丢更新）、不保证可见性（不刷 CPU 缓存）、不阻止重排，仅用于硬件 MMIO 寄存器和信号处理；std::atomic 三者全保证：原子性（单条原子指令/CAS）、可见性（内存栅栏）、有序性（memory_order 约束重排）；一句话：volatile 给编译器看，atomic 给多线程看；内存序：relaxed 只保证原子性适合纯计数，release/acquire 配对建立 happens-before 用于发布数据，seq_cst 默认且全局总顺序一致最稳；重排事故：写端 data=42 与 flag=true 重排或缓存延迟，读端见 flag 后读到旧 data，修复为写端 store flag 用 release、读端 load flag 用 acquire；工程建议默认 seq_cst，profile 证明瓶颈再降级。",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day6.md#4"
     },
     {
       "category": "knowledge",
-      "title": "C++11 到 C++23 各版本关键新特性",
-      "content": "现代 C++ 从 C++11 开始经历了多次标准更新，面试中常考察对各版本特性的整体掌握。请概述 C++11、C++14、C++17、C++20、C++23 分别引入了哪些关键特性？其中面试频率最高的 C++11 核心特性有哪些？",
+      "title": "select、poll、epoll 的区别与选型",
+      "content": "在 Linux 高并发网络服务器开发中，I/O 多路复用是绕不开的技术。请对比 select、poll、epoll 三种多路复用机制：它们在 fd 数量上限、fd 集合向内核的传递方式、就绪检测的复杂度上有何不同？epoll 为什么在大规模长连接场景下性能显著更好？边缘触发（ET）和水平触发（LT）有什么区别，使用 ET 时编程上要注意什么？",
       "difficulty": "medium",
-      "tags": "C++11,C++17,C++20,现代C++",
+      "tags": "网络编程,epoll,IO多路复用,Linux",
       "followUps": [
-        "lambda 的值捕获和引用捕获各有什么风险？分别在什么场景下使用？",
-        "C++17 的结构化绑定和 CTAD 分别解决了什么问题？",
-        "C++20 的 Concepts 相比传统 SFINAE 带来了哪些改进？",
-        "如果团队项目还停留在 C++11/14，你会优先推动升级到哪个标准？为什么？",
-        "你在实际项目中用过哪些 C++20/23 特性，带来了什么收益？"
+        "select 的 fd 上限 1024 是由什么机制决定的？",
+        "epoll 内部的数据结构是怎样的？就绪 fd 是如何被 epoll_wait 拿到的？",
+        "使用 ET 模式时为什么必须配合非阻塞 fd？",
+        "什么场景下你仍然会选择 select 而不是 epoll？",
+        "如果让你设计一个百万连接的服务器，epoll 之外还需要考虑哪些瓶颈？"
       ],
-      "keyPoints": "C++11：auto、lambda、智能指针、移动语义/右值引用、nullptr、range-for、constexpr、变参模板、thread/atomic、override/final，是面试最高频版本；C++14：函数返回类型推导、泛型 lambda、make_unique、decltype(auto)、数字字面量分隔符；C++17：if constexpr、结构化绑定、optional/variant/any、string_view、filesystem、折叠表达式、CTAD、[[nodiscard]]；C++20：Concepts、Ranges、Coroutines、Modules、<=> 飞船运算符、consteval/constinit、std::format、std::span；C++23：std::expected、std::print、Deducing this、std::mdspan（面试了解即可）。",
-      "source": "",
+      "keyPoints": "select 用 fd_set 位图，上限 1024，每次调用全量拷贝进内核；poll 用 pollfd 数组突破上限但仍是全量拷贝 + O(n) 扫描；epoll 通过 epoll_ctl 一次注册进内核红黑树，事件就绪经回调挂入就绪链表，epoll_wait 只拷回就绪 fd，复杂度与总连接数无关；LT 只要还有数据没读完就一直通知，编程简单；ET 只在状态变化时通知一次，必须一次性读到 EAGAIN 且配合非阻塞 fd，换来更少唤醒次数；高并发长连接场景选 epoll（nginx/Redis）",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#0"
     },
     {
       "category": "knowledge",
-      "title": "C++17 工具类型：optional、variant 与 string_view",
-      "content": "C++17 引入了一批常用'词汇类型'工具，面试中经常逐一考察。请分别说明 std::optional、std::variant、std::string_view 的用途和适用场景，并谈谈使用 string_view 时需要警惕的陷阱。",
+      "title": "TCP 三次握手原因与 TIME_WAIT / CLOSE_WAIT 排查",
+      "content": "请解释 TCP 的三次握手过程和四次挥手过程。为什么握手必须是三次、两次不行？请从收发能力验证和历史连接（滞留的旧 SYN）两个角度分析。四次挥手中中间的 ACK 和 FIN 为什么不能合并？另外，如果你在服务器上用 ss 或 netstat 发现大量 TIME_WAIT 或大量 CLOSE_WAIT，分别说明什么问题、可能是什么原因、如何排查？",
       "difficulty": "medium",
-      "tags": "C++17,std::optional,std::variant,string_view",
+      "tags": "TCP,网络协议,连接状态,问题排查",
       "followUps": [
-        "std::optional 表示'可能没有值'，它和返回错误码、抛异常相比各有什么优劣？",
-        "std::variant 和传统 union 有什么区别？std::visit 是怎么配合使用的？",
-        "string_view 为什么能避免拷贝？它悬空的风险来自哪里？",
-        "C++23 的 std::expected 想替代什么样的错误处理方式？"
+        "TIME_WAIT 状态为什么需要等待 2MSL？",
+        "大量 CLOSE_WAIT 通常是代码层面的什么 bug？",
+        "大量 TIME_WAIT 有哪些缓解手段？",
+        "SYN 洪泛攻击利用了三次握手的什么弱点？",
+        "主动关闭方和被动关闭方分别可能进入哪些状态？"
       ],
-      "keyPoints": "optional 表示可能没有值（如查找失败返回 nullopt，调用方用 if(opt)/*opt 判断和取值）；variant 是类型安全的 union，配合 std::visit 访问当前持有的类型；string_view 是不拥有数据的字符串视图，substr 等操作不产生字符串拷贝；string_view 不延长底层字符串的生命周期，指向临时字符串或已被销毁的字符串会悬空导致未定义行为。",
-      "source": "",
+      "keyPoints": "三次握手：SYN → SYN+ACK → ACK；两次不行因为服务端无法确认'自己→客户端'方向通畅，且无法挡住网络中滞留的旧 SYN（三次握手时客户端发现序号不对可回 RST）；四次挥手 FIN → ACK → FIN → ACK，中间 ACK 与 FIN 不能合并因为被动方可能还有数据要发（半关闭）；TIME_WAIT 在主动关闭方，等 2MSL 以保证最后 ACK 丢失后可响应重发的 FIN，并让旧报文消亡；大量 TIME_WAIT 是主动关闭方高并发短连接的正常堆积，可开 tcp_tw_reuse 或改长连接；大量 CLOSE_WAIT 说明收到 FIN 后代码没调 close()，是 fd 泄漏 bug，用 ss -tnp / lsof 定位进程",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#1"
     },
     {
       "category": "knowledge",
-      "title": "用 RAII 封装 CUDA 显存资源",
-      "content": "在 AI Infra 项目中经常需要用 C++ 类管理 GPU 显存：内部通过 cudaMalloc 分配、cudaFree 释放。假设你要设计一个 CudaBuffer 类，请描述其完整设计：构造和析构如何处理资源？拷贝和移动操作应如何定义？为什么移动构造要标记 noexcept？",
-      "difficulty": "medium",
-      "tags": "RAII,CUDA,Rule of Five,资源管理",
+      "title": "手写支持移动语义的 String 类（Rule of Five）",
+      "content": "请你在白板（或纸笔）上实现一个包含移动语义的 String 类，管理一个动态分配的 char 数组。要求实现构造函数、析构函数、拷贝构造、拷贝赋值、移动构造、移动赋值，凑齐 Rule of Five。请说明拷贝赋值运算符为什么采用'先分配新内存、再释放旧内存'的写法，以及移动操作为什么必须标记 noexcept，不标会有什么后果。",
+      "difficulty": "hard",
+      "tags": "C++,移动语义,RuleOfFive,手写题",
       "followUps": [
-        "如果这个类允许默认拷贝构造，会出现什么问题？",
-        "移动构造里为什么要将源对象的指针置为 nullptr？",
-        "移动赋值运算符需要做哪些事？自赋值如何处理？",
-        "如果想让多个对象共享同一块显存的所有权，你会怎么改造这个类？",
-        "用 unique_ptr 配自定义 deleter（cudaFree）和手写 RAII 类相比有什么取舍？"
+        "String s2 = std::move(s1) 执行完之后，s1 处于什么状态？还能做什么操作？",
+        "为什么移动赋值里要先 delete 自己的 data_ 再接管对方的？",
+        "拷贝赋值里为什么要先自赋值检查？",
+        "如果类里有 shared_ptr 成员而不是裸指针，还需要写这些特殊成员函数吗？",
+        "如果面试官要求你改用 copy-and-swap 实现拷贝赋值，你会怎么写？"
       ],
-      "keyPoints": "RAII 将资源生命周期绑定到对象生命周期：构造函数中 cudaMalloc 获取资源，析构函数中 cudaFree 自动释放；拷贝构造和拷贝赋值应显式 delete，避免 double free；遵循 Rule of 5；移动构造 noexcept 地接管指针和大小，并把源对象指针置 nullptr；移动操作标 noexcept 是为了让 vector 扩容等场景能安全使用移动而非回退到拷贝。",
-      "source": "",
+      "keyPoints": "拷贝构造/赋值必须深拷贝（new char[] + strcpy），否则默认逐成员浅拷贝导致 double free；拷贝赋值用'先分配新 buf、拷贝、再 delete 旧 data_'保证异常安全（new 抛异常时 this 未被破坏）；移动构造在初始化列表窃取指针后把 other.data_ 置为 nullptr（delete[] nullptr 安全）；移动赋值：自赋值检查 → 释放自己 → 偷指针 → 置空对方；移动操作必须 noexcept，否则 vector 扩容时不敢用移动会退回拷贝；std::move 后 s1 处于'有效但未指定'状态，只能重新赋值或析构",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#2"
     },
     {
       "category": "knowledge",
-      "title": "std::move 与 std::forward 的区别",
-      "content": "移动语义和完美转发是 C++ 面试的高频考点。请解释 std::move 实际做了什么？它与 std::forward 的区别是什么？另外，为什么移动构造函数通常要标记为 noexcept？",
-      "difficulty": "medium",
-      "tags": "移动语义,完美转发,右值引用,noexcept",
+      "title": "手写简易 shared_ptr 与循环引用问题",
+      "content": "请实现一个简化版 shared_ptr：每个智能指针对象包含两个指针（对象指针 + 控制块指针），控制块中包含原子引用计数。要求实现构造、析构、拷贝构造、拷贝赋值、移动构造、移动赋值，并保证多线程下拷贝和析构的正确性。请说明 release 逻辑中为什么用 fetch_sub(1) == 1 判断自己是最后一个持有者。最后，解释 shared_ptr 的循环引用问题是如何产生的，以及为什么用 weak_ptr 可以解决。",
+      "difficulty": "hard",
+      "tags": "智能指针,shared_ptr,原子操作,手写题",
       "followUps": [
-        "std::move 之后原来的对象处于什么状态？还能继续使用吗？",
-        "什么是引用折叠规则？模板中的转发引用 T&& 是如何推导的？",
-        "为什么不要写 return std::move(local)？它和 RVO/NRVO 有什么关系？",
-        "vector 扩容时是如何决定对元素用移动构造还是拷贝构造的？"
+        "拷贝赋值运算符里为什么要先 release() 自己再接管对方？顺序反了会怎样？",
+        "移动构造时引用计数为什么不变？",
+        "原子引用计数保证了什么安全、又没保证什么安全？指向的对象本身线程安全吗？",
+        "真正的 std::shared_ptr 用 make_shared 相比直接 new 有什么优势？",
+        "weak_ptr 的 lock() 返回什么？使用时要注意什么？"
       ],
-      "keyPoints": "std::move 只是 static_cast 到右值引用，本身不移动任何东西；std::forward 是条件转换，配合转发引用 T&& 和引用折叠（只有 && && 折叠为 &&，其余折叠为 &）保持参数原始值类别，实现完美转发；移动构造标 noexcept 使 vector 扩容等场景能安全选择移动而不是回退到拷贝；RVO 在 C++17 对临时对象强制、NRVO 是编译器优化，return std::move(local) 会阻止 NRVO。",
-      "source": "",
+      "keyPoints": "控制块含 T* ptr + atomic<int> refs，构造时 refs=1；拷贝 fetch_add(1)、析构 fetch_sub(1)，fetch_sub 返回旧值，旧值为 1 说明自己是最后一个，需 delete 对象再 delete 控制块；移动不动计数，只转移控制块指针并置空对方；赋值先 release 自己再接管（先接管后 release 可能在自赋值场景翻车）；计数原子保证多线程操作不同副本安全，但指向的对象本身不安全需自行加锁；循环引用如 A 持 shared_ptr<B>、B 持 shared_ptr<A>，析构后计数都停在 1 双双泄漏，改一方为 weak_ptr（不增加强计数）破解，使用前 lock() 检测存活；make_shared 把对象和控制块一次分配，省一次堆请求并提升缓存局部性",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#3"
     },
     {
       "category": "knowledge",
-      "title": "shared_ptr 的控制块与线程安全性",
-      "content": "关于 std::shared_ptr 有三个连环问题常被一起考察：它的控制块里包含哪些内容？make_shared 和直接 new 再构造 shared_ptr 相比有什么差异？shared_ptr 到底是不是线程安全的？",
-      "difficulty": "medium",
-      "tags": "智能指针,shared_ptr,线程安全,内存管理",
+      "title": "双重检查锁（DCLP）与内存序问题",
+      "content": "请写出线程安全单例的两种实现：Meyers 局部静态变量版本，以及双重检查锁（DCLP）版本。在 DCLP 版本中，请正确使用 std::atomic 和 std::mutex。然后解释：为什么 C++11 之前经典 DCLP 是错的？`tmp = new Singleton` 实际由哪几步组成、可能发生什么问题？C++11 之后用什么机制保证它正确？",
+      "difficulty": "hard",
+      "tags": "单例模式,多线程,内存序,原子操作",
       "followUps": [
-        "make_shared 把对象和控制块合并为一次分配，为什么说这反而可能导致对象内存延迟释放？",
-        "两个 shared_ptr 互相引用会发生什么？怎么用 weak_ptr 打破循环？",
-        "多个线程各自持有同一对象的 shared_ptr 副本时，哪些操作仍需要额外加锁？",
-        "相比 shared_ptr，unique_ptr 在性能和设计上有哪些优势？"
+        "Meyers 单例为什么天然是懒汉式？C++11 对局部静态初始化做了什么保证？",
+        "第一次检查（无锁快路径）为什么用 acquire 内存序？",
+        "volatile 能替代 atomic 实现 DCLP 吗？为什么？",
+        "memory_order_relaxed / acquire / release 各自的语义是什么？",
+        "如果单例析构时有其他线程仍在使用它，会有什么问题？怎么处理？"
       ],
-      "keyPoints": "控制块包含强引用计数、弱引用计数、deleter、allocator；make_shared 一次分配对象和控制块（缓存友好），new + shared_ptr 构造需要两次分配，但 make_shared 因弱计数存在会使对象内存延迟释放；线程安全需分三层：引用计数操作是原子的（安全），但所管理对象本身的并发访问不安全，同一个 shared_ptr 变量的并发读写也不安全；循环引用导致泄漏，用 weak_ptr 打破并通过 lock() 提升访问。",
-      "source": "",
+      "keyPoints": "Meyers 版本：static Singleton inst 局部静态变量，C++11 起保证初始化线程安全且首次执行到才构造（天然懒汉），同时 delete 拷贝构造和拷贝赋值；DCLP 版本：无锁快路径 load(acquire) 判空 → 加锁 → 锁内 relaxed 二次检查 → new 后 store(release)；C++11 之前 DCLP 不安全因为 new 是'分配内存 → 构造对象 → 赋值指针'三步，编译器/CPU 可能重排为'分配 → 赋值 → 构造'，另一线程看到非空指针却拿到未构造完的对象；C++11 起 atomic + acquire/release 语义禁止该重排，DCLP 才正确",
+      "source": "ai-infra-notes/cpp",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#4"
+    },
+    {
+      "category": "knowledge",
+      "title": "手写有界阻塞队列（生产者-消费者）",
+      "content": "请实现一个线程安全的有界阻塞队列（BlockingQueue）：push 在队列满时阻塞等待、pop 在队列空时阻塞等待，队列有固定容量上限。要求使用 mutex 和 condition_variable 实现，并支持多生产者多消费者场景。请说明：为什么 wait 必须搭配谓词（predicate）形式？为什么必须用 unique_lock 而不是 lock_guard？notify_one 和 notify_all 分别在什么场景下使用？",
+      "difficulty": "medium",
+      "tags": "多线程,条件变量,生产者消费者,手写题",
+      "followUps": [
+        "虚假唤醒（spurious wakeup）是什么？不带谓词的 wait 为什么会出问题？",
+        "pop 完成后为什么要 notify 生产者一侧？",
+        "如果要求支持'优雅关闭'（让所有阻塞线程退出），你会怎么改？",
+        "wait 内部做了什么？醒来后为什么还要重新检查条件？",
+        "如何把容量改为无界？无界时还需要 notFull_ 条件变量吗？"
+      ],
+      "keyPoints": "成员：queue + mutex + notEmpty_（队列空时消费者等）+ notFull_（队列满时生产者等）+ capacity；push：unique_lock → notFull_.wait(lk, size<capacity) → push → notEmpty_.notify_one()；pop：unique_lock → notEmpty_.wait(lk, !empty) → 取元素 → notFull_.notify_one()；必须用 unique_lock 因为 wait 内部需要'解锁→睡→唤醒后重新加锁'，lock_guard 不支持中途解锁；wait 带谓词等价 while(!cond) wait(lk)，防虚假唤醒且应对醒来后条件已被其他线程改掉的情况；只唤醒一个等数据用 notify_one，广播状态变化（如关闭队列）用 notify_all；优雅关闭：加 closed_ 标志，pop 谓词改为 !empty || closed_",
+      "source": "ai-infra-notes/cpp",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/cpp/day7.md#5"
     },
     {
       "category": "knowledge",
@@ -7625,6 +7743,54 @@
     },
     {
       "category": "knowledge",
+      "title": "DeepGEMM 与 CUTLASS/CuTe 的设计哲学差异",
+      "content": "DeepSeek 开源的 DeepGEMM 库（v2.6.1，支持 SM90/SM100）在实现 FP8 GEMM 时，没有像 CUTLASS 那样使用 CuTe 的模板代数，而是选择了“借鉴 CuTe 但不依赖模板代数、用裸 PTX 手写、运行时 JIT”的路线。请对比 DeepGEMM 与 CUTLASS/CuTe 在抽象层、架构支持、JIT 策略上的差异，并解释为什么 DeepGEMM 这样做。",
+      "difficulty": "medium",
+      "tags": "deepgemm,cutlass,cute,jit",
+      "followUps": [
+        "DeepGEMM 具体复用了 CuTe 的哪些部分、放弃了哪些部分？",
+        "运行时 JIT 相比 CUTLASS 的编译期模板拼 GEMM，各有什么优劣？",
+        "DeepGEMM 的 JIT（NVCC/NVRTC）为什么说‘安装时不编译’？这带来什么工程收益？",
+        "这种设计哲学对 kernel 的可读性和可维护性有什么影响？"
+      ],
+      "keyPoints": "DeepGEMM 借鉴 CuTe 的 TMA descriptor 与 WGMMA wrapper，但不用其模板代数；用裸 PTX 手写以保证极致可读；采用运行时 JIT（NVCC/NVRTC），安装时不编译，针对具体 shape 在运行时生成最优 kernel；支持架构限定为 SM90（Hopper）+ SM100（Blackwell），而 CUTLASS/CuTe 是全架构通用的库/原语框架；CUTLASS 侧重用 CollectiveBuilder + CuTe 模板在编译期组装全精度 GEMM，DeepGEMM 专注 FP8/FP4/BF16 GEMM + Grouped + MoE 融合 kernel 单点深度。",
+      "source": "ai-infra-notes/deepgemm",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/deepgemm/README.md#0"
+    },
+    {
+      "category": "knowledge",
+      "title": "DeepGEMM SM90 FP8 GEMM 核心 kernel 的异步执行模型",
+      "content": "DeepGEMM 的 `sm90_fp8_gemm_1d1d` kernel 结合了 TMA、WGMMA、warp specialization 与持久化调度。请描述该 kernel 中 TMA warpgroup 与 Math warpgroup 的分工与协作方式：异步数据搬运与矩阵计算如何重叠，barrier 握手点设置在哪里，持久化调度器如何工作。",
+      "difficulty": "hard",
+      "tags": "deepgemm,wgmma,tma,warp-specialization",
+      "followUps": [
+        "TMA 加载的数据放到哪里（shared memory），Math warpgroup 如何感知数据就绪？",
+        "warp specialization 在这种 GEMM 结构中的好处是什么？与 FlashAttention-3 的机制有何共通之处？",
+        "持久化（persistent）调度相比每 tile 一个 block 的常规调度有什么优势？",
+        "寄存器重配（register reallocation）在 warp specialization 中起什么作用？"
+      ],
+      "keyPoints": "kernel 将 warpgroup 划分为 TMA warpgroup 与 Math warpgroup：TMA warpgroup 负责异步数据搬运（TMA load），Math warpgroup 负责 WGMMA 计算，两者通过 barrier 握手实现异步重叠；采用持久化调度器管理 tile 分配；前置知识为 Hopper 异步执行模型，warp specialization 与 FP8 布局工程借鉴 FlashAttention-3；验收要求能画出时序图并标注 barrier 握手点。",
+      "source": "ai-infra-notes/deepgemm",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/deepgemm/README.md#1"
+    },
+    {
+      "category": "knowledge",
+      "title": "DeepGEMM 的 FP8 per-128-channel scaling 机制",
+      "content": "DeepGEMM 为 FP8 GEMM 引入了 per-128-channel scaling（1D1D 排布）来保证训练/推理精度。请解释这一 scaling 的含义与数学形式：缩放因子如何沿 K 维按 128 通道粒度施加，它与 Blackwell SM100 上的 UE8M0 缩放格式有什么差异。",
+      "difficulty": "medium",
+      "tags": "deepgemm,fp8,scaling,sm100",
+      "followUps": [
+        "为什么按每 128 个通道一个缩放因子，而不是 per-tensor 或 per-channel？",
+        "per-128-channel scaling 在 kernel 实现上如何与 WGMMA 的 accumulator 累加配合？",
+        "SM100 的 UE8M0 格式在表示缩放因子时有什么特点？",
+        "这一精度策略与 DeepSeek-V3 技术报告中的 FP8 训练动机有何关联？"
+      ],
+      "keyPoints": "DeepGEMM 采用 per-128-channel scaling：缩放因子以 128 通道为粒度施加（对应 kernel 命名 1d1d）；其动机是 FP8 表示范围窄、需要细粒度 scaling 来保证 GEMM 精度；Blackwell SM100 上存在与之不同的 UE8M0 缩放格式；属于 DeepSeek-V3 FP8 训练精度策略的工程落地。",
+      "source": "ai-infra-notes/deepgemm",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/deepgemm/README.md#2"
+    },
+    {
+      "category": "knowledge",
       "title": "为什么 DeepSeek 要自研 DeepGEMM 而不用 cuBLASLt/CUTLASS/Triton",
       "content": "DeepSeek 开源了高性能 tensor core kernel 库 DeepGEMM，在 H800 上 FP8 GEMM 可达约 1550 TFLOPS（约 1.0x cuBLASLt），但核心代码只有约 3-5 千行。当时业界已有 cuBLASLt、CUTLASS、Triton 等成熟方案。请分析：DeepSeek 为什么要投入自研 DeepGEMM？现有方案分别在哪些地方无法满足他们的需求？",
       "difficulty": "easy",
@@ -8366,6 +8532,70 @@
       "keyPoints": "Ring AllReduce = ReduceScatter + AllGather 两阶段；每卡只收发 2(N-1)/N 倍数据量，带宽最优、与卡数无关；NCCL 默认实现，小消息用 tree/doubling 降低延迟；常用集合通信原语包括 Broadcast、Reduce、AllReduce、AllGather、ReduceScatter、AllToAll。",
       "source": "",
       "sourceKey": "bank:ai-infra-notes:aiinfra/topics/interview/notes/us_interview_qa.md#4"
+    },
+    {
+      "category": "knowledge",
+      "title": "MoE 层的前向数据流与核心组件",
+      "content": "假设你正在实现一个 Top-2 路由的 MoE FFN 层（目标是用 Triton 组装一个可运行的 MoE 层）。请描述 MoE 前向的完整数据流：从输入 token 出发，经过哪些阶段最终得到输出？每个阶段对应的核心算子或操作是什么？",
+      "difficulty": "medium",
+      "tags": "moe,top-k routing,grouped gemm",
+      "followUps": [
+        "Gating 和 Top-K 选择为什么经常被融合成一个 kernel？融合的好处是什么？",
+        "Grouped GEMM 在 MoE 层中解决什么问题？为什么不能简单地复用普通 GEMM？",
+        "Combine 阶段需要做什么？Top-2 路由下多个专家的输出如何加权合并？",
+        "如果把 MoE 层搬到推理引擎（如 vLLM 的 fused_moe）中，数据流上会遇到哪些训练场景没有的问题？"
+      ],
+      "keyPoints": "数据流为：输入 → Gating（门控打分）→ Top-K 路由选择 → 分派（dispatch）→ 各专家 Grouped GEMM 计算 → Combine（加权合并）。核心算子包括 Gating/Top-K 融合 kernel、Grouped GEMM、Scatter-Gather。Combine 需按门控权重加权求和多个专家输出。",
+      "source": "ai-infra-notes/moe",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/moe/README.md#0"
+    },
+    {
+      "category": "knowledge",
+      "title": "Expert Parallelism 的 all-to-all token dispatch",
+      "content": "在大规模 MoE 训练中，专家通常分布在多张 GPU 上（Expert Parallelism）。请解释 EP 下 token dispatch 的过程：为什么需要 all-to-all 通信？一次 MoE 前向中 all-to-all 发生在哪些位置、传输的是什么数据？",
+      "difficulty": "medium",
+      "tags": "moe,expert parallelism,all-to-all",
+      "followUps": [
+        "all-to-all 与 all-reduce、all-gather 在通信模式上有什么本质区别？",
+        "负载不均衡时 all-to-all 的通信量会如何变化？瓶颈出在哪里？",
+        "如何用 Nsight Systems / ncu 定位 MoE 层中通信与计算的占比？",
+        "单机多卡 demo 与大规模 EP（跨机）场景下，all-to-all 的优化重点有何不同？"
+      ],
+      "keyPoints": "EP 将专家切分到不同设备，token 需按路由结果发送到对应专家所在设备，因此需要 all-to-all。dispatch（发）与 combine（收）各需一次 all-to-all，传输按路由结果重新排布的 token/激活数据。通信量受路由负载分布影响，负载不均是主要瓶颈之一。能用 profiling 工具定位通信/计算占比。",
+      "source": "ai-infra-notes/moe",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/moe/README.md#1"
+    },
+    {
+      "category": "knowledge",
+      "title": "MoE 负载均衡：容量因子与辅助损失",
+      "content": "MoE 训练常见的问题是路由 collapse——少数专家承接了过多 token。GShard 和 Switch Transformer 分别提出了哪些机制缓解负载不均衡？请解释容量因子（capacity factor）和负载均衡辅助损失（auxiliary loss）各自的作用与代价。",
+      "difficulty": "medium",
+      "tags": "moe,load balancing,switch transformer",
+      "followUps": [
+        "容量因子设置得过大或过小分别会带来什么问题？",
+        "Switch Transformer 的 top-1 路由相比 GShard 的 top-2 路由对负载均衡有什么影响？",
+        "auxiliary loss 的权重如何权衡负载均衡与主任务性能？",
+        "DeepSeekMoE 的细粒度专家和共享专家设计与负载均衡有什么关系？"
+      ],
+      "keyPoints": "GShard 提出 top-2 路由 + 容量因子（capacity factor）限制每个专家承接的 token 数；Switch Transformer 采用 top-1 路由并提出负载均衡辅助损失（auxiliary loss）。容量因子限制专家容量防止过载，过小会丢弃 token/损失信息，过大浪费计算。DeepSeekMoE 引入细粒度专家与共享专家。",
+      "source": "ai-infra-notes/moe",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/moe/README.md#2"
+    },
+    {
+      "category": "knowledge",
+      "title": "Grouped GEMM 与逐专家调用 cuBLAS 的对比",
+      "content": "在一个 8 专家的 MoE 层中，有两种实现方式：循环调用 8 次 cuBLAS GEMM，或者使用一次 Grouped GEMM 算子。请对比这两种方式的优缺点，并说明为什么工程实现中追求 Grouped GEMM 达到逐专家调用 cuBLAS 90% 以上的性能。",
+      "difficulty": "medium",
+      "tags": "moe,grouped gemm,tensor core",
+      "followUps": [
+        "逐专家调用 cuBLAS 时，GPU 利用率会受哪些因素影响？",
+        "Grouped GEMM 如何处理不同专家上 token 数不等（变长 problem size）的情况？",
+        "Triton 实现 Grouped GEMM 时，tiling 和 kernel 调度上与普通 GEMM 有何不同？",
+        "CUTLASS 的 GemmGroup 与手写 Triton Grouped GEMM 各适合什么场景？"
+      ],
+      "keyPoints": "逐专家 cuBLAS 调用会产生 kernel launch 开销，各专家 GEMM 规模小、GPU 利用率低；Grouped GEMM 将多组 GEMM 合入一次 kernel 执行，摊薄 launch 开销、提高占用率。变长 problem size（各专家 token 数不等）是 MoE 场景 Grouped GEMM 的核心挑战。性能目标为达到逐专家 cuBLAS 90%+。",
+      "source": "ai-infra-notes/moe",
+      "sourceKey": "bank:ai-infra-notes:aiinfra/topics/moe/README.md#3"
     },
     {
       "category": "knowledge",

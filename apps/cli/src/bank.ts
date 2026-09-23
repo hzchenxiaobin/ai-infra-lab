@@ -1,10 +1,12 @@
 // bank.ts —— LLM 题库管线（dev/cli.md §3：bank:generate / bank:import）。
 // 从 server scripts 收编（06 §interview 代码映射）：generate 是离线批处理
-// （拉仓库 → 逐文件调 LLM 抽题 → 断点续跑落盘 JSON），import 经 createCaller
+// （读本地内容 → 逐文件调 LLM 抽题 → 断点续跑落盘 JSON），import 经 createCaller
 // 走 question.bankImport 幂等入库。
-import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { appendFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { promisify } from "node:util";
 import {
   bankExtractItemSchema,
   bankImportItemSchema,
@@ -12,14 +14,16 @@ import {
   type BankImportItem,
 } from "@ailab/contracts";
 import { env } from "@ailab/server/env";
-import { fetchRepoFiles } from "@ailab/server/sync/github";
 import type { Command } from "commander";
 import { getCaller } from "./session.js";
 import { dimLine, errorLine, successLine } from "./ui.js";
 
 const DATA_DIR = fileURLToPath(new URL("../data", import.meta.url));
+// 内容库迁入 packages/content 后为唯一维护地（content/README.md），generate 直接读本地，
+// 不再在线拉 GitHub 快照；路径映射保持 sourceKey 与历史题库一致
+const CONTENT_LEARN_DIR = fileURLToPath(new URL("../../../packages/content/learn", import.meta.url));
 const REPO = "ai-infra-notes";
-const OWNER = "hzchenxiaobin";
+const BANK_FILENAME = "question-bank.ai-infra.json";
 
 // ---------------------------------------------------------------------------
 // bank:generate（离线批处理，不依赖 DB）
@@ -73,6 +77,47 @@ function scopeFiles(files: Array<{ path: string; content: string }>): ScopedFile
     }
   }
   return out;
+}
+
+const execFileAsync = promisify(execFile);
+
+/** 与原 GitHub 收集口径一致：跳过图片/构建产物等目录与 SKILL.md */
+const EXCLUDED_DIRS = new Set(["images", "build", "static", ".github"]);
+
+/** 本地相对路径 → 仓库路径映射（历史 sourceKey 以仓库路径为准：topics/daily 加 aiinfra/ 前缀，profiling 原样） */
+function repoPath(rel: string): string | null {
+  if (rel.startsWith("topics/") || rel.startsWith("daily/")) return `aiinfra/${rel}`;
+  if (rel.startsWith("profiling/")) return rel;
+  return null;
+}
+
+async function collectLocalFiles(): Promise<Array<{ path: string; content: string }>> {
+  const out: Array<{ path: string; content: string }> = [];
+  const walk = async (absDir: string, relDir: string): Promise<void> => {
+    for (const entry of await readdir(absDir, { withFileTypes: true })) {
+      if (entry.name.startsWith(".")) continue;
+      const rel = relDir ? `${relDir}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) {
+        if (!EXCLUDED_DIRS.has(entry.name)) await walk(path.join(absDir, entry.name), rel);
+      } else if (entry.name.endsWith(".md") && entry.name !== "SKILL.md") {
+        const mapped = repoPath(rel);
+        if (mapped) out.push({ path: mapped, content: await readFile(path.join(absDir, entry.name), "utf8") });
+      }
+    }
+  };
+  await walk(CONTENT_LEARN_DIR, "");
+  out.sort((a, b) => a.path.localeCompare(b.path));
+  return out;
+}
+
+/** 内容快照版本：内容已迁入本 monorepo，取仓库 HEAD 作产物溯源 */
+async function contentCommitSha(): Promise<string> {
+  try {
+    const { stdout } = await execFileAsync("git", ["rev-parse", "HEAD"]);
+    return stdout.trim();
+  } catch {
+    return "";
+  }
 }
 
 async function chatCompletion(
@@ -177,7 +222,7 @@ async function extractFromFile(file: ScopedFile): Promise<BankExtractItem[]> {
 async function runGenerate(outDir: string): Promise<void> {
   if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY，无法生成题库");
   const checkpointFile = path.join(outDir, ".bank-checkpoint.jsonl");
-  const outputFile = path.join(outDir, `question-bank.${REPO}.json`);
+  const outputFile = path.join(outDir, BANK_FILENAME);
   await mkdir(outDir, { recursive: true });
 
   // 加载断点
@@ -192,8 +237,8 @@ async function runGenerate(outDir: string): Promise<void> {
     // 无断点文件，从头开始
   }
 
-  console.log("拉取仓库文件…");
-  const { commitSha, files } = await fetchRepoFiles(OWNER, REPO);
+  console.log("读取本地内容 packages/content/learn…");
+  const [commitSha, files] = await Promise.all([contentCommitSha(), collectLocalFiles()]);
   const scoped = scopeFiles(files);
   const todo = scoped.filter((f) => !done.has(f.path));
   console.log(
@@ -277,7 +322,7 @@ async function runImport(file: string): Promise<void> {
 export function registerBankCommands(program: Command): void {
   program
     .command("bank:generate")
-    .description("LLM 从 ai-infra-notes 抽面试题 → 静态 JSON（断点续跑，离线批处理）")
+    .description("LLM 从本地内容 packages/content/learn 抽面试题 → 静态 JSON（断点续跑，离线批处理）")
     .option("-o, --out <dir>", "产物目录", DATA_DIR)
     .action(async (opts) => {
       try {
@@ -295,7 +340,7 @@ export function registerBankCommands(program: Command): void {
     .action(async (file?: string) => {
       const target = file
         ? path.resolve(file)
-        : path.join(DATA_DIR, "question-bank.ai-infra.json");
+        : path.join(DATA_DIR, BANK_FILENAME);
       try {
         await runImport(target);
         process.exit(0);
