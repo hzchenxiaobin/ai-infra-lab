@@ -3,6 +3,7 @@ import { Layout } from "./components/Layout";
 import { InterviewSection } from "./components/InterviewSection";
 import { RequireAuth } from "./components/RequireAuth";
 import LandingPage from "./pages/LandingPage";
+import { LandingShell } from "./components/LandingShell";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import BankPage from "./pages/bank/BankPage";
@@ -25,9 +26,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 首页落地页：独立壳（自带导航/页脚，版式对齐 ai-infra-notes），沿用原首页的登录守卫 */}
+        {/* 首页落地页 + 刷题板块：独立壳（自带导航/页脚，GitHub 暗色 + 蓝强调，版式对齐 ai-infra-notes），沿用原首页的登录守卫 */}
         <Route element={<RequireAuth />}>
           <Route index element={<LandingPage />} />
+          {/* 刷题板块：与首页同款落地壳，导航高亮当前分区 */}
+          <Route element={<LandingShell />}>
+            <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
+            <Route path="problems/algo" element={<ProblemsPage partition="algo" />} />
+            <Route path="problems/lists" element={<ProblemListsPage />} />
+            <Route path="problems/lists/:slug" element={<ProblemListPage />} />
+            <Route path="problems/contest" element={<ContestPage />} />
+            <Route path="problems/contest/:session" element={<ContestSessionPage />} />
+          </Route>
         </Route>
         <Route element={<Layout />}>
           <Route path="login" element={<LoginPage />} />
@@ -42,12 +52,6 @@ export default function App() {
             </Route>
             <Route path="learn" element={<LearnPage />} />
             <Route path="learn/path" element={<LearnPage />} />
-            <Route path="problems/gpu" element={<ProblemsPage partition="gpu" />} />
-            <Route path="problems/algo" element={<ProblemsPage partition="algo" />} />
-            <Route path="problems/lists" element={<ProblemListsPage />} />
-            <Route path="problems/lists/:slug" element={<ProblemListPage />} />
-            <Route path="problems/contest" element={<ContestPage />} />
-            <Route path="problems/contest/:session" element={<ContestSessionPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="interview/:id" element={<InterviewPage />} />

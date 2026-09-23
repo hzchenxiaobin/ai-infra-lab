@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import { trpc } from "../../lib/trpc";
-import { Card, EmptyBox, ErrorBox, ListCard, Loading, PageHeader, ProgressBar } from "../../components/ui";
+import { LandingEmpty, LandingError, LandingLoading } from "../../components/LandingShell";
 import { ProblemRow } from "./ProblemRow";
+import "./problems.css";
 
 // ---------------------------------------------------------------------------
 // 题单详情（/problems/lists/:slug）：成员题目按题单顺序浏览 + AC 标记。
@@ -15,63 +16,58 @@ export default function ProblemListPage() {
     trpc.problem.getList.queryOptions({ slug: slug ?? "" }),
   );
 
-  if (!slug) return <ErrorBox error={new Error("无效的题单标识")} />;
-  if (get.isLoading) return <Loading text="加载题单…" />;
-  if (get.error) return <ErrorBox error={get.error} />;
+  if (!slug) return <LandingError error={new Error("无效的题单标识")} />;
+  if (get.isLoading) return <LandingLoading text="加载题单…" />;
+  if (get.error) return <LandingError error={get.error} />;
   if (!get.data) return null;
 
   const { list, items } = get.data;
   const acCount = items.filter((i) => i.ac).length;
+  const pct = list.problemCount ? Math.round((acCount / list.problemCount) * 100) : 0;
 
   return (
-    <div className="space-y-10">
-      {/* 标题区 */}
-      <PageHeader
-        label={
-          <>
-            <Link to="/problems/lists" className="transition-colors hover:text-accent-700">
-              Problems · 题单
-            </Link>
-            <span className="text-faint"> /</span>
-          </>
-        }
-        title={list.title}
-        description={`共 ${list.problemCount} 道题 · 已 AC ${acCount}${list.problemCount > 0 ? `（${Math.round((acCount / list.problemCount) * 100)}%）` : ""}`}
-      >
-        <ProgressBar
-          className="mt-3 max-w-xs"
-          value={list.problemCount ? (acCount / list.problemCount) * 100 : 0}
-        />
-        {list.url && (
-          <a
-            href={list.url}
-            className="mt-3 inline-block text-sm text-accent-600 transition-colors hover:text-accent-700"
-          >
-            查看题单编排说明（学习节奏与分组） →
-          </a>
-        )}
-      </PageHeader>
+    <div className="problems-page">
+      {/* 标题区：题单名 + AC 进度（进度条与编排说明入口） */}
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-eyebrow">刷题 · 题单</div>
+          <h1 className="hero-title">
+            <span className="hero-title-accent">{list.title}</span>
+          </h1>
+          <p className="hero-subtitle">
+            共 {list.problemCount} 道题 · 已 AC {acCount}
+            {list.problemCount > 0 ? `（${pct}%）` : ""}
+          </p>
+          <div className="problems-hero-extra">
+            <div className="problems-progress">
+              <span style={{ width: `${pct}%` }} />
+            </div>
+            {list.url && (
+              <a className="problems-hero-link" href={list.url}>
+                查看题单编排说明（学习节奏与分组） →
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
 
       {/* 成员列表（题库同款行） */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
+      <main className="landing-main">
         {items.length === 0 ? (
-          <EmptyBox text="题单成员为空（需先执行 content:sync 导入题目元数据）" />
+          <LandingEmpty text="题单成员为空（需先执行 content:sync 导入题目元数据）" />
         ) : (
-          <ListCard>
+          <div className="problem-list">
             {items.map((p) => (
               <ProblemRow key={p.id} problem={p} />
             ))}
-          </ListCard>
+          </div>
         )}
-      </section>
-
-      {items.length < list.problemCount && (
-        <Card>
-          <p className="text-sm text-muted">
+        {items.length < list.problemCount && (
+          <div className="problems-note">
             {list.problemCount - items.length} 道成员题暂无站内题解元数据，已自动略过。
-          </p>
-        </Card>
-      )}
+          </div>
+        )}
+      </main>
     </div>
   );
 }

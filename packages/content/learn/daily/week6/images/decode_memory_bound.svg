@@ -41,10 +41,13 @@
   <text x="265" y="174" text-anchor="middle" font-size="9" fill="#666">(1024, 1536)</text>
   <!-- Prefill metrics -->
   <line x1="50" y1="190" x2="390" y2="190" stroke="#3a3a3a" stroke-width="0.6" stroke-dasharray="3 3" filter="url(#sk5)"/>
-  <text x="50" y="210" font-size="10" fill="#444">FLOPs = 2×1024×512×1536 ≈ 1.6G</text>
-  <text x="50" y="232" font-size="10" fill="#444">Bytes ≈ 1.3M (读 x + W, 写 QKV)</text>
-  <text x="50" y="258" font-size="11" fill="#4a8edb" font-weight="bold">AI ≈ 384 FLOP/Byte</text>
-  <text x="50" y="278" font-size="10" fill="#4a8edb" font-weight="bold">> Ridge 58.45 → Compute-bound ✓</text>
+  <text x="50" y="208" font-size="10" fill="#444">FLOPs = 2×1024×512×1536 ≈ 1.6G</text>
+  <text x="50" y="226" font-size="10" fill="#444">Bytes (fp16)：</text>
+  <text x="50" y="243" font-size="10" fill="#444">  读 x：1024×512×2B ≈ 1.0 MB</text>
+  <text x="50" y="260" font-size="10" fill="#444">  读 W：512×1536×2B ≈ 1.6 MB</text>
+  <text x="50" y="277" font-size="10" fill="#444">  写 QKV：1024×1536×2B ≈ 3.1 MB</text>
+  <text x="50" y="296" font-size="10" fill="#444" font-weight="bold">  合计 ≈ 5.8 MB</text>
+  <text x="50" y="316" font-size="10" fill="#4a8edb" font-weight="bold">AI = 1.6G ÷ 5.8MB ≈ 279 &gt; Ridge 58.45 → Compute-bound ✓</text>
 
   <!-- ====== Decode Box ====== -->
   <g filter="url(#sk5)">
@@ -75,10 +78,13 @@
   <text x="658" y="174" text-anchor="middle" font-size="9" fill="#666">(1, 1536)</text>
   <!-- Decode metrics -->
   <line x1="470" y1="190" x2="810" y2="190" stroke="#3a3a3a" stroke-width="0.6" stroke-dasharray="3 3" filter="url(#sk5)"/>
-  <text x="470" y="210" font-size="10" fill="#444">FLOPs = 2×1×512×1536 ≈ 1.6M (↓1024×)</text>
-  <text x="470" y="232" font-size="10" fill="#444">Bytes ≈ 1.6 MB (W=3d², fp16, 仍读完整权重)</text>
-  <text x="470" y="258" font-size="11" fill="#e57373" font-weight="bold">AI ≈ 1.0 FLOP/Byte</text>
-  <text x="470" y="278" font-size="10" fill="#e57373" font-weight="bold">&lt;&lt; Ridge 58.45 → Memory-bound ✗</text>
+  <text x="470" y="208" font-size="10" fill="#444">FLOPs = 2×1×512×1536 ≈ 1.6M (↓1024×)</text>
+  <text x="470" y="226" font-size="10" fill="#444">Bytes (fp16)：</text>
+  <text x="470" y="243" font-size="10" fill="#444">  读 W：512×1536×2B ≈ 1.6 MB ← 主导 (W=3d²，不随 M 变)</text>
+  <text x="470" y="260" font-size="10" fill="#444">  读 x + 写 QKV：(512+1536)×2B ≈ 4 KB (可忽略)</text>
+  <text x="470" y="279" font-size="10" fill="#444" font-weight="bold">  合计 ≈ 1.6 MB</text>
+  <text x="470" y="299" font-size="10" fill="#e57373" font-weight="bold">AI = 1.6M ÷ 1.6MB ≈ 1.0 FLOP/Byte (恰为 M)</text>
+  <text x="470" y="317" font-size="10" fill="#e57373" font-weight="bold">&lt;&lt; Ridge 58.45 → Memory-bound ✗</text>
 
   <!-- ====== Transition arrow between boxes ====== -->
   <text x="435" y="170" text-anchor="middle" font-size="9" fill="#888">M: 1024→1</text>
@@ -110,7 +116,7 @@
   <text x="90" y="464" text-anchor="middle" font-size="9" fill="#666">0.4</text>
   <text x="242" y="464" text-anchor="middle" font-size="9" fill="#666">2</text>
   <text x="417" y="464" text-anchor="middle" font-size="9" fill="#666">58.45</text>
-  <text x="740" y="464" text-anchor="middle" font-size="9" fill="#666">384</text>
+  <text x="740" y="464" text-anchor="middle" font-size="9" fill="#666">279</text>
 
   <!-- Ridge point vertical line -->
   <g filter="url(#sk5)">
@@ -137,7 +143,7 @@
     <circle cx="740" cy="446" r="8" fill="#4a9d5f" stroke="#3a3a3a" stroke-width="1"/>
   </g>
   <text x="740" y="490" text-anchor="middle" font-size="10" fill="#4a9d5f" font-weight="bold">Prefill</text>
-  <text x="740" y="504" text-anchor="middle" font-size="8" fill="#666">AI≈384</text>
+  <text x="740" y="504" text-anchor="middle" font-size="8" fill="#666">AI≈279</text>
 
   <!-- Zone labels -->
   <text x="220" y="530" text-anchor="middle" font-size="10" fill="#e57373" font-style="italic">← Memory-bound 区间</text>
@@ -145,6 +151,6 @@
 
   <!-- Summary -->
   <line x1="60" y1="548" x2="800" y2="548" stroke="#3a3a3a" stroke-width="0.6" stroke-dasharray="3 3" filter="url(#sk5)"/>
-  <text x="430" y="572" text-anchor="middle" font-size="10" fill="#444">根本原因：M=1 时 FLOPs 与 M 成正比骤降 (↓1024×)，但权重 W 大小不变、Bytes 几乎没减</text>
-  <text x="430" y="590" text-anchor="middle" font-size="10" fill="#444">→ AI = FLOPs/Bytes 暴跌，从 Compute-bound 跌入 Memory-bound，数据喂不饱计算单元</text>
+  <text x="430" y="572" text-anchor="middle" font-size="10" fill="#444">根本原因：M=1 时 FLOPs 与 M 成正比骤降 (↓1024×)，但 Bytes 只降 3.6×——权重 W=1.6 MB 不随 M 变，每步仍要全量读</text>
+  <text x="430" y="590" text-anchor="middle" font-size="10" fill="#444">→ AI = FLOPs/Bytes 从 279 跌到 1.0，从 Compute-bound 跌入 Memory-bound，数据喂不饱计算单元</text>
 </svg>

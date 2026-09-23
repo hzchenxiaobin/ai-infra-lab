@@ -1,0 +1,613 @@
+/*
+ * 刷题板块样式：与首页落地页（landing.css）同一设计语言 —— GitHub 暗色 + 蓝强调、
+ * 卡片化分区、悬停上浮；令牌与基础组件（.hero / .landing-main / .btn）直接复用 landing.css。
+ * 除反馈组件（LandingShell 早退渲染）外，选择器一律收敛在 .problems-page 作用域。
+ */
+
+/* ---------- 反馈组件 ---------- */
+
+.landing-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.landing-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: landing-spin 0.7s linear infinite;
+}
+
+@keyframes landing-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.landing-error {
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  background: rgba(248, 81, 73, 0.08);
+  color: #f85149;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+}
+
+.landing-empty {
+  border: 1px dashed var(--border-color);
+  border-radius: 10px;
+  padding: 56px 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 紧凑 hero：为固定导航让位，标题较落地页小一档 ---------- */
+
+.problems-page .hero {
+  padding: 132px 24px 60px;
+}
+
+.problems-page .hero-title {
+  font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+}
+
+.problems-page .hero-subtitle {
+  font-size: clamp(0.98rem, 1.8vw, 1.12rem);
+  margin-bottom: 0;
+}
+
+/* hero 附加区：进度条 + 外链（题单详情页） */
+.problems-hero-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.problems-progress {
+  width: min(320px, 100%);
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.problems-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #58a6ff, #79c0ff);
+  transition: width 0.3s;
+}
+
+.problems-hero-link {
+  font-size: 0.88rem;
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.problems-hero-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* ---------- 筛选工具栏 ---------- */
+
+.problems-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.problems-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.problems-count {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.problems-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 分段选择器（分区 / 知识领域 / 掌握状态共用） ---------- */
+
+.problems-page .seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+}
+
+.problems-page .seg-item {
+  border: none;
+  background: transparent;
+  padding: 4px 13px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-family: inherit;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.problems-page .seg-item:hover {
+  color: var(--text-color);
+}
+
+.problems-page .seg-item.is-active {
+  background: var(--accent-color);
+  color: #0d1117;
+  font-weight: 600;
+}
+
+.problems-page .seg-item:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.problems-page .seg--sm .seg-item {
+  padding: 2px 10px;
+  font-size: 0.78rem;
+}
+
+/* ---------- 表单控件 ---------- */
+
+.problems-page .select {
+  height: 34px;
+  padding: 0 10px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.84rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.problems-page .search {
+  height: 34px;
+  padding: 0 12px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.84rem;
+  font-family: inherit;
+  min-width: 180px;
+  flex: 1 1 180px;
+  max-width: 300px;
+}
+
+.problems-page .search::placeholder {
+  color: var(--text-muted);
+}
+
+.problems-page .select:focus,
+.problems-page .search:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+/* ---------- 分组头（GPU 高频 / 中频） ---------- */
+
+.problems-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.problems-group-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  background: rgba(88, 166, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+
+.problems-group-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.problems-group-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 题目列表 ---------- */
+
+.problems-content {
+  margin-top: 24px;
+}
+
+.problems-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.problem-list {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.problem-row {
+  padding: 12px 18px;
+  transition: background-color 0.15s;
+}
+
+.problem-row + .problem-row {
+  border-top: 1px solid var(--border-color);
+}
+
+.problem-row:hover {
+  background: rgba(88, 166, 255, 0.045);
+}
+
+.problem-row-flex {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.problem-row-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.problem-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.problem-number {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.problem-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.problem-title:hover {
+  color: var(--accent-color);
+}
+
+.problem-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 5px;
+  font-size: 0.78rem;
+}
+
+.problem-id {
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.problem-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.problem-link:hover {
+  color: var(--accent-color);
+}
+
+/* ---------- 徽章 ---------- */
+
+.pbadge {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+/* 周赛题号 Q1…（等宽、亮一档） */
+.pbadge--q {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+}
+
+.pbadge--high {
+  color: var(--accent-color);
+  border-color: rgba(88, 166, 255, 0.35);
+  background: rgba(88, 166, 255, 0.08);
+  font-weight: 600;
+}
+
+/* 难度徽章取 GitHub 暗色语义色（绿 / 黄 / 红） */
+.pbadge--easy {
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.4);
+  background: rgba(63, 185, 80, 0.1);
+}
+
+.pbadge--medium {
+  color: #d29922;
+  border-color: rgba(210, 153, 34, 0.4);
+  background: rgba(210, 153, 34, 0.1);
+}
+
+.pbadge--hard {
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.4);
+  background: rgba(248, 81, 73, 0.1);
+}
+
+/* ---------- 个人备注 ---------- */
+
+.problem-note-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  margin-left: 5px;
+  vertical-align: 1px;
+}
+
+.problem-note {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.problem-note-box {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text-color);
+  font-size: 0.82rem;
+  font-family: inherit;
+  line-height: 1.55;
+  resize: vertical;
+  min-height: 72px;
+}
+
+.problem-note-box:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+.problem-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.problem-form-error {
+  font-size: 0.78rem;
+  color: #f85149;
+}
+
+.problem-note-view {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+  text-align: left;
+  background: var(--bg-color);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  line-height: 1.55;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.problem-note-view:hover {
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* ---------- 按钮（landing 的 .btn 按 a 元素编写，button 需复位） ---------- */
+
+.problems-page button.btn {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.problems-page button.btn-primary {
+  border: none;
+}
+
+.problems-page .btn--sm {
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+}
+
+.problems-page .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- 分页 ---------- */
+
+.problems-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.problems-footer-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---------- 索引卡片网格（题单 / 周赛） ---------- */
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.problems-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px 17px;
+  text-decoration: none;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.problems-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.problems-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.problems-card-arrow {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition:
+    transform 0.2s,
+    color 0.2s;
+}
+
+.problems-card:hover .problems-card-arrow {
+  transform: translateX(3px);
+  color: var(--accent-color);
+}
+
+.problems-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.problems-card-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 附注卡片（题单缺失元数据提示） ---------- */
+
+.problems-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--surface-color);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 768px) {
+  .problems-page .hero {
+    padding: 118px 20px 44px;
+  }
+
+  .problems-toolbar {
+    padding: 12px 13px;
+  }
+
+  .problem-row {
+    padding: 11px 14px;
+  }
+
+  .problem-row-flex {
+    flex-wrap: wrap;
+  }
+
+  .problem-row-flex > .seg {
+    margin-left: auto;
+  }
+
+  .problems-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+}

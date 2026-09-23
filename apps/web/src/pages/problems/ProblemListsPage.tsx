@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { trpc } from "../../lib/trpc";
-import { Card, EmptyBox, ErrorBox, Loading, PageHeader } from "../../components/ui";
+import { LandingEmpty, LandingError, LandingLoading } from "../../components/LandingShell";
+import "./problems.css";
 
 // ---------------------------------------------------------------------------
 // 题单索引（/problems/lists）：hot-interview / 10 周计划等题单卡片。
@@ -12,35 +13,39 @@ export default function ProblemListsPage() {
   const lists = useQuery(trpc.problem.lists.queryOptions());
 
   return (
-    <div className="space-y-10">
-      <PageHeader
-        label="Problems · 题单"
-        title="刷题题单"
-        description="按面试高频与学习节奏编排的题目合集，进度与题库互通。"
-      />
+    <div className="problems-page">
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-eyebrow">刷题 · 题单</div>
+          <h1 className="hero-title">
+            刷题<span className="hero-title-accent">题单</span>
+          </h1>
+          <p className="hero-subtitle">按面试高频与学习节奏编排的题目合集，进度与题库互通。</p>
+        </div>
+      </section>
 
-      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
+      <main className="landing-main">
         {lists.isLoading ? (
-          <Loading />
+          <LandingLoading />
         ) : lists.error ? (
-          <ErrorBox error={lists.error} />
+          <LandingError error={lists.error} />
         ) : lists.data === undefined ? null : lists.data.length === 0 ? (
-          <EmptyBox text="暂无题单（需先执行 content:sync 导入）" />
+          <LandingEmpty text="暂无题单（需先执行 content:sync 导入）" />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="problems-grid">
             {lists.data.map((l) => (
-              <Link key={l.id} to={`/problems/lists/${l.slug}`} className="group">
-                <Card className="h-full transition-colors duration-150 group-hover:border-faint">
-                  <div className="text-base font-semibold transition-colors duration-150 group-hover:text-accent-600">
-                    {l.title}
-                  </div>
-                  <div className="mt-2 text-xs text-muted">{l.problemCount} 道题</div>
-                </Card>
+              <Link key={l.id} to={`/problems/lists/${l.slug}`} className="problems-card">
+                <div className="problems-card-top">
+                  <span className="pbadge">题单</span>
+                  <span className="problems-card-arrow">→</span>
+                </div>
+                <div className="problems-card-title">{l.title}</div>
+                <div className="problems-card-desc">{l.problemCount} 道题</div>
               </Link>
             ))}
           </div>
         )}
-      </section>
+      </main>
     </div>
   );
 }

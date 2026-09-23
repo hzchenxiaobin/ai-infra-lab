@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router";
 import { CATEGORY_LABELS, MAX_FOLLOW_UPS, type InterviewState } from "@ailab/contracts";
 import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
-import { Button, Card, DifficultyBadge, ErrorBox, InlineError, Loading, ProgressBar, SegmentedControl } from "../components/ui";
+import { Button, Card, DifficultyBadge, ErrorBox, InlineError, Loading, PageHeader, ProgressBar, SegmentedControl } from "../components/ui";
 import { Markdown } from "../components/Markdown";
 import { MessageBubble } from "../components/MessageBubble";
 import { JudgeResultView } from "../components/JudgeResult";
@@ -212,78 +212,86 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
     );
 
   return (
-    <div className="space-y-4">
-      {/* 顶部状态栏 */}
-      <Card>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              {status === "active" && (
-                <span className="size-1.5 shrink-0 animate-pulse-dot rounded-full bg-accent-600" />
-              )}
-              <div className="truncate text-sm font-semibold">{session.title}</div>
-            </div>
-            <div className="mt-0.5 text-xs text-muted">
-              第 {Math.min(currentIndex + 1, total)}/{total} 题
-              {maxFollowUps > 0
-                ? ` · 追问 ${Math.min(followUpIndex, maxFollowUps)}/${maxFollowUps}`
-                : " · 无预设追问"}
-              {currentQ && status === "active" ? ` · 当前：${currentQ.title}` : ""}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {status === "finished" ? (
-              <Link to={`/report/${sessionId}`}>
-                <Button>查看评估报告 →</Button>
-              </Link>
-            ) : (
-              <Button variant="danger" size="sm" disabled={finish.isPending} onClick={confirmFinish}>
-                {finish.isPending ? "生成报告中…" : "结束本场"}
-              </Button>
+    <div className="space-y-10">
+      {/* 标题区：与首页同款 PageHeader，进度与操作收纳于此 */}
+      <PageHeader
+        label="Interview · 面试"
+        title={
+          <span className="inline-flex items-center gap-2.5">
+            {status === "active" && (
+              <span className="size-2 shrink-0 animate-pulse-dot rounded-full bg-accent-600" />
             )}
-          </div>
+            {session.title}
+          </span>
+        }
+        description={
+          <>
+            第 {Math.min(currentIndex + 1, total)}/{total} 题
+            {maxFollowUps > 0
+              ? ` · 追问 ${Math.min(followUpIndex, maxFollowUps)}/${maxFollowUps}`
+              : " · 无预设追问"}
+            {currentQ && status === "active" ? ` · 当前：${currentQ.title}` : ""}
+          </>
+        }
+        actions={
+          status === "finished" ? (
+            <Link to={`/report/${sessionId}`}>
+              <Button>查看评估报告 →</Button>
+            </Link>
+          ) : (
+            <Button variant="danger" size="sm" disabled={finish.isPending} onClick={confirmFinish}>
+              {finish.isPending ? "生成报告中…" : "结束本场"}
+            </Button>
+          )
+        }
+      >
+        <div className="mt-5">
+          <ProgressBar value={progressPct} />
+          {finish.error && (
+            <InlineError className="mt-2">结束失败：{finish.error.message}</InlineError>
+          )}
         </div>
-        <ProgressBar className="mt-3" value={progressPct} />
-        {finish.error && <InlineError className="mt-2">结束失败：{finish.error.message}</InlineError>}
-      </Card>
+      </PageHeader>
 
       {/* 算法题 / leetgpu 题：左题面 + 对话，右代码编辑器 */}
-      {codeQ ? (
-        <div className="grid items-start gap-4 lg:grid-cols-2">
-          <div className="min-w-0 space-y-4">
-            {/* 题目描述 */}
-            <Card>
-              <div className="mb-2 flex items-center gap-2">
-                <span className="text-sm font-semibold">{codeQ.title}</span>
-                <DifficultyBadge difficulty={codeQ.difficulty} />
-              </div>
-              <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[45vh]">
-                <Markdown
-                  text={codeQ.content}
-                  className="space-y-2 text-sm leading-relaxed text-ink"
-                />
-              </div>
-            </Card>
+      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
+        {codeQ ? (
+          <div className="grid items-start gap-4 lg:grid-cols-2">
+            <div className="min-w-0 space-y-4">
+              {/* 题目描述 */}
+              <Card>
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="text-base font-semibold">{codeQ.title}</span>
+                  <DifficultyBadge difficulty={codeQ.difficulty} />
+                </div>
+                <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[45vh]">
+                  <Markdown
+                    text={codeQ.content}
+                    className="space-y-2 text-sm leading-relaxed text-ink"
+                  />
+                </div>
+              </Card>
+              {messageFlow}
+              {inputArea}
+            </div>
+            <div className="min-w-0">
+              {/* key=题 ID：换题时重置编辑器内容与评测状态 */}
+              <CodeEditorCard
+                key={codeQ.id}
+                categoryLabel={CATEGORY_LABELS[codeQ.category]}
+                judgeProblemId={codeQ.judgeProblemId}
+                pending={reply.isPending}
+                onSubmit={sendContent}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
             {messageFlow}
             {inputArea}
           </div>
-          <div className="min-w-0">
-            {/* key=题 ID：换题时重置编辑器内容与评测状态 */}
-            <CodeEditorCard
-              key={codeQ.id}
-              categoryLabel={CATEGORY_LABELS[codeQ.category]}
-              judgeProblemId={codeQ.judgeProblemId}
-              pending={reply.isPending}
-              onSubmit={sendContent}
-            />
-          </div>
-        </div>
-      ) : (
-        <>
-          {messageFlow}
-          {inputArea}
-        </>
-      )}
+        )}
+      </section>
     </div>
   );
 }
@@ -357,7 +365,7 @@ function CodeEditorCard({
   return (
     <Card className="lg:sticky lg:top-6">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold">代码作答</span>
+        <span className="text-base font-semibold">代码作答</span>
         {judgable ? (
           <div className="flex items-center gap-2">
             <SegmentedControl
