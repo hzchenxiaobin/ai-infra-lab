@@ -232,8 +232,9 @@ export function ProgressBar({
 
 /* --------------------------------- 状态反馈 --------------------------------- */
 
+/* err-box / ok-box 为语义色钩子，供板块作用域样式（interview.css）切换语义色 */
 const ERROR_BOX_CLASS =
-  "rounded-lg border border-accent-600/30 bg-accent-600/10 text-sm text-accent-400";
+  "err-box rounded-lg border border-accent-600/30 bg-accent-600/10 text-sm text-accent-400";
 
 /** 加载 spinner（Loading 与行内加载态共用） */
 export function Spinner({ className = "size-3.5" }: { className?: string }) {
@@ -261,7 +262,7 @@ export function ErrorBox({ error }: { error: unknown }) {
 /** 成功反馈（与 ErrorBox 同族，accent 亮文字档语义） */
 export function SuccessBox({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-lg border border-accent-600/30 bg-accent-600/10 px-4 py-3 text-sm text-accent-300">
+    <div className="ok-box rounded-lg border border-accent-600/30 bg-accent-600/10 px-4 py-3 text-sm text-accent-300">
       {children}
     </div>
   );
@@ -301,7 +302,7 @@ export function Modal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 p-4"
       onClick={onClose}
     >
       <div

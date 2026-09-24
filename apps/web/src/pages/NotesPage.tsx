@@ -13,6 +13,7 @@ import {
 import { Markdown } from "../components/Markdown";
 import { extractHeadings } from "../lib/markdown-blocks";
 import { formatDateTime } from "../lib/format";
+import "./interview.css";
 
 // ---------------------------------------------------------------------------
 // 面试复盘笔记：以 markdown 记录每次面试过程（模拟面试复盘 / 真实面经）。
@@ -75,65 +76,79 @@ export default function NotesPage() {
   };
 
   return (
-    <div className="flex items-start gap-8">
-      {/* 左栏：全部笔记 */}
-      <aside className="sticky top-24 flex max-h-[calc(100vh-8rem)] w-64 shrink-0 flex-col">
-        <MicroLabel>Notes · 复盘笔记</MicroLabel>
-        <Button className="mt-3 w-full" onClick={startCreate}>
-          写复盘
-        </Button>
-        {notes.isLoading ? (
-          <Loading />
-        ) : notes.error ? (
-          <ErrorBox error={notes.error} />
-        ) : list.length === 0 ? (
-          <p className="mt-4 text-xs text-faint">还没有复盘笔记</p>
-        ) : (
-          <nav className="mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
-            {list.map((note) => {
-              const active = note.id === selectedId;
-              return (
-                <button
-                  key={note.id}
-                  onClick={() => openNote(note.id)}
-                  className={`block w-full rounded-lg border px-3 py-2 text-left transition-colors duration-150 ${
-                    active
-                      ? "border-line bg-surface shadow-soft"
-                      : "border-transparent hover:bg-surface/70"
-                  }`}
-                >
-                  <div className="truncate text-sm font-medium">{note.title}</div>
-                  <div className="mt-0.5 text-xs text-faint">{formatDateTime(note.updatedAt)}</div>
-                </button>
-              );
-            })}
-          </nav>
-        )}
-      </aside>
+    <div className="itv">
+      {/* 标题区：与首页同款 hero */}
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-eyebrow">面试 · 复盘笔记</div>
+          <h1 className="hero-title">
+            <span className="hero-title-accent">复盘笔记</span>
+          </h1>
+          <p className="hero-subtitle">以 markdown 记录每次面试过程 —— 模拟面试复盘 / 真实面经。</p>
+        </div>
+      </section>
 
-      {/* 中栏：正文（阅读 / 编辑） */}
-      <div className="min-w-0 flex-1">
-        {creating || (editing && selected) ? (
-          <NoteEditor
-            key={editing ? `edit-${selectedId}` : "new"}
-            initial={editing ? selected : null}
-            onSaved={onSaved}
-            onCancel={() => {
-              setCreating(false);
-              setEditing(false);
-            }}
-          />
-        ) : selected ? (
-          <NoteReader note={selected} onEdit={() => setEditing(true)} onDelete={() => onDelete(selected)} />
-        ) : (
-          <div className="rounded-2xl border border-line bg-surface shadow-soft">
-            <EmptyBox text="从左侧选择一篇笔记，或点击「写复盘」记录第一次面试" />
-          </div>
-        )}
-      </div>
+      {/* 三栏文档布局：放宽容器以利用两侧空间 */}
+      <main className="landing-main itv-main--wide flex items-start gap-8">
+        {/* 左栏：全部笔记 */}
+        <aside className="sticky top-20 flex max-h-[calc(100vh-8rem)] w-64 shrink-0 flex-col">
+          <MicroLabel>Notes · 复盘笔记</MicroLabel>
+          <Button className="mt-3 w-full" onClick={startCreate}>
+            写复盘
+          </Button>
+          {notes.isLoading ? (
+            <Loading />
+          ) : notes.error ? (
+            <ErrorBox error={notes.error} />
+          ) : list.length === 0 ? (
+            <p className="mt-4 text-xs text-faint">还没有复盘笔记</p>
+          ) : (
+            <nav className="mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
+              {list.map((note) => {
+                const active = note.id === selectedId;
+                return (
+                  <button
+                    key={note.id}
+                    onClick={() => openNote(note.id)}
+                    className={`block w-full rounded-lg border px-3 py-2 text-left transition-colors duration-150 ${
+                      active
+                        ? "border-line bg-surface"
+                        : "border-transparent hover:bg-surface/70"
+                    }`}
+                  >
+                    <div className="truncate text-sm font-medium">{note.title}</div>
+                    <div className="mt-0.5 text-xs text-faint">{formatDateTime(note.updatedAt)}</div>
+                  </button>
+                );
+              })}
+            </nav>
+          )}
+        </aside>
 
-      {/* 右栏：大纲目录（仅阅读态、宽屏显示） */}
-      {!creating && !editing && selected && <Toc content={selected.content} />}
+        {/* 中栏：正文（阅读 / 编辑） */}
+        <div className="min-w-0 flex-1">
+          {creating || (editing && selected) ? (
+            <NoteEditor
+              key={editing ? `edit-${selectedId}` : "new"}
+              initial={editing ? selected : null}
+              onSaved={onSaved}
+              onCancel={() => {
+                setCreating(false);
+                setEditing(false);
+              }}
+            />
+          ) : selected ? (
+            <NoteReader note={selected} onEdit={() => setEditing(true)} onDelete={() => onDelete(selected)} />
+          ) : (
+            <div className="rounded-2xl border border-line bg-surface">
+              <EmptyBox text="从左侧选择一篇笔记，或点击「写复盘」记录第一次面试" />
+            </div>
+          )}
+        </div>
+
+        {/* 右栏：大纲目录（仅阅读态、宽屏显示） */}
+        {!creating && !editing && selected && <Toc content={selected.content} />}
+      </main>
     </div>
   );
 }
@@ -143,7 +158,7 @@ function Toc({ content }: { content: string }) {
   const headings = extractHeadings(content).filter((h) => h.level <= 3);
   if (headings.length === 0) return null;
   return (
-    <aside className="sticky top-24 hidden max-h-[calc(100vh-8rem)] w-56 shrink-0 overflow-y-auto xl:block">
+    <aside className="sticky top-20 hidden max-h-[calc(100vh-8rem)] w-56 shrink-0 overflow-y-auto xl:block">
       <MicroLabel>大纲</MicroLabel>
       <nav className="mt-3 space-y-1 border-l border-line">
         {headings.map((h) => (
@@ -194,7 +209,7 @@ function NoteReader({
           </Button>
         </div>
       </div>
-      <div className="mt-6 rounded-2xl border border-line bg-surface p-8 shadow-soft">
+      <div className="mt-6 rounded-2xl border border-line bg-surface p-8">
         <Markdown text={note.content} headingIdPrefix="note-h" />
       </div>
     </div>
@@ -252,7 +267,7 @@ function NoteEditor({
         </div>
       </div>
 
-      <div className="mt-6 space-y-4 rounded-2xl border border-line bg-surface p-6 shadow-soft">
+      <div className="mt-6 space-y-4 rounded-2xl border border-line bg-surface p-6">
         <label className="block text-sm">
           <span className="mb-1 block text-xs text-muted">标题 *</span>
           <input

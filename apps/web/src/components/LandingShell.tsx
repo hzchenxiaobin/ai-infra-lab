@@ -6,24 +6,38 @@ import "../pages/landing.css";
 
 const GITHUB_URL = "https://github.com/hzchenxiaobin/ai-infra-notes";
 
+// 导航项：to/label + 自定义激活匹配（默认前缀匹配；「刷题」覆盖 /problems 下除题单/周赛
+// 外的全部路径，「面试」覆盖组卷/面试间/报告整个流程，「题库」连带评测页）
 const NAV_LINKS = [
-  { to: "/learn", label: "10 周计划" },
-  { to: "/problems/algo", label: "刷题" },
-  { to: "/problems/lists", label: "题单" },
-  { to: "/problems/contest", label: "周赛" },
-  { to: "/start", label: "面试" },
+  { to: "/learn", label: "10 周计划", match: (p: string) => p.startsWith("/learn") },
+  {
+    to: "/problems/algo",
+    label: "刷题",
+    match: (p: string) =>
+      p.startsWith("/problems/") &&
+      !p.startsWith("/problems/lists") &&
+      !p.startsWith("/problems/contest"),
+  },
+  { to: "/problems/lists", label: "题单", match: (p: string) => p.startsWith("/problems/lists") },
+  {
+    to: "/problems/contest",
+    label: "周赛",
+    match: (p: string) => p.startsWith("/problems/contest"),
+  },
+  {
+    to: "/start",
+    label: "面试",
+    match: (p: string) =>
+      p.startsWith("/start") || p.startsWith("/interview/") || p.startsWith("/report/"),
+  },
+  {
+    to: "/bank",
+    label: "题库",
+    match: (p: string) => p.startsWith("/bank") || p.startsWith("/judge/"),
+  },
+  { to: "/history", label: "历史", match: (p: string) => p.startsWith("/history") },
+  { to: "/notes", label: "笔记", match: (p: string) => p.startsWith("/notes") },
 ] as const;
-
-// 「刷题」覆盖 /problems 下除题单/周赛外的全部路径（含 GPU 分区）
-function navLinkClass(pathname: string, to: string) {
-  const active =
-    to === "/problems/algo"
-      ? pathname.startsWith("/problems/") &&
-        !pathname.startsWith("/problems/lists") &&
-        !pathname.startsWith("/problems/contest")
-      : pathname.startsWith(to);
-  return active ? "is-active" : undefined;
-}
 
 export function LandingShell() {
   const { pathname } = useLocation();
@@ -35,7 +49,7 @@ export function LandingShell() {
         </Link>
         <nav className="landing-nav-links">
           {NAV_LINKS.map((item) => (
-            <Link key={item.to} to={item.to} className={navLinkClass(pathname, item.to)}>
+            <Link key={item.to} to={item.to} className={item.match(pathname) ? "is-active" : undefined}>
               {item.label}
             </Link>
           ))}

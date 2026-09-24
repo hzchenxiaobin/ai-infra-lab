@@ -32,9 +32,9 @@ export function JudgeResultView({ result }: { result: JudgeResultData }) {
   if (status === "ie" || verdict == null || verdict.status === "no_cases") {
     return (
       <div>
-        <div className="text-sm font-medium text-accent-400">评测服务异常（{status}），请稍后重试。</div>
+        <div className="err-text text-sm font-medium">评测服务异常（{status}），请稍后重试。</div>
         {internalError && (
-          <pre className="mt-2 max-h-40 overflow-auto rounded-lg border border-accent-600/30 bg-accent-600/10 p-3 font-mono text-xs text-accent-300">
+          <pre className="err-box mt-2 max-h-40 overflow-auto rounded-lg border p-3 font-mono text-xs">
             {internalError}
           </pre>
         )}
@@ -44,8 +44,8 @@ export function JudgeResultView({ result }: { result: JudgeResultData }) {
   if (verdict.status === "compile_error") {
     return (
       <div>
-        <div className="mb-2 text-sm font-medium text-accent-400">编译失败</div>
-        <pre className="max-h-60 overflow-auto rounded-lg border border-accent-600/30 bg-accent-600/10 p-3 font-mono text-xs text-accent-300">
+        <div className="err-text mb-2 text-sm font-medium">编译失败</div>
+        <pre className="err-box max-h-60 overflow-auto rounded-lg border p-3 font-mono text-xs">
           {verdict.compileError}
         </pre>
       </div>
@@ -68,16 +68,16 @@ export function JudgeResultView({ result }: { result: JudgeResultData }) {
           <div
             key={i}
             className={`rounded-lg border p-2 font-mono text-xs ${
-              c.pass ? "border-line bg-page" : "border-accent-600/30 bg-accent-600/10"
+              c.pass ? "border-line bg-page" : "err-box"
             }`}
           >
-            <div className={c.pass ? "text-ink" : "text-accent-300"}>
+            <div className={c.pass ? "text-ink" : "err-text"}>
               用例 {i + 1}：{c.pass ? "通过" : "未通过"}
             </div>
             <div className="mt-1 text-muted">输入：{c.input}</div>
             <div className="text-muted">期望：{c.expected}</div>
             <div className="text-muted">实际：{c.actual || "（无输出）"}</div>
-            {c.error && <div className="mt-1 whitespace-pre-wrap text-accent-400">{c.error}</div>}
+            {c.error && <div className="err-text mt-1 whitespace-pre-wrap">{c.error}</div>}
           </div>
         ))}
       </div>

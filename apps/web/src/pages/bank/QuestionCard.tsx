@@ -89,7 +89,7 @@ export function QuestionCard({
                 <Button variant="danger" size="sm" onClick={onDelete} disabled={remove.isPending}>
                   {remove.isPending ? "删除中…" : "删除"}
                 </Button>
-                {remove.error && <span className="text-xs text-accent-400">{remove.error.message}</span>}
+                {remove.error && <span className="err-text text-xs">{remove.error.message}</span>}
               </>
             )}
           </div>

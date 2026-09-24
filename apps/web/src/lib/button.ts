@@ -18,7 +18,8 @@ const BUTTON_SIZES: Record<ButtonSize, string> = {
   lg: "h-12 px-7 text-sm font-semibold",
 };
 
-/** 按钮类名拼接：供 Link 等非 button 元素复用按钮样式 */
+/** 按钮类名拼接：供 Link 等非 button 元素复用按钮样式；
+ *  btn-ui / btn-ui-{variant} 为稳定钩子，供板块作用域样式（interview.css）覆写 */
 export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md"): string {
-  return `rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_SIZES[size]} ${BUTTON_STYLES[variant]}`;
+  return `btn-ui btn-ui-${variant} rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_SIZES[size]} ${BUTTON_STYLES[variant]}`;
 }

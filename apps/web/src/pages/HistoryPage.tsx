@@ -10,12 +10,12 @@ import {
   GradeBadge,
   Loading,
   MicroLabel,
-  PageHeader,
   ProgressBar,
   SectionTitle,
   StatusPill,
 } from "../components/ui";
 import { durationMinutes, formatDateTime, formatShortDate } from "../lib/format";
+import "./interview.css";
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -34,120 +34,126 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="space-y-10">
-      {/* 标题区 */}
-      <PageHeader
-        label="History · 历史"
-        title="历史统计"
-        description="各方向均分、近期趋势与全部场次一览。"
-      />
+    <div className="itv">
+      {/* 标题区：与首页同款 hero */}
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-eyebrow">面试 · 历史</div>
+          <h1 className="hero-title">
+            <span className="hero-title-accent">历史统计</span>
+          </h1>
+          <p className="hero-subtitle">各方向均分、近期趋势与全部场次一览。</p>
+        </div>
+      </section>
 
-      {/* 方向平均分 */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
-        <Card className="p-6">
-          <SectionTitle title="方向平均分" description="A=4 / B=3 / C=2 / D=1" className="mb-4" />
-          {stats.isLoading ? (
+      <main className="landing-main space-y-10">
+        {/* 方向平均分 */}
+        <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
+          <Card className="p-6">
+            <SectionTitle title="方向平均分" description="A=4 / B=3 / C=2 / D=1" className="mb-4" />
+            {stats.isLoading ? (
+              <Loading />
+            ) : stats.error ? (
+              <ErrorBox error={stats.error} />
+            ) : stats.data === undefined ? null : (
+              <CategoryBars data={stats.data.categoryAverages} />
+            )}
+          </Card>
+        </section>
+
+        {/* 近 10 场趋势 */}
+        <section className="animate-fade-up" style={{ animationDelay: "0.16s" }}>
+          <Card className="p-6">
+            <SectionTitle title="近 10 场趋势" className="mb-4" />
+            {stats.isLoading ? (
+              <Loading />
+            ) : stats.error ? (
+              <ErrorBox error={stats.error} />
+            ) : stats.data === undefined ? null : (
+              <TrendChart trend={stats.data.trend} />
+            )}
+          </Card>
+        </section>
+
+        {/* 场次表格 */}
+        <section className="animate-fade-up" style={{ animationDelay: "0.24s" }}>
+          <MicroLabel>All Sessions</MicroLabel>
+          <h3 className="mt-2 mb-5 text-lg font-semibold tracking-tight">全部场次</h3>
+          {sessions.isLoading ? (
             <Loading />
-          ) : stats.error ? (
-            <ErrorBox error={stats.error} />
-          ) : stats.data === undefined ? null : (
-            <CategoryBars data={stats.data.categoryAverages} />
+          ) : sessions.error ? (
+            <ErrorBox error={sessions.error} />
+          ) : sessions.data === undefined ? null : sessions.data.length === 0 ? (
+            <EmptyBox text="还没有面试记录" />
+          ) : (
+            <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-divider text-xs text-muted">
+                    <th className="px-5 py-3 font-medium">时间</th>
+                    <th className="px-5 py-3 font-medium">标题</th>
+                    <th className="px-5 py-3 font-medium">方向</th>
+                    <th className="px-5 py-3 font-medium">题数</th>
+                    <th className="px-5 py-3 font-medium">等级</th>
+                    <th className="px-5 py-3 font-medium">时长</th>
+                    <th className="px-5 py-3 font-medium">状态</th>
+                    <th className="px-5 py-3 font-medium">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions.data.map((s) => {
+                    const duration = durationMinutes(s.createdAt, s.finishedAt);
+                    return (
+                      <tr
+                        key={s.id}
+                        onClick={() =>
+                          navigate(s.status === "finished" ? `/report/${s.id}` : `/interview/${s.id}`)
+                        }
+                        className="cursor-pointer border-b border-divider transition-colors duration-150 last:border-0 hover:bg-page"
+                      >
+                        <td className="whitespace-nowrap px-5 py-3 text-muted">
+                          {formatDateTime(s.createdAt)}
+                        </td>
+                        <td className="max-w-56 truncate px-5 py-3 font-medium">{s.title}</td>
+                        <td className="whitespace-nowrap px-5 py-3 text-muted">
+                          {s.categories.map((c) => CATEGORY_LABELS[c as Category] ?? c).join("/")}
+                        </td>
+                        <td className="px-5 py-3 text-muted">{s.questionIds.length}</td>
+                        <td className="px-5 py-3">
+                          <GradeBadge grade={s.overallGrade} />
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-3 text-muted">
+                          {duration != null ? `${duration} 分钟` : "—"}
+                        </td>
+                        <td className="px-5 py-3">
+                          {s.status === "finished" ? (
+                            <StatusPill variant="done">已完成</StatusPill>
+                          ) : (
+                            <StatusPill variant="active">进行中</StatusPill>
+                          )}
+                        </td>
+                        <td className="px-5 py-3">
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            disabled={remove.isPending}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(s.id, s.title);
+                            }}
+                          >
+                            删除
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
-        </Card>
-      </section>
-
-      {/* 近 10 场趋势 */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.16s" }}>
-        <Card className="p-6">
-          <SectionTitle title="近 10 场趋势" className="mb-4" />
-          {stats.isLoading ? (
-            <Loading />
-          ) : stats.error ? (
-            <ErrorBox error={stats.error} />
-          ) : stats.data === undefined ? null : (
-            <TrendChart trend={stats.data.trend} />
-          )}
-        </Card>
-      </section>
-
-      {/* 场次表格 */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.24s" }}>
-        <MicroLabel>All Sessions</MicroLabel>
-        <h3 className="mt-2 mb-5 text-lg font-semibold tracking-tight">全部场次</h3>
-        {sessions.isLoading ? (
-          <Loading />
-        ) : sessions.error ? (
-          <ErrorBox error={sessions.error} />
-        ) : sessions.data === undefined ? null : sessions.data.length === 0 ? (
-          <EmptyBox text="还没有面试记录" />
-        ) : (
-          <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-soft">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-divider text-xs text-muted">
-                  <th className="px-5 py-3 font-medium">时间</th>
-                  <th className="px-5 py-3 font-medium">标题</th>
-                  <th className="px-5 py-3 font-medium">方向</th>
-                  <th className="px-5 py-3 font-medium">题数</th>
-                  <th className="px-5 py-3 font-medium">等级</th>
-                  <th className="px-5 py-3 font-medium">时长</th>
-                  <th className="px-5 py-3 font-medium">状态</th>
-                  <th className="px-5 py-3 font-medium">操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sessions.data.map((s) => {
-                  const duration = durationMinutes(s.createdAt, s.finishedAt);
-                  return (
-                    <tr
-                      key={s.id}
-                      onClick={() =>
-                        navigate(s.status === "finished" ? `/report/${s.id}` : `/interview/${s.id}`)
-                      }
-                      className="cursor-pointer border-b border-divider transition-colors duration-150 last:border-0 hover:bg-page"
-                    >
-                      <td className="whitespace-nowrap px-5 py-3 text-muted">
-                        {formatDateTime(s.createdAt)}
-                      </td>
-                      <td className="max-w-56 truncate px-5 py-3 font-medium">{s.title}</td>
-                      <td className="whitespace-nowrap px-5 py-3 text-muted">
-                        {s.categories.map((c) => CATEGORY_LABELS[c as Category] ?? c).join("/")}
-                      </td>
-                      <td className="px-5 py-3 text-muted">{s.questionIds.length}</td>
-                      <td className="px-5 py-3">
-                        <GradeBadge grade={s.overallGrade} />
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-3 text-muted">
-                        {duration != null ? `${duration} 分钟` : "—"}
-                      </td>
-                      <td className="px-5 py-3">
-                        {s.status === "finished" ? (
-                          <StatusPill variant="done">已完成</StatusPill>
-                        ) : (
-                          <StatusPill variant="active">进行中</StatusPill>
-                        )}
-                      </td>
-                      <td className="px-5 py-3">
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          disabled={remove.isPending}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(s.id, s.title);
-                          }}
-                        >
-                          删除
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

@@ -3,11 +3,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router";
 import { CATEGORY_LABELS, MAX_FOLLOW_UPS, type InterviewState } from "@ailab/contracts";
 import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
-import { Button, Card, DifficultyBadge, ErrorBox, InlineError, Loading, PageHeader, ProgressBar, SegmentedControl } from "../components/ui";
+import { Button, Card, DifficultyBadge, ErrorBox, InlineError, Loading, ProgressBar, SegmentedControl } from "../components/ui";
 import { Markdown } from "../components/Markdown";
 import { MessageBubble } from "../components/MessageBubble";
 import { JudgeResultView } from "../components/JudgeResult";
 import { POLL_INTERVAL_MS } from "../lib/judge";
+import "./interview.css";
 
 type Language = "cpp" | "python";
 const LANG_LABELS: Record<Language, string> = { cpp: "C++", python: "Python" };
@@ -28,7 +29,11 @@ export default function InterviewPage() {
   const { id } = useParams();
   const sessionId = Number(id);
   if (!Number.isInteger(sessionId) || sessionId <= 0) {
-    return <ErrorBox error={new Error("无效的场次 ID")} />;
+    return (
+      <div className="itv pt-24">
+        <ErrorBox error={new Error("无效的场次 ID")} />
+      </div>
+    );
   }
   return <InterviewRoom key={sessionId} sessionId={sessionId} />;
 }
@@ -113,8 +118,18 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
     }),
   );
 
-  if (get.isLoading) return <Loading text="恢复面试现场…" />;
-  if (get.error) return <ErrorBox error={get.error} />;
+  if (get.isLoading)
+    return (
+      <div className="itv pt-24">
+        <Loading text="恢复面试现场…" />
+      </div>
+    );
+  if (get.error)
+    return (
+      <div className="itv pt-24">
+        <ErrorBox error={get.error} />
+      </div>
+    );
   if (!get.data) return null;
 
   const { session } = get.data;
@@ -212,86 +227,87 @@ function InterviewRoom({ sessionId }: { sessionId: number }) {
     );
 
   return (
-    <div className="space-y-10">
-      {/* 标题区：与首页同款 PageHeader，进度与操作收纳于此 */}
-      <PageHeader
-        label="Interview · 面试"
-        title={
-          <span className="inline-flex items-center gap-2.5">
+    <div className="itv">
+      {/* 标题区：与首页同款 hero（工作台紧凑版），进度与操作收纳于此 */}
+      <section className="hero hero--slim">
+        <div className="hero-inner">
+          <div className="hero-eyebrow">
             {status === "active" && (
-              <span className="size-2 shrink-0 animate-pulse-dot rounded-full bg-accent-600" />
+              <span className="mr-1.5 inline-block size-1.5 animate-pulse-dot rounded-full bg-accent-600 align-middle" />
             )}
-            {session.title}
-          </span>
-        }
-        description={
-          <>
+            面试 · {status === "active" ? "进行中" : "已结束"}
+          </div>
+          <h1 className="hero-title">
+            <span className="hero-title-accent">{session.title}</span>
+          </h1>
+          <p className="hero-subtitle">
             第 {Math.min(currentIndex + 1, total)}/{total} 题
             {maxFollowUps > 0
               ? ` · 追问 ${Math.min(followUpIndex, maxFollowUps)}/${maxFollowUps}`
               : " · 无预设追问"}
             {currentQ && status === "active" ? ` · 当前：${currentQ.title}` : ""}
-          </>
-        }
-        actions={
-          status === "finished" ? (
-            <Link to={`/report/${sessionId}`}>
-              <Button>查看评估报告 →</Button>
-            </Link>
+          </p>
+          <div className="itv-hero-extra">
+            <ProgressBar value={progressPct} className="w-full max-w-xs" />
+            {finish.error && <InlineError>结束失败：{finish.error.message}</InlineError>}
+          </div>
+          {status === "finished" ? (
+            <div className="hero-actions">
+              <Link to={`/report/${sessionId}`}>
+                <Button>查看评估报告 →</Button>
+              </Link>
+            </div>
           ) : (
-            <Button variant="danger" size="sm" disabled={finish.isPending} onClick={confirmFinish}>
-              {finish.isPending ? "生成报告中…" : "结束本场"}
-            </Button>
-          )
-        }
-      >
-        <div className="mt-5">
-          <ProgressBar value={progressPct} />
-          {finish.error && (
-            <InlineError className="mt-2">结束失败：{finish.error.message}</InlineError>
+            <div className="hero-actions">
+              <Button variant="danger" size="sm" disabled={finish.isPending} onClick={confirmFinish}>
+                {finish.isPending ? "生成报告中…" : "结束本场"}
+              </Button>
+            </div>
           )}
         </div>
-      </PageHeader>
+      </section>
 
       {/* 算法题 / leetgpu 题：左题面 + 对话，右代码编辑器 */}
-      <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
-        {codeQ ? (
-          <div className="grid items-start gap-4 lg:grid-cols-2">
-            <div className="min-w-0 space-y-4">
-              {/* 题目描述 */}
-              <Card>
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="text-base font-semibold">{codeQ.title}</span>
-                  <DifficultyBadge difficulty={codeQ.difficulty} />
-                </div>
-                <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[45vh]">
-                  <Markdown
-                    text={codeQ.content}
-                    className="space-y-2 text-sm leading-relaxed text-ink"
-                  />
-                </div>
-              </Card>
+      <main className="landing-main">
+        <section className="animate-fade-up" style={{ animationDelay: "0.08s" }}>
+          {codeQ ? (
+            <div className="grid items-start gap-4 lg:grid-cols-2">
+              <div className="min-w-0 space-y-4">
+                {/* 题目描述 */}
+                <Card>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-base font-semibold">{codeQ.title}</span>
+                    <DifficultyBadge difficulty={codeQ.difficulty} />
+                  </div>
+                  <div className="max-h-none overflow-y-auto pr-1 sm:max-h-[45vh]">
+                    <Markdown
+                      text={codeQ.content}
+                      className="space-y-2 text-sm leading-relaxed text-ink"
+                    />
+                  </div>
+                </Card>
+                {messageFlow}
+                {inputArea}
+              </div>
+              <div className="min-w-0">
+                {/* key=题 ID：换题时重置编辑器内容与评测状态 */}
+                <CodeEditorCard
+                  key={codeQ.id}
+                  categoryLabel={CATEGORY_LABELS[codeQ.category]}
+                  judgeProblemId={codeQ.judgeProblemId}
+                  pending={reply.isPending}
+                  onSubmit={sendContent}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
               {messageFlow}
               {inputArea}
             </div>
-            <div className="min-w-0">
-              {/* key=题 ID：换题时重置编辑器内容与评测状态 */}
-              <CodeEditorCard
-                key={codeQ.id}
-                categoryLabel={CATEGORY_LABELS[codeQ.category]}
-                judgeProblemId={codeQ.judgeProblemId}
-                pending={reply.isPending}
-                onSubmit={sendContent}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {messageFlow}
-            {inputArea}
-          </div>
-        )}
-      </section>
+          )}
+        </section>
+      </main>
     </div>
   );
 }
@@ -363,7 +379,7 @@ function CodeEditorCard({
   };
 
   return (
-    <Card className="lg:sticky lg:top-6">
+    <Card className="lg:sticky lg:top-20">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-base font-semibold">代码作答</span>
         {judgable ? (
@@ -410,7 +426,7 @@ function CodeEditorCard({
         </div>
       </div>
       {submitJudge.error && (
-        <p className="mt-2 text-xs text-accent-400">{submitJudge.error.message}</p>
+        <p className="err-text mt-2 text-xs">{submitJudge.error.message}</p>
       )}
       {result.data && (
         <div className="mt-3 border-t border-line pt-3">
