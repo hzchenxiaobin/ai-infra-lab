@@ -138,7 +138,7 @@ export default function DashboardPage() {
           <div className="flex items-baseline justify-between">
             <h2 className="text-base font-semibold">学习路径</h2>
             <Link
-              to="/learn/path"
+              to="/"
               className="group inline-flex items-center gap-1 text-xs font-medium text-accent-600 transition-colors duration-150 hover:text-accent-700"
             >
               继续学习

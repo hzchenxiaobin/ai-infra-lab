@@ -11,7 +11,6 @@ import ProblemListsPage from "./pages/problems/ProblemListsPage";
 import ProblemListPage from "./pages/problems/ProblemListPage";
 import ContestPage from "./pages/problems/ContestPage";
 import ContestSessionPage from "./pages/problems/ContestSessionPage";
-import LearnPage from "./pages/learn/LearnPage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import SearchPage from "./pages/SearchPage";
@@ -50,8 +49,6 @@ export default function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route element={<RequireAuth />}>
-            <Route path="learn" element={<LearnPage />} />
-            <Route path="learn/path" element={<LearnPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="search" element={<SearchPage />} />
           </Route>

@@ -7,7 +7,7 @@ import "./landing.css";
 // 首页落地页：版式与文案对齐 ai-infra-notes 站点首页
 // （https://hzchenxiaobin.github.io/ai-infra-notes/index.html），样式见同目录 landing.css。
 // 周 / 专题卡片链接一律取 learn.overview 的 contents.url（红线：不手拼 docs 路径）；
-// 「10 周计划 / 查看完整计划」进应用内 /learn 学习路径页（原首页内容，含进度标记）。
+// 导航「10 周计划」回本页（/）。
 
 const GITHUB_URL = "https://github.com/hzchenxiaobin/ai-infra-notes";
 // docs 构建期生成的论文索引页：站点结构页，无 contents 条目（统一 ID 体系外）
@@ -114,7 +114,7 @@ export default function LandingPage() {
           AI Infra <span>Notes</span>
         </Link>
         <nav className="landing-nav-links">
-          <Link to="/learn">10 周计划</Link>
+          <Link to="/">10 周计划</Link>
           <Link to="/problems/algo">刷题</Link>
           <Link to="/start">面试</Link>
           <a href="#topics">专题笔记</a>
@@ -141,9 +141,6 @@ export default function LandingPage() {
                 🚀 开始 Week {firstWeek.week}
               </a>
             )}
-            <Link className="btn btn-secondary" to="/learn">
-              📋 查看完整计划
-            </Link>
           </div>
         </div>
       </section>

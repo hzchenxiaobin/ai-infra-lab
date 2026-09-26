@@ -9,7 +9,7 @@ const GITHUB_URL = "https://github.com/hzchenxiaobin/ai-infra-notes";
 // 导航项：to/label + 自定义激活匹配（默认前缀匹配；「刷题」覆盖 /problems 下除题单/周赛
 // 外的全部路径，「面试」覆盖组卷/面试间/报告整个流程，「题库」连带评测页）
 const NAV_LINKS = [
-  { to: "/learn", label: "10 周计划", match: (p: string) => p.startsWith("/learn") },
+  { to: "/", label: "10 周计划", match: (p: string) => p === "/" },
   {
     to: "/problems/algo",
     label: "刷题",
