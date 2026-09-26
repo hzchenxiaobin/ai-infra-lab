@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="640" viewBox="0 0 880 640" font-family="-apple-system,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="880" height="640" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#111827">分页 KV Cache：逻辑块 → block_table → 物理块池</text>
+  <text x="440" y="56" text-anchor="middle" font-size="12.5" fill="#6b7280">示例：block_size = 4（nano-vllm 默认 256）。序列 9 个 token → 逻辑块 0/1 满、逻辑块 2 未满</text>
+
+  <text x="56" y="94" font-size="14" font-weight="700" fill="#374151">① 序列逻辑视图 —— Sequence.token_ids（逻辑连续）</text>
+
+  <rect x="48" y="102" width="248" height="64" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="172" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">逻辑块 0（满）</text>
+  <rect x="292" y="102" width="248" height="64" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="416" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">逻辑块 1（满）</text>
+  <rect x="532" y="102" width="248" height="64" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="656" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">逻辑块 2（未满，还会追加）</text>
+
+  <g font-size="13" font-family="'SF Mono',Consolas,monospace" text-anchor="middle">
+    <rect x="56" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="84" y="150" fill="#1e3a8a">t₀</text>
+    <rect x="116" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="144" y="150" fill="#1e3a8a">t₁</text>
+    <rect x="176" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="204" y="150" fill="#1e3a8a">t₂</text>
+    <rect x="236" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="264" y="150" fill="#1e3a8a">t₃</text>
+    <rect x="296" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="324" y="150" fill="#1e3a8a">t₄</text>
+    <rect x="356" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="384" y="150" fill="#1e3a8a">t₅</text>
+    <rect x="416" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="444" y="150" fill="#1e3a8a">t₆</text>
+    <rect x="476" y="128" width="56" height="34" fill="#dbeafe" stroke="#3b82f6"/><text x="504" y="150" fill="#1e3a8a">t₇</text>
+    <rect x="536" y="128" width="56" height="34" fill="#fef3c7" stroke="#f59e0b"/><text x="564" y="150" fill="#92400e">t₈</text>
+    <rect x="596" y="128" width="56" height="34" fill="none" stroke="#94a3b8" stroke-dasharray="4 3"/><text x="624" y="150" fill="#94a3b8">空</text>
+    <rect x="656" y="128" width="56" height="34" fill="none" stroke="#94a3b8" stroke-dasharray="4 3"/><text x="684" y="150" fill="#94a3b8">空</text>
+    <rect x="716" y="128" width="56" height="34" fill="none" stroke="#94a3b8" stroke-dasharray="4 3"/><text x="744" y="150" fill="#94a3b8">空</text>
+  </g>
+
+  <text x="56" y="212" font-size="14" font-weight="700" fill="#374151">② block_table —— 逻辑块号 → 物理块号（序列持有的唯一映射）</text>
+
+  <line x1="172" y1="166" x2="352" y2="224" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="416" y1="166" x2="438" y2="224" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="656" y1="166" x2="524" y2="224" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g font-size="17" font-weight="700" font-family="'SF Mono',Consolas,monospace" text-anchor="middle">
+    <rect x="320" y="228" width="72" height="36" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/><text x="356" y="252" fill="#111827">5</text>
+    <rect x="404" y="228" width="72" height="36" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/><text x="440" y="252" fill="#111827">2</text>
+    <rect x="488" y="228" width="72" height="36" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/><text x="524" y="252" fill="#111827">7</text>
+  </g>
+  <g font-size="11" fill="#6b7280" text-anchor="middle">
+    <text x="356" y="280">逻辑块 0</text>
+    <text x="440" y="280">逻辑块 1</text>
+    <text x="524" y="280">逻辑块 2</text>
+  </g>
+
+  <text x="56" y="314" font-size="14" font-weight="700" fill="#374151">③ 物理块池 —— BlockManager.blocks（物理离散，跨序列共享）</text>
+
+  <line x1="356" y1="264" x2="594" y2="328" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="440" y1="264" x2="306" y2="328" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="524" y1="264" x2="794" y2="328" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <g text-anchor="middle">
+    <rect x="56" y="332" width="88" height="70" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
+    <text x="100" y="354" font-size="13" font-weight="600" fill="#64748b">块 0</text>
+    <text x="100" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#94a3b8">—</text>
+    <text x="100" y="390" font-size="11" fill="#94a3b8">free</text>
+    <rect x="156" y="332" width="88" height="70" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
+    <text x="200" y="354" font-size="13" font-weight="600" fill="#64748b">块 1</text>
+    <text x="200" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#94a3b8">—</text>
+    <text x="200" y="390" font-size="11" fill="#94a3b8">free</text>
+    <rect x="256" y="332" width="88" height="70" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="300" y="354" font-size="13" font-weight="700" fill="#1e3a8a">块 2</text>
+    <text x="300" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#1d4ed8">ref=1 h₁</text>
+    <text x="300" y="390" font-size="11" fill="#1d4ed8">used</text>
+    <rect x="356" y="332" width="88" height="70" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
+    <text x="400" y="354" font-size="13" font-weight="600" fill="#64748b">块 3</text>
+    <text x="400" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#94a3b8">—</text>
+    <text x="400" y="390" font-size="11" fill="#94a3b8">free</text>
+    <rect x="456" y="332" width="88" height="70" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
+    <text x="500" y="354" font-size="13" font-weight="600" fill="#64748b">块 4</text>
+    <text x="500" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#94a3b8">—</text>
+    <text x="500" y="390" font-size="11" fill="#94a3b8">free</text>
+    <rect x="556" y="332" width="88" height="70" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="600" y="354" font-size="13" font-weight="700" fill="#1e3a8a">块 5</text>
+    <text x="600" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#1d4ed8">ref=1 h₀</text>
+    <text x="600" y="390" font-size="11" fill="#1d4ed8">used</text>
+    <rect x="656" y="332" width="88" height="70" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
+    <text x="700" y="354" font-size="13" font-weight="600" fill="#64748b">块 6</text>
+    <text x="700" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#94a3b8">—</text>
+    <text x="700" y="390" font-size="11" fill="#94a3b8">free</text>
+    <rect x="756" y="332" width="88" height="70" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="800" y="354" font-size="13" font-weight="700" fill="#92400e">块 7</text>
+    <text x="800" y="372" font-size="11.5" font-family="'SF Mono',Consolas,monospace" fill="#b45309">ref=1 未哈希</text>
+    <text x="800" y="390" font-size="11" fill="#b45309">used（未满）</text>
+  </g>
+
+  <rect x="56" y="428" width="384" height="88" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="72" y="450" font-size="12.5" font-weight="700" fill="#334155">free_block_ids —— 空闲块队列（deque，FIFO）</text>
+  <text x="72" y="474" font-size="13" font-family="'SF Mono',Consolas,monospace" fill="#0f172a">deque([0, 1, 3, 4, 6])</text>
+  <text x="72" y="498" font-size="11.5" fill="#6b7280">_allocate_block() 从左端 popleft —— 先释放的先被复用</text>
+
+  <rect x="464" y="428" width="380" height="88" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="480" y="450" font-size="12.5" font-weight="700" fill="#334155">used_block_ids —— 在用块集合（set）</text>
+  <text x="480" y="474" font-size="13" font-family="'SF Mono',Consolas,monospace" fill="#0f172a">{2, 5, 7}</text>
+  <text x="480" y="498" font-size="11.5" fill="#6b7280">can_allocate 用它判断缓存块是否被在跑序列持有（可零成本共享）</text>
+
+  <rect x="56" y="536" width="788" height="84" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="72" y="560" font-size="13" font-weight="700" fill="#1e40af">要点</text>
+  <text x="72" y="582" font-size="12" fill="#1e3a8a">token 逻辑连续、KV 物理离散：attention kernel 拿着 block_table 逐块取 KV；每个序列唯一的浪费是最后一个不满块（&lt; block_size 个 token）。</text>
+  <text x="72" y="604" font-size="12" fill="#1e3a8a">同一物理块可被多个序列的 block_table 引用（ref_count 计数）—— 这是前缀缓存与并行采样的物理基础。</text>
+</svg>

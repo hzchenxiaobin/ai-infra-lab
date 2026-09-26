@@ -323,13 +323,17 @@ aiinfra/topics/nano-vllm/
 ├── day3.md                      # Day 3: BlockManager（分页 KV Cache、链式哈希前缀缓存）
 ├── day4.md                      # Day 4: Scheduler（continuous batching、chunked prefill、抢占）
 ├── day5.md                      # Day 5: 模型执行与算子（attention 双路径、Gumbel-max、CUDA graph）
-├── day6.md                      # Day 6: Tensor Parallelism 与优化特性 A/B 实验
+├── day6.md                      # Day 6: Tensor Parallelism 与优化特性 A/B 实验）
 ├── day7.md                      # Day 7: 迁移 vLLM 与复盘（五站走读、能力地图、结课自测）
-├── notes/                       # （规划中）走读笔记
-│   ├── engine_walkthrough.md    # Day 2: generate() 调用链
-│   ├── block_manager.md         # Day 3: 分页 KV Cache + 链式哈希
-│   ├── scheduler.md             # Day 4: 调度与抢占
-│   └── attention_kernel.md      # Day 5: prefill/decode kernel 对比
+├── code/                        # 源码逐行解读（正文引用的 .py 为仓库源码快照）
+│   ├── llm_engine.md            # 引擎主循环（generate / step 三段式）
+│   ├── sequence.md              # 一条请求在引擎里的化身（三字段记账体系）
+│   ├── block_manager.md         # 分页 KV Cache + 链式哈希前缀缓存（Day 3 对应）
+│   ├── scheduler.md             # 调度与抢占（Day 4 对应）
+│   ├── model_runner.md          # 模型执行（KV 池分配、张量组装）
+│   ├── attention.md             # attention 双路径 + store_kvcache kernel
+│   ├── linear.md / qwen3.md     # 线性层与 Qwen3 模型结构
+│   └── assets/                  # 上述文档的配图（SVG）
 └── benchmark/                   # （规划中）A/B 实验脚本与结果
     └── prefix_cache_ab.md       # Day 6: 前缀缓存 / CUDA graph 实验
 ```

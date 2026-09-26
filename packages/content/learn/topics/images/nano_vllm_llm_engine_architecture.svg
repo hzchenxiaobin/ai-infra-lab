@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 650" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="73" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5"/>
+    </filter>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#5a5a5a"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a8edb"/>
+    </marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a7a3a"/>
+    </marker>
+  </defs>
+  <rect width="920" height="650" fill="#fdfcf7"/>
+
+  <text x="460" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#2b2b2b">LLMEngine 组件架构：主进程编排 + TP worker 进程</text>
+  <path d="M 250 40 Q 460 48 670 40" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- 主进程容器 -->
+  <g filter="url(#sk)"><rect x="30" y="62" width="600" height="330" rx="12" fill="#e8f0fa" stroke="#4a8edb" stroke-width="2"/></g>
+  <text x="330" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b6e9e">主进程 · LLM(LLMEngine)，rank 0</text>
+
+  <!-- Tokenizer -->
+  <g filter="url(#sk)"><rect x="55" y="108" width="140" height="118" rx="8" fill="#fff" stroke="#4a8edb" stroke-width="1.5"/></g>
+  <text x="125" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#2b6e9e">Tokenizer</text>
+  <g font-size="9" fill="#444">
+    <text x="125" y="152" text-anchor="middle">AutoTokenizer</text>
+    <text x="125" y="170" text-anchor="middle">add_request：</text>
+    <text x="125" y="184" text-anchor="middle">encode(prompt)→ids</text>
+    <text x="125" y="202" text-anchor="middle">generate 收尾：</text>
+    <text x="125" y="216" text-anchor="middle">decode(ids)→文本</text>
+  </g>
+
+  <!-- Scheduler -->
+  <g filter="url(#sk)"><rect x="235" y="108" width="175" height="160" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="322" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#7a5415">Scheduler</text>
+  <g font-size="9" fill="#444">
+    <text x="322" y="152" text-anchor="middle">waiting / running 双队列</text>
+    <text x="322" y="170" text-anchor="middle">BlockManager：</text>
+    <text x="322" y="184" text-anchor="middle">KV 块分配 / 回收</text>
+    <text x="322" y="202" text-anchor="middle">前缀缓存（块哈希）</text>
+    <text x="322" y="220" text-anchor="middle">抢占 preempt</text>
+    <text x="322" y="244" text-anchor="middle" fill="#7a5415">prefill 优先调度</text>
+  </g>
+
+  <!-- ModelRunner rank0 -->
+  <g filter="url(#sk)"><rect x="450" y="108" width="155" height="160" rx="8" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.5"/></g>
+  <text x="527" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#356130">ModelRunner</text>
+  <g font-size="9" fill="#444">
+    <text x="527" y="148" text-anchor="middle">(rank 0，主进程内)</text>
+    <text x="527" y="166" text-anchor="middle">Qwen3 权重</text>
+    <text x="527" y="180" text-anchor="middle">KV cache 显存池</text>
+    <text x="527" y="198" text-anchor="middle">CUDA Graph 捕获</text>
+    <text x="527" y="216" text-anchor="middle">call('run', …)</text>
+    <text x="527" y="234" text-anchor="middle">write_shm 广播指令</text>
+  </g>
+
+  <!-- 组件间箭头 -->
+  <path d="M 195 190 L 232 190" stroke="#5a5a5a" stroke-width="1.5" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="214" y="182" text-anchor="middle" font-size="8.5" fill="#888">token_ids</text>
+  <path d="M 410 185 L 447 185" stroke="#5a5a5a" stroke-width="1.5" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="429" y="177" text-anchor="middle" font-size="8.5" fill="#888">seqs, is_prefill</text>
+  <path d="M 447 215 L 410 215" stroke="#d6a040" stroke-width="1.5" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="429" y="232" text-anchor="middle" font-size="8.5" fill="#7a5415">token_ids</text>
+
+  <!-- 引擎方法条 -->
+  <g filter="url(#sk)"><rect x="55" y="292" width="550" height="76" rx="8" fill="#fff" stroke="#4a8edb" stroke-width="1.2" stroke-dasharray="5 3"/></g>
+  <text x="330" y="314" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b6e9e">引擎主循环（llm_engine.py 的编排逻辑）</text>
+  <g font-size="9.5" fill="#444">
+    <text x="330" y="334" text-anchor="middle">add_request → 入队；step() = schedule → call('run') → postprocess</text>
+    <text x="330" y="352" text-anchor="middle">generate()：while not is_finished() 反复 step，收集 FINISHED 序列</text>
+  </g>
+
+  <!-- worker 进程 -->
+  <g filter="url(#sk)"><rect x="680" y="108" width="210" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="785" y="130" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a5415">worker 进程 rank 1</text>
+  <g font-size="8.5" fill="#444">
+    <text x="785" y="147" text-anchor="middle">Process(target=ModelRunner)</text>
+    <text x="785" y="162" text-anchor="middle">loop()：event.wait → read_shm</text>
+  </g>
+  <g filter="url(#sk)"><rect x="680" y="192" width="210" height="72" rx="8" fill="#fff8e1" stroke="#d6a040" stroke-width="1.5"/></g>
+  <text x="785" y="214" text-anchor="middle" font-size="11" font-weight="bold" fill="#7a5415">worker 进程 rank 2</text>
+  <g font-size="8.5" fill="#444">
+    <text x="785" y="231" text-anchor="middle">同样的 ModelRunner</text>
+    <text x="785" y="246" text-anchor="middle">各自持有 1/N 切分权重</text>
+  </g>
+  <g filter="url(#sk)"><rect x="680" y="276" width="210" height="72" rx="8" fill="#eeeeee" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3"/></g>
+  <text x="785" y="298" text-anchor="middle" font-size="11" font-weight="bold" fill="#666">⋮ worker 进程</text>
+  <g font-size="8.5" fill="#444">
+    <text x="785" y="315" text-anchor="middle">rank 3 … TP−1</text>
+    <text x="785" y="330" text-anchor="middle">共 TP−1 个，spawn 启动</text>
+  </g>
+
+  <!-- 共享内存通道 -->
+  <g filter="url(#sk)"><rect x="680" y="366" width="210" height="62" rx="8" fill="#fce4ec" stroke="#b85450" stroke-width="1.5"/></g>
+  <text x="785" y="386" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#8d3f3b">SharedMemory</text>
+  <g font-size="8.5" fill="#444">
+    <text x="785" y="402" text-anchor="middle">name='nanovllm'，2^20 字节</text>
+    <text x="785" y="417" text-anchor="middle">+ Event × (TP−1) 唤醒信号</text>
+  </g>
+
+  <!-- 主进程 → shm / shm → workers 箭头 -->
+  <path d="M 608 340 C 650 345 655 380 677 388" stroke="#b85450" stroke-width="1.5" fill="none" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="648" y="372" text-anchor="middle" font-size="8.5" fill="#8d3f3b">write_shm</text>
+  <path d="M 785 364 L 785 352" stroke="#b85450" stroke-width="1.5" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="833" y="358" text-anchor="middle" font-size="8.5" fill="#8d3f3b">event.set()</text>
+
+  <!-- NCCL 进程组 -->
+  <g filter="url(#sk)"><rect x="30" y="452" width="860" height="56" rx="10" fill="#e6f4ea" stroke="#4a7a3a" stroke-width="1.8"/></g>
+  <text x="460" y="474" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#356130">NCCL 进程组：init_process_group("nccl", "tcp://localhost:2333", world_size=TP)</text>
+  <text x="460" y="494" text-anchor="middle" font-size="9.5" fill="#444">各 rank 前向时 all-reduce 通信；主进程与 worker 只通过共享内存传「指令」，不传张量</text>
+  <path d="M 330 394 L 330 450" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arg)" filter="url(#sk)"/>
+  <path d="M 785 430 L 785 450" stroke="#4a7a3a" stroke-width="1.5" marker-end="url(#arg)" filter="url(#sk)"/>
+
+  <!-- GPU 行 -->
+  <g font-size="10" font-weight="bold">
+    <g filter="url(#sk)"><rect x="150" y="530" width="110" height="34" rx="6" fill="#eeeeee" stroke="#888" stroke-width="1.5"/></g><text x="205" y="551" text-anchor="middle" fill="#444">GPU 0</text>
+    <g filter="url(#sk)"><rect x="420" y="530" width="110" height="34" rx="6" fill="#eeeeee" stroke="#888" stroke-width="1.5"/></g><text x="475" y="551" text-anchor="middle" fill="#444">GPU 1</text>
+    <g filter="url(#sk)"><rect x="690" y="530" width="110" height="34" rx="6" fill="#eeeeee" stroke="#888" stroke-width="1.5"/></g><text x="745" y="551" text-anchor="middle" fill="#444">GPU TP−1</text>
+    <text x="620" y="551" text-anchor="middle" fill="#888">…</text>
+  </g>
+  <path d="M 205 526 L 205 512" stroke="#5a5a5a" stroke-width="1.2" marker-end="url(#ar)" filter="url(#sk)"/>
+  <text x="262" y="520" font-size="8.5" fill="#888">set_device(rank)</text>
+  <path d="M 475 526 L 475 512" stroke="#5a5a5a" stroke-width="1.2" marker-end="url(#ar)" filter="url(#sk)"/>
+  <path d="M 745 526 L 745 512" stroke="#5a5a5a" stroke-width="1.2" marker-end="url(#ar)" filter="url(#sk)"/>
+
+  <text x="460" y="600" text-anchor="middle" font-size="10" fill="#888">TP=1（默认）时没有 worker 进程 / 共享内存 / Event，只剩主进程内一个 rank 0 的 ModelRunner</text>
+  <text x="460" y="622" text-anchor="middle" font-size="10" fill="#888">atexit.register(exit)：解释器退出时让 worker 走完最后一轮 loop 再 join，避免僵尸进程</text>
+</svg>

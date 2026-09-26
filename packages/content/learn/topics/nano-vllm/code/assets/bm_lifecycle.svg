@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="630" viewBox="0 0 960 630" font-family="-apple-system,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="960" height="630" fill="#ffffff"/>
+  <text x="480" y="32" text-anchor="middle" font-size="19" font-weight="700" fill="#111827">一个序列的生命周期：Scheduler ↔ BlockManager 的全部交互</text>
+  <text x="480" y="54" text-anchor="middle" font-size="12.5" fill="#6b7280">BlockManager 没有被 engine 直接调用过 —— 全部 6 个调用点都在 scheduler.py（L xx 为行号）</text>
+
+  <rect x="36" y="76" width="912" height="128" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="52" y="98" font-size="13" font-weight="700" fill="#1d4ed8">进批（prefill 路径）</text>
+  <g text-anchor="middle">
+    <rect x="128" y="112" width="146" height="66" rx="7" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="201" y="137" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#1e3a8a">can_allocate(seq)</text>
+    <text x="201" y="157" font-size="10.5" fill="#6b7280">L36 · 探测前缀命中</text>
+    <rect x="286" y="112" width="146" height="66" rx="7" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="359" y="137" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#1e3a8a">allocate(seq, n)</text>
+    <text x="359" y="157" font-size="10.5" fill="#6b7280">L45 · 共享 n 块 + 新分配</text>
+    <rect x="444" y="112" width="146" height="66" rx="7" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="517" y="137" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#1e3a8a">forward(prefill)</text>
+    <text x="517" y="157" font-size="10.5" fill="#6b7280">只计算未缓存的 token</text>
+    <rect x="602" y="112" width="146" height="66" rx="7" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="675" y="137" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#1e3a8a">hash_blocks(seq)</text>
+    <text x="675" y="157" font-size="10.5" fill="#6b7280">L83 · 登记本次填满的块</text>
+    <rect x="760" y="112" width="146" height="66" rx="7" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="833" y="137" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#1e3a8a">append_token</text>
+    <text x="833" y="157" font-size="10.5" fill="#6b7280">产出第 1 个生成 token</text>
+  </g>
+  <g stroke="#475569" stroke-width="1.5">
+    <line x1="274" y1="145" x2="283" y2="145" marker-end="url(#arr)"/>
+    <line x1="432" y1="145" x2="441" y2="145" marker-end="url(#arr)"/>
+    <line x1="590" y1="145" x2="599" y2="145" marker-end="url(#arr)"/>
+    <line x1="748" y1="145" x2="757" y2="145" marker-end="url(#arr)"/>
+  </g>
+  <text x="201" y="196" text-anchor="middle" font-size="10.5" fill="#dc2626">返回 −1 → break（队头阻塞）</text>
+
+  <rect x="36" y="216" width="912" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="52" y="238" font-size="13" font-weight="700" fill="#15803d">生成循环（decode 路径 · 每个 step）</text>
+  <g text-anchor="middle">
+    <rect x="128" y="252" width="170" height="66" rx="7" fill="#ffffff" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="213" y="277" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#14532d">can_append(seq)</text>
+    <text x="213" y="297" font-size="10.5" fill="#6b7280">L60 · 空闲块够这步吗</text>
+    <rect x="322" y="252" width="170" height="66" rx="7" fill="#ffffff" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="407" y="277" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#14532d">may_append(seq)</text>
+    <text x="407" y="297" font-size="10.5" fill="#6b7280">L69 · 跨块边界才扩块</text>
+    <rect x="516" y="252" width="170" height="66" rx="7" fill="#ffffff" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="601" y="277" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#14532d">forward(decode)</text>
+    <text x="601" y="297" font-size="10.5" fill="#6b7280">每序列 1 个 token</text>
+    <rect x="710" y="252" width="170" height="66" rx="7" fill="#ffffff" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="795" y="277" font-size="12" font-weight="700" font-family="'SF Mono',Consolas,monospace" fill="#14532d">hash_blocks+append</text>
+    <text x="795" y="297" font-size="10.5" fill="#6b7280">L83 · 常规 no-op</text>
+  </g>
+  <g stroke="#475569" stroke-width="1.5">
+    <line x1="298" y1="285" x2="318" y2="285" marker-end="url(#arr)"/>
+    <line x1="492" y1="285" x2="512" y2="285" marker-end="url(#arr)"/>
+    <line x1="686" y1="285" x2="706" y2="285" marker-end="url(#arr)"/>
+  </g>
+  <path d="M880,285 H916 V352 H213 V322" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrG)"/>
+  <text x="560" y="346" text-anchor="middle" font-size="11" fill="#15803d">每个 decode step 循环</text>
+
+  <path d="M170,318 V462" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrR)"/>
+  <text x="180" y="392" font-size="10.5" fill="#dc2626">can_append 为假</text>
+
+  <path d="M700,370 V478" fill="none" stroke="#ea580c" stroke-width="1.5" marker-end="url(#arrO)"/>
+  <text x="708" y="426" font-size="10.5" fill="#b45309">EOS / 达到 max_tokens</text>
+
+  <rect x="36" y="446" width="912" height="124" rx="10" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="52" y="468" font-size="13" font-weight="700" fill="#b45309">出口（两条路都走 deallocate）</text>
+  <rect x="128" y="482" width="340" height="76" rx="7" fill="#ffffff" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="144" y="504" font-size="12" font-weight="700" fill="#b91c1c">显存不足 → preempt(seq)（L75-79）</text>
+  <text x="144" y="524" font-size="11" fill="#7f1d1d">deallocate → 状态回 WAITING、插回队首</text>
+  <text x="144" y="542" font-size="11" fill="#7f1d1d">重新 prefill = recompute：已生成 KV 全部重算</text>
+  <rect x="520" y="482" width="380" height="76" rx="7" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="536" y="504" font-size="12" font-weight="700" fill="#b45309">正常结束：EOS / max_tokens（L89-92）</text>
+  <text x="536" y="524" font-size="11" fill="#92400e">deallocate：逆序遍历 block_table，ref_count−−</text>
+  <text x="536" y="542" font-size="11" fill="#92400e">减到 0 → 归还 free_block_ids（哈希保留 = 留作缓存）</text>
+
+  <text x="480" y="598" text-anchor="middle" font-size="12" fill="#334155">deallocate 的释放语义：ref_count 减到 0 的块回到空闲队列尾部，但哈希登记保留 —— 它仍是可命中的缓存块；</text>
+  <text x="480" y="618" text-anchor="middle" font-size="12" fill="#334155">直到该块被 _allocate_block() 重新分配、即将写入新内容前，才条件删除旧哈希映射。</text>
+</svg>
