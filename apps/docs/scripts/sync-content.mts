@@ -11,6 +11,9 @@
 //   paper/{slug}/README.md → papers/{slug}/index.md   （url /learn/papers/{slug}）
 //   profiling/**          → profiling/**     （原样）
 // SKILL.md / 根 README 不拷（写作规范与仓库说明，非站点内容）。
+// 拷贝 .md 时同步重写正文相对链接：内容里写源树路径（GitHub 可读），这里按同一套
+// 映射改写成 src 布局路径（README.md → index.md、daily/ 拍平、paper/ → papers/），
+// 由 VitePress 再解析成最终 URL。映射表见 srcToDest()，与下方拷贝逻辑一一对应。
 // 运行：pnpm --filter docs sync（dev/build 前置自动执行）
 import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -23,15 +26,102 @@ const DEST = path.resolve(here, "../learn/src");
 
 const EXCLUDE_FILES = new Set(["SKILL.md"]);
 
-async function copyFiltered(from: string, to: string, mapName?: (name: string) => string) {
+// ---- 链接重写 ----
+// 内容仓库里写「源树相对路径」（GitHub 上可读，topics/SKILL.md §5.4 约定），
+// 拷贝进 src 时按目录映射改写成 src 布局的相对路径，再由 VitePress 解析成最终 URL
+// （index.md → 目录形式，dayN.md → dayN.html）。映射规则须与下方拷贝逻辑一一对应。
+function srcToDest(rel: string): string | null {
+  const rename = (p: string) => p.replace(/(^|\/)README\.md$/, "$1index.md");
+  if (rel === "daily/README.md") return "path.md";
+  let m = /^daily\/(week\d+)\/(.+)$/.exec(rel);
+  if (m) return rename(`${m[1]}/${m[2]}`);
+  m = /^daily\/(plan|reference)\/(.+)$/.exec(rel);
+  if (m) return `${m[1]}/${m[2]}`;
+  m = /^daily\/([^/]+\.md)$/.exec(rel);
+  if (m) return m[1];
+  m = /^topics\/(.+)$/.exec(rel);
+  if (m) return rename(`topics/${m[1]}`);
+  m = /^profiling\/(.+)$/.exec(rel);
+  if (m) return rename(`profiling/${m[1]}`);
+  m = /^paper\/images\/(.+)$/.exec(rel);
+  if (m) return `papers/images/${m[1]}`;
+  m = /^paper\/([^/]+)\/README\.md$/.exec(rel);
+  if (m) return `papers/${m[1]}/index.md`;
+  // PDF 只拷 <slug>.pdf（见下方 paper 拷贝），目标 URL 在 public/ 下、按站点根相对书写
+  m = /^paper\/([^/]+)\/(\1\.pdf)$/.exec(rel);
+  if (m) return `papers/${m[1]}/${m[2]}`;
+  return null;
+}
+
+/** 单个链接目标改写；无法映射（站外 / 未拷贝文件）返回 null 保持原样 */
+function mapTarget(target: string, srcDir: string, destDir: string): string | null {
+  if (/^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(target)) return null; // 绝对 URL
+  if (target.startsWith("/") || target.startsWith("#") || target.startsWith("mailto:")) return null;
+  const hashIdx = target.indexOf("#");
+  const p = hashIdx >= 0 ? target.slice(0, hashIdx) : target;
+  const anchor = hashIdx >= 0 ? target.slice(hashIdx) : "";
+  if (!/\.(md|html|pdf)$/.test(p)) return null; // 图片等静态资源相对位置不变
+  let rel = path.posix.normalize(path.posix.join(srcDir, p));
+  if (rel === ".." || rel.startsWith("../")) return null; // 跳出 learn/ 根（跨分区互链）
+  if (p.endsWith(".html")) {
+    // 旧部署形态链接（x.html / x/index.html）：还原成源文件再映射
+    const stem = rel.slice(0, -".html".length);
+    if (existsSync(path.join(SRC, `${stem}.md`))) rel = `${stem}.md`;
+    else if (existsSync(path.join(SRC, stem, "README.md"))) rel = path.posix.join(stem, "README.md");
+    else return null;
+  } else if (!existsSync(path.join(SRC, rel))) return null;
+  const dest = srcToDest(rel);
+  if (!dest) return null;
+  return path.posix.relative(destDir, dest) + anchor;
+}
+
+const LINK_RE = /(!?\[[^\]\n]*\]\()([^)\s]+)((?:\s+"[^"]*")?\))/g;
+
+function rewriteLinks(md: string, srcRel: string, destRel: string): string {
+  const srcDir = path.posix.dirname(srcRel);
+  const destDir = path.posix.dirname(destRel);
+  return md.replace(LINK_RE, (all, pre: string, target: string, post: string) => {
+    const mapped = mapTarget(target, srcDir, destDir);
+    return mapped === null ? all : pre + mapped + post;
+  });
+}
+
+/** md 走链接重写，其余原样拷贝；srcRel/destRel 为相对 SRC/DEST 的 posix 路径 */
+async function copyFile(srcAbs: string, destAbs: string, srcRel: string, destRel: string) {
+  if (srcAbs.endsWith(".md")) {
+    const md = await readFile(srcAbs, "utf8");
+    await writeFile(destAbs, rewriteLinks(md, srcRel, destRel));
+  } else {
+    await cp(srcAbs, destAbs);
+  }
+}
+
+async function copyFiltered(
+  from: string,
+  to: string,
+  mapName?: (name: string) => string,
+  relFrom = "",
+  relTo = "",
+) {
   await mkdir(to, { recursive: true });
   for (const e of await readdir(from, { withFileTypes: true })) {
     if (e.isFile() && EXCLUDE_FILES.has(e.name)) continue;
     const destName = mapName?.(e.name) ?? e.name;
     if (e.isDirectory()) {
-      await copyFiltered(path.join(from, e.name), path.join(to, destName), mapName);
+      await copyFiltered(
+        path.join(from, e.name),
+        path.join(to, destName),
+        mapName,
+        `${relFrom}${e.name}/`,
+        `${relTo}${destName}/`,
+      );
     } else {
-      await cp(path.join(from, e.name), path.join(to, destName));
+      await copyFile(
+        path.join(from, e.name),
+        path.join(to, destName),
+        `${relFrom}${e.name}`,
+        `${relTo}${destName}`,
+      );
     }
   }
 }
@@ -46,15 +136,19 @@ for (const e of await readdir(daily, { withFileTypes: true })) {
   if (e.isFile()) {
     // daily/README.md → path.md（课程总览页，url /learn/path）
     const destName = e.name === "README.md" ? "path.md" : e.name;
-    await cp(path.join(daily, e.name), path.join(DEST, destName));
+    await copyFile(path.join(daily, e.name), path.join(DEST, destName), `daily/${e.name}`, destName);
   } else if (e.name === "weekN" || /^week\d+$/.test(e.name)) {
     // daily/weekN/** → weekN/**（README.md → index.md）
-    await copyFiltered(path.join(daily, e.name), path.join(DEST, e.name), (n) =>
-      n === "README.md" ? "index.md" : n,
+    await copyFiltered(
+      path.join(daily, e.name),
+      path.join(DEST, e.name),
+      (n) => (n === "README.md" ? "index.md" : n),
+      `daily/${e.name}/`,
+      `${e.name}/`,
     );
   } else {
     // plan / reference → 原名
-    await copyFiltered(path.join(daily, e.name), path.join(DEST, e.name));
+    await copyFiltered(path.join(daily, e.name), path.join(DEST, e.name), undefined, `daily/${e.name}/`, `${e.name}/`);
   }
 }
 
@@ -69,8 +163,12 @@ if (existsSync(path.join(SRC, "topics"))) {
       if (e.name === "images") {
         await cp(path.join(topicsSrc, e.name), path.join(topicsDest, e.name), { recursive: true });
       } else {
-        await copyFiltered(path.join(topicsSrc, e.name), path.join(topicsDest, e.name), (n) =>
-          n === "README.md" ? "index.md" : n,
+        await copyFiltered(
+          path.join(topicsSrc, e.name),
+          path.join(topicsDest, e.name),
+          (n) => (n === "README.md" ? "index.md" : n),
+          `topics/${e.name}/`,
+          `topics/${e.name}/`,
         );
       }
     }
@@ -98,9 +196,11 @@ if (existsSync(path.join(SRC, "paper"))) {
     }
     if (hasReadme) {
       await mkdir(path.join(DEST, "papers", e.name), { recursive: true });
-      await cp(
+      await copyFile(
         path.join(paperSrc, e.name, "README.md"),
         path.join(DEST, "papers", e.name, "index.md"),
+        `paper/${e.name}/README.md`,
+        `papers/${e.name}/index.md`,
       );
     }
   }
@@ -146,8 +246,12 @@ ${skelRows.join("\n")}
 
 // ---- profiling 原样（README.md → index.md）----
 if (existsSync(path.join(SRC, "profiling"))) {
-  await copyFiltered(path.join(SRC, "profiling"), path.join(DEST, "profiling"), (n) =>
-    n === "README.md" ? "index.md" : n,
+  await copyFiltered(
+    path.join(SRC, "profiling"),
+    path.join(DEST, "profiling"),
+    (n) => (n === "README.md" ? "index.md" : n),
+    "profiling/",
+    "profiling/",
   );
 }
 
@@ -174,9 +278,11 @@ if (existsSync(path.join(SRC, "profiling"))) {
 // ---- cuda-interview-notes（属 problems-gpu 分区内容，但 URL 在 /learn/notes/ 空间）----
 if (existsSync(path.resolve(SRC, "../problems-gpu/cuda-interview-notes.md"))) {
   await mkdir(path.join(DEST, "notes"), { recursive: true });
-  await cp(
+  await copyFile(
     path.resolve(SRC, "../problems-gpu/cuda-interview-notes.md"),
     path.join(DEST, "notes", "cuda-interview-notes.md"),
+    "../problems-gpu/cuda-interview-notes.md",
+    "notes/cuda-interview-notes.md",
   );
 }
 

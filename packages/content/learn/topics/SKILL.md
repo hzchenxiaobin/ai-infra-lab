@@ -200,14 +200,19 @@ aiinfra/topics/<topic-name>/
 
 ### 5.4 交叉引用规范
 
-Markdown 中可写源文件相对路径，构建时会自动重写为部署后的路径：
+Markdown 中写源文件相对路径（GitHub 上可读），`apps/docs/scripts/sync-content.mts`
+拷入站点源码时会自动重写为站点布局的相对路径，再由 VitePress 解析成最终 URL：
 
-| 源路径示例 | 部署后路径 |
-|---|---|
-| `](../cutlass/README.md)` | `](../cutlass/index.html)` |
-| `](../cutlass/day2.md)` | `](../cutlass/day2.html)` |
-| `](../../paper/flashattention3/README.md)` | `](../paper/flashattention3/index.html)` |
-| `](../../daily/week6/day1/README.md)` | `](../daily/week6/day1.html)` |
+| 源路径示例 | 站点源码路径 | 最终 URL |
+|---|---|---|
+| `](../cutlass/README.md)` | `](../cutlass/index.md)` | `/learn/topics/cutlass/` |
+| `](../cutlass/day2.md)` | `](../cutlass/day2.md)` | `/learn/topics/cutlass/day2.html` |
+| `](../../paper/flashattention3/README.md)` | `](../../papers/flashattention3/index.md)` | `/learn/papers/flashattention3/` |
+| `](../../daily/week6/day1/README.md)` | `](../../week6/day1/index.md)` | `/learn/week6/day1/` |
+
+注意 `daily/` 层级在站点中被拍平（`daily/weekN/**` → `weekN/**`）、`paper/` 改为
+`papers/`、各 `README.md` 更名为 `index.md`——这些差异都由同步脚本兜底，内容里
+始终按源树写即可。
 
 ### 5.5 本地构建与预览
 

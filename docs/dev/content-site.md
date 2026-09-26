@@ -137,4 +137,7 @@ BATCH_TOTAL=4 BATCH_INDEX=0 NODE_OPTIONS=--max-old-space-size=6144 \
   禁止在内容文件里硬编码（内容里是内容 ID 相对引用，构建期由 content-kit 重写）。
 - 内容文件不进 `apps/docs/` Git 目录重复存放——构建脚本从 `packages/content/` 拷入
   或软链，拷入动作属于构建流程而非手工步骤。
+- 内容正文写**源树相对链接**（`../vllm/README.md` 等，GitHub 上可读）；
+  `sync-content.mts` 拷入时按目录映射重写为 src 布局路径（`../vllm/index.md`），
+  由 VitePress 解析成最终 URL。改目录映射时须同步改 `srcToDest()`，否则整片内链 404。
 - 统计数字（"共 N 题"）由 content-kit 构建期注入，页面文案禁止手写（06 硬编码禁令）。
