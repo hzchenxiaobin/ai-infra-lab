@@ -68,6 +68,7 @@ const TOPIC_CARDS = [
   { slug: "interview", icon: "💼", name: "Interview" },
   { slug: "misc", icon: "📒", name: "杂七杂八" },
   { slug: "moe", icon: "🧩", name: "MoE" },
+  { slug: "nano-vllm", icon: "🪶", name: "nano-vllm" },
   { slug: "pytorch", icon: "🔥", name: "PyTorch" },
   { slug: "sglang", icon: "🛰️", name: "SGLang" },
   { slug: "shengteng", icon: "🌄", name: "昇腾" },
