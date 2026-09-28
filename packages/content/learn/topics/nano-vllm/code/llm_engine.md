@@ -1,3 +1,15 @@
+---
+id: "learn:topic:nano-vllm:code:llm-engine"
+type: learn
+title: "llm_engine.py 源码解读：nano-vllm 的引擎主循环"
+tags: [nano-vllm, vllm]
+knowledge_points: [nano-vllm, engine-loop, continuous-batching, chunked-prefill, tensor-parallel]
+updated: 2026-09-26
+topic: nano-vllm
+related_problems: []
+related_questions: []
+---
+
 # llm_engine.py 源码解读：nano-vllm 的引擎主循环
 
 > 源码版本：nano-vllm v0.2.0（commit `bb823b3`），文件 `nanovllm/engine/llm_engine.py`，全文仅 **90 行**。

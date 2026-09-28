@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/>
+    </filter>
+  </defs>
+  <rect width="940" height="560" fill="#fdfcf7"/>
+
+  <text x="470" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#2b2b2b">动画：Static Batching vs Continuous Batching</text>
+  <path d="M 270 42 Q 470 50 670 42" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+  <text x="470" y="58" text-anchor="middle" font-size="12" fill="#666">彩色条 = 请求逐 token 生成；灰色 = slot 被已完成请求占住空等；✓ = 请求完成（每小格 = 1 token，动画循环播放）</text>
+
+  <!-- ================= Static Batching ================= -->
+  <text x="40" y="76" font-size="14" font-weight="bold" fill="#7a2828">Static Batching：凑满一批 → 整批等最长的完成才统一释放</text>
+  <g font-size="8" fill="#999" text-anchor="middle">
+    <text x="160" y="76">0</text><text x="220" y="76">1</text><text x="280" y="76">2</text><text x="340" y="76">3</text><text x="400" y="76">4</text>
+    <text x="460" y="76">5</text><text x="520" y="76">6</text><text x="580" y="76">7</text><text x="640" y="76">8</text>
+    <text x="668" y="76" font-size="9">token →</text>
+  </g>
+
+  <!-- batch 1 -->
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="103" text-anchor="end" font-size="11" fill="#446688" font-weight="bold">S1 (gen=4)</text>
+    <rect x="160" y="84" width="0" height="28" rx="3" fill="#bcd6f0" stroke="#4a8edb" stroke-width="1.2">
+      <animate attributeName="width" values="0;240;240" keyTimes="0;0.222;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="400" y="84" width="240" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.222;0.227;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="406" y="102" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.222;0.227;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 已完成，但 slot 被占住空等 2s</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="141" text-anchor="end" font-size="11" fill="#2e6e2e" font-weight="bold">S2 (gen=8)</text>
+    <rect x="160" y="122" width="0" height="28" rx="3" fill="#bfe0bf" stroke="#4a8e4a" stroke-width="1.2">
+      <animate attributeName="width" values="0;480;480" keyTimes="0;0.444;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="648" y="141" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.444;0.449;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 最长 → 批次结束</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="179" text-anchor="end" font-size="11" fill="#7a5415" font-weight="bold">S3 (gen=6)</text>
+    <rect x="160" y="160" width="0" height="28" rx="3" fill="#f0d9a8" stroke="#c98a2b" stroke-width="1.2">
+      <animate attributeName="width" values="0;360;360" keyTimes="0;0.333;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="520" y="160" width="120" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.333;0.338;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="526" y="178" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.333;0.338;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 空等 1s</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="217" text-anchor="end" font-size="11" fill="#7a2828" font-weight="bold">S4 (gen=5)</text>
+    <rect x="160" y="198" width="0" height="28" rx="3" fill="#f4b8b0" stroke="#b85450" stroke-width="1.2">
+      <animate attributeName="width" values="0;300;300" keyTimes="0;0.278;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="460" y="198" width="180" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.278;0.283;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="466" y="216" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.278;0.283;0.495;0.5;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 空等 1.5s</text>
+  </g>
+
+  <!-- batch 2 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.556;0.561;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="103" text-anchor="end" font-size="11" fill="#5e4a8e" font-weight="bold">S5 (gen=5)</text>
+    <rect x="160" y="84" width="0" height="28" rx="3" fill="#ddd0ee" stroke="#7a5ea8" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;300;300" keyTimes="0;0.556;0.833;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="460" y="84" width="180" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.833;0.838;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="466" y="102" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.833;0.838;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 空等</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.556;0.561;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="141" text-anchor="end" font-size="11" fill="#1f6363" font-weight="bold">S6 (gen=7)</text>
+    <rect x="160" y="122" width="0" height="28" rx="3" fill="#bfe6e6" stroke="#2b8e8e" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;420;420" keyTimes="0;0.556;0.944;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="588" y="141" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.944;0.949;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 批次结束</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.556;0.561;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="179" text-anchor="end" font-size="11" fill="#446688" font-weight="bold">S7 (gen=3)</text>
+    <rect x="160" y="160" width="0" height="28" rx="3" fill="#bcd6f0" stroke="#4a8edb" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;180;180" keyTimes="0;0.556;0.722;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="340" y="160" width="300" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.722;0.727;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="346" y="178" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.722;0.727;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 空等</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.556;0.561;1" dur="9s" repeatCount="indefinite"/>
+    <text x="152" y="217" text-anchor="end" font-size="11" fill="#7a5415" font-weight="bold">S8 (gen=6)</text>
+    <rect x="160" y="198" width="0" height="28" rx="3" fill="#f0d9a8" stroke="#c98a2b" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;360;360" keyTimes="0;0.556;0.889;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="520" y="198" width="120" height="28" rx="3" fill="#e6e2d6" stroke="#bbb" stroke-dasharray="4 3">
+      <animate attributeName="opacity" values="0;0;0.9;0.9;0;0" keyTimes="0;0.889;0.894;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="526" y="216" font-size="10" font-weight="bold" fill="#b85450">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.889;0.894;0.939;0.944;1" dur="9s" repeatCount="indefinite"/>
+      ✓ 空等</text>
+  </g>
+
+  <text x="470" y="246" text-anchor="middle" font-size="11" fill="#7a2828">iter 边界：批次时长由最长请求决定（S2=8 / S6=7），其余请求完成后只能占着 slot 空等（灰色区）</text>
+
+  <line x1="40" y1="266" x2="900" y2="266" stroke="#ccc" stroke-width="1" stroke-dasharray="5 3" filter="url(#sk)"/>
+
+  <!-- ================= Continuous Batching ================= -->
+  <text x="40" y="296" font-size="14" font-weight="bold" fill="#2e6e2e">Continuous Batching：每轮重建 batch —— 完成即退出、新请求即填入</text>
+  <g font-size="8" fill="#999" text-anchor="middle">
+    <text x="160" y="308">0</text><text x="220" y="308">1</text><text x="280" y="308">2</text><text x="340" y="308">3</text><text x="400" y="308">4</text>
+    <text x="460" y="308">5</text><text x="520" y="308">6</text><text x="580" y="308">7</text><text x="640" y="308">8</text>
+    <text x="668" y="308" font-size="9">token →</text>
+  </g>
+  <g font-size="11" fill="#555" font-weight="bold" text-anchor="end">
+    <text x="152" y="335">slot 1</text><text x="152" y="373">slot 2</text>
+    <text x="152" y="411">slot 3</text><text x="152" y="449">slot 4</text>
+  </g>
+
+  <!-- slot 1 -->
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.262;0.267;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="316" width="0" height="28" rx="3" fill="#bcd6f0" stroke="#4a8edb" stroke-width="1.2">
+      <animate attributeName="width" values="0;240;240" keyTimes="0;0.222;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="334" font-size="9" fill="#2b2b2b">S1 · gen4</text>
+    <text x="408" y="334" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.222;0.23;0.262;0.267;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done → 立即释放 slot</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.267;0.272;0.639;0.644;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="316" width="0" height="28" rx="3" fill="#bfe0bf" stroke="#4a8e4a" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;360;360" keyTimes="0;0.267;0.6;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="334" font-size="9" fill="#2b2b2b">S5 · gen6（新请求立即填入）</text>
+    <text x="528" y="334" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6;0.608;0.639;0.644;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.644;0.65;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="316" width="0" height="28" rx="3" fill="#f0d9a8" stroke="#c98a2b" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;300;300" keyTimes="0;0.644;0.922;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="334" font-size="9" fill="#2b2b2b">S9 · gen5</text>
+    <text x="468" y="334" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.922;0.93;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+
+  <!-- slot 2 -->
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.484;0.489;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="354" width="0" height="28" rx="3" fill="#bfe0bf" stroke="#4a8e4a" stroke-width="1.2">
+      <animate attributeName="width" values="0;480;480" keyTimes="0;0.444;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="372" font-size="9" fill="#2b2b2b">S2 · gen8</text>
+    <text x="648" y="372" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.444;0.452;0.484;0.489;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.489;0.494;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="354" width="0" height="28" rx="3" fill="#ddd0ee" stroke="#7a5ea8" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;240;240" keyTimes="0;0.489;0.711;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="372" font-size="9" fill="#2b2b2b">S6 · gen4</text>
+    <text x="408" y="372" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.711;0.719;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+
+  <!-- slot 3 -->
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.373;0.378;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="392" width="0" height="28" rx="3" fill="#f0d9a8" stroke="#c98a2b" stroke-width="1.2">
+      <animate attributeName="width" values="0;360;360" keyTimes="0;0.333;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="410" font-size="9" fill="#2b2b2b">S3 · gen6</text>
+    <text x="528" y="410" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.333;0.341;0.373;0.378;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.378;0.383;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="392" width="0" height="28" rx="3" fill="#bfe6e6" stroke="#2b8e8e" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;420;420" keyTimes="0;0.378;0.767;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="410" font-size="9" fill="#2b2b2b">S7 · gen7</text>
+    <text x="588" y="410" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.767;0.775;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+
+  <!-- slot 4 -->
+  <g>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.317;0.322;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="430" width="0" height="28" rx="3" fill="#f4b8b0" stroke="#b85450" stroke-width="1.2">
+      <animate attributeName="width" values="0;300;300" keyTimes="0;0.278;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="448" font-size="9" fill="#2b2b2b">S4 · gen5</text>
+    <text x="468" y="448" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.278;0.286;0.317;0.322;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.322;0.327;1" dur="9s" repeatCount="indefinite"/>
+    <rect x="160" y="430" width="0" height="28" rx="3" fill="#bcd6f0" stroke="#4a8edb" stroke-width="1.2">
+      <animate attributeName="width" values="0;0;480;480" keyTimes="0;0.322;0.767;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+    <text x="166" y="448" font-size="9" fill="#2b2b2b">S8 · gen8</text>
+    <text x="648" y="448" font-size="10" font-weight="bold" fill="#2e6e2e">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.767;0.775;1" dur="9s" repeatCount="indefinite"/>
+      ✓ done</text>
+  </g>
+
+  <!-- summary -->
+  <g filter="url(#sk)">
+    <rect x="40" y="486" width="860" height="62" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-dasharray="5 3"/>
+  </g>
+  <text x="60" y="510" font-size="12" fill="#2e6e2e" font-weight="bold">✓ 对比：Static 的灰色区 = slot 被已完成请求占住、GPU 空等；Continuous 完成即退出、新请求即填入，slot 零空等</text>
+  <text x="60" y="532" font-size="12" fill="#7a2828" font-weight="bold">→ 但高频的 slot 释放/复用需要无碎片的内存管理支撑 —— 这正是本文 PagedAttention 要解决的（见 4.2 节）</text>
+</svg>

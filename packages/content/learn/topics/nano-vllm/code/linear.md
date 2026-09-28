@@ -1,5 +1,5 @@
 ---
-id: "learn:topic:nano-vllm:code-linear"
+id: "learn:topic:nano-vllm:code:linear"
 type: learn
 title: "源码解读：linear.py——Tensor Parallelism 的线性层全家桶"
 tags: [nano-vllm, vllm, tensor-parallelism]

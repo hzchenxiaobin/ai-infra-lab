@@ -30,6 +30,10 @@ related_questions: []
 
 ### 学前导读：Continuous Batching 的"隐形杀手"——内存碎片
 
+先回顾一下 Day 3 的 Continuous Batching——下面动画对比了两种 batching：Static 中已完成的请求会占着 slot 空等（灰色区），Continuous 则完成即退出、新请求即填入，slot 零空等：
+
+![动画：Static vs Continuous Batching——完成即退出、即空即填](../images/continuous_batching_animation.svg)
+
 Day 3 的 mini 调度器里，请求完成时我们 `used_blocks -= seq.kv_blocks` 就算"释放"了。但真实场景下，KV cache 不是按"整个序列"连续分配的——如果按序列连续分配，长度不确定的请求频繁 alloc/free 会产生大量**外部碎片**：释放的小空洞拼不回来，新请求放不下就 OOM。
 
 ![Static / Dynamic / PagedAttention 三种分配的碎片对比](../images/paged_attention_fragmentation.svg)
@@ -72,6 +76,10 @@ Scheduler 在每轮 `schedule()` 时更新 block table（分配新 block、回�
 #### 4.2 PagedAttention 核心思想：分页 + block table
 
 ![Block Table：逻辑连续 ↔ 物理不连续](../images/paged_attention_block_table.svg)
+
+下面这段动画把上面的静态图"动"起来——token 逐个写入当前逻辑 block → 写满后从空闲池分配新物理 block（可不连续）→ block table 追加一条映射；最后的红框阶段演示 decode kernel 按逻辑顺序扫描时，如何经 block table 逐 block 间接寻址：
+
+![动画：PagedAttention——token 生成、物理 block 分配与 block table 间接寻址](../images/paged_attention_animation.svg)
 
 借鉴 OS 虚拟内存分页：
 
