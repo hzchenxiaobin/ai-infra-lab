@@ -31,7 +31,7 @@ related_questions: []
 
 ## 一、全景：ModelRunner 在引擎中的位置
 
-![ModelRunner 架构总览](assets/model_runner_architecture.svg)
+<!-- 插图待补充（SVG 未提交）：![ModelRunner 架构总览](assets/model_runner_architecture.svg) -->
 
 `ModelRunner` 是 nano-vllm 里**唯一同时认识"调度世界"和"GPU 世界"的类**。上游 `LLMEngine.step()` 把 `seqs + is_prefill` 交给它，下游它产出 `token_ids` 交回 `postprocess`：
 
@@ -59,7 +59,7 @@ token_ids = self.model_runner.call("run", seqs, is_prefill)
 
 ## 二、启动时序：`__init__` 的 8 步
 
-![启动时序](assets/model_runner_init_sequence.svg)
+<!-- 插图待补充（SVG 未提交）：![启动时序](assets/model_runner_init_sequence.svg) -->
 
 ```python
 # engine/model_runner.py L17-48
@@ -131,7 +131,7 @@ def warmup_model(self):
 
 ### 2.2 `allocate_kv_cache()`：显存账本
 
-![KV Cache 布局](assets/model_runner_kv_cache_layout.svg)
+<!-- 插图待补充（SVG 未提交）：![KV Cache 布局](assets/model_runner_kv_cache_layout.svg) -->
 
 ```python
 # engine/model_runner.py L103-121
@@ -189,7 +189,7 @@ $$\text{block\_bytes} = \underbrace{2}_{K \text{ 和} V} \times L_{\text{layer}}
 
 ## 三、TP 进程间 RPC：SharedMemory + Event
 
-![TP RPC 机制](assets/model_runner_tp_rpc.svg)
+<!-- 插图待补充（SVG 未提交）：![TP RPC 机制](assets/model_runner_tp_rpc.svg) -->
 
 `tensor_parallel_size > 1` 时，`LLMEngine` 会为每个 worker 起一个独立进程，**进程里跑的就是 `ModelRunner.__init__`**（见 `llm_engine.py` 的 `ctx.Process(target=ModelRunner, args=(config, i, event))`）。此后每个 rank 各持一份完整实例，问题变成：**主进程怎么让所有 rank 执行同一个方法？**
 
@@ -251,7 +251,7 @@ def loop(self):
 
 ## 四、prepare 系列：Sequence 列表 → 张量组
 
-![prepare 张量构造](assets/model_runner_prepare_tensors.svg)
+<!-- 插图待补充（SVG 未提交）：![prepare 张量构造](assets/model_runner_prepare_tensors.svg) -->
 
 这一层做的事：把 Scheduler 产出的 Python 对象（`list[Sequence]`）拼成 kernel 要的张量组。**所有小张量都 `pin_memory=True` + `.cuda(non_blocking=True)`**——页锁定内存 + 异步 H2D，每个推理引擎的标配。
 
@@ -348,7 +348,7 @@ def prepare_block_tables(self, seqs: list[Sequence]):
 
 ## 五、执行主链：`run()` 与 `run_model()`
 
-![执行流程](assets/model_runner_run_flow.svg)
+<!-- 插图待补充（SVG 未提交）：![执行流程](assets/model_runner_run_flow.svg) -->
 
 ```python
 # engine/model_runner.py L214-220 —— 四步流水
@@ -407,7 +407,7 @@ def run_model(self, input_ids, positions, is_prefill):
 
 ## 六、CUDA Graph：`capture_cudagraph()` 的捕获与重放
 
-![CUDA Graph 捕获与重放](assets/model_runner_cudagraph.svg)
+<!-- 插图待补充（SVG 未提交）：![CUDA Graph 捕获与重放](assets/model_runner_cudagraph.svg) -->
 
 ```python
 # engine/model_runner.py L222-257（节选）

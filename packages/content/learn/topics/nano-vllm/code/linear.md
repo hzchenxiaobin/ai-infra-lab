@@ -40,7 +40,7 @@ nano-vllm 的 `layers/` 目录是"带 TP 意识的算子积木箱"：attention�
 
 整个文件的类图与分工：
 
-![linear.py 类图：一个基类加五个派生线性层](assets/linear_class_hierarchy.svg)
+<!-- 插图待补充（SVG 未提交）：![linear.py 类图：一个基类加五个派生线性层](assets/linear_class_hierarchy.svg) -->
 
 可以看出设计意图：**继承树上只分两支**——"怎么切权重"（Column / Row）决定构造函数和 weight_loader 的行为，"切完的权重里装了几段东西"（单段 / Merged 两段 / QKV 三段）只在子类里微调 weight_loader 的偏移计算。forward 则几乎不被重写。
 
@@ -161,7 +161,7 @@ class RowParallelLinear(LinearBase):
 
 把 3.4 和 3.5 串起来看一个完整的 decoder layer。**Column 的输出分片恰好是 Row 需要的输入分片**，中间结果从不聚合，每个"投影对"只在 Row 出口付一次 all-reduce：
 
-![Column-Row 配对：一个 Decoder Layer 的 TP 数据流](assets/linear_column_row_pairing.svg)
+<!-- 插图待补充（SVG 未提交）：![Column-Row 配对：一个 Decoder Layer 的 TP 数据流](assets/linear_column_row_pairing.svg) -->
 
 从这张图可以直接读出 TP 的账单：
 
@@ -223,7 +223,7 @@ weight_loader 按 `"q" / "k" / "v"` 三种 shard_id 计算各自的落点：
 
 注意 offset 全部用**本 rank 的头数**计算（不是全局），因为融合权重的三段布局是 per-rank 的。数值例子（Qwen3 典型配置）：
 
-![QKVParallelLinear 三段布局与 GQA 头切分](assets/linear_qkv_gqa_layout.svg)
+<!-- 插图待补充（SVG 未提交）：![QKVParallelLinear 三段布局与 GQA 头切分](assets/linear_qkv_gqa_layout.svg) -->
 
 前向之后，`qwen3.py:78` 用 `qkv.split([q_size, kv_size, kv_size], dim=-1)` 把三段切开——**融合层负责"装"，下游负责"拆"**，两头共享同一套尺寸约定。
 
@@ -267,7 +267,7 @@ packed_modules_mapping = {
 
 整条数据流（以 gate_up_proj 为例）：
 
-![weight_loader 从 checkpoint 分片到本地融合权重](assets/linear_weight_loader.svg)
+<!-- 插图待补充（SVG 未提交）：![weight_loader 从 checkpoint 分片到本地融合权重](assets/linear_weight_loader.svg) -->
 
 这套设计的精妙之处在于**三层解耦**：
 

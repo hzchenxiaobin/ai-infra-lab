@@ -124,7 +124,7 @@ class Attention(nn.Module):
 
 ## 整体数据流：先写后读
 
-![Attention.forward 整体数据流：q/k/v 输入，store_kvcache 散写进分页 KV Cache，prefill 与 decode 两个分支按页读取，元数据由全局 Context 提供](assets/attention_dataflow.svg)
+<!-- 插图待补充（SVG 未提交）：![Attention.forward 整体数据流：q/k/v 输入，store_kvcache 散写进分页 KV Cache，prefill 与 decode 两个分支按页读取，元数据由全局 Context 提供](assets/attention_dataflow.svg) -->
 
 `forward` 的逻辑用五行伪代码就能说尽：
 
@@ -146,7 +146,7 @@ class Attention(nn.Module):
 
 ## 写入端：store_kvcache（Triton 散写）
 
-![store_kvcache_kernel：每个 program 处理一个 token，按 slot_mapping 查到目标槽位，K/V 各一行散写进分页 cache；slot 为 -1 的 padding 行直接 return](assets/store_kvcache_scatter.svg)
+<!-- 插图待补充（SVG 未提交）：![store_kvcache_kernel：每个 program 处理一个 token，按 slot_mapping 查到目标槽位，K/V 各一行散写进分页 cache；slot 为 -1 的 padding 行直接 return](assets/store_kvcache_scatter.svg) -->
 
 ### 启动包装：四个 assert 是一份"形状契约"
 
@@ -217,7 +217,7 @@ $$\text{slot} = \text{block\_id} \times 256 + \text{块内偏移}$$
 
 ## 读取端 I：prefill 的两条路径
 
-![prefill 双路径：无前缀命中时读本地连续 k/v；命中前缀或 chunked prefill 续段时改读 cache 本体并携带 block_table](assets/prefill_dual_path.svg)
+<!-- 插图待补充（SVG 未提交）：![prefill 双路径：无前缀命中时读本地连续 k/v；命中前缀或 chunked prefill 续段时改读 cache 本体并携带 block_table](assets/prefill_dual_path.svg) -->
 
 ```python
 if context.is_prefill:
@@ -253,7 +253,7 @@ if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    # 要读的 K 比 本步算的 Q 多 
 
 ## 读取端 II：decode 按页读
 
-![decode 路径：q 每序列 1 个，block_tables 把逻辑块序翻译成物理块池中的散落位置，cache_seqlens 决定每个序列读多深](assets/decode_paged_read.svg)
+<!-- 插图待补充（SVG 未提交）：![decode 路径：q 每序列 1 个，block_tables 把逻辑块序翻译成物理块池中的散落位置，cache_seqlens 决定每个序列读多深](assets/decode_paged_read.svg) -->
 
 ```python
 else:    # decode

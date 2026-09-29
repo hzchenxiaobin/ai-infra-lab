@@ -54,7 +54,7 @@ LLM 推理引擎的性能差异，一半在 kernel，另一半在调度。**同�
 
 ## 全景：调度器在引擎中的位置
 
-![Scheduler 全景：引擎每一步都从 schedule() 开始](assets/scheduler_engine_loop.svg)
+<!-- 插图待补充（SVG 未提交）：![Scheduler 全景：引擎每一步都从 schedule() 开始](assets/scheduler_engine_loop.svg) -->
 
 [LLMEngine](../day2.md) 的 `generate()` 就是一个大循环（`llm_engine.py:73-86`）：
 
@@ -116,7 +116,7 @@ def add(self, seq: Sequence):
 
 ### 状态机：Sequence 的一生
 
-![Sequence 的状态机：一次请求的一生](assets/scheduler_sequence_states.svg)
+<!-- 插图待补充（SVG 未提交）：![Sequence 的状态机：一次请求的一生](assets/scheduler_sequence_states.svg) -->
 
 三个状态（`SequenceStatus`）与两条队列**一一对应**：
 
@@ -135,7 +135,7 @@ def add(self, seq: Sequence):
 
 ## schedule()：每一步的决策核心
 
-![schedule() 决策流程：prefill 优先，decode 兜底](assets/scheduler_flow.svg)
+<!-- 插图待补充（SVG 未提交）：![schedule() 决策流程：prefill 优先，decode 兜底](assets/scheduler_flow.svg) -->
 
 整个方法 49 行，分成**互斥的两条路径**：waiting 非空走 prefill，否则走 decode。先看骨架：
 
@@ -254,7 +254,7 @@ def can_append(self, seq: Sequence) -> bool:
 
 ## preempt()：抢占即"从头再来"
 
-![抢占：free 块不足时，队尾为队首让路](assets/scheduler_preemption.svg)
+<!-- 插图待补充（SVG 未提交）：![抢占：free 块不足时，队尾为队首让路](assets/scheduler_preemption.svg) -->
 
 ```python
 def preempt(self, seq: Sequence):
@@ -313,7 +313,7 @@ def postprocess(self, seqs: list[Sequence], token_ids: list[int], is_prefill: bo
 
 ### 场景：一条 600 token 的长 prompt
 
-![Chunked Prefill：长 prompt 分步计算，块却一次占满](assets/scheduler_chunked_prefill.svg)
+<!-- 插图待补充（SVG 未提交）：![Chunked Prefill：长 prompt 分步计算，块却一次占满](assets/scheduler_chunked_prefill.svg) -->
 
 设 `max_num_batched_tokens = 256`、`block_size = 256`、无前缀缓存命中：
 

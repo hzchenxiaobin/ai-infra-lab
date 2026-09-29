@@ -72,7 +72,7 @@ class SequenceStatus(Enum):
     FINISHED = auto()     # 生成结束
 ```
 
-![Sequence 状态机：三态与抢占回路](assets/sequence_state_machine.svg)
+<!-- 插图待补充（SVG 未提交）：![Sequence 状态机：三态与抢占回路](assets/sequence_state_machine.svg) -->
 
 三个状态、三条迁移路径，全部由 Scheduler 驱动：
 
@@ -128,7 +128,7 @@ class Sequence:
 
 ## token 计数体系：调度系统的通用语言
 
-![Sequence 的 token 计数体系](assets/sequence_token_counters.svg)
+<!-- 插图待补充（SVG 未提交）：![Sequence 的 token 计数体系](assets/sequence_token_counters.svg) -->
 
 四个计数器 + 两个切片视图，用一个贯穿全文的例子：**prompt 600 个 token，前缀缓存命中 512（2 个满块），已生成 130 个 token**：
 
@@ -168,7 +168,7 @@ def completion_token_ids(self):       # token_ids[600:]，generate() 的最终�
 
 ## 分块视图：token_ids → block_table → 物理块
 
-![分块视图：token_ids、block_table 与 KV Cache 物理块的映射](assets/sequence_block_view.svg)
+<!-- 插图待补充（SVG 未提交）：![分块视图：token_ids、block_table 与 KV Cache 物理块的映射](assets/sequence_block_view.svg) -->
 
 PagedAttention 的世界里，序列不是一根连续内存，而是**切成 `block_size`（256）大小的块，散落在物理块池里**。`Sequence` 用三个成员/方法提供这套视图：
 
@@ -232,7 +232,7 @@ def __getitem__(self, key):
 
 ## 生命周期：字段如何随 step 演化
 
-![Sequence 生命周期：字段随 step 演化](assets/sequence_lifecycle.svg)
+<!-- 插图待补充（SVG 未提交）：![Sequence 生命周期：字段随 step 演化](assets/sequence_lifecycle.svg) -->
 
 把前面的字段串成一条时间线（例：prompt 600，前缀命中 512，`max_tokens=130`）：
 
@@ -263,7 +263,7 @@ def append_token(self, token_id: int):
 
 ## `__getstate__` / `__setstate__`：TP 模式下的瘦身序列化
 
-![TP 进程间的瘦身序列化](assets/sequence_pickle_ipc.svg)
+<!-- 插图待补充（SVG 未提交）：![TP 进程间的瘦身序列化](assets/sequence_pickle_ipc.svg) -->
 
 这是 83 行里最"藏巧"的一段。背景：TP 模式下每个 rank 是独立进程，`model_runner.call("run", seqs, is_prefill)` 要把整批 Sequence **pickle 后写进 SharedMemory** 发给 worker（model_runner.py 的 `write_shm`/`read_shm`）——**每个 step 都要传一次**。
 

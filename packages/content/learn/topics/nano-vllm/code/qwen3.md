@@ -46,7 +46,7 @@ nano-vllm 的 `layers/` 是"带 TP 意识的算子积木箱"（[linear.md](linea
 
 五个类的组装关系与调用方：
 
-![qwen3.py 整体结构：五个类搭起一台解码器](assets/qwen3_overall_structure.svg)
+<!-- 插图待补充（SVG 未提交）：![qwen3.py 整体结构：五个类搭起一台解码器](assets/qwen3_overall_structure.svg) -->
 
 三个贯穿全文的观察，先立在这里：
 
@@ -133,7 +133,7 @@ def forward(self, positions, hidden_states, residual):
     return hidden_states, residual                         # 元组协议
 ```
 
-![Qwen3DecoderLayer：一条残差线穿过两个子层](assets/qwen3_decoder_layer.svg)
+<!-- 插图待补充（SVG 未提交）：![Qwen3DecoderLayer：一条残差线穿过两个子层](assets/qwen3_decoder_layer.svg) -->
 
 **元组协议**：`RMSNorm.forward(x, residual=None)` 有两种模式——不带 residual 时是普通归一化；带 residual 时做融合的 `add_rms_forward`：
 
@@ -206,7 +206,7 @@ def forward(self, positions, hidden_states):
     return output
 ```
 
-![Qwen3Attention 前向流水（Qwen3-0.6B 的数字）](assets/qwen3_attention_pipeline.svg)
+<!-- 插图待补充（SVG 未提交）：![Qwen3Attention 前向流水（Qwen3-0.6B 的数字）](assets/qwen3_attention_pipeline.svg) -->
 
 逐步注解（TP=1、T 为本步总 token 数）：
 
@@ -320,7 +320,7 @@ embedding ≈ 155.6M（tie_word_embeddings=True，lm_head 不另计）
 
 qwen3.py 里没有任何 `if tp_size > 1` 的分支——TP 全部藏在积木里。但读码时应该能在脑子里"渲染"出双卡版：
 
-![TP=2 时同一份 qwen3.py 的切分与通信点](assets/qwen3_tp_sharding.svg)
+<!-- 插图待补充（SVG 未提交）：![TP=2 时同一份 qwen3.py 的切分与通信点](assets/qwen3_tp_sharding.svg) -->
 
 | 模块 | 切法 | 每 rank 持有 | 前向通信 |
 |---|---|---|---|
