@@ -21,7 +21,8 @@ related_questions: []
 2. 掌握 **TensorRT-LLM 调度器特点**——C++ 层实现、与 TensorRT engine 深度集成、原生支持 chunked prefill，对比 vLLM Python 调度器的灵活性与开销权衡<br>
 3. 理解 **Chunked Prefill 的原理与收益**——长 prompt 拆成小 chunk 与 decode 交错，避免 prefill 占满整轮算力导致 decode 延迟突增<br>
 4. 了解 **LightLLM 的 Dynamic Split Fuse 与 Token Attention**——动态组合 prefill/decode、内存池式 KV Cache 管理的差异化思路<br>
-5. 用 Python 手写一个 **Chunked Prefill 模拟器**，实测 naive vs chunked 两种策略下 decode 延迟曲线，验证 TPOT（time-per-output-token）平滑效果
+5. 掌握 **SGLang RadixAttention 的 radix tree 结构**——match/insert/evict 三操作、引用计数防淘汰、写入策略与 cache-aware 调度的设计思想<br>
+6. 用 Python 手写一个 **Chunked Prefill 模拟器**，实测 naive vs chunked 两种策略下 decode 延迟曲线，验证 TPOT（time-per-output-token）平滑效果
 
 > 💡 **为什么重要**：Day 2 我们拆解了 vLLM Scheduler 的 `schedule()` 5 步流程，但它有个隐患——`_schedule_waiting` 一次性 prefill 整个 prompt，长 prompt 会占满整轮 token budget，导致同 batch 的 decode 请求延迟突增。今天我们看 TensorRT-LLM 和 LightLLM 怎么解决这个"长 prefill 阻塞 decode"问题，核心答案就是 **Chunked Prefill**。这也是面试高频加分题："不同推理框架的 batching 策略对比"。
 
@@ -178,7 +179,61 @@ LightLLM 走了另一条差异化路线：
 | 多轮对话 | 每轮重新哈希 | 前缀树自动增量 |
 | 适用场景 | 短/无共享前缀 | 共享前缀多且长（如多轮对话、few-shot） |
 
-> 💡 **何时 RadixAttention 更优**：共享前缀多且长时（多轮对话、few-shot batch、共享 system prompt）。RadixAttention 的前缀树自动识别任意公共前缀，避免 block-hash 的对齐损失。SGLang 在这类场景的 KV Cache 命中率远高于 vLLM。
+**Radix tree 数据结构**：基数树 = 压缩前缀树（compressed trie）——每条**边存一段 token 序列**（不是单个 token，所以树高很低），每个**节点挂这段 token 对应的 KV cache 索引**。根到任意节点的路径拼接起来，就是一个"被缓存过"的完整前缀：
+
+```python
+class RadixNode:
+    keys: List[int]                # 这条边对应的 token 序列段（如 1024 个 system prompt token）
+    value: List[int]               # 这些 token 的 KV cache slot 索引（token 粒度）
+    children: Dict[int, RadixNode] # 用下一个 token id 索引子节点
+    lock_ref: int                  # 引用计数：>0 = 有运行中请求在用，不可淘汰
+    last_access_time: float        # LRU 淘汰依据
+```
+
+**三个核心操作**：
+
+**① match（请求到达时：前缀匹配）**——从根沿 token 序列走树，找最长匹配前缀，命中部分直接复用 KV，只对剩余部分 prefill：
+
+```python
+def match_prefix(root, tokens):
+    node, matched = root, 0
+    while matched < len(tokens):
+        child = node.children.get(tokens[matched])
+        if child is None:
+            break   # 没有子边可走：匹配结束
+        n = len(common_prefix(child.keys, tokens[matched:]))
+        matched += n
+        node = child
+        if n < len(child.keys):
+            break   # 边内部分匹配：前缀到此为止（block-hash 无此能力，粒度损失就在这）
+    return node, matched   # 前 matched 个 token 复用 KV，其余进 prefill
+```
+
+**② insert（请求完成后：序列插入）**——把新序列沿树插入；若与已有边只部分重合，则**分裂**（split）该边——共享前缀由此自动"沉淀"出来：
+
+```text
+[S]=共享 system prompt，A/B=两个 session，q=用户输入，a=模型回复
+
+Round 1 后:  root ──[S + q1 + a1]
+Round 2 后:  root ──[S + q1 + a1 + q2 + a2]           ← A session 增量扩展，只 prefill 新增段
+B 到达时:    root ──[S]──┬──[q1 + a1 + q2 + a2]       ← [S] 边分裂，两 session 共享 system prompt
+                        └──[few-shot examples + B 的 query]
+```
+
+**③ evict（显存不够时：淘汰）**——**自叶向根**按 LRU 淘汰，只淘汰 `lock_ref == 0` 的节点（运行中请求 pin 住的不许动）；节点子树被清空后向上**合并**（merge），保持树紧凑、避免退化成链表。
+
+**关键设计细节**：
+
+| 设计 | 做法 | 原因 |
+|------|------|------|
+| 引用计数（lock） | match 成功后对路径上所有节点 `lock_ref += 1`，请求结束 `-1` | 运行中请求的 KV 正被 attention 读取，淘汰会导致读到脏数据 |
+| 写入策略 | 默认**不缓存最后一个 token** | 末 token 往往马上被扩展（多轮追加新输入）或分叉（采样多候选），先缓存它反而引发频繁的节点分裂 |
+| Cache-aware 调度 | waiting 队列重排，**优先调度前缀命中更长**的请求 | 趁命中前缀还在树上赶紧复用；先跑不相关请求可能把热点前缀 LRU 挤出去 |
+| 前端协同 | SGLang 前端提供 `fork`/`join` 原语 | Agent/树搜索式程序（一次采多个候选分支）天然产生共享前缀，RadixAttention 自动管理所有分支的 KV |
+
+> 💡 **RadixAttention 的本质**：把"prefix 复用什么、怎么共享、怎么淘汰、谁在用"统一到一棵树上——**匹配 = 查树，共享 = 边分裂，淘汰 = 剪枝，防踩 = 引用计数**。对比 vLLM block-hash 需要 hash 表 + LRU 链 + ref_count 多套机制配合，radix tree 一个数据结构全包了。代价是实现复杂度更高（树操作要加锁/做并发控制），这也是 vLLM 选择简单哈希表的工程权衡。
+
+> 📖 品读论文：SGLang: Efficient Execution of Structured Language Model Programs（NeurIPS 2024，RadixAttention 原论文）。对齐损失的量化对比见 Day 4。
 
 ##### 选型建议
 
@@ -586,6 +641,25 @@ for cs in [4, 8, 16, 24]:
 
 > 思考：Dynamic Split Fuse 与固定 chunked prefill 的本质区别？（提示：一个是"按 decode 负载自适应分块"，一个是"固定分块大小"。前者更激进地利用空闲算力。）
 
+#### 实验 4：手写 Mini RadixAttention 模拟器
+
+实现 `RadixNode` + `match_prefix` + `insert` + `evict`（叶优先 LRU + lock_ref），模拟"共享 system prompt + 2 个多轮 session + few-shot batch"的请求流，统计每轮 prefill token 数与命中率：
+
+```python
+# 核心骨架
+root = RadixNode()
+for req in request_stream:                  # 交替到达的多轮/few-shot 请求
+    node, n_hit = match_prefix(root, req.tokens)   # ① 查树：命中前缀复用 KV
+    lock_path(node)                         # ② 引用计数 +1，pin 住路径
+    req.prefill_len = len(req.tokens) - n_hit      # 只 prefill 未命中部分
+    run_and_generate(req)
+    insert(root, req.tokens, req.kv_indices)       # ③ 插入树，部分重合则边分裂
+    if memory_full():
+        evict(root)                         # ④ 叶优先 LRU，跳过 lock_ref > 0 的节点
+```
+
+> 思考：与 Day 4 的 block-hash 版 `PrefixCache` 跑同一请求流对比命中率——把共享前缀长度设成非 block_size 整数倍（如 17、33），观察 radix 版无对齐损失、block-hash 版尾部浪费。再问自己：如果 `lock_path` 漏加，会出现什么 bug？（提示：运行中请求的 KV 被淘汰 → attention 读到脏数据，输出错乱但可能不报错，是最难排查的一类 bug。）
+
 ---
 
 ### 今日总结
@@ -597,7 +671,8 @@ Day 3 我们对比了四大推理框架的调度策略，并手写了 Chunked Pr
 3. **Chunked Prefill**：长 prompt 拆成小 chunk 与 decode 交错，每轮 prefill 被 chunk_size 封顶，decode 延迟平滑（实测尖峰降 40%）
 4. **TTFT vs TPOT 权衡**：chunk_size 小 → TPOT 平滑但 TTFT 增加；chunk_size 大 → TTFT 短但 TPOT 抖动；经验值 512-2048
 5. **LightLLM 差异化**：Dynamic Split Fuse（自适应分块）+ Token Attention（token 粒度内存池），高并发长上下文场景优势
-6. **手写模拟器**：实测 naive 延迟尖峰 2.0ms、chunked 1.2ms，验证 chunked prefill 的 TPOT 平滑效果
+6. **RadixAttention（SGLang）**：radix tree 统一管理 prefix 复用——match 查树 / insert 边分裂沉淀共享前缀 / evict 叶优先 LRU + lock_ref 引用计数，token 级匹配无 block 对齐损失，多轮对话与 few-shot 场景命中率更高
+7. **手写模拟器**：实测 naive 延迟尖峰 2.0ms、chunked 1.2ms，验证 chunked prefill 的 TPOT 平滑效果
 
 掌握这些后，你就有了推理框架的全局视野——明天 Day 4 先讲 Chunked Prefill + Prefix Caching，Day 5 再把 Continuous Batching + Scheduler + Chunked Prefill 整合进 Mini 推理引擎 v1，构建支持多请求并发的完整引擎。
 
@@ -668,14 +743,34 @@ Day 3 我们对比了四大推理框架的调度策略，并手写了 Chunked Pr
 <details>
 <summary>点击查看答案</summary>
 
- - **性能更高的原因**：
- - C++ 调度器无 Python 解释开销和 GIL
- - 与 TensorRT engine 深度集成，使用预编译 plan（kernel 融合、显存预分配）
- - 原生 C++ 实现 chunked prefill、KV Cache 管理
- - **代价**：
- - 灵活性低：换模型结构要重新构建 engine（trtexec 编译，几分钟到几十分钟）
- - vLLM 改模型只需改 Python 代码，迭代快
- - **选择**：生产部署固定模型选 TensorRT-LLM；研发迭代选 vLLM
+  - **性能更高的原因**：
+  - C++ 调度器无 Python 解释开销和 GIL
+  - 与 TensorRT engine 深度集成，使用预编译 plan（kernel 融合、显存预分配）
+  - 原生 C++ 实现 chunked prefill、KV Cache 管理
+  - **代价**：
+  - 灵活性低：换模型结构要重新构建 engine（trtexec 编译，几分钟到几十分钟）
+  - vLLM 改模型只需改 Python 代码，迭代快
+  - **选择**：生产部署固定模型选 TensorRT-LLM；研发迭代选 vLLM
+
+</details>
+
+
+6. **SGLang 的 RadixAttention 是什么？相比 vLLM 的 block-hash prefix caching 有什么优势？**（⭐⭐⭐ 高频）
+
+<details>
+<summary>点击查看答案</summary>
+
+  - **RadixAttention**：用基数树（radix tree）管理 KV Cache 的自动复用。每条边存一段 token 序列，每个节点挂这些 token 的 KV 索引；根到节点的路径 = 一个已缓存前缀
+  - **三个核心操作**：
+  - **match**：新请求沿树找最长匹配前缀（可停在边的中间，token 级粒度），命中部分复用 KV，只 prefill 剩余
+  - **insert**：请求完成后序列插入树，与已有边部分重合则边分裂（split）——共享前缀自动沉淀
+  - **evict**：显存不够时自叶向根 LRU 淘汰，`lock_ref > 0`（运行中请求 pin 住）的节点不可淘汰
+  - **vs block-hash（vLLM）**：
+  - 匹配粒度 token 级 vs block 级 → 无 block 对齐损失
+  - 一棵树统一"匹配/共享/淘汰/引用计数"，vs 哈希表 + LRU 链 + ref_count 多套机制
+  - 天然支持 fork 分支：agent/树搜索程序的多候选共享前缀自动管理
+  - **配套设计**：写入策略默认不缓存最后一个 token（避免频繁分裂）；cache-aware 调度优先跑前缀命中更长的请求
+  - **适用**：共享前缀多且长（多轮对话、few-shot、共享 system prompt）时命中率和 TTFT 显著更优；无共享前缀时两者等同
 
 </details>
 
