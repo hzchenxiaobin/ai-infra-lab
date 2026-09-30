@@ -4,7 +4,7 @@ type: learn
 title: "Day 2：实现 KV Cache（含 GQA/MQA/MLA 变体）"
 tags: [inference-system, kv-cache, notes, vllm]
 knowledge_points: [inference-system, kv-cache]
-updated: 2026-08-28
+updated: 2026-09-29
 week: 6
 day: 2
 related_problems: ["gpu:m:051", "gpu:m:080", "lc:0101", "lc:0104", "lc:0110", "lc:0226", "lc:0543"]
@@ -22,6 +22,7 @@ related_questions: []
 3. 能区分 **静态分配 / 动态分配 / PagedAttention** 三种 cache 分配策略的优缺点，理解为什么 vLLM 要借鉴 OS 虚拟内存分页<br>
 4. 学会用 C++/CUDA 手写一个支持 **append / get_cache / reset** 的 KVCache 类，并通过多轮对话验证其正确性<br>
 5. 理解多轮对话中 **历史 cache 复用** 的流程——Round 2 只需计算新增 token 的 K/V，大幅降低 TTFT<br>
+6. 能讲清 **MQA → GQA → MLA** 的演进逻辑：分组共享的头映射 `kv_h = h/group`、GQA 的 uptraining、MLA 的低秩压缩与矩阵吸收为什么可行<br>
 
 > 💡 **为什么重要**：Day 1 我们算清楚了 Decode 是 memory-bound，并提到"KV Cache 把每步 FLOPs 从 $O(L \cdot d^2)$ 降到 $O(d^2)$"——但那个 cache 到底长什么样、怎么存、怎么追加？今天我们亲手把它实现出来。KV Cache 是推理系统优化的基础：Day 3-4 读 vLLM 的 PagedAttention、Day 5 搭 Mini 引擎、Day 6 做 profiling，全都建立在今天的 KVCache 类之上。它也是面试必考点——"手写一个 KV Cache"是工程能力的直接体现。
 
@@ -110,14 +111,106 @@ KV Cache 是一个 5 维张量，K 和 V 各一份：
 
 ![MHA/GQA/MQA/MLA KV Cache 口算](../images/kv_cache_variants_calc.svg)
 
+> 📖 上表只给结论。三个变体**怎么改结构、为什么省显存、精度代价从哪来**——MQA 的激进共享、GQA 的分组映射与 uptraining、MLA 的低秩压缩与矩阵吸收——展开见下节 §2.3。
+
 > 💡 **面试要点**：
 > - **GQA 是精度与显存的最佳折中**——LLaMA-3、Qwen-2 都用 GQA-8（n_kv_head=8），KV Cache 降到 1/4 而精度几乎不掉。
 > - **MQA 太激进**——显存最小但 perplexity 上升明显，现在只在 PaLM/Falcon 等早期模型见到。
-> - **MLA 是 DeepSeek 的创新**——不存完整 K/V，存一个低秩"潜在向量"（d_c ≪ n_head·d_head），attention 时用上投影矩阵现场解压。DeepSeek-V3 的 d_c=512+，KV Cache 比 MHA 小 ~10x 且精度持平，代价是 attention kernel 要做额外解压 GEMM。这是 2024-2026 推理优化面试的热门追问。
+> - **MLA 是 DeepSeek 的创新**——不存完整 K/V，存一个低秩"潜在向量"（d_c ≪ n_head·d_head）。DeepSeek-V2/V3 取 d_c=512、d_h^R=64，每 token 缓存降到同规模 MHA 的 ~1/57（约 69 KB），消融精度反超 MHA，代价是 attention kernel 要按"矩阵吸收"重写。推导与总账见 §2.3。这是 2024-2026 推理优化面试的热门追问。
 >
 > **一般公式**（见 [key_numbers.md](https://github.com/hzchenxiaobin/ai-infra-notes/blob/main/aiinfra/daily/reference/key_numbers.md)）：把 `n_kv_head` 换成变体实际值即可——GQA 用 `n_kv_head`，MQA 用 1，MLA 用 `d_c`（注意 MLA 存的是潜在向量，公式形态不同）。
 
-#### 2.3 分配策略：静态 vs 动态 vs PagedAttention
+#### 2.3 注意力变体详解：MHA → MQA → GQA → MLA
+
+2.2 的对比表给出结论：**KV Cache 的大小由 `n_kv_head`（或 MLA 的 `d_c`）决定**。这一节按时间线（MQA 2019 → GQA 2023 → MLA 2024）讲清楚三件事：每个变体**怎么改结构**、**为什么省显存**、**精度代价从哪来**。
+
+##### MQA（2019）：所有 query 头共享一份 K/V
+
+![MHA/GQA/MQA 的 KV 头共享方式对比](../images/attn_variants_head_sharing.svg)
+
+出发点是一个经验观察：MHA 的各个 KV 头之间**信息高度冗余**——不同头的 K 相似度很高。Shazeer 2019 年的论文《Fast Transformer Decoding: One Write-Head is All You Need》提出最激进的压缩：
+
+- **结构改动**：`n_head` 个 query 头照常保留，**K/V 只留 1 个头**，所有 query 头共享
+- **收益**：KV Cache 直接降到 $1/n_{head}$；decode 是 memory-bound，读的 KV 少了，每步延迟也同比例下降
+- **代价**：所有头被迫读同一份 K/V，**头间多样性消失**，perplexity 上升明显；从 MHA checkpoint 转 MQA 基本等于重新训练
+- **代表模型**：PaLM、Falcon-7B、StarCoder（2023 年前"省显存"的主流选择）
+
+> ⚠️ **注意**：MQA 省的不只是显存——decode 阶段 KV 的访存带宽压力也降到 1/n_head。但精度损失让它在对话模型上难以接受，这正是 GQA 出现的直接动机。
+
+##### GQA（2023）：分组共享，精度与显存的最佳折中
+
+GQA（《GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints》，Ainslie et al. 2023）的想法介于两者之间——**不要一个极端全砍，让每 `group` 个 query 头共享一组 K/V**：
+
+- **结构改动**：`n_head` 个 query 头分成 `n_kv_head` 组（$\text{group} = n_{head} / n_{kv\_head}$），每组共享一份 K/V 头
+- **头映射**（kernel 里唯一要改的一行代码）：
+
+$$\text{group} = n_{head} / n_{kv\_head},\qquad \text{kv\_head}(h) = h \,/\, \text{group}$$
+
+- **统一框架**：group=1 退化为 MQA，group=n_head 退化为 MHA——GQA 是两者的泛化，可以在"精度-显存"曲线上任取一点
+- **uptraining**：GQA 论文的关键贡献——已有 MHA checkpoint **不必重训**：把同组的 `group` 个 K/V 头**均值合并**成该组的初始 KV 头，再用原预训练数据的一小部分（论文用量约几个百分点）继续训练，质量几乎无损
+- **代表模型**：LLaMA-2-70B（64Q/8KV）、LLaMA-3（32Q/8KV）、Mistral-7B（32Q/8KV）、Qwen2-7B（28Q/4KV）——2023 年后开源模型的标准配置
+
+##### 为什么共享 K/V 几乎不掉点？
+
+直觉解释：K/V 的角色是"被所有 query 头查询的索引与取值"，天然信息冗余度高；uptraining 让模型学会**把组内共性放进共享的 KV 头、把差异放进各自的 query 投影**。消融上 GQA-8 与 MHA 的差距通常在 1% 以内，而推理显存与带宽都降为数分之一——性价比极高。
+
+> 💡 **实现要点**（对应任务 4）：GQA 的 attention kernel 与 MHA 的**唯一区别**就是 `kv_h = h / group` 的索引——**千万不要把 K/V expand 成 n_head 份再跑 MHA kernel**（LLaMA-3 32Q/8KV 会多占 4× 显存，cache 收益直接归零）。多个 Q 头读同一份 KV 时还能借 shared memory 复用，这是 GQA 在 GPU 上的高效实现方式。
+
+##### MLA（2024）：不砍头，把 KV 压缩到低秩潜在向量
+
+GQA/MQA 本质是**结构化砍头**——信息通道数物理减少，精度损失正来源于此。DeepSeek-V2 的 MLA（Multi-head Latent Attention）换了条路：**头一个不减，压缩 KV 的表示本身**。
+
+![MLA 低秩压缩与矩阵吸收](../images/mla_low_rank_compression.svg)
+
+核心观察：K、V 都是 hidden state $h_t$ 的线性函数（$k_t = W^K h_t$、$v_t = W^V h_t$），两个线性映射的复合还是低秩的——等价于假设"逐头 KV 的 $n_h \cdot d_h$ 维表示生活在一个 $d_c$ 维子空间里"，让训练数据去学这个子空间：
+
+**① 联合低秩压缩**——K、V 共享同一个隐向量：
+
+$$c_t^{KV} = W^{DKV} h_t \in \mathbb{R}^{d_c},\qquad k_t^C = W^{UK} c_t^{KV},\qquad v_t^C = W^{UV} c_t^{KV}$$
+
+- $d_c = 512 \ll n_h \cdot d_h = 128 \times 128 = 16384$（DeepSeek-V2 配置：128 头 × 128 维）
+- **推理只缓存 $c_t^{KV}$**，K/V 需要时由上投影矩阵 $W^{UK}/W^{UV}$ 恢复
+- **联合压缩的妙处**：K、V 共用一份隐向量，所以 **没有 ×2 因子**——这是 MLA 的 bytes 公式形态与 MHA/GQA 不同的根源
+
+**② 解耦 RoPE**——位置编码单独走一条小路：
+
+RoPE 对 K 施加位置相关的旋转 $R$，而 $q^\top R\, W^{UK} c$ 中 $R$ 与 $W^{UK}$ **不可交换**（旋转矩阵和投影矩阵乘法不能换序），矩阵吸收（见 ③）会被 RoPE 打断。MLA 的解法：把 attention 拆成**内容路径**（无 RoPE，可吸收）+ **位置路径**（单独算一个**所有头共享**的 $k_t^R = \mathrm{RoPE}(W^{KR} h_t)$，只有 $d_h^R = 64$ 维）：
+
+$$\text{score}(q_t, i) = \underbrace{q_t^{C\top} c_i^{KV}}_{\text{内容项}} + \underbrace{q_t^{R\top} k_i^R}_{\text{位置项}}$$
+
+**③ 矩阵吸收**——推理时根本不用展开 K/V：
+
+$$q^\top k^C = q^\top W^{UK} c = \left(W^{UK\top} q\right)^\top c$$
+
+- 由矩阵乘法结合律，$W^{UK}$ 可以**吸进 query 侧投影**、$W^{UV}$ 可以**吸进输出投影 $W^O$**——attention 直接在 $d_c$ 维隐空间里做
+- **省显存的同时不增加计算**：展开 K/V（512 → 16384 维）的 GEMM 完全省去
+
+**④ DeepSeek-V2 的总账**：
+
+| 项 | MHA（同规模 128 头） | MLA | 对比 |
+|---|---|---|---|
+| 每 token 每层缓存元素 | $2 \times 128 \times 128 = 32768$ | $d_c + d_h^R = 512 + 64 = 576$ | **1.76%（约 1/57）** |
+| 每 token 缓存（60 层，bf16） | ~3.93 MB | $576 \times 60 \times 2\text{B} \approx$ **69 KB** | |
+| 对比 DeepSeek 67B（GQA） | — | KV Cache **−93.3%**、最大生成吞吐 **×5.76** | 论文口径 |
+| 消融精度（MMLU，Table 9） | 57.5 | **59.0** | MLA 反超 |
+
+DeepSeek-V3 延续同一套 MLA（$d_c=512$、$d_h^R=64$、61 层 → 约 70 KB/token），V2/V3 的长上下文与高并发服务都建立在这上面。
+
+> ⚠️ **MLA 的代价**：① attention kernel 不能复用 MHA/GQA 实现，要按"吸收后的矩阵"重写（FlashMLA 等专用 kernel）；② PagedAttention 基础设施要按"隐向量 + 位置向量**两段缓存**"改造；③ query 侧同样低秩压缩（$d_c' = 1536$），训练/推理代码路径更复杂。这是"省 50× 显存"换来的工程复杂度——也是推理框架（vLLM/SGLang）的必答题。
+
+##### 四种变体对比总结
+
+| 维度 | MHA | MQA | GQA | MLA |
+|------|-----|-----|-----|-----|
+| 缓存内容 | 每头独立 K、V | 全体共享 1 份 K、V | 每组共享 1 份 K、V | 联合隐向量 $c^{KV}$ + 共享 $k^R$ |
+| 每 token 每层元素 | $2\, n_h d_h$ | $2\, d_h$ | $2\, n_{kv} d_h$ | $d_c + d_h^R$ |
+| 精度 | 基准 | 掉点明显 | 几乎无损（uptrain） | 持平甚至反超 |
+| kernel 改动 | — | `kv_h = 0` | `kv_h = h / group` | 矩阵吸收 + 隐空间 attention |
+| 代表模型 | GPT-2、LLaMA-1 | PaLM、Falcon-7B | LLaMA-2/3、Mistral、Qwen2 | DeepSeek-V2/V3 |
+
+> 💡 **面试一句话**：MQA 砍到 1 个 KV 头（省最多、掉点），GQA 分组共享（工程折中的主流），MLA 低秩压缩不砍头（显存再降一个量级、精度反超，代价是 kernel 与框架复杂度）。三者回答同一个问题——**decode 阶段的瓶颈是 KV Cache 的显存与带宽，从模型结构层面减小它**；与量化（精度层面）、PagedAttention（管理层面）正交，可叠加。
+
+#### 2.4 分配策略：静态 vs 动态 vs PagedAttention
 
 ![三种 KV Cache 分配策略对比](../images/kv_cache_allocation_strategies.svg)
 
@@ -137,7 +230,7 @@ KV Cache 是一个 5 维张量，K 和 V 各一份：
 
 > 💡 PagedAttention 解决的是"动态分配的碎片"问题——不是消除碎片（分页本身也有内部碎片），而是让碎片**可回收**。这是 Day 4 的核心，今天先建直觉。
 
-#### 2.4 多轮对话中的 Cache 复用
+#### 2.5 多轮对话中的 Cache 复用
 
 ![多轮对话 KV Cache 复用](../images/kv_cache_multi_turn.svg)
 
@@ -373,7 +466,7 @@ Day 2 我们把 Day 1 提到的"KV Cache"从概念变成了可运行的代码：
 4. **三种分配策略**：静态（浪费）、动态（碎片）、PagedAttention（分页+映射表，Day 4 详读）——演进逻辑是"解决浪费→引入碎片→解决碎片"
 5. **多轮对话复用**：Round 1 的 cache 保留，Round 2 只算新增 token 的 K/V，TTFT 大幅降低；前提是 prompt 格式严格一致
 6. **手写 KVCache 类**：`append`/`get_cache`/`reset` 三件套，多轮追加 + 数据落位验证通过，并打印 LLaMA-7B 真实显存参考值
-7. **GQA 优化**：从模型结构层面减少 KV 头数，把 cache 的 `num_heads` 维从 `num_q_heads` 降到 `num_kv_heads`（LLaMA-3 缩小 4×）
+7. **注意力变体（MQA → GQA → MLA）**：MQA 全体共享 1 个 KV 头（省最多、掉点）；GQA 每 `group` 个 Q 头共享一组（`kv_h = h/group`，uptraining 几乎无损，LLaMA-3 缩小 4×）；MLA 不砍头、K/V 联合低秩压缩成 $d_c$ 维隐向量 + 矩阵吸收（DeepSeek-V2 约 69 KB/token，同规模 MHA 的 ~1/57 且精度反超）——从模型结构层面削减 cache，与量化正交可叠加
 
 掌握这些后，你就有了 Day 3-4 读 vLLM 源码的全部数据结构基础——明天的 PagedAttention 就建在今天的 KVCache 之上，只是把"连续分配"换成了"分页 + block table"。
 
@@ -453,10 +546,37 @@ Day 2 我们把 Day 1 提到的"KV Cache"从概念变成了可运行的代码：
 <details>
 <summary>点击查看答案</summary>
 
- - 标准 MHA：每个 query 头有独立 K/V 头，cache 的 `num_heads` 维 = `num_q_heads`（如 32）
- - GQA：每 `num_q_heads/num_kv_heads` 个 query 头**共享**同一组 K/V 头，cache 的 `num_heads` 维 = `num_kv_heads`（如 8）
- - LLaMA-3 8B（32 Q 头 + 8 KV 头）：KV cache 直接缩小到 1/4
- - 与 int8 量化的区别：GQA 是**模型结构层面**的优化（训练时就定好 KV 头数，无损精度）；int8 量化是**推理时精度层面**的优化（有精度损失，atol~1e-3）。两者正交，可叠加（GQA + int8 = 1/8 cache）
+  - 标准 MHA：每个 query 头有独立 K/V 头，cache 的 `num_heads` 维 = `num_q_heads`（如 32）
+  - GQA：每 `num_q_heads/num_kv_heads` 个 query 头**共享**同一组 K/V 头，cache 的 `num_heads` 维 = `num_kv_heads`（如 8）
+  - LLaMA-3 8B（32 Q 头 + 8 KV 头）：KV cache 直接缩小到 1/4
+  - 与 int8 量化的区别：GQA 是**模型结构层面**的优化（训练时就定好 KV 头数，无损精度）；int8 量化是**推理时精度层面**的优化（有精度损失，atol~1e-3）。两者正交，可叠加（GQA + int8 = 1/8 cache）
 
 </details>
+
+
+7. **MQA → GQA → MLA 的演进逻辑是什么？各自的精度-显存如何权衡？**
+
+<details>
+<summary>点击查看答案</summary>
+
+  - **MQA**（2019，Shazeer）：所有 query 头共享 1 份 K/V，cache 降到 1/n_head，但头间多样性消失、perplexity 上升明显——PaLM、Falcon-7B 采用
+  - **GQA**（2023，Ainslie et al.）：每 `group` 个 query 头共享一组 K/V（group=1 退化 MQA、group=n_head 退化 MHA），kernel 只改 `kv_h = h/group`；配合 uptraining（MHA checkpoint 组内 K/V 头均值合并 + 少量数据续训）几乎无损——LLaMA-2/3、Mistral、Qwen2 的标准配置
+  - **MLA**（2024，DeepSeek-V2）：不砍头，K/V 联合低秩压缩成 $d_c=512$ 维隐向量缓存（+64 维共享位置键 $k^R$），矩阵吸收后 attention 在隐空间做——每 token 约 69 KB（同规模 MHA 的 ~1/57），消融 MMLU 59.0 vs MHA 57.5 反超，代价是需要专用 kernel
+  - 演进主线：decode 的 memory-bound 瓶颈在 KV Cache → 从"减少 KV 头数"（MQA/GQA）到"压缩 KV 表示本身"（MLA）
+
+</details>
+
+
+8. **MLA 的矩阵吸收为什么可行？RoPE 为什么必须解耦？**
+
+<details>
+<summary>点击查看答案</summary>
+
+  - **吸收**：attention score 只含 $q,k$ 的双线性形式 $q^\top W^{UK} c$，由结合律 $= (W^{UK\top} q)^\top c$ → $W^{UK}$ 吸进 query 投影；输出端同理，$W^{UV}$ 吸进 $W^O$。推理时 K/V 完全不必展开，省显存不增计算
+  - **RoPE 的问题**：位置旋转作用在 K 上时 $q^\top R\, W^{UK} c$ 中 $R$ 与 $W^{UK}$ **不可交换**，吸收被打断
+  - **解法**：内容路径（无 RoPE，可吸收）+ 位置路径（所有头共享的 $k^R = \mathrm{RoPE}(W^{KR} h_t)$，仅 $d_h^R=64$ 维单独缓存），$\text{score} = q^C \cdot c^{KV} + q^R \cdot k^R$
+  - **代价**：缓存从一段变两段（576 = 512 + 64），PagedAttention 的 block 布局要按两段管理；decode 的 GEMV 维度变高，需要 FlashMLA 这类专用 kernel
+
+</details>
+
 

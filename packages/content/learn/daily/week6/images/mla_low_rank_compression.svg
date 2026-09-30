@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="440" viewBox="0 0 860 440" font-family="'Comic Sans MS','Marker Felt','Segoe UI','Kaiti SC',楷体,cursive">
+  <defs>
+    <filter id="sk" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="33" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#666" stroke-width="1.4"/>
+    </marker>
+  </defs>
+  <rect width="860" height="440" fill="#fdfcf7"/>
+  <text x="430" y="30" text-anchor="middle" font-size="19" font-weight="bold" fill="#2b2b2b">MLA：联合低秩压缩 + 解耦 RoPE + 矩阵吸收（DeepSeek-V2 口径）</text>
+  <path d="M 240 38 Q 430 46 620 38" stroke="#2b2b2b" stroke-width="1.5" fill="none" filter="url(#sk)"/>
+
+  <!-- 左：h_t -->
+  <g filter="url(#sk)">
+    <rect x="50" y="140" width="120" height="56" rx="8" fill="#e8f0fa" stroke="#4a8edb" stroke-width="1.4" fill-opacity="0.4"/>
+  </g>
+  <text x="110" y="163" font-size="14" fill="#2b6e9e" text-anchor="middle" font-weight="bold">h_t</text>
+  <text x="110" y="182" font-size="10" fill="#666" text-anchor="middle">当前 token hidden state</text>
+
+  <!-- 降维箭头 -->
+  <g filter="url(#sk)">
+    <path d="M 170 168 L 258 168" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+  </g>
+  <text x="214" y="152" font-size="11" fill="#666" text-anchor="middle">W_DKV 降维</text>
+
+  <!-- 中：c_KV 唯一缓存 -->
+  <g filter="url(#sk)">
+    <rect x="260" y="130" width="140" height="76" rx="8" fill="#f3eaf7" stroke="#8e5db8" stroke-width="1.8"/>
+  </g>
+  <text x="330" y="155" font-size="14" fill="#5d3a7e" text-anchor="middle" font-weight="bold">c_KV ∈ R^512</text>
+  <text x="330" y="174" font-size="10" fill="#666" text-anchor="middle">K/V 联合隐向量</text>
+  <text x="330" y="196" font-size="11" fill="#5d3a7e" text-anchor="middle" font-weight="bold">✓ 进 Cache（无 ×2）</text>
+
+  <!-- 右上：上投影区域（可吸收） -->
+  <g filter="url(#sk)">
+    <rect x="480" y="70" width="330" height="130" rx="10" fill="none" stroke="#8e5db8" stroke-width="1.2" stroke-dasharray="6 4"/>
+  </g>
+  <text x="645" y="88" font-size="11" fill="#8e5db8" text-anchor="middle" font-weight="bold">推理时可被矩阵吸收 —— 不必真的展开</text>
+  <g filter="url(#sk)">
+    <path d="M 400 155 Q 440 135 478 118" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+    <path d="M 400 180 Q 440 195 478 202" stroke="#666" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  </g>
+  <text x="432" y="128" font-size="10" fill="#666">W_UK</text>
+  <text x="432" y="208" font-size="10" fill="#666">W_UV</text>
+  <g filter="url(#sk)">
+    <rect x="484" y="100" width="150" height="36" rx="6" fill="#f3eaf7" stroke="#8e5db8" stroke-width="1.2" fill-opacity="0.35"/>
+    <rect x="484" y="152" width="150" height="36" rx="6" fill="#f3eaf7" stroke="#8e5db8" stroke-width="1.2" fill-opacity="0.35"/>
+  </g>
+  <text x="559" y="123" font-size="12" fill="#5d3a7e" text-anchor="middle">k_C = W_UK · c_KV</text>
+  <text x="559" y="175" font-size="12" fill="#5d3a7e" text-anchor="middle">v_C = W_UV · c_KV</text>
+  <text x="725" y="123" font-size="10" fill="#8e5db8" text-anchor="middle">吸进 Q 投影</text>
+  <text x="725" y="175" font-size="10" fill="#8e5db8" text-anchor="middle">吸进 W_O</text>
+
+  <!-- RoPE 侧路 -->
+  <g filter="url(#sk)">
+    <path d="M 110 196 L 110 288" stroke="#666" stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+  </g>
+  <text x="150" y="248" font-size="11" fill="#666">W_KR + RoPE</text>
+  <g filter="url(#sk)">
+    <rect x="50" y="290" width="150" height="56" rx="8" fill="#fef6e6" stroke="#c98a2b" stroke-width="1.4" fill-opacity="0.35"/>
+  </g>
+  <text x="125" y="313" font-size="13" fill="#7a5415" text-anchor="middle" font-weight="bold">k_R（64 维）</text>
+  <text x="125" y="332" font-size="10" fill="#7a5415" text-anchor="middle">共享位置键，也进 Cache</text>
+
+  <!-- score 公式 -->
+  <g filter="url(#sk)">
+    <rect x="260" y="270" width="550" height="76" rx="10" fill="#eaf6ee" stroke="#4a8e4a" stroke-width="1.3" fill-opacity="0.3"/>
+  </g>
+  <text x="535" y="298" font-size="14" fill="#2e6e2e" text-anchor="middle" font-weight="bold">score = q_C · c_KV  +  q_R · k_R</text>
+  <text x="535" y="322" font-size="11" fill="#2e6e2e" text-anchor="middle">内容路径（可吸收） + 位置路径（RoPE 单独走，绕开不可交换问题）</text>
+  <g filter="url(#sk)">
+    <path d="M 212 318 Q 240 320 256 305" stroke="#c98a2b" stroke-width="1.4" fill="none" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- 底部总账 -->
+  <g filter="url(#sk)">
+    <rect x="40" y="364" width="780" height="58" rx="8" fill="#fffdf3" stroke="#9e9e9e" stroke-width="1" fill-opacity="0.5"/>
+  </g>
+  <text x="430" y="386" font-size="12" fill="#2b2b2b" text-anchor="middle" font-family="monospace">每 token 每层：MHA 2×128×128 = 32768 元素  vs  MLA (512 + 64) = 576 元素</text>
+  <text x="430" y="408" font-size="12" fill="#5d3a7e" text-anchor="middle" font-weight="bold">≈ 1/57 · 60 层 bf16 → 576×60×2B ≈ 69 KB/token · K/V 共享隐向量，公式没有 ×2</text>
+</svg>
