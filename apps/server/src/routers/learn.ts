@@ -14,7 +14,7 @@ const WEEK_RE = /^learn:w(\d{2})$/;
 const TOPIC_DAY_RE = /^learn:topic:([a-z0-9-]+):d(\d+)$/;
 const TOPIC_RE = /^learn:topic:([a-z0-9-]+)$/;
 
-export interface LearnDay {
+interface LearnDay {
   id: string;
   day: number;
   title: string;
@@ -22,7 +22,7 @@ export interface LearnDay {
   status: ProgressStatus;
 }
 
-export interface LearnWeek {
+interface LearnWeek {
   week: number;
   title: string;
   url: string;
@@ -30,7 +30,7 @@ export interface LearnWeek {
   days: LearnDay[];
 }
 
-export interface LearnTopic {
+interface LearnTopic {
   slug: string;
   title: string;
   url: string;

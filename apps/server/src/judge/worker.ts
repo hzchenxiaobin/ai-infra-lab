@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import {
   runJudge,
   terminalStatus,
@@ -136,16 +136,4 @@ function judge(language: string, code: string, ctx: ProblemJudgeContext): JudgeR
     });
   }
   throw new Error(`不支持的评测语言：${language}`);
-}
-
-/** JudgeRunResult → 提交终态（judge-core 同源映射，供测试与类型引用） */
-export const terminalStatusOf = terminalStatus;
-
-/** 队列深度与积压（监控/测试用）：各状态计数 */
-export async function queueDepths(): Promise<Record<string, number>> {
-  const rows = await db
-    .select({ status: submissions.status, count: sql<number>`count(*)` })
-    .from(submissions)
-    .groupBy(submissions.status);
-  return Object.fromEntries(rows.map((r) => [r.status, Number(r.count)]));
 }

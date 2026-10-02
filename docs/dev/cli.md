@@ -1,8 +1,8 @@
 # cli — 管理 CLI 开发指南
 
-> `apps/cli`：commander + tsx 的管理/交互 CLI，经 `appRouter.createCaller()` **直调
-> 后端代码，不走 HTTP**。以 `interview/apps/cli` 原样拷入起步。定位：新管理操作
-> 优先进 CLI，而不是做管理页面（06 已决策）。
+> `apps/cli`：commander + tsx 的管理/交互 CLI，走 **HTTP tRPC**（与 web/iOS 同
+> 协议），服务身份经 `CLI_TOKEN` 共享密钥传递。以 `interview/apps/cli` 原样拷入
+> 起步。定位：新管理操作优先进 CLI，而不是做管理页面（06 已决策）。
 
 ## 1. 目录结构
 
@@ -11,42 +11,50 @@ apps/cli/
 ├── bin/ailab.mjs           # bin 入口：tsx/esm 的 tsImport 直接跑 TS 源码，免构建
 ├── src/
 │   ├── index.ts            # commander 命令注册（全部命令集中此处）
-│   ├── session.ts          # getCaller() + 交互式面试会话循环
+│   ├── session.ts          # getCaller()（HTTP tRPC client）+ 交互式面试会话循环
+│   ├── bank.ts             # LLM 题库管线（bank:generate / bank:import）
+│   ├── env.ts              # 环境变量（仓库根 .env，仅取 CLI 需要的键）
 │   └── ui.ts               # 终端输出助手（banner/表格/着色）
 └── package.json            # @ailab/cli，bin 名 ailab
 ```
 
-依赖关键点：`@ailab/server` 与 `@ailab/contracts` 都是 `workspace:*`——
-CLI 与 server 同进程模型共享 router 与 schema；根 `package.json` 用
-`"dependencies": { "@ailab/cli": "link:apps/cli" }` 把 bin（`ailab`，经
-`apps/cli/bin/ailab.mjs` 以 tsx 直跑 TS 源）链接到仓库根。
+依赖关键点：`@ailab/server` 仅为 **AppRouter 类型链**（type-only import，
+tRPC 标准做法，与 web 一致）；运行时依赖 `@trpc/client` + `superjson`。
 
-## 2. createCaller 模式
+## 2. HTTP tRPC + 服务身份
 
 `src/session.ts` 的核心（身份显式化，2026-09-11 收紧后形态）：
 
 ```ts
-import { appRouter, type AppRouter } from "@ailab/server/router";
-import { getUserIdByEmail } from "@ailab/server/auth";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import superjson from "superjson";
+import type { AppRouter } from "@ailab/server/router";   // 仅类型
 
-export async function getCaller() {
-  const email = process.env.AILAB_USER?.trim();   // --user 或环境变量
-  if (!email) /* 报错退出：未指定操作身份 */;
-  const userId = await getUserIdByEmail(email);   // 按 email 查 users 表
-  if (userId == null) /* 报错退出：用户不存在 */;
-  return appRouter.createCaller({ userId });      // Context 与 HTTP 请求同构
-}
+const caller = createTRPCClient<AppRouter>({
+  links: [httpBatchLink({
+    url: `${env.serverUrl}/trpc`,
+    transformer: superjson,
+    headers: () => ({
+      "x-ailab-cli-token": env.cliToken,   // 与 server .env 的 CLI_TOKEN 一致
+      "x-ailab-cli-user": email,           // --user / AILAB_USER 邮箱
+    }),
+  })],
+});
 ```
 
 - 身份来源：全局 `--user <email>`（`ailab --user x@y start` 与 `ailab start --user x@y`
   均可，index.ts 在 `program.parse()` 前给根命令与全部子命令统一注入该 option，
   `preAction` 钩子落到 `AILAB_USER`）或直接设 `AILAB_USER` 环境变量。
-- caller 的 Context 与 server HTTP 链路的 Context **同构**，因此 CLI 天然复用所有
-  router 的鉴权与业务逻辑——这也是"管理操作优先进 CLI"成立的原因。
+- server 端 `auth.ts cliUserIdFromHeaders` 校验 `x-ailab-cli-token`（timing-safe，
+  命中 `env.CLI_TOKEN`）后按 `x-ailab-cli-user` 邮箱解析 userId——CLI 复用与
+  web 完全相同的 router 鉴权与业务逻辑（HTTP Context 同构）。
 - 管理命令（`content:sync` / `user:*` / `quota:*`）走 `adminProcedure`：
   `--user` 的邮箱必须在服务端 `ADMIN_EMAILS` 中（能登录部署机 + 邮箱白名单双背书）。
-- 环境变量（DATABASE_URL、LLM_*）由 server 的 `env.ts` 统一加载仓库根 `.env`，
-  CLI 不单独读环境。
+- 环境变量由 CLI 自己的 `src/env.ts` 加载仓库根 `.env`（`AILAB_SERVER_URL`、
+  `CLI_TOKEN`、`DATABASE_URL`、`LLM_*`），不再 import server 代码。
+- `.env` 配置：`CLI_TOKEN=<强随机串>`（两侧一致；server 侧为空则通道关闭）、
+  部署机 `AILAB_SERVER_URL=http://127.0.0.1:3001`（compose 已将 server 端口
+  绑定回环）。
 
 ## 3. 命令清单
 

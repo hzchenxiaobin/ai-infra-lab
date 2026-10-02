@@ -35,6 +35,8 @@ const envSchema = z.object({
   SMTP_FROM: z.string().default(""),
   /** adminProcedure 放行邮箱列表（逗号分隔） */
   ADMIN_EMAILS: z.string().default(""),
+  /** CLI 服务身份共享密钥（x-ailab-cli-token 头）；空 = 关闭 CLI 通道 */
+  CLI_TOKEN: z.string().default(""),
   /** 配额默认值（缺省/空 = 不限，上线初期默认；后续仅改配置开启分层） */
   QUOTA_DEFAULT_JUDGE: optionalInt,
   QUOTA_DEFAULT_INTERVIEW: optionalInt,

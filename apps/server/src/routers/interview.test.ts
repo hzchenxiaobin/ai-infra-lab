@@ -122,6 +122,11 @@ run("interview 状态机（集成）", () => {
     const detail = await caller.interview.get({ sessionId: state.sessionId });
     expect(detail.report?.report).toBeTruthy();
     expect(detail.report?.report).toContain("面试评估报告");
+    // 结构化报告（单一事实源）：markdown 为其渲染产物
+    expect(detail.report?.structured?.result.summary).toBe("mock 总评");
+    expect(detail.report?.structured?.result.questions).toHaveLength(2);
+    expect(detail.report?.structured?.sessionId).toBe(state.sessionId);
+    expect(detail.report?.structured?.recommendations).toEqual([]);
     expect(detail.session.overallGrade).toMatch(/^[ABCD]$/);
     expect(detail.messages.filter((m) => m.role === "candidate").length).toBe(rounds);
   }, 30_000);
@@ -172,6 +177,7 @@ run("interview 状态机（集成）", () => {
     await pending;
     const done = await caller.interview.get({ sessionId: start.state.sessionId });
     expect(done.report?.report).toContain("面试评估报告");
+    expect(done.report?.structured?.result.questions).toHaveLength(1);
     expect(done.session.overallGrade).toMatch(/^[ABCD]$/);
     expect(done.reportProgress.stage).toBe("done");
   }, 30_000);
@@ -288,7 +294,15 @@ run("interview 状态机（集成）", () => {
       expect(detail.report).not.toBeNull();
       expect(detail.report!.weakPoints).toContain(KP);
       expect(detail.session.overallGrade).toBe("C");
-      // 报告正文：专项训练建议 + 薄弱点推荐链接（学习章节与练习题）
+      // 结构化推荐（单一事实源）：薄弱点 → 学习章节与练习题链接
+      const rec = detail.report!.structured?.recommendations.find((r) => r.name === KP);
+      expect(rec?.learn).toEqual([
+        { id: "learn:zz-interview", title: "测试-薄弱点对应学习章节", url: "/learn/zz-interview" },
+      ]);
+      expect(rec?.problems).toEqual([
+        { id: "lc:zz-interview", title: "#424242 测试-薄弱点对应练习题", url: "/problems/zz-interview" },
+      ]);
+      // Markdown 渲染产物与结构化数据一致（导出/旧端兼容）
       const text = detail.report!.report;
       expect(text).toContain("### 薄弱点 → 学习与练习");
       expect(text).toContain(`**${KP}**`);

@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router";
 import { CATEGORY_LABELS, type Category } from "@ailab/contracts";
 import { queryClient, trpc, type InterviewGetData } from "../lib/trpc";
 import { Button, Card, ErrorBox, Loading, SegmentedControl } from "../components/ui";
+import { StructuredReportBody } from "../components/StructuredReportBody";
 import { ReportBody } from "../components/ReportBody";
 import { MessageBubble } from "../components/MessageBubble";
 import { durationMinutes, formatDateTime, gradeTextColor } from "../lib/format";
@@ -204,13 +205,18 @@ function ReportView({ sessionId }: { sessionId: number }) {
         />
 
         {tab === "report" ? (
-          report?.report ? (
-            <ReportBody
-              text={report.report}
-              questionIds={session.questionIds}
-              questions={questions}
-              messages={messages}
-            />
+          report ? (
+            // 结构化数据直渲（新报告）；存量报告（structured 为 NULL）回落 markdown 解析
+            report.structured ? (
+              <StructuredReportBody report={report.structured} messages={messages} />
+            ) : (
+              <ReportBody
+                text={report.report}
+                questionIds={session.questionIds}
+                questions={questions}
+                messages={messages}
+              />
+            )
           ) : (
             <ReportPendingCard sessionId={sessionId} progress={get.data.reportProgress} />
           )

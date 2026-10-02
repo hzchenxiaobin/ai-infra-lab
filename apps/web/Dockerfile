@@ -11,7 +11,8 @@ COPY packages/contracts/package.json packages/contracts/
 COPY packages/judge-core/package.json packages/judge-core/
 COPY apps/server/package.json apps/server/
 COPY apps/web/package.json apps/web/
-RUN pnpm install --filter @ailab/web...
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+  pnpm install --filter @ailab/web... --frozen-lockfile
 
 # 源码层：server/judge-core 仅为 tsc 的 AppRouter 类型链所需（产物不打包后端代码）
 COPY packages/contracts packages/contracts

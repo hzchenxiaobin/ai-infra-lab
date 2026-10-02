@@ -14,10 +14,6 @@ export function candidateMsg(text: string): string {
   return `${GREEN}${BOLD}[我]${RESET} ${GREEN}${text}${RESET}`;
 }
 
-export function systemMsg(text: string): string {
-  return `${GRAY}${text}${RESET}`;
-}
-
 export function progressLine(current: number, total: number, followUp: number): string {
   return `${GRAY}── 第 ${current + 1}/${total} 题 · 追问 ${followUp}/${4} ──${RESET}`;
 }

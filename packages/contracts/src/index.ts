@@ -256,18 +256,22 @@ export interface WeakPointRecommendation {
   problems: RecommendLink[];
 }
 
-export function renderReportMarkdown(opts: {
+/** 结构化报告（interview_reports.structured 列）：报告数据的单一事实源，
+ *  Markdown 由 renderReportMarkdown 从本结构派生，仅为导出/旧端展示格式。
+ *  keyPointsByQuestion 以 questionId 字符串为键（JSON 列无 Map）。 */
+export interface StructuredReport {
   sessionId: number;
   categories: Category[];
   questionCount: number;
   durationMinutes: number | null;
   result: EvaluationResult;
-  keyPointsByQuestion: Map<number, string>;
-  /** 薄弱点推荐（可选）：有内容命中时渲染为带链接的专项训练计划 */
-  recommendations?: WeakPointRecommendation[];
-}): string {
-  const { sessionId, categories, questionCount, durationMinutes, result, keyPointsByQuestion } = opts;
-  const recommendations = opts.recommendations?.filter((r) => r.learn.length > 0 || r.problems.length > 0) ?? [];
+  keyPointsByQuestion: Record<string, string>;
+  recommendations: WeakPointRecommendation[];
+}
+
+export function renderReportMarkdown(report: StructuredReport): string {
+  const { sessionId, categories, questionCount, durationMinutes, result, keyPointsByQuestion } = report;
+  const recommendations = report.recommendations?.filter((r) => r.learn.length > 0 || r.problems.length > 0) ?? [];
   const catLabels = categories.map((c) => CATEGORY_LABELS[c]).join("/");
   const duration = durationMinutes != null ? ` · ${durationMinutes} 分钟` : "";
   const lines: string[] = [];
@@ -290,7 +294,7 @@ export function renderReportMarkdown(opts: {
       lines.push("- 参考答案：");
       for (const a of q.answers) lines.push(`【答】${a}`);
     }
-    const kp = keyPointsByQuestion.get(q.questionId);
+    const kp = keyPointsByQuestion[String(q.questionId)];
     if (kp) lines.push(`- 要点对照：${kp}`);
   }
   if (result.weakDimensions.length > 0 || recommendations.length > 0) {

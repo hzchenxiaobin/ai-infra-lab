@@ -15,7 +15,7 @@ import {
   type Category,
   type ContentImportInput,
 } from "@ailab/contracts";
-import { env } from "@ailab/server/env";
+import { env } from "./env.js";
 import { getCaller, runSession } from "./session.js";
 import { registerBankCommands } from "./bank.js";
 import { banner, dimLine, errorLine, successLine, tableRow } from "./ui.js";
@@ -73,7 +73,7 @@ program
     console.log(dimLine(`正在创建面试（${scope ?? categories.join("+")}，${count} 题）…`));
 
     try {
-      const start = await caller.interview.start(
+      const start = await caller.interview.start.mutate(
         scope ? { categories: [], count, scope } : { categories, count },
       );
       console.log(successLine(`面试已创建：场次 #${start.state.sessionId}`));
@@ -108,7 +108,7 @@ program
   .description("列出历史面试场次")
   .action(async () => {
     const caller = await getCaller();
-    const sessions = await caller.interview.list();
+    const sessions = await caller.interview.list.query();
     if (sessions.length === 0) {
       console.log(dimLine("暂无面试记录"));
       process.exit(0);
@@ -136,7 +136,7 @@ program
   .action(async (sessionId: string) => {
     const caller = await getCaller();
     try {
-      const detail = await caller.interview.get({ sessionId: parseInt(sessionId, 10) });
+      const detail = await caller.interview.get.query({ sessionId: parseInt(sessionId, 10) });
       if (detail.session.status !== "finished") {
         console.log(errorLine("该面试尚未结束，使用 resume 继续面试。"));
         process.exit(1);
@@ -160,14 +160,14 @@ program
   .description("题库统计 + 面试统计")
   .action(async () => {
     const caller = await getCaller();
-    const qStats = await caller.question.stats();
+    const qStats = await caller.question.stats.query();
     console.log(banner("题库统计"));
     for (const c of CATEGORIES) {
       console.log(`  ${CATEGORY_LABELS[c].padEnd(10)} ${qStats.byCategory[c]} 题`);
     }
     console.log(`  ${"合计".padEnd(10)} ${qStats.total} 题`);
 
-    const iStats = await caller.interview.stats();
+    const iStats = await caller.interview.stats.query();
     console.log(banner("面试统计"));
     console.log(`  已完成场次：${iStats.totalFinished}`);
     if (iStats.categoryAverages.length > 0) {
@@ -186,7 +186,7 @@ program
   .description("列出可选考察范围（按周/天/专题）")
   .action(async () => {
     const caller = await getCaller();
-    const scopes = await caller.question.scopes();
+    const scopes = await caller.question.scopes.query();
     if (scopes.weeks.length > 0) {
       console.log(dimLine("按周（daily）："));
       for (const w of scopes.weeks) {
@@ -215,7 +215,7 @@ program
   .description("播种内置题库")
   .action(async () => {
     const caller = await getCaller();
-    const result = await caller.question.seed();
+    const result = await caller.question.seed.mutate();
     console.log(successLine(`播种完成：新增 ${result.seeded} 题，跳过 ${result.skipped} 题`));
     process.exit(0);
   });
@@ -230,7 +230,7 @@ program
   .option("-p, --page <n>", "页码", "1")
   .action(async (opts) => {
     const caller = await getCaller();
-    const { items, total } = await caller.question.list({
+    const { items, total } = await caller.question.list.query({
       category: opts.category,
       search: opts.search,
       page: parseInt(opts.page, 10),
@@ -311,7 +311,7 @@ program
     console.log(dimLine(`导入 ${input.contents.length} 条内容元数据 / ${input.problems.length} 条题目元数据 / ${input.lists.length} 个题单…`));
     try {
       const caller = await getCaller();
-      const stats = await caller.content.import(input);
+      const stats = await caller.content.import.mutate(input);
       console.log(
         successLine(
           `同步完成：新增 ${stats.inserted} · 更新 ${stats.updated} · 未变 ${stats.unchanged} · 标 stale ${stats.stale} · 题目 upsert ${stats.problemsUpserted} · 题单 upsert ${stats.listsUpserted}`,
@@ -333,7 +333,7 @@ program
   .option("-p, --page <n>", "页码", "1")
   .action(async (opts) => {
     const caller = await getCaller();
-    const { items, total, page } = await caller.auth.userList({
+    const { items, total, page } = await caller.auth.userList.query({
       search: opts.search,
       page: parseInt(opts.page, 10),
       pageSize: 20,
@@ -360,7 +360,7 @@ program
   });
 
 async function printBanTarget(caller: Awaited<ReturnType<typeof getCaller>>, email: string) {
-  const user = await caller.auth.userByEmail({ email });
+  const user = await caller.auth.userByEmail.query({ email });
   console.log(dimLine(`目标：#${user.id} ${user.email}（${user.name}，tier=${user.tier}，当前${user.bannedAt ? "已封禁" : "正常"}）`));
   return user;
 }
@@ -377,7 +377,7 @@ program
         console.log(errorLine("封禁后该用户登录与既有会话立即失效；确认请加 --yes"));
         process.exit(1);
       }
-      await caller.auth.userSetBanned({ email, banned: true });
+      await caller.auth.userSetBanned.mutate({ email, banned: true });
       console.log(successLine(`已封禁：${email}`));
       process.exit(0);
     } catch (err) {
@@ -392,7 +392,7 @@ program
   .action(async (email: string) => {
     const caller = await getCaller();
     try {
-      await caller.auth.userSetBanned({ email, banned: false });
+      await caller.auth.userSetBanned.mutate({ email, banned: false });
       console.log(successLine(`已解封：${email}`));
       process.exit(0);
     } catch (err) {
@@ -408,7 +408,7 @@ program
   .action(async (userId: string, email: string, opts: { password?: string }) => {
     const caller = await getCaller();
     try {
-      const result = await caller.auth.userClaim({
+      const result = await caller.auth.userClaim.mutate({
         userId: parseInt(userId, 10),
         email,
         password: opts.password,
@@ -435,7 +435,7 @@ program
   .action(async (email: string) => {
     const caller = await getCaller();
     try {
-      const data = await caller.quota.adminGet({ email });
+      const data = await caller.quota.adminGet.query({ email });
       console.log(banner(`${email} · 周期 ${data.current[0]?.period ?? "—"}`));
       for (const u of data.current) {
         const quota = u.quota == null ? "不限" : String(u.quota);
@@ -471,7 +471,7 @@ program
     }
     const caller = await getCaller();
     try {
-      const result = await caller.quota.adminSet({
+      const result = await caller.quota.adminSet.mutate({
         email,
         kind: kind as (typeof QUOTA_KINDS)[number],
         quota,
@@ -493,7 +493,7 @@ program
   .description("mysqldump 备份到 deploy/backups/")
   .option("-o, --out <dir>", "输出目录（默认 deploy/backups）")
   .action(async (opts: { out?: string }) => {
-    const url = new URL(env.DATABASE_URL);
+    const url = new URL(env.databaseUrl);
     const host = url.hostname;
     const port = url.port || "3306";
     const user = decodeURIComponent(url.username);
@@ -545,8 +545,8 @@ program
 async function interactivePick(
   caller: Awaited<ReturnType<typeof getCaller>>,
 ): Promise<{ scope?: string; categories: Category[]; count: number }> {
-  const qStats = await caller.question.stats();
-  const scopes = await caller.question.scopes();
+  const qStats = await caller.question.stats.query();
+  const scopes = await caller.question.scopes.query();
 
   console.log(banner("创建面试"));
   console.log("题库：");

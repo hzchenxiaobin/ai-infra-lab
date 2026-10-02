@@ -18,6 +18,28 @@ export async function getUserIdByEmail(email: string): Promise<number | null> {
   return rows[0]?.id ?? null;
 }
 
+// ---------------------------------------------------------------------------
+// CLI 服务身份（HTTP 头）：替代原进程内 createCaller 的 --user 模型。
+// x-ailab-cli-token 命中 env.CLI_TOKEN 时，按 x-ailab-cli-user 邮箱解析身份；
+// 管理命令仍需该邮箱在 ADMIN_EMAILS（adminProcedure 二次校验）。
+// ---------------------------------------------------------------------------
+
+function timingSafeEqualStr(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
+
+/** 解析 CLI 服务身份；无效/未启用/用户不存在返回 null（回落 cookie 认证路径） */
+export async function cliUserIdFromHeaders(
+  header: (name: string) => string | undefined,
+): Promise<number | null> {
+  const token = header("x-ailab-cli-token");
+  if (!env.CLI_TOKEN || !token || !timingSafeEqualStr(token, env.CLI_TOKEN)) return null;
+  const email = header("x-ailab-cli-user")?.trim().toLowerCase();
+  if (!email) return null;
+  return getUserIdByEmail(email);
+}
+
 /** 生成可读随机密码（无歧义字符集，12 位；user:claim 未显式传密码时用） */
 export function generatePassword(): string {
   const alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";

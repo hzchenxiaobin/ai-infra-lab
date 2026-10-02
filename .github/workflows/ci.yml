@@ -1,4 +1,6 @@
 # CI（dev/backlog P1：lint 必跑、sync 产物校验、测试）。
+# 路径分流：内容提交（packages/content、docs、*.md）不触发本 workflow——
+# 内容健康由 docs-build.yml 的分区页数校验覆盖；本 workflow 只跑代码链路。
 # 分区构建（learn/gpu/algo 4 批）见 docs-build.yml（workflow_dispatch + 周调度，
 # algo 单批堆上限 10GB，与常规检查分流）。
 name: ci
@@ -6,7 +8,33 @@ name: ci
 on:
   push:
     branches: [main]
+    paths:
+      - "apps/server/**"
+      - "apps/web/**"
+      - "apps/judge-worker/**"
+      - "apps/cli/**"
+      - "apps/docs/**"
+      - "packages/contracts/**"
+      - "packages/judge-core/**"
+      - "packages/content-kit/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/ci.yml"
   pull_request:
+    paths:
+      - "apps/server/**"
+      - "apps/web/**"
+      - "apps/judge-worker/**"
+      - "apps/cli/**"
+      - "apps/docs/**"
+      - "packages/contracts/**"
+      - "packages/judge-core/**"
+      - "packages/content-kit/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/ci.yml"
 
 jobs:
   check:
@@ -14,14 +42,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: "pnpm"
 
       - name: pnpm install
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: build（tsc/vite，除 docs——三分区构建见 docs-build.yml）
         run: pnpm build
@@ -61,14 +90,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: "pnpm"
 
       - name: pnpm install
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 建测试库并迁移（server 与 judge-worker 各自独立库）
         run: |
@@ -83,6 +113,4 @@ jobs:
         run: pnpm --filter content-kit sync
 
       - name: 测试（judge-core / server / judge-worker）
-        # root test 脚本先构建 judge-core dist（exports 指向 dist，server/worker
-        # 测试的运行时解析依赖它），再 pnpm -r test
         run: pnpm test

@@ -16,13 +16,11 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/judge-core/package.json packages/judge-core/
 COPY apps/judge-worker/package.json apps/judge-worker/
-RUN corepack enable && pnpm install --filter @ailab/judge-worker...
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+  corepack enable && pnpm install --filter @ailab/judge-worker... --frozen-lockfile
 
 COPY packages/judge-core packages/judge-core
 COPY apps/judge-worker apps/judge-worker
-
-# judge-core 产 dist（运行时 import 解析到 dist/index.js；worker 经 tsx 启动）
-RUN pnpm --filter @ailab/judge-core build
 
 WORKDIR /app/apps/judge-worker
 # 直接指向本地 .bin：容器 CMD 不经 pnpm run，PATH 无 node_modules/.bin

@@ -13,7 +13,7 @@ import {
   type BankExtractItem,
   type BankImportItem,
 } from "@ailab/contracts";
-import { env } from "@ailab/server/env";
+import { env } from "./env.js";
 import type { Command } from "commander";
 import { getCaller } from "./session.js";
 import { dimLine, errorLine, successLine } from "./ui.js";
@@ -126,15 +126,15 @@ async function chatCompletion(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(`${env.LLM_BASE_URL}/chat/completions`, {
+    const res = await fetch(`${env.llmBaseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${env.LLM_API_KEY}`,
-        ...(env.LLM_VKEY ? { "x-api-vkey": env.LLM_VKEY } : {}),
+        Authorization: `Bearer ${env.llmApiKey}`,
+        ...(env.llmVkey ? { "x-api-vkey": env.llmVkey } : {}),
       },
       body: JSON.stringify({
-        model: env.LLM_MODEL,
+        model: env.llmModel,
         messages,
         max_tokens: MAX_TOKENS,
         // 不传 temperature：reasoning 模型锁定为 1，显式传会 400
@@ -220,7 +220,7 @@ async function extractFromFile(file: ScopedFile): Promise<BankExtractItem[]> {
 }
 
 async function runGenerate(outDir: string): Promise<void> {
-  if (!env.LLM_API_KEY) throw new Error("未配置 LLM_API_KEY，无法生成题库");
+  if (!env.llmApiKey) throw new Error("未配置 LLM_API_KEY，无法生成题库");
   const checkpointFile = path.join(outDir, ".bank-checkpoint.jsonl");
   const outputFile = path.join(outDir, BANK_FILENAME);
   await mkdir(outDir, { recursive: true });
@@ -280,7 +280,7 @@ async function runGenerate(outDir: string): Promise<void> {
   }
   await writeFile(
     outputFile,
-    `${JSON.stringify({ repo: REPO, commitSha, generatedAt: new Date().toISOString(), model: env.LLM_MODEL, questions: all }, null, 2)}\n`,
+    `${JSON.stringify({ repo: REPO, commitSha, generatedAt: new Date().toISOString(), model: env.llmModel, questions: all }, null, 2)}\n`,
   );
   console.log(`\n完成：${all.length} 题（失败跳过 ${failed} 个文件）→ ${outputFile}`);
   console.log("下一步：cli bank:import");
@@ -305,7 +305,7 @@ async function runImport(file: string): Promise<void> {
 
   const caller = await getCaller();
   console.log(dimLine(`题库文件 ${items.length} 题，导入中…`));
-  const stats = await caller.question.bankImport({
+  const stats = await caller.question.bankImport.mutate({
     items,
     bankSourceKeyPrefix: `bank:${bank.repo}:`,
     replaceSourceKeyPrefix: `${bank.repo}:`,

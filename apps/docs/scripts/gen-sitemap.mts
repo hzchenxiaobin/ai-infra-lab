@@ -9,7 +9,7 @@
 // https://ailab.example.com，可被搜索引擎识别但请务必替换）。
 //
 // 运行：node --experimental-strip-types scripts/gen-sitemap.mts（build:* 后）
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,7 +61,9 @@ for (const t of targets) {
   console.log(`sitemap: ${t.dir}/sitemap.xml（${t.urls.length} url）`);
 }
 
-// robots.txt：三分区 sitemap 索引 + API 路径禁抓（写 learn 分区根）
+// robots.txt：三分区 sitemap 索引 + API 路径禁抓（写 learn 分区根；
+// 分区独立构建时 learn/dist 可能尚未生成，先建目录兜底）
+await mkdir(path.join(targets[0].dir), { recursive: true });
 await writeFile(
   path.join(targets[0].dir, "robots.txt"),
   `User-agent: *

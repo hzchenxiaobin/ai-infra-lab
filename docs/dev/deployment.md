@@ -58,15 +58,17 @@ deploy/
 docker compose -f deploy/docker-compose.yml build
 
 # docs 镜像构建要点（大规模构建纪律，见 content-site §3）：
-#   构建参数透传分批与堆上限
+#   三分区各自独立 stage（任一分区内容变更只重建该分区）
 docker compose build docs \
   --build-arg BATCH_TOTAL=4
-# Dockerfile 内：NODE_OPTIONS=--max-old-space-size=6144，
-# 4 批构建（multi-stage 或 CI 预构建产物 COPY 进 nginx 镜像）
+# build-algo.sh 内：NODE_OPTIONS=--max-old-space-size=10240，4 批构建
 ```
 
 - 沿用 interview Dockerfile 的分层模式：先 COPY lockfile + 各包 package.json
-  → `pnpm install --frozen-lockfile` → 再 COPY 源码，保证依赖层缓存。
+  → `pnpm install --frozen-lockfile`（BuildKit cache mount 共享 pnpm store）
+  → 再 COPY 源码，保证依赖层缓存。
+- server/judge-worker 无独立构建产物：tsx 直跑源码（dev/prod 同构），
+  镜像内 build 仅做 tsc 类型检查。
 - pnpm 版本经 corepack 固定（interview 现状 `pnpm@11.18.0`）。
 - algo 评测镜像**单独预构建**并留在宿主（`docker build -t ailab/judge-algo deploy/images/algo`），
   不在 compose 服务链里，也不在评测路径上现场构建。

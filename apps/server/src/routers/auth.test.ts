@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { sql, eq } from "drizzle-orm";
 import {
   checkVerificationCode,
+  cliUserIdFromHeaders,
   generateVerificationCode,
   hashPassword,
   hashVerificationCode,
@@ -158,6 +159,38 @@ async function dbAvailable(): Promise<boolean> {
 
 const available = await dbAvailable();
 const run = available ? describe : describe.skip;
+
+run("CLI 服务身份（cliUserIdFromHeaders，集成）", () => {
+  const header =
+    (h: Record<string, string>) =>
+    (name: string): string | undefined =>
+      h[name.toLowerCase()];
+
+  it("token 命中且用户存在 → userId；错误 token / 未知邮箱 / 缺头 → null", async () => {
+    const email = `cli-identity-${Date.now()}@ailab.test`;
+    const inserted = await db.insert(users).values({ email, name: "cli-identity" }).$returningId();
+    const userId = inserted[0].id;
+
+    await expect(
+      cliUserIdFromHeaders(header({ "x-ailab-cli-token": "test-cli-token", "x-ailab-cli-user": email })),
+    ).resolves.toBe(userId);
+    // 邮箱大小写与首尾空白归一
+    await expect(
+      cliUserIdFromHeaders(
+        header({ "x-ailab-cli-token": "test-cli-token", "x-ailab-cli-user": `  ${email.toUpperCase()} ` }),
+      ),
+    ).resolves.toBe(userId);
+    await expect(
+      cliUserIdFromHeaders(header({ "x-ailab-cli-token": "wrong-token", "x-ailab-cli-user": email })),
+    ).resolves.toBeNull();
+    await expect(
+      cliUserIdFromHeaders(header({ "x-ailab-cli-token": "test-cli-token", "x-ailab-cli-user": "nobody@ailab.test" })),
+    ).resolves.toBeNull();
+    await expect(cliUserIdFromHeaders(header({ "x-ailab-cli-token": "test-cli-token" }))).resolves.toBeNull();
+
+    await db.delete(users).where(eq(users.id, userId));
+  });
+});
 
 run("auth register/login 流程（集成）", () => {
   const email = `test-${Date.now()}@example.com`;

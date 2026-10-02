@@ -80,8 +80,7 @@ pnpm --filter @ailab/server db:migrate
 
 # 4. 注册账号：起 server 后在 web（:5173）注册（SMTP 未配置时验证码打印在
 #    server 日志）；把注册邮箱写进 .env 的 ADMIN_EMAILS 即获得管理身份
-pnpm --filter @ailab/judge-core build   # judge-core exports 指向 dist（约 1s，跑一次即可）
-pnpm --filter @ailab/server dev         # Hono API，默认 :3001
+pnpm --filter @ailab/server dev         # Hono API，默认 :3001（共享包均为 src 直链，无需预构建）
 pnpm --filter @ailab/web dev            # 门户，默认 :5173（/trpc 代理到 :3001）
 pnpm --filter @ailab/docs dev           # VitePress 内容站，默认 :4173
 

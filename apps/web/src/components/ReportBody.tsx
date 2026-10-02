@@ -2,11 +2,14 @@ import { CATEGORY_LABELS, type Category, type InterviewMessage, type Question } 
 import { Card, Chip, GradeBadge } from "./ui";
 import { Markdown } from "./Markdown";
 import { MessageBubble } from "./MessageBubble";
+import { AnswerPairs, SectionHeading } from "./report-shared";
+import { stripChatPrefix } from "../lib/report";
 
 // ---------------------------------------------------------------------------
-// 评估报告正文：把 renderReportMarkdown 生成的整段 markdown 按 `## ` 拆成
-// 独立模块卡片；题目卡片内再拆出维度评分 chips 和「诊断/改进建议/参考答案/
-// 要点对照」带标签的子块，避免整页文字堆叠。
+// 存量报告（structured 列为 NULL 的历史数据）的 markdown 解析渲染：
+// 把 renderReportMarkdown 生成的整段 markdown 按 `## ` 拆成独立模块卡片。
+// 新报告走 StructuredReportBody（结构化数据直渲）；本文件仅为兼容保留，
+// 待存量报告通过「重新生成报告」刷新后可整体删除。
 // ---------------------------------------------------------------------------
 
 interface Section {
@@ -40,13 +43,6 @@ type QBlock =
 
 const KNOWN_LABELS = ["诊断", "改进建议", "参考答案", "要点对照"];
 
-/** 去掉面试官消息里的寒暄/换题前缀，只保留题目本身 */
-function stripChatPrefix(content: string): string {
-  return content
-    .replace(/^你好，我是今天的面试官[\s\S]*?我们开始第一题：\s*/, "")
-    .replace(/^好的，进入第\s*\d+\s*题：\s*/, "");
-}
-
 /** 新格式参考答案按行首「【答】」拆成每问一条；没有标记（旧报告）返回 null */
 function splitAnswers(text: string): string[] | null {
   const answers: string[] = [];
@@ -74,31 +70,7 @@ function ReferenceAnswer({
 }) {
   const answers = splitAnswers(text);
   if (answers) {
-    const n = Math.max(askedQuestions.length, answers.length);
-    return (
-      <div className="mt-2 space-y-3">
-        {Array.from({ length: n }, (_, j) => (
-          <div key={j}>
-            {j < askedQuestions.length && (
-              <>
-                <div className="mb-1 text-xs text-faint">
-                  {j === 0 ? "主问题" : `追问 ${j}`}
-                </div>
-                <MessageBubble role="interviewer" content={askedQuestions[j]} flat />
-              </>
-            )}
-            {j < answers.length && (
-              <div className="ml-4 mt-1.5 border-l-2 border-accent-200 pl-3">
-                <Markdown
-                  text={answers[j]}
-                  className="space-y-2 text-sm leading-relaxed text-ink"
-                />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
+    return <AnswerPairs askedQuestions={askedQuestions} answers={answers} />;
   }
   // 旧报告：参考答案为整段文本，先列全部问题再给答案
   return (
@@ -177,15 +149,6 @@ function parseQuestionBody(body: string): QBlock[] {
     }
   }
   return blocks;
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-3 flex items-center gap-2">
-      <span className="h-4 w-1 rounded-full bg-accent-600" />
-      <h2 className="text-base font-semibold tracking-tight">{children}</h2>
-    </div>
-  );
 }
 
 /** 「第 N 题：标题（category）」→ 题号 + 标题 + 方向标签 */

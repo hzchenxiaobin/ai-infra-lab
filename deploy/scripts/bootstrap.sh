@@ -46,7 +46,9 @@ for i in $(seq 1 60); do
 done
 
 # CLI 管理命令身份（2026-09-11 收紧后显式化）：取 ADMIN_EMAILS 第一个邮箱；
-# 对应用户需已在 web 注册（否则跳过 content:sync，打印补跑指引）
+# 对应用户需已在 web 注册（否则跳过 content:sync，打印补跑指引）。
+# CLI 走 HTTP tRPC（宿主侧执行，server 端口已绑定回环），服务身份经
+# .env 的 CLI_TOKEN 传递——server 镜像不再打包 cli
 admin_email=$(grep -E '^ADMIN_EMAILS=' .env | tail -1 | cut -d= -f2- | cut -d, -f1 | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//" | xargs)
 if [ -z "$admin_email" ]; then
   echo "警告：.env 未配置 ADMIN_EMAILS，跳过 content:sync（配置后在 web 注册对应邮箱再补跑）" >&2
@@ -54,11 +56,10 @@ else
   admin_exists=$($COMPOSE -f "$COMPOSE_FILE" exec -T mysql sh -c \
     "exec mysql -uailab -p\"\$MYSQL_PASSWORD\" -N -s ailab -e \"SELECT COUNT(*) FROM users WHERE email='$admin_email'\"" 2>/dev/null || echo 0)
   if [ "$admin_exists" = "1" ]; then
-    $COMPOSE -f "$COMPOSE_FILE" exec -T -e AILAB_USER="$admin_email" server \
-      sh -c "cd /app && node apps/cli/bin/ailab.mjs content:sync"
+    AILAB_SERVER_URL=http://127.0.0.1:3001 AILAB_USER="$admin_email" node apps/cli/bin/ailab.mjs content:sync
   else
     echo "提示：$admin_email 尚未注册。先在 web 完成注册（SMTP 未配置时验证码见 server 日志），再补跑："
-    echo "  $COMPOSE -f $COMPOSE_FILE exec -T -e AILAB_USER=$admin_email server sh -c 'cd /app && node apps/cli/bin/ailab.mjs content:sync'"
+    echo "  AILAB_SERVER_URL=http://127.0.0.1:3001 AILAB_USER=$admin_email node apps/cli/bin/ailab.mjs content:sync"
   fi
 fi
 

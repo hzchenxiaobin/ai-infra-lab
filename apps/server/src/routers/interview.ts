@@ -14,6 +14,7 @@ import {
   type InterviewMessage,
   type InterviewState,
   type Question,
+  type StructuredReport,
   type WeakPointRecommendation,
   renderReportMarkdown,
 } from "@ailab/contracts";
@@ -614,17 +615,23 @@ async function finishSession(sessionId: number, userId: number) {
     .where(inArray(questions.id, session.questionIds));
   const questionMeta = new Map(metaRows.map((r) => [r.id, r]));
   const weakPoints = deriveWeakPoints(result, questionMeta);
-  const recommendations = await buildRecommendations(weakPoints.slice(0, RECOMMEND_MAX_POINTS));
+  const recommendations = (
+    await buildRecommendations(weakPoints.slice(0, RECOMMEND_MAX_POINTS))
+  ).filter((r) => r.learn.length > 0 || r.problems.length > 0);
 
-  const report = renderReportMarkdown({
+  // 结构化报告（单一事实源）先落库，Markdown 仅为其渲染产物（导出/旧端兼容）
+  const structured: StructuredReport = {
     sessionId,
     categories: session.categories as Category[],
     questionCount: session.questionIds.length,
     durationMinutes,
     result,
-    keyPointsByQuestion: new Map(groups.map((g) => [g.question.id, g.question.keyPoints])),
+    keyPointsByQuestion: Object.fromEntries(
+      groups.filter((g) => g.question.keyPoints).map((g) => [g.question.id, g.question.keyPoints]),
+    ),
     recommendations,
-  });
+  };
+  const report = renderReportMarkdown(structured);
 
   await db.transaction(async (tx) => {
     // onDuplicateKeyUpdate：并发双 finish 时幂等（sessionId 唯一键）
@@ -636,6 +643,7 @@ async function finishSession(sessionId: number, userId: number) {
         overallGrade: result.overallGrade,
         evaluatedBy: result.evaluatedBy,
         report,
+        structured,
         weakPoints,
       })
       .onDuplicateKeyUpdate({
@@ -643,6 +651,7 @@ async function finishSession(sessionId: number, userId: number) {
           overallGrade: result.overallGrade,
           evaluatedBy: result.evaluatedBy,
           report,
+          structured,
           weakPoints,
         },
       });

@@ -40,10 +40,11 @@ $COMPOSE -f "$COMPOSE_FILE" exec -T mysql \
   sh -c "exec mysqldump -uroot -p\"${DB_ROOT_PASS}\" --single-transaction --routines ${DB_NAME}" \
   | gzip > "$dest"
 
-# 备份自检：解压后必须包含建表语句且非空
+# 备份自检：过小 / gzip 损坏 / 缺建表语句即判失败（曾产出 20 字节空备份且 cron 未感知）
 size=$(stat -c%s "$dest")
-if [ "$size" -lt 10240 ]; then
-  echo "[backup] 警告：备份文件仅 ${size} 字节，疑似异常，请人工核查" >&2
+if [ "$size" -lt 10240 ] || ! gzip -t "$dest" 2>/dev/null || ! zgrep -q "CREATE TABLE" "$dest"; then
+  echo "[backup] 错误：备份文件 ${size} 字节，疑似异常，请人工核查（现场已保留：${dest}）" >&2
+  exit 1
 fi
 
 # 保留策略：非周日的保留 14 天；周日的保留 8 周（周日 = $(date +%u) == 7）

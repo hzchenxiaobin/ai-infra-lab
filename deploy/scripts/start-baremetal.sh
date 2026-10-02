@@ -17,9 +17,11 @@ if ! mysqladmin ping --silent 2>/dev/null; then
 fi
 mysqladmin ping --silent || { echo "mysqld 启动失败，看 /var/log/mysqld-safe.log" >&2; exit 1; }
 
-# 2. server（pm2 守护，进程清单经 pm2 save 持久化）
+# 2. server（pm2 守护，进程清单经 pm2 save 持久化；tsx 直跑源码，与 Docker
+#    形态一致，无独立构建产物。注：不用 .bin/tsx——那是 shell 包装，pm2 默认
+#    node 解释器会报语法错，直接指向 cli.mjs）
 if ! pm2 pid ailab-server >/dev/null 2>&1 || ! kill -0 "$(pm2 pid ailab-server)" 2>/dev/null; then
-  pm2 resurrect 2>/dev/null || pm2 start "$REPO/apps/server/dist/index.js" --name ailab-server --cwd "$REPO"
+  pm2 resurrect 2>/dev/null || pm2 start node --name ailab-server --cwd "$REPO/apps/server" -- node_modules/tsx/dist/cli.mjs src/index.ts
 fi
 
 # 3. nginx（web/docs 静态 + 反代）

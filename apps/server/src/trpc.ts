@@ -3,7 +3,7 @@ import type { Context as HonoContext } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import superjson from "superjson";
 import { eq } from "drizzle-orm";
-import { SESSION_COOKIE, SESSION_TTL_MS, signSession, verifySession } from "./auth.js";
+import { SESSION_COOKIE, SESSION_TTL_MS, cliUserIdFromHeaders, signSession, verifySession } from "./auth.js";
 import { db } from "./db/client.js";
 import { users } from "./db/schema.js";
 import { env } from "./env.js";
@@ -24,6 +24,10 @@ export async function createContext(_opts: unknown, c?: HonoContext): Promise<Co
     null;
 
   if (c) {
+    // CLI 服务身份（x-ailab-cli-token / x-ailab-cli-user，见 auth.ts）：
+    // 命中即按邮箱身份放行；未命中回落 cookie 认证
+    const cliUserId = await cliUserIdFromHeaders((n) => c.req.header(n));
+    if (cliUserId != null) return { userId: cliUserId, ip, hono: c };
     const token = getCookie(c, SESSION_COOKIE);
     if (token) {
       const session = verifySession(token);

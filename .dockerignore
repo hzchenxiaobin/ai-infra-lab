@@ -14,21 +14,33 @@
 .claude
 .vscode
 .idea
+.arts
 *.log
 logs/
+
+# 与镜像构建无关的目录（此前被打包进全部 4 个镜像的构建上下文）
+/apps/ios
+/docs
+/deploy
+UI-AUDIT.md
+UI-DESIGN.md
 
 # 秘密（只在部署机，不进任何镜像层）
 .env
 .env.*
 !.env.example
 
-# 依赖与构建产物（镜像内自建；按目录锚定）
+# 依赖与构建产物（镜像内自建；按目录锚定）。
+# packages 侧用 dist/**（只排内容不排目录本身）：下面的文件级豁免才能生效
 node_modules
 **/node_modules
 apps/*/dist
-packages/*/dist
+packages/*/dist/**
 *.tsbuildinfo
 coverage
+
+# 豁免：sitemap 的 URL 事实源需要进 docs 镜像（gen-sitemap.mts 读取）
+!packages/content-kit/dist/contents.json
 
 # docs 内容站：分批产物与 sync 源由镜像内 build:* 生成（仅 apps/docs 内匹配）
 apps/docs/learn/dist

@@ -10,7 +10,7 @@ import {
   uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
-import type { ProblemJudgeMeta, ProblemTestcase, ProgressStatus } from "@ailab/contracts";
+import type { ProblemJudgeMeta, ProblemTestcase, ProgressStatus, StructuredReport } from "@ailab/contracts";
 
 // ---------------------------------------------------------------------------
 // 账号域（dev/database.md §2.1）
@@ -229,6 +229,9 @@ export const interviewReports = mysqlTable(
     overallGrade: varchar("overall_grade", { length: 8 }),
     evaluatedBy: varchar("evaluated_by", { length: 8 }),
     report: text("report").notNull(),
+    /** 结构化报告（单一事实源；report 列为其 Markdown 渲染产物）。
+     *  存量报告为 NULL，前端回落 markdown 解析（LegacyReportBody） */
+    structured: json("structured").$type<StructuredReport>(),
     /** 薄弱知识点（C/D 维度题目的 knowledge_points 并集，缺标签时回落题目 tags） */
     weakPoints: json("weak_points").$type<string[]>().notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
