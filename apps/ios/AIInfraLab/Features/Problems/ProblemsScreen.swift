@@ -17,12 +17,12 @@ final class ProblemsModel {
     enum Partition: String, CaseIterable, Identifiable {
         case gpu, algo
         var id: String { rawValue }
-        var label: String { self == .gpu ? "GPU 题库" : "算法题库" }
+        var label: String { self == .gpu ? "GPU" : "算法" }
         var source: ProblemSource { self == .gpu ? .leetgpu : .leetcode }
         var description: String {
             self == .gpu
-                ? "选自 CUDA 手撕面经的高频 + 中频题（34 题），评测跳转 leetgpu.com"
-                : "LeetCode 全量题库（按题号 / 标签筛选），支持站内评测"
+                ? "选自 CUDA 手撕面经的高频 + 中频题（34 题），评测跳转 leetgpu.com。"
+                : "面试题库中的 LeetCode 高频题，按题号浏览，标记刷题进度。"
         }
     }
 
@@ -41,7 +41,7 @@ final class ProblemsModel {
 
     var items: [ProblemListItem] = []
     var total = 0
-    var acCount = 0
+    var acTotal = 0
     var facets = ProblemFacets(tags: [], knowledgePoints: [])
     var loading = false
     var errorMessage: String?
@@ -52,6 +52,7 @@ final class ProblemsModel {
 
     func handleProgressChanged() {
         Task { await load(resetPage: true) }
+        Task { await loadAcTotal() }
     }
 
     func switchPartition(_ target: Partition) {
@@ -66,6 +67,7 @@ final class ProblemsModel {
         page = 1
         Task { await load(resetPage: true) }
         Task { await loadFacets() }
+        Task { await loadAcTotal() }
     }
 
     func setDifficulty(_ value: Difficulty?) {
@@ -123,14 +125,15 @@ final class ProblemsModel {
                 knowledgePoint: knowledgePoint,
                 search: trimmed.isEmpty ? nil : trimmed,
                 progress: progressFilter.flatMap { raw in
-                    ["unseen", "seen", "ac"].contains(raw) ? raw : nil
+                    ["unseen", "seen", "ac", "skipped"].contains(raw) ? raw : nil
                 }.flatMap(ProgressStatus.init(rawValue:)),
+                solved: nil,
+                interview: true,
                 page: page,
                 pageSize: pageSize
             )
             items = result.items
             total = result.total
-            acCount = result.items.filter(\.ac).count
         } catch let error as TRPCError {
             errorMessage = error.message
         } catch {
@@ -138,9 +141,31 @@ final class ProblemsModel {
         }
     }
 
+    /// 全库已完全掌握数（solved 口径，与 web 统计行一致）
+    func loadAcTotal() async {
+        do {
+            let result = try await Services.shared.api.problemList(
+                difficulty: nil,
+                source: partition.source,
+                judgeType: nil,
+                tag: nil,
+                knowledgePoint: nil,
+                search: nil,
+                progress: nil,
+                solved: true,
+                interview: true,
+                page: 1,
+                pageSize: 1
+            )
+            acTotal = result.total
+        } catch {
+            // 统计失败不打断主列表
+        }
+    }
+
     func loadFacets() async {
         do {
-            facets = try await Services.shared.api.problemFacets(source: partition.source)
+            facets = try await Services.shared.api.problemFacets(source: partition.source, interview: true)
         } catch {
             // facets 失败不打断主列表
         }
@@ -160,11 +185,19 @@ final class ProblemsModel {
 }
 
 /// GPU 知识领域 A–L（对齐 contracts.GPU_DOMAINS）
-private let GPU_DOMAINS: [(letter: String, slug: String)] = [
-    ("A", "parallel-patterns"), ("B", "convolution-pooling"), ("C", "reduction-scan"),
-    ("D", "gemm"), ("E", "attention"), ("F", "normalization-embedding"),
-    ("G", "transformer-inference"), ("H", "quantization"), ("I", "sampling-sorting-search"),
-    ("J", "advanced-algorithms-math"), ("K", "losses-basic-ml"), ("L", "simulation-misc"),
+private let GPU_DOMAINS: [(letter: String, slug: String, name: String)] = [
+    ("A", "parallel-patterns", "基础并行模式（Element-wise / Memory-bound）"),
+    ("B", "convolution-pooling", "卷积与池化（Convolution & Pooling）"),
+    ("C", "reduction-scan", "归约与扫描（Reduction & Scan）"),
+    ("D", "gemm", "矩阵乘法与 GEMM（GEMM & Matmul）"),
+    ("E", "attention", "注意力机制（Attention）"),
+    ("F", "normalization-embedding", "归一化与嵌入（Normalization & Embedding）"),
+    ("G", "transformer-inference", "Transformer 组件与推理优化"),
+    ("H", "quantization", "量化与低精度（Quantization）"),
+    ("I", "sampling-sorting-search", "采样、排序与搜索"),
+    ("J", "advanced-algorithms-math", "高级算法与数学"),
+    ("K", "losses-basic-ml", "损失函数与基础 ML"),
+    ("L", "simulation-misc", "其他综合与模拟"),
 ]
 
 struct ProblemsScreen: View {
@@ -193,6 +226,7 @@ struct ProblemsScreen: View {
             .task {
                 await model.load(resetPage: true)
                 await model.loadFacets()
+                await model.loadAcTotal()
             }
             .onReceive(NotificationCenter.default.publisher(for: .progressChanged)) { _ in
                 model.handleProgressChanged()
@@ -200,6 +234,7 @@ struct ProblemsScreen: View {
             .refreshable {
                 await model.load(resetPage: true)
                 await model.loadFacets()
+                await model.loadAcTotal()
             }
             .navigationDestination(for: ProblemsRoute.self) { route in
                 switch route {
@@ -258,6 +293,7 @@ struct ProblemsScreen: View {
                     .init("没写过", "unseen"),
                     .init("需复习", "seen"),
                     .init("已完全掌握", "ac"),
+                    .init("不需要写", "skipped"),
                 ])
 
                 FilterMenu(title: "评测方式", selection: Binding(
@@ -287,27 +323,65 @@ struct ProblemsScreen: View {
                         .init("\($0.value)（\($0.count)）", $0.value)
                     })
                 }
+
+                HStack(spacing: 6) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.footnote)
+                        .foregroundStyle(Color.faint)
+                    TextField("搜索标题…", text: $model.searchText)
+                        .font(.footnote)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: model.searchText) { model.onSearchChange() }
+                        .submitLabel(.search)
+                        .onSubmit { model.page = 1; Task { await model.load(resetPage: true) } }
+                }
+                .padding(.horizontal, 10)
+                .frame(width: 170, height: 32)
+                .background(Color.surface, in: Capsule())
+                .overlay(Capsule().strokeBorder(Color.line))
             }
         }
     }
 
-    /// GPU 分区：A–L 知识领域快捷分组
+    /// GPU 分区：A–L 知识领域快捷分组（选中后显示领域名，与 web 一致）
     private var domainBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(GPU_DOMAINS, id: \.letter) { domain in
-                    let active = model.knowledgePoint == domain.slug
+        VStack(alignment: .leading, spacing: 8) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
                     Button {
-                        model.setKnowledgePoint(active ? nil : domain.slug)
+                        model.setKnowledgePoint(nil)
                     } label: {
-                        Text(domain.letter)
-                            .font(.mono(.footnote).weight(.medium))
-                            .frame(width: 34, height: 34)
-                            .background(active ? Color.accent600 : Color.surface, in: Circle())
-                            .overlay(Circle().strokeBorder(active ? Color.accent600 : Color.line))
-                            .foregroundStyle(active ? Color.ink : Color.muted)
+                        Text("全部")
+                            .font(.footnote)
+                            .frame(height: 34)
+                            .padding(.horizontal, 12)
+                            .background(model.knowledgePoint == nil ? Color.accent600 : Color.surface, in: Capsule())
+                            .overlay(Capsule().strokeBorder(model.knowledgePoint == nil ? Color.accent600 : Color.line))
+                            .foregroundStyle(model.knowledgePoint == nil ? Color.ink : Color.muted)
+                    }
+                    .buttonStyle(.plain)
+                    ForEach(GPU_DOMAINS, id: \.letter) { domain in
+                        let active = model.knowledgePoint == domain.slug
+                        Button {
+                            model.setKnowledgePoint(active ? nil : domain.slug)
+                        } label: {
+                            Text(domain.letter)
+                                .font(.mono(.footnote).weight(.medium))
+                                .frame(width: 34, height: 34)
+                                .background(active ? Color.accent600 : Color.surface, in: Circle())
+                                .overlay(Circle().strokeBorder(active ? Color.accent600 : Color.line))
+                                .foregroundStyle(active ? Color.ink : Color.muted)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
+            }
+            if let slug = model.knowledgePoint,
+               let domain = GPU_DOMAINS.first(where: { $0.slug == slug }) {
+                Text(domain.name)
+                    .font(.caption)
+                    .foregroundStyle(Color.muted)
             }
         }
     }
@@ -342,7 +416,7 @@ struct ProblemsScreen: View {
             } else if model.items.isEmpty {
                 EmptyBoxView(text: "没有符合条件的题目")
             } else {
-                Text("共 \(model.total) 题 · 当前页已完全掌握 \(model.acCount)")
+                Text("共 \(model.total) 题 · 已完全掌握 \(model.acTotal)")
                     .font(.caption)
                     .foregroundStyle(Color.muted)
             }
@@ -354,16 +428,12 @@ struct ProblemsScreen: View {
         if model.partition == .gpu, model.knowledgePoint == nil {
             let high = model.items.filter { $0.tier == "high" }
             let mid = model.items.filter { $0.tier == "mid" }
-            let others = model.items.filter { $0.tier == nil }
             VStack(alignment: .leading, spacing: 16) {
                 if !high.isEmpty {
                     problemGroup(title: "高频（面经几乎必考）", items: high)
                 }
                 if !mid.isEmpty {
                     problemGroup(title: "中频", items: mid)
-                }
-                if !others.isEmpty {
-                    problemGroup(title: "其他", items: others)
                 }
             }
         } else if !model.items.isEmpty {

@@ -1,0 +1,1 @@
+ALTER TABLE `user_progress` MODIFY COLUMN `status` enum('unseen','seen','mastered','ac','skipped') NOT NULL DEFAULT 'unseen';

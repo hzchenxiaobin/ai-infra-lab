@@ -448,7 +448,7 @@ export const JUDGE_TYPES = ["internal", "leetgpu-com", "none"] as const;
 export type JudgeType = (typeof JUDGE_TYPES)[number];
 export const judgeTypeSchema = z.enum(JUDGE_TYPES);
 
-export const PROGRESS_STATUSES = ["unseen", "seen", "mastered", "ac"] as const;
+export const PROGRESS_STATUSES = ["unseen", "seen", "mastered", "ac", "skipped"] as const;
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 export const progressStatusSchema = z.enum(PROGRESS_STATUSES);
 
@@ -537,8 +537,8 @@ export const problemFilterSchema = z.object({
   search: z.string().trim().min(1).max(200).optional(),
   /** true 只看已 AC；false 只看未 AC；不传为全部（统计口径用；三态筛选请用 progress） */
   solved: z.boolean().optional(),
-  /** 掌握状态三态筛选：unseen 没写过 / seen 需复习 / ac 已完全掌握（与 solved 互斥，优先用这个） */
-  progress: z.enum(["unseen", "seen", "ac"]).optional(),
+  /** 掌握状态四态筛选：unseen 没写过 / seen 需复习 / ac 已完全掌握 / skipped 不需要写（与 solved 互斥，优先用这个） */
+  progress: z.enum(["unseen", "seen", "ac", "skipped"]).optional(),
   /** true 时只返回面试题库（questions 表 category=leetcode 共享题，source 形如 "LeetCode N"）对应的题 */
   interview: z.boolean().optional(),
   page: z.number().int().min(1).default(1),
@@ -556,8 +556,8 @@ export type ProblemFacetsInput = z.infer<typeof problemFacetsSchema>;
 
 export const progressMarkSchema = z.object({
   contentId: z.string().min(1).max(128),
-  /** unseen = 回到「没写过」（服务端删除记录行而非落库）；seen = 写了但需复习；ac = 已完全掌握 */
-  status: z.enum(["unseen", "seen", "mastered", "ac"]),
+  /** unseen = 回到「没写过」（服务端删除记录行而非落库）；seen = 写了但需复习；ac = 已完全掌握；skipped = 不需要写（不计入刷题统计） */
+  status: z.enum(["unseen", "seen", "mastered", "ac", "skipped"]),
   /** 可选得分（0-100），如自评/评测分数 */
   score: z.number().int().min(0).max(100).optional(),
 });

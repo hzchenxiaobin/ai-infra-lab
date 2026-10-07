@@ -201,6 +201,7 @@ final class API: @unchecked Sendable {
 
     func problemList(difficulty: Difficulty?, source: ProblemSource?, judgeType: JudgeType?, tag: String?,
                      knowledgePoint: String?, search: String?, progress: ProgressStatus?,
+                     solved: Bool?, interview: Bool?,
                      page: Int, pageSize: Int = 50) async throws -> ProblemListResult {
         struct In: Codable {
             let difficulty: Difficulty?
@@ -210,6 +211,8 @@ final class API: @unchecked Sendable {
             let knowledgePoint: String?
             let search: String?
             let progress: ProgressStatus?
+            let solved: Bool?
+            let interview: Bool?
             let page: Int
             let pageSize: Int
         }
@@ -217,13 +220,14 @@ final class API: @unchecked Sendable {
             "problem.list",
             input: In(difficulty: difficulty, source: source, judgeType: judgeType,
                       tag: tag, knowledgePoint: knowledgePoint, search: search,
-                      progress: progress, page: page, pageSize: pageSize)
+                      progress: progress, solved: solved, interview: interview,
+                      page: page, pageSize: pageSize)
         )
     }
 
-    func problemFacets(source: ProblemSource?) async throws -> ProblemFacets {
-        struct In: Codable { let source: ProblemSource? }
-        return try await client.call("problem.facets", input: In(source: source))
+    func problemFacets(source: ProblemSource?, interview: Bool?) async throws -> ProblemFacets {
+        struct In: Codable { let source: ProblemSource?; let interview: Bool? }
+        return try await client.call("problem.facets", input: In(source: source, interview: interview))
     }
 
     func problemLists() async throws -> [ProblemListMeta] {

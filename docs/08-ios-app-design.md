@@ -162,8 +162,9 @@ actor Poller<T> {
 
 ### 5.5 刷题（ProblemsScreen 及题目行）
 
-- `ProblemRow`（题库/题单/周赛共用）：序号徽标、标题（外链 docs）、难度徽标、高频/中频徽标、标签 Chip、入口按钮（internal → push `JudgeScreen`；leetgpu-com → 内嵌浏览器/外跳）、备注按钮（圆点标记，≤2000 字）、三态掌握切换（`progress.mark`，leetgpu 题 AC 有专门提示文案）。
-- 筛选状态本地持有，服务端过滤 + 内存分页（50/页），`LazyVStack` 保证 4000+ 题滚动性能。
+- `ProblemRow`（题库/题单/周赛共用）：序号徽标、标题（外链 docs）、难度徽标、高频/中频徽标、标签 Chip、入口按钮（internal → push `JudgeScreen`；leetgpu-com → 内嵌浏览器/外跳）、备注按钮（圆点标记，≤2000 字）、四态掌握切换（`progress.mark`：unseen/seen/ac/skipped，skipped 不需要写不计入刷题统计；leetgpu 题 AC 有专门提示文案）。
+- 题库口径对齐 web：两分区均传 `interview: true`（GPU = 面经高频/中频 34 题、算法 = 面试题库 LeetCode 高频题），facets 同口径；统计行「共 X 题 · 已完全掌握 Y」的 Y 为 `solved: true` 全库计数（标记后经 progressChanged 通知刷新）。
+- 筛选状态本地持有（难度/四态状态/评测方式/标签/知识点 + 标题搜索 300ms 防抖），服务端过滤 + 内存分页（50/页），`LazyVStack` 保证大列表滚动性能；GPU 分区 A–L 知识领域快捷分组（含「全部」与选中领域名提示），列表按高频（面经几乎必考）/中频分组。
 
 ### 5.6 我的（DashboardScreen）
 

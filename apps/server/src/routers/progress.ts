@@ -15,8 +15,9 @@ import { contents, interviewSessions, problems, questions, userProgress } from "
 import { authedProcedure, router } from "../trpc.js";
 
 export const progressRouter = router({
-  /** 进度标记（unseen / seen / mastered / ac），每用户 × 每内容一行，upsert 幂等；
-   *  status=unseen 回到「没写过」：有备注的行仅重置状态（备注保留），无备注的行删除（保持 unseen=无记录） */
+  /** 进度标记（unseen / seen / mastered / ac / skipped），每用户 × 每内容一行，upsert 幂等；
+   *  status=unseen 回到「没写过」：有备注的行仅重置状态（备注保留），无备注的行删除（保持 unseen=无记录）；
+   *  skipped = 不需要写（刷题页四态之一，不计入刷题统计） */
   mark: authedProcedure.input(progressMarkSchema).mutation(async ({ input, ctx }) => {
     const exists = await db
       .select({ id: contents.id })

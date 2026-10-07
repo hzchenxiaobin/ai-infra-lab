@@ -2,7 +2,7 @@ import SwiftUI
 
 // ---------------------------------------------------------------------------
 // 题目行（题库 / 题单 / 周赛共用）：标题外链 docs、入口（站内评测 / leetgpu）、
-// 三态掌握切换（progress.mark）、行内备注（progress.setNote）。
+// 四态掌握切换（progress.mark，skipped 不需要写不计入刷题统计）、行内备注（progress.setNote）。
 // ---------------------------------------------------------------------------
 
 struct ProblemRow: View {
@@ -22,6 +22,7 @@ struct ProblemRow: View {
         ("unseen", "没写过"),
         ("seen", "需复习"),
         ("ac", "已完全掌握"),
+        ("skipped", "不需要写"),
     ]
 
     private var currentStatusValue: String {

@@ -7,7 +7,7 @@ import "./problems.css";
 
 // ---------------------------------------------------------------------------
 // 题目行（题库/题单/周赛共用）：标题跳 docs 题解页，leetgpu-com 题附外站评测链接，
-// 行尾掌握状态三态切换（没写过 = unseen / 需复习 = seen / 已完全掌握 = ac，progress.mark），
+// 行尾掌握状态四态切换（没写过 = unseen / 需复习 = seen / 已完全掌握 = ac / 不需要写 = skipped，progress.mark），
 // 行内个人备注（progress.setNote，记录注意事项/易错点）。
 // ---------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ export interface ProblemRowData {
   judgeType: string;
   externalUrl: string;
   tags: string[];
-  progressStatus: "unseen" | "seen" | "mastered" | "ac";
+  progressStatus: "unseen" | "seen" | "mastered" | "ac" | "skipped";
   note: string | null;
   /** GPU 面试题频次档（仅刷题 GPU 分区有值）：high 高频 / mid 中频 */
   tier?: "high" | "mid" | null;
@@ -30,6 +30,7 @@ const PROGRESS_STATES = [
   { value: "unseen", label: "没写过", hint: "完全没写过，点击重置为该状态（备注保留）" },
   { value: "seen", label: "需复习", hint: "写过但还没完全掌握，留待后续复习" },
   { value: "ac", label: "已完全掌握", hint: "已完全掌握（计入刷题统计）" },
+  { value: "skipped", label: "不需要写", hint: "判定不需要刷的题（不考/已熟悉同类题），不计入刷题统计" },
 ] as const;
 
 const DIFFICULTY_BADGE_CLASS: Record<string, string> = {

@@ -67,7 +67,7 @@ private let WEEK_BLURBS: [Int: String] = [
     2: "掌握 Warp Shuffle、Register Blocking、GEMM 七层路径、CUDA Streams",
     3: "掌握 WMMA/mma.sync、CUTLASS 三级 Tiling、CuTe 布局抽象",
     4: "手写 Softmax/LayerNorm/GEMM Backward、Triton 三方 benchmark",
-    5: "从 FA 简化版到 FA-3 完整贯通：论文 / Forward / Backward / 官方源码 / 性能对比",
+    5: "从 FA 简化版到 FA-3 完整贯通：论文/Forward/Backward/官方源码/性能对比",
     6: "Prefill/Decode、KV Cache（GQA/MQA/MLA）、vLLM、PagedAttention、FlashDecoding",
     7: "Continuous Batching、vLLM Scheduler、Chunked Prefill、PD 分离、Mini 引擎 v1",
     8: "量化（W8A16/INT8 KV/FP8）、投机解码、CUDA Graph、采样 kernel",
@@ -306,7 +306,7 @@ private struct DayCell: View {
 
     private var borderColor: Color {
         switch day.status {
-        case .unseen: return .line
+        case .unseen, .skipped: return .line
         case .seen: return Color.accent600.opacity(0.4)
         case .mastered, .ac: return .accent600
         }

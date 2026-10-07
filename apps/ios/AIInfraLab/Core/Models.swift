@@ -33,7 +33,7 @@ enum MessageRole: String, Codable {
 }
 
 enum ProgressStatus: String, Codable {
-    case unseen, seen, mastered, ac
+    case unseen, seen, mastered, ac, skipped
 }
 
 enum SessionStatus: String, Codable {

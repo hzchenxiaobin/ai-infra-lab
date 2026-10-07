@@ -143,7 +143,7 @@ export const userProgress = mysqlTable(
     id: serial("id").primaryKey(),
     userId: bigint("user_id", { mode: "number" }).notNull(),
     contentId: varchar("content_id", { length: 128 }).notNull(),
-    status: mysqlEnum("status", ["unseen", "seen", "mastered", "ac"])
+    status: mysqlEnum("status", ["unseen", "seen", "mastered", "ac", "skipped"])
       .$type<ProgressStatus>()
       .notNull()
       .default("unseen"),

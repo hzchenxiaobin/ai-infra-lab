@@ -46,7 +46,7 @@
 
 | 表 | 列 | 说明 |
 |---|---|---|
-| `user_progress` | `user_id`, `content_id`, `status(unseen/seen/mastered/ac)`, `score`, `last_at`, UNIQUE(user_id, content_id) | 学习/刷题进度，每用户 × 每内容一行；GPU 题手动标记完成也写这里 |
+| `user_progress` | `user_id`, `content_id`, `status(unseen/seen/mastered/ac/skipped)`, `score`, `last_at`, UNIQUE(user_id, content_id) | 学习/刷题进度，每用户 × 每内容一行；GPU 题手动标记完成也写这里；`skipped` = 刷题页「不需要写」（不计入刷题统计，迁移 0013） |
 | `submissions` | `id`, `user_id`, `problem_id`, `language`, `code`, `status(pending/running/ac/wa/ce/tle/mle)`, `verdict_detail`(json), `runtime_ms`, `memory_kb`, `created_at` | **兼作 judge-worker 的任务队列**（02 已决策，初期不上 MQ）；状态机与领取方式见 [judge-worker](judge-worker.md#6-队列与状态机细节) |
 
 ### 2.5 面试域（已有，扩展列）

@@ -85,8 +85,9 @@ problems               # 题目元数据（contents 的 type=problem 子集，�
   judge_type           testcases(json, 内置评测的用例)  external_url (跳转评测地址)
 
 user_progress          # 学习/刷题进度（每用户 × 每内容/题目 一行）
-  user_id  content_id  status (unseen/seen/mastered/ac)
+  user_id  content_id  status (unseen/seen/mastered/ac/skipped)
   score    last_at     UNIQUE(user_id, content_id)
+  # skipped = 刷题页「不需要写」：不计入刷题统计与掌握度信号
 
 submissions            # 评测提交（judge-worker 的任务队列也是它）
   id  user_id  problem_id  language  code

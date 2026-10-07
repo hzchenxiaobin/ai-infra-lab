@@ -155,7 +155,7 @@ run("progress.overview（集成）", () => {
     }
   });
 
-  it("mark：seen/ac upsert 幂等；unseen 删除记录行回到「没写过」", async () => {
+  it("mark：seen/ac/skipped upsert 幂等；unseen 删除记录行回到「没写过」", async () => {
     await seed();
     const rowCount = async () =>
       db
@@ -168,6 +168,9 @@ run("progress.overview（集成）", () => {
 
       await caller.progress.mark({ contentId: "lc:zzprog1", status: "seen" });
       expect((await rowCount())[0]?.status).toBe("seen");
+
+      await caller.progress.mark({ contentId: "lc:zzprog1", status: "skipped" });
+      expect((await rowCount())[0]?.status).toBe("skipped");
 
       await caller.progress.mark({ contentId: "lc:zzprog1", status: "unseen" });
       expect(await rowCount()).toHaveLength(0);

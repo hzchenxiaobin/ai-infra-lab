@@ -164,6 +164,22 @@ run("problem router（集成）", () => {
       expect(solved.total).toBe(1);
       expect(solved.items[0].id).toBe("lc:zztest1");
       expect(solved.items[0].ac).toBe(true);
+
+      // progress=skipped 筛选：标记后命中且不计 AC
+      expect(
+        (await caller.problem.list({ source: "leetcode", tag: "zz-test-array", progress: "skipped", page: 1, pageSize: 50 })).total,
+      ).toBe(0);
+      await caller.progress.mark({ contentId: "lc:zztest2", status: "skipped" });
+      const bySkipped = await caller.problem.list({
+        source: "leetcode",
+        tag: "zz-test-array",
+        progress: "skipped",
+        page: 1,
+        pageSize: 50,
+      });
+      expect(bySkipped.total).toBe(1);
+      expect(bySkipped.items[0].id).toBe("lc:zztest2");
+      expect(bySkipped.items[0].ac).toBe(false);
     } finally {
       await cleanup();
     }

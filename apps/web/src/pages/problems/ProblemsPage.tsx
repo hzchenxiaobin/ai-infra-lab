@@ -38,7 +38,7 @@ const PARTITIONS = {
 export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS }) {
   const meta = PARTITIONS[partition];
   const [difficulty, setDifficulty] = useState<"all" | Difficulty>("all");
-  const [progress, setProgress] = useState<"all" | "unseen" | "seen" | "ac">("all");
+  const [progress, setProgress] = useState<"all" | "unseen" | "seen" | "ac" | "skipped">("all");
   const [tag, setTag] = useState("");
   const [knowledgePoint, setKnowledgePoint] = useState("");
   const [judgeType, setJudgeType] = useState<"all" | JudgeType>("all");
@@ -150,7 +150,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
             <select
               value={progress}
               onChange={(e) => {
-                setProgress(e.target.value as "all" | "unseen" | "seen" | "ac");
+                setProgress(e.target.value as "all" | "unseen" | "seen" | "ac" | "skipped");
                 setPage(1);
               }}
               className="select"
@@ -159,6 +159,7 @@ export function ProblemsPage({ partition }: { partition: keyof typeof PARTITIONS
               <option value="unseen">没写过</option>
               <option value="seen">需复习</option>
               <option value="ac">已完全掌握</option>
+              <option value="skipped">不需要写</option>
             </select>
             <select
               value={tag}
