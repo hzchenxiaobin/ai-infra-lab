@@ -15,6 +15,7 @@ struct InterviewHomeScreen: View {
         case start = "开始面试"
         case bank = "题库"
         case history = "历史"
+        case notes = "笔记"
         var id: String { rawValue }
     }
 
@@ -42,6 +43,8 @@ struct InterviewHomeScreen: View {
                 case .history:
                     HistoryScreen(openRoom: { id in path.append(.room(id)) },
                                   openReport: { id in path.append(.report(id, assumeFinished: false)) })
+                case .notes:
+                    NotesScreen()
                 }
             }
             .background(Color.page)

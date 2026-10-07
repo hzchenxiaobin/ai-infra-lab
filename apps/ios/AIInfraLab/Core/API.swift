@@ -98,6 +98,42 @@ final class API: @unchecked Sendable {
         return try await client.call("interview.get", input: In(sessionId: sessionId))
     }
 
+    // MARK: - note（面试复盘笔记）
+
+    func noteList() async throws -> [InterviewNote] {
+        try await client.call("note.list")
+    }
+
+    @discardableResult
+    func noteCreate(title: String, content: String) async throws -> Int {
+        struct In: Codable { let title: String; let content: String }
+        struct Out: Codable { let id: Int }
+        let out: Out = try await client.call(
+            "note.create",
+            input: In(title: title, content: content),
+            method: .mutation,
+            retryOnNetworkError: false
+        )
+        return out.id
+    }
+
+    func noteUpdate(id: Int, title: String, content: String) async throws {
+        struct Data: Codable { let title: String; let content: String }
+        struct In: Codable { let id: Int; let data: Data }
+        let _: OkResult = try await client.call(
+            "note.update",
+            input: In(id: id, data: Data(title: title, content: content)),
+            method: .mutation,
+            retryOnNetworkError: false
+        )
+    }
+
+    func noteRemove(id: Int) async throws {
+        struct In: Codable { let id: Int }
+        let _: OkResult = try await client.call("note.remove", input: In(id: id),
+                                                method: .mutation, retryOnNetworkError: false)
+    }
+
     // MARK: - question（面试题库）
 
     func questionList(category: Category?, difficulty: Difficulty?, search: String?, page: Int, pageSize: Int = 10) async throws -> QuestionListResult {

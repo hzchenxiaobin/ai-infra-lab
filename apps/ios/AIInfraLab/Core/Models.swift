@@ -192,8 +192,78 @@ struct ReportRow: Codable, Equatable {
     let overallGrade: String?
     let evaluatedBy: String?
     let report: String
+    /// 结构化报告（单一事实源；report 列为其 Markdown 渲染产物）。存量报告为 nil，回落 markdown 解析
+    let structured: StructuredReport?
     let weakPoints: [String]
     let createdAt: Date
+}
+
+// ---------------------------------------------------------------------------
+// 结构化报告（对齐 contracts StructuredReport：interview_reports.structured 列）
+// ---------------------------------------------------------------------------
+
+/// 推荐链接目标：站内 docs 路径或外部 URL
+struct RecommendLink: Codable, Equatable, Identifiable {
+    let id: String
+    let title: String
+    let url: String
+}
+
+/// 单个薄弱点的推荐：关联学习章节与练习题
+struct WeakPointRecommendation: Codable, Equatable, Identifiable {
+    let name: String
+    let learn: [RecommendLink]
+    let problems: [RecommendLink]
+    var id: String { name }
+}
+
+/// 结构化报告（报告数据的单一事实源；keyPointsByQuestion 以 questionId 字符串为键）
+struct StructuredReport: Codable, Equatable {
+    struct DimensionGrade: Codable, Equatable {
+        let name: String
+        let grade: String
+    }
+
+    struct QuestionEvaluation: Codable, Equatable, Identifiable {
+        let questionId: Int
+        let title: String
+        let category: Category
+        let dimensions: [DimensionGrade]
+        let diagnosis: String
+        let suggestion: String
+        /// 与面试官的每次提问（主问题 + 每次追问）一一对应、顺序一致的参考答案
+        let answers: [String]
+        var id: Int { questionId }
+    }
+
+    struct EvaluationResult: Codable, Equatable {
+        let overallGrade: String
+        let summary: String
+        let questions: [QuestionEvaluation]
+        let weakDimensions: [String]
+        let evaluatedBy: String
+    }
+
+    let sessionId: Int
+    let categories: [String]
+    let questionCount: Int
+    let durationMinutes: Int?
+    let result: EvaluationResult
+    let keyPointsByQuestion: [String: String]
+    let recommendations: [WeakPointRecommendation]
+}
+
+// ---------------------------------------------------------------------------
+// 面试复盘笔记（interview_notes 表行，note router）
+// ---------------------------------------------------------------------------
+
+/// 复盘笔记：用户以 markdown 记录每次面试过程（模拟面试复盘 / 真实面经）
+struct InterviewNote: Codable, Identifiable, Equatable {
+    let id: Int
+    let title: String
+    let content: String
+    let createdAt: Date
+    let updatedAt: Date
 }
 
 struct ReportProgress: Codable, Equatable {

@@ -59,6 +59,7 @@ RootView（SessionStore 未登录 → fullScreenCover(LoginScreen)）
 | `/start` | 面试Tab · `StartScreen` | 三步组卷（方向多选卡/范围联动/题量1–5）+ 统计带 + 最近 5 场 |
 | `/bank` | 面试Tab · `BankScreen` | 筛选+防抖搜索+分页；QuestionCard 展开；新增/编辑表单、JSON 批量导入、一键播种；仅本人题可编辑删除 |
 | `/history` | 面试Tab · `HistoryScreen` | 方向均分条形图、近10场趋势折线、场次列表（删除需 confirm） |
+| `/notes` | 面试Tab · `NotesScreen` | 复盘笔记列表（更新时间）；阅读页 Markdown 渲染 + 编辑/删除；编辑器 sheet（标题 + 编辑/预览分段） |
 | `/interview/:id` | `InterviewRoomScreen`（push） | 聊天流+乐观更新；代码题分栏（题面/代码面板）；结束本场 confirm |
 | `/report/:id` | `ReportScreen`（push） | 总评大字等级；报告/对话回放 Tab；生成进度轮询；失败可重新生成 |
 | `/problems/gpu`、`/problems/algo` | 刷题Tab · `ProblemsScreen` | 分区胶囊切换、5 组筛选、标签防抖搜索、A–L 字母分组、高频/中频分组、分页 50 |
@@ -133,7 +134,7 @@ struct TRPCError: Error { let code: String; let message: String }
 - **两种布局**：knowledge 纯聊天；代码题（leetcode/cuda）上下结构——上方题面卡（Markdown + 难度徽标），下方聊天流 + 可展开代码面板（换题按 questionId 重置）。
 - **内嵌评测**：语言 Segmented（C++/Python，不可用禁用+原因）、starter code 预填、`judge.submit` → 轮询 `judge.getResult` → `JudgeResultView` 原生渲染；「提交代码」把当前代码作为考生消息发给面试官。
 - **结束流程**：confirm（"生成可能需要数十秒"）→ `interview.finish`；本地立即置 finished（服务端状态先落库）→ 报告生成期间 2s 轮询 `interview.get` 的 `reportProgress`（pending/evaluating/rendering/failed/done），failed 显示原因 + 「重新生成」。
-- **报告渲染**：移植 web `ReportBody` 解析器到 Swift——按 `## ` 分节成卡片、维度行（"准确性 C · 深度 C"→ Chip+GradeBadge）、`【答】`分段与面试官提问一问一答配对、"专项训练建议"的薄弱点→学习/练习链接（点击进内嵌浏览器或站内路由）；解析不匹配时兜底整段 Markdown。Tab 切换：评估报告 / 对话回放（复用气泡组件）。
+- **报告渲染**：新报告（`report.structured` 非空）走结构化直渲——`StructuredReportBodyView` 按数据渲染总评卡 / 逐题卡（维度 chips + 诊断/改进建议/参考答案/要点对照），提问与参考答案按 `questionId` 关联消息一问一答配对（不依赖文本格式约定），"专项训练建议"的薄弱点→学习/练习链接（点击进内嵌浏览器或站内路由）。存量报告（structured 为 NULL）回落移植 web `ReportBody` 的 markdown 解析器——按 `## ` 分节成卡片、维度行（"准确性 C · 深度 C"→ Chip+GradeBadge）、`【答】`分段配对；解析不匹配时兜底整段 Markdown。Tab 切换：评估报告 / 对话回放（复用气泡组件）。
 
 ### 5.2 轮询引擎
 

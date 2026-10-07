@@ -2,7 +2,9 @@ import SwiftUI
 
 // ---------------------------------------------------------------------------
 // 评估报告（web /report/:id）：总评大字等级 + 生成进度轮询（2s）+ 报告卡片
-// + 对话回放；失败可重新生成。
+// + 对话回放；失败可重新生成。报告正文：新报告走 structured 列直渲
+// （StructuredReportBodyView），存量报告（structured 为 NULL）回落 markdown
+// 解析（ReportBodyView）。
 // ---------------------------------------------------------------------------
 
 @MainActor
@@ -156,12 +158,19 @@ struct ReportScreen: View {
                     }
                     .pickerStyle(.segmented)
                     if tab == 0 {
-                        ReportBodyView(
-                            text: report.report,
-                            session: session,
-                            messages: model.messages,
-                            questions: model.questions
-                        )
+                        if let structured = report.structured {
+                            StructuredReportBodyView(
+                                report: structured,
+                                messages: model.messages
+                            )
+                        } else {
+                            ReportBodyView(
+                                text: report.report,
+                                session: session,
+                                messages: model.messages,
+                                questions: model.questions
+                            )
+                        }
                     } else {
                         replayList
                     }
@@ -243,12 +252,13 @@ struct ReportScreen: View {
     }
 
     private func gradeCard(_ session: SessionRow, _ report: ReportRow) -> some View {
-        HStack(alignment: .firstTextBaseline) {
+        let evaluatedByText = report.evaluatedBy == "rule" ? "规则引擎评估" : "LLM 评估"
+        return HStack(alignment: .firstTextBaseline) {
             Text(report.overallGrade ?? session.overallGrade ?? "-")
                 .font(.system(size: 64, weight: .bold, design: .rounded))
                 .foregroundStyle(gradeColor(report.overallGrade ?? session.overallGrade ?? ""))
             VStack(alignment: .leading, spacing: 4) {
-                Text("完成于 \(Fmt.date(report.createdAt)) · LLM 评估")
+                Text("完成于 \(Fmt.date(report.createdAt)) · \(evaluatedByText)")
                     .font(.caption)
                     .foregroundStyle(Color.muted)
                 if !report.weakPoints.isEmpty {
@@ -427,28 +437,7 @@ private struct ReferenceAnswerView: View {
 
     var body: some View {
         if let answers = ReportParser.splitAnswers(text) {
-            let count = max(askedQuestions.count, answers.count)
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(0..<count, id: \.self) { index in
-                    VStack(alignment: .leading, spacing: 4) {
-                        if index < askedQuestions.count {
-                            Text(index == 0 ? "主问题" : "追问 \(index)")
-                                .font(.caption2)
-                                .foregroundStyle(Color.faint)
-                            MessageBubble(role: .interviewer, content: askedQuestions[index], compact: true)
-                        }
-                        if index < answers.count {
-                            MarkdownView(text: answers[index])
-                                .padding(.leading, 12)
-                                .overlay(alignment: .leading) {
-                                    RoundedRectangle(cornerRadius: 1)
-                                        .fill(Color.accent200)
-                                        .frame(width: 3)
-                                }
-                        }
-                    }
-                }
-            }
+            AnswerPairsView(askedQuestions: askedQuestions, answers: answers)
         } else {
             VStack(alignment: .leading, spacing: 8) {
                 if !askedQuestions.isEmpty {
@@ -479,6 +468,247 @@ private struct ReferenceAnswerView: View {
                 }
                 MarkdownView(text: text)
             }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 一问一答配对（主问题/追问 j ↔ answers[j]）——报告两套渲染共用（对齐 web
+// report-shared.tsx AnswerPairs）
+// ---------------------------------------------------------------------------
+
+struct AnswerPairsView: View {
+    let askedQuestions: [String]
+    let answers: [String]
+
+    var body: some View {
+        let count = max(askedQuestions.count, answers.count)
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(0..<count, id: \.self) { index in
+                VStack(alignment: .leading, spacing: 4) {
+                    if index < askedQuestions.count {
+                        Text(index == 0 ? "主问题" : "追问 \(index)")
+                            .font(.caption2)
+                            .foregroundStyle(Color.faint)
+                        MessageBubble(role: .interviewer, content: askedQuestions[index], compact: true)
+                    }
+                    if index < answers.count {
+                        MarkdownView(text: answers[index])
+                            .padding(.leading, 12)
+                            .overlay(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 1)
+                                    .fill(Color.accent200)
+                                    .frame(width: 3)
+                            }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 结构化报告正文（对齐 web StructuredReportBody.tsx）：structured 列直渲，
+// 总评 / 逐题卡片（维度 chips + 诊断/建议/参考答案/要点对照）/ 专项训练建议。
+// 提问与参考答案的配对直接按 questionId 关联消息，不依赖文本格式约定。
+// ---------------------------------------------------------------------------
+
+struct StructuredReportBodyView: View {
+    let report: StructuredReport
+    let messages: [InterviewMessageDTO]
+
+    @Environment(LinkStore.self) private var links
+
+    /// 有内容命中的推荐才渲染（服务端落库时已过滤，旧数据兜底）
+    private var recommendations: [WeakPointRecommendation] {
+        report.recommendations.filter { !$0.learn.isEmpty || !$0.problems.isEmpty }
+    }
+
+    private func askedQuestions(_ questionId: Int) -> [String] {
+        messages
+            .filter { $0.questionId == questionId && $0.role == .interviewer }
+            .map { ReportParser.stripChatPrefix($0.content) }
+    }
+
+    var body: some View {
+        VStack(spacing: 12) {
+            overallCard
+            ForEach(Array(report.result.questions.enumerated()), id: \.element.id) { index, question in
+                questionCard(index: index, question: question)
+            }
+            if !report.result.weakDimensions.isEmpty || !recommendations.isEmpty {
+                recommendationCard
+            }
+        }
+    }
+
+    private var overallCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                RoundedRectangle(cornerRadius: 1).fill(Color.accent600).frame(width: 4, height: 14)
+                Text("总评")
+                    .font(.subheadline.weight(.semibold))
+                GradeBadge(grade: report.result.overallGrade)
+            }
+            MarkdownView(text: report.result.summary)
+            if report.result.evaluatedBy == "rule" {
+                Text("注：本次由规则引擎评估（未启用 LLM 或 LLM 降级）。")
+                    .font(.caption2)
+                    .foregroundStyle(Color.faint)
+            }
+        }
+        .cardStyle()
+    }
+
+    private func questionCard(index: Int, question: StructuredReport.QuestionEvaluation) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                RoundedRectangle(cornerRadius: 1).fill(Color.accent600).frame(width: 4, height: 14)
+                Text("第 \(index + 1) 题：\(question.title)")
+                    .font(.subheadline.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                ChipView(text: question.category.label)
+            }
+            HStack(spacing: 6) {
+                ForEach(question.dimensions, id: \.name) { dim in
+                    HStack(spacing: 4) {
+                        Text(dim.name)
+                            .font(.caption)
+                            .foregroundStyle(Color.muted)
+                        GradeBadge(grade: dim.grade)
+                    }
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.page, in: RoundedRectangle(cornerRadius: 6))
+                }
+            }
+            LabeledBlockView(label: "诊断", text: question.diagnosis)
+            LabeledBlockView(label: "改进建议", text: question.suggestion)
+            if !question.answers.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("参考答案")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(Color.muted)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
+                        .background(Color.page, in: RoundedRectangle(cornerRadius: 6))
+                    AnswerPairsView(
+                        askedQuestions: askedQuestions(question.questionId),
+                        answers: question.answers
+                    )
+                }
+                .padding(.leading, 10)
+                .overlay(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 1)
+                        .fill(Color.line)
+                        .frame(width: 3)
+                }
+            }
+            if let keyPoints = report.keyPointsByQuestion[String(question.questionId)], !keyPoints.isEmpty {
+                LabeledBlockView(label: "要点对照", text: keyPoints)
+            }
+        }
+        .cardStyle()
+    }
+
+    private var recommendationCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                RoundedRectangle(cornerRadius: 1).fill(Color.accent600).frame(width: 4, height: 14)
+                Text("专项训练建议")
+                    .font(.subheadline.weight(.semibold))
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(Array(report.result.weakDimensions.enumerated()), id: \.offset) { index, weak in
+                    Text("\(index + 1). \(weak)")
+                        .font(.footnote)
+                        .foregroundStyle(Color.ink)
+                }
+            }
+            if !recommendations.isEmpty {
+                VStack(alignment: .leading, spacing: 10) {
+                    if !report.result.weakDimensions.isEmpty {
+                        Divider().overlay(Color.divider)
+                    }
+                    Text("薄弱点 → 学习与练习")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(Color.muted)
+                    ForEach(recommendations) { rec in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(rec.name)
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(Color.ink)
+                            if !rec.learn.isEmpty {
+                                recommendRow("学习", links: rec.learn)
+                            }
+                            if !rec.problems.isEmpty {
+                                recommendRow("练习", links: rec.problems)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .cardStyle()
+    }
+
+    private func recommendRow(_ label: String, links items: [RecommendLink]) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Text("\(label)：")
+                .font(.caption)
+                .foregroundStyle(Color.muted)
+            FlowLinksView(links: items, open: { links.open($0.url, title: $0.title) })
+        }
+    }
+}
+
+/// 「、」分隔的可点推荐链接行
+private struct FlowLinksView: View {
+    let links: [RecommendLink]
+    let open: (RecommendLink) -> Void
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            ForEach(Array(links.enumerated()), id: \.element.id) { index, link in
+                if index > 0 {
+                    Text("、")
+                        .font(.caption)
+                        .foregroundStyle(Color.faint)
+                }
+                Button {
+                    open(link)
+                } label: {
+                    Text(link.title)
+                        .font(.caption)
+                        .foregroundStyle(Color.accent300)
+                        .lineLimit(1)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+/// 带标签的左线子块（诊断/改进建议/要点对照）；「诊断」为报告核心结论，accent 强调
+private struct LabeledBlockView: View {
+    let label: String
+    let text: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(label == "诊断" ? Color.accent300 : Color.muted)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(label == "诊断" ? Color.accent50 : Color.page, in: RoundedRectangle(cornerRadius: 6))
+            MarkdownView(text: text)
+        }
+        .padding(.leading, 10)
+        .overlay(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 1)
+                .fill(Color.line)
+                .frame(width: 3)
         }
     }
 }
